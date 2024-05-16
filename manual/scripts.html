@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Flow Tracing :: Apache Log4j</title>
-    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/flowtracing.html">
+    <title>Scripts :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/scripts.html">
     <meta name="generator" content="Antora 3.2.0-alpha.4">
 <link rel="stylesheet" href="../_/css/site.css">
 <link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
@@ -120,7 +120,7 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="logbuilder.html">Log Builder</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="2">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -171,7 +171,7 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="filters.html">Filters</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="scripts.html">Scripts</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -306,329 +306,197 @@
   <ul>
     <li><a href="../index.html">Home</a></li>
     <li><a href="index.html">Manual</a></li>
-    <li><a href="api.html">Log4j API</a></li>
-    <li><a href="flowtracing.html">Flow Tracing</a></li>
+    <li>Configuration</li>
+    <li><a href="scripts.html">Scripts</a></li>
   </ul>
 </nav>
-<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/manual/flowtracing.adoc">Edit this Page</a></div>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/manual/scripts.adoc">Edit this Page</a></div>
 </div>
   <div class="content">
 <aside class="toc sidebar" data-title="Contents" data-levels="4">
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Flow Tracing</h1>
+<h1 class="page">Scripts</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Flow tracing in Log4j is an advanced logging technique designed to enhance
-the visibility of application processes. With this technique, developers can track
-the flow of data through their application by using special methods that log entry
-and exit points within the code.</p>
+<p>Log4j provides support for
+<a href="https://docs.oracle.com/javase/6/docs/technotes/guides/scripting/">JSR
+223</a> scripting languages to be used in some of its components.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>In order to enable a scripting language, its name must be included in the
+<a href="systemproperties.html#log4j2.scriptEnableLanguages" class="xref page">log4j2.scriptEnableLanguages</a>
+configuration property.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>These methods are:</p>
+<p>Each component that allows scripts can contain on of the following configuration elements:</p>
 </div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Script</dt>
+<dd>
+<div class="paragraph">
+<p>This element specifies the content of the script directly and has:</p>
+</div>
+<div class="openblock">
+<div class="content">
 <div class="ulist">
 <ul>
 <li>
-<p><code>entry()</code> or <code>traceEntry()</code></p>
+<p>a required <code>language</code> configuration attribute that specifies the name of the JSR 223 language to use,</p>
 </li>
 <li>
-<p><code>exit()</code> or <code>traceExit()</code></p>
-</li>
-<li>
-<p><code>throwing()</code></p>
-</li>
-<li>
-<p><code>catching()</code></p>
+<p>a required <code>scriptText</code> configuration attribute that contains the text of the script.
+In the XML configuration format, the text of the script can also be written as content of the <code>&lt;Script&gt;</code> XML element.
+This allows the usage of a <code>CDATA</code> block.</p>
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>With these methods, we can investigate environments where traditional debugging is not possible,
-such as in production or during live application monitoring.
-Furthermore, new developers can be educated on the application&#8217;s behavior by examining the logs.</p>
+</div>
 </div>
 <div class="paragraph">
-<p>Flow tracing offers a structured approach to all this.</p>
+<p>The element can be assigned a name using the <code>name</code> configuration attribute.</p>
+</div>
+<div class="paragraph">
+<p>See also
+<a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-script-Script" class="xref page">Plugin reference</a>.</p>
+</div>
+</dd>
+<dt class="hdlist1">ScriptFile</dt>
+<dd>
+<div class="paragraph">
+<p>This element points to an external script file and has:</p>
+</div>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>a required <code>path</code> attribute that points to the path to a file name.</p>
+</li>
+<li>
+<p>an optional <code>language</code> attribute that specifies the name of the JSR 223 language to use.
+If not provided, the language is deduced from the extension of the file.</p>
+</li>
+<li>
+<p>an optional <code>isWatched</code> attribute.
+If set to <code>true</code> the script file will be monitored for changes.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The element can be assigned a name using the <code>name</code> configuration attribute.</p>
+</div>
+<div class="paragraph">
+<p>See also
+<a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-script-ScriptFile" class="xref page">Plugin reference</a>.</p>
+</div>
+</dd>
+<dt class="hdlist1">ScriptRef</dt>
+<dd>
+<div class="paragraph">
+<p>This element references a <strong>named</strong> script from the global
+<a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-ScriptsPlugin" class="xref page">Scripts</a>
+container plugin in the configuration file.</p>
+</div>
+<div class="paragraph">
+<p>See also
+<a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-script-ScriptRef" class="xref page">Plugin reference</a>.</p>
+</div>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>The environment in which the script runs is different for each Log4j script-based component.</p>
+</div>
+<div id="_tabs_1" class="openblock tabs is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_1_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_1_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_1_java_properties" class="tab">
+<p>Java properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_1_xml--panel" class="tabpanel" aria-labelledby="_tabs_1_xml">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">Unresolved include directive in modules/ROOT/pages/manual/scripts.adoc - include::example$configuration/scripts.xml[]</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_json--panel" class="tabpanel" aria-labelledby="_tabs_1_json">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">Unresolved include directive in modules/ROOT/pages/manual/scripts.adoc - include::example$configuration/scripts.json[]</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_yaml--panel" class="tabpanel" aria-labelledby="_tabs_1_yaml">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Unresolved include directive in modules/ROOT/pages/manual/scripts.adoc - include::example$configuration/scripts.yaml[]</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_java_properties--panel" class="tabpanel" aria-labelledby="_tabs_1_java_properties">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">Unresolved include directive in modules/ROOT/pages/manual/scripts.adoc - include::example$configuration/scripts.properties[]</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_flow_tracing_methods"><a class="anchor" href="#_flow_tracing_methods"></a>Flow Tracing Methods</h2>
+<h2 id="a-special-note-on-beanshell"><a class="anchor" href="#a-special-note-on-beanshell"></a>A special note on Beanshell</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The methods used most often are <code>entry()</code> or <code>traceEntry()</code> and <code>exit()</code> or <code>traceExit()</code>.
-As the name suggests, the "entry" methods are used at the beginning of a method,
-while the "exit" methods are used at the end of a method.</p>
+<p>JSR 223 scripting engines are supposed to identify that they support the
+<a href="https://docs.oracle.com/javase/8/docs/api/javax/script/Compilable.html">Compilable</a>
+interface if they support compiling their scripts.</p>
+</div>
+<div class="paragraph">
+<p>Beanshell does extend the <code>Compilable</code> interface, but an attempt to compile a script ends up in an
+<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Error.html">Error</a>
+being thrown.
+Log4j catches the throwable, but issues a warning in the status logger.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public void someMethod() {
-    logger.entry(); <i class="conum" data-value="1"></i><b>(1)</b>
-    // method body
-    logger.exit(); <i class="conum" data-value="2"></i><b>(2)</b>
-}</code></pre>
+<pre>2015-09-27 16:13:23,095 main DEBUG Script BeanShellSelector is compilable
+2015-09-27 16:13:23,096 main WARN Error compiling script java.lang.Error: unimplemented
+            at bsh.engine.BshScriptEngine.compile(BshScriptEngine.java:175)
+            at bsh.engine.BshScriptEngine.compile(BshScriptEngine.java:154)
+            at org.apache.logging.log4j.core.script.ScriptManager$MainScriptRunner.&lt;init&gt;(ScriptManager.java:125)
+            at org.apache.logging.log4j.core.script.ScriptManager.addScript(ScriptManager.java:94)</pre>
 </div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>entry()</code> method is called at the beginning of the method.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The <code>exit()</code> method is called at the end of the method.</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Both <code>entry()</code> and <code>exit()</code> methods can be called with or without parameters.
-In the case of <code>entry()</code> it makes sense to pass the method parameters as arguments.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public void someMethod(String param) {
-    logger.entry(param); <i class="conum" data-value="1"></i><b>(1)</b>
-    // method body
-    logger.exit(); <i class="conum" data-value="2"></i><b>(2)</b>
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>entry()</code> method is called at the beginning of the method.</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>The <code>traceEntry()</code> also supports messages.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public void someMethod(String[] text) {
-    logger.traceEntry(new JsonMessage(text)); <i class="conum" data-value="1"></i><b>(1)</b>
-    // method body
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Using the <code>JsonMessage</code> class to log the <code>text</code> parameter.</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Very similar, it is possible to use <code>exit()</code> with methods that return a value.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public String someMethod() {
-    String result = "Hello";
-    // method body
-    return logger.exit(result); <i class="conum" data-value="1"></i><b>(1)</b>
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>exit()</code> method can also return a value.</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>To work with exceptions, the <code>catching()</code> and <code>throwing()</code> methods are used.</p>
-</div>
-<div class="paragraph">
-<p>The following code shows, how to use the <code>catching()</code> method. It will be called
-inside the <code>catch</code> block of a try-catch statement.</p>
-</div>
-<div class="paragraph">
-<p>The <code>catching()</code> method can be used by an application when it catches an
-Exception that it is not going to rethrow, either explicitly or attached
-to another Exception. The logging event generated will have a level of <code>ERROR</code>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public void someMethod() {
-    try {
-        // Lets assume an exception is thrown here
-        String msg = messages[messages.length];
-    } catch (Exception ex) {
-        logger.catching(ex); <i class="conum" data-value="1"></i><b>(1)</b>
-    }
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>catching()</code> method is used to log exceptions that are caught and not rethrown.</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>The <code>throwing()</code> method is used to log exceptions that are thrown and not caught.
-The code shows how to use the <code>throwing()</code> method- like <code>catching()</code> it will be called
-inside the <code>catch</code> block of a try-catch statement.</p>
-</div>
-<div class="paragraph">
-<p>The <code>throwing()</code> method can be used by an application when it is throwing
-an exception that is unlikely to be handled, such as a RuntimeException.
-This will ensure that proper diagnostics are available if needed. The
-logging event generated will have a level of <code>ERROR</code>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public void someMethod() {
-    try {
-        // Lets assume an exception is thrown here
-        String msg = messages[messages.length];
-    } catch (Exception ex) {
-        logger.throwing(ex); <i class="conum" data-value="1"></i><b>(1)</b>
-    }
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>throwing()</code> method is used to log exceptions that are thrown and not caught.</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_differences_in_flow_tracing_methods"><a class="anchor" href="#_differences_in_flow_tracing_methods"></a>Differences in flow tracing methods</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Flow tracing methods have specific markers assigned and logs with a level of <code>TRACE</code>.
-It&#8217;s also noteworthy that all messages will begin with the word "event".</p>
-</div>
-<div class="paragraph">
-<p>The table below shows the methods and their special features.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Method Name</th>
-<th class="tableblock halign-left valign-top">Marker Name</th>
-<th class="tableblock halign-left valign-top">Special Features</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>entry()</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ENTER</code>, <code>FLOW</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Accepts 0 to 4 parameters</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>traceEntry()</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ENTER</code>, <code>FLOW</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Can take a format string and a variable list of parameters.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>exit()</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>EXIT</code>, <code>FLOW</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Can be called with or without parameters.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>traceExit()</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>EXIT</code>, <code>FLOW</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Handles return values differently based on the method signature.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>throwing()</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>THROWING</code>, <code>EXCEPTION</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Typically used when an application throws an exception that is unlikely to be handled, such as a RuntimeException.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>catching()</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CATCHING</code>, <code>EXCEPTION</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Used when catching exceptions that are not rethrown; logs with ERROR level.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_flow_tracing_example_configuration"><a class="anchor" href="#_flow_tracing_example_configuration"></a>Flow Tracing Example Configuration</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The following example demonstrates how to configure Log4j to use flow tracing.
-While it is recommended to use the <code>JsonTemplateLayout</code> in production, we are using the
-<code>PatternLayout</code> in this example for simplicity.</p>
-</div>
-<div class="paragraph">
-<p>The configuration below will cause all output to be routed to
-target/test.log. The pattern for the FileAppender includes the class
-name, line number and method name. Including these in the pattern is
-critical for the log to be of value.</p>
-</div>
-<div class="paragraph">
-<p>The following example demonstrates how you could use flow tracing.
-The Configuration element is set with a status of "error," which means Log4j
-will only report issues that are of error severity or higher.
-Within the Appenders section, two appenders are defined: Console and File.</p>
-</div>
-<div class="paragraph">
-<p>The Console appender is configured to output logs to <code>SYSTEM_OUT</code>, typically the console.
-It includes a <code>ThresholdFilter</code> set to only accept messages at the <code>ERROR</code> level or above.
-This filters out less severe messages.
-The output format is specified by a <code>PatternLayout</code>, designed to include detailed
-trace information such as time, log level, class name, line number, and method name.
-Please note, that we are recommending <code>JsonTemplateLayout</code> over <code>PatternLayout</code> in production.</p>
-</div>
-<div class="paragraph">
-<p>Similarly, the File appender directs logs to a file named <code>target/test.log</code>.
-The appenders configuration will create a new file for every application run.</p>
-</div>
-<div class="paragraph">
-<p>Finally, in the Loggers section, the Root logger is set to a <code>TRACE</code> level which is necessary
-to see flow tracing in action. The Root logger references the File appender, directing
-its output to the configured file.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="error"&gt;
-  &lt;Appenders&gt;
-    &lt;Console name="Console" target="SYSTEM_OUT"&gt;
-      &lt;ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/&gt;
-      &lt;!-- Flow tracing is most useful with a pattern that shows location.
-           Below pattern outputs class, line number and method name. --&gt;
-      &lt;PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/&gt;
-    &lt;/Console&gt;
-    &lt;File name="log" fileName="target/test.log" append="false"&gt;
-      &lt;PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/&gt;
-    &lt;/File&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="trace"&gt;
-      &lt;AppenderRef ref="log"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>By changing the level of the Root logger to <code>DEBUG</code>, you can reduce the amount of output.</p>
 </div>
 </div>
 </div>

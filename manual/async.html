@@ -144,31 +144,46 @@
 </ul>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="configuration.html">Configuration</a>
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Configuration</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="configuration.html">Configuration file</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="appenders.html">Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="customloglevels.html">Custom Log Levels</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="filters.html">Filters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="scripts.html">Scripts</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="systemproperties.html">Configuration properties</a>
+  </li>
+</ul>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="usage.html">Usage</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="lookups.html">Lookups</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="appenders.html">Appenders</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="layouts.html">Layouts</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="filters.html">Filters</a>
   </li>
   <li class="nav-item is-current-page" data-depth="1">
     <a class="nav-link" href="async.html">Lock-free Asynchronous Loggers for Low-Latency Logging</a>
@@ -177,16 +192,16 @@
     <a class="nav-link" href="garbagefree.html">Garbage-free Steady State Logging</a>
   </li>
   <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
     <a class="nav-link" href="extending.html">Extending Log4j</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
+  </li>
+</ul>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="plugins.html">Plugins</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="customloglevels.html">Custom Log Levels</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="jmx.html">JMX</a>
@@ -306,14 +321,14 @@
 <div class="sectionbody">
 <div class="paragraph">
 <p>Asynchronous logging can improve your application&#8217;s performance by
-executing the I/O operations in a separate thread. Log4j 2 makes a
-number of improvements in this area.</p>
+executing the I/O operations in a separate thread.
+Log4j 2 makes several improvements in this area.</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Asynchronous Loggers</strong> are a new addition in Log4j 2. Their aim is to
-return from the call to Logger.log to the application as soon as
+<p><strong>Asynchronous Loggers</strong> are a new addition in Log4j 2. They aim to
+return the call to Logger.log to the application as soon as
 possible. You can choose between making all Loggers asynchronous or
 using a mixture of synchronous and asynchronous Loggers. Making all
 Loggers asynchronous will give the best performance, while mixing gives
@@ -330,8 +345,8 @@ latency.</p>
 been enhanced to flush to disk at the end of a batch (when the queue is
 empty). This produces the same result as configuring
 "immediateFlush=true", that is, all received log events are always
-available on disk, but is more efficient because it does not need to
-touch the disk on each and every log event. (Async Appenders use
+available on disk but are more efficient because it does not need to
+touch the disk on every log event. (Async Appenders use
 ArrayBlockingQueue internally and do not need the disruptor jar on the
 classpath.)</p>
 </li>
@@ -361,7 +376,7 @@ to log bursts of messages. Async logging can help prevent or dampen
 latency spikes by shortening the wait time until the next message can be
 logged. If the queue size is configured large enough to handle the
 burst, asynchronous logging will help prevent your application from
-falling behind (as much) during a sudden increase of activity.</p>
+falling behind (as much) during a sudden increase in activity.</p>
 </div>
 </li>
 <li>
@@ -383,8 +398,8 @@ exception is thrown, it is less easy for an asynchronous logger or
 appender to signal this problem to the application. This can partly be
 alleviated by configuring an <code>ExceptionHandler</code>, but this may still not
 cover all cases. For this reason, if logging is part of your business
-logic, for example if you are using Log4j as an audit logging framework,
-we would recommend to synchronously log those audit messages. (Note that
+logic, for example, if you are using Log4j as an audit logging framework,
+we would recommend synchronously logging those audit messages. (Note that
 you can still <a href="#MixedSync-Async">combine</a> them and use asynchronous
 logging for debug/trace logging in addition to synchronous logging for
 the audit trail.)</p>
@@ -399,7 +414,7 @@ modified later. It is safe to asynchronously log mutable objects because
 most
 <a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html"><code>Message</code></a>
 implementations built-in to Log4j take a snapshot of the parameters.
-There are some exceptions however:
+There are some exceptions, however:
 <a href="../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html"><code>MapMessage</code></a>
 and
 <a href="../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html"><code>StructuredDataMessage</code></a>
@@ -423,7 +438,7 @@ another thread is not likely to give better performance.</p>
 is faster than the maximum sustained throughput of the underlying
 appender, the queue will fill up and the application will end up logging
 at the speed of the slowest appender. If this happens, consider
-selecting a <a href="performance.html#whichAppender" class="xref page">faster appender</a>, or
+selecting an <a href="performance.html#whichAppender" class="xref page">faster appender</a>, or
 logging less. If neither of these is an option, you may get better
 throughput and fewer latency spikes by logging synchronously.</p>
 </li>
@@ -450,8 +465,8 @@ required.</em>
 </table>
 </div>
 <div class="paragraph">
-<p>This is simplest to configure and gives the best performance.
-To make all loggers asynchronous, add the disruptor jar to the classpath and set the system property <a href="configuration.html#log4j2.contextSelector" class="xref page">log4j2.contextSelector</a> to <code>org.apache.logging.log4j.core.async.AsyncLoggerContextSelector</code> or <code>org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector</code>.</p>
+<p>This is the simplest to configure and gives the best performance.
+To make all loggers asynchronous, add the disruptor jar to the classpath and set the system property <a href="systemproperties.html#log4j2.contextSelector" class="xref page">log4j2.contextSelector</a> to <code>org.apache.logging.log4j.core.async.AsyncLoggerContextSelector</code> or <code>org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector</code>.</p>
 </div>
 <div class="paragraph">
 <p>By default, <a href="#Location">location</a> is not passed to the I/O thread by
@@ -515,292 +530,16 @@ of the application.</p>
 </div>
 <div class="sect2">
 <h3 id="SysPropsAllAsync"><a class="anchor" href="#SysPropsAllAsync"></a>Configuration Properties</h3>
-<div class="sect3">
-<h4 id="log4j2.asyncLoggerExceptionHandler"><a class="anchor" href="#log4j2.asyncLoggerExceptionHandler"></a><code>log4j2.asyncLoggerExceptionHandler</code></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 83.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_EXCEPTION_HANDLER</p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html">Class&lt;? extends ExceptionHandler&lt;? super RingBufferLogEvent&gt;&gt;</a></p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerDefaultExceptionHandler">AsyncLoggerDefaultExceptionHandler</a></p></td>
-</tr>
-</tbody>
-</table>
 <div class="paragraph">
-<p>Fully qualified name of a class that implements the <a href="https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html">ExceptionHandler</a> interface, which will be notified when an exception occurs while logging messages.
-The class needs to have a public zero-argument constructor.</p>
-</div>
-<div class="paragraph">
-<p>The default exception handler will print a message and stack trace to the standard error output stream.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="log4j2.asyncLoggerRingBufferSize"><a class="anchor" href="#log4j2.asyncLoggerRingBufferSize"></a><code>log4j2.asyncLoggerRingBufferSize</code></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 83.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_RING_BUFFER_SIZE</p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>256 &times; 1024</code></p>
-<p class="tableblock">(GC-free mode: <code>4 &times; 1024</code>)</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Size (number of slots) in the RingBuffer used by the asynchronous logging subsystem.
-Make this value large enough to deal with bursts of activity.
-The minimum size is 128.
-The RingBuffer will be pre-allocated at first use and will never grow or shrink during the life of the system.</p>
-</div>
-<div class="paragraph">
-<p>When the application is logging faster than the underlying appender can keep up with for a long enough time to fill up the queue, the behaviour is determined by the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html">AsyncQueueFullPolicy</a>.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="log4j2.asyncLoggerWaitStrategy"><a class="anchor" href="#log4j2.asyncLoggerWaitStrategy"></a><code>log4j2.asyncLoggerWaitStrategy</code></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 83.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_WAIT_STRATEGY</p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/WaitStrategy.html">Class&lt;? extends WaitStrategy&gt;</a> or predefined constant</p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Timeout</code></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Specifies the <a href="https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/WaitStrategy.html">WaitStrategy</a> used by the LMAX Disruptor.</p>
-</div>
-<div class="paragraph">
-<p>The value needs to be a fully qualified class name of a custom <code>WaitStrategy</code> implementation (cf. <a href="#custom-waitstrategy">Custom WaitStrategy</a>) or one of the predefined constants:</p>
-</div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Block</dt>
-<dd>
-<p>a strategy that uses a lock and condition variable for the I/O thread waiting for log events.
-Block can be used when throughput and low-latency are not as important as CPU resource.
-Recommended for resource constrained/virtualised environments.</p>
-</dd>
-<dt class="hdlist1">Timeout</dt>
-<dd>
-<p>a variation of the <code>Block</code> strategy that will periodically wake up from the lock condition <code>await()</code> call.
-This ensures that if a notification is missed somehow the consumer thread is not stuck but will recover with a small latency delay (see <a href="#log4j2.asyncLoggerTimeout"><code>log4j2.asyncLoggerTimeout</code></a>)</p>
-</dd>
-<dt class="hdlist1">Sleep</dt>
-<dd>
-<p>a strategy that initially spins, then uses a <code>Thread.yield()</code>, and eventually parks for the minimum number of nanos the OS and JVM will allow while the I/O thread is waiting for log events (see <a href="#log4j2.asyncLoggerRetries"><code>log4j2.asyncLoggerRetries</code></a> and <a href="#log4j2.asyncLoggerSleepTimeNs"><code>log4j2.asyncLoggerSleepTimeNs</code></a>).
-Sleep is a good compromise between performance and CPU resource.
-This strategy has very low impact on the application thread, in exchange for some additional latency for actually getting the message logged.</p>
-</dd>
-<dt class="hdlist1">Yield</dt>
-<dd>
-<p>is a strategy that uses a <code>Thread.yield()</code> for waiting for log events after an initially spinning.
-Yield is a good compromise between performance and CPU resource, but may use more CPU than <code>Sleep</code> in order to get the message logged to disk sooner.</p>
-</dd>
-</dl>
-</div>
-</div>
-<div class="sect3">
-<h4 id="log4j2.asyncLoggerTimeout"><a class="anchor" href="#log4j2.asyncLoggerTimeout"></a><code>log4j2.asyncLoggerTimeout</code></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 83.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_TIMEOUT</p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10</code></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Timeout in milliseconds of <code>Timeout</code> wait strategy (see <a href="#log4j2.asyncLoggerWaitStrategy"><code>log4j2.asyncLoggerWaitStrategy</code></a>).</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="log4j2.asyncLoggerSleepTimeNs"><a class="anchor" href="#log4j2.asyncLoggerSleepTimeNs"></a><code>log4j2.asyncLoggerSleepTimeNs</code></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 83.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_SLEEP_TIME_NS</p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>long</code></p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>100</code></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Sleep time in nanoseconds of <code>Sleep</code> wait strategy (see <a href="#log4j2.asyncLoggerWaitStrategy"><code>log4j2.asyncLoggerWaitStrategy</code></a>).</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="log4j2.asyncLoggerRetries"><a class="anchor" href="#log4j2.asyncLoggerRetries"></a><code>log4j2.asyncLoggerRetries</code></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 83.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_RETRIES</p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>200</code></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Total number of spin cycles and <code>Thread.yield()</code> cycles of <code>Sleep</code> (see <a href="#log4j2.asyncLoggerWaitStrategy"><code>log4j2.asyncLoggerWaitStrategy</code></a>).</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="log4j2.asyncLoggerSynchronizeEnqueueWhenQueueFull"><a class="anchor" href="#log4j2.asyncLoggerSynchronizeEnqueueWhenQueueFull"></a><code>log4j2.asyncLoggerSynchronizeEnqueueWhenQueueFull</code></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 83.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL</p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Synchronizes access to the Disruptor ring buffer for blocking enqueue operations when the queue is full.
-Users encountered excessive CPU utilization with Disruptor v3.4.2 when the application was logging more than the underlying appender could keep up with and the ring buffer became full, especially when the number of application threads vastly outnumbered the number of cores.
-CPU utilization is significantly reduced by restricting access to the enqueue operation.
-Setting this value to <code>false</code> may lead to very high CPU utilization when the async logging queue is full.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="log4j2.asyncLoggerThreadNameStrategy"><a class="anchor" href="#log4j2.asyncLoggerThreadNameStrategy"></a><code>log4j2.asyncLoggerThreadNameStrategy</code></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 83.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_HREAD_NAME_STRATEGY</p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/ThreadNameCachingStrategy">ThreadNameCachingStrategy</a> (enumeration)</p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNCACHED</code> for JRE 8u102 or later,</p>
-<p class="tableblock"><code>CACHED</code> otherwise</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Specifies the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/ThreadNameCachingStrategy">ThreadNameCachingStrategy</a> to use to cache the result of <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Thread.html#getName--">Thread.getName()</a>.</p>
-</div>
-<div class="paragraph">
-<p>This setting allows to cache the result of <code>Thread.getName()</code> calls and has two values:</p>
-</div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">CACHED</dt>
-<dd>
-<p>stores the name of the current thread in a <code>ThreadLocal</code> field,</p>
-</dd>
-<dt class="hdlist1">UNCACHED</dt>
-<dd>
-<p>disables caching.</p>
-</dd>
-</dl>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-Since JRE 8u102 the <code>Thread.getName()</code> method does <strong>not</strong> allocate a new object.
-</td>
-</tr>
-</table>
+<p>Unresolved include directive in modules/ROOT/pages/manual/async.adoc - include::partial$properties-async-logger.adoc[]</p>
 </div>
 <div class="paragraph">
 <p>There are also a few system properties that can be used to maintain
 application throughput even when the underlying appender cannot keep up
 with the logging rate and the queue is filling up. See the details for
 system properties
-<a href="configuration.html#log4j2.asyncQueueFullPolicy" class="xref page"><code>log4j2.asyncQueueFullPolicy</code>
+<a href="systemproperties.html#log4j2.asyncQueueFullPolicy" class="xref page"><code>log4j2.asyncQueueFullPolicy</code>
 and <code>log4j2.discardThreshold</code></a>.</p>
-</div>
 </div>
 </div>
 </div>
@@ -816,8 +555,8 @@ and <code>log4j2.discardThreshold</code></a>.</p>
 </td>
 <td class="content">
 <em>Log4j-2.9 and higher require disruptor-3.3.4.jar or higher on the
-classpath. Prior to Log4j-2.9, disruptor-3.0.0.jar or higher was
-required. There is no need to set system property "Log4jContextSelector"
+classpath. Before Log4j-2.9, disruptor-3.0.0.jar or higher was
+required. There is no need to set the system property "Log4jContextSelector"
 to any value.</em>
 </td>
 </tr>
@@ -827,10 +566,10 @@ to any value.</em>
 <p>Synchronous and asynchronous loggers can be combined in configuration.
 This gives you more flexibility at the cost of a slight loss in
 performance (compared to making all loggers asynchronous). Use the
-<code>&lt;asyncRoot&gt;</code> or <code>&lt;asyncLogger&gt;</code> configuration elements to specify the
+<code>&lt;asyncRoot&gt;</code> or <code>&lt;asyncLogger&gt;</code> configuration elements specify the
 loggers that need to be asynchronous. A configuration can contain only
 one root logger (either a <code>&lt;root&gt;</code> or an <code>&lt;asyncRoot&gt;</code> element), but
-otherwise async and non-async loggers may be combined. For example, a
+otherwise, async and non-async loggers may be combined. For example, a
 configuration file containing <code>&lt;asyncLogger&gt;</code> elements can also contain
 <code>&lt;root&gt;</code> and <code>&lt;logger&gt;</code> elements for the synchronous loggers.</p>
 </div>
@@ -884,238 +623,16 @@ of the application.</p>
 </div>
 <div class="sect2">
 <h3 id="SysPropsMixedSync-Async"><a class="anchor" href="#SysPropsMixedSync-Async"></a>Configuration Properties</h3>
-<div class="sect3">
-<h4 id="log4j2.asyncLoggerConfigExceptionHandler"><a class="anchor" href="#log4j2.asyncLoggerConfigExceptionHandler"></a><code>log4j2.asyncLoggerConfigExceptionHandler</code></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 83.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_CONFIG_EXCEPTION_HANDLER</p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html">Class&lt;? extends ExceptionHandler&lt;? super Log4jEventWrapper&gt;&gt;</a></p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerConfigDefaultExceptionHandler">AsyncLoggerConfigDefaultExceptionHandler</a></p></td>
-</tr>
-</tbody>
-</table>
 <div class="paragraph">
-<p>Fully qualified name of a class that implements the <a href="https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html">ExceptionHandler</a> interface, which will be notified when an exception occurs while logging messages.
-The class needs to have a public zero-argument constructor.</p>
-</div>
-<div class="paragraph">
-<p>The default exception handler will print a message and stack trace to the standard error output stream.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="log4j2.asyncLoggerConfigRingBufferSize"><a class="anchor" href="#log4j2.asyncLoggerConfigRingBufferSize"></a><code>log4j2.asyncLoggerRingConfigBufferSize</code></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 83.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_CONFIG_RING_BUFFER_SIZE</p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>256 &times; 1024</code></p>
-<p class="tableblock">(GC-free mode: <code>4 &times; 1024</code>)</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Size (number of slots) in the RingBuffer used by the asynchronous logging subsystem.
-Make this value large enough to deal with bursts of activity.
-The minimum size is 128.
-The RingBuffer will be pre-allocated at first use and will never grow or shrink during the life of the system.</p>
-</div>
-<div class="paragraph">
-<p>When the application is logging faster than the underlying appender can keep up with for a long enough time to fill up the queue, the behaviour is determined by the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html">AsyncQueueFullPolicy</a>.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="log4j2.asyncLoggerConfigWaitStrategy"><a class="anchor" href="#log4j2.asyncLoggerConfigWaitStrategy"></a><code>log4j2.asyncLoggerConfigWaitStrategy</code></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 83.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_CONFIG_WAIT_STRATEGY</p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/WaitStrategy.html">Class&lt;? extends WaitStrategy&gt;</a> or predefined constant</p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Timeout</code></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Specifies the <a href="https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/WaitStrategy.html">WaitStrategy</a> used by the LMAX Disruptor.</p>
-</div>
-<div class="paragraph">
-<p>The value needs to be a fully qualified class name of a custom <code>WaitStrategy</code> implementation (cf. <a href="#custom-waitstrategy">Custom WaitStrategy</a>) or one of the predefined constants:</p>
-</div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Block</dt>
-<dd>
-<p>a strategy that uses a lock and condition variable for the I/O thread waiting for log events.
-Block can be used when throughput and low-latency are not as important as CPU resource.
-Recommended for resource constrained/virtualised environments.</p>
-</dd>
-<dt class="hdlist1">Timeout</dt>
-<dd>
-<p>a variation of the <code>Block</code> strategy that will periodically wake up from the lock condition <code>await()</code> call.
-This ensures that if a notification is missed somehow the consumer thread is not stuck but will recover with a small latency delay (see <a href="#log4j2.asyncLoggerTimeout"><code>log4j2.asyncLoggerTimeout</code></a>)</p>
-</dd>
-<dt class="hdlist1">Sleep</dt>
-<dd>
-<p>a strategy that initially spins, then uses a <code>Thread.yield()</code>, and eventually parks for the minimum number of nanos the OS and JVM will allow while the I/O thread is waiting for log events (see <a href="#log4j2.asyncLoggerRetries"><code>log4j2.asyncLoggerRetries</code></a> and <a href="#log4j2.asyncLoggerSleepTimeNs"><code>log4j2.asyncLoggerSleepTimeNs</code></a>).
-Sleep is a good compromise between performance and CPU resource.
-This strategy has very low impact on the application thread, in exchange for some additional latency for actually getting the message logged.</p>
-</dd>
-<dt class="hdlist1">Yield</dt>
-<dd>
-<p>is a strategy that uses a <code>Thread.yield()</code> for waiting for log events after an initially spinning.
-Yield is a good compromise between performance and CPU resource, but may use more CPU than <code>Sleep</code> in order to get the message logged to disk sooner.</p>
-</dd>
-</dl>
-</div>
-</div>
-<div class="sect3">
-<h4 id="log4j2.asyncLoggerConfigTimeout"><a class="anchor" href="#log4j2.asyncLoggerConfigTimeout"></a><code>log4j2.asyncLoggerConfigTimeout</code></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 83.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_CONFIG_TIMEOUT</p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10</code></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Timeout in milliseconds of <code>Timeout</code> wait strategy (see <a href="#log4j2.asyncLoggerConfigWaitStrategy"><code>log4j2.asyncLoggerConfigWaitStrategy</code></a>).</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="log4j2.asyncLoggerConfigSleepTimeNs"><a class="anchor" href="#log4j2.asyncLoggerConfigSleepTimeNs"></a><code>log4j2.asyncLoggerConfigSleepTimeNs</code></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 83.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_CONFIG_SLEEP_TIME_NS</p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>long</code></p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>100</code></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Sleep time in nanoseconds of <code>Sleep</code> wait strategy (see <a href="#log4j2.asyncLoggerConfigWaitStrategy"><code>log4j2.asyncLoggerConfigWaitStrategy</code></a>)).</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="log4j2.asyncLoggerConfigRetries"><a class="anchor" href="#log4j2.asyncLoggerConfigRetries"></a><code>log4j2.asyncLoggerConfigRetries</code></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 83.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_CONFIG_RETRIES</p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>200</code></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Total number of spin cycles and <code>Thread.yield()</code> cycles of <code>Sleep</code> (see <a href="#log4j2.asyncLoggerConfigWaitStrategy"><code>log4j2.asyncLoggerConfigWaitStrategy</code></a>)).</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="log4j2.asyncLoggerConfigSynchronizeEnqueueWhenQueueFull"><a class="anchor" href="#log4j2.asyncLoggerConfigSynchronizeEnqueueWhenQueueFull"></a><code>log4j2.asyncLoggerConfigSynchronizeEnqueueWhenQueueFull</code></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 83.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL</p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Synchronizes access to the Disruptor ring buffer for blocking enqueue operations when the queue is full.
-Users encountered excessive CPU utilization with Disruptor v3.4.2 when the application was logging more than the underlying appender could keep up with and the ring buffer became full, especially when the number of application threads vastly outnumbered the number of cores.
-CPU utilization is significantly reduced by restricting access to the enqueue operation.
-Setting this value to <code>false</code> may lead to very high CPU utilization when the async logging queue is full.</p>
+<p>Unresolved include directive in modules/ROOT/pages/manual/async.adoc - include::partial$properties-async-logger-config.adoc[]</p>
 </div>
 <div class="paragraph">
 <p>There are also a few system properties that can be used to maintain
 application throughput even when the underlying appender cannot keep up
 with the logging rate and the queue is filling up. See the details for
 system properties
-<a href="configuration.html#log4j2.asyncQueueFullPolicy" class="xref page"><code>log4j2.asyncQueueFullPolicy</code>
+<a href="systemproperties.html#log4j2.asyncQueueFullPolicy" class="xref page"><code>log4j2.asyncQueueFullPolicy</code>
 and <code>log4j2.discardThreshold</code></a>.</p>
-</div>
 </div>
 </div>
 </div>
@@ -1174,7 +691,7 @@ This is possible by using a <code>AsyncWaitStrategyFactory</code> element in the
 Log4j will instantiate an instance of the specified factory class and use this factory to create the WaitStrategy used by all Async Loggers.</p>
 </div>
 <div class="paragraph">
-<p>WaitStrategy-related system properties are ignored if a <code>AsyncWaitStrategyFactory</code> is configured.</p>
+<p>WaitStrategy-related system properties are ignored if an <code>AsyncWaitStrategyFactory</code> is configured.</p>
 </div>
 </div>
 </div>
@@ -1209,7 +726,7 @@ this reason, asynchronous loggers and asynchronous appenders do not
 include location information by default.</p>
 </div>
 <div class="paragraph">
-<p>You can override the default behaviour in your logger or asynchronous
+<p>You can override the default behavior in your logger or asynchronous
 appender configuration by specifying <code>includeLocation="true"</code>.</p>
 </div>
 </div>
@@ -1268,10 +785,10 @@ doing the logging.</p>
 <div class="sect2">
 <h3 id="_asynchronous_throughput_comparison_with_other_logging_packages"><a class="anchor" href="#_asynchronous_throughput_comparison_with_other_logging_packages"></a>Asynchronous Throughput Comparison with Other Logging Packages</h3>
 <div class="paragraph">
-<p>We also compared peak throughput of asynchronous loggers to the
+<p>We also compared the peak throughput of asynchronous loggers to the
 synchronous loggers and asynchronous appenders available in other
 logging packages, specifically log4j-1.2.17 and logback-1.0.10, with
-similar results. For asynchronous appenders, total logging throughput of
+similar results. For asynchronous appenders, the total logging throughput of
 all threads together remains roughly constant when adding more threads.
 Asynchronous loggers make more effective use of the multiple cores
 available on the machine in multi-threaded scenarios.</p>
@@ -1499,14 +1016,13 @@ threads</th>
 <div class="paragraph">
 <p>This section has been rewritten with the Log4j 2.6 release. The
 previous version only reported <em>service time</em> instead of <em>response
-time</em>. See the <a href="performance.html#responseTime" class="xref page">response time</a> side
-bar on the performance page on why this is too optimistic. Furthermore
-the previous version reported average latency, which does not make sense
+time</em>. See the <a href="performance.html#responseTime" class="xref page">response time</a> sidebar on the performance page on why this is too optimistic.
+Furthermore, the previous version reported average latency, which does not make sense
 since latency is not a normal distribution. Finally, the previous
 version of this section only reported the maximum latency of up to
 99.99% of the measurements, which does not tell you how bad the worst
 0.01% were. This is unfortunate because often the "outliers" are all
-that matter when it comes to response time. From this release we will
+that matter when it comes to response time. From this release, we will
 try to do better and report response time latency across the full range
 of percentages, including all the outliers. Our thanks to Gil Tene for
 his <a href="http://www.infoq.com/presentations/latency-response-time">How NOT to
@@ -1516,11 +1032,11 @@ the "Oh s#@t!" presentation.)</p>
 <div class="paragraph">
 <p><a href="performance.html#responseTime" class="xref page">Response time</a> is how long it
 takes to log a message under a certain load. What is often reported as
-latency is actually <em>service time</em>: how long it took to perform the
-operation. This hides the fact that a single spike in service time adds
-queueing delay for many of the subsequent operations. Service time is
+latency is <em>service time</em>: how long it took to operate.
+This hides the fact that a single spike in service time adds
+a queueing delay for many of the subsequent operations. Service time is
 easy to measure (and often looks good on paper) but is irrelevant for
-users since it omits the time spent waiting for service. For this reason
+users since it omits the time spent waiting for service. For this reason,
 we report response time: service time plus wait time.</p>
 </div>
 <div class="paragraph">
@@ -1549,12 +1065,12 @@ wait strategy reduces some jitter.)</p>
 <li>
 <p>-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps
 -XX:+PrintTenuringDistribution -XX:+PrintGCApplicationConcurrentTime
--XX:+PrintGCApplicationStoppedTime (to eyeball GC and safepoint pauses)</p>
+-XX:+PrintGCApplicationStoppedTime (to eyeball GC and savepoint pauses)</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>The graph below compares response time latency of the
+<p>The graph below compares the response time latency of the
 ArrayBlockingQueue-based asynchronous appenders in Logback 1.1.7, Log4j
 1.2.17 to the various options for asynchronous logging that Log4j 2.6
 offers. Under a workload of 128,000 messages per second, using 16
@@ -1563,14 +1079,14 @@ that Logback 1.1.7, Log4j 1.2.17 experience latency spikes that are
 orders of magnitude larger than Log4j 2.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="../_images/ResponseTimeAsyncLogging16Threads_8kEach.png" alt="When 16 threads generate a total workload of 128" width="000 msg/sec" height="Logback 1.1.7 and Log4j 1.2.17 experience latency spikes that are orders of magnitude larger than Log4j 2"></span></p>
+<p><span class="image"><img src="../_images/ResponseTimeAsyncLogging16Threads_8kEach.png" alt="When 16 threads generate a total workload of 128" width="000 msg/sec" height="Logback 1.1.7 and Log4j 1.2.17 experiences latency spikes that are orders of magnitude larger than Log4j 2"></span></p>
 </div>
 <div class="paragraph">
 <p>The graph below zooms in on the Log4j 2 results for the same test. We
 see that the worst-case response time is highest for the
 ArrayBlockingQueue-based Async Appender.
 <a href="garbagefree.html" class="xref page">Garbage-free</a> async loggers have the best response
-time behaviour.</p>
+time behavior.</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="../_images/ResponseTimeAsyncLogging16Threads_8kEachLog4j2Only-labeled.png" alt="image"></span></p>
@@ -1584,16 +1100,16 @@ time behaviour.</p>
 <div class="paragraph">
 <p>Asynchronous Loggers are implemented using the
 <a href="https://lmax-exchange.github.io/disruptor/">LMAX Disruptor</a> inter-thread
-messaging library. From the LMAX web site:</p>
+messaging library. From the LMAX website:</p>
 </div>
 <div class="quoteblock">
 <blockquote>
 <div class="paragraph">
 <p>&#8230;&#8203;using queues to pass data between stages of the system was
-introducing latency, so we focused on optimising this area. The
+introducing latency, so we focused on optimizing this area. The
 Disruptor is the result of our research and testing. We found that cache
-misses at the CPU-level, and locks requiring kernel arbitration are both
-extremely costly, so we created a framework which has "mechanical
+misses at the CPU level, and locks requiring kernel arbitration are both
+extremely costly, so we created a framework that has "mechanical
 sympathy" for the hardware it&#8217;s running on, and that&#8217;s lock-free.</p>
 </div>
 </blockquote>

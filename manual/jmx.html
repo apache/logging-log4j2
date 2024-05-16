@@ -144,7 +144,40 @@
 </ul>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="configuration.html">Configuration</a>
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Configuration</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="configuration.html">Configuration file</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="appenders.html">Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="customloglevels.html">Custom Log Levels</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="filters.html">Filters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="scripts.html">Scripts</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="systemproperties.html">Configuration properties</a>
+  </li>
+</ul>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="usage.html">Usage</a>
@@ -153,40 +186,22 @@
     <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="lookups.html">Lookups</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="appenders.html">Appenders</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="layouts.html">Layouts</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="filters.html">Filters</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="async.html">Lock-free Asynchronous Loggers for Low-Latency Logging</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="garbagefree.html">Garbage-free Steady State Logging</a>
   </li>
   <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
     <a class="nav-link" href="extending.html">Extending Log4j</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
+  </li>
+</ul>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="plugins.html">Plugins</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="customloglevels.html">Custom Log Levels</a>
   </li>
   <li class="nav-item is-current-page" data-depth="1">
     <a class="nav-link" href="jmx.html">JMX</a>
@@ -337,10 +352,12 @@ JMX support was enabled by default in Log4j 2 versions before 2.24.0.
 </table>
 </div>
 <div class="paragraph">
-<p>To enable JMX support, set the following system property when starting the Java VM:</p>
+<p>To enable JMX support, set the
+<a href="systemproperties.html#log4j2.disableJmx" class="xref page">log4j2.disableJmx</a>
+system property when starting the Java VM:</p>
 </div>
 <div class="paragraph">
-<p><code><a href="configuration.html#log4j2.disableJmx" class="xref page">log4j2.disableJmx</a>=false</code></p>
+<p><code>log4j2.disableJmx=false</code></p>
 </div>
 </div>
 </div>
@@ -348,11 +365,14 @@ JMX support was enabled by default in Log4j 2 versions before 2.24.0.
 <h2 id="Local"><a class="anchor" href="#Local"></a>Local Monitoring and Management</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>To perform local monitoring you need to specify the <code><a href="configuration.html#log4j2.disableJmx" class="xref page">log4j2.disableJmx</a>=false</code> system
-property. The JConsole tool that is included in the Java JDK can be
+<p>To perform local monitoring you need to set the
+<a href="systemproperties.html#log4j2.disableJmx" class="xref page">log4j2
+.disableJmx</a>
+system property to <code>false</code>.
+The JConsole tool that is included in the Java JDK can be
 used to monitor your application. Start JConsole by typing
 <code>$JAVA_HOME/bin/jconsole</code> in a command shell. For more details,
-see Oracle&#8217;s documentation on
+see Oracle&#8217;s documentation at
 <a href="https://docs.oracle.com/javase/7/docs/technotes/guides/management/jconsole.html">how
 to use JConsole</a>.</p>
 </div>
@@ -366,7 +386,7 @@ to use JConsole</a>.</p>
 following two system properties when starting the Java VM:</p>
 </div>
 <div class="paragraph">
-<p><code><a href="configuration.html#log4j2.disableJmx" class="xref page">log4j2.disableJmx</a>=false</code></p>
+<p><code>log4j2.disableJmx=false</code></p>
 </div>
 <div class="paragraph">
 <p>and</p>
@@ -379,7 +399,7 @@ following two system properties when starting the Java VM:</p>
 want to enable JMX RMI connections.</p>
 </div>
 <div class="paragraph">
-<p>For more details, see Oracle&#8217;s documentation on
+<p>For more details, see Oracle&#8217;s documentation at
 <a href="https://docs.oracle.com/javase/7/docs/technotes/guides/management/agent.html#gdenl">Remote
 Monitoring and Management</a>.</p>
 </div>
@@ -397,7 +417,7 @@ properties is 3600000 milliseconds (one hour). Before Java 6, it was one
 minute.</p>
 </div>
 <div class="paragraph">
-<p>The two sun.rmi arguments reflect whether your JVM is running in server
+<p>The two <code>sun.rmi</code> arguments reflect whether your JVM is running in server
 or client mode. If you want to modify the GC interval time it may be
 best to specify both properties to ensure the argument is picked up by
 the JVM.</p>
