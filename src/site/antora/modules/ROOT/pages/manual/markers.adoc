@@ -16,11 +16,11 @@
 ////
 = Markers
 
-Markers allow "tag" log statements with a Marker object, labeling them
-as belonging to a specific type. For example, developers can use Markers to tag
+Markers allow "tag" log statements with a `Marker` object, labeling them
+as belonging to a specific type. For example, developers can use markers to tag
 log statements related to a particular subsystem or functionality.
 
-By using Markers, it is possible to filter log statements based on the Marker
+By using markers, it is possible to filter log statements based on the `Marker`
 and display only those log statements that are of interest, such as those
 related to XML processing or SQL queries.
 
@@ -45,7 +45,7 @@ Once created, use it as the first argument in the log statement:
 logger.debug(SQL_MARKER, "Here is my SQL related message");
 ----
 
-A complete example is shown below. It creates the Marker as the constant
+A complete example is shown below. It creates the `Marker` as the constant
 and then uses it to tag a log statement. The log method works "as usual,"
 but the marker needs to be added as the first argument.
 
@@ -62,7 +62,7 @@ public class MyApp {
     private static final Marker SQL_MARKER = MarkerManager.getMarker("MY_APP_SQL"); <1>
 
     public void doQuery(String table) {
-        // do business logic here        
+        // Do business logic here        
 
         LOGGER.debug(SQL_MARKER, "SELECT * FROM {}", table); <2>
     }
@@ -75,8 +75,8 @@ You must create a configuration file to write log statements tagged with the "SQ
 This file uses the `<MarkerFilter>` element to accept or deny log statements 
 based on the marker. 
 
-The following code shows how the MarkerFilter is used in the configuration file. 
-It assumes that the Console appender is defined in the configuration file.
+The following code shows how the `MarkerFilter` is used in the configuration file. 
+It assumes that the `Console` appender is defined in the configuration file.
 
 [source, xml]
 ----
