@@ -3071,6 +3071,45 @@ See <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/CoarseCach
 </div>
 </div>
 <div class="sect3">
+<h4 id="log4j2.contextData"><a class="anchor" href="#log4j2.contextData"></a><code>log4j2.contextData</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_CONTEXT_DATA</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html">Class&lt;? extends StringMap&gt;</a></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/util/SortedArrayStringMap.html">SortedArrayStringMap</a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Fully qualified class name of a
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html">StringMap</a>
+implementation to use to store context data in log events.
+The implementation must have:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>a no-arg contructor,</p>
+</li>
+<li>
+<p>a constructor accepting a single <code>int</code> parameter that specifies the capacity of the string map.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
 <h4 id="log4j2.contextDataInjector"><a class="anchor" href="#log4j2.contextDataInjector"></a><code>log4j2.contextDataInjector</code></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
