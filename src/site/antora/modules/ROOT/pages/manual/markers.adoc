@@ -113,6 +113,7 @@ LOGGER.debug(UPDATE_MARKER, "UPDATE {} SET {}", table, values);
 
 It is now possible to either filter for the parent, or, be more specific, and filter only for the child marker.
 
+[#pitfalls]
 == Pitfalls
 
 It is important to note that marker names must be unique, as they are permanently registered by name. 
