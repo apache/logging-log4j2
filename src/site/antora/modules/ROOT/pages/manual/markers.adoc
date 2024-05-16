@@ -55,7 +55,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.MarkerManager;
 
 public class MyApp {
-    private Logger logger = LogManager.getLogger();
+
+    private static final Logger LOGGER = LogManager.getLogger();
+
     private static final Marker SQL_MARKER = MarkerManager.getMarker("MY_APP_SQL"); <1>
 
     public void doQuery(String table) {
