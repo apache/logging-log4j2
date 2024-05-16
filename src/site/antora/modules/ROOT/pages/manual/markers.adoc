@@ -63,7 +63,7 @@ public class MyApp {
     public void doQuery(String table) {
         // do business logic here        
 
-        logger.debug(SQL_MARKER, "SELECT * FROM {}", table); <2>
+        LOGGER.debug(SQL_MARKER, "SELECT * FROM {}", table); <2>
     }
 }
 ----
