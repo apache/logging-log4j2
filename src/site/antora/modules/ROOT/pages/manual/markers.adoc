@@ -110,7 +110,7 @@ The child marker works as expected by adding to the log method as the first argu
 logger.debug(UPDATE_MARKER, "UPDATE {} SET {}", table, values);
 ----
 
-However, it is now possible to filter for the parent, of more fine-grained, for the child marker.
+It is now possible to either filter for the parent, or, be more specific, and filter only for the child marker.
 
 == Pitfalls
 
