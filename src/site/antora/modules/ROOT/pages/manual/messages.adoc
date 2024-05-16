@@ -16,165 +16,202 @@
 ////
 = Messages
 
-Although Log4j 2 provides Logger methods that accept Strings and
-Objects, all of these are ultimately captured in Message objects that
-are then associated with the log event. Applications are free to
-construct Messages of their own and pass them to the Logger. Although it
-may seem more expensive than passing the message format and parameters
-directly to the event, testing has shown that with modern JVMs the cost
-of creating and destroying events is minor, especially when complex
-tasks are encapsulated in the Message instead of the application. In
-addition, when using the methods that accept Strings and parameters, the
-underlying Message object will only be created if any configured global
-filters or the Logger's log level allow the message to be processed.
+Messages are a way to encapsulate the creation of logging statements.
+They can be used to make code more readable and reuseable.
 
-Consider an application that has a Map object containing \{"Name" =
-"John Doe", "Address" = "123 Main St.", "Phone" = "(999) 555-1212"} and
-a User object that has a getId method that returns "jdoe". The developer
-would like to add an informational message that returns "User John Doe
-has logged in using id jdoe". The way this could be accomplished is by
-doing:
+== Introduction
 
-[source,java]
+Log4j provides various methods for creating log messages.
+
+The most popular ones are probably the ones that take a string as an argument:
+
+[source, java]
+----
+logger.info("Hello World");
+----
+
+In simple environments, this is sufficient. However, in more complex scenarios,
+the string one wants to log may require more complex construction.
+
+Imagine a scenario that uses a `Map` and a `User` object that may look like this:
+
+[source, java]
+----
+Map<String, String> map = new HashMap<>();
+map.put("Name", "John Doe");
+
+User user = new User();
+user.setId("jdoe");
+----
+
+When the developer wants to log a message that says "User John Doe has logged in using id jdoe",
+we can see that the string construction becomes more challenging to read:
+
+[source, java]
 ----
 logger.info("User {} has logged in using id {}", map.get("Name"), user.getId());
 ----
 
-While there is nothing inherently wrong with this, as the complexity of
-the objects and desired output increases this technique becomes harder
-to use. As an alternative, using Messages allows:
+Messages will change your code to allow these complex constructions to be encapsulated in a class.
 
-[source,java]
+Developers could create a `LoggedInMessage` class that is responsible for formatting the message.
+The result is more readable and reusable across the code, like the custom-made `LoggedInMessage` class:
+
+[source, java]
 ----
 logger.info(new LoggedInMessage(map, user));
 ----
 
-In this alternative the formatting is delegated to the `LoggedInMessage`
-object's `getFormattedMessage` method. Although in this alternative a new
-object is created, none of the methods on the objects passed to the
-`LoggedInMessage` are invoked until the `LoggedInMessage` is formatted. This
-is especially useful when an `Object`'s `toString` method does not produce
-the information you would like to appear in the log.
+== Performance and benefits
 
-Another advantage to Messages is that they simplify writing Layouts. In
-other logging frameworks the Layout must loop through the parameters
-individually and determine what to do based on what objects are
-encountered. With Messages the Layout has the option of delegating the
-formatting to the Message or performing its formatting based on the type
-of Message encountered.
+Although it may initially seem unintuitive, there is no performance benefit to using strings instead of messages. 
+Ultimately, Log4j captures all log messages in a `Message` object under the hood. 
+There is no difference when creating a custom `Message` object.
 
-Borrowing from the earlier example illustrating Markers to identify SQL
-statements being logged, Messages can also be leveraged. First, the
-Message is defined.
+Testing has shown that modern JVMs can create and destroy log events quickly,
+especially when complex tasks are encapsulated in the `Message` object instead of the application.
+
+Implementing a `Layout` is also simpler with `Message` objects.
+Instead of requiring the `Layout` to loop through the parameters and determine 
+what to do based on the objects encountered, the `Layout` can delegate the formatting to the `Message` 
+or format it based on the type of message encountered.
+
+== Example
+
+To achieve the same result as the previous example, we can create a `LoggedInMessage` class.
+This class implements the `Message` interface and provides a `getFormattedMessage` method that returns the desired message.
+The constructor can take the arguments that the `getFormattedMessage` method needs to construct the message.
+
+[source, java]
+----
+public class LoggedInMessage implements Message { <1>
+    private final Map<String, String> map;
+    private final User user;
+
+    public LoggedInMessage(Map<String, String> map, User user) {
+        this.map = map;
+        this.user = user;
+    }
+
+    @Override
+    public String getFormattedMessage() { <2>
+        return "User " + map.get("Name") + " has logged in using id " + user.getId(); <3>
+    }
+}
+----
+<1> The `Message` interface must be implemented.
+<2> The `getFormattedMessage` provides the `String` to be logged.
+<3> The message is constructed here.
+
+Implementing a `Message` is basically only a way to concatenate a string.
+
+With this class, the log statement can be simplified as already shown above:
+
+[source, java]
+----
+logger.info(new LoggedInMessage(map, user));
+----
+
+In this example, we may create a `LoggedInMessage` object, but we will not invoke
+the construction logic of this message until the `getFormattedMessage` method is called.
+Logging might be turned off for this statement, and the construction logic will not be executed, saving resources.
+
+== A more complex example
+
+Messages can be complex, if necessary, and make them work for different scenarios.
+
+Imagine a scenario where you want to log SQL queries and updates.
+You might want to change the formatted message based on the type of SQL operation.
+
+The first step could be to define a type for the two SQL operations.
 
 [source,java]
 ----
-public class SQLMessage implements Message {
-  public enum SQLType {
-      UPDATE,
-      QUERY
-  }
-
-  private final SQLType type;
-  private final String table;
-  private final Map<String, String> cols;
-
-  public SQLMessage(SQLType type, String table) {
-      this(type, table, null);
-  }
-
-  public SQLMessage(SQLType type, String table, Map<String, String> cols) {
-      this.type = type;
-      this.table = table;
-      this.cols = cols;
-  }
-
-  public String getFormattedMessage() {
-      switch (type) {
-          case UPDATE:
-            return createUpdateString();
-            break;
-          case QUERY:
-            return createQueryString();
-            break;
-          default:
-              throw new UnsupportedOperationException();
-      }
-  }
-
-  public String getMessageFormat() {
-      return type + " " + table;
-  }
-
-  public Object getParameters() {
-      return cols;
-  }
-
-  private String createUpdateString() {
-  }
-
-  private String createQueryString() {
-  }
-
-  private String formatCols(Map<String, String> cols) {
-      StringBuilder sb = new StringBuilder();
-      boolean first = true;
-      for (Map.Entry<String, String> entry : cols.entrySet()) {
-          if (!first) {
-              sb.append(", ");
-          }
-          sb.append(entry.getKey()).append("=").append(entry.getValue());
-          first = false;
-      }
-      return sb.toString();
-  }
+public enum SQLType {
+    UPDATE,
+    QUERY
 }
 ----
 
-Next we can use the message in our application.
+Next, we can create a `SQLMessage` class that implements the `Message` interface.
+It may take the `SQLType`, the table name, and a map of query parameters as arguments. 
+Based on this information, the `SQLMessage` class can format the message accordingly.
 
-[source,java]
+[source, java]
+----
+public class SQLMessage implements Message {
+    private final SQLType type;
+    private final String table;
+    private final Map<String, String> queryParams;
+
+    public SQLMessage(SQLType type, String table, Map<String, String> queryParams) {
+        this.type = type;
+        this.table = table;
+        this.queryParams = queryParams;
+    }
+
+    @Override
+    public String getFormattedMessage() {
+        switch (type) { <1>
+            case UPDATE:
+                return createUpdateString();
+                break;
+            case QUERY:
+                return createQueryString();
+                break;
+            default:
+                throw new UnsupportedOperationException();
+        }
+    }
+
+    private String createUpdateString() { <2>
+        // Complex logic for creating an update log string
+    }
+
+    private String createQueryString() { <3>
+        // Complex logic for creating a query log string
+    }
+}
+----
+<1> The type decides which message to create.
+<2> The `createUpdateString` method creates the message for an update.
+<3> The `createQueryString` method creates the message for a query.
+
+After the logic for string creation is inserted, this message can be used
+for two different scenarios already.
+
+[source, java]
 ----
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import java.util.Map;
 
 public class MyApp {
-
-    private Logger logger = LogManager.getLogger(MyApp.class.getName());
-    private static final Marker SQL_MARKER = MarkerManager.getMarker("SQL");
-    private static final Marker UPDATE_MARKER = MarkerManager.getMarker("SQL_UPDATE", SQL_MARKER);
-    private static final Marker QUERY_MARKER = MarkerManager.getMarker("SQL_QUERY", SQL_MARKER);
-
+    private static final Logger logger = LogManager.getLogger();
+    
     public String doQuery(String table) {
-        logger.entry(param);
-
-        logger.debug(QUERY_MARKER, new SQLMessage(SQLMessage.SQLType.QUERY, table));
-
-        return logger.exit();
+        logger.debug(new SQLMessage(SQLType.QUERY, table));
+        String result = // ... do the query;
+        return result;
     }
 
     public String doUpdate(String table, Map<String, String> params) {
-        logger.entry(param);
+        logger.debug(new SQLMessage(SQLType.UPDATE, table, params));
 
-        logger.debug(UPDATE_MARKER, new SQLMessage(SQLMessage.SQLType.UPDATE, table, parmas));
-
-        return logger.exit();
+        String result = // ... do the query;
+        return result;
     }
 }
 ----
 
-Notice that in contrast to the prior version of this example, the
-`logger.debug` in `doUpdate` no longer needs to be wrapped in an
-`isDebugEnabled` call as creation of the `SQLMessage` is on the same order
-of magnitude of performing that check. Furthermore, all the formatting
-of the SQL columns is now hidden in the `SQLMessage` instead of having to
-take place in the business logic. Finally, if desired, Filters and/or
-Layouts can be written to take special action when an `SQLMessage` is
-encountered.
+Even when the creation of the SQL message might be complex, the business logic is kept clean and readable.
+
+== Message types
+
+Log4j provides several message types that developers can use to create log messages.
 
 [#FormattedMessage]
-== FormattedMessage
+=== FormattedMessage
 
 The message pattern passed to a
 link:../javadoc/log4j-api/org/apache/logging/log4j/message/FormattedMessage.html[`FormattedMessage`]
@@ -186,7 +223,7 @@ is used to format it. Finally, if the pattern doesn't match either of
 those then a `ParameterizedMessage` is used to format it.
 
 [#LocalizedMessage]
-== LocalizedMessage
+=== LocalizedMessage
 
 link:../javadoc/log4j-api/org/apache/logging/log4j/message/LocalizedMessage.html[`LocalizedMessage`]
 is provided primarily to provide compatibility with Log4j 1.x.
@@ -200,7 +237,7 @@ with the name of the Logger used to log the event. The message retrieved
 from the bundle will be formatted using a FormattedMessage.
 
 [#LoggerNameAwareMessage]
-== LoggerNameAwareMessage
+=== LoggerNameAwareMessage
 
 `LoggerNameAwareMessage` is an interface with a `setLoggerName` method. This
 method will be called during event construction so that the Message has
@@ -208,7 +245,7 @@ the name of the Logger used to log the event when the message is being
 formatted.
 
 [#MapMessage]
-== MapMessage
+=== MapMessage
 
 A `MapMessage` contains a Map of String keys and values. `MapMessage`
 implements `FormattedMessage` and accepts format specifiers of "XML",
@@ -230,7 +267,7 @@ configured with no layout, it converts a Log4j `MapMessage` to
 fields in a MongoDB object.
 
 [#MessageFormatMessage]
-== MessageFormatMessage
+=== MessageFormatMessage
 
 link:../javadoc/log4j-api/org/apache/logging/log4j/message/MessageFormatMessage.html[`MessageFormatMessage`]
 handles messages that use a
@@ -239,7 +276,7 @@ format]. While this `Message` has more flexibility than
 `ParameterizedMessage`, it is also about two times slower.
 
 [#MultiformatMessage]
-== MultiformatMessage
+=== MultiformatMessage
 
 A `MultiformatMessage` will have a getFormats method and a
 `getFormattedMessage` method that accepts and array of format Strings. The
@@ -252,28 +289,28 @@ which accepts a format String of "XML" which will cause it to format the
 event data as XML instead of the RFC 5424 format.
 
 [#ObjectMessage]
-== ObjectMessage
+=== ObjectMessage
 
 Formats an `Object` by calling its `toString` method. Since Log4j 2.6,
 Layouts trying to be low-garbage or garbage-free will call the
 `formatTo(StringBuilder)` method instead.
 
 [#ParameterizedMessage]
-== ParameterizedMessage
+=== ParameterizedMessage
 
 link:../javadoc/log4j-api/org/apache/logging/log4j/message/ParameterizedMessage.html[`ParameterizedMessage`]
 handles messages that contain "\{}" in the format to represent
 replaceable tokens and the replacement parameters.
 
 [#ReusableObjectMessage]
-== ReusableObjectMessage
+=== ReusableObjectMessage
 
 In garbage-free mode, this message is used to pass logged Objects to the
 Layout and Appenders. Functionally equivalent to
 <<ObjectMessage>>.
 
 [#ReusableParameterizedMessage]
-== ReusableParameterizedMessage
+=== ReusableParameterizedMessage
 
 In garbage-free mode, this message is used to handle messages that
 contain "\{}" in the format to represent replaceable tokens and the
@@ -281,20 +318,20 @@ replacement parameters. Functionally equivalent to
 <<ParameterizedMessage>>.
 
 [#ReusableSimpleMessage]
-== ReusableSimpleMessage
+=== ReusableSimpleMessage
 
 In garbage-free mode, this message is used to pass logged `String`s and
 `CharSequence`s to the Layout and Appenders. Functionally equivalent to
 <<SimpleMessage>>.
 
 [#SimpleMessage]
-== SimpleMessage
+=== SimpleMessage
 
 `SimpleMessage` contains a `String` or `CharSequence` that requires no
 formatting.
 
 [#StringFormattedMessage]
-== StringFormattedMessage
+=== StringFormattedMessage
 
 link:../javadoc/log4j-api/org/apache/logging/log4j/message/StringFormattedMessage.html[`StringFormattedMessage`]
 handles messages that use a
@@ -305,7 +342,7 @@ While this Message has more flexibility than `ParameterizedMessage`, it is
 also 5 to 10 times slower.
 
 [#StructuredDataMessage]
-== StructuredDataMessage
+=====StructuredDataMessage
 
 link:../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html[`StructuredDataMessage`]
 allows applications to add items to a `Map` as well as set the id to allow
@@ -313,13 +350,13 @@ a message to be formatted as a Structured Data element in accordance
 with http://tools.ietf.org/html/rfc5424[RFC 5424].
 
 [#ThreadDumpMessage]
-== ThreadDumpMessage
+=== ThreadDumpMessage
 
 A ThreadDumpMessage, if logged, will generate stack traces for all
 threads. The stack traces will include any locks that are held.
 
 [#TimestampMessage]
-== TimestampMessage
+=== TimestampMessage
 
 A TimestampMessage will provide a `getTimestamp` method that is called
 during event construction. The timestamp in the Message will be used in
