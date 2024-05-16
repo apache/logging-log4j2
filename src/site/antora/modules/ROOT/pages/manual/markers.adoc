@@ -89,7 +89,8 @@ It assumes that the Console appender is defined in the configuration file.
 ----
 <1> The MarkerFilter is used to accept only SQL markers but deny others
 
-== Parent and child Markers
+[#hierarchy]
+== Parent and child markers
 
 A Marker can have zero or more parent Markers. This allows for a hierarchy of Markers.
 To create such a hierarchy, you must use the `setParents` method on the Marker object
