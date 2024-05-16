@@ -37,7 +37,7 @@ a factory method to create a Marker object is used to tag log statements.
 Marker SQL_MARKER = MarkerManager.getMarker("SQL");
 ----
 
-Since a `Marker` is reusable across multiple log statements, it makes sense to store the `Marker` in a `static final` field and make it a constant.
+Since a `Marker` is reusable across multiple log statements, storing it in a `static final` field makes it a constant.
 Once created, use it as the first argument in the log statement:
 
 [source, java]
@@ -93,8 +93,8 @@ It assumes that the `Console` appender is defined in the configuration file.
 [#hierarchy]
 == Parent and child markers
 
-A Marker can have zero or more parent Markers. This allows for a hierarchy of Markers.
-To create such a hierarchy, you must use the `setParents` method on the Marker object
+A marker can have zero or more parent markers. This allows for a hierarchy of markers.
+To create such a hierarchy, you must use the `setParents` method on the `Marker` object
 after you create the child marker. This method will connect both markers.
 
 [source, java]
@@ -112,7 +112,7 @@ The child marker works as expected by adding to the log method as the first argu
 LOGGER.debug(UPDATE_MARKER, "UPDATE {} SET {}", table, values);
 ----
 
-It is now possible to either filter for the parent, or, be more specific, and filter only for the child marker.
+It is now possible to filter for the parent or, more specifically, only for the child marker.
 
 [#pitfalls]
 == Pitfalls
