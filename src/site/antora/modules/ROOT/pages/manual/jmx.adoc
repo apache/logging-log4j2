@@ -15,8 +15,6 @@
     limitations under the License.
 ////
 = JMX
-Remko Popma <remkop@yahoo.com>
-Volkan Yazıcı <vy@apache.org>
 
 Log4j 2 has built-in support for JMX. The StatusLogger, ContextSelector,
 and all LoggerContexts, LoggerConfigs and Appenders are instrumented

@@ -15,7 +15,6 @@
     limitations under the License.
 ////
 = Performance
-Remko Popma <rpopma@apache.org>; Ralph Goers <rgoers@apache.org>
 
 ////
 One of the often-cited arguments against logging is its
