@@ -39,6 +39,29 @@ See link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/CachedClock[Ja
 CoarseCachedClock:: alternative implementation of `CachedClock` with a slightly lower precision.
 See link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/CoarseCachedClock[JavaDoc] for details.
 
+[id=log4j2.contextData]
+== `log4j2.contextData`
+
+[cols="1h,5"]
+|===
+| Env. variable
+| LOG4J_CONTEXT_DATA
+
+| Type
+| link:../javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html[Class<? extends StringMap>]
+
+| Default value
+| link:../javadoc/log4j-api/org/apache/logging/log4j/util/SortedArrayStringMap.html[SortedArrayStringMap]
+|===
+
+Fully qualified class name of a
+link:../javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html[StringMap]
+implementation to use to store context data in log events.
+The implementation must have:
+
+* a no-arg contructor,
+* a constructor accepting a single `int` parameter that specifies the capacity of the string map.
+
 [id=log4j2.contextDataInjector]
 == `log4j2.contextDataInjector`
 
