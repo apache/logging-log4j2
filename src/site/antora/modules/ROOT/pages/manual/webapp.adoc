@@ -30,6 +30,7 @@ In either case, you'll need to add the `log4j-web` module to your deployment.
 To avoid problems, the Log4j shutdown hook will automatically be disabled when the log4j-web jar is included.
 ====
 
+[id=configuration]
 === Configuration
 
 Log4j allows the configuration file to be specified in web.xml using the `log4jConfiguration` context parameter. Log4j will search for configuration files by:

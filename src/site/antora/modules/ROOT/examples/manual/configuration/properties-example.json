@@ -1,0 +1,14 @@
+{
+  "Properties": {
+    "Property": [
+      {
+        "name": "FOO",
+        "value": "foo"
+      },
+      {
+        "name": "BAR",
+        "value": "bar"
+      }
+    ]
+  }
+}

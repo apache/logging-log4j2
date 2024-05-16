@@ -32,14 +32,14 @@ many systems significant effort is spent on controlling these pauses.
 
 Many logging libraries, including previous versions of Log4j, allocate
 temporary objects like log event objects, Strings, char arrays, byte
-arrays and more during steady state logging. This contributes to
+arrays and more during steady-state logging. This contributes to
 pressure on the garbage collector and increases the frequency with which
 GC pauses occur.
 
-From version 2.6, Log4j runs in "garbage free" mode by default where
+From version 2.6, Log4j runs in "garbage-free" mode by default where
 objects and buffers are reused and no temporary objects are allocated as
 much as possible. There is also a "low garbage" mode which is not
-completely garbage free but does not use ThreadLocal fields. This is the
+completely garbage-free but does not use ThreadLocal fields. This is the
 default mode when Log4j link:#Config[detects] it is running in a web
 application. Finally, it is possible to switch off all garbage-free
 logic and run in "classic mode" instead. For details, see the
@@ -82,7 +82,7 @@ reference these fields after the web application is undeployed. To avoid
 causing memory leaks, Log4j will not use these ThreadLocals when it
 detects that it is used in a web application (when the
 `javax.servlet.Servlet` class is in the classpath, or when system
-property xref:manual/configuration.adoc#log4j2.isWebapp[log4j2.isWebapp] is set to `true`).
+property xref:manual/systemproperties.adoc#log4j2.isWebapp[log4j2.isWebapp] is set to `true`).
 
 Some garbage-reducing functionality does not rely on ThreadLocals and is
 enabled by default for all applications: in Log4j 2.6, converting log
@@ -112,8 +112,8 @@ you may also configure a xref:manual/async.adoc#WaitStrategy[custom wait strateg
 There are separate system properties for manually controlling the
 mechanisms Log4j uses to avoid creating temporary objects:
 
-* xref:manual/configuration.adoc#log4j2.enableThreadlocals[log4j2.enableThreadlocals] - if "true" (the default for non-web applications) objects are stored in ThreadLocal fields and reused, otherwise new objects are created for each log event.
-* xref:manual/configuration.adoc#log4j2.enableDirectEncoders[log4j2.enableDirectEncoders] - if "true" (the default)
+* xref:manual/systemproperties.adoc#log4j2.enableThreadlocals[log4j2.enableThreadlocals] - if "true" (the default for non-web applications) objects are stored in ThreadLocal fields and reused, otherwise new objects are created for each log event.
+* xref:manual/systemproperties.adoc#log4j2.enableDirectEncoders[log4j2.enableDirectEncoders] - if "true" (the default)
 log events are
 converted to text and this text is converted to bytes without creating
 temporary objects. Note: _synchronous_ logging performance may be worse
@@ -121,8 +121,8 @@ for multi-threaded applications in this mode due to synchronization on
 the shared buffer. If your application is multi-threaded and logging
 performance is important, consider using Async Loggers.
 * The ThreadContext map is _not_ garbage-free by default, but from Log4j
-2.7 it can be configured to be garbage-free by setting system property
-xref:manual/configuration.adoc#log4j2.garbagefreeThreadContextMap[log4j2.garbagefreeThreadContextMap] to "true".
+2.7 it can be configured to be garbage-free by setting the system property
+xref:manual/systemproperties.adoc#log4j2.garbagefreeThreadContextMap[log4j2.garbagefreeThreadContextMap] to "true".
 
 Instead of system properties, the above properties can also be specified
 in a file named `log4j2.component.properties` by including this file in
@@ -158,16 +158,16 @@ steady-state logging:
 * CompositeFilter (adding and removing element filters creates temporary
 objects for thread safety)
 * DynamicThresholdFilter
-* LevelRangeFilter (garbage free since 2.8)
-* MapFilter (garbage free since 2.8)
-* MarkerFilter (garbage free since 2.8)
-* StructuredDataFilter (garbage free since 2.8)
-* ThreadContextMapFilter (garbage free since 2.8)
-* ThresholdFilter (garbage free since 2.8)
-* TimeFilter (garbage free since 2.8 except when range must be recalculated once per day)
+* LevelRangeFilter (garbage-free since 2.8)
+* MapFilter (garbage-free since 2.8)
+* MarkerFilter (garbage-free since 2.8)
+* StructuredDataFilter (garbage-free since 2.8)
+* ThreadContextMapFilter (garbage-free since 2.8)
+* ThresholdFilter (garbage-free since 2.8)
+* TimeFilter (garbage-free since 2.8 except when range must be recalculated once per day)
 
 Other filters like BurstFilter, RegexFilter and ScriptFilter are not
-trivial to make garbage free, and there is currently no plan to change
+trivial to make garbage-free, and there is currently no plan to change
 them.
 
 [#Layouts]
@@ -186,7 +186,7 @@ xref:manual/json-template-layout.adoc#faq-garbage-free[a few exceptions].
 
 PatternLayout with the following limited set of conversion patterns is
 garbage-free. Format modifiers to control such things as field width,
-padding, left and right justification will not generate garbage.
+padding, and left and right justification will not generate garbage.
 
 [cols="1m,2"]
 |===
@@ -198,7 +198,7 @@ padding, left and right justification will not generate garbage.
 |%d, %date
 a|
 Note: Only the predefined date formats are garbage-free: (millisecond
-separator may be either a comma ',' or a period '.')
+the separator may be either a comma ',' or a period '.')
 
 [cols="1m,1"]
 !===
@@ -248,11 +248,11 @@ garbage-free since 2.8
 %equalsIgnoreCase\{pattern}\{test}\{substitution}
 |Replaces occurrences
 of 'test', a string, with its replacement 'substitution' in the string
-resulting from evaluation of the pattern - garbage-free since 2.8
+resulting from the evaluation of the pattern - garbage-free since 2.8
 
 |%highlight\{pattern}\{style}
 |Adds ANSI colors - garbage-free since 2.7
-(unless nested pattern is not garbage free)
+(unless the nested pattern is not garbage-free)
 
 |%K\{key}, %map\{key}, %MAP\{key}
 |Outputs the entries in a
@@ -272,11 +272,11 @@ since 2.8
 parents)
 
 |%maxLen, %maxLength
-|Truncates another pattern to some max number of
+|Truncates another pattern to some maximum number of
 characters - garbage-free since 2.8
 
 |%n
-|The platform dependent line separator
+|The platform-dependent line separator
 
 |%N, %nano
 |System.nanoTime() when the event was logged
@@ -300,7 +300,7 @@ every event - garbage-free since 2.8
 
 |%style\{pattern}{ANSI style}
 |Style the message - garbage-free since
-2.7 (unless nested pattern is not garbage free)
+2.7 (unless the nested pattern is not garbage-free)
 
 |%T, %tid, %threadId
 |The ID of the thread that generated the logging
@@ -324,13 +324,13 @@ garbage-free since 2.8
 substitution)
 |===
 
-Other PatternLayout conversion patterns, and other Layouts may be
+Other PatternLayout conversion patterns and other Layouts may be
 updated to avoid creating temporary objects in future releases. (Patches
 welcome!)
 
 NOTE: Logging exceptions and stack traces will create temporary
 objects with any layout. (However, Layouts will only create these
-temporary objects when an exception actually occurs.) We haven't figured
+temporary objects when an exception occurs.) We haven't figured
 out a way to log exceptions and stack traces without creating temporary
 objects. That is unfortunate, but you probably still want to log them
 when they happen.
@@ -393,10 +393,10 @@ not possible. When logging primitive values (i.e. int, double, boolean,
 etc.) the JVM autoboxes these primitive values to their Object wrapper
 equivalents, creating garbage.
 
-Log4j provides an `Unbox` utility to prevent autoboxing of primitive
+Log4j provides an `Unbox` utility to prevent the autoboxing of primitive
 parameters. This utility contains a thread-local pool of reused
 `StringBuilder`s. The `Unbox.box(primitive)` methods write directly into
-a StringBuilder, and the resulting text will be copied into the final
+a `StringBuilder`, and the resulting text will be copied into the final
 log message text without creating temporary objects.
 
 [source,java]
@@ -410,16 +410,16 @@ public void garbageFree() {
 ----
 
 ****
-NOTE: not all logging is garbage free. Specifically:
+NOTE: not all logging is garbage-free. Specifically:
 
-* The ThreadContext map is not garbage-free by default, but can be
-configured to be garbage-free by setting system property
+* The ThreadContext map is not garbage-free by default but can be
+configured to be garbage-free by setting the system property
 `log4j2.garbagefreeThreadContextMap` to "true".
 * The ThreadContext stack is not garbage-free.
 * Logging more than 10 parameters creates vararg arrays.
 * Logging very large messages (more than 518 characters) when all
 loggers are Async Loggers will cause the internal StringBuilder in the
-RingBuffer to be trimmed back to their max size.
+RingBuffer is to be trimmed back to its max size.
 * Logging messages containing '${': substituting a `$\{variable}` creates
 temporary objects.
 * Logging a lambda _as a parameter_
@@ -428,7 +428,7 @@ creates a vararg array. Logging a lambda expression by itself is
 garbage-free: `logger.debug(() -> callExpensiveMethod())`.
 * The `Logger.traceEntry` and `Logger.traceExit` methods create
 temporary objects.
-* Time calculations are not garbage free when log4j2.usePreciseClock is set to true.
+* Time calculations are not garbage-free when log4j2.usePreciseClock is set to true.
 The default is false.
 ****
 
@@ -439,12 +439,12 @@ The default is false.
 === Response Time Latency
 
 Response time is how long it takes to log a message under a certain
-load. What is often reported as latency is actually _service time_: how
-long it took to perform the operation. This hides the fact that a single
-spike in service time adds queueing delay for many of the subsequent
+load. What is often reported as latency is _service time_: how
+long it took to operate. This hides the fact that a single
+spike in service time adds a queueing delay for many of the subsequent
 operations. Service time is easy to measure (and often looks good on
 paper) but is irrelevant for users since it omits the time spent waiting
-for service. For this reason we report response time: service time plus
+for service. For this reason, we report response time: service time plus
 wait time. See the xref:manual/performance.adoc#responseTime[response time
 section] of the performance page for more detail.
 
@@ -462,25 +462,25 @@ wait strategy reduces some jitter.)
 * -XX:CompileCommand=dontinline,org.apache.logging.log4j.core.async.perftest.NoOpIdleStrategy::idle
 * -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps
 -XX:+PrintTenuringDistribution -XX:+PrintGCApplicationConcurrentTime
--XX:+PrintGCApplicationStoppedTime (to eyeball GC and safepoint pauses)
+-XX:+PrintGCApplicationStoppedTime (to eyeball GC and savepoint pauses)
 
 === Async Loggers
 
 The graph below compares "classic" logging to garbage-free logging
-response time behaviour for Log4j's Async Loggers. In the graph, "100k"
-means logging at a sustained load of 100,000 messages/second, "800k" is
+response time behavior for Log4j's Async Loggers. In the graph, "100k"
+means logging at a sustained load of 100,000 messages/second, and "800k" is
 a sustained load of 800,000 messages/second.
 
 image:ResponseTimeAsyncClassicVsGcFree-label.png[image]
 
-In *classic* mode we see numerous minor garbage collections which pause
+In *classic* mode we see numerous minor garbage collections that pause
 the application threads for 3 milliseconds or more. This quickly adds up
 to response time delays of almost 10 milliseconds. As you can see in the
 graph, increasing the load shifts the curve to the left (there are more
 spikes). This makes sense: logging more means more pressure on the
 garbage collector resulting in more minor GC pauses. We experimented a
 little with reducing the load to 50,000 or even 5000 messages/second,
-but this did not eliminate the 3 millisecond pauses, it just made them
+but this did not eliminate the 3-millisecond pauses, it just made them
 occur less frequently. Note that all GC pauses in this test are minor GC
 pauses. We did not see any full garbage collections.
 
@@ -488,19 +488,19 @@ In *garbage-free* mode, maximum response time remains well below 1
 millisecond under a wide range of loads. (Max 780 us at 800,000
 messages/sec, max 407 us at 600,000 messages/sec, with the 99% around 5
 us for all loads up to 800,000 messages/sec.) Increasing or decreasing
-the load does not change the response time behaviour. We did not
+the load does not change the response time behavior. We did not
 investigate the cause of the 200-300 microsecond pauses we saw in these
 tests.
 
-When we increased the load further we begin to see larger response time
+When we increased the load further we began to see larger response time
 pauses for both classic and garbage-free logging. At sustained loads of
 1 million messages/second or more we start to approach the maximum
 throughput of the underlying RandomAccessFile Appender (see the
-synchronous logging throughput chart below). At these loads the
-ringbuffer starts to fill up and backpressure kicks in: attempting to
+synchronous logging throughput chart below). At these loads, the
+ringbuffer starts to fill up and backpressure kicks in, attempting to
 add another message when the ringbuffer is full will block until a free
 slot becomes available. We start to see response times of tens of
-milliseconds or more; and attempting to increase the load even more
+milliseconds or more, and attempting to increase the load even more
 results in larger and larger response time spikes.
 
 === Synchronous File Logging
@@ -509,11 +509,11 @@ With synchronous file logging, garbage-free logging still performs
 better than classic logging, but the difference is less pronounced.
 
 At a workload of 100,000 messages/second, classic logging max response
-time was a little over 2 milliseconds where garbage-free logging was a
+time was a little over 2 milliseconds whereas garbage-free logging was a
 little over 1 millisecond. When the workload is increased to 300,000
 messages/second, classic logging shows response time pauses of 6
 milliseconds where the garbage-free response times were less than 3
-milliseconds. It may be possible to improve on this, we did not
+milliseconds. It may be possible to improve on this, but we did not
 investigate further yet.
 
 image:ResponseTimeSyncClassicVsGcFree.png[image]
@@ -535,7 +535,7 @@ classic mode and Log4j 2.5.
 
 image:garbage-free2.6-SyncThroughputLinux.png[Throughput of
 Log4j 2.6 in garbage-free mode is slightly worse than in classic mode,
-but on par with 2.5 and much better than alternatives logging libraries]
+but on par with 2.5 and much better than alternative logging libraries]
 
 The results above are obtained with the
 http://openjdk.java.net/projects/code-tools/jmh/[JMH] Java benchmark
@@ -564,12 +564,11 @@ directly write into.
 `AbstractOutputStreamAppender` has been modified to make the
 ConsoleAppender, (Rolling)FileAppender,
 (Rolling)RandomAccessFileAppender and MemoryMappedFileAppender
-garbage-free. An effort has been made to minimize impact on custom
+garbage-free. An effort has been made to minimize the impact on custom
 Appenders that extend `AbstractOutputStreamAppender`, but it is
-impossible to guarantee that changing the superclass will not impact any
-and all subclasses. Custom Appenders that extend
+impossible to guarantee that changing the superclass will not impact any subclasses. Custom Appenders that extend
 `AbstractOutputStreamAppender` should verify that they still function
-correctly. In case there is a problem, system property
+correctly. In case there is a problem, the system property
 `log4j2.enable.direct.encoders` can be set to "false" to revert to the
 pre-Log4j 2.6 behaviour.
 

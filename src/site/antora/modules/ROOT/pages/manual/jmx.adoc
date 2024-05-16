@@ -34,18 +34,23 @@ JMX support is disabled by default.
 
 NOTE: JMX support was enabled by default in Log4j 2 versions before 2.24.0.
 
-To enable JMX support, set the following system property when starting the Java VM:
+To enable JMX support, set the
+xref:manual/systemproperties.adoc#log4j2.disableJmx[log4j2.disableJmx]
+system property when starting the Java VM:
 
-`xref:manual/configuration.adoc#log4j2.disableJmx[log4j2.disableJmx]=false`
+`log4j2.disableJmx=false`
 
 [#Local]
 == Local Monitoring and Management
 
-To perform local monitoring you need to specify the `xref:manual/configuration.adoc#log4j2.disableJmx[log4j2.disableJmx]=false` system
-property. The JConsole tool that is included in the Java JDK can be
+To perform local monitoring you need to set the
+xref:manual/systemproperties.adoc#log4j2.disableJmx[log4j2
+.disableJmx]
+system property to `false`.
+The JConsole tool that is included in the Java JDK can be
 used to monitor your application. Start JConsole by typing
 `$JAVA_HOME/bin/jconsole` in a command shell. For more details,
-see Oracle's documentation on
+see Oracle's documentation at
 https://docs.oracle.com/javase/7/docs/technotes/guides/management/jconsole.html[how
 to use JConsole].
 
@@ -55,7 +60,7 @@ to use JConsole].
 To enable monitoring and management from remote systems, set the
 following two system properties when starting the Java VM:
 
-`xref:manual/configuration.adoc#log4j2.disableJmx[log4j2.disableJmx]=false`
+`log4j2.disableJmx=false`
 
 and
 
@@ -64,7 +69,7 @@ and
 In the property above, `portNum` is the port number through which you
 want to enable JMX RMI connections.
 
-For more details, see Oracle's documentation on
+For more details, see Oracle's documentation at
 https://docs.oracle.com/javase/7/docs/technotes/guides/management/agent.html#gdenl[Remote
 Monitoring and Management].
 
@@ -78,7 +83,7 @@ documentation] for the `sun.rmi.dgc.server.gcInterval` and
 properties is 3600000 milliseconds (one hour). Before Java 6, it was one
 minute.
 
-The two sun.rmi arguments reflect whether your JVM is running in server
+The two `sun.rmi` arguments reflect whether your JVM is running in server
 or client mode. If you want to modify the GC interval time it may be
 best to specify both properties to ensure the argument is picked up by
 the JVM.
