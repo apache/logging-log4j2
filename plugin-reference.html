@@ -18047,75 +18047,6 @@ Minimum is 1000.</p>
 <div class="sect2">
 <h3 id="org-apache-logging-log4j_log4j-jdbc"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc"></a><code>org.apache.logging.log4j:log4j-jdbc</code></h3>
 <div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-AbstractConnectionSource"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-AbstractConnectionSource"></a><code>org.apache.logging.log4j.jdbc.appender.AbstractConnectionSource</code></h4>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Class</dt>
-<dd>
-<p><code>org.apache.logging.log4j.jdbc.appender.AbstractConnectionSource</code></p>
-</dd>
-<dt class="hdlist1">Provider</dt>
-<dd>
-<p><code>org.apache.logging.log4j:log4j-jdbc</code></p>
-</dd>
-</dl>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-AbstractConnectionSource_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-AbstractConnectionSource_implementations"></a>Known implementations</h5>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-dbcp2-appender-PoolingDriverConnectionSource">PoolingDriverConnectionSource</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DataSourceConnectionSource">DataSourceConnectionSource</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DriverManagerConnectionSource">DriverManagerConnectionSource</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-FactoryMethodConnectionSource">FactoryMethodConnectionSource</a></p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-AbstractDriverManagerConnectionSource"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-AbstractDriverManagerConnectionSource"></a><code>org.apache.logging.log4j.jdbc.appender.AbstractDriverManagerConnectionSource</code></h4>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Class</dt>
-<dd>
-<p><code>org.apache.logging.log4j.jdbc.appender.AbstractDriverManagerConnectionSource</code></p>
-</dd>
-<dt class="hdlist1">Provider</dt>
-<dd>
-<p><code>org.apache.logging.log4j:log4j-jdbc</code></p>
-</dd>
-</dl>
-</div>
-<div class="paragraph">
-<p>A <a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-ConnectionSource">ConnectionSource</a> that uses a JDBC connection string, a user name, and a password to call <code>java.sql.DriverManager#getConnection(String,String,String)</code>.</p>
-</div>
-<div class="paragraph">
-<p>This plugin does not provide any connection pooling unless it is available through the connection string and driver itself.
-This handy to get you off the ground without having to deal with JNDI.</p>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-AbstractDriverManagerConnectionSource_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-AbstractDriverManagerConnectionSource_implementations"></a>Known implementations</h5>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-dbcp2-appender-PoolingDriverConnectionSource">PoolingDriverConnectionSource</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DriverManagerConnectionSource">DriverManagerConnectionSource</a></p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect3">
 <h4 id="org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-ColumnConfig"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-ColumnConfig"></a>Column</h4>
 <div class="dlist">
 <dl>
@@ -18216,46 +18147,6 @@ This handy to get you off the ground without having to deal with JNDI.</p>
 </tr>
 </tbody>
 </table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-ConnectionSource"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-ConnectionSource"></a><code>org.apache.logging.log4j.jdbc.appender.ConnectionSource</code></h4>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Class</dt>
-<dd>
-<p><code>org.apache.logging.log4j.jdbc.appender.ConnectionSource</code></p>
-</dd>
-<dt class="hdlist1">Provider</dt>
-<dd>
-<p><code>org.apache.logging.log4j:log4j-jdbc</code></p>
-</dd>
-</dl>
-</div>
-<div class="paragraph">
-<p>Configuration element for <a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-JdbcAppender">JdbcAppender</a>.</p>
-</div>
-<div class="paragraph">
-<p>If you want to use the <a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-JdbcAppender">JdbcAppender</a> but none of the provided connection sources meet your needs, you can simply create your own connection source.</p>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-ConnectionSource_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-ConnectionSource_implementations"></a>Known implementations</h5>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-dbcp2-appender-PoolingDriverConnectionSource">PoolingDriverConnectionSource</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DataSourceConnectionSource">DataSourceConnectionSource</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DriverManagerConnectionSource">DriverManagerConnectionSource</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-FactoryMethodConnectionSource">FactoryMethodConnectionSource</a></p>
-</li>
-</ul>
-</div>
 </div>
 </div>
 <div class="sect3">
@@ -18656,7 +18547,7 @@ This appender can be reconfigured at run time.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-ConnectionSource">ConnectionSource</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-jdbc-appender-ConnectionSource">ConnectionSource</a></code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p>The connections source from which database connections should be retrieved.</p>
 </div></div></td>
@@ -18964,6 +18855,102 @@ This appender can be reconfigured at run time.</p>
 </tr>
 </tbody>
 </table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-jdbc-appender-AbstractConnectionSource"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-jdbc-appender-AbstractConnectionSource"></a><code>org.apache.logging.log4j.jdbc.appender.AbstractConnectionSource</code></h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Class</dt>
+<dd>
+<p><code>org.apache.logging.log4j.jdbc.appender.AbstractConnectionSource</code></p>
+</dd>
+<dt class="hdlist1">Provider</dt>
+<dd>
+<p><code>org.apache.logging.log4j:log4j-jdbc-dbcp2</code></p>
+</dd>
+</dl>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-jdbc-appender-AbstractConnectionSource_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-jdbc-appender-AbstractConnectionSource_implementations"></a>Known implementations</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-dbcp2-appender-PoolingDriverConnectionSource">PoolingDriverConnectionSource</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DataSourceConnectionSource">DataSourceConnectionSource</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DriverManagerConnectionSource">DriverManagerConnectionSource</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-FactoryMethodConnectionSource">FactoryMethodConnectionSource</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-jdbc-appender-AbstractDriverManagerConnectionSource"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-jdbc-appender-AbstractDriverManagerConnectionSource"></a><code>org.apache.logging.log4j.jdbc.appender.AbstractDriverManagerConnectionSource</code></h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Class</dt>
+<dd>
+<p><code>org.apache.logging.log4j.jdbc.appender.AbstractDriverManagerConnectionSource</code></p>
+</dd>
+<dt class="hdlist1">Provider</dt>
+<dd>
+<p><code>org.apache.logging.log4j:log4j-jdbc-dbcp2</code></p>
+</dd>
+</dl>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-jdbc-appender-AbstractDriverManagerConnectionSource_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-jdbc-appender-AbstractDriverManagerConnectionSource_implementations"></a>Known implementations</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-dbcp2-appender-PoolingDriverConnectionSource">PoolingDriverConnectionSource</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DriverManagerConnectionSource">DriverManagerConnectionSource</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-jdbc-appender-ConnectionSource"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-jdbc-appender-ConnectionSource"></a><code>org.apache.logging.log4j.jdbc.appender.ConnectionSource</code></h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Class</dt>
+<dd>
+<p><code>org.apache.logging.log4j.jdbc.appender.ConnectionSource</code></p>
+</dd>
+<dt class="hdlist1">Provider</dt>
+<dd>
+<p><code>org.apache.logging.log4j:log4j-jdbc-dbcp2</code></p>
+</dd>
+</dl>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-jdbc-appender-ConnectionSource_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-jdbc-appender-ConnectionSource_implementations"></a>Known implementations</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-dbcp2-appender-PoolingDriverConnectionSource">PoolingDriverConnectionSource</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DataSourceConnectionSource">DataSourceConnectionSource</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DriverManagerConnectionSource">DriverManagerConnectionSource</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-FactoryMethodConnectionSource">FactoryMethodConnectionSource</a></p>
+</li>
+</ul>
+</div>
 </div>
 </div>
 </div>
