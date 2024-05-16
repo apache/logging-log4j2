@@ -107,7 +107,7 @@ The child marker works as expected by adding to the log method as the first argu
 
 [source, java]
 ----
-logger.debug(UPDATE_MARKER, "UPDATE {} SET {}", table, values);
+LOGGER.debug(UPDATE_MARKER, "UPDATE {} SET {}", table, values);
 ----
 
 It is now possible to either filter for the parent, or, be more specific, and filter only for the child marker.
