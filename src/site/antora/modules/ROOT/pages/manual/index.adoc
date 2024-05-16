@@ -18,7 +18,9 @@
 
 == Welcome to Apache Log4j!
 
-Welcome to Apache Log4j, one of the world's most widely used logging frameworks.
+Apache Log4j is a versatile, industrial-grade Java logging framework composed of an API, its implementation,  and components to assist the deployment for various use cases.
+Log4j is https://security.googleblog.com/2021/12/apache-log4j-vulnerability.html[used by 8% of the Maven ecosystem] and listed as one of https://docs.google.com/spreadsheets/d/1ONZ4qeMq8xmeCHX03lIgIYE4MEXVfVL6oj05lbuXTDM/edit#gid=1024997528[the top 100 critical open source software projects].
+The project is actively maintained by a {logging-services-url}/team-list.html[team] of several volunteers and {logging-services-url}/support[support]ed by a big community.
 
 Logging is an essential part of the software development process. 
 It provides a way to track the flow of execution in a program, allowing developers 
@@ -54,26 +56,7 @@ to consider not using logging at all.
 
 Log4j offers numerous features, including:
 
-Easy to use::
-Log4j is easy to use and configure.
-You can xref:5min.adoc[get started] with just a few lines of code.
-
-Performance::
-When configured correctly, Log4j excels at speed.
-See the xref:manual/performance.adoc[Performance] page for details.
-
-Reliable::
-Log4j is reliable and has been used in many production applications.
-No messages will be lost even during reconfiguration.
-
-Extensible::
-Log4j is designed to be easily extended using a xref:manual/plugins.adoc[plugin system], allowing users to customize it to xref:manual/extending.adoc[fit their specific needs].
-
-Integration::
-Log4j integrates with numerous other frameworks and libraries.
-
-ASF Standards::
-Developed at the Apache Software Foundation, Log4j adheres to rigorous standards and best practices.
+include::partial$log4j-features.adoc[]
 
 == How to learn more?
 
