@@ -116,3 +116,33 @@ The link:../javadoc/log4j-api/org/apache/logging/log4j/util/Unbox[Unbox] utility
 This property specifies the maximum number of primitive arguments to a log message that will be cached and usually does not need to be changed.
 
 // end::api[]
+
+[id=log4j.recycler.capacity]
+== `log4j.recycler.capacity`
+
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_RECYCLER_CAPACITY
+| Type          | `int`
+| Default value | `2C+1` (`C` denoting the number of available processors)
+|===
+
+Denotes the buffer capacity for a recycler.
+For a queueing recycler, it corresponds to the queue size.
+For a thread local recycler, it corresponds to the per-thread buffer size.
+
+If an invalid capacity is provided (i.e., if the capacity is zero or negative), the default value will be used.
+
+[id=log4j.recycler.factory]
+== `log4j.recycler.factory`
+
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_RECYCLER_FACTORY
+| Type          | `String`
+| Default value | `null`
+|===
+
+If provided, available recycler factory providers will be sorted in order, and the first one whose name matching with this property value will be used.
+
+If missing or the selection fails, the default will be used.

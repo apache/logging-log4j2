@@ -135,6 +135,97 @@ objects for thread safety)
 
 Any other filter not shared in the above list is not garbage-free.
 
+[#recyclers]
+=== Recyclers
+
+Log4j contains the _recycler_ abstraction that models the buffer-and-reuse strategy used to operate without any extra memory allocations at steady state.
+Recyclers implement the `RecyclerFactoryProvider` interface in `log4j-kit` (a dependency of `log4j-core`) and provide themselves as a `ServiceLoader`.
+Hence, you can easily implement custom recyclers and inject them using the `ServiceLoader` mechanism.
+
+Log4j chooses a recycler using the following procedure:
+
+. Using `ServiceLoader` mechanism, loads all available `RecyclerFactoryProvider` implementations
+. Sorts providers (the lower `order` value will come first)
+. If xref:#log4j.recycler.factory[] is provided, the first provider whose name matching with this property value will be used. Otherwise, the first provider will be used.
+
+The predefined recycler factory providers are as follows:
+
+[#recyclers-dummy]
+==== Dummy recycler
+
+[cols="1h,5"]
+|===
+| Module
+| `log4j-kit`
+
+| Name
+| `dummy`
+
+| Order
+| 900
+|===
+
+Does not recycle anything; all instances are freshly created.
+(Not recommended for production!
+Intended as a test utility.)
+
+[#recyclers-threadLocal]
+==== Thread-local recycler
+
+[cols="1h,5"]
+|===
+| Module
+| `log4j-kit`
+
+| Name
+| `threadLocal`
+
+| Order
+| `Integer.MAX_VALUE`, if `javax.servlet.Servlet` or `jakarta.servlet.Servlet` is in the classpath; +
+700, otherwise
+|===
+
+Pools objects in a fixed-size queue stored in a `ThreadLocal`.
+If pool runs out of capacity (see xref:#log4j.recycler.capacity[]), it will start creating fresh instances for new requests.
+
+Note that it is effectively disabled for servlet environments.
+
+[#recyclers-queue]
+==== Queueing recycler
+
+[cols="1h,5"]
+|===
+| Module
+| `log4j-kit`
+
+| Name
+| `queue`
+
+| Order
+| 800
+|===
+
+Pools objects in a fixed-size `ArrayBlockingQueue` queue.
+If pool runs out of capacity (see xref:#log4j.recycler.capacity[]), it will start creating fresh instances for new requests.
+
+[#recyclers-jctools]
+==== JCTools MPMC recycler
+
+[cols="1h,5"]
+|===
+| Module
+| `log4j-jctools`
+
+| Name
+| `jctools-mpmc`
+
+| Order
+| 600
+|===
+
+Pools objects in a fixed-size JCTools MPMC queue.
+If pool runs out of capacity (see xref:#log4j.recycler.capacity[]), it will start creating fresh instances for new requests.
+
 [#core-limitations]
 === Limitations
 
