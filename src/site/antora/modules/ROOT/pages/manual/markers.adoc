@@ -26,6 +26,7 @@ related to XML processing or SQL queries.
 
 Markers offer more fine-grained control over log filtering beyond log levels or package names.
 
+[#create]
 == Creating Markers
 
 To create a Marker, use the MarkerManager class. The MarkerManager class provides 
