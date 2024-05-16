@@ -144,14 +144,7 @@ Asynchronous logging is useful to deal with bursts of events.
 How this works is that a minimum amount of work is done by the application thread to capture all required information in a log event, and this log event is then put on a queue for later processing by a background thread.
 As long as the queue is sized large enough, the application threads should be able to spend very little time on the logging call and return to the business logic very quickly.
 
-[#async-drawbacks]
-==== Asynchronous logging drawbacks
-
-.There are certain drawbacks associated with asynchronous logging:
-[%collapsible]
-====
-include::partial$manual/async-drawbacks.adoc[]
-====
+include::partial$manual/async-trade-offs.adoc[leveloffset=+3]
 
 [#async-strategies]
 ==== Asynchronous logging strategies

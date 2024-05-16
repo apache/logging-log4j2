@@ -39,35 +39,7 @@ touch the disk on every log event. (Async Appenders use
 ArrayBlockingQueue internally and do not need the disruptor jar on the
 classpath.)
 
-[#Trade-offs]
-== Trade-offs
-
-Although asynchronous logging can give significant performance benefits,
-there are situations where you may want to choose synchronous logging.
-This section describes some of the trade-offs of asynchronous logging.
-
-=== Benefits
-
-* Higher peak link:#Performance[throughput]. With an asynchronous logger
-your application can log messages at 6 - 68 times the rate of a
-synchronous logger.
-+
-This is especially interesting for applications that occasionally need
-to log bursts of messages. Async logging can help prevent or dampen
-latency spikes by shortening the wait time until the next message can be
-logged. If the queue size is configured large enough to handle the
-burst, asynchronous logging will help prevent your application from
-falling behind (as much) during a sudden increase in activity.
-* Lower logging response time link:#Latency[latency]. Response time
-latency is the time it takes for a call to Logger.log to return under a
-given workload. Asynchronous Loggers have consistently lower latency
-than synchronous loggers or even queue-based asynchronous appenders.
-
-=== Drawbacks
-
-There are certain drawbacks associated with asynchronous logging:
-
-include::partial$manual/async-drawbacks.adoc[]
+include::partial$manual/async-trade-offs.adoc[leveloffset=+1]
 
 [#AllAsync]
 == Making All Loggers Asynchronous
