@@ -25,7 +25,7 @@
       <JsonTemplateLayout/>
     </File>
     <File name="DEBUG_LOG" fileName="logs/debug.log">
-      <PatternLayout pattern="%d [%t] %p %c - %m%n"/>
+      <PatternLayout/>
     </File>
   </Appenders>
   <Loggers>

@@ -43,9 +43,7 @@ See <<asynchronous-loggers>> for more details.
 [CAUTION]
 ====
 Logging performance depends greatly on the architecture of your application and the way you use logging.
-
 The solutions offered by this chapter should be evaluated using benchmarks against your own application.
-
 If benchmarks and profiling don't show a statistically significant difference between asynchronous and synchronous logging solutions, the latter one is recommended, since it is the simplest one.
 ====
 
@@ -76,7 +74,7 @@ Lower sustainable throughput:::
 +
 If the _sustained rate_ at which your application is logging messages is faster than the maximum sustained throughput of the underlying appender, the queue will fill up and the application will end up logging at the speed of the slowest appender.
 +
-If this happens, consider selecting a xref:manual/performance.adoc#whichAppender[faster appender], or logging less.
+If this happens, consider selecting a faster appender, or logging less.
 If neither of these is an option, you may get better throughput and fewer latency spikes by logging synchronously.
 
 Error handling:::
@@ -163,9 +161,9 @@ runtimeOnly 'com.lmax:disruptor:{disruptor-version}'
 ====
 
 [#AllAsync]
-== Making all loggers asynchronous
+=== Making all loggers asynchronous
 
-This is simplest to configure and gives the best performance.
+This is the simplest to configure and gives the best performance.
 
 To make all logger asynchronous, you need to set the
 xref:manual/systemproperties.adoc#log4j2.contextSelector[log4j2.contextSelector]
@@ -188,17 +186,17 @@ If you use `AsyncRoot` and `AsyncLogger` configuration elements, two asynchronou
 [[SysPropsAllAsync]]
 === Configuration Properties
 
-Since the disruptor is created at the same time as the logger context and before any Log4j configuration file is loaded, tuning async loggers is only possible through configuration properties.
+Since Disruptor is initialized at the same time as the logger context and before any Log4j configuration file is loaded, tuning async loggers is only possible through configuration properties.
 
 The following elements are configurable:
 
 * the generic behavior of asynchronous components, such as the queue full policy and message formatting.
 +
-See xref:manual/systemproperties.adoc#properties-async[Commons async configuration] for more details.
+See xref:manual/systemproperties.adoc#properties-async[common asynchronous logging configurations] for more details.
 
 * the parameters of the disruptor, such as the size of the ring buffer and the wait strategy to use.
 +
-See xref:manual/systemproperties.adoc#properties-async-logger[Full asynchronous logger configuration] for more details.
+See xref:manual/systemproperties.adoc#properties-async-logger[asynchronous logger configuration] for more details.
 
 [TIP]
 ====
@@ -209,7 +207,7 @@ See xref:manual/systemproperties.adoc#property-sources[Property Sources] for mor
 ====
 
 [#MixedSync-Async]
-== Mixing synchronous and asynchronous loggers
+=== Mixing synchronous and asynchronous loggers
 
 Synchronous and asynchronous loggers can be combined in a single configuration.
 This gives you more flexibility at the cost of a slight loss in performance (compared to making all loggers asynchronous).
@@ -259,7 +257,7 @@ These log statements will cause a smaller latency for the caller.
 [[SysPropsMixedSync-Async]]
 === Configuration Properties
 
-Since all `AsyncRoot` and `AsyncLogger` components share the same disruptor, its configuration is available through configuration properties.
+Since all `AsyncRoot` and `AsyncLogger` components share the same Disruptor instance, its configuration is available through configuration properties.
 
 The following elements are configurable:
 
@@ -323,7 +321,7 @@ include::example$manual/configuration/custom-wait-strategy.properties[lines=17..
 ====
 
 [#Location]
-== Location
+== Location information
 
 Computing the location of a log event is an expensive operation.
 Synchronous appenders are around 1.5&nbsp;&ndash;&nbsp;5 times slower, when location information is required.
@@ -360,7 +358,7 @@ configuration property.
 
 Mixed synchronous/asynchronous::
 +
-If you use a mix of sync and async loggers you need to:
+If you use a mix of synchronous and asynchronous loggers you need to:
 +
 * implement a
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerConfigDisruptor.Log4jEventWrapper.html[ExceptionHandler<? super AsyncLoggerConfigDisruptor.Log4jEventWrapper>]
