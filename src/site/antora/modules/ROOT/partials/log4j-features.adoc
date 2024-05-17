@@ -19,7 +19,7 @@ Batteries included::
 Log4j bundles a rich set of components to assist various use cases.
 * xref:manual/appenders.adoc[Appenders] targeting files, network sockets, databases, SMTP servers, etc.
 * xref:manual/layouts.adoc[Layouts] that can render CSV, HTML, JSON, Syslog, etc. formatted outputs
-* xref:manual/filters.adoc[Filters] that can be configured using log event rates, regular expressions, scripts, time, etc.
+* xref:manual/filters.adoc[Filters] based on log event rates, regular expressions, scripts, time, etc.
 * xref:manual/lookups.adoc[Lookups] for accessing system properties, environment variables, log event fields, etc.
 
 API separation::
@@ -32,8 +32,12 @@ No vendor lock-in::
 Even though the Log4j API is implemented by the Log4j at its fullest, users can choose to use another logging backend.
 This can be achieved by either using another backend implementing the Log4j API, or forwarding Log4j API calls to another logging facade (e.g., SLF4J) and using a backend for that particular facade.
 
+Reliability::
+Log4j is built with strong reliability in mind.
+Such that it can automatically reload its configuration upon modification, and it will do so without losing log events while reconfiguration is taking place.
+
 Performance::
-When configured correctly, Log4j can deliver excelling performance without almost any burden on the Java garbage collector.
+When configured correctly, Log4j can deliver excelling performance without almost any burden on the Java garbage collector, and it will do so without sacrificing reliability.
 This is made possible via an asynchronous logger founded on the https://lmax-exchange.github.io/disruptor/[LMAX Disruptor] technology (having its roots in the demanding industry of financial trading) and the garbage-free features baked at hot paths.
 Check out the xref:manual/performance.adoc[Performance] page for details.
 
