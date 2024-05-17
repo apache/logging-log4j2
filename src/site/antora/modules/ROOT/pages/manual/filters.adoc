@@ -15,8 +15,6 @@
     limitations under the License.
 ////
 = Filters
-Ralph Goers <rgoers@apache.org>
-Volkan Yazıcı <vy@apache.org>
 
 Filters allow Log Events to be evaluated to determine if or how they
 should be published. A Filter will be called on one of its `filter`

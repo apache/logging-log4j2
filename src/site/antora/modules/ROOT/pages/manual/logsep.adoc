@@ -15,7 +15,6 @@
     limitations under the License.
 ////
 = Logging Separation
-Ralph Goers <rgoers@apache.org>
 
 There are many well known use cases where applications may share an
 environment with other applications and each has a need to have its own,
