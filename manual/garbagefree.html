@@ -409,8 +409,7 @@ are not garbage-free since they
 cause <code>java.util.concurrent.locks.AbstractQueuedSynchronizer$Node</code> objects to be created.
 The default wait strategy used by Log4j uses a synchronized block instead of a ReentrantLock to avoid this problem.
 The Yield and Sleep wait strategies are garbage-free. (For configuring predefined wait strategies, see
-<a href="async.html#SysPropsAllAsync" class="xref page">here</a> and
-<a href="async.html#SysPropsMixedSync-Async" class="xref page">here</a>,
+<a href="systemproperties.html#properties-log4j-async-logger" class="xref page">here</a>,
 you may also configure a <a href="async.html#WaitStrategy" class="xref page">custom wait strategy</a>.)
 </td>
 </tr>
@@ -443,7 +442,7 @@ performance is important, consider using Async Loggers.</p>
 <p>Instead of system properties, the above properties can also be specified
 in a file named <code>log4j2.component.properties</code> by including this file in
 the classpath of the application. See the
-<a href="configuration.html#SystemProperties" class="xref page">manual regarding system
+<a href="systemproperties.html" class="xref page">manual regarding system
 properties</a> for more info.</p>
 </div>
 </div>
@@ -938,7 +937,7 @@ spike in service time adds queueing delay for many of the subsequent
 operations. Service time is easy to measure (and often looks good on
 paper) but is irrelevant for users since it omits the time spent waiting
 for service. For this reason we report response time: service time plus
-wait time. See the <a href="performance.html#responseTime" class="xref page">response time
+wait time. See the <a href="performance.html" class="xref page">response time
 section</a> of the performance page for more detail.</p>
 </div>
 <div class="paragraph">

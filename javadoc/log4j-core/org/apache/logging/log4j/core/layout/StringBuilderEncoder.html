@@ -87,7 +87,7 @@ implements <a href="Encoder.html" title="interface in org.apache.logging.log4j.c
 <div class="block"><a href="Encoder.html" title="interface in org.apache.logging.log4j.core.layout"><code>Encoder</code></a> for <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link"><code>StringBuilder</code></a>s.
  <p>
  <b><a href="#encode(java.lang.StringBuilder,org.apache.logging.log4j.core.layout.ByteBufferDestination)"><code>encode()</code></a> is not thread-safe!</b>
- Users are expected to recycle <a href="StringBuilderEncoder.html" title="class in org.apache.logging.log4j.core.layout"><code>StringBuilderEncoder</code></a> instances, e.g., using a <code>RecyclerFactory</code>.
+ Users are expected to recycle <a href="StringBuilderEncoder.html" title="class in org.apache.logging.log4j.core.layout"><code>StringBuilderEncoder</code></a> instances, e.g., using a <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/kit/recycler/RecyclerFactory.html" title="class or interface in org.apache.logging.log4j.kit.recycler" class="external-link"><code>RecyclerFactory</code></a>.
  </p></div>
 </section>
 <section class="summary">
@@ -173,7 +173,7 @@ implements <a href="Encoder.html" title="interface in org.apache.logging.log4j.c
 <div class="block">Encodes the given source to the given destination.
  <p>
  <b>This method is not thread-safe!</b>
- Users are expected to recycle <a href="StringBuilderEncoder.html" title="class in org.apache.logging.log4j.core.layout"><code>StringBuilderEncoder</code></a> instances, e.g., using a <code>RecyclerFactory</code>.
+ Users are expected to recycle <a href="StringBuilderEncoder.html" title="class in org.apache.logging.log4j.core.layout"><code>StringBuilderEncoder</code></a> instances, e.g., using a <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/kit/recycler/RecyclerFactory.html" title="class or interface in org.apache.logging.log4j.kit.recycler" class="external-link"><code>RecyclerFactory</code></a>.
  </p></div>
 <dl class="notes">
 <dt>Specified by:</dt>

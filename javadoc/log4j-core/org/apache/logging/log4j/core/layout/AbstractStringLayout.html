@@ -138,10 +138,10 @@ implements <a href="../StringLayout.html" title="interface in org.apache.logging
 <div class="col-first odd-row-color"><code>protected static final int</code></div>
 <div class="col-second odd-row-color"><code><a href="#MAX_STRING_BUILDER_SIZE" class="member-name-link">MAX_STRING_BUILDER_SIZE</a></code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><code>protected final org.apache.logging.log4j.kit.recycler.Recycler&lt;<a href="Encoder.html" title="interface in org.apache.logging.log4j.core.layout">Encoder</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&gt;&gt;</code></div>
+<div class="col-first even-row-color"><code>protected final <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/kit/recycler/Recycler.html" title="class or interface in org.apache.logging.log4j.kit.recycler" class="external-link">Recycler</a>&lt;<a href="Encoder.html" title="interface in org.apache.logging.log4j.core.layout">Encoder</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&gt;&gt;</code></div>
 <div class="col-second even-row-color"><code><a href="#stringBuilderEncoderRecycler" class="member-name-link">stringBuilderEncoderRecycler</a></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>protected final org.apache.logging.log4j.kit.recycler.Recycler&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&gt;</code></div>
+<div class="col-first odd-row-color"><code>protected final <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/kit/recycler/Recycler.html" title="class or interface in org.apache.logging.log4j.kit.recycler" class="external-link">Recycler</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&gt;</code></div>
 <div class="col-second odd-row-color"><code><a href="#stringBuilderRecycler" class="member-name-link">stringBuilderRecycler</a></code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 </div>
@@ -196,8 +196,8 @@ implements <a href="../StringLayout.html" title="interface in org.apache.logging
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>protected static org.apache.logging.log4j.kit.recycler.Recycler&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createStringBuilderRecycler(org.apache.logging.log4j.kit.recycler.RecyclerFactory)" class="member-name-link">createStringBuilderRecycler</a><wbr>(org.apache.logging.log4j.kit.recycler.RecyclerFactory&nbsp;recyclerFactory)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>protected static <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/kit/recycler/Recycler.html" title="class or interface in org.apache.logging.log4j.kit.recycler" class="external-link">Recycler</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createStringBuilderRecycler(org.apache.logging.log4j.kit.recycler.RecyclerFactory)" class="member-name-link">createStringBuilderRecycler</a><wbr>(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/kit/recycler/RecyclerFactory.html" title="class or interface in org.apache.logging.log4j.kit.recycler" class="external-link">RecyclerFactory</a>&nbsp;recyclerFactory)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected byte[]</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getBytes(java.lang.String)" class="member-name-link">getBytes</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;s)</code></div>
@@ -295,13 +295,13 @@ implements <a href="../StringLayout.html" title="interface in org.apache.logging
 <li>
 <section class="detail" id="stringBuilderEncoderRecycler">
 <h3>stringBuilderEncoderRecycler</h3>
-<div class="member-signature"><span class="modifiers">protected final</span>&nbsp;<span class="return-type">org.apache.logging.log4j.kit.recycler.Recycler&lt;<a href="Encoder.html" title="interface in org.apache.logging.log4j.core.layout">Encoder</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&gt;&gt;</span>&nbsp;<span class="element-name">stringBuilderEncoderRecycler</span></div>
+<div class="member-signature"><span class="modifiers">protected final</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/kit/recycler/Recycler.html" title="class or interface in org.apache.logging.log4j.kit.recycler" class="external-link">Recycler</a>&lt;<a href="Encoder.html" title="interface in org.apache.logging.log4j.core.layout">Encoder</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&gt;&gt;</span>&nbsp;<span class="element-name">stringBuilderEncoderRecycler</span></div>
 </section>
 </li>
 <li>
 <section class="detail" id="stringBuilderRecycler">
 <h3>stringBuilderRecycler</h3>
-<div class="member-signature"><span class="modifiers">protected final</span>&nbsp;<span class="return-type">org.apache.logging.log4j.kit.recycler.Recycler&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&gt;</span>&nbsp;<span class="element-name">stringBuilderRecycler</span></div>
+<div class="member-signature"><span class="modifiers">protected final</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/kit/recycler/Recycler.html" title="class or interface in org.apache.logging.log4j.kit.recycler" class="external-link">Recycler</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&gt;</span>&nbsp;<span class="element-name">stringBuilderRecycler</span></div>
 </section>
 </li>
 </ul>
@@ -364,7 +364,7 @@ implements <a href="../StringLayout.html" title="interface in org.apache.logging
 <li>
 <section class="detail" id="createStringBuilderRecycler(org.apache.logging.log4j.kit.recycler.RecyclerFactory)">
 <h3>createStringBuilderRecycler</h3>
-<div class="member-signature"><span class="modifiers">protected static</span>&nbsp;<span class="return-type">org.apache.logging.log4j.kit.recycler.Recycler&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&gt;</span>&nbsp;<span class="element-name">createStringBuilderRecycler</span><wbr><span class="parameters">(org.apache.logging.log4j.kit.recycler.RecyclerFactory&nbsp;recyclerFactory)</span></div>
+<div class="member-signature"><span class="modifiers">protected static</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/kit/recycler/Recycler.html" title="class or interface in org.apache.logging.log4j.kit.recycler" class="external-link">Recycler</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&gt;</span>&nbsp;<span class="element-name">createStringBuilderRecycler</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/kit/recycler/RecyclerFactory.html" title="class or interface in org.apache.logging.log4j.kit.recycler" class="external-link">RecyclerFactory</a>&nbsp;recyclerFactory)</span></div>
 </section>
 </li>
 <li>

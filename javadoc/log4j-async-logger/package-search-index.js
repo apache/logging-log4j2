@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"org.apache.logging.log4j.async.logger"},{"l":"org.apache.logging.log4j.async.logger.internal"}];updateSearchResults();
