@@ -237,38 +237,46 @@ include::partial$manual/systemproperties/properties-log4j-script.adoc[leveloffse
 [id=property-sources]
 == Property sources
 
-The Log4j configuration properties sub-system merges the content of multiple property sources that implement the Java interface link:../javadoc/log4j-api/org/apache/logging/log4j/util/PropertySource[PropertySource].
+The Log4j configuration properties sub-system is based on the
+link:../javadoc/log4j-kit/org/apache/logging/log4j/kit/env/PropertyEnvironment.html[PropertyEnvironment]
+interface, which provides a type-safe access to configuration properties.
 
-Additional property source classes can be added through:
+Two kinds of property environments are used by Log4j 3:
 
-* the standard Java SE https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/util/ServiceLoader.html[ServiceLoader] mechanism,
-* programmatically using `addPropertySource()` and `removePropertySource()` static methods of `PropertiesUtil`.
+* a single global environment resolves configuration properties that apply to the entire Log4j system.
+* logger context specific environments resolve configuration properties that apply to a single logger context only.
+If a property is not defined in a logger context specific environment, the corresponding value from the global environment is used.
 
-Each property source can define its own naming convention for property names, although most of them support the standard:
+[#global-environment]
+=== Global environment
+
+The global environment delegates property resolution to the Log4j 2 API
+link:../javadoc/log4j-api/org/apache/logging/log4j/util/PropertiesUtil.html[PropertiesUtil]
+service (see
+link:../../2.x/manual/systemproperties.adoc#property-sources[Log4j 2 API documentation]).
+
+Configuration properties can be declared in any of the property sources below, which use the standard naming convention:
 
 ----
-log4j2.camelCasePropertyName
+log4j.propertyName
 ----
 
-convention.
+When resolving a configuration property, the first property source that contains a value is used.
 
-Properties can be overridden by sources with a lower numerical priority (e.g. -100 comes before 100).
-
-Log4j provides the following implementations:
-
-.PropertySource priorities and descriptions
-[cols="2m,1m,1,1m,5"]
+.Global environment property sources
+[%header,cols="2m,1,1m,5"]
 |===
-| Name | Priority | Naming Convention | Module | Description
+| Name
+| Naming Convention
+| Module
+| Description
 
 | SystemPropertiesPropertySource
-| 0
 | standard
 | log4j-api
 | Resolves properties using Java https://docs.oracle.com/javase/tutorial/essential/environment/sysprop.html[System Properties].
 
 | EnvironmentPropertySource
-| 100
 | **custom**
 | log4j-api
 a| Resolves properties using environment variables.
@@ -277,9 +285,50 @@ a| Resolves properties using environment variables.
 The property name is prefixed with LOG4J_, is in all caps and words are all separated by underscores.
 
 | PropertyFilePropertySource
-| 200
 | standard
 | log4j-api
 | Resolves properties using all the resources named `log4j2.component.properties` found on the classpath.
 This property source should be used to change the default values of an application.
 |===
+
+Additional property source classes can be added through:
+
+* the standard Java SE https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/util/ServiceLoader.html[ServiceLoader] mechanism,
+* programmatically using `addPropertySource()` and `removePropertySource()` static methods of `PropertiesUtil` class.
+
+[#logger-context-property-environment]
+=== Logger context specific environment
+
+The logger context specific environment resolve configuration properties that apply to a single logger context.
+
+Configuration properties can be declared in any of the property sources below:
+
+.Logger context specific property sources
+[%header,cols="2m,1m,5"]
+|===
+| Name
+| Module
+| Description
+
+| ContextualJavaPropsPropertySource
+| log4j-kit
+| Resolves properties using Java https://docs.oracle.com/javase/tutorial/essential/environment/sysprop.html[System Properties].
+
+| ContextualEnvironmentPropertySource
+| log4j-kit
+| Resolves properties using environment variables.
+|===
+
+The `ContextualJavaPropsPropertySource` looks for Java system properties of the form:
+
+----
+log4j.contexts.<contextName>.propertyName
+----
+
+and its values take precedence over those from the `ContextualEnvironmentPropertySource`.
+
+The `ContextualEnvironmentPropertySource` looks for environment variables named:
+
+----
+LOG4J_CONTEXTS_<contextName>_PROPERTY_NAME
+----
