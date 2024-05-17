@@ -1,0 +1,47 @@
+{
+  "Configuration": {
+    "Appenders": {
+      "Console": { // <1>
+        "name": "CONSOLE",
+        "PatternLayout": {
+          "pattern": "%p - %m%n"
+        }
+      },
+      "File": [
+        { // <2>
+          "name": "MAIN",
+          "fileName": "logs/main.log",
+          "JsonTemplateLayout": {}
+        },
+        { // <3>
+          "name": "DEBUG_LOG",
+          "fileName": "logs/debug.log",
+          "PatternLayout": {
+            "pattern": "%d [%t] %p %c - %m%n"
+          }
+        }
+      ]
+    },
+    "Loggers": {
+      "Root": { // <4>
+        "level": "INFO",
+        "AppenderRef": [
+          {
+            "ref": "CONSOLE",
+            "level": "WARN"
+          },
+          {
+            "ref": "MAIN"
+          }
+        ]
+      },
+      "Logger": { // <5>
+        "name": "org.example",
+        "level": "DEBUG",
+        "AppenderRef": {
+          "ref": "DEBUG_LOG"
+        }
+      }
+    }
+  }
+}

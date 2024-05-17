@@ -39,8 +39,8 @@ image:whichjar-log4j-1.2-api.png[Using log4j 2 via the log4j 1.x API]
 For most applications this is sufficient.
 This is a low-effort way to migrate, and may also allow for migration to proceed gradually over time.
 
-[#EnablingLog4j12Bridge]
-=== Enabling the Log4j 1.x bridge
+[#enabling-the-log4j-1-x-bridge]
+=== [[EnablingLog4j12Bridge]]Enabling the Log4j 1.x bridge
 
 Enable the Log4j 1.x bridge via one of the following steps:
 

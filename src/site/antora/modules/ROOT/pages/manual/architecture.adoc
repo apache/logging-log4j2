@@ -31,6 +31,7 @@ the root LoggerConfig. LoggerConfig objects are created from Logger
 declarations in the configuration. The LoggerConfig is associated with
 the Appenders that actually deliver the LogEvents.
 
+[#logger-hierarchy]
 === Logger Hierarchy
 
 The first and foremost advantage of any logging API over plain
@@ -150,6 +151,7 @@ Logger name.
 Nevertheless, naming loggers after the class where they are located
 seems to be the best strategy known so far.
 
+[#loggerconfig]
 === LoggerConfig
 
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/LoggerConfig.html[`LoggerConfig`]

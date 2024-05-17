@@ -120,7 +120,7 @@ There are also a few system properties that can be used to maintain
 application throughput even when the underlying appender cannot keep up
 with the logging rate and the queue is filling up. See the details for
 system properties
-xref:manual/configuration.adoc#log4j2.AsyncQueueFullPolicy[`log4j2.AsyncQueueFullPolicy`
+xref:manual/systemproperties.adoc#log4j.async.queueFullPolicy.type[`log4j.async.queueFullPolicy.type`
 and `log4j2.DiscardThreshold`].
 
 A typical AsyncAppender configuration might look like:
@@ -197,7 +197,7 @@ attribute from AsyncAppender as `LinkedTransferQueue` does not support a
 maximum capacity.
 |=======================================================================
 
-[#ConsoleAppender]
+[#consoleappender]
 == ConsoleAppender
 
 As one might expect, the ConsoleAppender writes its output to either
@@ -324,7 +324,7 @@ A Failover configuration might look like:
 </Configuration>
 ----
 
-[#FileAppender]
+[#fileappender]
 == FileAppender
 
 The FileAppender is an OutputStreamAppender that writes to the File
@@ -716,7 +716,8 @@ As of Log4j 2.11.0, JDBC support has moved from the existing module
 
 The JDBC Appender configured with a `DataSource` requires JNDI support so as of release 2.17.1
 this appender will not function unless `log4j2.enableJndiJdbc=true` is configured as a system property
-or environment variable. See the xref:manual/configuration.adoc#enableJndiJdbc[enableJndiJdbc] system property.
+or environment variable. See the xref:manual/systemproperties.adoc#log4j.jndi.enableJdbc[log4j.jndi.enableJdbc] system
+property.
 
 The JDBCAppender writes log events to a relational database table using
 standard JDBC. It can be configured to obtain JDBC connections using a
@@ -2651,7 +2652,7 @@ by the script.
                 }
                 statusLogger.trace 'SCRIPT: returning ' + result;
                 result;
-              ]] >
+              ]]>
             </Script>
           </ScriptCondition>
         </Delete>

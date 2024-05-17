@@ -1,0 +1,18 @@
+{
+  "Properties": {
+    "Property": [
+      {
+        "name": "logging.file",
+        "value": "${logging.path}/app.log"
+      },
+      {
+        "name": "logging.dir",
+        "value": "${env:APP_BASE}/logs"
+      },
+      {
+        "name": "APP_BASE",
+        "value": "."
+      }
+    ]
+  }
+}

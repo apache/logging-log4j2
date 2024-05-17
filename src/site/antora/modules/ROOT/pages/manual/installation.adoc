@@ -621,12 +621,10 @@ log4j2.properties::
 +
 [source,properties]
 ----
-appender.0.type = Console
-appender.0.name = CONSOLE
-appender.0.layout = PatternLayout # <1>
-appender.0.layout.pattern = %d [%t] %5p %c{1.} - %m%n
-rootLogger.level = INFO
-rootLogger.appenderRef.0.ref = CONSOLE
+Appenders.Console.name = CONSOLE
+Appenders.Console.PatternLayout.pattern = %d [%t] %5p %c{1.} - %m%n # <1>
+Loggers.Root.level = INFO
+Loggers.Root.AppenderRef.ref = CONSOLE
 ----
 
 ====
@@ -634,91 +632,7 @@ rootLogger.appenderRef.0.ref = CONSOLE
 
 In order to use these formats, the following additional dependencies are required:
 
-[tabs]
-====
-
-Maven::
-+
-[tabs]
-=====
-
-log4j2.xml::
-+
-JPMS users need to add:
-+
-[source,java]
-----
-module foo.bar {
-    requires java.xml;
-}
-----
-+
-to their `module-info.java` descriptor.
-
-log4j2.json::
-+
-No dependency required.
-
-log4j2.yaml::
-+
-[source,xml]
-----
-<dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-config-yaml</artifactId>
-</dependency>
-----
-
-log4j2.properties::
-+
-[source,xml]
-----
-<dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-config-properties</artifactId>
-</dependency>
-----
-
-=====
-
-Gradle::
-+
-[tabs]
-=====
-
-log4j2.xml::
-+
-JPMS users need to add:
-+
-[source,java]
-----
-module foo.bar {
-    requires java.xml;
-}
-----
-+
-to their `module-info.java` descriptor.
-
-log4j2.json::
-+
-No dependency required.
-
-log4j2.yaml::
-+
-[source,groovy]
-----
-runtimeOnly 'org.apache.logging.log4j:log4j-config-yaml'
-----
-
-log4j2.properties::
-+
-[source,groovy]
-----
-runtimeOnly 'org.apache.logging.log4j:log4j-config-properties'
-----
-
-=====
-====
+include::partial$configuration-file-format-deps.adoc[]
 
 [#impl-jul]
 === Installing JUL

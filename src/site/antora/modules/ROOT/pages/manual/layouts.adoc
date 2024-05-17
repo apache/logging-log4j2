@@ -30,11 +30,27 @@ The root class for layouts that use a Charset is
 default is UTF-8. Each layout that extends `AbstractStringLayout` can
 provide its own default. See each layout below.
 
-A custom character encoder was added to Log4j 2.4.1 for the ISO-8859-1
-and US-ASCII charsets, to bring some of the performance improvements
-built-in to Java 8 to Log4j for use on Java 7. For applications that log
-only ISO-8859-1 characters, specifying this charset will improve
-performance significantly.
+A custom character encoder was added to Log4j 2.4.1 for the ISO-8859-1 and US-ASCII charsets, to bring some of the performance improvements built-in to Java 8 to Log4j for use on Java 7. For applications that log only ISO-8859-1 characters, specifying this charset will improve performance significantly.
+
+[#common-concerns]
+== Common concerns
+
+[#location-information]
+=== Location information
+
+Computing the location information of a logging statement is an expensive operation.
+For this reason many Log4j components implement the
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/LocationAware.html[LocationAware]
+interface to only compute location information when needed.
+
+While the methods of determining if location information is required are specific to each layout, most layouts implement `LocationAware`.
+
+[NOTE]
+====
+Even if a layout is configured not to **request** location information, it might use it if the information is already available.
+This is always the case of information location computed at build time using the
+link:/log4j/transform/latest/#log4j-transform-maven-plugin[Log4j Transform Maven Plugin].
+====
 
 [#CSVLayouts]
 == CSV Layouts
@@ -333,7 +349,7 @@ JSON Template Layout will render JSON documents as follows:
 See xref:manual/json-template-layout.adoc[JSON Template Layout] page for the complete
 documentation.
 
-[#PatternLayout]
+[#pattern-layout]
 == Pattern Layout
 
 A flexible layout configurable with pattern string. The goal of this

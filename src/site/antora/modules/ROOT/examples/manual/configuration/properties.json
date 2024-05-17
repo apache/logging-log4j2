@@ -1,0 +1,17 @@
+{
+  "Configuration": {
+    "Properties": {
+      "Property": [
+        {
+          "name": "log.dir",
+          "value": "/var/log"
+        },
+        {
+          "name": "log.file",
+          "value": "${log.dir}/app.log"
+        }
+      ]
+    }
+    // ...
+  }
+}
