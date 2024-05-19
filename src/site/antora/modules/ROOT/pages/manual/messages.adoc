@@ -65,8 +65,26 @@ logger.info(new LoggedInMessage(map, user));
 == Performance and benefits
 
 Although it may initially seem unintuitive, there is no performance benefit to using strings instead of messages. 
-Ultimately, Log4j captures all log messages in a `Message` object under the hood.
-There is no difference when creating a custom `Message` object.
+
+Log4j provides `Logger` methods that accept a formatting pattern of type `String` and its parameters of type `Object,` 
+all of these are ultimately captured in link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html[`Message`] objects. 
+These messages are attached to the generated log event.
+
+The following code is seen often in code that uses Log4j:
+
+[source, java]
+----
+LOGGER.info("Everything is awesome!");
+LOGGER.info("Party time for `{}`", userName);
+----
+
+It is analogous to the following code, which uses `Message` objects, as Log4j does internally in a similar way.
+
+[source, java]
+----
+LOGGER.info(new SimpleMessage("Everything is awesome!"));
+LOGGER.info(new ParameterizedMessage("Party time for `{}`", new Object[]{userId}));
+----
 
 Testing has shown that modern JVMs can create and destroy log events quickly,
 especially when encapsulating complex tasks in the `Message` object instead of the application.
