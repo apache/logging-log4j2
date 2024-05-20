@@ -77,17 +77,22 @@ based on the marker.
 The following code shows how the `MarkerFilter` is used in the configuration file. 
 It assumes that the `Console` appender is defined in the configuration file.
 
+Once a log event is tagged with a marker, we can apply specialized configuration on that particular marker.
+For instance, we can use a xref:manual/filters.adoc#MarkerFilter[`MarkerFilter`] to redirect log events whose marker matches a certain name to a dedicated appender.
+In the example below, all `MY_SQL_APP`-marked log messages from the `com.example` package will be redirected to the `CONSOLE` appender:
+
 [source, xml]
 ----
-<Logger name="com.example" level="all" additivity="false">
-    <AppenderRef ref="Console">
-        <Filters>
-            <MarkerFilter marker="MY_APP_SQL" onMatch="ACCEPT" onMismatch="DENY"/> <1>
-        </Filters>
-    </AppenderRef>
-</Logger>
+<logger name="com.example" level="OFF"><!--1-->
+  <AppenderRef ref="CONSOLE">
+    <Filters>
+      <MarkerFilter marker="MY_APP_SQL" onMatch="ACCEPT" onMismatch="DENY"/><!--2-->
+    </Filters>
+  </AppenderRef>
+</logger>
 ----
-<1> The MarkerFilter is used to accept only SQL markers but deny others
+<1> Match all messages from `com.example` package from all levels
+<2> Only allow `MY_APP_SQL`-marked messages
 
 [#hierarchy]
 == Parent and child markers
