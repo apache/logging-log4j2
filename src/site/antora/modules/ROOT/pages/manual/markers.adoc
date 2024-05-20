@@ -98,8 +98,8 @@ after you create the child marker. This method will connect both markers.
 
 [source, java]
 ----
-Marker SQL_MARKER = MarkerManager.getMarker("MY_APP_SQL"); <1>
-Marker UPDATE_MARKER = MarkerManager.getMarker("MY_APP_SQL_UPDATE").setParents(SQL_MARKER); <2>
+Marker SQL_MARKER = MarkerManager.getMarker("MY_APP_SQL"); // <1>
+Marker UPDATE_MARKER = MarkerManager.getMarker("MY_APP_SQL_UPDATE").setParents(SQL_MARKER); // <2>
 ----
 <1> Creating the parent marker
 <2> Creating the child marker and connecting it to the parent marker
