@@ -38,7 +38,9 @@ class ThreadContextMapTest extends AbstractThreadContextMapTest {
         props.setProperty("log4j2.isThreadContextMapInheritable", "true");
         final PropertiesUtil util = new PropertiesUtil(props);
         return Stream.of(
-                new CopyOnWriteSortedArrayThreadContextMap(util), new GarbageFreeSortedArrayThreadContextMap(util));
+                new StringArrayThreadContextMap(util),
+                new CopyOnWriteSortedArrayThreadContextMap(util),
+                new GarbageFreeSortedArrayThreadContextMap(util));
     }
 
     @ParameterizedTest

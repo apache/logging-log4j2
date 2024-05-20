@@ -52,7 +52,7 @@ public class ThreadContextDataInjectorTest {
         return asList(new String[][] {
             {"org.apache.logging.log4j.core.context.CopyOnWriteSortedArrayThreadContextMap"},
             {"org.apache.logging.log4j.core.context.GarbageFreeSortedArrayThreadContextMap"},
-            // {"org.apache.logging.log4j.core.context.StringArrayThreadContextMap"}
+            {"org.apache.logging.log4j.core.context.StringArrayThreadContextMap"}
         });
     }
 

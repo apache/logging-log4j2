@@ -31,6 +31,7 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * Commons base class for {@link StringMap}-based implementations of {@code ThreadContextMap}.
+ * @since 2.24.0
  */
 public abstract class AbstractSortedArrayThreadContextMap implements ReadOnlyThreadContextMap, ObjectThreadContextMap {
 
@@ -38,7 +39,7 @@ public abstract class AbstractSortedArrayThreadContextMap implements ReadOnlyThr
      * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
      * {@code ThreadLocal} (value is not "true") in the implementation.
      */
-    public static final String INHERITABLE_MAP = "isThreadContextMapInheritable";
+    private static final String INHERITABLE_MAP = "isThreadContextMapInheritable";
 
     /**
      * The default initial capacity.
