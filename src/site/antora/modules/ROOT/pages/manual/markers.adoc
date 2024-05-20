@@ -29,8 +29,7 @@ Markers offer more fine-grained control over log filtering beyond log levels or 
 [#create]
 == Creating Markers
 
-To create a Marker, use the MarkerManager class. The MarkerManager class provides 
-a factory method to create a Marker object is used to tag log statements.
+To create a `Marker`, use the `MarkerManager` class as follows:
 
 [source, java]
 ----
