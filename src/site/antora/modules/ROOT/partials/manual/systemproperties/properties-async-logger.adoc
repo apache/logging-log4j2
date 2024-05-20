@@ -64,16 +64,20 @@ The value needs to be one of the predefined constants:
 
 Block:: a strategy that uses a lock and condition variable for the I/O thread waiting for log events.
 Block can be used when throughput and low-latency are not as important as CPU resource.
-Recommended for resource constrained/virtualised environments.
+Recommended for resource constrained/virtualized environments.
+This wait strategy is not xref:manual/garbagefree.adoc[garbage free].
 
 Timeout:: a variation of the `Block` strategy that will periodically wake up from the lock condition `await()` call.
-This ensures that if a notification is missed somehow the consumer thread is not stuck but will recover with a small latency delay (see <<log4j2.asyncLoggerTimeout>>)
+This ensures that if a notification is missed somehow the consumer thread is not stuck but will recover with a small latency delay, see <<log4j2.asyncLoggerTimeout>>.
+This wait strategy is xref:manual/garbagefree.adoc[garbage free].
 
 Sleep:: a strategy that initially spins, then uses a `Thread.yield()`, and eventually parks for the minimum number of nanos the OS and JVM will allow while the I/O thread is waiting for log events (see <<log4j2.asyncLoggerRetries>> and <<log4j2.asyncLoggerSleepTimeNs>>).
 Sleep is a good compromise between performance and CPU resource.
 This strategy has very low impact on the application thread, in exchange for some additional latency for actually getting the message logged.
+This wait strategy is xref:manual/garbagefree.adoc[garbage free].
 
 Yield:: is a strategy that will use `100%` CPU, but will give up the CPU if other threads require CPU resources.
+This wait strategy is xref:manual/garbagefree.adoc[garbage free].
 
 [id=log4j2.asyncLoggerTimeout]
 == `log4j2.asyncLoggerTimeout`

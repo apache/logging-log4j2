@@ -15,7 +15,6 @@
     limitations under the License.
 ////
 = Asynchronous logging
-Remko Popma <rpopma@apache.org>; Piotr Karwasz <pkarwasz@apache.org>
 
 Asynchronous logging is a technique to improve application logging performance by executing all I/O operations in a separate thread.
 
@@ -47,73 +46,7 @@ The solutions offered by this chapter should be evaluated using benchmarks again
 If benchmarks and profiling don't show a statistically significant difference between asynchronous and synchronous logging solutions, the latter one is recommended, since it is the simplest one.
 ====
 
-Although asynchronous logging can give significant performance benefits, there are situations where you may want to choose synchronous logging.
-
-[[Trade-offs]]
-[[trade-offs]]
-The trade-offs of asynchronous logging are:
-
-Benefits::
-
-Higher peak throughput:::
-+
-Applications that occasionally need to log bursts of messages, can take advantage of this.
-+
-Asynchronous logging can prevent or dampen latency spikes by shortening the wait time until the next message can be logged.
-+
-If the queue size is large enough to handle the burst, asynchronous logging will prevent your application from falling behind during a sudden increase of activity.
-
-Lower logging latency:::
-+
-link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html[Logger]
-method calls return faster, since most of the work is done on the I/O thread.
-
-Drawbacks::
-
-Lower sustainable throughput:::
-+
-If the _sustained rate_ at which your application is logging messages is faster than the maximum sustained throughput of the underlying appender, the queue will fill up and the application will end up logging at the speed of the slowest appender.
-+
-If this happens, consider selecting a faster appender, or logging less.
-If neither of these is an option, you may get better throughput and fewer latency spikes by logging synchronously.
-
-Error handling:::
-+
-If a problem happens during the logging process and an exception is thrown, it is less easy for an asynchronous logger or appender to signal this problem to the application.
-+
-This can partly be alleviated by configuring an
-<<exception-handler>>, but this may still not cover all cases.
-+
-[CAUTION]
-====
-If logging is part of your business logic, e.g. you are using Log4j as an audit logging framework, we would recommend to synchronously log those audit messages.
-
-See <<MixedSync-Async>> on how to log some messages synchronously.
-====
-
-Mutable messages:::
-+
-Most
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html[Message]
-implementations take a snapshot of the formatted message on the calling thread (cf.
-xref:manual/systemproperties.adoc#log4j2.formatMsgAsync[log4j2.formatMsgAsync]).
-The log message will not change even if the arguments of the logging call are modified later.
-+
-There are some exceptions to this rule.
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html[MapMessage]
-and
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html[StructuredDataMessage]
-are mutable by design: fields can be added to these messages after the message object was created.
-These messages should not be modified after they are logged with asynchronous loggers or asynchronous appenders.
-+
-Custom
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html[Message]
-implementations should be designed with asynchronous use in mind, and either take a snapshot of their parameters at construction time, or document their thread-safety characteristics (cf.
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/AsynchronouslyFormattable.html[AsynchronouslyFormattable]).
-
-CPU consumption:::
-If your application is running in an environment where CPU resources are scarce, like a VM with a single vCPU, starting another thread is not likely to give better performance.
-
+include::partial$manual/async-trade-offs.adoc[leveloffset=+1]
 
 [id=asynchronous-loggers]
 == Asynchronous loggers

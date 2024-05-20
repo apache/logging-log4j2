@@ -74,7 +74,7 @@
     <commons-dbcp2.version>2.12.0</commons-dbcp2.version>
     <commons-io.version>2.16.1</commons-io.version>
     <commons-lang3.version>3.14.0</commons-lang3.version>
-    <commons-logging.version>1.3.1</commons-logging.version>
+    <commons-logging.version>1.3.2</commons-logging.version>
     <!-- `com.conversantmedia:disruptor` version 1.2.16 requires Java 9: -->
     <conversant.disruptor.version>1.2.15</conversant.disruptor.version>
     <disruptor.version>3.4.4</disruptor.version>
@@ -136,7 +136,7 @@
     <pax-exam.version>4.13.5</pax-exam.version>
     <plexus-utils.version>3.5.1</plexus-utils.version>
     <spring-boot.version>2.7.18</spring-boot.version>
-    <spring-framework.version>5.3.34</spring-framework.version>
+    <spring-framework.version>5.3.35</spring-framework.version>
     <system-stubs.version>2.0.3</system-stubs.version>
     <tomcat-juli.version>10.0.27</tomcat-juli.version>
     <velocity.version>1.7</velocity.version>
