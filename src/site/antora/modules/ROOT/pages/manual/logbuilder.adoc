@@ -17,51 +17,110 @@
 
 = Log Builder
 
-Log4j has traditionally been used with logging statements like
-[source,java]
+Developers use Log4j traditionally with logging statements like:
+
+[source, java]
 ----
 logger.error("Unable to process request due to {}", code, exception);
 ----
 
-This has resulted in some confusion as to whether the exception should be a parameter to the message or
-if Log4j should handle it as a throwable. In order to make logging clearer a builder pattern has been
-added to the API. Using the builder syntax the above would be handled as:
-[source,java]
-----
-logger.atError().withThrowable(exception).log("Unable to process request due to {}", code);
-----
+This kind of statement has confused developers as to whether the exception 
+should be a parameter to the message, or Log4j should handle it as a throwable. 
 
-With this syntax it is clear that the exception is to be treated as a Throwable by Log4j.
+The builder pattern has been added to the API to make logging more transparent and more readable. 
 
-The Logger class now returns a LogBuilder when any of the atTrace, atDebug, atInfo, atWarn, atError,
-atFatal, always, or atLevel(Level) methods are called. The logBuilder then allows a Marker, Throwable,
-and/or location to be added to the event before it is logged. A call to the log method always causes the
-log event to be finalized and sent.
+[NOTE]
+.The Builder Pattern
+====
+The builder pattern is a design pattern that provides a flexible and fluent way 
+to construct complex objects. Instead of using a constructor or a method with many parameters, 
+the builder pattern allows for the step-by-step construction of an object through method chaining.
+==== 
 
-A logging statement with a Marker, Throwable, and location would look like:
-[source,java]
+`Logger` objects return a `LogBuilder` when developers call of these methods:
+
+- `atTrace()`
+- `atDebug()`
+- `atInfo()`
+- `atWarn()`
+- `atError()`
+- `atFatal()`
+- `always()`
+- `atLevel(Level)` 
+
+The `LogBuilder` allows adding a `Marker,` `Throwable,` and location to the event. 
+Developers can do this by calling one of the following methods:
+
+- `withMarker()`, 
+- `withThrowable()`, and 
+- `withLocation()` 
+
+After that, developers can call the `log()` method to finalize and send the log event.
+
+Using the builder pattern, developers can write logging statements like the following.
+Log4j executes the statement at the `ERROR` level with the exception treated as a throwable.
+The log statement is substituted as expected.
+
+[source, java]
 ----
-logger.atInfo().withMarker(marker).withLocation().withThrowable(exception).log("Login for user {} failed", userId);
+logger
+    .atError() <1>
+    .withThrowable(exception) <2>
+    .log("Unable to process request due to {}", code); <3>
 ----
+<1> The log level is set to ERROR.
+<2> The exception is treated as a Throwable.
+<3> The log message is formatted with the code parameter.
+
+With this syntax, it is clear that the exception is to be treated as a Throwable by Log4j.
+In addition, it is also more readable and more accessible for the developer to understand.
+
+Adding a marker to the log statement is also straightforward.
+In the following case, the developer added a marker and the location to the log event.
+
+[source, java]
+----
+logger
+    .atInfo()
+    .withMarker(marker) <1>
+    .withThrowable(exception)
+    .log("Login for user {} failed", userId);
+----
+<1> The marker is added to the log event.
+
+== Location information
+
+Developers can include location information in the log event by calling the `withLocation()` method.
+
+[source, java]
+----
+logger
+    .atInfo()
+    .withMarker(marker)
+    .withLocation() <1>
+    .withThrowable(exception)
+    .log("Login for user {} failed", userId);
+----
+<1> The location is added to the log event.
+
 Providing the location method on the LogBuilder provides two distinct advantages:
 
-1. Logging wrappers can use it to provide the location information to be used by Log4j.</li>
-2. The overhead of capturing location information when using the location method with no
-parameters is much better than having to calculate the location information when it is needed. Log4j
-can simply ask for the stack trace entry at a fixed index instead of having to walk the stack trace
-to determine the calling class. Of course, if the location information will not be used by the layout
-this will result in slower performance.</li>
+1. Logging wrappers can use the location provided by Log4j.
+2. The overhead of capturing location information using the location method with no
+   parameters is much better than calculating the location information when needed. 
+   Log4j can simply ask for the stack trace entry at a fixed index instead of having to walk the stack trace
+   to determine the calling class. 
+   Of course, if the layout does not use the location information, this will result in slower performance.
 
-== Location Performance
+=== Location Performance
 
-The table below shows some of the results from the FileAppenderBenchmark and FileAppenderWithLocationBenchmark
-classes in the log4j-perf-test project when configured to use 4 threads. The results show that lazily including
-the location information is about 8 times slower than not including location information. While using the
-withLocation method of LogBuilder is about 3 times faster than lazily calculating the location information
+The table below shows some results from the FileAppenderBenchmark and FileAppenderWithLocationBenchmark
+classes in the log4j-perf-test project when configured to use four threads. 
+The results show that lazily including the location information is about eight times slower than not including location information. 
+While using the `withLocation()` method of `LogBuilder` is about three times faster than lazily calculating the location information
 it is still about 2.5 times slower than not including location information.
 
-The tests were run on a 2018 MacBook Pro with a 2.9 GHz Intel Core i9 processor with 6 cores, 32 GB of memory
-and 1 TB of SSD storage on Java 11 using Log4j 2.13.0 and Logback 1.2.3.
+The tests were run on a 2018 MacBook Pro with a 2.9 GHz Intel Core i9 processor with six cores, 32 GB of memory and 1 TB of SSD storage on Java 11 using Log4j 2.13.0 and Logback 1.2.3.
 image:LocationPerf.png[Location Performance]
 
 |===
@@ -71,8 +130,11 @@ image:LocationPerf.png[Location Performance]
 |Log4j2 Log Builder withLocation()|469,200.684 ± 50025.985  ops/s|577,127.463 ± 11464.342  ops/s
 |Logback File|159,116.538 ± 1884.969  ops/s|1,240,438.384 ± 76619.873  ops/s
 |===
-As expected, when using LogBuilder with a call to the withLocation() method logging is much faster when
-location information is used in the output but significantly slower when it is not.
 
-Note: Running the tests at various times provides varying results. Although some results have been as much
-as 10% higher all results are generally affected similarly so the comparisons between them stay the same.
+As expected, when using LogBuilder with a call to the `withLocation()` method, logging is much faster when location information is used in the output but significantly slower when it is not.
+
+[NOTE]
+====
+Running the tests at various times provides varying results. 
+Although some results have been as much as 10% higher, all results are generally affected similarly, so their comparisons stay the same.
+====
