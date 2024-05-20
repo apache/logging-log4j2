@@ -16,7 +16,9 @@
 ////
 = Markers
 
-Markers allow "tag" log statements with a `Marker` object, labeling them
+Markers allow "tag" log statements with a
+link:../javadoc/log4j-api/org/apache/logging/log4j/Marker.html[`Marker`]
+object, labeling them
 as belonging to a specific type. For example, developers can use markers to tag
 log statements related to a particular subsystem or functionality.
 
