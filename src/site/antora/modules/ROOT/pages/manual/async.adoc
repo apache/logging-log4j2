@@ -27,7 +27,9 @@ See xref:manual/appenders.adoc#AsyncAppender[Asynchronous appender] for more det
 
 Asynchronous loggers::
 Asynchronous loggers are a new feature available since Log4j 2.
-They are based on link:#UnderTheHood[LMAX Disruptor], a lock-free inter-thread communication library, instead of queues, resulting in higher throughput and lower latency.
+They are based on
+{lmax-disruptor-url}[LMAX Disruptor],
+a lock-free inter-thread communication library, instead of queues, resulting in higher throughput and lower latency.
 +
 The rest of this chapter is dedicated to this new component.
 
@@ -275,22 +277,3 @@ link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerConfig
 * set its fully qualified class name as value of the
 xref:manual/systemproperties.adoc#log4j2.asyncLoggerConfigExceptionHandler[log4j2.asyncLoggerConfigExceptionHandler]
 configuration property.
-
-[#UnderTheHood]
-== Under The Hood
-
-Asynchronous Loggers are implemented using the
-https://lmax-exchange.github.io/disruptor/[LMAX Disruptor] inter-thread messaging library.
-From the LMAX web site:
-
-____
-...using queues to pass data between stages of the system was
-introducing latency, so we focused on optimising this area.
-The Disruptor is the result of our research and testing.
-We found that cache misses at the CPU-level, and locks requiring kernel arbitration are both extremely costly, so we created a framework which has "mechanical sympathy" for the hardware it's running on, and that's lock-free.
-____
-
-LMAX Disruptor internal performance comparisons with the Java SE
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/concurrent/ArrayBlockingQueue.html[ArrayBlockingQueue]
-class can be found on
-https://github.com/LMAX-Exchange/disruptor/wiki/Performance-Results[LMAX Disruptor Wiki].
