@@ -56,7 +56,7 @@ If not for yours, keep on reading.
 
 In order to have a garbage-free Log4j Core, you need to
 
-* xref:#properties[configure it using properties],
+* xref:#core-properties[configure it using properties],
 * and employ garbage-free xref:#Layouts[layouts], xref:Appenders[appenders], and xref:#Filters[filters].
 
 [#core-properties]
@@ -65,11 +65,11 @@ In order to have a garbage-free Log4j Core, you need to
 Garbage-free logging can be configured for Log4j Core using properties listed below.
 (See xref:manual/configuration.adoc[] on details how you can set these properties.)
 
-include::partial$properties-meta.adoc[leveloffset=+2]
+include::partial$manual/systemproperties/properties-meta.adoc[leveloffset=+2]
 
-include::partial$properties-garbage-collection.adoc[leveloffset=+2]
+include::partial$manual/systemproperties/properties-garbage-collection.adoc[leveloffset=+2]
 
-include::partial$properties-thread-context.adoc[leveloffset=+2,tag=gcfree]
+include::partial$manual/systemproperties/properties-thread-context.adoc[leveloffset=+2,tag=gcfree]
 
 [#Layouts]
 === Layouts
