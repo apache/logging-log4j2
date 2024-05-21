@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.kit.recycler;
 
-import edu.umd.cs.findbugs.annotations.Nullable;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.kit.recycler.internal.DummyRecyclerFactoryProvider;
 
@@ -51,14 +50,9 @@ public interface RecyclerFactoryProvider {
 
     /**
      * Creates a recycler factory for the provided environment.
-     * <p>
-     * The return value can be null indicating that the recycler factory is not available for the provided environment.
-     * For instance, the provider of a {@link ThreadLocal}-based recycler factory can return null if the environment is of a web application.
-     * </p>
      *
      * @param environment an environment
-     * @return either a recycler factory instance, or null, if the associated recycler factory is not available for the given environment
+     * @return a recycler factory instance for the given environment
      */
-    @Nullable
     RecyclerFactory createForEnvironment(PropertyEnvironment environment);
 }

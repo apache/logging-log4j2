@@ -37,15 +37,15 @@ final class RecyclerFactoryTestUtil {
         if (capacity != null) {
             properties.put("recycler.capacity", capacity.toString());
         }
-        final PropertyEnvironment env = new TestPropertyEnvironment(properties);
+        final PropertyEnvironment environment = new TestPropertyEnvironment(properties);
         return ServiceLoaderUtil.safeStream(
                         RecyclerFactoryProvider.class,
                         ServiceLoader.load(
                                 RecyclerFactoryProvider.class, RecyclerFactoryTestUtil.class.getClassLoader()),
                         StatusLogger.getLogger())
-                .filter(p -> factory.equals(p.getName()))
+                .filter(factoryProvider -> factory.equals(factoryProvider.getName()))
                 .findFirst()
-                .map(p -> p.createForEnvironment(env))
+                .map(factoryProvider -> factoryProvider.createForEnvironment(environment))
                 .orElse(null);
     }
 }
