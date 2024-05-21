@@ -224,26 +224,27 @@ File:
 
 Java properties::
 +
-In the Java properties configuration format:
+WARNING: The Java properties configuration format used in Log4j 2 and Log4j 3 are not compatible.
++
+The Java properties configuration format used in Log4j 3 is based on
+https://github.com/FasterXML/jackson-dataformats-text/blob/master/properties/README.md[`jackson-dataformat-properties`],
+
 +
 [id=configuration-with-properties]
 ====
-* Properties that share a common prefix (e.g., `appender.foo`) are mapped to a subtree of the configuration node tree.
-* Configuration attributes are specified by appending the property's name (e.g., `name`) to the prefix of the node, separated by a dot (e.g., `appender.foo.name`).
-* The **plugin type** must be specified as an attribute named `type`.
-* Nested elements are created by:
-** Choosing an arbitrary id for the nested component (e.g., `<0>`)
-** Appending the id to the prefix of the parent component (e.g., `appender.foo.<0>`)
-** Specifying the type of the nested plugin by assigning a `type` attribute (e.g., `appender.foo.<0>.type`)
+* Each configuration node and its children are represented by a dot `.` separated prefix (e.g. `Appenders.Foo`),
+* Configuration attributes are specified by appending the property's name (e.g., `name`) to the prefix of the node, separated by a dot (e.g., `Appenders.Foo.name`).
+* The **plugin type** if the last component of a node prefix (e.g. `Foo` for `Appenders.Foo`),
+* If a node has multiple children of the same type, they can be specified by appending an index marker `[<n>]` to their prefix, where `<n>` is an integer starting at `1`.
+For example `Appenders.Foo[1]` and `Appender.Foo[2]`,
+* The plugin type can also be specified by using **any** prefix and setting the `type` attribute of a node.
+If the configuration node has no other attributes this is the only way to define the node.
 ====
 +
-[NOTE]
-====
-Nested components use the assigned ID for sorting purposes only.
-====
+See
+https://github.com/FasterXML/jackson-dataformats-text/blob/master/properties/README.md[`jackson-dataformat-properties` documentation]
+for more details.
 =====
-
-See also <<format-specific-notes>> for exceptions to the rules above.
 
 [id=main-configuration-elements]
 === Main configuration elements
@@ -1082,13 +1083,13 @@ include::example$manual/configuration/arbiters-select.properties[tag=select]
 === Composite Configuration
 
 Log4j allows multiple configuration files to be used at the same time by specifying them as a list of comma-separated file paths or URLs in the
-xref:manual/systemproperties.adoc#log4j2.configurationFile[log4j2.configurationFile]
+xref:manual/systemproperties.adoc#log4j.configuration.location[log4j.configuration.location]
 configuration property.
 
 These configuration files are merged into a single configuration file using
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy.html[MergeStrategy]
 service that can be customized using the
-xref:manual/systemproperties.adoc#log4j2.mergeStrategy[log4j2.mergeStrategy]
+xref:manual/systemproperties.adoc#log4j.configuration.mergeStrategy[log4j.configuration.mergeStrategy]
 configuration property.
 
 The default merge strategy will merge the files using the following rules:
@@ -1179,61 +1180,3 @@ include::example$manual/configuration/xinclude-appenders.xml[lines=1;18..-1]
 include::example$manual/configuration/xinclude-loggers.xml[lines=1;18..-1]
 ----
 
-[id=java-properties-features]
-==== Java properties format
-
-[TIP]
-====
-The Java properties format is not well suited to represent hierarchical structures.
-
-Switch to XML to avoid additional dependencies, or choose YAML for a format similar to Java properties but less verbose.
-====
-
-The Java properties configuration format is the most verbose of the available formats.
-To make it more usable, a series of exceptions to the rules in <<configuration-with-properties,Java properties syntax>> have been introduced over time:
-
-. The following direct children of `Configuration` have predefined prefixes and do not require to specify a `type` attribute:
-* The xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-AppendersPlugin[Appender container] has a predefined `appender` prefix.
-* The xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-CustomLevels[Custom levels container] has a predefined `customLevel` prefix.
-* The xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggersPlugin[Loggers container] has a predefined `logger` prefix.
-* The xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-PropertiesPlugin[Properties container] has a predefined `property` prefix.
-* The xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-ScriptsPlugin[Scripts container] has a predefined `script` prefix.
-
-. Properties that start with `property` are used for <<property-substitution>>.
-Their syntax is:
-+
-[source,properties]
-----
-property.<key> = <value>
-----
-
-. Properties that start with `customLevel` are used to define custom levels.
-Their syntax is:
-+
-[source,properties]
-----
-customLevel.<name> = <intValue>
-----
-+
-where `<name>` is the name of the level and `<intValue>` its numerical value.
-
-. The root logger can be configured using properties that start with `rootLogger`.
-
-. A shorthand notation is available that allows users to write:
-+
-[source,properties]
-----
-rootLogger = INFO, APPENDER
-----
-+
-instead of:
-+
-[source,properties]
-----
-rootLogger.level = INFO
-rootLogger.appenderRef.0.ref = APPENDER
-----
-
-. All the keys of the form `logger.<name>.appenderRef.<id>`, where `<name>` and `<id>` are arbitrary, are considered appender references.
-
-. To add a filter to a component use a `filter.<id>` prefix instead of just `<id>`.

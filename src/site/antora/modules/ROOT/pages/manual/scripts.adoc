@@ -24,7 +24,7 @@ https://docs.oracle.com/javase/6/docs/technotes/guides/scripting/[JSR
 [WARNING]
 ====
 In order to enable a scripting language, its name must be included in the
-xref:manual/systemproperties.adoc#log4j2.scriptEnableLanguages[log4j2.scriptEnableLanguages]
+xref:manual/systemproperties.adoc#log4j.script.enableLanguages[log4j.script.enableLanguages]
 configuration property.
 ====
 
@@ -80,28 +80,28 @@ XML::
 +
 [source,xml]
 ----
-include::example$configuration/scripts.xml[lines=1;18..-1]
+include::example$manual/configuration/scripts.xml[lines=1;18..-1]
 ----
 
 JSON::
 +
 [source,json]
 ----
-include::example$configuration/scripts.json[]
+include::example$manual/configuration/scripts.json[]
 ----
 
 YAML::
 +
 [source,yaml]
 ----
-include::example$configuration/scripts.yaml[lines=17..-1]
+include::example$manual/configuration/scripts.yaml[lines=17..-1]
 ----
 
 Java properties::
 +
 [source,properties]
 ----
-include::example$configuration/scripts.properties[lines=17..-1]
+include::example$manual/configuration/scripts.properties[lines=17..-1]
 ----
 ====
 

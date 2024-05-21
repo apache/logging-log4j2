@@ -106,7 +106,7 @@ Log4j Docker provides access to the following container attributes:
 
 This Lookup is subject to the requirements listed at xref:log4j-docker.adoc[Log4j Docker Support]
 
-[#EnvironmentLookup]
+[#environment-lookup]
 == Environment Lookup
 
 The EnvironmentLookup allows systems to configure environment variables,
@@ -567,7 +567,7 @@ while "type" would have to be an item in the Map in a MapMessage.
 </Routing>
 ----
 
-[#SystemPropertiesLookup]
+[#system-properties-lookup]
 == System Properties Lookup
 
 As it is quite common to define values inside and outside the

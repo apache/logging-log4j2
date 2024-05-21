@@ -1766,7 +1766,7 @@ with `com.foo.bar`.
 </Configuration>
 ----
 
-[#RollingFileAppender]
+[#rollingfileappender]
 == RollingFileAppender
 
 The RollingFileAppender is an OutputStreamAppender that writes to the
