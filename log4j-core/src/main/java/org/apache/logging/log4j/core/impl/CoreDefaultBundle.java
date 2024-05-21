@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.impl;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
