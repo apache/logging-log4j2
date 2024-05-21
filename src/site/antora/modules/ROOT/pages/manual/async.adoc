@@ -82,9 +82,7 @@ Under the hood these methods use different Log4j plugins, but also share a
 [#AllAsync]
 === Making all loggers asynchronous
 
-This is the simplest to configure and gives the best performance.
-
-To make all logger asynchronous, you need to set the
+This is the simplest to configure and gives the best performance: to make all logger asynchronous, **all** you need to set the
 xref:manual/systemproperties.adoc#log4j2.contextSelector[log4j2.contextSelector]
 property to one of the asynchronous logger context selectors:
 
@@ -102,12 +100,12 @@ xref:manual/configuration.adoc#configuring-loggers[Logger configuration]).
 If you use `AsyncRoot` and `AsyncLogger` configuration elements, two asynchronous barriers will be created instead of one, which will impair performance.
 ====
 
-[[SysPropsAllAsync]]
+[#SysPropsAllAsync]
+=== Tuning a fully asynchronous configuration
+
 Since Disruptor is initialized at the same time as the logger context and before any Log4j configuration file is loaded, tuning async loggers is only possible through configuration properties.
 
 Beyond the <<common-configuration-properties,common configuration properties>>, the following additional elements are configurable:
-
-include::partial$manual/systemproperties/properties-async.adoc[leveloffset=+2]
 
 include::partial$manual/systemproperties/properties-async-logger.adoc[leveloffset=+2]
 
@@ -176,6 +174,8 @@ This is especially important for audit logging, since exceptions can be forwarde
 These log statements will cause a smaller latency for the caller.
 
 [[SysPropsMixedSync-Async]]
+=== Tuning a mixed synchronous/asynchronous configuration
+
 Since all `AsyncRoot` and `AsyncLogger` components share the same Disruptor instance, its configuration is available through configuration properties.
 
 Beyond the <<common-configuration-properties,common configuration properties>>, the following additional elements are configurable:
@@ -243,20 +243,10 @@ include::example$manual/configuration/custom-wait-strategy.properties[lines=17..
 [#Location]
 == Location information
 
-Computing the location of a log event is an expensive operation.
-Synchronous appenders are around 1.5&nbsp;&ndash;&nbsp;5 times slower, when location information is required.
+xref:manual/layouts.adoc#location-information[Computing the location information (i.e., the caller class, method, file, and line number) of a log event is an expensive operation.]
 The impact on asynchronous loggers and appenders is even higher, since the component must decide whether to compute it or not **before** crossing the asynchronous barrier.
-For asynchronous loggers logging with location is 30&nbsp;&ndash;&nbsp;100 times slower than without location.
-
-See also xref:manual/layouts.adoc#location-information[Location information].
-
-[WARNING]
-====
-Location information is disabled by default for async loggers and async appenders.
-
-In order to enable it for a certain logger, set its
-xref:manual/configuration.adoc#logger-attributes-includeLocation[includeLocation] attribute to `true`.
-====
+Hence, the location information is disabled by default for asynchronous loggers and appenders.
+In order to enable it for a certain logger, set its xref:manual/configuration.adoc#logger-attributes-includeLocation[`includeLocation`] attribute to `true`.
 
 [id=exception-handler]
 == Exception handler
