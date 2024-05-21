@@ -132,15 +132,7 @@ public final class CoreDefaultBundle {
                     .findFirst()
                     .orElse(null);
             if (matchingProvider != null) {
-                @Nullable final RecyclerFactory factory = matchingProvider.createForEnvironment(environment);
-                if (factory != null) {
-                    return factory;
-                } else {
-                    statusLogger.error(
-                            "Configured recycler factory provider `{}` is not applicable for the current environment! Available recycler factory providers: {}. Will choose the first one available for the current environment.",
-                            providerName,
-                            providerNames);
-                }
+                return matchingProvider.createForEnvironment(environment);
             } else {
                 statusLogger.error(
                         "Configured recycler factory provider `{}` is not found! Available recycler factory providers: {}. Will choose the first one available for the current environment.",
@@ -152,7 +144,6 @@ public final class CoreDefaultBundle {
         // Fallback to the first available provider
         return providers.stream()
                 .map(provider -> provider.createForEnvironment(environment))
-                .filter(Objects::nonNull)
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException(
                         "None of the available recycler factory providers are found to be available for the current environment: "
