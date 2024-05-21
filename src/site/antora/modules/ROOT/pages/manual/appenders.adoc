@@ -85,6 +85,21 @@ xref:manual/performance.adoc#asyncLogging[tests showed] performance may become w
 Consider using
 xref:manual/async.adoc[lock-free Async Loggers] for optimal performance.
 
+[NOTE]
+====
+Log4j 2 brought the following enhancements to the Log4j 1 async appender:
+
+* all appenders referenced by `AsyncAppender` flush their buffers to the OS at the end of a batch, when the queue becomes empty.
+This guarantees that the batch of log events is passed to the OS and is a more performant version of the <<immediateFlush>> attribute.
++
+WARNING: Similarly to what happens with the `immediateFlush` attribute, this does not guarantee that the OS stores the data on the underlying device.
+
+* the type of queue is configurable to allow users to use faster and more performant queues, such as those from the
+https://github.com/JCTools/JCTools?tab=readme-ov-file#jctools[JCTools]
+or
+https://github.com/conversant/disruptor[Conversant Disruptor] projects.
+====
+
 .AsyncAppender Parameters
 [width="100%",cols="20%,20%,60%",options="header",]
 |=======================================================================

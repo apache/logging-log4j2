@@ -14,30 +14,22 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-= Asynchronous logging
+= Asynchronous loggers
 
 Asynchronous logging is a technique to improve application logging performance by executing all I/O operations in a separate thread.
 
 Log4j offers out-of-the-box two different asynchronous logging solutions:
 
 Asynchronous appender::
-+
 A classical queue-based asynchronous appender, which is available since Log4j 1.
-+
-Since Log4j 2 the type of queue is configurable to allow users to use faster and more performant queues, such as those from the
-https://github.com/JCTools/JCTools?tab=readme-ov-file#jctools[JCTools]
-or
-https://github.com/conversant/disruptor[Conversant Disruptor] projects.
 +
 See xref:manual/appenders.adoc#AsyncAppender[Asynchronous appender] for more details.
 
 Asynchronous loggers::
+Asynchronous loggers are a new feature available since Log4j 2.
+They are based on link:#UnderTheHood[LMAX Disruptor], a lock-free inter-thread communication library, instead of queues, resulting in higher throughput and lower latency.
 +
-A new logger implementation based on
-https://lmax-exchange.github.io/disruptor/[LMAX Disruptor]
-that provides even better latency and throughput.
-+
-See <<asynchronous-loggers>> for more details.
+The rest of this chapter is dedicated to this new component.
 
 [CAUTION]
 ====
@@ -47,24 +39,6 @@ If benchmarks and profiling don't show a statistically significant difference be
 ====
 
 include::partial$manual/async-trade-offs.adoc[leveloffset=+1]
-
-[id=asynchronous-loggers]
-== Asynchronous loggers
-
-Log4j 2 makes a number of improvements in the area of asynchronous logging:
-
-* It introduces *asynchronous loggers*, whose aim is to return from the logging call to the application as soon as possible.
-+
-Asynchronous loggers are based on link:#UnderTheHood[LMAX Disruptor], a lock-free inter-thread communication library, instead of queues, resulting in higher throughput and lower latency.
-+
-You can choose between:
-
-** <<AllAsync>>, which gives a better performance,
-** <<MixedSync-Async>>, which gives more flexibility.
-
-* *Asynchronous appenders* have been enhanced to flush to the OS at the end of a batch, when the queue becomes empty.
-+
-This produces the same result as the xref:manual/appenders.adoc#immediateFlush[immediateFlush] attribute of many appenders: it guarantees that the batch of log events is passed to the OS, but does not guarantee that the OS forwards the data to the appropriate physical device.
 
 [#installation]
 == Installation
@@ -93,6 +67,18 @@ runtimeOnly 'com.lmax:disruptor:{disruptor-version}'
 ----
 ====
 
+[#configuration]
+== Configuration
+
+There are two ways asynchronous loggers can be used in Log4j.
+You can:
+
+** <<AllAsync>>, which gives a better performance,
+** <<MixedSync-Async>>, which gives more flexibility.
+
+Under the hood these methods use different Log4j plugins, but also share a
+<<common-configuration-properties,set of common configuration properties>>.
+
 [#AllAsync]
 === Making all loggers asynchronous
 
@@ -117,11 +103,13 @@ If you use `AsyncRoot` and `AsyncLogger` configuration elements, two asynchronou
 ====
 
 [[SysPropsAllAsync]]
-=== Configuration Properties
-
 Since Disruptor is initialized at the same time as the logger context and before any Log4j configuration file is loaded, tuning async loggers is only possible through configuration properties.
 
-The following elements are configurable:
+Beyond the <<common-configuration-properties,common configuration properties>>, the following additional elements are configurable:
+
+include::partial$manual/systemproperties/properties-async.adoc[leveloffset=+2]
+
+include::partial$manual/systemproperties/properties-async-logger.adoc[leveloffset=+2]
 
 * the generic behavior of asynchronous components, such as the queue full policy and message formatting.
 +
@@ -188,19 +176,11 @@ This is especially important for audit logging, since exceptions can be forwarde
 These log statements will cause a smaller latency for the caller.
 
 [[SysPropsMixedSync-Async]]
-=== Configuration Properties
-
 Since all `AsyncRoot` and `AsyncLogger` components share the same Disruptor instance, its configuration is available through configuration properties.
 
-The following elements are configurable:
+Beyond the <<common-configuration-properties,common configuration properties>>, the following additional elements are configurable:
 
-* the generic behavior of asynchronous components, such as the queue full policy and message formatting.
-+
-See xref:manual/systemproperties.adoc#properties-async[Commons async configuration] for more details.
-
-* the parameters of the disruptor, such as the size of the ring buffer and the wait strategy to use.
-+
-See xref:manual/systemproperties.adoc#properties-async-logger-config[Mixed asynchronous logger configuration] for more details.
+include::partial$manual/systemproperties/properties-async-logger-config.adoc[leveloffset=+2]
 
 [TIP]
 ====
@@ -208,6 +188,13 @@ You can place the values of configuration properties in a `log4j2.component.prop
 
 See xref:manual/systemproperties.adoc#property-sources[Property Sources] for more details.
 ====
+
+[#common-configuration-properties]
+=== Common configuration properties
+
+Regardless of the way you configure asynchronous loggers in Log4j, you can use the following properties to further tune your installation:
+
+include::partial$manual/systemproperties/properties-async.adoc[leveloffset=+2]
 
 [#custom-waitstrategy]
 == Custom `WaitStrategy`
