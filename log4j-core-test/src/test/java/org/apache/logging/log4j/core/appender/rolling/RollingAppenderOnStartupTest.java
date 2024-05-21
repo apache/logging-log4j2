@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -52,7 +53,19 @@ public class RollingAppenderOnStartupTest {
         final Path target = loggingPath.resolve(FILENAME);
         Files.copy(Paths.get(SOURCE, FILENAME), target, StandardCopyOption.COPY_ATTRIBUTES);
         final FileTime newTime = FileTime.from(Instant.now().minus(1, ChronoUnit.DAYS));
-        Files.getFileAttributeView(target, BasicFileAttributeView.class).setTimes(newTime, newTime, newTime);
+        final BasicFileAttributeView attrs = Files.getFileAttributeView(target, BasicFileAttributeView.class);
+        attrs.setTimes(newTime, newTime, newTime);
+        /*
+         * POSIX does not define a file creation timestamp.
+         * Depending on the system `creationTime` might be:
+         *  * 0,
+         *  * the last modification time
+         *  * or the time the file was actually created.
+         *
+         * This test fails if the latter occurs, since the file is created after the JVM.
+         */
+        final FileTime creationTime = attrs.readAttributes().creationTime();
+        assumeTrue(creationTime.equals(newTime) || creationTime.toMillis() == 0L);
     }
 
     @Test
