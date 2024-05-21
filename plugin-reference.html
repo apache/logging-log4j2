@@ -186,10 +186,22 @@
     <a class="nav-link" href="manual/cloud.html">Using Log4j in Cloud Enabled Applications</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="manual/async.html">Lock-free Asynchronous Loggers for Low-Latency Logging</a>
+    <a class="nav-link" href="manual/lookups.html">Lookups</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="manual/garbagefree.html">Garbage-free Steady State Logging</a>
+    <a class="nav-link" href="manual/appenders.html">Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="manual/layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/json-template-layout.html">JSON Template Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="manual/filters.html">Filters</a>
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
@@ -204,13 +216,28 @@
     <a class="nav-link" href="manual/plugins.html">Plugins</a>
   </li>
   <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="manual/customconfig.html">Programmatic Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="manual/customloglevels.html">Custom Log Levels</a>
+  </li>
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="manual/jmx.html">JMX</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="manual/logsep.html">Logging Separation</a>
   </li>
   <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
     <a class="nav-link" href="manual/performance.html">Performance</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/async.html">Asynchronous loggers</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/garbagefree.html">Garbage-free logging</a>
+  </li>
+</ul>
   </li>
 </ul>
   </li>
@@ -1443,7 +1470,7 @@ Originally developed by Ceki Glc and Anders Kristensen.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>header</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>

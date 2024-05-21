@@ -186,10 +186,22 @@
     <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="async.html">Lock-free Asynchronous Loggers for Low-Latency Logging</a>
+    <a class="nav-link" href="lookups.html">Lookups</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="garbagefree.html">Garbage-free Steady State Logging</a>
+    <a class="nav-link" href="appenders.html">Appenders</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="filters.html">Filters</a>
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
@@ -204,13 +216,28 @@
     <a class="nav-link" href="plugins.html">Plugins</a>
   </li>
   <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="customloglevels.html">Custom Log Levels</a>
+  </li>
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="jmx.html">JMX</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="logsep.html">Logging Separation</a>
   </li>
   <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
     <a class="nav-link" href="performance.html">Performance</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="async.html">Asynchronous loggers</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="garbagefree.html">Garbage-free logging</a>
+  </li>
+</ul>
   </li>
 </ul>
   </li>
@@ -336,39 +363,6 @@ See each layout below.</p>
 </div>
 <div class="paragraph">
 <p>A custom character encoder was added to Log4j 2.4.1 for the ISO-8859-1 and US-ASCII charsets, to bring some of the performance improvements built-in to Java 8 to Log4j for use on Java 7. For applications that log only ISO-8859-1 characters, specifying this charset will improve performance significantly.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="common-concerns"><a class="anchor" href="#common-concerns"></a>Common concerns</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="location-information"><a class="anchor" href="#location-information"></a>Location information</h3>
-<div class="paragraph">
-<p>Computing the location information of a logging statement is an expensive operation.
-For this reason many Log4j components implement the
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/impl/LocationAware.html">LocationAware</a>
-interface to only compute location information when needed.</p>
-</div>
-<div class="paragraph">
-<p>While the methods of determining if location information is required are specific to each layout, most layouts implement <code>LocationAware</code>.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Even if a layout is configured not to <strong>request</strong> location information, it might use it if the information is already available.
-This is always the case of information location computed at build time using the
-<a href="/log4j/transform/latest/#log4j-transform-maven-plugin">Log4j Transform Maven Plugin</a>.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
 </div>
 </div>
 </div>
@@ -560,11 +554,23 @@ specified value. One of: <code>ALL</code>, <code>MINIMAL</code>, <code>NON_NUMER
 <h2 id="GELFLayout"><a class="anchor" href="#GELFLayout"></a>GELF Layout</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Lays out events in the Graylog Extended Log Format (GELF) 1.1.</p>
-</div>
-<div class="paragraph">
-<p>This layout compresses JSON to GZIP or ZLIB (<code>compressionType</code>) if log event data is larger than 1024 bytes (<code>compressionThreshold</code>).
+<p>Encodes log events in <a href="https://go2docs.graylog.org/current/getting_in_log_data/gelf.html#GELFPayloadSpecification">the GELF specification</a> version <code>1.1</code>.
+Compresses JSON to GZIP or ZLIB (<code>compressionType</code>) if log event data is larger than 1024 bytes (<code>compressionThreshold</code>).
 This layout does not implement chunking.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Unless compression is needed, we advise you to use <a href="json-template-layout.html" class="xref page">JSON Template Layout</a> instead, which provides GELF layout support out of the box and offers a far richer set of features.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>Configure as follows to send to a Graylog 2.x server with UDP:</p>
@@ -703,14 +709,7 @@ This layout does not implement chunking.</p>
 The values support <a href="lookups.html" class="xref page">lookups</a>.</p>
 </div>
 <div class="paragraph">
-<p>See also:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The <a href="https://docs.graylog.org/en/latest/pages/gelf.html#gelf">GELF specification</a></p>
-</li>
-</ul>
+<p>GELF Layout is garbage-free when used with <code>compressionType="OFF"</code> and as long as no additional field contains <code>${</code> (variable substitution).</p>
 </div>
 </div>
 </div>
@@ -806,15 +805,17 @@ expensive operation and may impact performance. Use with caution.</p>
 <div class="sect1">
 <h2 id="JSONLayout"><a class="anchor" href="#JSONLayout"></a>JSON Layout</h2>
 <div class="sectionbody">
-<div class="admonitionblock note">
+<div class="admonitionblock warning">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-note" title="Note"></i>
+<i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-JsonTemplate is considered deprecated.
-JsonTemplateLayout provides more capabilities and should be used instead.
+<div class="paragraph">
+<p>JSON Layout is considered deprecated.
+<a href="#JSONTemplateLayout">JSON Template Layout</a> provides more capabilities and should be used instead.</p>
+</div>
 </td>
 </tr>
 </table>
@@ -2945,6 +2946,307 @@ The script is passed all the properties configured in the Properties section of 
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="PatternLayout-gcfree"><a class="anchor" href="#PatternLayout-gcfree"></a>Garbage-free configuration</h3>
+<div class="paragraph">
+<p>PatternLayout with the following limited set of conversion patterns is
+garbage-free. Format modifiers to control such things as field width,
+padding, left and right justification will not generate garbage.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Conversion Pattern</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%c{precision}, %logger{precision}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Logger name</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d, %date</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Note: Only the predefined date formats are garbage-free: (millisecond
+separator may be either a comma ',' or a period '.')</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Pattern</th>
+<th class="tableblock halign-left valign-top">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d{DEFAULT}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2012-11-02 14:34:02,781</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d{ISO8601}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2012-11-02T14:34:02,781</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d{ISO8601_BASIC}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">20121102T143402,781</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d{ABSOLUTE}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">14:34:02,781</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d{DATE}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">02 Nov 2012 14:34:02,781</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d{COMPACT}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">20121102143402781</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d{HH:mm:ss,SSS}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">14:34:02,781</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d{dd MMM yyyy HH:mm:ss,SSS}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">02 Nov 2012 14:34:02,781</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d{HH:mm:ss}{GMT+0}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">18:34:02</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d{UNIX}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1351866842</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d{UNIX_MILLIS}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1351866842781</p></td>
+</tr>
+</tbody>
+</table></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%enc{pattern}, %encode{pattern}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Encodes special characters such as
+'\n' and HTML characters to help prevent log forging and some XSS
+attacks that could occur when displaying logs in a web browser -
+garbage-free since 2.8</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%equals{pattern}{test}{substitution},
+%equalsIgnoreCase{pattern}{test}{substitution}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Replaces occurrences
+of 'test', a string, with its replacement 'substitution' in the string
+resulting from evaluation of the pattern - garbage-free since 2.8</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%highlight{pattern}{style}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Adds ANSI colors - garbage-free since 2.7
+(unless nested pattern is not garbage free)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%K{key}, %map{key}, %MAP{key}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Outputs the entries in a
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html">MapMessage</a>,
+if one is present in the event - garbage-free since 2.8.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%m, %msg, %message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Log message (garbage-free unless message text
+contains '${')</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%marker</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The full name of the marker (including parents) - garbage-free
+since 2.8</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%markerSimpleName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The simple name of the marker (not including
+parents)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%maxLen, %maxLength</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Truncates another pattern to some max number of
+characters - garbage-free since 2.8</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%n</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The platform dependent line separator</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%N, %nano</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">System.nanoTime() when the event was logged</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%notEmpty{pattern}, %varsNotEmpty{pattern},
+%variablesNotEmpty{pattern}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Outputs the result of evaluating the
+pattern if and only if all variables in the pattern are not empty -
+garbage-free since 2.8</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%p, %level</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The level of the logging event</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%r, %relative</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of milliseconds elapsed since the JVM was
+started until the creation of the logging event - garbage-free since 2.8</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%sn, %sequenceNumber</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A sequence number that will be incremented in
+every event - garbage-free since 2.8</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%style{pattern}{ANSI style}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Style the message - garbage-free since
+2.7 (unless nested pattern is not garbage free)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%T, %tid, %threadId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the thread that generated the logging
+event</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%t, %tn, %thread, %threadName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the thread that generated
+the logging event</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%tp</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The priority of the thread that generated the logging event</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%X{key[,key2&#8230;&#8203;]}, %mdc{key[,key2&#8230;&#8203;]}, %MDC{key[,key2&#8230;&#8203;]}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Outputs
+the Thread Context Map (also known as the Mapped Diagnostic Context or
+MDC) associated with the thread that generated the logging event -
+garbage-free since 2.8</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>literal text</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Garbage-free unless literal contains '${' (variable
+substitution)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Other PatternLayout conversion patterns, and other Layouts may be
+updated to avoid creating temporary objects in future releases. (Patches
+welcome!)</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Logging exceptions and stack traces will create temporary
+objects with any layout. (However, Layouts will only create these
+temporary objects when an exception actually occurs.) We haven&#8217;t figured
+out a way to log exceptions and stack traces without creating temporary
+objects. That is unfortunate, but you probably still want to log them
+when they happen.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>patterns containing regular expressions and lookups for property
+substitution will result in temporary objects being created during
+steady-state logging.</p>
+</div>
+<div class="paragraph">
+<p>Including location information is done by walking the stacktrace of an
+exception, which creates temporary objects, so the following patterns
+are not garbage-free:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>%C, %class - Class Name</p>
+</li>
+<li>
+<p>%F, %file - File Location</p>
+</li>
+<li>
+<p>%l, %location - Location</p>
+</li>
+<li>
+<p>%L, %line - Line Location</p>
+</li>
+<li>
+<p>%M, %method - Method Location</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Also, the pattern converters for formatting Throwables are not
+garbage-free:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>%ex, %exception, %throwable - The Throwable trace bound to the
+LoggingEvent</p>
+</li>
+<li>
+<p>%rEx, %rException %rThrowable - Same as %ex but with wrapping
+exceptions</p>
+</li>
+<li>
+<p>%xEx, %xException, %xThrowable - Same as %ex but with class packaging
+information</p>
+</li>
+<li>
+<p>%u, %uuid - Creates a new random or time-based UUID while formatting</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="PatternLayout-performance"><a class="anchor" href="#PatternLayout-performance"></a>Performance</h3>
+<div class="paragraph">
+<p>Great effort has been put into the efficiency of Pattern Layout.
+To get the most out of it, mind the following checklist:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Enable <a href="garbagefree.html" class="xref page">garbage-free logging</a></p>
+</li>
+<li>
+<p>Mind <a href="#PatternLayout-gcfree">the garbage footprint of features you use</a></p>
+</li>
+<li>
+<p>Don&#8217;t give too much slack to <a href="configuration.html#log4j2.layoutStringBuilderMaxSize" class="xref page"><code>log4j2.layoutStringBuilderMaxSize</code></a> and try to keep it relatively tight</p>
+</li>
+</ul>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -3457,28 +3759,74 @@ Additional <a href="../runtime-dependencies.html" class="xref page">runtime depe
 </div>
 </div>
 <div class="sect1">
-<h2 id="LocationInformation"><a class="anchor" href="#LocationInformation"></a>Location Information</h2>
+<h2 id="LocationInformation"><a class="anchor" href="#LocationInformation"></a>Location information</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>If one of the layouts is configured with a location-related attribute like HTML <a href="#HtmlLocationInfo">locationInfo</a>, or one of the patterns
-<a href="#PatternClass">%C or %class</a>, <a href="#PatternFile">%F or %file</a>,
-<a href="#PatternLocation">%l or %location</a>, <a href="#PatternLine">%L or %line</a>,
-<a href="#PatternMethod">%M or %method</a>, Log4j will take a snapshot of the stack, and walk the stack trace to find the location information.</p>
+<p>Several layouts offer directives to include the <em>location information</em>: the caller class, method, file, and line.
+Log4j takes a snapshot of the stack, and walks the stack trace to find the location information.
+<strong>This is an expensive operation</strong> and should be avoided in performance-sensitive setups.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Note that <em>the caller class</em> of the location information and <em>the logger name</em> are two different things.
+In most setups just using <em>the logger name</em> – which doesn&#8217;t incur any overhead to obtain while logging! – is a sufficient and <strong>zero-cost substitute for the caller class</strong>.</p>
+</div>
+<details>
+<summary class="title">Example demonstrating that the logger name can be a substitute for the caller name</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package com.mycompany;
+
+public class PaymentService {
+
+    // Logger name: `com.mycompany.PaymentService`
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    private static final class PaymentTransaction {
+        void doPayment() {
+            // Caller class: `com.mycompany.PaymentService$PaymentTransaction`
+            LOGGER.trace("...");
+        }
+    }
+
+}</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>This is an expensive operation: 1.3 - 5 times slower for synchronous loggers.
-Synchronous loggers wait as long as possible before they take this stack snapshot.
-If no location is required, the snapshot will never be taken.</p>
+<p>In the above example, if <em>the caller class</em> (which is expensive to compute!) is omitted in the layout, the produced log line will still be likely to contain sufficient information to trace back the source by just looking at <em>the logger name</em>.</p>
+</div>
+</div>
+</details>
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>However, asynchronous loggers need to make this decision before passing the log message to another thread; the location information will be lost after that point.
-The
-<a href="performance.html#asyncLoggingWithLocation" class="xref page">performance impact</a> of taking a stack trace snapshot is even higher for asynchronous loggers:
-logging with location is 30-100 times slower than without location.
-For this reason, asynchronous loggers and asynchronous appenders do not include location information by default.</p>
+<p>Asynchronous loggers need to capture the location information before passing the log message to another thread; otherwise the location information will be lost after that point.
+Due to associated performance implications, <a href="async.html" class="xref page">asynchronous loggers</a> and <a href="appenders.html#AsyncAppender" class="xref page">asynchronous appenders</a> do <strong>not</strong> include location information by default.
+You can override the default behaviour in your asynchronous logger or asynchronous appender configuration.</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
 <div class="paragraph">
-<p>You can override the default behavior in your logger or asynchronous appender configuration by specifying <code>includeLocation="true"</code>.</p>
+<p>Even if a layout is configured not to <strong>request</strong> location information, it might use it if the information is already available.
+This is always the case of information location computed at build time using the <a href="/log4j/transform/latest/#log4j-transform-maven-plugin">Log4j Transform Maven Plugin</a>.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>

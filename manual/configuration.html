@@ -186,10 +186,22 @@
     <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="async.html">Lock-free Asynchronous Loggers for Low-Latency Logging</a>
+    <a class="nav-link" href="lookups.html">Lookups</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="garbagefree.html">Garbage-free Steady State Logging</a>
+    <a class="nav-link" href="appenders.html">Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="filters.html">Filters</a>
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
@@ -204,13 +216,28 @@
     <a class="nav-link" href="plugins.html">Plugins</a>
   </li>
   <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="customloglevels.html">Custom Log Levels</a>
+  </li>
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="jmx.html">JMX</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="logsep.html">Logging Separation</a>
   </li>
   <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
     <a class="nav-link" href="performance.html">Performance</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="async.html">Asynchronous loggers</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="garbagefree.html">Garbage-free logging</a>
+  </li>
+</ul>
   </li>
 </ul>
   </li>
@@ -1943,7 +1970,7 @@ Log events that are more specific than this setting will be filtered out.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="property-substitution"><a class="anchor" href="#property-substitution"></a>Property substitution</h3>
+<h3 id="property-substitution"><a class="anchor" href="#property-substitution"></a><a id="PropertySubstitution"></a>Property substitution</h3>
 <div class="paragraph">
 <p>Log4j provides a simple and extensible mechanism to reuse values in the configuration file using <code>${name}</code> expressions, such as those used in Bash, Ant or Maven.</p>
 </div>

@@ -186,10 +186,22 @@
     <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="async.html">Lock-free Asynchronous Loggers for Low-Latency Logging</a>
+    <a class="nav-link" href="lookups.html">Lookups</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="garbagefree.html">Garbage-free Steady State Logging</a>
+    <a class="nav-link" href="appenders.html">Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="filters.html">Filters</a>
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
@@ -204,13 +216,28 @@
     <a class="nav-link" href="plugins.html">Plugins</a>
   </li>
   <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="customloglevels.html">Custom Log Levels</a>
+  </li>
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="jmx.html">JMX</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="logsep.html">Logging Separation</a>
   </li>
   <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
     <a class="nav-link" href="performance.html">Performance</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="async.html">Asynchronous loggers</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="garbagefree.html">Garbage-free logging</a>
+  </li>
+</ul>
   </li>
 </ul>
   </li>
@@ -477,7 +504,8 @@ See <a href="#property-sources">Property sources</a> for a complete list of supp
 <p>In this mode Log4j uses <code>ThreadLocal</code>s for object pooling to prevent object allocations.</p>
 </div>
 <div class="paragraph">
-<p>This mode is incompatible with <a href="#log4j2.isWebapp"><code>log4j2.isWebapp</code></a>.</p>
+<p><a href="https://docs.oracle.com/en/java/javase/8/docs/api/java.base/java/lang/ThreadLocal.html"><code>ThreadLocal</code></a> fields holding non-JDK classes can cause memory leaks in web applications when the application server&#8217;s thread pool continues to reference these fields after the web application is undeployed.
+Hence, to avoid causing memory leaks, <code>log4j2.enableThreadlocals</code> by default reflects the opposite of <a href="#log4j2.isWebapp"><code>log4j2.isWebapp</code></a>.</p>
 </div>
 </div>
 </div>
@@ -1421,23 +1449,27 @@ The RingBuffer will be pre-allocated at first use and will never grow or shrink 
 <dd>
 <p>a strategy that uses a lock and condition variable for the I/O thread waiting for log events.
 Block can be used when throughput and low-latency are not as important as CPU resource.
-Recommended for resource constrained/virtualised environments.</p>
+Recommended for resource constrained/virtualized environments.
+This wait strategy is not <a href="garbagefree.html" class="xref page">garbage free</a>.</p>
 </dd>
 <dt class="hdlist1">Timeout</dt>
 <dd>
 <p>a variation of the <code>Block</code> strategy that will periodically wake up from the lock condition <code>await()</code> call.
-This ensures that if a notification is missed somehow the consumer thread is not stuck but will recover with a small latency delay (see <a href="#log4j2.asyncLoggerTimeout"><code>log4j2.asyncLoggerTimeout</code></a>)</p>
+This ensures that if a notification is missed somehow the consumer thread is not stuck but will recover with a small latency delay, see <a href="#log4j2.asyncLoggerTimeout"><code>log4j2.asyncLoggerTimeout</code></a>.
+This wait strategy is <a href="garbagefree.html" class="xref page">garbage free</a>.</p>
 </dd>
 <dt class="hdlist1">Sleep</dt>
 <dd>
 <p>a strategy that initially spins, then uses a <code>Thread.yield()</code>, and eventually parks for the minimum number of nanos the OS and JVM will allow while the I/O thread is waiting for log events (see <a href="#log4j2.asyncLoggerRetries"><code>log4j2.asyncLoggerRetries</code></a> and <a href="#log4j2.asyncLoggerSleepTimeNs"><code>log4j2.asyncLoggerSleepTimeNs</code></a>).
 Sleep is a good compromise between performance and CPU resource.
-This strategy has very low impact on the application thread, in exchange for some additional latency for actually getting the message logged.</p>
+This strategy has very low impact on the application thread, in exchange for some additional latency for actually getting the message logged.
+This wait strategy is <a href="garbagefree.html" class="xref page">garbage free</a>.</p>
 </dd>
 <dt class="hdlist1">Yield</dt>
 <dd>
 <p>is a strategy that uses a <code>Thread.yield()</code> for waiting for log events after an initially spinning.
-Yield is a good compromise between performance and CPU resource, but may use more CPU than <code>Sleep</code> in order to get the message logged to disk sooner.</p>
+Yield is a good compromise between performance and CPU resource, but may use more CPU than <code>Sleep</code> in order to get the message logged to disk sooner.
+This wait strategy is <a href="garbagefree.html" class="xref page">garbage free</a>.</p>
 </dd>
 </dl>
 </div>

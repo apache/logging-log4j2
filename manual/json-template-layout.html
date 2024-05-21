@@ -186,10 +186,22 @@
     <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="async.html">Lock-free Asynchronous Loggers for Low-Latency Logging</a>
+    <a class="nav-link" href="lookups.html">Lookups</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="garbagefree.html">Garbage-free Steady State Logging</a>
+    <a class="nav-link" href="appenders.html">Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="filters.html">Filters</a>
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
@@ -204,13 +216,28 @@
     <a class="nav-link" href="plugins.html">Plugins</a>
   </li>
   <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="customloglevels.html">Custom Log Levels</a>
+  </li>
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="jmx.html">JMX</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="logsep.html">Logging Separation</a>
   </li>
   <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
     <a class="nav-link" href="performance.html">Performance</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="async.html">Asynchronous loggers</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="garbagefree.html">Garbage-free logging</a>
+  </li>
+</ul>
   </li>
 </ul>
   </li>
@@ -554,7 +581,7 @@ appender.console.layout.eventTemplateUri = classpath:EcsLayout.json</code></pre>
   <code>log4j.layout.jsonTemplate.nullEventDelimiterEnabled</code> property)</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>maxStringLength</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="maxStringLength"></a> maxStringLength</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">truncate string values longer than the specified limit (defaults to 16384 set
   by <code>log4j.layout.jsonTemplate.maxStringLength</code> property)</p></td>
@@ -812,7 +839,7 @@ for stack traces to generate a document-store-friendly flat structure.)</p>
 it at the point of the JSON where they are declared. For instance, <code>marker</code>
 resolver renders the marker of the event, <code>level</code> resolver renders the level,
 and so on. An event template resolver is denoted with a special object
-containing a`$resolver` key:</p>
+containing a <code>$resolver</code> key:</p>
 </div>
 <div class="listingblock">
 <div class="title">Example event template demonstrating the usage of <code>level</code> resolver</div>
@@ -827,9 +854,8 @@ containing a`$resolver` key:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Here <code>version</code> field will be rendered as is, while <code>level</code> field will be
-populated by the <code>level</code> resolver. That is, this template will generate JSON
-similar to the following:</p>
+<p>Here <code>version</code> field will be rendered as is, while <code>level</code> field will be populated by <a href="#event-template-resolver-level">the <code>level</code> resolver</a>.
+That is, this template will generate JSON similar to the following:</p>
 </div>
 <div class="listingblock">
 <div class="title">Example JSON generated from the demonstrated event template</div>
@@ -1737,6 +1763,22 @@ stackTraceEnabled = "stackTraceEnabled" -&gt; boolean</code></pre>
 <p>Note that this resolver is toggled by
 <code>log4j.layout.jsonTemplate.locationInfoEnabled</code> property.</p>
 </div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Mind that capturing the source location information is an expensive operation, and is not garbage-free.
+Note that <a href="#event-template-resolver-logger">the <code>logger</code> resolver</a> can generally be used as a zero-cost substitute for <code>className</code>.
+See <a href="layouts.html#LocationInformation" class="xref page">this section of the layouts page</a> for details.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div class="sect5">
 <h6 id="_examples_12"><a class="anchor" href="#_examples_12"></a>Examples</h6>
 <div class="paragraph">
@@ -2596,6 +2638,31 @@ alternatives.</p>
 </div>
 </div>
 <div class="sect1">
+<h2 id="performance"><a class="anchor" href="#performance"></a>Performance</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>JSON Template Layout is a heavily optimized piece of software to encode a log event as fast as possible.
+To get the most out of it, mind the following checklist:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Enable <a href="garbagefree.html" class="xref page">garbage-free logging</a></p>
+</li>
+<li>
+<p>Mind <a href="#faq-garbage-free">the garbage footprint of features you use</a></p>
+</li>
+<li>
+<p>Choose a <a href="#recycling-strategy">recycling strategy</a> that suits best to your deployment environment</p>
+</li>
+<li>
+<p>Don&#8217;t give too much slack to <a href="#maxStringLength"><code>maxStringLength</code></a> and try to keep it relatively tight</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="faq"><a class="anchor" href="#faq"></a>F.A.Q.</h2>
 <div class="sectionbody">
 <div class="sect2">
@@ -2628,9 +2695,8 @@ logging.</p>
 <div class="sect2">
 <h3 id="faq-garbage-free"><a class="anchor" href="#faq-garbage-free"></a>Is <code>JsonTemplateLayout</code> garbage-free?</h3>
 <div class="paragraph">
-<p>Yes, if the garbage-free layout behaviour toggling properties
-<code>log4j2.enableDirectEncoders</code> and <code>log4j2.garbagefreeThreadContextMap</code> are
-enabled. Take into account the following caveats:</p>
+<p>Yes, if <a href="garbagefree.html" class="xref page">garbage-free logging</a> is enabled.
+Take into account the following caveats:</p>
 </div>
 <div class="ulist">
 <ul>

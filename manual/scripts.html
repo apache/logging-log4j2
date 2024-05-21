@@ -186,10 +186,22 @@
     <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="async.html">Lock-free Asynchronous Loggers for Low-Latency Logging</a>
+    <a class="nav-link" href="lookups.html">Lookups</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="garbagefree.html">Garbage-free Steady State Logging</a>
+    <a class="nav-link" href="appenders.html">Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="filters.html">Filters</a>
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
@@ -204,13 +216,28 @@
     <a class="nav-link" href="plugins.html">Plugins</a>
   </li>
   <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="customloglevels.html">Custom Log Levels</a>
+  </li>
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="jmx.html">JMX</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="logsep.html">Logging Separation</a>
   </li>
   <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
     <a class="nav-link" href="performance.html">Performance</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="async.html">Asynchronous loggers</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="garbagefree.html">Garbage-free logging</a>
+  </li>
+</ul>
   </li>
 </ul>
   </li>
@@ -445,28 +472,246 @@ container plugin in the configuration file.</p>
 <div id="_tabs_1_xml--panel" class="tabpanel" aria-labelledby="_tabs_1_xml">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">Unresolved include directive in modules/ROOT/pages/manual/scripts.adoc - include::example$configuration/scripts.xml[]</code></pre>
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Configuration xmlns="https://logging.apache.org/xml/ns"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="
+                   https://logging.apache.org/xml/ns
+                   https://logging.apache.org/xml/ns/log4j-config-2.xsd"&gt;
+  &lt;Appenders&gt;
+    &lt;Console name="STDOUT"&gt;
+      &lt;PatternLayout&gt;
+        &lt;ScriptPatternSelector defaultPattern="%d %p %m%n"&gt;
+          &lt;ScriptRef ref="SELECTOR_SCRIPT"/&gt;
+          &lt;PatternMatch key="NoLocation" pattern="[%-5level] %c{1.} %msg%n"/&gt;
+          &lt;PatternMatch key="Flow" pattern="[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"/&gt;
+        &lt;/ScriptPatternSelector&gt;
+      &lt;/PatternLayout&gt;
+    &lt;/Console&gt;
+  &lt;/Appenders&gt;
+  &lt;Loggers&gt;
+    &lt;Logger name="EventLogger"&gt;
+      &lt;ScriptFilter onMatch="ACCEPT" onMismatch="DENY"&gt;
+        &lt;Script name="EVENT_LOGGER_FILTER" language="groovy"&gt;&lt;![CDATA[
+          if (logEvent.getMarker() != null &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW")) {
+              return true;
+          } else if (logEvent.getContextMap().containsKey("UserId")) {
+              return true;
+          }
+          return false;
+          ]]&gt;
+        &lt;/Script&gt;
+      &lt;/ScriptFilter&gt;
+    &lt;/Logger&gt;
+    &lt;Root level="INFO"&gt;
+      &lt;ScriptFilter onMatch="ACCEPT" onMismatch="DENY"&gt;
+        &lt;ScriptRef ref="ROOT_FILTER"/&gt;
+      &lt;/ScriptFilter&gt;
+      &lt;AppenderRef ref="STDOUT"/&gt;
+    &lt;/Root&gt;
+  &lt;/Loggers&gt;
+  &lt;Scripts&gt;
+    &lt;Script name="SELECTOR_SCRIPT" language="javascript"&gt;&lt;![CDATA[
+      var result;
+      if (logEvent.getLoggerName().equals("JavascriptNoLocation")) {
+          result = "NoLocation";
+      } else if (logEvent.getMarker() != null &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW")) {
+          result = "Flow";
+      }
+      result;
+      ]]&gt;
+    &lt;/Script&gt;
+    &lt;ScriptFile name="ROOT_FILTER" path="scripts/filter.groovy"/&gt;
+  &lt;/Scripts&gt;
+&lt;/Configuration&gt;</code></pre>
 </div>
 </div>
 </div>
 <div id="_tabs_1_json--panel" class="tabpanel" aria-labelledby="_tabs_1_json">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">Unresolved include directive in modules/ROOT/pages/manual/scripts.adoc - include::example$configuration/scripts.json[]</code></pre>
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "Configuration": {
+    "Appenders": {
+      "Console": {
+        "name": "STDOUT",
+        "PatternLayout": {
+          "ScriptPatternSelector": {
+            "defaultPattern": "%d %p %m%n",
+            "ScriptRef": {
+              "ref": "SELECTOR_SCRIPT",
+              "PatternMatch": [
+                {
+                  "key": "NoLocation",
+                  "pattern": "[%-5level] %c{1.} %msg%n"
+                },
+                {
+                  "key": "Flow",
+                  "pattern": "[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "Loggers": {
+        "Logger": {
+          "name": "EventLogger",
+          "ScriptFilter": {
+            "onMatch": "ACCEPT",
+            "onMismatch": "DENY",
+            "Script": {
+              "name": "EVENT_LOGGER_FILTER",
+              "language": "groovy",
+              "scriptText": "if (logEvent.getMarker() != null &amp;&amp; logEvent.getMarker().isInstanceOf('FLOW'))) { return true; } else if (logEvent.getContextMap().containsKey('UserId')) { return true; } return false;"
+            }
+          }
+        },
+        "Root": {
+          "level": "INFO",
+          "ScriptFilter": {
+            "onMatch": "ACCEPT",
+            "onMismatch": "DENY",
+            "ScriptRef": {
+              "ref": "ROOT_FILTER"
+            }
+          },
+          "AppenderRef": {
+            "ref": "STDOUT"
+          }
+        },
+        "Scripts": {
+          "Script": {
+            "name": "SELECTOR_SCRIPT",
+            "language": "javascript",
+            "scriptText": "var result; if (logEvent.getLoggerName().equals('JavascriptNoLocation')) { result = 'NoLocation'; } else if (logEvent.getMarker() != null &amp;&amp; logEvent.getMarker().isInstanceOf('FLOW')) { result = 'Flow'; } result;"
+          },
+          "ScriptFile": {
+            "name": "ROOT_FILTER",
+            "path": "scripts/filter.groovy"
+          }
+        }
+      }
+    }
+  }
+}</code></pre>
 </div>
 </div>
 </div>
 <div id="_tabs_1_yaml--panel" class="tabpanel" aria-labelledby="_tabs_1_yaml">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Unresolved include directive in modules/ROOT/pages/manual/scripts.adoc - include::example$configuration/scripts.yaml[]</code></pre>
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Configuration:
+  Appenders:
+    Console:
+      name: "STDOUT"
+      PatternLayout:
+        ScriptPatternSelector:
+          defaultPattern: "%d %p %m%n"
+          ScriptRef:
+            ref: "SELECTOR_SCRIPT"
+          PatternMatch:
+            - key: "NoLocation"
+              pattern: "[%-5level] %c{1.} %msg%n"
+            - key: "Flow"
+              pattern: "[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"
+  Loggers:
+    Logger:
+      name: "EventLogger"
+      ScriptFilter:
+        onMatch: "ACCEPT"
+        onMismatch: "DENY"
+        Script:
+          name: "EVENT_LOGGER_FILTER"
+          language: "groovy"
+          scriptText: |
+            if (logEvent.getMarker() != null &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW")) {
+              return true;
+            } else if (logEvent.getContextMap().containsKey("UserId")) {
+              return true;
+            }
+            return false;
+    Root:
+      level: "INFO"
+      ScriptFilter:
+        onMatch: "ACCEPT"
+        onMismatch: "DENY"
+        ScriptRef:
+          ref: "ROOT_FILTER"
+      AppenderRef:
+        ref: "STDOUT"
+  Scripts:
+    Script:
+      name: "SELECTOR_SCRIPT"
+      language: "javascript"
+      scriptText: |
+        var result;
+        if (logEvent.getLoggerName().equals("JavascriptNoLocation")) {
+          result = "NoLocation";
+        } else if (logEvent.getMarker() != null &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW")) {
+          result = "Flow";
+        }
+        result;
+    ScriptFile:
+      name: "ROOT_FILTER"
+      path: "scripts/filter.groovy"</code></pre>
 </div>
 </div>
 </div>
 <div id="_tabs_1_java_properties--panel" class="tabpanel" aria-labelledby="_tabs_1_java_properties">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">Unresolved include directive in modules/ROOT/pages/manual/scripts.adoc - include::example$configuration/scripts.properties[]</code></pre>
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = Console
+appender.0.name = STDOUT
+appender.0.layout.type = PatternLayout
+
+appender.0.layout.selector = ScriptPatternSelector
+appender.0.layout.selector.defaultPattern = %d %p %m%n
+appender.0.layout.selector.scriptRef.type = ScriptRef
+appender.0.layout.selector.scriptRef.ref = SELECTOR_SCRIPT
+appender.0.layout.selector.match[0].type = PatternMatch
+appender.0.layout.selector.match[0].key = NoLocation
+appender.0.layout.selector.match[0].pattern = [%-5level] %c{1.} %msg%n
+appender.0.layout.selector.match[1].type = PatternMatch
+appender.0.layout.selector.match[1].key = Flow
+appender.0.layout.selector.match[1].pattern = [%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n
+
+logger.0.name = EventLogger
+logger.0.filter.0.type = ScriptFilter
+logger.0.filter.0.onMatch = ACCEPT
+logger.0.filter.0.onMismatch = DENY
+logger.0.filter.0.script.type = Script
+logger.0.filter.0.script.name = EVENT_LOGGER_FILTER
+logger.0.filter.0.script.language = groovy
+logger.0.filter.0.script.scriptText = if (logEvent.getMarker() != null &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW"))) {\
+    return true;\
+  } else if (logEvent.getContextMap().containsKey("UserId")) {\
+    return true;\
+  }\
+  return false;
+
+rootLogger.level = INFO
+rootLogger.filter.0.type = ScriptFilter
+rootLogger.filter.0.onMatch = ACCEPT
+rootLogger.filter.0.onMismatch = DENY
+rootLogger.filter.0.scriptRef.type = ScriptRef
+rootLogger.filter.0.scriptRef.ref = ROOT_FILTER
+rootLogger.appenderRef.0.ref = STDOUT
+
+script.0.type = Script
+script.0.name = SELECTOR_SCRIPT
+script.0.language = javascript
+script.0.scriptText = var result;\
+  if (logEvent.getLoggerName().equals("JavascriptNoLocation")) {\
+    result = "NoLocation";\
+  } else if (logEvent.getMarker() != null &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW")) {\
+    result = "Flow";\
+  }\
+  result;
+
+script.1.type = ScriptFile
+script.1.name = ROOT_FILTER
+script.1.path = scripts/filter.groovy</code></pre>
 </div>
 </div>
 </div>
