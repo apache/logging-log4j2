@@ -29,6 +29,12 @@ Hence, we will discuss both:
 . xref:#Config[]
 . xref:#api[]
 
+[NOTE]
+====
+Garbage-free logging is currently implemented for Log4j API and its reference implementation, Log4j Core.
+If you use another setup (e.g., a different logging API or implementation) this promise might not hold.
+====
+
 [#quick]
 == Quick start
 
@@ -61,7 +67,9 @@ Garbage-free logging can be configured for Log4j Core using properties listed be
 
 include::partial$manual/systemproperties/properties-meta.adoc[leveloffset=+2]
 
-include::partial$manual/systemproperties/properties-garbage-collection.adoc[leveloffset=+2,tag=!api]
+include::partial$manual/systemproperties/properties-garbage-collection.adoc[leveloffset=+2]
+
+include::partial$manual/systemproperties/properties-thread-context.adoc[leveloffset=+2,tag=gcfree]
 
 [#Layouts]
 === Layouts
@@ -152,43 +160,25 @@ As of version `2.18.0`, the default xref:manual/async.adoc[asynchronous logger] 
 See xref:manual/async.adoc#log4j2.asyncLoggerWaitStrategy[`log4j2.asyncLoggerWaitStrategy`] for details on predefined wait strategies.
 
 [#api]
-== Log4j API configuration and usage
-
-In order to have a garbage-free Log4j API, you need to
-
-* xref:#api-config[configure it using properties],
-* and xref:#api-usage[use garbage-free API methods].
-
-[#api-config]
-=== Configuration
-
-Garbage-free logging can be configured for Log4j API using properties listed below.
-(See xref:manual/configuration.adoc[] on details how you can set these properties.)
-
-include::partial$manual/systemproperties/properties-garbage-collection.adoc[leveloffset=+2,tag=api]
-
-include::partial$manual/systemproperties/properties-thread-context.adoc[leveloffset=+2,tag=gcfree]
-
-[#api-usage]
-=== Usage
+== Log4j API usage
 
 xref:manual/api.adoc[Log4j API] contains several features to facilitate garbage-free logging:
 
 [#api-vararg]
-==== Parameterized message arguments
+=== Parameterized message arguments
 
 The `Logger` interface contains methods for parameterized messages up to 10 arguments.
 Logging more than 10 parameters creates https://docs.oracle.com/javase/8/docs/technotes/guides/language/varargs.html[vararg arrays].
 
 [#api-encode-custom-object]
-==== Encoding custom objects
+=== Encoding custom objects
 
 When a message parameter contains an unknown type by the layout, it will encode by calling `toString()` on these objects.
 Most objects don't have garbage-free `toString()` methods.
 Objects themselves can implement their own garbage-free encoders by either extending from https://docs.oracle.com/javase/8/docs/api/java/lang/CharSequence.html[Java's `CharSequence`] or link:../javadoc/log4j-api/org/apache/logging/log4j/util/StringBuilderFormattable.html[Log4j's `StringBuilderFormattable`].
 
 [#codeImpact]
-==== Avoiding autoboxing
+=== Avoiding autoboxing
 
 We made an effort to make logging garbage-free without requiring code
 changes in existing applications, but there is one area where this was
