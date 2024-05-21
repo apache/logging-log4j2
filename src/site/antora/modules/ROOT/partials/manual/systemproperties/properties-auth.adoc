@@ -1,0 +1,70 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+[id=log4j.auth.provider]
+== `log4j.auth.provider`
+
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_AUTH_PROVIDER
+| Type          | link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/AuthorizationProvider[Class<? extends AuthorizationProvider>]
+| Default value | link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/BasicAuthorizationProvider[BasicAuthorizationProvider]
+|===
+
+The fully qualified class name of the
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/AuthorizationProvider[AuthorizationProvider]
+implementation to use with `http` and `https` URL protocols.
+
+[id=log4j.auth.basic.password]
+== `log4j.auth.basic.password`
+
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_AUTH_BASIC_PASSWORD
+| Type          | `String`
+| Default value | `null`
+|===
+
+The password to use in HTTP Basic authentication.
+
+If used in conjunction with <<log4j.auth.basic.passwordDecryptor>> the contents of this variable are interpreted by the decryptor.
+
+[id=log4j.auth.basic.passwordDecryptor]
+== `log4j.auth.basic.passwordDecryptor`
+
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_AUTH_BASIC_PASSWORD_DECRYPTOR
+| Type          | link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/PasswordDecryptor[Class<? extends PasswordDecryptor>]
+| Default value | `null`
+|===
+
+Fully qualified class name of an implementation of link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/PasswordDecryptor[PasswordDecryptor] to use for the value of the <<log4j.auth.basic.password>> property.
+
+If `null`, the literal value of the password is used.
+
+[id=log4j.auth.basic.username]
+== `log4j.auth.basic.username`
+
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_AUTH_BASIC_USERNAME
+| Type          | `String`
+| Default value | `null`
+|===
+
+The username used in HTTP Basic authentication.

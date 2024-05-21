@@ -15,7 +15,6 @@
     limitations under the License.
 ////
 = JSON Template Layout
-Volkan Yazıcı <vy@apache.org>
 
 `JsonTemplateLayout` is a customizable, efficient, and garbage-free JSON
 generating layout. It encodes ``LogEvent``s according to the structure described

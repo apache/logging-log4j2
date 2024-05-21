@@ -14,22 +14,16 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-= Javadoc API Documentation
+[id=log4j.script.enableLanguages]
+== `log4j.script.enableLanguages`
 
-The table below contains links to the Javadoc API Documentation for the components you are most likely to use directly in code.
-
+[cols="1h,5"]
 |===
-|Component |Description
-
-|link:/log4j/2.x/javadoc/log4j-api[Log4j 2 API]
-|The interface that applications should use and code against.
-
-|link:javadoc/log4j-kit/index.html[Implementation helper kit]
-|Common helper functions for Log4j API implementations.
-
-|link:javadoc/log4j-core/index.html[Reference implementation]
-|The standard implementation, also called the Log4j 3 Core, that contains Appenders, Filters, and more.
-
-|link:javadoc/log4j-async-logger/index.html[Asynchronous logger]
-|An alternative asynchronous logger implementation for Log4j 3 Core, based on LMAX Disruptor.
+| Env. variable | LOG4J_SCRIPT_ENABLE_LANGUAGES
+| Type          | Comma-separated list of https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/script/ScriptEngine.html[ScriptEngine] names
+| Default value | _empty_
 |===
+
+The list of script languages that are allowed to execute.
+
+The names specified must correspond to those returned by https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/script/ScriptEngineFactory.html#getNames--[ScriptEngineFactory.getNames()].
