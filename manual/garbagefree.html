@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Garbage-free Steady State Logging :: Apache Log4j</title>
+    <title>Garbage-free logging :: Apache Log4j</title>
     <link rel="canonical" href="https://logging.apache.org/log4j/3.x/manual/garbagefree.html">
     <meta name="generator" content="Antora 3.2.0-alpha.4">
 <link rel="stylesheet" href="../_/css/site.css">
@@ -171,12 +171,6 @@
     <a class="nav-link" href="filters.html">Filters</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="async.html">Lock-free Asynchronous Loggers for Low-Latency Logging</a>
-  </li>
-  <li class="nav-item is-current-page" data-depth="1">
-    <a class="nav-link" href="garbagefree.html">Garbage-free Steady State Logging</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="extending.html">Extending Log4j 3</a>
   </li>
   <li class="nav-item" data-depth="1">
@@ -195,7 +189,16 @@
     <a class="nav-link" href="logsep.html">Logging Separation</a>
   </li>
   <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
     <a class="nav-link" href="performance.html">Performance</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="async.html">Asynchronous loggers</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="garbagefree.html">Garbage-free logging</a>
+  </li>
+</ul>
   </li>
 </ul>
   </li>
@@ -288,7 +291,8 @@
   <ul>
     <li><a href="../index.html">Home</a></li>
     <li><a href="index.html">Manual</a></li>
-    <li><a href="garbagefree.html">Garbage-free Steady State Logging</a></li>
+    <li><a href="performance.html">Performance</a></li>
+    <li><a href="garbagefree.html">Garbage-free logging</a></li>
   </ul>
 </nav>
 <div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/main/src/site/antora/modules/ROOT/pages/manual/garbagefree.adoc">Edit this Page</a></div>
@@ -298,88 +302,47 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Garbage-free Steady State Logging</h1>
+<h1 class="page">Garbage-free logging</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Garbage collection pauses are a common cause of latency spikes and for
-many systems significant effort is spent on controlling these pauses.</p>
+<p>Garbage collection pauses are a common cause of latency spikes and for many systems significant effort is spent on controlling these pauses.
+Log4j allocates temporary <code>LogEvent</code>, <code>String</code>, <code>char[]</code>, <code>byte[]</code>, etc. objects during steady state logging.
+This contributes to pressure on the garbage collector and increases the frequency with which garbage collection pauses occur.
+In <em>garbage-free mode</em>, Log4j buffers and reuses objects to lessen this pressure.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Extra tuning of any application will deviate you away from defaults and add up to the maintenance load.
+You are strongly advised to measure your application&#8217;s overall performance and then, if Log4j is found to be an important bottleneck factor, tune it carefully.
+When this happens, we also recommend you to evaluate your assumptions on a regular basis to check if they still hold.
+Remember, <a href="https://en.wikipedia.org/wiki/Program_optimization#When_to_optimize">premature optimization is the root of all evil</a>.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>Many logging libraries, including previous versions of Log4j, allocate
-temporary objects like log event objects, Strings, char arrays, byte
-arrays and more during steady state logging. This contributes to
-pressure on the garbage collector and increases the frequency with which
-GC pauses occur.</p>
+<p>The act of logging is an interplay between the logging API (i.e., Log4j API) where the programmer publishes logs and a logging implementation (i.e., Log4j Core) where published logs get consumed; filtered, enriched, encoded, and written to files, databases, network sockets, etc.
+Both parties contain different features with different memory allocation characteristics.
+To achieve an end-to-end garbage-free logging system, they need to work hand in hand.
+Hence, we will discuss both:</p>
 </div>
-<div class="paragraph">
-<p>From version 2.6, Log4j runs in "garbage free" mode by default where
-objects and buffers are reused and no temporary objects are allocated as
-much as possible. There is also a "low garbage" mode which is not
-completely garbage free but does not use ThreadLocal fields. This is the
-default mode when Log4j <a href="#Config">detects</a> it is running in a web
-application. Finally, it is possible to switch off all garbage-free
-logic and run in "classic mode" instead. For details, see the
-<a href="#Config">Configuration</a> section below.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="jfr"><a class="anchor" href="#jfr"></a>A Contrived Example</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>To highlight the difference that garbage-free logging can make, we used
-Java Flight Recorder to measure a simple application that does nothing
-but log a simple string as often as possible for about 12 seconds.</p>
-</div>
-<div class="paragraph">
-<p>The application was configured to use Async Loggers, a RandomAccessFile
-appender and a "%d %p %c{1.} [%t] %m %ex%n" pattern layout. (Async
-Loggers used the Yield WaitStrategy.)</p>
-</div>
-<div class="paragraph">
-<p>Mission Control shows that with Log4j 2.5 this application allocates
-memory at a rate of about 809 MB/sec, resulting in 141 minor
-collections. Log4j 2.6 does not allocate temporary objects in this
-configuration, and as a result the same application with Log4j 2.6 has a
-memory allocation rate of 1.6 MB/sec and was GC-free with 0 (zero)
-garbage collections.</p>
-</div>
-<div class="paragraph">
-<div class="title">Using Log4j 2.5: memory allocation rate 809 MB/sec, 141 minor collections</div>
-<p><span class="image xref-image"><a class="image" href="../_images/log4j-2.5-FlightRecording.png"><img src="../_images/log4j-2.5-FlightRecording-thumbnail40pct.png" alt="log4j 2.5 FlightRecording thumbnail40pct"></a></span></p>
-</div>
-<div class="paragraph">
-<div class="title">Using Log4j 2.6: no temporary object allocations, 0 (zero) garbage collections</div>
-<p><span class="image xref-image"><a class="image" href="../_images/log4j-2.6-FlightRecording.png"><img src="../_images/log4j-2.6-FlightRecording-thumbnail40pct.png" alt="log4j 2.6 FlightRecording thumbnail40pct"></a></span></p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="Config"><a class="anchor" href="#Config"></a>Configuration</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Garbage-free logging in Log4j 2.6 is partially implemented by reusing
-objects in ThreadLocal fields, and partially by reusing buffers when
-converting text to bytes.</p>
-</div>
-<div class="paragraph">
-<p>ThreadLocal fields holding non-JDK classes can cause memory leaks in web
-applications when the application server&#8217;s thread pool continues to
-reference these fields after the web application is undeployed. To avoid
-causing memory leaks, Log4j will not use these ThreadLocals when it
-detects that it is used in a web application (when the
-<code>javax.servlet.Servlet</code> class is in the classpath, or when system
-property <code>log4j2.isWebapp</code> is set to "true").</p>
-</div>
-<div class="paragraph">
-<p>Some garbage-reducing functionality does not rely on ThreadLocals and is
-enabled by default for all applications: in Log4j 2.6, converting log
-events to text and text to bytes can be done by directly encoding text
-into a reused ByteBuffer without creating intermediary Strings, char
-arrays and byte arrays. So while logging is not completely garbage-free
-for web applications yet, the pressure on the garbage collector can
-still be significantly reduced.</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><a href="#Config">Log4j Core configuration</a></p>
+</li>
+<li>
+<p><a href="#api">Log4j API usage</a></p>
+</li>
+</ol>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -388,12 +351,383 @@ still be significantly reduced.</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-As of version 2.6, a Log4j configuration containing a
-<code>&lt;Properties&gt;</code> section will result in temporary objects being created
-during steady-state logging.
+<div class="paragraph">
+<p>Garbage-free logging is currently implemented for Log4j API and its reference implementation, Log4j Core.
+If you use another setup (e.g., a different logging API or implementation) this promise might not hold.</p>
+</div>
 </td>
 </tr>
 </table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="quick"><a class="anchor" href="#quick"></a>Quick start</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you want to have a garbage-free Log4j setup, but don&#8217;t want to spend time with the associated details, you can quickly get started with the following instructions:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Set the following system properties to <code>true</code>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#log4j2.enableThreadlocals"><code>log4j2.enableThreadlocals</code></a></p>
+</li>
+<li>
+<p><a href="#log4j2.garbagefreeThreadContextMap"><code>log4j2.garbagefreeThreadContextMap</code></a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Use garbage-free</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#Layouts">Layouts</a></p>
+</li>
+<li>
+<p><a href="#Appenders">Appenders</a></p>
+</li>
+<li>
+<p><a href="#Filters">Filters</a></p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This should be sufficient for a majority of use cases.
+If not for yours, keep on reading.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Config"><a class="anchor" href="#Config"></a>Log4j Core configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order to have a garbage-free Log4j Core, you need to</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#properties">configure it using properties</a>,</p>
+</li>
+<li>
+<p>and employ garbage-free <a href="#Layouts">layouts</a>, <a href="#Appenders">appenders</a>, and <a href="#Filters">filters</a>.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="core-properties"><a class="anchor" href="#core-properties"></a>Properties</h3>
+<div class="paragraph">
+<p>Garbage-free logging can be configured for Log4j Core using properties listed below.
+(See <a href="configuration.html" class="xref page">Configuration</a> on details how you can set these properties.)</p>
+</div>
+<div class="sect3">
+<h4 id="log4j.isWebapp"><a class="anchor" href="#log4j.isWebapp"></a><code>log4j.isWebapp</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_IS_WEBAPP</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code> if the <a href="https://jakarta.ee/specifications/servlet/6.0/apidocs/jakarta.servlet/jakarta/servlet/servlet">Servlet</a> class on classpath,</p>
+<p class="tableblock"><code>false</code> otherwise</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Setting this property to <code>true</code> switches Log4j Core into "Web application mode" (<em>"Web-app mode"</em>).</p>
+</div>
+<div class="paragraph">
+<p>In this mode Log4j is optimized to work in a Servlet container.</p>
+</div>
+<div class="paragraph">
+<p>This mode is incompatible with <a href="#log4j.enableThreadlocals"><code>log4j.enableThreadlocals</code></a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="log4j.enableThreadlocals"><a class="anchor" href="#log4j.enableThreadlocals"></a><code>log4j.enableThreadlocals</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ENABLE_THREADLOCALS</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code> if Web-app mode is enabled,</p>
+<p class="tableblock"><code>true</code> otherwise</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Setting this property to <code>true</code> switches Log4j Core into "garbage-free mode" (<em>"GC-free mode"</em>).</p>
+</div>
+<div class="paragraph">
+<p>In this mode Log4j uses <code>ThreadLocal</code>s for object pooling to prevent object allocations.</p>
+</div>
+<div class="paragraph">
+<p>This mode is incompatible with <a href="#log4j.isWebapp"><code>log4j.isWebapp</code></a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="log4j.gc.enableDirectEncoders"><a class="anchor" href="#log4j.gc.enableDirectEncoders"></a><code>log4j.gc.enableDirectEncoders</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_GC_ENABLE_DIRECT_ENCODERS</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>If <code>true</code>, garbage-aware layouts will directly encode log events into <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html">ByteBuffer</a>s provided by appenders.</p>
+</div>
+<div class="paragraph">
+<p>This prevents allocating temporary <code>String</code> and <code>char[]</code> instances.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="log4j.gc.encoderByteBufferSize"><a class="anchor" href="#log4j.gc.encoderByteBufferSize"></a><code>log4j.gc.encoderByteBufferSize</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_GC_ENCODER_BYTE_BUFFER_SIZE</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>8192</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The size in bytes of the <a href="../https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html">ByteBuffer</a>s stored in <code>ThreadLocal</code> fields by layouts and <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder">StringBuilderEncoder</a>s.</p>
+</div>
+<div class="paragraph">
+<p>This setting is only used if <a href="#log4j.gc.enableDirectEncoders"><code>log4j.gc.enableDirectEncoders</code></a> is set to <code>true</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="log4j.gc.encoderCharBufferSize"><a class="anchor" href="#log4j.gc.encoderCharBufferSize"></a><code>log4j.gc.encoderCharBufferSize</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_GC_ENCODER_CHAR_BUFFER_SIZE</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>4096</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The size in <code>char</code>s of the <a href="../https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html">ByteBuffer</a>s stored in <code>ThreadLocal</code> fields <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder">StringBuilderEncoder</a>s.</p>
+</div>
+<div class="paragraph">
+<p>This setting is only used if <a href="#log4j.gc.enableDirectEncoders"><code>log4j.gc.enableDirectEncoders</code></a> is set to <code>true</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="log4j.gc.initialReusableMsgSize"><a class="anchor" href="#log4j.gc.initialReusableMsgSize"></a><code>log4j.gc.initialReusableMsgSize</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_GC_INITIAL_REUSABLE_MSG_SIZE</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>128</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>In GC-free mode, this property determines the initial size of the reusable <code>StringBuilder</code>s used by <a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage">ReusableMessages</a> for formatting purposes.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="log4j.gc.maxReusableMsgSize"><a class="anchor" href="#log4j.gc.maxReusableMsgSize"></a><code>log4j.gc.maxReusableMsgSize</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_GC_MAX_REUSABLE_MSG_SIZE</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>518</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>In GC-free mode, this property determines the maximum size of the reusable <code>StringBuilder</code>s used by <a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage">ReusableMessages</a> for formatting purposes.</p>
+</div>
+<div class="paragraph">
+<p>The default value allows is equal to <code>2 &times; (2 &times; log4j.initialReusableMsgSize + 2) + 2</code> and allows the
+<code>StringBuilder</code> to be resized twice by the current JVM resize algorithm.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="log4j.gc.layoutStringBuilderMaxSize"><a class="anchor" href="#log4j.gc.layoutStringBuilderMaxSize"></a><code>log4j.gc.layoutStringBuilderMaxSize</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_GC_LAYOUT_STRING_BUILDER_MAX_SIZE</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2048</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>This property determines the maximum size of the reusable <code>StringBuilder</code>s used to format <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent">LogEvents</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="Layouts"><a class="anchor" href="#Layouts"></a>Layouts</h3>
+<div class="paragraph">
+<p>The following <a href="layouts.html" class="xref page">layouts</a> can be configured to run garbage-free during steady-state logging.
+To understand which configuration knobs exhibit what kind of allocation behaviour, see their dedicated pages.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="layouts.html#GELFLayout" class="xref page"><code>GelfLayout</code></a></p>
+</li>
+<li>
+<p><a href="json-template-layout.html#faq-garbage-free" class="xref page"><code>JsonTemplateLayout</code></a></p>
+</li>
+<li>
+<p><a href="layouts.html#PatternLayout-gcfree" class="xref page"><code>PatternLayout</code></a></p>
+</li>
+</ul>
+</div>
+<details>
+<summary class="title">Implementation notes</summary>
+<div class="content">
+<div class="paragraph">
+<p>Garbage-free <a href="layouts.html" class="xref page">layouts</a> need to implement the <code>Encoder&lt;LogEvent&gt;</code> interface.
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder.html"><code>StringBuilderEncoder</code></a> helps with encoding text to bytes in a garbage-free manner.</p>
+</div>
+</div>
+</details>
+</div>
+<div class="sect2">
+<h3 id="Appenders"><a class="anchor" href="#Appenders"></a>Appenders</h3>
+<div class="paragraph">
+<p>The following <a href="appenders.html" class="xref page">appenders</a> are garbage-free during steady-state logging:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="appenders.html#ConsoleAppender" class="xref page"><code>ConsoleAppender</code></a></p>
+</li>
+<li>
+<p><a href="appenders.html#FileAppender" class="xref page"><code>FileAppender</code></a></p>
+</li>
+<li>
+<p><a href="appenders.html#MemoryMappedFileAppender" class="xref page"><code>MemoryMappedFileAppender</code></a></p>
+</li>
+<li>
+<p><a href="appenders.html#RandomAccessFileAppender" class="xref page"><code>RandomAccessFileAppender</code></a></p>
+</li>
+<li>
+<p><a href="appenders.html#RollingFileAppender" class="xref page"><code>RollingFileAppender</code></a> (except during rollover)</p>
+</li>
+<li>
+<p><a href="appenders.html#RollingRandomAccessFileAppender" class="xref page"><code>RollingRandomAccessFileAppender</code></a> (except during rollover)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Any other appender not shared in the above list (including <a href="appenders.html#AsyncAppender" class="xref page"><code>AsyncAppender</code></a>) is not garbage-free.</p>
+</div>
+<details>
+<summary class="title">Implementation notes</summary>
+<div class="content">
+<div class="paragraph">
+<p>Garbage-free <a href="appenders.html" class="xref page">appenders</a> need to provide their <a href="layouts.html" class="xref page">layout</a> with a <code>ByteBufferDestination</code> implementation that the layout can directly write into.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -402,701 +736,332 @@ during steady-state logging.
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-as of version 2.18.0, the default Async Logger wait strategy used by Log4j
-(Timeout) is garbage-free. Some of the wait strategies included in LMAX disruptor 3.4.4,
-especially <code>TimeoutBlockingWaitStrategy</code> and <code>BlockingWaitStrategy</code> (Block)
-are not garbage-free since they
-cause <code>java.util.concurrent.locks.AbstractQueuedSynchronizer$Node</code> objects to be created.
-The default wait strategy used by Log4j uses a synchronized block instead of a ReentrantLock to avoid this problem.
-The Yield and Sleep wait strategies are garbage-free. (For configuring predefined wait strategies, see
-<a href="systemproperties.html#properties-log4j-async-logger" class="xref page">here</a>,
-you may also configure a <a href="async.html#WaitStrategy" class="xref page">custom wait strategy</a>.)
+<div class="paragraph">
+<p><code>AbstractOutputStreamAppender</code> has been modified to make the following appenders garbage-free:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ConsoleAppender</code></p>
+</li>
+<li>
+<p><code>(Rolling)FileAppender</code></p>
+</li>
+<li>
+<p><code>(Rolling)RandomAccessFileAppender</code></p>
+</li>
+<li>
+<p><code>MemoryMappedFileAppender</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>An effort has been made to minimize impact on custom appenders that extend <code>AbstractOutputStreamAppender</code>, but it is impossible to guarantee that changing the superclass will not impact any and all subclasses.
+Custom appenders that extend <code>AbstractOutputStreamAppender</code> should verify that they still function correctly.
+In case there is a problem, <a href="#log4j2.enableDirectEncoders">the <code>log4j2.enableDirectEncoders</code> system property</a> can be set to <code>false</code> to revert to the pre-Log4j 2.6 behaviour.</p>
+</div>
 </td>
 </tr>
 </table>
 </div>
+</div>
+</details>
+</div>
 <div class="sect2">
-<h3 id="_disabling_garbage_free_logging"><a class="anchor" href="#_disabling_garbage_free_logging"></a>Disabling Garbage-free Logging</h3>
+<h3 id="Filters"><a class="anchor" href="#Filters"></a>Filters</h3>
 <div class="paragraph">
-<p>There are two separate system properties for manually controlling the
-mechanisms Log4j uses to avoid creating temporary objects:</p>
+<p>The following <a href="filters.html" class="xref page">filters</a> are garbage-free during steady-state logging:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><code>log4j2.enableDirectEncoders</code> - if "true" (the default) log events are
-converted to text and this text is converted to bytes without creating
-temporary objects. Note: <em>synchronous</em> logging performance may be worse
-for multi-threaded applications in this mode due to synchronization on
-the shared buffer. If your application is multi-threaded and logging
-performance is important, consider using Async Loggers.</p>
-</li>
-<li>
-<p>The ThreadContext map is <em>not</em> garbage-free by default, but from Log4j
-2.7 it can be configured to be garbage-free by setting system property
-<code>log4j2.garbagefreeThreadContextMap</code> to "true".</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Instead of system properties, the above properties can also be specified
-in a file named <code>log4j2.component.properties</code> by including this file in
-the classpath of the application. See the
-<a href="systemproperties.html" class="xref page">manual regarding system
-properties</a> for more info.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="Appenders"><a class="anchor" href="#Appenders"></a>Supported Appenders</h3>
-<div class="paragraph">
-<p>The following <a href="appenders.html" class="xref page">appenders</a> are garbage-free during
-steady-state logging:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Console</p>
-</li>
-<li>
-<p>File</p>
-</li>
-<li>
-<p>RollingFile (some temporary objects are created during file rollover)</p>
-</li>
-<li>
-<p>RandomAccessFile</p>
-</li>
-<li>
-<p>RollingRandomAccessFile (some temporary objects are created during
-file rollover)</p>
-</li>
-<li>
-<p>MemoryMappedFile</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Any other appenders not in the above list (including AsyncAppender)
-create temporary objects during steady-state logging. Instead of
-AsyncAppender, use <a href="async.html" class="xref page">Async Loggers</a> to log asynchronously
-in a garbage-free manner.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="Filters"><a class="anchor" href="#Filters"></a>Supported Filters</h3>
-<div class="paragraph">
-<p>The following <a href="filters.html" class="xref page">filters</a> are garbage-free during
-steady-state logging:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>CompositeFilter (adding and removing element filters creates temporary
+<p><a href="filters.html#CompositeFilter" class="xref page"><code>CompositeFilter</code></a> (adding and removing element filters creates temporary
 objects for thread safety)</p>
 </li>
 <li>
-<p>DynamicThresholdFilter</p>
+<p><a href="filters.html#DynamicThresholdFilter" class="xref page"><code>DynamicThresholdFilter</code></a></p>
 </li>
 <li>
-<p>LevelRangeFilter (garbage free since 2.8)</p>
+<p><a href="filters.html#LevelRangeFilter" class="xref page"><code>LevelRangeFilter</code></a> (garbage-free since <code>2.8</code>)</p>
 </li>
 <li>
-<p>MapFilter (garbage free since 2.8)</p>
+<p><a href="filters.html#MapFilter" class="xref page"><code>MapFilter</code></a> (garbage-free since <code>2.8</code>)</p>
 </li>
 <li>
-<p>MarkerFilter (garbage free since 2.8)</p>
+<p><a href="filters.html#MarkerFilter" class="xref page"><code>MarkerFilter</code></a> (garbage-free since <code>2.8</code>)</p>
 </li>
 <li>
-<p>StructuredDataFilter (garbage free since 2.8)</p>
+<p><a href="filters.html#StructuredDataFilter" class="xref page"><code>StructuredDataFilter</code></a> (garbage-free since <code>2.8</code>)</p>
 </li>
 <li>
-<p>ThreadContextMapFilter (garbage free since 2.8)</p>
+<p><a href="filters.html#ThreadContextMapFilter" class="xref page"><code>ThreadContextMapFilter</a></code> (garbage-free since <code>2.8</code>)</p>
 </li>
 <li>
-<p>ThresholdFilter (garbage free since 2.8)</p>
+<p><a href="filters.html#ThresholdFilter" class="xref page"><code>ThresholdFilter</code></a> (garbage-free since <code>2.8</code>)</p>
 </li>
 <li>
-<p>TimeFilter (garbage free since 2.8 except when range must be recalculated once per day)</p>
+<p><a href="filters.html#TimeFilter" class="xref page"><code>TimeFilter</code></a> (garbage-free since <code>2.8</code> except when range must be recalculated once per day)</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Other filters like BurstFilter, RegexFilter and ScriptFilter are not
-trivial to make garbage free, and there is currently no plan to change
-them.</p>
+<p>Any other filter not shared in the above list is not garbage-free.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="Layouts"><a class="anchor" href="#Layouts"></a>Supported Layouts</h3>
-<div class="sect3">
-<h4 id="_jsontemplatelayout"><a class="anchor" href="#_jsontemplatelayout"></a>JsonTemplateLayout</h4>
+<h3 id="recyclers"><a class="anchor" href="#recyclers"></a>Recyclers</h3>
 <div class="paragraph">
-<p><code>JsonTemplateLayout</code> is garbage-free with
-<a href="json-template-layout.html#faq-garbage-free" class="xref page">a few exceptions</a>.</p>
+<p>Log4j contains the <em>recycler</em> abstraction that models the buffer-and-reuse strategy used to operate without any extra memory allocations at steady state.
+Recyclers implement the <code>RecyclerFactoryProvider</code> interface in <code>log4j-kit</code> (a dependency of <code>log4j-core</code>) and provide themselves as a <code>ServiceLoader</code>.
+Hence, you can easily implement custom recyclers and inject them using the <code>ServiceLoader</code> mechanism.</p>
 </div>
+<div class="paragraph">
+<p>Log4j chooses a recycler using the following procedure:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Using <code>ServiceLoader</code> mechanism, loads all available <code>RecyclerFactoryProvider</code> implementations</p>
+</li>
+<li>
+<p>Sorts providers (the lower <code>order</code> value will come first)</p>
+</li>
+<li>
+<p>If <a href="#log4j.recycler.factory">[log4j.recycler.factory]</a> is provided, the first provider whose name matching with this property value will be used. Otherwise, the first provider will be used.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The predefined recycler factory providers are as follows:</p>
 </div>
 <div class="sect3">
-<h4 id="_patternlayout"><a class="anchor" href="#_patternlayout"></a>PatternLayout</h4>
-<div class="paragraph">
-<p>PatternLayout with the following limited set of conversion patterns is
-garbage-free. Format modifiers to control such things as field width,
-padding, left and right justification will not generate garbage.</p>
-</div>
+<h4 id="recyclers-dummy"><a class="anchor" href="#recyclers-dummy"></a>Dummy recycler</h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 66.6667%;">
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
 </colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Conversion Pattern</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%c{precision}, %logger{precision}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Logger name</p></td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Module</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>log4j-kit</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d, %date</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Note: Only the predefined date formats are garbage-free: (millisecond
-separator may be either a comma ',' or a period '.')</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Pattern</th>
-<th class="tableblock halign-left valign-top">Example</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d{DEFAULT}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2012-11-02 14:34:02,781</p></td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Name</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dummy</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d{ISO8601}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2012-11-02T14:34:02,781</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d{ISO8601_BASIC}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">20121102T143402,781</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d{ABSOLUTE}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">14:34:02,781</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d{DATE}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">02 Nov 2012 14:34:02,781</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d{COMPACT}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">20121102143402781</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d{HH:mm:ss,SSS}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">14:34:02,781</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d{dd MMM yyyy HH:mm:ss,SSS}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">02 Nov 2012 14:34:02,781</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d{HH:mm:ss}{GMT+0}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">18:34:02</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d{UNIX}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1351866842</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d{UNIX_MILLIS}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1351866842781</p></td>
-</tr>
-</tbody>
-</table></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%enc{pattern}, %encode{pattern}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Encodes special characters such as
-'\n' and HTML characters to help prevent log forging and some XSS
-attacks that could occur when displaying logs in a web browser -
-garbage-free since 2.8</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%equals{pattern}{test}{substitution},
-%equalsIgnoreCase{pattern}{test}{substitution}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Replaces occurrences
-of 'test', a string, with its replacement 'substitution' in the string
-resulting from evaluation of the pattern - garbage-free since 2.8</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%highlight{pattern}{style}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Adds ANSI colors - garbage-free since 2.7
-(unless nested pattern is not garbage free)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%K{key}, %map{key}, %MAP{key}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Outputs the entries in a
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html">MapMessage</a>,
-if one is present in the event - garbage-free since 2.8.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%m, %msg, %message</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Log message (garbage-free unless message text
-contains '${')</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%marker</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The full name of the marker (including parents) - garbage-free
-since 2.8</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%markerSimpleName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The simple name of the marker (not including
-parents)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%maxLen, %maxLength</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Truncates another pattern to some max number of
-characters - garbage-free since 2.8</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%n</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The platform dependent line separator</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%N, %nano</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">System.nanoTime() when the event was logged</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%notEmpty{pattern}, %varsNotEmpty{pattern},
-%variablesNotEmpty{pattern}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Outputs the result of evaluating the
-pattern if and only if all variables in the pattern are not empty -
-garbage-free since 2.8</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%p, %level</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The level of the logging event</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%r, %relative</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The number of milliseconds elapsed since the JVM was
-started until the creation of the logging event - garbage-free since 2.8</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%sn, %sequenceNumber</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A sequence number that will be incremented in
-every event - garbage-free since 2.8</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%style{pattern}{ANSI style}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Style the message - garbage-free since
-2.7 (unless nested pattern is not garbage free)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%T, %tid, %threadId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the thread that generated the logging
-event</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%t, %tn, %thread, %threadName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the thread that generated
-the logging event</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%tp</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The priority of the thread that generated the logging event</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%X{key[,key2&#8230;&#8203;]}, %mdc{key[,key2&#8230;&#8203;]}, %MDC{key[,key2&#8230;&#8203;]}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Outputs
-the Thread Context Map (also known as the Mapped Diagnostic Context or
-MDC) associated with the thread that generated the logging event -
-garbage-free since 2.8</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>literal text</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Garbage-free unless literal contains '${' (variable
-substitution)</p></td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Order</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">900</p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Other PatternLayout conversion patterns, and other Layouts may be
-updated to avoid creating temporary objects in future releases. (Patches
-welcome!)</p>
+<p>Does not recycle anything; all instances are freshly created.
+(Not recommended for production!
+Intended as a test utility.)</p>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-Logging exceptions and stack traces will create temporary
-objects with any layout. (However, Layouts will only create these
-temporary objects when an exception actually occurs.) We haven&#8217;t figured
-out a way to log exceptions and stack traces without creating temporary
-objects. That is unfortunate, but you probably still want to log them
-when they happen.
-</td>
-</tr>
-</table>
 </div>
-<div class="sidebarblock">
-<div class="content">
-<div class="admonitionblock note">
-<table>
+<div class="sect3">
+<h4 id="recyclers-threadLocal"><a class="anchor" href="#recyclers-threadLocal"></a>Thread-local recycler</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
 <tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-patterns containing regular expressions and lookups for property
-substitution will result in temporary objects being created during
-steady-state logging.
-</td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Module</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>log4j-kit</code></p></td>
 </tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Name</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>threadLocal</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Order</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Integer.MAX_VALUE</code>, if <code>javax.servlet.Servlet</code> or <code>jakarta.servlet.Servlet</code> is in the classpath;<br>
+700, otherwise</p></td>
+</tr>
+</tbody>
 </table>
+<div class="paragraph">
+<p>Pools objects in a fixed-size queue stored in a <code>ThreadLocal</code>.
+If pool runs out of capacity (see <a href="#log4j.recycler.capacity">[log4j.recycler.capacity]</a>), it will start creating fresh instances for new requests.</p>
 </div>
 <div class="paragraph">
-<p>Including location information is done by walking the stacktrace of an
-exception, which creates temporary objects, so the following patterns
-are not garbage-free:</p>
+<p>Note that it is effectively disabled for servlet environments.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>%C, %class - Class Name</p>
-</li>
-<li>
-<p>%F, %file - File Location</p>
-</li>
-<li>
-<p>%l, %location - Location</p>
-</li>
-<li>
-<p>%L, %line - Line Location</p>
-</li>
-<li>
-<p>%M, %method - Method Location</p>
-</li>
-</ul>
 </div>
+<div class="sect3">
+<h4 id="recyclers-queue"><a class="anchor" href="#recyclers-queue"></a>Queueing recycler</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Module</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>log4j-kit</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Name</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>queue</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Order</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">800</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
-<p>Also, the pattern converters for formatting Throwables are not
-garbage-free:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>%ex, %exception, %throwable - The Throwable trace bound to the
-LoggingEvent</p>
-</li>
-<li>
-<p>%rEx, %rException %rThrowable - Same as %ex but with wrapping
-exceptions</p>
-</li>
-<li>
-<p>%xEx, %xException, %xThrowable - Same as %ex but with class packaging
-information</p>
-</li>
-<li>
-<p>%u, %uuid - Creates a new random or time-based UUID while formatting</p>
-</li>
-</ul>
+<p>Pools objects in a fixed-size <code>ArrayBlockingQueue</code> queue.
+If pool runs out of capacity (see <a href="#log4j.recycler.capacity">[log4j.recycler.capacity]</a>), it will start creating fresh instances for new requests.</p>
 </div>
 </div>
+<div class="sect3">
+<h4 id="recyclers-jctools"><a class="anchor" href="#recyclers-jctools"></a>JCTools MPMC recycler</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Module</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>log4j-jctools</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Name</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jctools-mpmc</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Order</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">600</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Pools objects in a fixed-size JCTools MPMC queue.
+If pool runs out of capacity (see <a href="#log4j.recycler.capacity">[log4j.recycler.capacity]</a>), it will start creating fresh instances for new requests.</p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="api"><a class="anchor" href="#api"></a>API Changes</h3>
+<h3 id="core-limitations"><a class="anchor" href="#core-limitations"></a>Limitations</h3>
 <div class="paragraph">
-<p>Methods have been added to the <code>Logger</code> interface so that no vararg
-array objects are created when logging messages with up to ten
-parameters.</p>
+<p>There are certain caveats associated with the configuration of garbage-free logging:</p>
 </div>
-<div class="paragraph">
-<p>Also, methods have been added to the <code>Logger</code> interface to log
-<code>java.lang.CharSequence</code> messages. User-defined objects that implement
-the <code>CharSequence</code> interface can be logged without creating temporary
-objects: Log4j will try to turn CharSequence messages, Object messages
-and message parameters into text by appending them to a StringBuilder as
-a CharSequence. This avoids calling <code>toString()</code> on these objects.</p>
+<div id="core-limitation-properties" class="dlist">
+<dl>
+<dt class="hdlist1"><code>&lt;Properties&gt;</code> section</dt>
+<dd>
+<p>A configuration containing <a href="configuration.html#PropertySubstitution" class="xref page">a <code>&lt;Properties&gt;</code> section</a> will result in temporary objects being created during steady-state logging.</p>
+</dd>
+</dl>
 </div>
+<div id="core-limitation-async-logger-wait-strategy" class="dlist">
+<dl>
+<dt class="hdlist1">Asynchronous logger wait strategies</dt>
+<dd>
+<p>As of version <code>2.18.0</code>, the default <a href="async.html" class="xref page">asynchronous logger</a> wait strategy (i.e., <code>Timeout</code>) is garbage-free while running against both LMAX Disruptor 3 and 4.
+See <a href="async.html#log4j2.asyncLoggerWaitStrategy" class="xref page"><code>log4j2.asyncLoggerWaitStrategy</code></a> for details on predefined wait strategies.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="api"><a class="anchor" href="#api"></a>Log4j API usage</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>An alternative is to implement the
-<a href="http://logging.apache.org/log4j/2.x/log4j-api/xref/org/apache/logging/log4j/util/StringBuilderFormattable.html"><code>org.apache.logging.log4j.util.StringBuilderFormattable</code></a>
-interface. If an object is logged that implements this interface, its
-<code>formatTo</code> method is called instead of <code>toString()</code>.</p>
+<p><a href="api.html" class="xref page">Log4j API</a> contains several features to facilitate garbage-free logging:</p>
+</div>
+<div class="sect2">
+<h3 id="api-vararg"><a class="anchor" href="#api-vararg"></a>Parameterized message arguments</h3>
+<div class="paragraph">
+<p>The <code>Logger</code> interface contains methods for parameterized messages up to 10 arguments.
+Logging more than 10 parameters creates <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/language/varargs.html">vararg arrays</a>.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="codeImpact"><a class="anchor" href="#codeImpact"></a>Impact on Application Code: Autoboxing</h3>
+<h3 id="api-encode-custom-object"><a class="anchor" href="#api-encode-custom-object"></a>Encoding custom objects</h3>
 <div class="paragraph">
-<p>We made an effort to make logging garbage-free without requiring code
-changes in existing applications, but there is one area where this was
-not possible. When logging primitive values (i.e. int, double, boolean,
-etc.) the JVM autoboxes these primitive values to their Object wrapper
-equivalents, creating garbage.</p>
+<p>When a message parameter contains an unknown type by the layout, it will encode by calling <code>toString()</code> on these objects.
+Most objects don&#8217;t have garbage-free <code>toString()</code> methods.
+Objects themselves can implement their own garbage-free encoders by either extending from <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/CharSequence.html">Java&#8217;s <code>CharSequence</code></a> or <a href="../javadoc/log4j-api/org/apache/logging/log4j/util/StringBuilderFormattable.html">Log4j&#8217;s <code>StringBuilderFormattable</code></a>.</p>
 </div>
+</div>
+<div class="sect2">
+<h3 id="codeImpact"><a class="anchor" href="#codeImpact"></a>Avoiding autoboxing</h3>
 <div class="paragraph">
-<p>Log4j provides an <code>Unbox</code> utility to prevent autoboxing of primitive
-parameters. This utility contains a thread-local pool of reused
-<code>StringBuilder`s. The `Unbox.box(primitive)</code> methods write directly into
-a StringBuilder, and the resulting text will be copied into the final
-log message text without creating temporary objects.</p>
+<p>We made an effort to make logging garbage-free without requiring code changes in existing applications, but there is one area where this was not possible.
+<a href="https://docs.oracle.com/javase/tutorial/java/data/autoboxing.html">When logging primitive values (i.e., <code>int</code>, <code>double</code>, <code>boolean</code>, etc.) the JVM autoboxes these primitive values to their <code>Object</code> wrapper equivalents, creating garbage.</a>
+Log4j provides an <code>Unbox</code> utility to prevent autoboxing of primitive parameters:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import static org.apache.logging.log4j.util.Unbox.box;
 
-// ...
-public void garbageFree() {
-    logger.debug("Prevent primitive autoboxing {} {}", box(10L), box(2.6d));
-}</code></pre>
+LOGGER.debug("Prevent primitive autoboxing {} {}", box(10L), box(2.6d));</code></pre>
 </div>
 </div>
-<div class="sidebarblock">
+<div class="paragraph">
+<p>This utility contains a <code>ThreadLocal</code> pool of reused <code>StringBuilder</code>s.
+The pool size is configured by <a href="#log4j2.unboxRingbufferSize">the <code>log4j2.unboxRingbufferSize</code> system property</a>.
+The <code>Unbox.box(primitive)</code> methods write directly into a <code>StringBuilder</code>, and the resulting text will be copied into the final log message text without creating temporary objects.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="api-limitations"><a class="anchor" href="#api-limitations"></a>Limitations</h3>
+<div class="paragraph">
+<p>Not all Log4j API feature set is garbage-free, specifically:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>ThreadContext</code> map (aka. MDC) is not garbage-free by default, but can be configured to be garbage-free by setting <a href="#log4j2.garbagefreeThreadContextMap">the <code>log4j2.garbagefreeThreadContextMap</code> system property</a> to <code>true</code>.</p>
+</li>
+<li>
+<p>The <code>ThreadContext</code> stack is not garbage-free.</p>
+</li>
+<li>
+<p>Logging very large messages (i.e., more than <a href="#log4j2.maxReusableMsgSize"><code>log4j2.maxReusableMsgSize</code></a> characters, which defaults to 518), when all loggers are <a href="async.html" class="xref page">asynchronous loggers</a>, will cause the internal <code>StringBuilder</code> in the
+<code>RingBuffer</code> to be trimmed back to their configured maximum size.</p>
+</li>
+<li>
+<p>Logging messages containing <code>${variable}</code> substitutions creates temporary objects.</p>
+</li>
+<li>
+<p>Logging a lambda as a parameter:</p>
+<div class="listingblock">
 <div class="content">
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-not all logging is garbage free. Specifically:
-</td>
-</tr>
-</table>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.info("lambda value is {}", () -&gt; callExpensiveMethod());</code></pre>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>The ThreadContext map is not garbage-free by default, but can be
-configured to be garbage-free by setting system property
-<code>log4j2.garbagefreeThreadContextMap</code> to "true".</p>
+</div>
+<div class="paragraph">
+<p>creates a vararg array.
+Logging a lambda expression by itself:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.debug(() -&gt; callExpensiveMethod());</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>is garbage-free.</p>
+</div>
 </li>
 <li>
-<p>The ThreadContext stack is not garbage-free.</p>
+<p>The <a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#traceEntry()"><code>traceEntry()</code></a> and <a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#traceExit()"><code>traceExit()</code></a> methods create temporary objects.</p>
 </li>
 <li>
-<p>Logging more than 10 parameters creates vararg arrays.</p>
-</li>
-<li>
-<p>Logging very large messages (more than 518 characters) when all
-loggers are Async Loggers will cause the internal StringBuilder in the
-RingBuffer to be trimmed back to their max size.</p>
-</li>
-<li>
-<p>Logging messages containing '${': substituting a <code>${variable}</code> creates
-temporary objects.</p>
-</li>
-<li>
-<p>Logging a lambda <em>as a parameter</em>
-(<code>logger.info("lambda value is {}", () &#8594; callExpensiveMethod())</code>)
-creates a vararg array. Logging a lambda expression by itself is
-garbage-free: <code>logger.debug) &#8594; callExpensiveMethod(</code>.</p>
-</li>
-<li>
-<p>The <code>Logger.traceEntry</code> and <code>Logger.traceExit</code> methods create
-temporary objects.</p>
-</li>
-<li>
-<p>Time calculations are not garbage free when log4j2.usePreciseClock is set to true.
-The default is false.</p>
+<p>Time calculations are not garbage-free when the <code>log4j2.usePreciseClock</code> system property (defaults to <code>false</code>) is set to <code>true</code>.</p>
 </li>
 </ul>
 </div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="Performance"><a class="anchor" href="#Performance"></a>Performance</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="Latency"><a class="anchor" href="#Latency"></a>Response Time Latency</h3>
-<div class="paragraph">
-<p>Response time is how long it takes to log a message under a certain
-load. What is often reported as latency is actually <em>service time</em>: how
-long it took to perform the operation. This hides the fact that a single
-spike in service time adds queueing delay for many of the subsequent
-operations. Service time is easy to measure (and often looks good on
-paper) but is irrelevant for users since it omits the time spent waiting
-for service. For this reason we report response time: service time plus
-wait time. See the <a href="performance.html" class="xref page">response time
-section</a> of the performance page for more detail.</p>
-</div>
-<div class="paragraph">
-<p>The response time test results below were all derived from running the
-ResponseTimeTest class which can be found in the Log4j 2 unit test
-source directory. If you want to run these tests yourself, here are the
-command line options we used:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>-Xms1G -Xmx1G (prevent heap resizing during the test)</p>
-</li>
-<li>
-<p>-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
--DAsyncLogger.WaitStrategy=busyspin (to use Async Loggers. The BusySpin
-wait strategy reduces some jitter.)</p>
-</li>
-<li>
-<p><strong>classic mode:</strong> -Dlog4j2.enable.direct.encoders=false<br>
-<strong>garbage-free mode:</strong> -Dlog4j2.enable.direct.encoders=true</p>
-</li>
-<li>
-<p>-XX:CompileCommand=dontinline,org.apache.logging.log4j.core.async.perftest.NoOpIdleStrategy::idle</p>
-</li>
-<li>
-<p>-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps
--XX:+PrintTenuringDistribution -XX:+PrintGCApplicationConcurrentTime
--XX:+PrintGCApplicationStoppedTime (to eyeball GC and safepoint pauses)</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_async_loggers"><a class="anchor" href="#_async_loggers"></a>Async Loggers</h3>
-<div class="paragraph">
-<p>The graph below compares "classic" logging to garbage-free logging
-response time behaviour for Log4j&#8217;s Async Loggers. In the graph, "100k"
-means logging at a sustained load of 100,000 messages/second, "800k" is
-a sustained load of 800,000 messages/second.</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="../_images/ResponseTimeAsyncClassicVsGcFree-label.png" alt="image"></span></p>
-</div>
-<div class="paragraph">
-<p>In <strong>classic</strong> mode we see numerous minor garbage collections which pause
-the application threads for 3 milliseconds or more. This quickly adds up
-to response time delays of almost 10 milliseconds. As you can see in the
-graph, increasing the load shifts the curve to the left (there are more
-spikes). This makes sense: logging more means more pressure on the
-garbage collector resulting in more minor GC pauses. We experimented a
-little with reducing the load to 50,000 or even 5000 messages/second,
-but this did not eliminate the 3 millisecond pauses, it just made them
-occur less frequently. Note that all GC pauses in this test are minor GC
-pauses. We did not see any full garbage collections.</p>
-</div>
-<div class="paragraph">
-<p>In <strong>garbage-free</strong> mode, maximum response time remains well below 1
-millisecond under a wide range of loads. (Max 780 us at 800,000
-messages/sec, max 407 us at 600,000 messages/sec, with the 99% around 5
-us for all loads up to 800,000 messages/sec.) Increasing or decreasing
-the load does not change the response time behaviour. We did not
-investigate the cause of the 200-300 microsecond pauses we saw in these
-tests.</p>
-</div>
-<div class="paragraph">
-<p>When we increased the load further we begin to see larger response time
-pauses for both classic and garbage-free logging. At sustained loads of
-1 million messages/second or more we start to approach the maximum
-throughput of the underlying RandomAccessFile Appender (see the
-synchronous logging throughput chart below). At these loads the
-ringbuffer starts to fill up and backpressure kicks in: attempting to
-add another message when the ringbuffer is full will block until a free
-slot becomes available. We start to see response times of tens of
-milliseconds or more; and attempting to increase the load even more
-results in larger and larger response time spikes.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_synchronous_file_logging"><a class="anchor" href="#_synchronous_file_logging"></a>Synchronous File Logging</h3>
-<div class="paragraph">
-<p>With synchronous file logging, garbage-free logging still performs
-better than classic logging, but the difference is less pronounced.</p>
-</div>
-<div class="paragraph">
-<p>At a workload of 100,000 messages/second, classic logging max response
-time was a little over 2 milliseconds where garbage-free logging was a
-little over 1 millisecond. When the workload is increased to 300,000
-messages/second, classic logging shows response time pauses of 6
-milliseconds where the garbage-free response times were less than 3
-milliseconds. It may be possible to improve on this, we did not
-investigate further yet.</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="../_images/ResponseTimeSyncClassicVsGcFree.png" alt="image"></span></p>
-</div>
-<div class="paragraph">
-<p>The above results are obtained with the ResponseTimeTest class which can
-be found in the Log4j 2 unit test source directory, running on JDK
-1.8.0_45 on RHEL 6.5 (Linux 2.6.32-573.1.1.el6.x86_64) with 10-core Xeon
-CPU E5-2660 v3 @2.60GHz with hyperthreading switched on (20 virtual
-cores).</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="Throughput"><a class="anchor" href="#Throughput"></a>Classic Logging has Slightly Higher Throughput</h3>
-<div class="paragraph">
-<p>Throughput is slightly worse for garbage-free logging, compared to
-classic logging. This is true for both synchronous and asynchronous
-logging. The graph below compares the sustained throughput of
-synchronous logging to a file with Log4j 2.6 in garbage-free mode,
-classic mode and Log4j 2.5.</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="../_images/garbage-free2.6-SyncThroughputLinux.png" alt="Throughput of Log4j 2.6 in garbage-free mode is slightly worse than in classic mode" width="but on par with 2.5 and much better than alternatives logging libraries"></span></p>
-</div>
-<div class="paragraph">
-<p>The results above are obtained with the
-<a href="http://openjdk.java.net/projects/code-tools/jmh/">JMH</a> Java benchmark
-harness. See the FileAppenderBenchmark source code in the log4j-perf-test
-module.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="UnderTheHood"><a class="anchor" href="#UnderTheHood"></a>Under the Hood</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Custom Message implementations that implement
-<code>org.apache.logging.log4j.util.StringBuilderFormattable</code> can be
-converted to text by garbage-free Layouts without creating temporary
-objects. PatternLayout uses this mechanism and other layouts that
-convert LogEvents to text will likely also look for this interface.</p>
-</div>
-<div class="paragraph">
-<p>Custom Layouts that want to be garbage-free should implement the
-<code>Encoder&lt;LogEvent&gt;</code> interface. For custom Layouts that convert a
-LogEvent to a text representation, the
-<code>org.apache.logging.log4j.core.layout.StringBuilderEncoder</code> class may be
-useful to convert this text to bytes in a garbage-free manner.</p>
-</div>
-<div class="paragraph">
-<p>Custom Appenders that want to be garbage-free should provide their
-Layout with a <code>ByteBufferDestination</code> implementation that the Layout can
-directly write into.</p>
-</div>
-<div class="paragraph">
-<p><code>AbstractOutputStreamAppender</code> has been modified to make the
-ConsoleAppender, (Rolling)FileAppender,
-(Rolling)RandomAccessFileAppender and MemoryMappedFileAppender
-garbage-free. An effort has been made to minimize impact on custom
-Appenders that extend <code>AbstractOutputStreamAppender</code>, but it is
-impossible to guarantee that changing the superclass will not impact any
-and all subclasses. Custom Appenders that extend
-<code>AbstractOutputStreamAppender</code> should verify that they still function
-correctly. In case there is a problem, system property
-<code>log4j2.enable.direct.encoders</code> can be set to "false" to revert to the
-pre-Log4j 2.6 behaviour.</p>
 </div>
 </div>
 </div>

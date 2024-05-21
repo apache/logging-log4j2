@@ -158,18 +158,13 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="createForEnvironment(org.apache.logging.log4j.kit.env.PropertyEnvironment)">
 <h3>createForEnvironment</h3>
-<div class="member-signature"><span class="annotations">@Nullable
-</span><span class="return-type"><a href="RecyclerFactory.html" title="interface in org.apache.logging.log4j.kit.recycler">RecyclerFactory</a></span>&nbsp;<span class="element-name">createForEnvironment</span><wbr><span class="parameters">(<a href="../env/PropertyEnvironment.html" title="interface in org.apache.logging.log4j.kit.env">PropertyEnvironment</a>&nbsp;environment)</span></div>
-<div class="block">Creates a recycler factory for the provided environment.
- <p>
- The return value can be null indicating that the recycler factory is not available for the provided environment.
- For instance, the provider of a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/ThreadLocal.html" title="class or interface in java.lang" class="external-link"><code>ThreadLocal</code></a>-based recycler factory can return null if the environment is of a web application.
- </p></div>
+<div class="member-signature"><span class="return-type"><a href="RecyclerFactory.html" title="interface in org.apache.logging.log4j.kit.recycler">RecyclerFactory</a></span>&nbsp;<span class="element-name">createForEnvironment</span><wbr><span class="parameters">(<a href="../env/PropertyEnvironment.html" title="interface in org.apache.logging.log4j.kit.env">PropertyEnvironment</a>&nbsp;environment)</span></div>
+<div class="block">Creates a recycler factory for the provided environment.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>environment</code> - an environment</dd>
 <dt>Returns:</dt>
-<dd>either a recycler factory instance, or null, if the associated recycler factory is not available for the given environment</dd>
+<dd>a recycler factory instance for the given environment</dd>
 </dl>
 </section>
 </li>
