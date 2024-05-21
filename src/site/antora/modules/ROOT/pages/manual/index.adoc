@@ -25,12 +25,11 @@ The project is actively maintained by a {logging-services-url}/team-list.html[te
 Logging is an essential part of the software development process. 
 It provides a way to track the flow of execution in a program, allowing developers 
 to understand the application's behavior without needing a debugger. 
-This is particularly useful when trying to track down a bug or understand 
-why a particular piece of code is running slow.
+This is particularly useful when tracking bugs or understanding why a particular code runs slowly.
 
 The original concept for Log4j was conceived in early 1996 when the 
 E.U. SEMPER project decided to develop its own tracing API. 
-In 2003, the project was donated to the Apache Software Foundation, becoming Apache Log4j. 
+In 2003, the project was donated to the Apache Software Foundation, which became Apache Log4j. 
 
 Since then, Log4j has seen numerous releases and has become a widely adopted solution.
 
