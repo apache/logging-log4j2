@@ -54,13 +54,13 @@ When the application is logging faster than the underlying appender can keep up 
 [cols="1h,5"]
 |===
 | Env. variable | LOG4J_ASYNC_LOGGER_CONFIG_WAIT_STRATEGY
-| Type          | https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/WaitStrategy.html[Class<? extends WaitStrategy>] or predefined constant
+| Type          | predefined constant
 | Default value | `Timeout`
 |===
 
 Specifies the https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/WaitStrategy.html[WaitStrategy] used by the LMAX Disruptor.
 
-The value needs to be a fully qualified class name of a custom `WaitStrategy` implementation (cf. xref:manual/async.adoc#custom-waitstrategy[Custom WaitStrategy]) or one of the predefined constants:
+The value needs to be one of the predefined constants:
 
 Block:: a strategy that uses a lock and condition variable for the I/O thread waiting for log events.
 Block can be used when throughput and low-latency are not as important as CPU resource.
@@ -73,8 +73,9 @@ Sleep:: a strategy that initially spins, then uses a `Thread.yield()`, and event
 Sleep is a good compromise between performance and CPU resource.
 This strategy has very low impact on the application thread, in exchange for some additional latency for actually getting the message logged.
 
-Yield:: is a strategy that uses a `Thread.yield()` for waiting for log events after an initially spinning.
-Yield is a good compromise between performance and CPU resource, but may use more CPU than `Sleep` in order to get the message logged to disk sooner.
+Yield:: is a strategy that will use `100%` CPU, but will give up the CPU if other threads require CPU resources.
+
+See also xref:manual/async.adoc#custom-waitstrategy[Custom `WaitStrategy`] for an alternative way to configure the wait strategy.
 
 [id=log4j2.asyncLoggerConfigTimeout]
 == `log4j2.asyncLoggerConfigTimeout`

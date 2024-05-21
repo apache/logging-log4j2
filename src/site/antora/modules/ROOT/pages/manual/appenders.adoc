@@ -40,8 +40,38 @@ In the tables below, the "Type" column corresponds to the Java type expected.
 For non-JDK classes, these should usually be in
 link:../javadoc/log4j-core/index.html[Log4j Core] unless otherwise noted.
 
-[#AsyncAppender]
-== AsyncAppender
+[#common-properties]
+== Common properties
+
+These configuration attributes are shared by multiple appenders:
+
+[#immediateFlush]
+=== `immediateFlush`
+
+[cols="1h,5"]
+|===
+| Type          | `boolean`
+| Default value | `true`
+|===
+
+If set to `true`, Log4j will flush all Java buffers at the end of each event:
+
+* for appenders based on Java's
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/io/OutputStream.html[OutputStream]
+a call to the `OutputStream.flush()` method is performed.
+* if xref:manual/systemproperties.adoc#log4j2.enableDirectEncoders[log4j2.enableDirectEncoders] is set to `true`, many Log4j appenders use a
+https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html[ByteBuffer]
+to format log events before sending them to the underlying resource.
+Setting `immediateFlush` to `true` flushes these buffers at each event.
+
+[IMPORTANT]
+====
+This setting only guarantees that a byte representation of the log event is passed to the operating system.
+It does not ensure that the operating system writes the event to the underlying storage.
+====
+
+[id=AsyncAppender]
+== [[asyncappender]] AsyncAppender
 
 The AsyncAppender accepts references to other Appenders and causes LogEvents to be written to them on a separate Thread.
 Note that exceptions while writing to those Appenders will be hidden from the application.
@@ -54,6 +84,21 @@ Note that multi-threaded applications should exercise care when using this appen
 xref:manual/performance.adoc#asyncLogging[tests showed] performance may become worse when more threads are logging concurrently.
 Consider using
 xref:manual/async.adoc[lock-free Async Loggers] for optimal performance.
+
+[NOTE]
+====
+Log4j 2 brought the following enhancements to the Log4j 1 async appender:
+
+* all appenders referenced by `AsyncAppender` flush their buffers to the OS at the end of a batch, when the queue becomes empty.
+This guarantees that the batch of log events is passed to the OS and is a more performant version of the <<immediateFlush>> attribute.
++
+WARNING: Similarly to what happens with the `immediateFlush` attribute, this does not guarantee that the OS stores the data on the underlying device.
+
+* the type of queue is configurable to allow users to use faster and more performant queues, such as those from the
+https://github.com/JCTools/JCTools?tab=readme-ov-file#jctools[JCTools]
+or
+https://github.com/conversant/disruptor[Conversant Disruptor] projects.
+====
 
 .AsyncAppender Parameters
 [width="100%",cols="20%,20%,60%",options="header",]

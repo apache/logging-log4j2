@@ -153,7 +153,7 @@ appender.console.layout.eventTemplateUri = classpath:EcsLayout.json
 | Charset
 | `Charset` used for `String` encoding
 
-| locationInfoEnabled
+| [[locationInfoEnabled]]locationInfoEnabled
 | boolean
 | toggles access to the `LogEvent` source; file name, line number, etc.
   (defaults to `false` set by `log4j.layout.jsonTemplate.locationInfoEnabled`
