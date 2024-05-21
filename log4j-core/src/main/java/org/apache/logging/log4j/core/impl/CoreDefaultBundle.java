@@ -17,11 +17,12 @@
 package org.apache.logging.log4j.core.impl;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.async.AsyncQueueFullPolicy;
@@ -62,6 +63,7 @@ import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.ServiceLoaderUtil;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Provides instance binding defaults.
@@ -103,24 +105,49 @@ public final class CoreDefaultBundle {
 
     @SingletonFactory
     @ConditionalOnMissingBinding
-    public RecyclerFactoryProvider defaultRecyclerFactoryProvider(
+    public RecyclerFactory defaultRecyclerFactory(
             final PropertyEnvironment environment,
             final ClassLoader loader,
             final @Named("StatusLogger") org.apache.logging.log4j.Logger statusLogger) {
-        final String factory = environment.getProperty(RecyclerProperties.class).factory();
-        final Stream<RecyclerFactoryProvider> providerStream = ServiceLoaderUtil.safeStream(
-                RecyclerFactoryProvider.class, ServiceLoader.load(RecyclerFactoryProvider.class, loader), statusLogger);
-        final Optional<RecyclerFactoryProvider> provider = factory != null
-                ? providerStream.filter(p -> factory.equals(p.getName())).findAny()
-                : providerStream.min(Comparator.comparing(RecyclerFactoryProvider::getOrder));
-        return provider.orElseGet(RecyclerFactoryProvider::getInstance);
-    }
 
-    @SingletonFactory
-    @ConditionalOnMissingBinding
-    public RecyclerFactory defaultRecyclerFactory(
-            final PropertyEnvironment environment, final RecyclerFactoryProvider provider) {
-        return provider.createForEnvironment(environment);
+        // Collect providers
+        @Nullable
+        final String providerName =
+                environment.getProperty(RecyclerProperties.class).factory();
+        final List<RecyclerFactoryProvider> providers = ServiceLoaderUtil.safeStream(
+                        RecyclerFactoryProvider.class,
+                        ServiceLoader.load(RecyclerFactoryProvider.class, loader),
+                        statusLogger)
+                .sorted(Comparator.comparing(RecyclerFactoryProvider::getOrder))
+                .toList();
+        final String providerNames = providers.stream()
+                .map(provider -> "`" + provider.getName() + "`")
+                .collect(Collectors.joining(", "));
+
+        // Try to create the configured provider
+        if (providerName != null) {
+            @Nullable
+            final RecyclerFactoryProvider matchingProvider = providers.stream()
+                    .filter(provider -> provider.getName().equals(providerName))
+                    .findFirst()
+                    .orElse(null);
+            if (matchingProvider != null) {
+                return matchingProvider.createForEnvironment(environment);
+            } else {
+                statusLogger.error(
+                        "Configured recycler factory provider `{}` is not found! Available recycler factory providers: {}. Will choose the first one available for the current environment.",
+                        providerName,
+                        providerNames);
+            }
+        }
+
+        // Fallback to the first available provider
+        return providers.stream()
+                .map(provider -> provider.createForEnvironment(environment))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException(
+                        "None of the available recycler factory providers are found to be available for the current environment: "
+                                + providerNames));
     }
 
     @SingletonFactory
