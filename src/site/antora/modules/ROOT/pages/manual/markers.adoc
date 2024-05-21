@@ -42,7 +42,7 @@ Once created, use it as the first argument in the log statement:
 
 [source, java]
 ----
-logger.debug(SQL_MARKER, "Here is my SQL related message");
+LOGGER.debug(SQL_MARKER, "Here is my SQL related message");
 ----
 
 The example below creates the marker as the constant and then uses it to tag a log statement.
