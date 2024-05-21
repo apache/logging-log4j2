@@ -719,7 +719,7 @@ Log events that are more specific than this setting will be filtered out.
 See xref:manual/filters.adoc#filters[Filters] for additional filtering capabilities that can be applied to a logger configuration.
 
 [id=property-substitution]
-=== Property substitution
+=== [[PropertySubstitution]]Property substitution
 
 Log4j provides a simple and extensible mechanism to reuse values in the configuration file using `$\{name}` expressions, such as those used in Bash, Ant or Maven.
 
