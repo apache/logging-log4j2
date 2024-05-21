@@ -23,18 +23,18 @@ Log4j bundles a rich set of components to assist various use cases.
 * xref:manual/lookups.adoc[Lookups] for accessing system properties, environment variables, log event fields, etc.
 
 API separation::
-The API for Log4j (i.e., `log4j-api`) is separate from the implementation (i.e., `log4j-core`) making it clear for application developers which classes and methods they can use while ensuring forward compatibility.
+The API for Log4j (i.e., `log4j-api`) is separate from the implementation (i.e., `log4j-core`), making it straightforward for application developers which classes and methods to use while ensuring forward compatibility.
 (See xref:manual/api-separation.adoc[API Separation] for details.)
-The Log4j API also provides the most feature rich logging facade in the market; support for various `Message` types (`Object`, `Map`, etc.) besides plain `String`, lambda expressions, parametrized logging, markers, levels, diagnostic contexts (aka. MDC/NDC), etc.
+The Log4j API also provides the most feature-rich logging facade in the market; support for various `Message` types (such as `Object` or `Map`) besides plain `String`, lambda expressions, parametrized logging, markers, levels, diagnostic contexts (aka. MDC/NDC), etc.
 Check out the xref:manual/api.adoc[Java API], {logging-services-url}/log4j/kotlin[Kotlin API], and {logging-services-url}/log4j/scala[Scala API] pages for further information.
 
 No vendor lock-in::
-Even though the Log4j API is implemented by the Log4j at its fullest, users can choose to use another logging backend.
-This can be achieved by either using another backend implementing the Log4j API, or forwarding Log4j API calls to another logging facade (e.g., SLF4J) and using a backend for that particular facade.
+Even though Log4j implements the Log4j API at its fullest, users can use another logging backend.
+This can be achieved by either using another backend implementing the Log4j API or forwarding Log4j API calls to another logging facade (e.g., SLF4J) and using a backend for that particular facade.
 
 Reliability::
-Log4j is built with strong reliability in mind.
-Such that it can automatically reload its configuration upon modification, and it will do so without losing log events while reconfiguration is taking place.
+Log4j is built with solid reliability in mind.
+It can automatically reload its configuration upon modification and will do so without losing log events while reconfiguration occurs.
 
 Performance::
 When configured correctly, Log4j can deliver excelling performance without almost any burden on the Java garbage collector, and it will do so without sacrificing reliability.
@@ -42,6 +42,6 @@ This is made possible via an asynchronous logger founded on the https://lmax-exc
 Check out the xref:manual/performance.adoc[Performance] page for details.
 
 Extensibility::
-Log4j contains a fully-fledged xref:manual/plugins.adoc[plugin support] that users can leverage to extend its functionality.
-You can easily add your own components (layouts, appenders, filters, etc.) or customizing existing ones (e.g., adding new directives to the xref:manual/layouts.adoc#PatternLayout[Pattern] or xref:manual/json-template-layout.adoc#extending[JSON Template Layout]).
+Log4j contains a fully-fledged xref:manual/plugins.adoc[plugin support] that users can leverage to extend functionality.
+You can easily add your components (layouts, appenders, filters, etc.) or customize existing ones (e.g., adding new directives to the xref:manual/layouts.adoc#PatternLayout[Pattern] or xref:manual/json-template-layout.adoc#extending[JSON Template Layout]).
 Check out the xref:manual/extending.adoc[Extending Log4j] page.

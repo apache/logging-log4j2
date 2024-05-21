@@ -33,6 +33,6 @@ The project is actively maintained by a {logging-services-url}/team-list.html[te
 [#features]
 == Features
 
-We share below some highlights from Log4j features.
+Below, we share some highlights from Log4j features.
 
 include::partial$log4j-features.adoc[]
