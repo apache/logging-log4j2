@@ -14,550 +14,165 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
+
 = Performance
 
-////
-One of the often-cited arguments against logging is its
-computational cost. This is a legitimate concern as even moderately
-sized applications can generate thousands of log requests. Much
-effort was spent measuring and tweaking logging performance. Log4j
-claims to be fast and flexible: speed first, flexibility second.
-////
+In this page we will guide you through certain steps that will show how to improve the performance of your Log4j configuration to serve your particular use case best.
 
-Apart from functional requirements, an important reason for selecting a
-logging library is often how well it fulfills non-functional
-requirements like reliability and performance.
+The act of logging is an interplay between the logging API (i.e., Log4j API) where the programmer publishes logs and a logging implementation (i.e., Log4j Core) where published logs get consumed; filtered, enriched, encoded, and written to files, databases, network sockets, etc.
+Both parties can have dramatic impact on performance.
+Hence, we will discuss the performance optimization of both individually:
 
-This page compares the performance of a number of logging frameworks
-(java.util.logging "JUL", Logback, Log4j 1.2 and Log4j 2.6), and
-documents some performance trade-offs for Log4j 2 functionality.
+. xref:#api[Using Log4j API efficiently]
+. xref:#core[Tuning Log4j Core for performance]
 
-[#benchmarks]
-== Benchmarks
+[#api]
+== Using Log4j API efficiently
 
-Performance can mean different things to different people. Common terms
-in this context are throughput and latency: _Throughput_ is a measure of
-capacity and can be expressed in a single number: how many messages can
-be logged in a certain period of time. _Response time latency_ is how
-long it takes to log a message. This cannot be expressed in a single
-number because each measurement has its own response time and we are
-often most interested in the outliers: how many there were and how large
-they were.
+Log4j API bundles a rich set of features to either totally avoid or minimize expensive computations whenever possible.
+We will walk you through these features with examples.
 
-When evaluating a logging framework's performance these may be useful
-questions to ask:
+[TIP]
+====
+Remember that a logging API and a logging implementation are two different things.
+You can use Log4j API in combination with a logging implementation other than Log4j Core (e.g., Logback).
+**The tips shared in this section are logging implementation agnostic.**
+====
 
-[qanda]
-What is its *peak throughput*?::
-Many systems that react to external
-events need to log bursts of messages followed by periods of relative
-quiet. This number is the maximum throughput measured over a short
-period of time and gives some idea of how well the logging library deals
-with bursts. For systems that need to log a lot at a constant high rate
-(for example, batch jobs) this is less likely to be a useful measure of
-performance.
+[#api-concat]
+=== Don't use string concatenation
 
-What is the *maximum sustained throughput*?::
-This is the throughput
-averaged over a long time. This is a useful measure of the "upper limit"
-of the capacity of the logging library. It is not recommended that
-reactive applications actually log at this rate since under this load
-they will likely experience jitter and large response time spikes.
+If you are using `String` concatenation while logging, you are doing something very wrong and dangerous!
 
-What is its *response time* behaviour under various loads?::
-This is the
-most important question for applications that need to react to external
-events in a timely manner. Response time is the total amount of time it
-takes to log a message and is the sum of the service time and wait time.
-The *service time* is the time it takes to do the work to log the
-message. As the workload increases, the service time often varies
-little: to do X amount of work it always takes X amount of time. The
-*wait time* is how long the request had to wait in a queue before being
-serviced. _As the workload increases, wait time often grows to many
-times the service time._
+* [ ] Don't use `String` concatenation to format arguments!
+This circumvents the handling of arguments by message type and layout.
+More importantly, **this approach is prone to attacks!**
+Imagine `userId` being provided by the user with the following content:
+`placeholders for non-existing args to trigger failure: {} {} \{dangerousLookup}`
++
+[source,java]
+----
+/* BAD! */ LOGGER.info("failed for user ID: " + userId);
+----
 
-[#responseTimeVsServiceTime]
-=== Why Care About Response Time Latency?
+* [x] Use message parameters.
+Parameterized messages allow safe encoding of parameters and avoid formatting totally if the message is filtered.
+For instance, if the associated level for the logger is discarded, no formatting will take place.
++
+[source,java]
+----
+/* GOOD */ LOGGER.info("failed for user ID `{}`", userId);
+----
 
-What is often measured and reported as _latency_ is actually _service
-time_, and omits that a service time spike adds wait time for many
-subsequent events. This may present results that are more optimistic
-than what users experience.
+[#api-supplier]
+=== Use ``Supplier``s to pass computationally expensive arguments
 
-The graph on the right illustrates how much more optimistic service time
-is than response time. The graph shows response time and service time
-for the same system under a load of 100,000 messages per second. Out of
-24 million measurements, only ~50 are more than 250 microseconds, less
-than 0.001%. In a service time-only graph this would hardly be visible.
-However, the depending on the load it will take a while to catch up
-after a spike.
-
-The response time graph shows that in reality many more events are
-impacted by these delays than the service time numbers alone would
-suggest.
-
-To learn more, watch Gil Tene's eye-opening presentation
-http://www.infoq.com/presentations/latency-response-time[How NOT to
-measure latency].
-
-image:ResponseTimeVsServiceTimeAsyncLoggers.png[image,width=480,height=288]
-
-[#loglibComparison]
-== Logging Library Performance Comparison
-
-[#asyncLogging]
-=== Asynchronous Logging - Peak Throughput Comparison
-
-Asynchronous logging is useful to deal with bursts of events. How this
-works is that a minimum amount of work is done by the application thread
-to capture all required information in a log event, and this log event
-is then put on a queue for later processing by a background thread. As
-long as the queue is sized large enough, the application threads should
-be able to spend very little time on the logging call and return to the
-business logic very quickly.
-
-It turns out that the choice of queue is extremely important for peak
-throughput. Log4j 2's Async Loggers use a
-https://lmax-exchange.github.io/disruptor/[lock-free data structure],
-whereas Logback, Log4j 1.2 and Log4j 2's Asynchronous Appenders use an
-ArrayBlockingQueue. With a blocking queue, multi-threaded applications
-often experience lock contention when trying to enqueue the log event.
-
-The graph below illustrates the difference a lock-free data structure
-can make to throughput in multi-threaded scenarios. _Log4j 2 scales
-better with the number of threads: an application with more threads can
-log more. The other logging libraries suffer from lock contention and
-total throughput stays constant or drops when more threads are logging.
-This means that with the other logging libraries, each individual thread
-will be able to log less._
-
-Bear in mind that this is _peak_ throughput: Log4j 2's Async Loggers
-give better throughput up to a point, but once the queue is full, the
-appender thread needs to wait until a slot becomes available in the
-queue, and throughput will drop to the maximum sustained throughput of
-the underlying appenders at best.
-
-image:async-throughput-comparison.png[Peak throughput comparison]
-
-For details, see the xref:manual/async.adoc[Async Loggers] manual page.
-
-[#asyncLoggingResponseTime]
-=== Asynchronous Logging Response Time
-
-Response time behaviour varies a lot with the workload and the number of
-threads that log concurrently. The xref:manual/async.adoc#Latency[Async
-Loggers] manual page and the
-xref:manual/garbagefree.adoc#Latency[garbage-free logging] manual page
-provide some graphs showing response time behaviour under various loads.
-
-This section shows another graph showing response time latency behaviour
-under a modest total workload of 64,000 messages per second, with 4
-threads logging concurrently. At this load and on this hardware/OS/JVM
-configuration, lock contention and context switches play less of a role
-and the pauses are mostly caused by minor garbage collections. Garbage
-collection pause duration and frequency can vary a lot: when testing the
-Log4j 1.2.17 Async Appender a minor GC pause of 7 milliseconds occurred
-while the Log4j 2 Async Appender test only saw a GC pause of a little
-over 2 milliseconds. This does not necessarily mean that one is better
-than the other.
-
-Generally, garbage-free async loggers had the best response time
-behaviour in all configurations we tested.
-
-image:ResponseTimeAsyncLogging4Threads_16kEach.png[Response time comparison]
-
-The above result was obtained with the ResponseTimeTest class which can
-be found in the Log4j 2 unit test source directory, running on JDK
-1.8.0_45 on RHEL 6.5 (Linux 2.6.32-573.1.1.el6.x86_64) with 10-core Xeon
-CPU E5-2660 v3 @2.60GHz with hyperthreading switched on (20 virtual
-cores).
-
-[#asyncLoggingWithParams]
-=== Asynchronous Logging Parameterized Messages
-
-Many logging libraries offer an API for logging parameterized messages.
-This enables application code to look something like this:
+If one or more arguments of the log statement are computationally expensive, it is not wise to evaluate them knowing that their results can be discarded.
+Consider the following example:
 
 [source,java]
 ----
-logger.debug("Entry number: {} is {}", i, entry[i]);
+/* BAD! */ LOGGER.info("failed for user ID `{}` and role `{}`", userId, db.findUserRoleById(userId));
 ----
 
-In the above example, the fully formatted message text is not created
-unless the DEBUG level is enabled for the logger. Without this API, you
-would need three lines of code to accomplish the same:
+The database query (i.e., `db.findUserNameById(userId)`) can be a significant bottleneck if the created the log event will be discarded anyway – maybe the `INFO` level or the associated xref:manual/markers.adoc[marker] is not accepted for this package, or due to some other filtering.
 
+* [ ] The old-school way of solving this problem is to level-guard the log statement:
++
 [source,java]
 ----
-if (logger.isDebugEnabled()) {
-    logger.debug("Entry number: " + i + " is " + entry[i].toString());
-}
+/* BAD! */ if (LOGGER.isInfoEnabled()) { LOGGER.info(...); }
+----
++
+While this would work for cases where the message can be dropped due to insufficient level, this approach is still prone to other filtering cases; e.g., maybe the associated xref:manual/markers.adoc[marker] is not accepted.
+
+* [x] Use ``Supplier``s to pass arguments containing computationally expensive items:
++
+[source,java]
+----
+/* GOOD */ LOGGER.info("failed for user ID `{}` and role `{}`", () -> userId, () -> db.findUserRoleById(userId));
 ----
 
-If the DEBUG level _is_ enabled, then at some point the message needs to
-be formatted. When logging asynchronously, the message parameters may be
-changed by the application thread before the background thread had a
-chance to log the message. This would show the wrong values in the log
-file. To prevent this, Log4j 2, Log4j 1.2 and Logback format the message
-text in the application thread _before_ passing off the log event to the
-background thread.
-
-This is the safe thing to do, but the formatting has a performance cost.
-The graph below compares the throughput of logging messages with
-parameters using various logging libraries. These are all asynchronous
-logging calls, so these numbers do not include the cost of disk I/O and
-represent _peak_ throughput.
-
-JUL (java.util.logging) does not have a built-in asynchronous Handler.
-https://docs.oracle.com/javase/8/docs/api/java/util/logging/MemoryHandler.html[`MemoryHandler`]
-is the nearest thing available so we included it here. MemoryHandler
-does _not_ do the safe thing of taking a snapshot of the current
-parameter state (it just keeps a reference to the original parameter
-objects), and as a result it is very fast when single-threaded. However,
-when more application threads are logging concurrently, the cost of lock
-contention outweighs this gain.
-
-In absolute numbers, _Log4j 2's Async Loggers perform well compared to
-the other logging frameworks, but notice that the message formatting
-cost increases sharply with the number of parameters. In this area,
-Log4j 2 still has work to do to improve: we would like to keep this cost
-more constant._
-
-image:ParamMsgThrpt1-4T.png[image]
-
-The results above are for JUL (java.util.logging) 1.8.0_45, Log4j 2.6,
-Log4j 1.2.17 and Logback 1.1.7, and were obtained with the
-http://openjdk.java.net/projects/code-tools/jmh/[JMH] Java benchmark
-harness. See the AsyncAppenderLog4j1Benchmark,
-AsyncAppenderLog4j2Benchmark, AsyncAppenderLogbackBenchmark,
-AsyncLoggersBenchmark and the MemoryHandlerJULBenchmark source code in
-the log4j-perf-test module.
-
-[#asyncLoggingWithLocation]
-=== Asynchronous Logging with Caller Location Information
-
-Some layouts can show the class, method and line number in the
-application where the logging call was made. In Log4j 2, examples of
-such layout options are HTML
-xref:manual/layouts.adoc#HtmlLocationInfo[locationInfo], or one of the patterns
-xref:manual/layouts.adoc#PatternClass[%C or $class],
-xref:manual/layouts.adoc#PatternFile[%F or %file],
-xref:manual/layouts.adoc#PatternLocation[%l or %location],
-xref:manual/layouts.adoc#PatternLine[%L or %line],
-xref:manual/layouts.adoc#PatternMethod[%M or %method]. In order to provide
-caller location information, the logging library will take a snapshot of
-the stack, and walk the stack trace to find the location information.
-
-The graph below shows the performance impact of capturing caller
-location information when logging asynchronously from a single thread.
-Our tests show that _capturing caller location has a similar impact
-across all logging libraries, and slows down asynchronous logging by
-about 30-100x_.
-
-image:AsyncWithLocationThrpt1T-labeled.png[image]
-
-The results above are for JUL (java.util.logging) 1.8.0_45, Log4j 2.6,
-Log4j 1.2.17 and Logback 1.1.7, and were obtained with the
-http://openjdk.java.net/projects/code-tools/jmh/[JMH] Java benchmark
-harness. See the AsyncAppenderLog4j1LocationBenchmark,
-AsyncAppenderLog4j2LocationBenchmark,
-AsyncAppenderLogbackLocationBenchmark, AsyncLoggersLocationBenchmark and
-the MemoryHandlerJULLocationBenchmark source code in the log4j-perf-test
-module.
-
-[#fileLoggingComparison]
-=== Synchronous File Logging - Sustained Throughput Comparison
-
-This section discusses the maximum sustained throughput of logging to a
-file. In any system, the maximum sustained throughput is determined by
-its slowest component. In the case of logging, this is the appender,
-where the message formatting and disk I/O takes place. For this reason
-we will look at simple _synchronous_ logging to a file, without queues
-or background threads.
-
-The graph below compares Log4j 2.6's RandomAccessFile appender to the
-respective File appenders of Log4j 1.2.17, Logback 1.1.7 and Java util
-logging (JUL) on Oracle Java 1.8.0_45. ImmediateFlush was set to false
-for all loggers that support this. The JUL results are for the
-XMLFormatter (which in our measurements was about twice as fast as the
-SimpleFormatter).
-
-_Log4j 2's sustained throughput drops a little when more threads are
-logging simultaneously, but its fine-grained locking pays off and
-throughput stays relatively high. The other logging frameworks'
-throughput drops dramatically in multi-threaded applications: Log4j 1.2
-has 1/4th of its single-threaded capacity, Logback has 1/10th of its
-single-threaded capacity, and JUL steadily drops from 1/4th to 1/10th of
-its single-threaded throughput as more threads are added._
-
-image:SyncThroughputLoggerComparisonLinux.png[image]
-
-The synchronous logging throughput results above are obtained with the
-http://openjdk.java.net/projects/code-tools/jmh/[JMH] Java benchmark
-harness. See the FileAppenderBenchmark source code in the log4j-perf-test
-module.
-
-=== Synchronous File Logging - Response Time Comparison
-
-Response time for synchronous file logging varies a lot with the
-workload and the number of threads. Below is a sample for a workload of
-32,000 events per second, with 2 threads logging 16,000 events per
-second each.
-
-image:SynchronousFileResponseTime2T32k-labeled.png[image]
-
-The above result was obtained with the ResponseTimeTest class which can
-be found in the Log4j 2 unit test source directory, running on JDK
-1.8.0_45 on RHEL 6.5 (Linux 2.6.32-573.1.1.el6.x86_64) with 10-core Xeon
-CPU E5-2660 v3 @2.60GHz with hyperthreading switched on (20 virtual
-cores).
-
-////
-TODO
-=== Synchronous Socket Sustained Throughput Comparison
-
-=== Synchronous Syslog Sustained Throughput Comparison
-////
-
-[#filtering]
-=== Filtering by Level
-
-The most basic filtering a logging framework provides is filtering by
-log level. When logging is turned off entirely or just for a set of
-Levels, the cost of a log request consists of a number of method
-invocations plus an integer comparison. Unlike Log4j, Log4j 2 Loggers
-don't "walk a hierarchy". Loggers point directly to the Logger
-configuration that best matches the Logger's name. This incurs extra
-overhead when the Logger is first created but reduces the overhead every
-time the Logger is used.
-
-=== Advanced Filtering
-
-Both Logback and Log4j 2 support advanced filtering. Logback calls them
-TurboFilters while Log4j 2 has a single Filter object. Advanced
-filtering provides the capability to filter LogEvents using more than
-just the Level before the events are passed to Appenders. However, this
-flexibility does come with some cost. Since multi-threading can also
-have an impact on the performance of advanced filtering, the chart below
-shows the difference in performance of filtering based on a Marker or a
-Marker's parent.
-
-The "Simple Marker" comparison checks to see if a Marker that has no
-references to other markers matches the requested Marker. The "Parent
-Marker" comparison checks to see if a Marker that does have references
-to other markers matches the requested Marker.
-
-It appears that coarse-grained synchronization in SLF4J can impact
-performance in multi-threaded scenarios. See
-http://jira.qos.ch/browse/SLF4J-240[SLF4J-240].
-
-image:MarkerFilterCostComparison.png[image]
-
-Log4j and Logback also support filtering on a value in the Log4j
-ThreadContext vs filtering in Logback on a value in the MDC. The graph
-below shows that the performance difference between Log4j 2 and Logback
-is small for the ThreadContext filter.
-
-image:ThreadContextFilterCostComparison.png[image]
-
-The Filter comparison results above are obtained with the
-http://openjdk.java.net/projects/code-tools/jmh/[JMH] Java benchmark
-harness. See the MarkerFilterBenchmark and MDCFilterBenchmark in the
-log4j-perf-test module for details on these benchmarks.
-
-[#tradeoffs]
-== Trade-offs
-
-[#whichAppender]
-=== Which Log4j 2 Appender to Use?
-
-Assuming that you selected Log4j 2 as your logging framework, next you
-may be interested in learning what the performance trade-offs are for
-selecting a specific Log4j 2 configuration. For example, there are three
-appenders for logging to a file: the File, RandomAccessFile and
-MemoryMappedFile appenders. Which one should you use?
-
-If performance is all you care about, the graphs below show your best
-choice is either the MemoryMappedFile appender or the RandomAccessFile
-appender. Some things to bear in mind:
-
-* MemoryMappedFile appender does not have a rolling variant yet.
-* When the log file size exceeds the MemoryMappedFile's region length,
-the file needs to be remapped. This can be a very expensive operation,
-taking several seconds if the region is large.
-* MemoryMappedFile appender creates a presized file from the beginning
-and fills it up gradually. This can confuse tools like `tail`; many such
-tools don't work very well with memory mapped files.
-* On Windows, using a tool like `tail` on a file created by
-RandomAccessFile appender can hold a lock on this file which may prevent
-Log4j from opening the file again when the application is restarted. In
-a development environment where you expect to restart your application
-regularly while using tools like tail to view the log file contents, the
-File appender may be a reasonable trade-off between performance and
-flexibility. For production environments performance may have higher
-priority.
-
-The graph below shows sustained throughput for the console and file
-appenders in Log4j 2.6, and for reference also provides the 2.5
-performance.
-
-It turns out that the garbage-free text encoding logic in 2.6 gives
-these appenders a performance boost compared to Log4j 2.5. It used to be
-that the RandomAccessFile appender was significantly faster, especially
-in multi-threaded scenarios, but with the 2.6 release the File appender
-performance has improved and the performance difference between these
-two appender is smaller.
-
-Another takeaway is just how much of a performance drag logging to the
-console can be. Considering logging to a file and using a tool like
-`tail` to watch the file change in real time.
-
-image:Log4j2AppenderThroughputComparison-linux.png[image]
-
-On Windows, the results are similar but the RandomAccessFile and
-MemoryMappedFile appenders outperform the plain File appender in
-multi-threaded scenarios. The absolute numbers are higher on Windows: we
-don't know why but it looks like Windows handles lock contention better
-than Linux.
-
-image:Log4j2AppenderThroughputComparison-windows.png[image]
-
-The Log4j 2 appender comparison results above are obtained with the
-http://openjdk.java.net/projects/code-tools/jmh/[JMH] Java benchmark
-harness. See the Log4j2AppenderComparisonBenchmark source code in the
-log4j-perf-test module.
-
-////
-The user should be aware of the following performance issues.
-
-=== Logging performance when logging is turned off.
-
-When logging is turned off entirely or just for a set of Levels, the
-cost of a log request consists of two method invocations plus an integer
-comparison. On a 2.53 GHz Intel Core 2 Duo MacBook Pro calling
-isDebugEnabled 10 million times produces an average result in
-nanoseconds of:
-
-....
-            Log4j: 4
-            Logback: 5
-            Log4j 2: 3
-
-....
-
-The numbers above will vary slightly from run to run so the only
-conclusion that should be drawn is that all 3 frameworks perform
-similarly on this task.
-
-However, The method invocation involves the "hidden" cost of parameter
-construction.
-
-For example,
-
-....
-              logger.debug("Entry number: " + i + " is " + String.valueOf(entry[i]));
-
-....
-
-incurs the cost of constructing the message parameter, i.e. converting
-both integer `i` and `entry[i]` to a String, and concatenating
-intermediate strings, regardless of whether the message will be logged
-or not. This cost of parameter construction can be quite high and it
-depends on the size of the parameters involved. A comparison run on the
-same hardware as above yields:
-
-....
-            Log4j: 188
-            Logback: 183
-            Log4j 2: 188
-
-....
-
-Again, no conclusion should be drawn regarding relative differences
-between the frameworks on this task, but it should be obvious that it is
-considerably more expensive than simply testing the level.
-
-The best approach to avoid the cost of parameter construction is to use
-Log4j 2's formatting capabilities. For example, instead of the above
-write:
-
-....
-            logger.debug("Entry number: {} is {}", i, entry[i]);
-
-....
-
-Using this approach, a comparison run again on the same hardware
-produces:
-
-....
-            Log4j: Not supported
-            Logback: 9
-            Log4j 2: 4
-
-....
-
-These results show that the difference in performance between the call
-to isDebugEnabled and logger.debug is barely discernible.
-
-In some circumstances one of the parameters to logger.debug will be a
-costly method call that should be avoided if debugging is disabled. In
-those cases write:
-
-....
-            if(logger.isDebugEnabled() {
-                logger.debug("Entry number: " + i + " is " + entry[i].toString());
-            }
-
-....
-
-This will not incur the cost of whatever the toString() method needs to
-do if debugging is disabled. On the other hand, if the logger is enabled
-for the debug level, it will incur twice the cost of evaluating whether
-the logger is enabled or not: once in `isDebugEnabled` and once in
-`debug`. This is an insignificant overhead because evaluating a logger
-takes about 1% of the time it takes to actually log.
-
-Certain users resort to pre-processing or compile-time techniques to
-compile out all log statements. This leads to perfect performance
-efficiency with respect to logging. However, since the resulting
-application binary does not contain any log statements, logging cannot
-be turned on for that binary. This seems to be a disproportionate price
-to pay in exchange for a small performance gain.
-
-The performance of deciding whether to log or not to log when logging is
-turned on.
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Unlike Log4j, Log4j 2 Loggers don't "walk a hierarchy". Loggers point
-directly to the Logger configuration that best matches the Logger's
-name. This incurs extra overhead when the Logger is first created but
-reduces the overhead every time the Logger is used.
-
-=== Actually outputting log messages
-
-This is the cost of formatting the log output and sending it to its
-target destination. Here again, a serious effort was made to make
-layouts (formatters) perform as quickly as possible. The same is true
-for appenders. One of the fundamental tenets of Log4j 2 is to use
-immutable objects whenever possible and to lock at the lowest
-granularity possible. However, the cost of actually formatting and
-delivering log events will never be insignificant. For example, the
-results of writing to a simple log file using the same format using
-Log4j, Logback and Log4j 2 are:
-
-....
-              Log4j: 1651
-              Logback: 1419
-              Log4j 2.0: 1542
-
-....
-
-As with many of the other results on this page the differences between
-the frameworks above should be considered insignificant. The values will
-change somewhat on each execution and changing the order the frameworks
-are tested or adding calls to System.gc() between the tests can cause a
-variation in the reported times. However, these results show that
-actually writing out the events can be at least 1000 times more
-expensive than when they are disabled, so it is always recommended to
-take advantage of Log4j 2's fine-grained filtering capabilities.
-////
+* [x] Use a `Supplier` to pass the message and its arguments containing computationally expensive items:
++
+[source,java]
+----
+/* GOOD */ LOGGER.info(() -> new ParameterizedMessage("failed for user ID `{}` and role `{}`", userId, db.findUserRoleById(userId)));
+----
+
+[#core]
+== Tuning Log4j Core for performance
+
+Below sections walk you through a set of features that can have significant impact on the performance of Log4j Core.
+
+include::partial$premature-optimization.adoc[]
+
+[TIP]
+====
+Remember that a logging API and a logging implementation are two different things.
+You can use Log4j Core in combination with a logging API other than Log4j API (e.g., SLF4J, JUL, JPL).
+**The tips shared in this section are logging API agnostic.**
+====
+
+[#layouts]
+=== Layouts
+
+xref:manual/layouts.adoc[Layouts] are responsible for encoding a log event in a certain format (human-readable text, JSON, etc.) and they can have significant impact in your overall logging performance.
+
+[#layouts-location]
+==== Location information
+
+include::partial$manual/layouts-location-information.adoc[]
+
+[#layouts-efficiency]
+==== Layout efficiency
+
+Not all layouts are designed with the same performance considerations in mind.
+Following layouts are known to be well-optimized for performance-sensitive workloads:
+
+xref:manual/json-template-layout.adoc#performance[JSON Template Layout]::
+It encodes log events into JSON according to the structure described by the template provided.
+Its output can safely be ingested into several log storage solutions: Elasticsearch, Google Cloud Logging, Graylog, Logstash, etc.
+
+xref:manual/layouts.adoc#PatternLayout-performance[Pattern Layout]::
+It encodes log events into human-readable text according to the pattern provided.
+
+[#async]
+=== Asynchronous logging
+
+Asynchronous logging is useful to deal with bursts of events.
+How this works is that a minimum amount of work is done by the application thread to capture all required information in a log event, and this log event is then put on a queue for later processing by a background thread.
+As long as the queue is sized large enough, the application threads should be able to spend very little time on the logging call and return to the business logic very quickly.
+
+[#async-drawbacks]
+==== Asynchronous logging drawbacks
+
+.There are certain drawbacks associated with asynchronous logging:
+[%collapsible]
+====
+include::partial$manual/async-drawbacks.adoc[]
+====
+
+[#async-strategies]
+==== Asynchronous logging strategies
+
+Log4j provides following strategies users can choose from to do asynchronous logging:
+
+[#async-logger]
+===== Asynchronous logger
+
+xref:manual/async.adoc[Asynchronous loggers] use {lmax-disruptor-url}[LMAX Disruptor] messaging library to consume log events.
+Their aim is to return from a `log()` call to the application as soon as possible.
+
+[#async-appender]
+===== Asynchronous appender
+
+The xref:manual/appenders.adoc#AsyncAppender[asynchronous appender] accepts references to other appenders and causes log events to be written to them on a separate thread.
+The backing queue uses `ArrayBlockingQueue` by default, though it can be replaced with a better performing one suitable for your use case.
+
+[#gcfree]
+=== Garbage-free logging
+
+include::partial$manual/garbagefree-intro.adoc[]
+
+See xref:manual/garbagefree.adoc[] for details.
