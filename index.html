@@ -380,7 +380,7 @@ The project is actively maintained by a <a href="https://logging.apache.org/team
 <h2 id="features"><a class="anchor" href="#features"></a>Features</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>We share below some highlights from Log4j features.</p>
+<p>Below, we share some highlights from Log4j features.</p>
 </div>
 <div class="dlist">
 <dl>
@@ -396,7 +396,7 @@ The project is actively maintained by a <a href="https://logging.apache.org/team
 <p><a href="manual/layouts.html" class="xref page">Layouts</a> that can render CSV, HTML, JSON, Syslog, etc. formatted outputs</p>
 </li>
 <li>
-<p><a href="manual/filters.html" class="xref page">Filters</a> that can be configured using log event rates, regular expressions, scripts, time, etc.</p>
+<p><a href="manual/filters.html" class="xref page">Filters</a> based on log event rates, regular expressions, scripts, time, etc.</p>
 </li>
 <li>
 <p><a href="manual/lookups.html" class="xref page">Lookups</a> for accessing system properties, environment variables, log event fields, etc.</p>
@@ -406,26 +406,31 @@ The project is actively maintained by a <a href="https://logging.apache.org/team
 </dd>
 <dt class="hdlist1">API separation</dt>
 <dd>
-<p>The API for Log4j (i.e., <code>log4j-api</code>) is separate from the implementation (i.e., <code>log4j-core</code>) making it clear for application developers which classes and methods they can use while ensuring forward compatibility.
+<p>The API for Log4j (i.e., <code>log4j-api</code>) is separate from the implementation (i.e., <code>log4j-core</code>), making it straightforward for application developers which classes and methods to use while ensuring forward compatibility.
 (See <a href="manual/api-separation.html" class="xref page">API Separation</a> for details.)
-The Log4j API also provides the most feature rich logging facade in the market; support for various <code>Message</code> types (<code>Object</code>, <code>Map</code>, etc.) besides plain <code>String</code>, lambda expressions, parametrized logging, markers, levels, diagnostic contexts (aka. MDC/NDC), etc.
+The Log4j API also provides the most feature-rich logging facade in the market; support for various <code>Message</code> types (such as <code>Object</code> or <code>Map</code>) besides plain <code>String</code>, lambda expressions, parametrized logging, markers, levels, diagnostic contexts (aka. MDC/NDC), etc.
 Check out the <a href="manual/api.html" class="xref page">Java API</a>, <a href="https://logging.apache.org/log4j/kotlin">Kotlin API</a>, and <a href="https://logging.apache.org/log4j/scala">Scala API</a> pages for further information.</p>
 </dd>
 <dt class="hdlist1">No vendor lock-in</dt>
 <dd>
-<p>Even though the Log4j API is implemented by the Log4j at its fullest, users can choose to use another logging backend.
-This can be achieved by either using another backend implementing the Log4j API, or forwarding Log4j API calls to another logging facade (e.g., SLF4J) and using a backend for that particular facade.</p>
+<p>Even though Log4j implements the Log4j API at its fullest, users can use another logging backend.
+This can be achieved by either using another backend implementing the Log4j API or forwarding Log4j API calls to another logging facade (e.g., SLF4J) and using a backend for that particular facade.</p>
+</dd>
+<dt class="hdlist1">Reliability</dt>
+<dd>
+<p>Log4j is built with solid reliability in mind.
+It can automatically reload its configuration upon modification and will do so without losing log events while reconfiguration occurs.</p>
 </dd>
 <dt class="hdlist1">Performance</dt>
 <dd>
-<p>When configured correctly, Log4j can deliver excelling performance without almost any burden on the Java garbage collector.
+<p>When configured correctly, Log4j can deliver excelling performance without almost any burden on the Java garbage collector, and it will do so without sacrificing reliability.
 This is made possible via an asynchronous logger founded on the <a href="https://lmax-exchange.github.io/disruptor/">LMAX Disruptor</a> technology (having its roots in the demanding industry of financial trading) and the garbage-free features baked at hot paths.
 Check out the <a href="manual/performance.html" class="xref page">Performance</a> page for details.</p>
 </dd>
 <dt class="hdlist1">Extensibility</dt>
 <dd>
-<p>Log4j contains a fully-fledged <a href="manual/plugins.html" class="xref page">plugin support</a> that users can leverage to extend its functionality.
-You can easily add your own components (layouts, appenders, filters, etc.) or customizing existing ones (e.g., adding new directives to the <a href="manual/layouts.html#PatternLayout" class="xref page">Pattern</a> or <a href="manual/json-template-layout.html#extending" class="xref page">JSON Template Layout</a>).
+<p>Log4j contains a fully-fledged <a href="manual/plugins.html" class="xref page">plugin support</a> that users can leverage to extend functionality.
+You can easily add your components (layouts, appenders, filters, etc.) or customize existing ones (e.g., adding new directives to the <a href="manual/layouts.html#PatternLayout" class="xref page">Pattern</a> or <a href="manual/json-template-layout.html#extending" class="xref page">JSON Template Layout</a>).
 Check out the <a href="manual/extending.html" class="xref page">Extending Log4j</a> page.</p>
 </dd>
 </dl>
