@@ -612,7 +612,7 @@ How this works is that a minimum amount of work is done by the application threa
 As long as the queue is sized large enough, the application threads should be able to spend very little time on the logging call and return to the business logic very quickly.</p>
 </div>
 <div class="sect3">
-<h4 id="async-trade-offs"><a class="anchor" href="#async-trade-offs"></a>Trade-offs</h4>
+<h4 id="trade-offs"><a class="anchor" href="#trade-offs"></a><a id="Trade-offs"></a>Trade-offs</h4>
 <div class="paragraph">
 <p>There are certain trade-offs associated with asynchronous logging:</p>
 </div>
@@ -648,17 +648,39 @@ If neither of these is an option, you may get better throughput and fewer latenc
 <dd>
 <p>If a problem happens during the logging process and an exception is thrown, it is less easy for an asynchronous setting to signal this problem to the application.
 This can partly be alleviated by configuring an exception handler, but this may still not cover all cases.</p>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If logging is part of your business logic, e.g. you are using Log4j as an audit logging framework, we would recommend to synchronously log those audit messages.</p>
+</div>
+<div class="paragraph">
+<p>See
+<a href="async.html#MixedSync-Async" class="xref page">mixed synchronous/asynchronous loggers</a> on how to log some messages synchronously.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </dd>
 <dt class="hdlist1">Stateful messages</dt>
 <dd>
-<p>In some rare cases, care must be taken with mutable messages.
-Most of the time you don&#8217;t need to worry about this.
-Log4 will ensure that log messages like <code>logger.debug("My object is {}", myObject)</code> will use the state of the <code>myObject</code> parameter at the time of the call to <code>logger.debug()</code>.
-The log message will not change even if <code>myObject</code> is modified later.
-It is safe to asynchronously log mutable objects because most <a href="messages.html" class="xref page">built-in <code>Message</code> implementations</a> take a snapshot of the parameters on the calling thread (see <a href="systemproperties.html#log4j2.formatMsgAsync" class="xref page"><code>log4j2.formatMsgAsync</code></a>).</p>
+<p>Most
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html"><code>Message</code></a>
+implementations take a snapshot of the formatted message on the calling thread (cf.
+<a href="systemproperties.html#log4j2.formatMsgAsync" class="xref page"><code>log4j2.formatMsgAsync</code></a>).
+The log message will not change even if the arguments of the logging call are modified later.</p>
 <div class="paragraph">
-<p>There are some exceptions however: <a href="messages.html#MapMessage" class="xref page"><code>MapMessage</code></a> and <a href="messages.html#StructuredDataMessage" class="xref page"><code>StructuredDataMessage</code></a> are mutable by design, fields can be added to these messages after the message object was created.
-These messages should not be modified after they are logged with asynchronous loggers or asynchronous appenders; you may or may not see the modifications in the resulting log output.</p>
+<p>There are some exceptions to this rule.
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html"><code>MapMessage</code></a>
+and
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html"><code>StructuredDataMessage</code></a>
+for example are mutable by design: fields can be added to these messages after the message object was created.
+These messages should not be modified after they are logged with asynchronous loggers or asynchronous appenders.</p>
 </div>
 <div class="paragraph">
 <p>Similarly, custom

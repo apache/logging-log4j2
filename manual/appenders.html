@@ -377,7 +377,67 @@ For non-JDK classes, these should usually be in
 </div>
 </div>
 <div class="sect1">
-<h2 id="AsyncAppender"><a class="anchor" href="#AsyncAppender"></a>AsyncAppender</h2>
+<h2 id="common-properties"><a class="anchor" href="#common-properties"></a>Common properties</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>These configuration attributes are shared by multiple appenders:</p>
+</div>
+<div class="sect2">
+<h3 id="immediateFlush"><a class="anchor" href="#immediateFlush"></a><code>immediateFlush</code></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>If set to <code>true</code>, Log4j will flush all Java buffers at the end of each event:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>for appenders based on Java&#8217;s
+<a href="https://docs.oracle.com/javase/8/docs/api/java/io/OutputStream.html">OutputStream</a>
+a call to the <code>OutputStream.flush()</code> method is performed.</p>
+</li>
+<li>
+<p>if <a href="systemproperties.html#log4j2.enableDirectEncoders" class="xref page">log4j2.enableDirectEncoders</a> is set to <code>true</code>, many Log4j appenders use a
+<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html">ByteBuffer</a>
+to format log events before sending them to the underlying resource.
+Setting <code>immediateFlush</code> to <code>true</code> flushes these buffers at each event.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This setting only guarantees that a byte representation of the log event is passed to the operating system.
+It does not ensure that the operating system writes the event to the underlying storage.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="AsyncAppender"><a class="anchor" href="#AsyncAppender"></a><a id="asyncappender"></a> AsyncAppender</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The AsyncAppender accepts references to other Appenders and causes LogEvents to be written to them on a separate Thread.
@@ -392,6 +452,46 @@ Note that multi-threaded applications should exercise care when using this appen
 <a href="performance.html#asyncLogging" class="xref page">tests showed</a> performance may become worse when more threads are logging concurrently.
 Consider using
 <a href="async.html" class="xref page">lock-free Async Loggers</a> for optimal performance.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Log4j 2 brought the following enhancements to the Log4j 1 async appender:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>all appenders referenced by <code>AsyncAppender</code> flush their buffers to the OS at the end of a batch, when the queue becomes empty.
+This guarantees that the batch of log events is passed to the OS and is a more performant version of the <a href="#immediateFlush"><code>immediateFlush</code></a> attribute.</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Similarly to what happens with the <code>immediateFlush</code> attribute, this does not guarantee that the OS stores the data on the underlying device.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>the type of queue is configurable to allow users to use faster and more performant queues, such as those from the
+<a href="https://github.com/JCTools/JCTools?tab=readme-ov-file#jctools">JCTools</a>
+or
+<a href="https://github.com/conversant/disruptor">Conversant Disruptor</a> projects.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. AsyncAppender Parameters</caption>

@@ -1429,7 +1429,7 @@ The RingBuffer will be pre-allocated at first use and will never grow or shrink 
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/WaitStrategy.html">Class&lt;? extends WaitStrategy&gt;</a> or predefined constant</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">predefined constant</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -1441,7 +1441,7 @@ The RingBuffer will be pre-allocated at first use and will never grow or shrink 
 <p>Specifies the <a href="https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/WaitStrategy.html">WaitStrategy</a> used by the LMAX Disruptor.</p>
 </div>
 <div class="paragraph">
-<p>The value needs to be a fully qualified class name of a custom <code>WaitStrategy</code> implementation (cf. <a href="async.html#custom-waitstrategy" class="xref page">Custom WaitStrategy</a>) or one of the predefined constants:</p>
+<p>The value needs to be one of the predefined constants:</p>
 </div>
 <div class="dlist">
 <dl>
@@ -1467,8 +1467,7 @@ This wait strategy is <a href="garbagefree.html" class="xref page">garbage free<
 </dd>
 <dt class="hdlist1">Yield</dt>
 <dd>
-<p>is a strategy that uses a <code>Thread.yield()</code> for waiting for log events after an initially spinning.
-Yield is a good compromise between performance and CPU resource, but may use more CPU than <code>Sleep</code> in order to get the message logged to disk sooner.
+<p>is a strategy that will use <code>100%</code> CPU, but will give up the CPU if other threads require CPU resources.
 This wait strategy is <a href="garbagefree.html" class="xref page">garbage free</a>.</p>
 </dd>
 </dl>
@@ -1718,7 +1717,7 @@ The RingBuffer will be pre-allocated at first use and will never grow or shrink 
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/WaitStrategy.html">Class&lt;? extends WaitStrategy&gt;</a> or predefined constant</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">predefined constant</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -1730,7 +1729,7 @@ The RingBuffer will be pre-allocated at first use and will never grow or shrink 
 <p>Specifies the <a href="https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/WaitStrategy.html">WaitStrategy</a> used by the LMAX Disruptor.</p>
 </div>
 <div class="paragraph">
-<p>The value needs to be a fully qualified class name of a custom <code>WaitStrategy</code> implementation (cf. <a href="async.html#custom-waitstrategy" class="xref page">Custom WaitStrategy</a>) or one of the predefined constants:</p>
+<p>The value needs to be one of the predefined constants:</p>
 </div>
 <div class="dlist">
 <dl>
@@ -1753,10 +1752,12 @@ This strategy has very low impact on the application thread, in exchange for som
 </dd>
 <dt class="hdlist1">Yield</dt>
 <dd>
-<p>is a strategy that uses a <code>Thread.yield()</code> for waiting for log events after an initially spinning.
-Yield is a good compromise between performance and CPU resource, but may use more CPU than <code>Sleep</code> in order to get the message logged to disk sooner.</p>
+<p>is a strategy that will use <code>100%</code> CPU, but will give up the CPU if other threads require CPU resources.</p>
 </dd>
 </dl>
+</div>
+<div class="paragraph">
+<p>See also <a href="async.html#custom-waitstrategy" class="xref page">Custom <code>WaitStrategy</code></a> for an alternative way to configure the wait strategy.</p>
 </div>
 </div>
 <div class="sect3">
