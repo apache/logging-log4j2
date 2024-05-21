@@ -1,0 +1,100 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+[id=log4j.loggerContext.selector]
+== `log4j.loggerContext.selector`
+
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_LOGGER_CONTEXT_SELECTOR
+| Type          | link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ContextSelector[Class<? extends ContextSelector>]
+| Default value | `link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ClassLoaderContextSelector[ClassLoaderContextSelector]`
+|===
+
+Specifies the fully qualified class name of the link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ContextSelector[ContextSelector] implementation to use.
+
+A `ContextSelector` decides:
+
+* how loggers are split among logger contexts,
+* the
+link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html[Logger]
+implementation to use.
+
+The implementations available by default are:
+
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/BasicContextSelector[org.apache.logging.log4j.core.selector.BasicContextSelector]::
+Creates a single logger context and synchronous loggers
+
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/BasicAsyncLoggerContextSelector[org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector]::
+Creates a single logger context and xref:manual/async.adoc[asynchronous loggers]
+
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ClassLoaderContextSelector[org.apache.logging.log4j.core.selector.ClassLoaderContextSelector]::
+Creates a separate logger context per classloader and synchronous loggers
+
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerContextSelector[org.apache.logging.log4j.core.async.AsyncLoggerContextSelector]::
+Creates a separate logger context per classloader and xref:manual/async.adoc[asynchronous loggers]
+
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/osgi/BundleContextSelector[org.apache.logging.log4j.core.osgi.BundleContextSelector]::
+Creates a separate logger context per OSGi bundle and synchronous loggers
+
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/JndiContextSelector[org.apache.logging.log4j.core.selector.JndiContextSelector]::
+Creates loggers contexts based on a JNDI lookup and synchronous loggers.
+See
+link:../../jakarta/log4j-jakarta-web.html#jndi[Web application]
+for details.
+
+[id=log4j.loggerContext.shutdownHookEnabled]
+== `log4j.loggerContext.shutdownHookEnabled`
+
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_LOGGER_CONTEXT_SHUTDOWN_HOOK_ENABLED
+| Type          | `boolean`
+| Default value | `true`
+
+(Web-app mode: `false`)
+|===
+
+If `true` a shutdown hook will be installed to stop the logger context when the system stops.
+
+[id=log4j.loggerContext.shutdownCallbackRegistry]
+== `log4j.loggerContext.shutdownCallbackRegistry`
+
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_LOGGER_CONTEXT_SHUTDOWN_CALLBACK_REGISTRY
+| Type          | link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/ShutdownCallbackRegistry[Class<? extends ShutdownCallbackRegistry>]
+| Default value | `link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/DefaultShutdownCallbackRegistry[DefaultShutdownCallbackRegistry]`
+|===
+
+The fully qualified class name of a link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/ShutdownCallbackRegistry[ShutdownCallbackRegistry] implementation.
+Integrators can use this to customize the shutdown order of the JVM.
+
+The default implementation executes all shutdown actions in a separate `Thread` registered through https://docs.oracle.com/javase/8/docs/api/java/lang/Runtime.html#addShutdownHook-java.lang.Thread-[Runtime#addShutdownHook()].
+
+[id=log4j.loggerContext.stacktraceOnStart]
+== `log4j.loggerContext.stacktraceOnStart`
+
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_LOGGER_CONTEXT_STACKTRACE_ON_START
+| Type          | `boolean`
+| Default value | `false`
+|===
+
+Prints a stacktrace to the xref:manual/configuration.adoc#StatusMessages[status logger] at `DEBUG` level when the LoggerContext is started.
+
+For debug purposes only.

@@ -14,22 +14,29 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-= Javadoc API Documentation
+[id=log4j2.disableJmx]
+== `log4j2.disableJmx`
 
-The table below contains links to the Javadoc API Documentation for the components you are most likely to use directly in code.
-
+[cols="1h,5"]
 |===
-|Component |Description
-
-|link:/log4j/2.x/javadoc/log4j-api[Log4j 2 API]
-|The interface that applications should use and code against.
-
-|link:javadoc/log4j-kit/index.html[Implementation helper kit]
-|Common helper functions for Log4j API implementations.
-
-|link:javadoc/log4j-core/index.html[Reference implementation]
-|The standard implementation, also called the Log4j 3 Core, that contains Appenders, Filters, and more.
-
-|link:javadoc/log4j-async-logger/index.html[Asynchronous logger]
-|An alternative asynchronous logger implementation for Log4j 3 Core, based on LMAX Disruptor.
+| Env. variable | LOG4J_DISABLE_JMX
+| Type          | `boolean`
+| Default value | `true`
 |===
+
+If `false`, Log4j configuration objects like ``LoggerContext``s, ``Appender``s, ``Logger``s, etc.
+will be instrumented with ``MBean``s and can be remotely monitored and managed.
+
+[id=log4j2.jmxNotifyAsync]
+== `log4j2.jmxNotifyAsync`
+
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_JMX_NOTIFY_ASYNC
+| Type          | `int`
+| Default value | `true`
+
+(Web-app mode: `false`)
+|===
+
+If `true`, Log4j's JMX notifications are sent from a separate background thread, otherwise they are sent from the caller thread.

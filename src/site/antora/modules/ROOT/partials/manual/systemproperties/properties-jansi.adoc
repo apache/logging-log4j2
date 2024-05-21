@@ -14,22 +14,19 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-= Javadoc API Documentation
+[id=log4j.console.jansiEnabled]
+== `log4j.console.jansiEnabled`
 
-The table below contains links to the Javadoc API Documentation for the components you are most likely to use directly in code.
-
+[cols="1h,5"]
 |===
-|Component |Description
-
-|link:/log4j/2.x/javadoc/log4j-api[Log4j 2 API]
-|The interface that applications should use and code against.
-
-|link:javadoc/log4j-kit/index.html[Implementation helper kit]
-|Common helper functions for Log4j API implementations.
-
-|link:javadoc/log4j-core/index.html[Reference implementation]
-|The standard implementation, also called the Log4j 3 Core, that contains Appenders, Filters, and more.
-
-|link:javadoc/log4j-async-logger/index.html[Asynchronous logger]
-|An alternative asynchronous logger implementation for Log4j 3 Core, based on LMAX Disruptor.
+| Env. variable | LOG4J_CONSOLE_JANSI_ENABLED
+| Type          | `boolean`
+| Default value | `false`
 |===
+
+If the following conditions are satisfied:
+
+* Log4j runs on Windows,
+* this property is set to `true`,
+
+Log4j will use the JANSI library to color the output of the console appender.

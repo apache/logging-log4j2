@@ -1,0 +1,51 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+[id=log4j.jul.levelConverter]
+== `log4j.jul.levelConverter`
+
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_JUL_LEVEL_CONVERTER
+| Type          | `Class<? extends LevelConverter>`
+| Default value | `org.apache.logging.log4j.jul.DefaultLevelConverter`
+|===
+
+Fully qualified name of an alternative `org.apache.logging.log4j.jul.LevelConverter` implementation.
+
+See xref:log4j-jul.adoc#default-level-conversions[Default Level Conversions] for the default implementation.
+
+[id=log4j.jul.loggerAdapter]
+== `log4j.jul.loggerAdapter`
+
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_JUL_LOGGER_ADAPTER
+| Type          | `Class<? extends AbstractLoggerAdapter>`
+| Default value | _depends on classpath_
+|===
+
+Fully qualified class name of the `org.apache.logging.log4j.jul.AbstractLoggerAdapter` implementation to use.
+
+This property allows users to choose between two implementation of the logging bridge:
+
+org.apache.logging.log4j.jul.CoreLoggerAdapter::
+The default if `log4j-core` is found in the class path.
+It allows users to modify the Log4j Core configuration through the JUL https://docs.oracle.com/javase/8/docs/api/java/util/logging/Logger.html[Logger] interface.
+
+org.apache.logging.log4j.jul.ApiLoggerAdapter::
+The default if `log4j-core` cannot be found in the class path.
+It disables the level mutators in the JUL `Logger` interface.

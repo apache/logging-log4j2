@@ -29,6 +29,8 @@
   <description>Helpers to implement Log4j 2.x API.</description>
 
   <properties>
+    <maven.javadoc.skip>false</maven.javadoc.skip>
+
     <bnd-extra-package-options>
       <!-- JSpecify is optional at runtime -->
       org.jspecify.annotations.*;resolution:=optional
