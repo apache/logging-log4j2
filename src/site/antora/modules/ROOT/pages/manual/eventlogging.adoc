@@ -14,39 +14,135 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-= Event Logging
+= Event Logging with Log4j
 
-The `EventLogger` class provides a simple mechanism for logging events
-that occur in an application. While the `EventLogger` is useful as a way
-of initiating events that should be processed by an audit Logging
-system, by itself it does not implement any of the features an audit
-logging system would require such as guaranteed delivery.
+The `EventLogger` class provides a mechanism for logging significant events
+in an application using structured data. This approach is beneficial for
+tracking user actions, monitoring system behavior, and debugging issues.
 
-The recommended way of using the `EventLogger` in a typical web
-application is to populate the `ThreadContext` Map with data that is
-related to the entire lifespan of the request such as the user's id, the
-user's IP address, the product name, etc. This can easily be done in a
-servlet filter where the `ThreadContext` Map can also be cleared at the
-end of the request. When an event that needs to be recorded occurs a
-`StructuredDataMessage` should be created and populated. Then call
-`EventLogger.logEvent(msg)` where msg is a reference to the
-`StructuredDataMessage`.
+Theoretically, every `Logger` can be used to perform this kind of action;
+however, the `EventLogger` class provides a shortcut to log events with structured data
+since it allows for a static method to log events.
 
-[source,java]
+== Advantages of Structured Logging
+
+Structured logging means events Log4j records events with detailed and structured information.
+That way, logs are easier to read and process. They provide better context and
+are also more consistent than plain text logs.
+
+== Integration with Syslog
+
+Log4j complies with Syslogs RFC5424 standard.
+This feature allows for easy integration with existing log management and monitoring systems.
+
+== Example Configuration
+
+To configure Log4j to output logs in Syslog (RFC5424) format, one needs to use the link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StructuredDataLayout.html[`StructuredDataLayout`] layout.
+Developers can use the following configuration to log events to a local Syslog server:
+
+[source, xml]
+----
+<Appenders>
+    <Syslog name="Syslog" host="localhost" port="514"> <1>
+        <StructuredDataLayout complete="true" /> <2>
+    </Syslog>
+</Appenders>
+
+<Loggers>
+    <Logger name="MyApp" level="info" additivity="false">
+        <AppenderRef ref="Syslog"/>
+    </Logger>
+</Loggers>
+----
+<1> The `Syslog` appender sends logs to a local Syslog server.
+<2> The `StructuredDataLayout` layout formats logs in RFC5424 format.
+
+Of course, sending logs to a Syslog server is unnecessary.
+Developers can use the `StructuredDataLayout` layout with any other appender, such as `FileAppender` or `ConsoleAppender`.
+
+As an example, the output could look like this:
+
+[source, text]
+----
+<165>1 2024-05-16T12:34:56.789Z myapp MyApp - ID47 [transfer@12345 toAccount="123456" fromAccount="654321" amount="1000"] User 654321 has transferred 1000 to account 123456
+----
+
+== Using the `EventLogger`
+
+The `EventLogger` class provides a simple way to log structured events.
+It uses the `StructuredDataMessage` class to create structured log messages.
+
+Assume a simple application that performs funds transfers between accounts.
+This application should send a certain amount of funds from one account to another and log the event.
+
+The account class is defined as follows, with a unique ID and a balance:
+
+[source, java]
+----
+class Account {
+    private String id;
+    private long balance;
+    // Getters and setters omitted for brevity
+}
+----
+
+The `transfer()` method transfers funds between two accounts and logs the event.
+It needs to take two accounts and the amount to transfer as parameters.
+
+Apart from the key-value pairs provided in the map of the `StructuredDataMessage,`
+the `StructuredDataMessage` also takes a unique ID, a free-form message, and a type as parameters.
+
+The free-form message is a human-readable description of the event.
+This message is good for operators who need to understand the event quickly,
+but not so much for automated processing.
+
+[source, java]
+----
+public static String transferFunds(Account toAccount, Account fromAccount, long amount) {
+    toAccount.deposit(amount);
+    fromAccount.withdraw(amount);
+
+    // Create a unique ID for the transaction
+    String confirm = UUID.randomUUID().toString();
+
+    String freeFormMessage = "User " + fromAccount.getId() + " has transferred " + amount + " to account " + toAccount.getId(); <1>
+
+    // Create the StructuredDataMessage
+    StructuredDataMessage msg = new StructuredDataMessage(confirm, freeFormMessage, "transfer"); <2>
+    msg.put("toAccount", toAccount.getId()); <3>
+    msg.put("fromAccount", fromAccount.getId());
+    msg.put("amount", amount);
+
+    // Log the event
+    EventLogger.logEvent(msg); <4>
+
+    return confirm;
+}
+----
+<1> The free-form message is a human-readable description of the event.
+<2> The `StructuredDataMessage` constructor takes an ID, the free-form message, and a type.
+<3> Developers can add key-value pairs to the message.
+<4> The `EventLogger` logs the event.
+
+That way, the `transferFunds()` method logs the event with structured data
+by using the `EventLogger`.
+
+== Web Application Example
+
+In a web application, developers can use a servlet filter to populate the
+`ThreadContext` map with data related to the request.
+
+The following example demonstrates how a `Filter` could investigate the request
+and populate the `ThreadContext` map with data such as the user's IP address,
+the user's login ID, the server's hostname, the product name, the locale, and the timezone.
+
+[source, java]
 ----
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.commons.lang.time.DateUtils;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.FilterChain;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.*;
+import javax.servlet.http.*;
 import java.io.IOException;
 import java.util.TimeZone;
 
@@ -54,9 +150,7 @@ public class RequestFilter implements Filter {
     private FilterConfig filterConfig;
     private static String TZ_NAME = "timezoneOffset";
 
-    public void init(FilterConfig filterConfig) throws ServletException {
-        this.filterConfig = filterConfig;
-    }
+    // Other methods ommitted for brevity
 
     /**
      * Sample filter that populates the MDC on every request.
@@ -64,75 +158,94 @@ public class RequestFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest)servletRequest;
-        HttpServletResponse response = (HttpServletResponse)servletResponse;
-        ThreadContext.put("ipAddress", request.getRemoteAddr());
+
+        ThreadContext.put("ipAddress", request.getRemoteAddr()); <1>
+
         HttpSession session = request.getSession(false);
-        TimeZone timeZone = null;
         if (session != null) {
-            // Something should set this after authentication completes
-            String loginId = (String)session.getAttribute("LoginId");
+            // Assuming, an authentication filter has already populated the loginId in the session
+            String loginId = (String)session.getAttribute("loginId");
             if (loginId != null) {
                 ThreadContext.put("loginId", loginId);
             }
-            // This assumes there is some javascript on the user's page to create the cookie.
-            if (session.getAttribute(TZ_NAME) == null) {
-                if (request.getCookies() != null) {
-                    for (Cookie cookie : request.getCookies()) {
-                        if (TZ_NAME.equals(cookie.getName())) {
-                            int tzOffsetMinutes = Integer.parseInt(cookie.getValue());
-                            timeZone = TimeZone.getTimeZone("GMT");
-                            timeZone.setRawOffset((int)(tzOffsetMinutes * DateUtils.MILLIS_PER_MINUTE));
-                            request.getSession().setAttribute(TZ_NAME, tzOffsetMinutes);
-                            cookie.setMaxAge(0);
-                            response.addCookie(cookie);
-                        }
-                    }
-                }
-            }
         }
+
         ThreadContext.put("hostname", servletRequest.getServerName());
         ThreadContext.put("productName", filterConfig.getInitParameter("ProductName"));
         ThreadContext.put("locale", servletRequest.getLocale().getDisplayName());
-        if (timeZone == null) {
-            timeZone = TimeZone.getDefault();
-        }
-        ThreadContext.put("timezone", timeZone.getDisplayName());
+        ThreadContext.put("timezone", TimeZone.getDefault().getDisplayName());
+
         filterChain.doFilter(servletRequest, servletResponse);
         ThreadContext.clear();
     }
-
-    public void destroy() {
-    }
 }
 ----
+<1> The `doFilter()` method populates the `ThreadContext` map with data related to the request.
 
-Sample class that uses `EventLogger`.
+The `Filter` needs to be registered in your `web.xml` file:
 
-[source,java]
+[source, xml]
 ----
-import org.apache.logging.log4j.StructuredDataMessage;
-import org.apache.logging.log4j.EventLogger;
+<filter>
+    <filter-name>RequestFilter</filter-name>
+    <filter-class>com.example.RequestFilter</filter-class>
+    <init-param>
+        <param-name>ProductName</param-name>
+        <param-value>YourProductName</param-value>
+    </init-param>
+</filter>
+<filter-mapping>
+    <filter-name>RequestFilter</filter-name>
+    <url-pattern>/*</url-pattern> <1>
+</filter-mapping>
+----
+<1> The `RequestFilter` is mapped to all requests.
 
-import java.util.Date;
-import java.util.UUID;
+Eventually, a `Servlet` or any other related class, such as a Spring Controller, can be used to log events with structured data.
+The following example uses a `Servlet` to call the `EventLogger` and log a user action.
 
-public class MyApp {
+[source, java]
+----
+import javax.servlet.*;
+import javax.servlet.http.*;
+import java.io.IOException;
 
-    public String doFundsTransfer(Account toAccount, Account fromAccount, long amount) {
-        toAccount.deposit(amount);
-        fromAccount.withdraw(amount);
-        String confirm = UUID.randomUUID().toString();
-        StructuredDataMessage msg = new StructuredDataMessage(confirm, null, "transfer");
-        msg.put("toAccount", toAccount);
-        msg.put("fromAccount", fromAccount);
-        msg.put("amount", amount);
+public class UserActionServlet extends HttpServlet {
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String userId = request.getParameter("userId");
+        String action = request.getParameter("action");
+        String details = request.getParameter("details");
+
+        // Perform and log the user action
+        String message = "User " + userId + " performed action: " + action;
+        StructuredDataMessage msg = new StructuredDataMessage(UUID.randomUUID().toString(), message, "userAction"); <1>
+        msg.put("userId", userId);
+        msg.put("action", action);
+        msg.put("details", details);
+
+        // Log the event
         EventLogger.logEvent(msg);
-        return confirm;
+
+        // Respond to the client
+        response.getWriter().write("Action logged successfully");
     }
 }
 ----
+<1> `userAction` is the name of the current transaction
 
-The `EventLogger` class uses a `Logger` named "EventLogger". `EventLogger`
-uses a logging level of OFF as the default to indicate that it cannot be
-filtered. These events can be formatted for printing using the
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StructuredDataLayout.html[`StructuredDataLayout`].
+That way, not only the data provided to the `EventLogger` is used, but also all the
+data populated in the `ThreadContext` map is included in the log message.
+
+== Benefits of Structured Logging
+
+1. **Improved Readability and Context:**
+Structured logs include detailed information, making them easier to understand and analyze.
+2. **Better for Automated Processing:**
+Structured logs are easily parsed by existing log management tools.
+3. **Consistency:**
+Structured logging enforces a consistent format, helping to identify patterns in logs.
+4. **Performance Optimization:**
+Structured messages are - as all messages - only constructed when necessary, keeping overhead low.
+
