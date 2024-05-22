@@ -209,7 +209,7 @@ public class SortedArrayVsHashMapBenchmark {
 
     @Benchmark
     public int putHashContextData() {
-        openHashMapContextData.put("someKey", "someValue");
+        openHashMapContextData.putValue("someKey", "someValue");
         return openHashMapContextData.size();
     }
 

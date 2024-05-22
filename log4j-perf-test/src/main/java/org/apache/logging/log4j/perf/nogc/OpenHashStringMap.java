@@ -20,12 +20,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringMap;
@@ -59,7 +57,7 @@ import org.apache.logging.log4j.util.TriConsumer;
  *
  * @since 2.7
  */
-public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
+public class OpenHashStringMap<K, V> implements StringMap {
     /** The initial default size of a hash table. */
     public static final int DEFAULT_INITIAL_SIZE = 16;
 
@@ -382,11 +380,6 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
         }
     }
 
-    @Override
-    public String get(final String key) {
-        return (String) getObjectValue(key);
-    }
-
     @SuppressWarnings("unchecked")
     private V getObjectValue(final Object k) {
         if (k == null) {
@@ -414,16 +407,6 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
     }
 
     @Override
-    public Map<String, String> getCopy() {
-        return toMap();
-    }
-
-    @Override
-    public Map<String, String> getImmutableMapOrNull() {
-        return isEmpty() ? null : Collections.unmodifiableMap(toMap());
-    }
-
-    @Override
     public <VAL> VAL getValue(final String key) {
         return (VAL) getObjectValue(key);
     }
@@ -431,12 +414,6 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
     @Override
     public boolean isEmpty() {
         return size == 0;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public void put(final String key, final String value) {
-        putObjectValue((K) key, (V) value);
     }
 
     private int insert(final K k, final V v) {
@@ -482,7 +459,6 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
         }
     }
 
-    /** {@inheritDoc} */
     public void putAll(final Map<? extends K, ? extends V> map) {
         if (loadFactor <= .5) {
             // The resulting map will be sized for m.size() elements
