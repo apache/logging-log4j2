@@ -3,6 +3,7 @@
     "Appenders": {
       "File": {
         "name": "MAIN",
+        "fileName": "logs/app.log",
         // tag::select[]
         "Select": {
           "SystemPropertyArbiter": { // <1>

@@ -3,6 +3,7 @@
     "Appenders": {
       "File": {
         "name": "MAIN",
+        "fileName": "logs/app.log",
         "SystemPropertyArbiter": [
           // <1>
           {
