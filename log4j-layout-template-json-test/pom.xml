@@ -30,6 +30,7 @@
   <name>Tests for the JSON Template Layout of Apache Log4j</name>
 
   <properties>
+    <log4j.docgen.skip>true</log4j.docgen.skip>
     <log4jParentDir>${basedir}/..</log4jParentDir>
 
     <!--

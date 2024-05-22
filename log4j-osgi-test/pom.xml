@@ -32,6 +32,7 @@
   <description>The Apache Log4j OSGi tests</description>
 
   <properties>
+    <log4j.docgen.skip>true</log4j.docgen.skip>
     <module.name>org.apache.logging.log4j.osgi</module.name>
     <bnd.baseline.skip>true</bnd.baseline.skip>
     <maven.deploy.skip>true</maven.deploy.skip>

@@ -32,6 +32,7 @@
   <description>The Apache Log4j Implementation Tests</description>
 
   <properties>
+    <log4j.docgen.skip>true</log4j.docgen.skip>
     <!-- Ignore less important (high rank) bugs for test artifacts -->
     <spotbugs.maxRank>9</spotbugs.maxRank>
 

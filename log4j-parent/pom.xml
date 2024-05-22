@@ -1043,19 +1043,21 @@
       </activation>
 
       <properties>
-        <log4j.docgen.pluginDescriptorsDir.effective>${log4j.docgen.pluginDescriptorsDir.phase2}</log4j.docgen.pluginDescriptorsDir.effective>
+        <log4j.docgen.pluginDescriptorsDir.skipped>${maven.multiModuleProjectDirectory}/target/plugin-descriptors/skipped</log4j.docgen.pluginDescriptorsDir.skipped>
+        <log4j.docgen.pluginDescriptorsDir>${log4j.docgen.pluginDescriptorsDir.phase2}</log4j.docgen.pluginDescriptorsDir>
       </properties>
 
       <build>
         <plugins>
 
-          <!-- Generate a random target package for `Log4jPlugins.java` -->
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>build-helper-maven-plugin</artifactId>
             <executions>
+
+              <!-- Generate a random target package for `Log4jPlugins.java` -->
               <execution>
-                <id>generate-plugin-package-for-tests</id>
+                <id>define-log4jPluginPackageForTests</id>
                 <goals>
                   <goal>bsh-property</goal>
                 </goals>
@@ -1081,6 +1083,36 @@
                   ]]></source>
                 </configuration>
               </execution>
+
+              <!-- This is a workaround to effectively disable Log4j Docgen `DescriptorGenerator` plugin processor.
+                   Once Log4j Docgen `>0.9.0` is released (containing the new `log4j.docgen.skip` argument to `DescriptorGenerator`):
+                   1. Remove this `build-helper:bsh-property` execution
+                   2. Remove the `log4j.docgen.pluginDescriptorsDir.skipped` property
+                   3. In the `PluginProcessor` execution configuration
+                      - Add `-Alog4j.docgen.skip=${log4j.docgen.skip}` argument
+                      - Set `-Alog4j.docgen.descriptorFilePath=${log4j.docgen.pluginDescriptorsDir}/${project.artifactId}-plugins.xml` argument -->
+              <execution>
+                <id>define-log4jDocgenDescriptorFilepath</id>
+                <goals>
+                  <goal>bsh-property</goal>
+                </goals>
+                <phase>process-resources</phase>
+                <configuration>
+                  <properties>
+                    <property>log4jDocgenDescriptorFilepath</property>
+                  </properties>
+                  <source><![CDATA[
+                    Properties properties = project.getProperties();
+                    String pluginDescriptorsDir = "true".equals(properties.getProperty("log4j.docgen.skip"))
+                            ? properties.getProperty("log4j.docgen.pluginDescriptorsDir.skipped")
+                            : properties.getProperty("log4j.docgen.pluginDescriptorsDir");
+                    String log4jDocgenDescriptorFilepath = String.format("%s/%s-plugins.xml", new Object[] {
+                        pluginDescriptorsDir, project.getArtifactId()
+                    });
+                  ]]></source>
+                </configuration>
+              </execution>
+
             </executions>
           </plugin>
 
@@ -1108,7 +1140,7 @@
               </annotationProcessorPaths>
               <compilerArgs combine.children="append">
                 <!-- Provide `org.apache.logging.log4j.docgen.processor.DescriptorGenerator` arguments: -->
-                <arg>-Alog4j.docgen.descriptorFilePath=${log4j.docgen.pluginDescriptorsDir.effective}/${project.artifactId}-plugins.xml</arg>
+                <arg>-Alog4j.docgen.descriptorFilePath=${log4jDocgenDescriptorFilepath}</arg>
                 <arg>-Alog4j.docgen.groupId=${project.groupId}</arg>
                 <arg>-Alog4j.docgen.artifactId=${project.artifactId}</arg>
                 <arg>-Alog4j.docgen.version=${project.version}</arg>
