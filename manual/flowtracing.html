@@ -350,7 +350,7 @@
 <div class="paragraph">
 <p>Flow tracing in Log4j is an advanced logging technique designed to enhance
 the visibility of application processes. With this technique, developers can track
-the flow of data through their application by using special methods that log entry
+data flow through their application using unique methods that log entry
 and exit points within the code.</p>
 </div>
 <div class="paragraph">
@@ -359,10 +359,10 @@ and exit points within the code.</p>
 <div class="ulist">
 <ul>
 <li>
-<p><code>entry()</code> or <code>traceEntry()</code></p>
+<p><code>traceEntry()</code> (Deprecated <code>entry()</code>)</p>
 </li>
 <li>
-<p><code>exit()</code> or <code>traceExit()</code></p>
+<p><code>traceExit()</code> (Deprecated: <code>exit()</code>)</p>
 </li>
 <li>
 <p><code>throwing()</code></p>
@@ -386,16 +386,15 @@ Furthermore, new developers can be educated on the application&#8217;s behavior 
 <h2 id="_flow_tracing_methods"><a class="anchor" href="#_flow_tracing_methods"></a>Flow Tracing Methods</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The methods used most often are <code>entry()</code> or <code>traceEntry()</code> and <code>exit()</code> or <code>traceExit()</code>.
-As the name suggests, the "entry" methods are used at the beginning of a method,
-while the "exit" methods are used at the end of a method.</p>
+<p>The methods often used are <code>traceEntry()</code> and <code>traceExit()</code>.
+As the name suggests, the "entry" method is used at the beginning and the "exit" method at the end of a method.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public void someMethod() {
-    logger.entry(); <i class="conum" data-value="1"></i><b>(1)</b>
+    logger.traceEntry(); <i class="conum" data-value="1"></i><b>(1)</b>
     // method body
-    logger.exit(); <i class="conum" data-value="2"></i><b>(2)</b>
+    logger.traceExit(); <i class="conum" data-value="2"></i><b>(2)</b>
 }</code></pre>
 </div>
 </div>
@@ -412,15 +411,15 @@ while the "exit" methods are used at the end of a method.</p>
 </table>
 </div>
 <div class="paragraph">
-<p>Both <code>entry()</code> and <code>exit()</code> methods can be called with or without parameters.
-In the case of <code>entry()</code> it makes sense to pass the method parameters as arguments.</p>
+<p>Developers can call both <code>traceEntry()</code> and <code>traceExit()</code> methods with or without parameters.
+In the case of <code>traceEntry()</code>, it makes sense to pass the method parameters on as arguments.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public void someMethod(String param) {
-    logger.entry(param); <i class="conum" data-value="1"></i><b>(1)</b>
+    logger.traceEntry(param); <i class="conum" data-value="1"></i><b>(1)</b>
     // method body
-    logger.exit(); <i class="conum" data-value="2"></i><b>(2)</b>
+    logger.traceExit(); <i class="conum" data-value="2"></i><b>(2)</b>
 }</code></pre>
 </div>
 </div>
@@ -428,7 +427,11 @@ In the case of <code>entry()</code> it makes sense to pass the method parameters
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>entry()</code> method is called at the beginning of the method.</td>
+<td>The <code>traceEntry()</code> method is called at the beginning of the method.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>traceExit()</code> method is called at the end of the method.</td>
 </tr>
 </table>
 </div>
@@ -452,14 +455,14 @@ In the case of <code>entry()</code> it makes sense to pass the method parameters
 </table>
 </div>
 <div class="paragraph">
-<p>Very similar, it is possible to use <code>exit()</code> with methods that return a value.</p>
+<p>Very similar, it is possible to use <code>traceExit()</code> with methods that return a value.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public String someMethod() {
     String result = "Hello";
     // method body
-    return logger.exit(result); <i class="conum" data-value="1"></i><b>(1)</b>
+    return logger.traceExit(result); <i class="conum" data-value="1"></i><b>(1)</b>
 }</code></pre>
 </div>
 </div>
@@ -467,27 +470,27 @@ In the case of <code>entry()</code> it makes sense to pass the method parameters
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>exit()</code> method can also return a value.</td>
+<td>The <code>traceExit()</code> method can also return a value.</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>To work with exceptions, the <code>catching()</code> and <code>throwing()</code> methods are used.</p>
+<p>Developers can use the <code>catching()</code> and <code>throwing()</code> methods to work with exceptions.</p>
 </div>
 <div class="paragraph">
-<p>The following code shows, how to use the <code>catching()</code> method. It will be called
+<p>The following code shows the <code>catching()</code> method. It will be called
 inside the <code>catch</code> block of a try-catch statement.</p>
 </div>
 <div class="paragraph">
 <p>The <code>catching()</code> method can be used by an application when it catches an
-Exception that it is not going to rethrow, either explicitly or attached
-to another Exception. The logging event generated will have a level of <code>ERROR</code>.</p>
+Exception that it will not rethrow, either explicitly or attached
+to another Exception. The generated logging event will have an <code>ERROR</code> level.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public void someMethod() {
     try {
-        // Lets assume an exception is thrown here
+        // Let's assume an exception is thrown here
         String msg = messages[messages.length];
     } catch (Exception ex) {
         logger.catching(ex); <i class="conum" data-value="1"></i><b>(1)</b>
@@ -499,26 +502,26 @@ to another Exception. The logging event generated will have a level of <code>ERR
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>catching()</code> method is used to log exceptions that are caught and not rethrown.</td>
+<td>The <code>catching()</code> method logs exceptions that are caught and not rethrown.</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
 <p>The <code>throwing()</code> method is used to log exceptions that are thrown and not caught.
-The code shows how to use the <code>throwing()</code> method- like <code>catching()</code> it will be called
+The code shows how to use the <code>throwing()</code> method- like <code>catching()</code>, which will be called
 inside the <code>catch</code> block of a try-catch statement.</p>
 </div>
 <div class="paragraph">
 <p>The <code>throwing()</code> method can be used by an application when it is throwing
 an exception that is unlikely to be handled, such as a RuntimeException.
-This will ensure that proper diagnostics are available if needed. The
-logging event generated will have a level of <code>ERROR</code>.</p>
+This will ensure that proper diagnostics are available if needed.
+The generated logging event will have an <code>ERROR</code> level.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public void someMethod() {
     try {
-        // Lets assume an exception is thrown here
+        // Let's assume an exception is thrown here
         String msg = messages[messages.length];
     } catch (Exception ex) {
         logger.throwing(ex); <i class="conum" data-value="1"></i><b>(1)</b>
@@ -530,7 +533,7 @@ logging event generated will have a level of <code>ERROR</code>.</p>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>throwing()</code> method is used to log exceptions that are thrown and not caught.</td>
+<td>The <code>throwing()</code> method logs exceptions that are thrown and not caught.</td>
 </tr>
 </table>
 </div>
@@ -541,10 +544,10 @@ logging event generated will have a level of <code>ERROR</code>.</p>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Flow tracing methods have specific markers assigned and logs with a level of <code>TRACE</code>.
-It&#8217;s also noteworthy that all messages will begin with the word "event".</p>
+It&#8217;s also noteworthy that all messages begin with "event".</p>
 </div>
 <div class="paragraph">
-<p>The table below shows the methods and their special features.</p>
+<p>The table below shows the methods and their unique features.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -561,24 +564,24 @@ It&#8217;s also noteworthy that all messages will begin with the word "event".</
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>entry()</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ENTER</code>, <code>FLOW</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Accepts 0 to 4 parameters</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>traceEntry()</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>ENTER</code>, <code>FLOW</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Can take a format string and a variable list of parameters.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>exit()</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>EXIT</code>, <code>FLOW</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Can be called with or without parameters.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>entry()</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ENTER</code>, <code>FLOW</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DEPRECATED. Accepts 0 to 4 parameters</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>traceExit()</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>EXIT</code>, <code>FLOW</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Handles return values differently based on the method signature.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>exit()</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>EXIT</code>, <code>FLOW</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DEPRECATED.  Can be called with or without parameters.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>throwing()</code></p></td>
@@ -599,42 +602,31 @@ It&#8217;s also noteworthy that all messages will begin with the word "event".</
 <div class="sectionbody">
 <div class="paragraph">
 <p>The following example demonstrates how to configure Log4j to use flow tracing.
-While it is recommended to use the <code>JsonTemplateLayout</code> in production, we are using the
-<code>PatternLayout</code> in this example for simplicity.</p>
+Note: While developers should prefer the <code>JsonTemplateLayout</code> in production, this example uses <code>PatternLayout</code> for simplicity.</p>
 </div>
 <div class="paragraph">
-<p>The configuration below will cause all output to be routed to
-target/test.log. The pattern for the FileAppender includes the class
-name, line number and method name. Including these in the pattern is
-critical for the log to be of value.</p>
+<p>Two appenders are defined: <code>Console</code> and <code>File</code>.</p>
 </div>
 <div class="paragraph">
-<p>The following example demonstrates how you could use flow tracing.
-The Configuration element is set with a status of "error," which means Log4j
-will only report issues that are of error severity or higher.
-Within the Appenders section, two appenders are defined: Console and File.</p>
-</div>
-<div class="paragraph">
-<p>The Console appender is configured to output logs to <code>SYSTEM_OUT</code>, typically the console.
+<p>The <code>Console</code> appender outputs logs to <code>SYSTEM_OUT</code>, typically the console.
 It includes a <code>ThresholdFilter</code> set to only accept messages at the <code>ERROR</code> level or above.
-This filters out less severe messages.
-The output format is specified by a <code>PatternLayout</code>, designed to include detailed
-trace information such as time, log level, class name, line number, and method name.
-Please note, that we are recommending <code>JsonTemplateLayout</code> over <code>PatternLayout</code> in production.</p>
+Less severe messages are filtered.</p>
 </div>
 <div class="paragraph">
 <p>Similarly, the File appender directs logs to a file named <code>target/test.log</code>.
 The appenders configuration will create a new file for every application run.</p>
 </div>
 <div class="paragraph">
-<p>Finally, in the Loggers section, the Root logger is set to a <code>TRACE</code> level which is necessary
-to see flow tracing in action. The Root logger references the File appender, directing
-its output to the configured file.</p>
+<p>Both appenders use the already mentioned <code>PatternLayout</code>, which includes detailed information such as time, log level, class name, line number, and method name.</p>
+</div>
+<div class="paragraph">
+<p>Finally, in the Loggers section, the Root logger is set to a <code>TRACE</code> level, which is necessary to see flow tracing in action.
+The Root logger references the File appender, directing its output to the configured file.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="error"&gt;
+&lt;Configuration&gt;
   &lt;Appenders&gt;
     &lt;Console name="Console" target="SYSTEM_OUT"&gt;
       &lt;ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/&gt;
@@ -655,7 +647,7 @@ its output to the configured file.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>By changing the level of the Root logger to <code>DEBUG</code>, you can reduce the amount of output.</p>
+<p>By changing the Root logger&#8217;s level to <code>DEBUG</code>, developers can reduce the amount of output.</p>
 </div>
 </div>
 </div>
