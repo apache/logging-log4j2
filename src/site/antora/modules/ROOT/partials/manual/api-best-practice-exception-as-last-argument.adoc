@@ -15,16 +15,35 @@
     limitations under the License.
 ////
 
-* [ ] Don't use `Object#toString()` in arguments, it is redundant!
+* [ ] Don't call `Throwable#printStackTrace()`!
+This not only circumvents the logging but can also leak sensitive information!
 +
 [source,java]
 ----
-/* BAD! */ LOGGER.info("userId: {}", userId.toString());
+/* BAD! */ exception.printStackTrace();
 ----
 
-* [x] Underlying message type and layout will deal with arguments:
+* [ ] Don't use `Throwable#getMessage()`!
+This prevents the log event from getting enriched with the exception.
 +
 [source,java]
 ----
-/* GOOD */ LOGGER.info("userId: {}", userId);
+/* BAD! */ LOGGER.info("failed", exception.getMessage());
+/* BAD! */ LOGGER.info("failed for user ID `{}`: {}", userId, exception.getMessage());
+----
+
+* [ ] Don't provide both `Throwable#getMessage()` and `Throwable` itself!
+This bloats the log message with a duplicate exception message.
++
+[source,java]
+----
+/* BAD! */ LOGGER.info("failed for user ID `{}`: {}", userId, exception.getMessage(), exception);
+----
+
+* [x] Pass exception as the last extra argument:
++
+[source,java]
+----
+/* GOOD */ LOGGER.error("failed", exception);
+/* GOOD */ LOGGER.error("failed for user ID `{}`", userId, exception);
 ----
