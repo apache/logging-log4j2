@@ -303,100 +303,242 @@
 </aside>
 <article class="doc">
 <h1 class="page">Markers</h1>
+<div id="preamble">
+<div class="sectionbody">
 <div class="paragraph">
-<p>One of the primary purpose of a logging framework is to provide the
-means to generate debugging and diagnostic information only when it is
-needed, and to allow filtering of that information so that it does not
-overwhelm the system or the individuals who need to make use of it. As
-an example, an application desires to log its entry, exit and other
-operations separately from SQL statements being executed, and wishes to
-be able to log queries separate from updates. One way to accomplish this
-is shown below:</p>
+<p>Markers allow to <em>tag</em> log statements with a
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/Marker.html"><code>Marker</code></a>
+object, labeling them as belonging to a specific type.
+For example, developers can use markers to tag log statements related to a particular subsystem or functionality.</p>
+</div>
+<div class="paragraph">
+<p>By using markers, it is possible to filter log statements based on the <code>Marker</code>
+and display only those log statements that are of interest, such as those
+related to XML processing or SQL queries.</p>
+</div>
+<div class="paragraph">
+<p>Markers offer more fine-grained control over log filtering beyond log levels or package names.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="create"><a class="anchor" href="#create"></a>Creating Markers</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="simple-markers"><a class="anchor" href="#simple-markers"></a>Simple markers</h3>
+<div class="paragraph">
+<p>To create a <code>Marker</code>, create a field in your class using the <code>MarkerManager.getMarker()</code> method:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.MarkerManager;
-import java.util.Map;
-
-public class MyApp {
-
-    private Logger logger = LogManager.getLogger(MyApp.class.getName());
-    private static final Marker SQL_MARKER = MarkerManager.getMarker("SQL");
-    private static final Marker UPDATE_MARKER = MarkerManager.getMarker("SQL_UPDATE").setParents(SQL_MARKER);
-    private static final Marker QUERY_MARKER = MarkerManager.getMarker("SQL_QUERY").setParents(SQL_MARKER);
-
-    public String doQuery(String table) {
-        logger.traceEntry();
-
-        logger.debug(QUERY_MARKER, "SELECT * FROM {}", table);
-
-        String result = ...
-
-        return logger.traceExit(result);
-    }
-
-    public String doUpdate(String table, Map&lt;String, String&gt; params) {
-        logger.traceEntry();
-
-        if (logger.isDebugEnabled()) {
-            logger.debug(UPDATE_MARKER, "UPDATE {} SET {}", table, formatCols());
-        }
-
-        String result = ...
-
-        return logger.traceExit(result);
-    }
-
-    private String formatCols(Map&lt;String, String&gt; cols) {
-        StringBuilder sb = new StringBuilder();
-        boolean first = true;
-        for (Map.Entry&lt;String, String&gt; entry : cols.entrySet()) {
-            if (!first) {
-                sb.append(", ");
-            }
-            sb.append(entry.getKey()).append("=").append(entry.getValue());
-            first = false;
-        }
-        return sb.toString();
-    }
-}</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">private static final Marker SQL_MARKER = MarkerManager.getMarker("SQL");</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>In the example above it is now possible to add MarkerFilters to only
-allow SQL update operations to be logged, all SQL updates to be logged
-or to log everything in MyApp.</p>
+<p>Since a <code>Marker</code> is reusable across multiple log statements, storing it in a <code>static final</code> field makes it a constant.
+Once created, use it as the first argument in the log statement:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">logger.debug(SQL_MARKER, "SELECT * FROM {}", table);</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>Some important rules about Markers must be considered when using them.</p>
+<p>If you use the <a href="#example-configuration">configuration example below</a>, one can see the following log statement on your console:</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">10:42:30.982 (SQL) SELECT * FROM my_table</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="hierarchy"><a class="anchor" href="#hierarchy"></a>Parent and child markers</h3>
+<div class="paragraph">
+<p>A marker can have zero or more parent markers, allowing for a hierarchy of markers.
+To create such a hierarchy, you must use the <code>addParents()</code> method on the <code>Marker</code> object after you make the child marker.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">private static final Marker QUERY_MARKER =
+        MarkerManager.getMarker("SQL_QUERY").addParents(SQL_MARKER);
+private static final Marker UPDATE_MARKER =
+        MarkerManager.getMarker("UPDATE").addParents(SQL_MARKER);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Child markers do not differ from simple markers; one must pass them on as the first argument of a logging call.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">logger.debug(QUERY_MARKER, "SELECT * FROM {}", table);
+logger.debug(UPDATE_MARKER, "UPDATE {} SET {} = {}", table, column, value);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Messages marked with children&#8217;s markers behave as if they were both marked with the children&#8217;s marker and all its parents.
+If you use the <a href="#example-configuration">configuration example below</a>, you&#8217;ll see the following log statement on your console:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">10:42:30.982 (SQL_QUERY[ SQL ]) SELECT * FROM my_table
+10:42:30.982 (SQL_UPDATE[ SQL ]) UPDATE my_table SET column = value</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configuring-log4j"><a class="anchor" href="#configuring-log4j"></a>Configuring filtering</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Developers can use markers to filter the log statements delivered to log files.
+Marker processing is supported at least by
+<a href="https://logback.qos.ch/manual/filters.html#TurboFilter">Logback</a>
+and the Log4j Core logging backends.
+We will discuss only the configuration of the latter.</p>
+</div>
+<div class="paragraph">
+<p>To filter messages by marker, you need to add
+<a href="filters.html#MarkerFilter" class="xref page"><code>MarkerFilter</code></a>
+to your configuration file.
+For example, one can use the snippet below to redirect all SQL-related logs to the <code>SQL_LOG</code> appender:</p>
+</div>
+<div id="example-configuration" class="openblock tabs is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="example_configuration_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="example_configuration_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="example_configuration_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="example_configuration_java_properties" class="tab">
+<p>Java properties</p>
+</li>
+</ul>
+</div>
+<div id="example_configuration_xml--panel" class="tabpanel" aria-labelledby="example_configuration_xml">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">    &lt;logger name="example" level="ALL"&gt;<i class="conum" data-value="1"></i><b>(1)</b>
+      &lt;AppenderRef ref="SQL_LOG"&gt;
+        &lt;MarkerFilter marker="SQL"
+                      onMatch="ACCEPT"
+                      onMismatch="DENY"/&gt;<i class="conum" data-value="2"></i><b>(2)</b>
+      &lt;/AppenderRef&gt;
+    &lt;/logger&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="example_configuration_json--panel" class="tabpanel" aria-labelledby="example_configuration_json">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">      "Logger": {
+        "name": "example",
+        "level": "ALL", <i class="conum" data-value="1"></i><b>(1)</b>
+        "AppenderRef": {
+          "ref": "SQL_LOG",
+          "MarkerFilter": { <i class="conum" data-value="2"></i><b>(2)</b>
+            "marker": "SQL",
+            "onMatch": "ACCEPT",
+            "onMismatch": "DENY"
+          }
+        }
+      }</code></pre>
+</div>
+</div>
+</div>
+<div id="example_configuration_yaml--panel" class="tabpanel" aria-labelledby="example_configuration_yaml">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">    Logger:
+      name: "example"
+      level: "ALL" <i class="conum" data-value="1"></i><b>(1)</b>
+      AppenderRef:
+        ref: "SQL_LOG"
+        MarkerFilter: <i class="conum" data-value="2"></i><b>(2)</b>
+          marker: "SQL"
+          onMatch: "ACCEPT"
+          onMismatch: DENY</code></pre>
+</div>
+</div>
+</div>
+<div id="example_configuration_java_properties--panel" class="tabpanel" aria-labelledby="example_configuration_java_properties">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">logger.0.name = example
+<i class="conum" data-value="1"></i><b>(1)</b>
+logger.0.level = ALL
+logger.0.appenderRef.0.ref = SQL_LOG
+<i class="conum" data-value="2"></i><b>(2)</b>
+logger.0.appenderRef.0.filter.type = MarkerFilter
+logger.0.appenderRef.0.filter.marker = SQL
+logger.0.appenderRef.0.filter.onMatch = ACCEPT
+logger.0.appenderRef.0.filter.onMismatch = DENY</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Match all messages from <code>example</code> package from all levels</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Only allow messages marker with <code>SQL</code> or one of its children to be sent to the <code>SQL_LOG</code> appender.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="pitfalls"><a class="anchor" href="#pitfalls"></a>Pitfalls</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>It is important to note that marker names must be unique, as Log4j registers them permanently by name.
+Developers should avoid generic marker names, as they may conflict with
+those provided by third parties. Except, of course, if the user is aware of the implications.</p>
+</div>
+<div class="paragraph">
+<p>While it is possible to add or remove parent markers dynamically through the <code>setParents()</code> method,
+it is generally advisable to set the parents when the marker is created for efficiency and performance reasons.</p>
+</div>
+<div class="paragraph">
+<p>It is also worth noting that markers without parents are more efficient to evaluate
+than markers with multiple parents. It is generally a good idea to avoid
+complex hierarchies of markers where possible.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="complete-example"><a class="anchor" href="#complete-example"></a>Complete example</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To try the examples on this page:</p>
+</div>
+<div class="ulist">
+<ul>
 <li>
-<p>Markers must be unique. They are permanently registered by name so
-care should be taken to insure that Markers used in your application are
-distinct from those in the application&#8217;s dependencies, unless that is
-what is desired.</p>
+<p>add
+<a href="https://raw.githubusercontent.com/apache/logging-log4j2/2.x/src/site/antora/modules/ROOT/examples/manual/markers/MarkerExample.java">MarkerExample.java</a>
+to the <code>src/main/java/example</code> folder of your project,</p>
 </li>
 <li>
-<p>Parent Markers can be added or removed dynamically. However, this is
-fairly expensive to do. Instead, it is recommended that the parents be
-identified when obtaining the Marker the first time as shown in the
-examples above. Specifically, the set method replaces all the markers in
-a single operation while add and remove act on only a single Marker at a
-time.</p>
+<p>add
+<a href="https://raw.githubusercontent.com/apache/logging-log4j2/2.x/src/site/antora/modules/ROOT/examples/manual/markers/log4j2.xml">log4j2.xml</a>
+to the <code>src/main/resources</code> folder of your project.</p>
 </li>
-<li>
-<p>Evaluating Markers with multiple ancestors is much more expensive
-than Markers with no parents. For example, in one set of tests to
-evaluate whether a Marker matched its grandparent took 3 times longer
-than evaluating the Marker itself. Even then though, evaluating Markers
-is inexpensive compared to resolving the callers class name or line
-number.</p>
-</li>
-</ol>
+</ul>
+</div>
+</div>
 </div>
 </article>
   </div>
