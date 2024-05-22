@@ -605,6 +605,23 @@
         </configuration>
       </plugin>
 
+      <!--
+        ~ Adds Antora examples to the list of checked files
+        -->
+      <plugin>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+        <configuration>
+          <java>
+            <includes>
+              <include>src/main/java/**/*.java</include>
+              <include>src/test/java/**/*.java</include>
+              <include>src/site/antora/modules/ROOT/examples/**/*.java</include>
+            </includes>
+          </java>
+        </configuration>
+      </plugin>
+
       <!-- ███████ ████████  █████  ██████  ████████        ███████ ██ ████████ ███████
            ██         ██    ██   ██ ██   ██    ██    ██     ██      ██    ██    ██
            ███████    ██    ███████ ██████     ██           ███████ ██    ██    █████
