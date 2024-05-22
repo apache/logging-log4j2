@@ -355,8 +355,6 @@
     <!-- Directories where `log4j-docgen` annotation processor will emit files to -->
     <log4j.docgen.pluginDescriptorsDir.phase1>${maven.multiModuleProjectDirectory}/target/plugin-descriptors/phase1</log4j.docgen.pluginDescriptorsDir.phase1>
     <log4j.docgen.pluginDescriptorsDir.phase2>${maven.multiModuleProjectDirectory}/target/plugin-descriptors/phase2</log4j.docgen.pluginDescriptorsDir.phase2>
-    <log4j.docgen.pluginDescriptorsDir.skipped>${maven.multiModuleProjectDirectory}/target/plugin-descriptors/skipped</log4j.docgen.pluginDescriptorsDir.skipped>
-    <log4j.docgen.pluginDescriptorsDir>${log4j.docgen.pluginDescriptorsDir.phase2}</log4j.docgen.pluginDescriptorsDir>
 
   </properties>
 

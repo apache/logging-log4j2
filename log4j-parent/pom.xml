@@ -1164,6 +1164,11 @@
         </file>
       </activation>
 
+      <properties>
+        <log4j.docgen.pluginDescriptorsDir.skipped>${maven.multiModuleProjectDirectory}/target/plugin-descriptors/skipped</log4j.docgen.pluginDescriptorsDir.skipped>
+        <log4j.docgen.pluginDescriptorsDir>${log4j.docgen.pluginDescriptorsDir.phase2}</log4j.docgen.pluginDescriptorsDir>
+      </properties>
+
       <build>
         <plugins>
 
@@ -1179,22 +1184,24 @@
             <artifactId>build-helper-maven-plugin</artifactId>
             <executions>
               <execution>
-                <id>define-log4j.docgen.descriptorFilePath</id>
+                <id>define-log4jDocgenDescriptorFilepath</id>
                 <goals>
                   <goal>bsh-property</goal>
                 </goals>
                 <phase>process-resources</phase>
                 <configuration>
                   <properties>
-                    <property>log4j.docgen.descriptorFilePath</property>
+                    <property>log4jDocgenDescriptorFilepath</property>
                   </properties>
-                  <source><![CDATA[properties = project.getProperties();
-skipped = properties.getProperty("log4j.docgen.skip");
-pluginDescriptorsDir = "true".equals(skipped)
-        ? properties.getProperty("log4j.docgen.pluginDescriptorsDir.skipped")
-        : properties.getProperty("log4j.docgen.pluginDescriptorsDir");
-log4j.docgen.descriptorFilePath = pluginDescriptorsDir + '/' + project.getArtifactId() + "-plugins.xml";
-]]></source>
+                  <source><![CDATA[
+                    Properties properties = project.getProperties();
+                    String pluginDescriptorsDir = "true".equals(properties.getProperty("log4j.docgen.skip"))
+                            ? properties.getProperty("log4j.docgen.pluginDescriptorsDir.skipped")
+                            : properties.getProperty("log4j.docgen.pluginDescriptorsDir");
+                    String log4jDocgenDescriptorFilepath = String.format("%s/%s-plugins.xml", new Object[] {
+                        pluginDescriptorsDir, project.getArtifactId()
+                    });
+                  ]]></source>
                 </configuration>
               </execution>
             </executions>
@@ -1261,7 +1268,7 @@ log4j.docgen.descriptorFilePath = pluginDescriptorsDir + '/' + project.getArtifa
                   </annotationProcessors>
                   <compilerArgs>
                     <!-- Provide `org.apache.logging.log4j.docgen.processor.DescriptorGenerator` arguments: -->
-                    <arg>-Alog4j.docgen.descriptorFilePath=${log4j.docgen.descriptorFilePath}</arg>
+                    <arg>-Alog4j.docgen.descriptorFilePath=${log4jDocgenDescriptorFilepath}</arg>
                     <arg>-Alog4j.docgen.groupId=${project.groupId}</arg>
                     <arg>-Alog4j.docgen.artifactId=${project.artifactId}</arg>
                     <arg>-Alog4j.docgen.version=${project.version}</arg>
