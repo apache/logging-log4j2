@@ -343,7 +343,7 @@
     <!-- =====================================================
          Direct dependency version properties (in alphabetical order)
          ===================================================== -->
-    <log4j-docgen.version>0.8.0</log4j-docgen.version>
+    <log4j-docgen.version>0.9.0</log4j-docgen.version>
     <node.version>21.7.1</node.version>
     <npm.version>10.5.0</npm.version>
 
