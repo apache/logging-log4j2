@@ -15,7 +15,7 @@
     limitations under the License.
 ////
 
-= Log Builder
+= Fluent API
 
 Log4j has traditionally been used with logging statements like
 [source,java]
