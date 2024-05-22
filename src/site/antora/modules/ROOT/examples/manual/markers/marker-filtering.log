@@ -15,9 +15,9 @@
 # limitations under the License.
 #
 # tag::use-marker[]
-{docdate} 10:42:30,982 DEBUG [ SQL ] - SELECT * FROM my_table
+10:42:30.982 (SQL) SELECT * FROM my_table
 # end::use-marker[]
 # tag::use-marker-parent[]
-{docdate} 10:42:30,982 DEBUG [ SQL_QUERY[ SQL ] ] - SELECT * FROM my_table
-{docdate} 10:42:30,982 DEBUG [ SQL_UPDATE[ SQL ] ] - UPDATE my_table SET column = value
+10:42:30.982 (SQL_QUERY[ SQL ]) SELECT * FROM my_table
+10:42:30.982 (SQL_UPDATE[ SQL ]) UPDATE my_table SET column = value
 # end::use-marker-parent[]
