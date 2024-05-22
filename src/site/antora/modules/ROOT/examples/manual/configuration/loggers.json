@@ -1,0 +1,37 @@
+{
+  "Configuration": {
+    // tag::loggers[]
+    "Loggers": {
+      "Root": { // <1>
+        "level": "INFO",
+        "AppenderRef": {
+          "ref": "APPENDER1"
+        }
+      },
+      "Logger": [
+        { // <2>
+          "name": "org.example.no_additivity",
+          "additivity": false,
+          "AppenderRef": {
+            "ref": "APPENDER2"
+          }
+        },
+        { // <3>
+          "name": "org.example.no_location",
+          "includeLocation": false,
+          "AppenderRef": {
+            "ref": "APPENDER3"
+          }
+        },
+        { // <4>
+          "name": "org.example.level",
+          "level": "DEBUG",
+          "AppenderRef": {
+            "ref": "APPENDER4"
+          }
+        }
+      ]
+    }
+    // end::loggers[]
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "Configuration": {
+    "Appenders": {
+      // tag::appender[]
+      "Routing": {
+        "name": "ROUTING",
+        "Routes": {
+          "pattern": "$${sd:type}", // <1>
+          "Route": {
+            "File": {
+              "name": "ROUTING-${sd:type}", // <2>
+              "fileName": "logs/${sd:type}.log", // <2>
+              "JsonTemplateLayout": {
+                "EventTemplateAdditionalField": {
+                  "name": "type",
+                  "value": "${sd:type}" // <2>
+                }
+              }
+            }
+          }
+        }
+      }
+      // end::appender[]
+    },
+    "Loggers": {
+      "Root": {
+        "AppenderRef": {
+          "level": "INFO",
+          "ref": "ROUTING"
+        }
+      }
+    }
+  }
+}

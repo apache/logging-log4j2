@@ -16,6 +16,7 @@
 .project
 .idea
 **/*.iml
+.vscode
 /.metadata/
 /.mvn/wrapper/maven-wrapper.jar
 .flattened-pom.xml

@@ -1,0 +1,29 @@
+{
+  "Configuration": {
+    "Appenders": {},
+    "Loggers": {
+      // tag::loggers[]
+      "Root": {
+        "Property": {
+          "name": "client.address",
+          "value": "$${web:request.remoteAddress}"
+        }
+      },
+      "Logger": [
+        {
+          "name": "org.hibernate",
+          "Property": {
+            "subsystem": "Database"
+          }
+        },
+        {
+          "name": "io.netty",
+          "Property": {
+            "subsystem": "Networking"
+          }
+        }
+      ]
+      // end::loggers[]
+    }
+  }
+}

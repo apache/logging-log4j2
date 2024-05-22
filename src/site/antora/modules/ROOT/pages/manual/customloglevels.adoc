@@ -15,7 +15,6 @@
     limitations under the License.
 ////
 = Custom Log Levels
-Remko Popma <rpopma@apache.org>
 
 [[top]]
 
