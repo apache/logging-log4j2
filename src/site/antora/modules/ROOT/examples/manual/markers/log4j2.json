@@ -1,0 +1,31 @@
+{
+  "Configuration": {
+    "Appenders": {
+      "Console": {
+        "name": "SQL_LOG",
+        "PatternLayout": {
+          "pattern": "%d %p %marker - %m%n"
+        }
+      }
+    },
+    "Loggers": {
+      "Root": {
+        "level": "INFO"
+      },
+      // tag::logger[]
+      "Logger": {
+        "name": "example",
+        "level": "ALL", // <1>
+        "AppenderRef": {
+          "ref": "SQL_LOG",
+          "MarkerFilter": { // <2>
+            "marker": "SQL",
+            "onMatch": "ACCEPT",
+            "onMismatch": "DENY"
+          }
+        }
+      }
+      // end::logger[]
+    }
+  }
+}
