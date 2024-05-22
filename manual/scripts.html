@@ -484,7 +484,8 @@ container plugin in the configuration file.</p>
         &lt;ScriptPatternSelector defaultPattern="%d %p %m%n"&gt;
           &lt;ScriptRef ref="SELECTOR_SCRIPT"/&gt;
           &lt;PatternMatch key="NoLocation" pattern="[%-5level] %c{1.} %msg%n"/&gt;
-          &lt;PatternMatch key="Flow" pattern="[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"/&gt;
+          &lt;PatternMatch key="Flow"
+                        pattern="[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"/&gt;
         &lt;/ScriptPatternSelector&gt;
       &lt;/PatternLayout&gt;
     &lt;/Console&gt;
@@ -493,10 +494,11 @@ container plugin in the configuration file.</p>
     &lt;Logger name="EventLogger"&gt;
       &lt;ScriptFilter onMatch="ACCEPT" onMismatch="DENY"&gt;
         &lt;Script name="EVENT_LOGGER_FILTER" language="groovy"&gt;&lt;![CDATA[
-          if (logEvent.getMarker() != null &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW")) {
-              return true;
+          if (logEvent.getMarker() != null
+              &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW")) {
+            return true;
           } else if (logEvent.getContextMap().containsKey("UserId")) {
-              return true;
+            return true;
           }
           return false;
           ]]&gt;
@@ -514,9 +516,10 @@ container plugin in the configuration file.</p>
     &lt;Script name="SELECTOR_SCRIPT" language="javascript"&gt;&lt;![CDATA[
       var result;
       if (logEvent.getLoggerName().equals("JavascriptNoLocation")) {
-          result = "NoLocation";
-      } else if (logEvent.getMarker() != null &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW")) {
-          result = "Flow";
+        result = "NoLocation";
+      } else if (logEvent.getMarker() != null
+          &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW")) {
+        result = "Flow";
       }
       result;
       ]]&gt;
@@ -625,7 +628,8 @@ container plugin in the configuration file.</p>
           name: "EVENT_LOGGER_FILTER"
           language: "groovy"
           scriptText: |
-            if (logEvent.getMarker() != null &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW")) {
+            if (logEvent.getMarker() != null
+                &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW")) {
               return true;
             } else if (logEvent.getContextMap().containsKey("UserId")) {
               return true;
@@ -648,7 +652,8 @@ container plugin in the configuration file.</p>
         var result;
         if (logEvent.getLoggerName().equals("JavascriptNoLocation")) {
           result = "NoLocation";
-        } else if (logEvent.getMarker() != null &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW")) {
+        } else if (logEvent.getMarker() != null
+            &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW")) {
           result = "Flow";
         }
         result;
@@ -674,7 +679,8 @@ appender.0.layout.selector.match[0].key = NoLocation
 appender.0.layout.selector.match[0].pattern = [%-5level] %c{1.} %msg%n
 appender.0.layout.selector.match[1].type = PatternMatch
 appender.0.layout.selector.match[1].key = Flow
-appender.0.layout.selector.match[1].pattern = [%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n
+appender.0.layout.selector.match[1].pattern = \
+  [%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n
 
 logger.0.name = EventLogger
 logger.0.filter.0.type = ScriptFilter
@@ -683,7 +689,9 @@ logger.0.filter.0.onMismatch = DENY
 logger.0.filter.0.script.type = Script
 logger.0.filter.0.script.name = EVENT_LOGGER_FILTER
 logger.0.filter.0.script.language = groovy
-logger.0.filter.0.script.scriptText = if (logEvent.getMarker() != null &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW"))) {\
+logger.0.filter.0.script.scriptText = \
+  if (logEvent.getMarker() != null\
+      &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW"))) {\
     return true;\
   } else if (logEvent.getContextMap().containsKey("UserId")) {\
     return true;\
@@ -701,10 +709,12 @@ rootLogger.appenderRef.0.ref = STDOUT
 script.0.type = Script
 script.0.name = SELECTOR_SCRIPT
 script.0.language = javascript
-script.0.scriptText = var result;\
+script.0.scriptText = \
+  var result;\
   if (logEvent.getLoggerName().equals("JavascriptNoLocation")) {\
     result = "NoLocation";\
-  } else if (logEvent.getMarker() != null &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW")) {\
+  } else if (logEvent.getMarker() != null\
+      &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW")) {\
     result = "Flow";\
   }\
   result;
