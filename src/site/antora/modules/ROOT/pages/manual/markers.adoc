@@ -35,7 +35,7 @@ Markers offer more fine-grained control over log filtering beyond log levels or 
 
 To create a `Marker`, create a field in your class using the `MarkerManager.getMarker()` method:
 
-[source,java,indent=0]
+[source, java, indent=0]
 ----
 include::example$manual/markers/MarkerExample.java[tag=create-marker]
 ----
@@ -43,14 +43,14 @@ include::example$manual/markers/MarkerExample.java[tag=create-marker]
 Since a `Marker` is reusable across multiple log statements, storing it in a `static final` field makes it a constant.
 Once created, use it as the first argument in the log statement:
 
-[source,java,indent=0]
+[source, java, indent=0]
 ----
 include::example$manual/markers/MarkerExample.java[tag=use-marker]
 ----
 
 If you use the <<example-configuration,configuration example below>>, you'll see the following log statement on your console:
 
-[source,text]
+[source, text]
 ----
 include::example$manual/markers/marker-filtering.log[tag=use-marker]
 ----
@@ -61,14 +61,14 @@ include::example$manual/markers/marker-filtering.log[tag=use-marker]
 A marker can have zero or more parent markers, allowing for a hierarchy of markers.
 To create such a hierarchy, you must use the `addParents()` method on the `Marker` object after you create the child marker.
 
-[source,java,indent=0]
+[source, java, indent=0]
 ----
 include::example$manual/markers/MarkerExample.java[tag=create-marker-parent]
 ----
 
 The usage of child markers does not differ from the usage of simple markers, you just need to pass them as the first argument of a logging call.
 
-[source,java,indent=0]
+[source, java, indent=0]
 ----
 include::example$manual/markers/MarkerExample.java[tag=use-marker-parent]
 ----
@@ -76,7 +76,7 @@ include::example$manual/markers/MarkerExample.java[tag=use-marker-parent]
 Messages marked with children markers behave as if they were both marked with the children marker and all its parents.
 If you use the <<example-configuration,configuration example below>>, you'll see the following log statement on your console:
 
-[source,text]
+[source, text]
 ----
 include::example$manual/markers/marker-filtering.log[tag=use-marker-parent]
 ----
@@ -100,28 +100,28 @@ For example the snippet below can be used to redirect all SQL-related logs to th
 ====
 XML::
 +
-[source,xml]
+[source, xml]
 ----
 include::example$manual/markers/log4j2.xml[tag=logger]
 ----
 
 JSON::
 +
-[source,json]
+[source, json]
 ----
 include::example$manual/markers/log4j2.json[tag=logger]
 ----
 
 YAML::
 +
-[source,yaml]
+[source, yaml]
 ----
 include::example$manual/markers/log4j2.yaml[tag=logger]
 ----
 
 Java properties::
 +
-[source,properties]
+[source, properties]
 ----
 include::example$manual/markers/log4j2.properties[tag=logger]
 ----
