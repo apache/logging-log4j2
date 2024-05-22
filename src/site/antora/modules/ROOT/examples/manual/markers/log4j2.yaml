@@ -19,7 +19,7 @@ Configuration:
     Console:
       name: "SQL_LOG"
       PatternLayout:
-        pattern: "%d %p %marker - %m%n"
+        pattern: "%d{HH:mm:ss.SSS} (%marker) %m%n"
   Loggers:
     Root:
       level: "INFO"

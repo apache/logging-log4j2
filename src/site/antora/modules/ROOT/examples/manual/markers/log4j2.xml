@@ -15,25 +15,29 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration xmlns="https://logging.apache.org/xml/ns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<Configuration xmlns="https://logging.apache.org/xml/ns"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xsi:schemaLocation="
                    https://logging.apache.org/xml/ns
                    https://logging.apache.org/xml/ns/log4j-config-2.xsd">
-  <Appenders>
+
+  <appenders>
     <Console name="SQL_LOG">
-      <PatternLayout pattern="%d %p %-32marker - %m%n"/>
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} (%marker) %m%n"/>
     </Console>
-  </Appenders>
-  <Loggers>
-    <Root level="INFO"/>
+  </appenders>
+
+  <loggers>
+    <root level="INFO"/>
     <!-- tag::logger[] -->
-    <Logger name="example" level="ALL"><!--1-->
+    <logger name="example" level="ALL"><!--1-->
       <AppenderRef ref="SQL_LOG">
         <MarkerFilter marker="SQL"
                       onMatch="ACCEPT"
                       onMismatch="DENY"/><!--2-->
       </AppenderRef>
-    </Logger>
+    </logger>
     <!-- end::logger[] -->
-  </Loggers>
+  </loggers>
+
 </Configuration>
