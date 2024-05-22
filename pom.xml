@@ -861,14 +861,18 @@
             <phase>pre-site</phase>
             <configuration>
               <templateDirectory>${project.basedir}/src/docgen</templateDirectory>
-              <indexTemplate>
-                <source>index.adoc.ftl</source>
-                <target>${project.build.directory}/generated-site/antora/modules/ROOT/pages/plugin-reference.adoc</target>
-              </indexTemplate>
-              <typeTemplate>
-                <source>type.adoc.ftl</source>
-                <target>${project.build.directory}/generated-site/antora/modules/ROOT/pages/_plugin-reference/%g-%a-%c.adoc</target>
-              </typeTemplate>
+              <indexTemplates>
+                <template>
+                  <source>index.adoc.ftl</source>
+                  <target>${project.build.directory}/generated-site/antora/modules/ROOT/pages/plugin-reference.adoc</target>
+                </template>
+              </indexTemplates>
+              <typeTemplates>
+                <template>
+                  <source>type.adoc.ftl</source>
+                  <target>${project.build.directory}/generated-site/antora/modules/ROOT/pages/_plugin-reference/%g-%a-%c.adoc</target>
+                </template>
+              </typeTemplates>
             </configuration>
           </execution>
 
