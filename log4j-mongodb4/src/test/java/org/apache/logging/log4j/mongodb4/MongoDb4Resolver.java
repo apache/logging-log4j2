@@ -104,9 +104,8 @@ public class MongoDb4Resolver extends TypeBasedParameterResolver<MongoClient> im
                     protected Package packageOf(
                             Command command, Distribution distribution, DistributionBaseUrl baseUrl) {
                         if (distribution.platform().operatingSystem().type() == OSType.Windows) {
-                            final Package relativePackage = legacyPackageResolverFactory()
-                                    .apply(command)
-                                    .packageFor(distribution);
+                            final Package relativePackage =
+                                    commandPackageResolver().apply(command).packageFor(distribution);
                             final FileSet.Builder fileSetBuilder = FileSet.builder()
                                     .addEntry(FileType.Library, "ssleay32.dll")
                                     .addEntry(FileType.Library, "libeay32.dll");
