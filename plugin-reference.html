@@ -2154,18 +2154,6 @@ NOTE: The Log4j API supports custom levels, the following list contains only the
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-TimeFilter">TimeFilter</a></p>
 </li>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-AlwaysFailAppender">AlwaysFailAppender</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-BlockingAppender">BlockingAppender</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-FailOnceAppender">FailOnceAppender</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-ListAppender">ListAppender</a></p>
-</li>
-<li>
 <p><a href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender">FlumeAppender</a></p>
 </li>
 <li>
@@ -2285,18 +2273,6 @@ When resources require locking (e.g., through <code>org.apache.logging.log4j.cor
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-RoutingAppender">RoutingAppender</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-AlwaysFailAppender">AlwaysFailAppender</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-BlockingAppender">BlockingAppender</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-FailOnceAppender">FailOnceAppender</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-ListAppender">ListAppender</a></p>
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender">FlumeAppender</a></p>
@@ -2521,7 +2497,7 @@ It is recommended that, where possible, Filter implementations create a generic 
 <div class="paragraph">
 <p>In Log4j, the main interface for handling the life cycle context of an object is this one.
 An object first starts in the <code>org.apache.logging.log4j.core.State#INITIALIZED</code> state by default to indicate the class has been loaded.
-From here, calling the <a href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-core-LifeCycle">LifeCycle</a> method will change this state to <code>org.apache.logging.log4j.core.State#STARTING</code>. After successfully being started, this state is changed to <code>org.apache.logging.log4j.core.State#STARTED</code>. When the <a href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-core-LifeCycle">LifeCycle</a> is called, this goes into the <code>org.apache.logging.log4j.core.State#STOPPING</code> state.
+From here, calling the <a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-LifeCycle">LifeCycle</a> method will change this state to <code>org.apache.logging.log4j.core.State#STARTING</code>. After successfully being started, this state is changed to <code>org.apache.logging.log4j.core.State#STARTED</code>. When the <a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-LifeCycle">LifeCycle</a> is called, this goes into the <code>org.apache.logging.log4j.core.State#STOPPING</code> state.
 After successfully being stopped, this goes into the <code>org.apache.logging.log4j.core.State#STOPPED</code> state.
 In most circumstances, implementation classes should store their <code>org.apache.logging.log4j.core.State</code> in a <code>volatile</code> field or inside an <code>org.apache.logging.log4j.core.java.util.concurrent.atomic.AtomicReference</code> dependent on synchronization and concurrency requirements.</p>
 </div>
@@ -2702,18 +2678,6 @@ In most circumstances, implementation classes should store their <code>org.apach
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-TimeFilter">TimeFilter</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-AlwaysFailAppender">AlwaysFailAppender</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-BlockingAppender">BlockingAppender</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-FailOnceAppender">FailOnceAppender</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-ListAppender">ListAppender</a></p>
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender">FlumeAppender</a></p>
@@ -2924,18 +2888,6 @@ In most circumstances, implementation classes should store their <code>org.apach
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-TimeFilter">TimeFilter</a></p>
 </li>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-AlwaysFailAppender">AlwaysFailAppender</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-BlockingAppender">BlockingAppender</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-FailOnceAppender">FailOnceAppender</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-ListAppender">ListAppender</a></p>
-</li>
-<li>
 <p><a href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender">FlumeAppender</a></p>
 </li>
 <li>
@@ -3110,18 +3062,6 @@ In most circumstances, implementation classes should store their <code>org.apach
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-RoutingAppender">RoutingAppender</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-AlwaysFailAppender">AlwaysFailAppender</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-BlockingAppender">BlockingAppender</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-FailOnceAppender">FailOnceAppender</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-ListAppender">ListAppender</a></p>
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender">FlumeAppender</a></p>
@@ -5381,7 +5321,7 @@ This can be modified by setting a filter for the appender.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-SocketAppender"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-SocketAppender"></a><code>SocketAppender</code></h4>
+<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-SocketAppender"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-SocketAppender"></a>Socket</h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Class</dt>
@@ -5399,6 +5339,174 @@ This can be modified by setting a filter for the appender.</p>
 </div>
 <div class="paragraph">
 <p>Supports both TCP and UDP.</p>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-SocketAppender_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-SocketAppender_XML-snippet"></a>XML snippet</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Socket advertise=""
+        bufferedIo=""
+        bufferSize=""
+        connectTimeoutMillis=""
+        host=""
+        ignoreExceptions=""
+        immediateFail=""
+        immediateFlush=""
+        name=""
+        port=""
+        protocol=""
+        reconnectDelayMillis=""&gt;
+    &lt;a-Filter-implementation/&gt;
+    &lt;a-Layout-implementation/&gt;
+    &lt;Property/&gt;&lt;!-- multiple occurrences allowed --&gt;
+    &lt;SocketOptions/&gt;
+    &lt;Ssl/&gt;
+&lt;/Socket&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-SocketAppender-attributes"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-SocketAppender-attributes"></a>Attributes</h5>
+<div class="paragraph">
+<p>Optional attributes are denoted by <code>?</code>-suffixed types.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>advertise</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bufferedIo</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bufferSize</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>connectTimeoutMillis</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>host</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ignoreExceptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>immediateFail</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>immediateFlush</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>port</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>protocol</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-Protocol">Protocol</a>?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>reconnectDelayMillis</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-SocketAppender_components"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-SocketAppender_components"></a>Nested components</h5>
+<div class="paragraph">
+<p>Optional components are denoted by <code>?</code>-suffixed types.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 71.4286%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Tag</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Property</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property">Property</a>?</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Filter">Filter</a>?</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Layout">Layout</a>?</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SocketOptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-SocketOptions">SocketOptions</a>?</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Ssl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-ssl-SslConfiguration">SslConfiguration</a>?</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect4">
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-SocketAppender_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-SocketAppender_implementations"></a>Known implementations</h5>
@@ -7776,7 +7884,7 @@ However, configurations set up for the 2.0 version of the JMS appenders will sti
 </dl>
 </div>
 <div class="paragraph">
-<p>Abstract convenience class for triggering policies that extend <a href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-core-AbstractLifeCycle">AbstractLifeCycle</a> and implement <a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-TriggeringPolicy">TriggeringPolicy</a>.</p>
+<p>Abstract convenience class for triggering policies that extend <a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-AbstractLifeCycle">AbstractLifeCycle</a> and implement <a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-TriggeringPolicy">TriggeringPolicy</a>.</p>
 </div>
 <div class="sect4">
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-AbstractTriggeringPolicy_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-AbstractTriggeringPolicy_implementations"></a>Known implementations</h5>
@@ -11157,7 +11265,7 @@ DefaultConfiguration is always called last if no configuration has been returned
 </div>
 </div>
 <div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig"></a><code>LoggerConfig</code></h4>
+<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig"></a>Logger</h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Class</dt>
@@ -11172,6 +11280,113 @@ DefaultConfiguration is always called last if no configuration has been returned
 </div>
 <div class="paragraph">
 <p>Logger object that is created via configuration.</p>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig_XML-snippet"></a>XML snippet</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Logger additivity=""
+        includeLocation=""
+        level=""
+        levelAndRefs=""
+        name=""&gt;
+    &lt;a-Filter-implementation/&gt;
+    &lt;AppenderRef/&gt;&lt;!-- multiple occurrences allowed --&gt;
+    &lt;Property/&gt;&lt;!-- multiple occurrences allowed --&gt;
+&lt;/Logger&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig-attributes"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig-attributes"></a>Attributes</h5>
+<div class="paragraph">
+<p>Optional attributes are denoted by <code>?</code>-suffixed types.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>additivity</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeLocation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>level</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-Level">Level</a>?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>levelAndRefs</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig_components"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig_components"></a>Nested components</h5>
+<div class="paragraph">
+<p>Optional components are denoted by <code>?</code>-suffixed types.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 71.4286%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Tag</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>AppenderRef</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-AppenderRef">AppenderRef</a>?</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Property</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property">Property</a>?</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Filter">Filter</a>?</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect4">
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig_implementations"></a>Known implementations</h5>
@@ -11353,7 +11568,7 @@ DefaultConfiguration is always called last if no configuration has been returned
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Logger</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig">LoggerConfig</a>?</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p>An array of Loggers.</p>
@@ -11439,7 +11654,8 @@ DefaultConfiguration is always called last if no configuration has been returned
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property_XML-snippet"></a>XML snippet</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Property name=""/&gt;</code></pre>
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Property name=""
+          value=""/&gt;</code></pre>
 </div>
 </div>
 </div>
@@ -11470,6 +11686,14 @@ DefaultConfiguration is always called last if no configuration has been returned
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p>The key.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>value</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The value without any substitution applied.</p>
 </div></div></td>
 </tr>
 </tbody>
@@ -12976,18 +13200,6 @@ A filter may choose to support being called only from the context or only from a
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig-RootLogger">RootLogger</a></p>
 </li>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-AlwaysFailAppender">AlwaysFailAppender</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-BlockingAppender">BlockingAppender</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-FailOnceAppender">FailOnceAppender</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-ListAppender">ListAppender</a></p>
-</li>
-<li>
 <p><a href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender">FlumeAppender</a></p>
 </li>
 <li>
@@ -13373,7 +13585,7 @@ DENY.</p>
 <p>Interface implemented by Classes that allow filtering to occur.</p>
 </div>
 <div class="paragraph">
-<p>Extends <a href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-core-LifeCycle">LifeCycle</a> since filters have a life cycle.</p>
+<p>Extends <a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-LifeCycle">LifeCycle</a> since filters have a life cycle.</p>
 </div>
 <div class="sect4">
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-Filterable_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-Filterable_implementations"></a>Known implementations</h5>
@@ -13468,18 +13680,6 @@ DENY.</p>
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig-RootLogger">RootLogger</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-AlwaysFailAppender">AlwaysFailAppender</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-BlockingAppender">BlockingAppender</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-FailOnceAppender">FailOnceAppender</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-ListAppender">ListAppender</a></p>
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender">FlumeAppender</a></p>
@@ -13669,7 +13869,7 @@ For example, if the filter is configured with <a href="#org-apache-logging-log4j
 </div>
 </div>
 <div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-MapFilter"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-MapFilter"></a><code>MapFilter</code></h4>
+<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-MapFilter"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-MapFilter"></a>MapFilter</h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Class</dt>
@@ -13684,6 +13884,87 @@ For example, if the filter is configured with <a href="#org-apache-logging-log4j
 </div>
 <div class="paragraph">
 <p>A Filter that operates on a Map.</p>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-MapFilter_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-MapFilter_XML-snippet"></a>XML snippet</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;MapFilter onMatch=""
+           onMismatch=""
+           operator=""&gt;
+    &lt;KeyValuePair/&gt;&lt;!-- multiple occurrences allowed --&gt;
+&lt;/MapFilter&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-MapFilter-attributes"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-MapFilter-attributes"></a>Attributes</h5>
+<div class="paragraph">
+<p>Optional attributes are denoted by <code>?</code>-suffixed types.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>onMatch</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Filter-Result">Result</a>?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>onMismatch</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Filter-Result">Result</a>?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>operator</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-MapFilter_components"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-MapFilter_components"></a>Nested components</h5>
+<div class="paragraph">
+<p>Optional components are denoted by <code>?</code>-suffixed types.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 71.4286%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Tag</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>KeyValuePair</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-util-KeyValuePair">KeyValuePair</a>?</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect4">
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-MapFilter_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-MapFilter_implementations"></a>Known implementations</h5>
@@ -14794,18 +15075,6 @@ The default Level is ERROR.</p>
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-MethodLocationPatternConverter">MethodLocationPatternConverter</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-AlwaysFailAppender">AlwaysFailAppender</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-BlockingAppender">BlockingAppender</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-FailOnceAppender">FailOnceAppender</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-ListAppender">ListAppender</a></p>
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender">FlumeAppender</a></p>
@@ -17531,9 +17800,6 @@ Supports Lookup expressions.</p>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-SystemPropertiesLookup">SystemPropertiesLookup</a></p>
 </li>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-junit-TestPropertyLookup">TestPropertyLookup</a></p>
-</li>
-<li>
 <p><a href="#org-apache-logging-log4j_log4j-docker_org-apache-logging-log4j-docker-DockerLookup">DockerLookup</a></p>
 </li>
 <li>
@@ -17818,7 +18084,7 @@ SimpleDateFormat date and time pattern strings.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-MapLookup"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-MapLookup"></a><code>MapLookup</code></h4>
+<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-MapLookup"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-MapLookup"></a>map</h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Class</dt>
@@ -17833,6 +18099,14 @@ SimpleDateFormat date and time pattern strings.</p>
 </div>
 <div class="paragraph">
 <p>A map-based lookup.</p>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-MapLookup_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-MapLookup_XML-snippet"></a>XML snippet</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;map/&gt;</code></pre>
+</div>
+</div>
 </div>
 <div class="sect4">
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-MapLookup_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-MapLookup_implementations"></a>Known implementations</h5>
@@ -17979,9 +18253,6 @@ If these do not suffice, you can subclass and implement your own matcher.</p>
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-UpperLookup">UpperLookup</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-junit-TestPropertyLookup">TestPropertyLookup</a></p>
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-docker_org-apache-logging-log4j-docker-DockerLookup">DockerLookup</a></p>
@@ -21028,7 +21299,7 @@ toString(), or to output the value of a specific key within the property bundle 
 </div>
 </div>
 <div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-ThrowablePatternConverter"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-ThrowablePatternConverter"></a><code>ThrowablePatternConverter</code></h4>
+<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-ThrowablePatternConverter"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-ThrowablePatternConverter"></a>ThrowablePatternConverter</h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Class</dt>
@@ -21043,6 +21314,14 @@ toString(), or to output the value of a specific key within the property bundle 
 </div>
 <div class="paragraph">
 <p>Outputs the Throwable portion of the LoggingEvent as a full stack trace unless this converter&#8217;s option is 'short', where it just outputs the first line of the trace, or if the number of lines to print is explicitly specified.</p>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-ThrowablePatternConverter_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-ThrowablePatternConverter_XML-snippet"></a>XML snippet</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;ThrowablePatternConverter/&gt;</code></pre>
+</div>
+</div>
 </div>
 <div class="sect4">
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-ThrowablePatternConverter_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-ThrowablePatternConverter_implementations"></a>Known implementations</h5>
@@ -21166,7 +21445,8 @@ toString(), or to output the value of a specific key within the property bundle 
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Script language=""
-        name=""/&gt;</code></pre>
+        name=""
+        scriptText=""/&gt;</code></pre>
 </div>
 </div>
 </div>
@@ -21199,6 +21479,12 @@ toString(), or to output the value of a specific key within the property bundle 
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scriptText</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"></div></td>
@@ -21503,337 +21789,6 @@ toString(), or to output the value of a specific key within the property bundle 
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-HttpWatcher">HttpWatcher</a></p>
 </li>
 </ul>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="org-apache-logging-log4j_log4j-core-test"><a class="anchor" href="#org-apache-logging-log4j_log4j-core-test"></a><code>log4j-core-test</code></h3>
-<div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-ExtendedLevels"><a class="anchor" href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-ExtendedLevels"></a>ExtendedLevel</h4>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Class</dt>
-<dd>
-<p><code>org.apache.logging.log4j.core.test.ExtendedLevels</code></p>
-</dd>
-<dt class="hdlist1">Provider</dt>
-<dd>
-<p><code>org.apache.logging.log4j:log4j-core-test</code></p>
-</dd>
-</dl>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-ExtendedLevels_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-ExtendedLevels_XML-snippet"></a>XML snippet</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;ExtendedLevel/&gt;</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-AlwaysFailAppender"><a class="anchor" href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-AlwaysFailAppender"></a>AlwaysFail</h4>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Class</dt>
-<dd>
-<p><code>org.apache.logging.log4j.core.test.appender.AlwaysFailAppender</code></p>
-</dd>
-<dt class="hdlist1">Provider</dt>
-<dd>
-<p><code>org.apache.logging.log4j:log4j-core-test</code></p>
-</dd>
-</dl>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-AlwaysFailAppender_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-AlwaysFailAppender_XML-snippet"></a>XML snippet</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;AlwaysFail name=""/&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-AlwaysFailAppender-attributes"><a class="anchor" href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-AlwaysFailAppender-attributes"></a>Attributes</h5>
-<div class="paragraph">
-<p>Optional attributes are denoted by <code>?</code>-suffixed types.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 62.5%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-BlockingAppender"><a class="anchor" href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-BlockingAppender"></a>Block</h4>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Class</dt>
-<dd>
-<p><code>org.apache.logging.log4j.core.test.appender.BlockingAppender</code></p>
-</dd>
-<dt class="hdlist1">Provider</dt>
-<dd>
-<p><code>org.apache.logging.log4j:log4j-core-test</code></p>
-</dd>
-</dl>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-BlockingAppender_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-BlockingAppender_XML-snippet"></a>XML snippet</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Block name=""/&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-BlockingAppender-attributes"><a class="anchor" href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-BlockingAppender-attributes"></a>Attributes</h5>
-<div class="paragraph">
-<p>Optional attributes are denoted by <code>?</code>-suffixed types.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 62.5%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-FailOnceAppender"><a class="anchor" href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-FailOnceAppender"></a>FailOnce</h4>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Class</dt>
-<dd>
-<p><code>org.apache.logging.log4j.core.test.appender.FailOnceAppender</code></p>
-</dd>
-<dt class="hdlist1">Provider</dt>
-<dd>
-<p><code>org.apache.logging.log4j:log4j-core-test</code></p>
-</dd>
-</dl>
-</div>
-<div class="paragraph">
-<p>An <a href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-core-Appender">Appender</a> that fails on the first use and works for the rest.</p>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-FailOnceAppender_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-FailOnceAppender_XML-snippet"></a>XML snippet</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;FailOnce name=""
-          throwableClassName=""/&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-FailOnceAppender-attributes"><a class="anchor" href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-FailOnceAppender-attributes"></a>Attributes</h5>
-<div class="paragraph">
-<p>Optional attributes are denoted by <code>?</code>-suffixed types.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 62.5%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>throwableClassName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-ListAppender"><a class="anchor" href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-ListAppender"></a>List</h4>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Class</dt>
-<dd>
-<p><code>org.apache.logging.log4j.core.test.appender.ListAppender</code></p>
-</dd>
-<dt class="hdlist1">Provider</dt>
-<dd>
-<p><code>org.apache.logging.log4j:log4j-core-test</code></p>
-</dd>
-</dl>
-</div>
-<div class="paragraph">
-<p>This appender is primarily used for testing.</p>
-</div>
-<div class="paragraph">
-<p>Use in a real environment is discouraged as the List could eventually grow to cause an OutOfMemoryError.
-This appender is not thread-safe.
-This appender will use <a href="#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-core-Layout">Layout</a>.</p>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-ListAppender_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-ListAppender_XML-snippet"></a>XML snippet</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;List entryPerNewLine=""
-      name=""
-      raw=""&gt;
-    &lt;a-Filter-implementation/&gt;
-    &lt;a-Layout-implementation/&gt;
-&lt;/List&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-ListAppender-attributes"><a class="anchor" href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-ListAppender-attributes"></a>Attributes</h5>
-<div class="paragraph">
-<p>Optional attributes are denoted by <code>?</code>-suffixed types.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 62.5%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>entryPerNewLine</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>raw</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-ListAppender_components"><a class="anchor" href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-ListAppender_components"></a>Nested components</h5>
-<div class="paragraph">
-<p>Optional components are denoted by <code>?</code>-suffixed types.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 71.4286%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Tag</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Filter">Filter</a>?</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Layout">Layout</a>?</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-junit-TestPropertyLookup"><a class="anchor" href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-junit-TestPropertyLookup"></a>test</h4>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Class</dt>
-<dd>
-<p><code>org.apache.logging.log4j.core.test.junit.TestPropertyLookup</code></p>
-</dd>
-<dt class="hdlist1">Provider</dt>
-<dd>
-<p><code>org.apache.logging.log4j:log4j-core-test</code></p>
-</dd>
-</dl>
-</div>
-<div class="paragraph">
-<p>Resolves properties using <code>org.apache.logging.log4j.test.junit.TestPropertySource</code>.</p>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-junit-TestPropertyLookup_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-junit-TestPropertyLookup_XML-snippet"></a>XML snippet</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;test/&gt;</code></pre>
-</div>
 </div>
 </div>
 </div>
