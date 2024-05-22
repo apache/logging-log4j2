@@ -48,7 +48,7 @@ Once created, use it as the first argument in the log statement:
 include::example$manual/markers/MarkerExample.java[tag=use-marker]
 ----
 
-If you use the <<example-configuration,configuration example below>>, you'll see the following log statement on your console:
+If you use the <<example-configuration,configuration example below>>, one can see the following log statement on your console:
 
 [source, text]
 ----
@@ -59,21 +59,21 @@ include::example$manual/markers/marker-filtering.log[tag=use-marker]
 === Parent and child markers
 
 A marker can have zero or more parent markers, allowing for a hierarchy of markers.
-To create such a hierarchy, you must use the `addParents()` method on the `Marker` object after you create the child marker.
+To create such a hierarchy, you must use the `addParents()` method on the `Marker` object after you make the child marker.
 
 [source, java, indent=0]
 ----
 include::example$manual/markers/MarkerExample.java[tag=create-marker-parent]
 ----
 
-The usage of child markers does not differ from the usage of simple markers, you just need to pass them as the first argument of a logging call.
+Child markers do not differ from simple markers; one must pass them on as the first argument of a logging call.
 
 [source, java, indent=0]
 ----
 include::example$manual/markers/MarkerExample.java[tag=use-marker-parent]
 ----
 
-Messages marked with children markers behave as if they were both marked with the children marker and all its parents.
+Messages marked with children's markers behave as if they were both marked with the children's marker and all its parents.
 If you use the <<example-configuration,configuration example below>>, you'll see the following log statement on your console:
 
 [source, text]
@@ -84,16 +84,16 @@ include::example$manual/markers/marker-filtering.log[tag=use-marker-parent]
 [#configuring-log4j]
 == Configuring filtering
 
-Markers can be used to filter the log statements that are delivered to your log files.
+Developers can use markers to filter the log statements delivered to log files.
 Marker processing is supported at least by
 https://logback.qos.ch/manual/filters.html#TurboFilter[Logback]
 and the Log4j Core logging backends.
-Will will discuss only the configuration of the latter.
+We will discuss only the configuration of the latter.
 
-In order to filter messages by marker, you need to add
+To filter messages by marker, you need to add
 xref:manual/filters.adoc#MarkerFilter[`MarkerFilter`]
 to your configuration file.
-For example the snippet below can be used to redirect all SQL-related logs to the `SQL_LOG` appender:
+For example, one can use the snippet below to redirect all SQL-related logs to the `SQL_LOG` appender:
 
 [[example-configuration]]
 [tabs]
@@ -138,8 +138,7 @@ Developers should avoid generic marker names, as they may conflict with
 those provided by third parties. Except, of course, if the user is aware of the implications.
 
 While it is possible to add or remove parent markers dynamically through the `setParents()` method,
-it is generally advisable to set the parents when the marker is created.
-This is for efficiency and performance reasons.
+it is generally advisable to set the parents when the marker is created for efficiency and performance reasons.
 
 It is also worth noting that markers without parents are more efficient to evaluate
 than markers with multiple parents. It is generally a good idea to avoid
