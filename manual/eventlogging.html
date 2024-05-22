@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Event Logging :: Apache Log4j</title>
+    <title>Event Logging with Log4j :: Apache Log4j</title>
     <link rel="canonical" href="https://logging.apache.org/log4j/3.x/manual/eventlogging.html">
     <meta name="generator" content="Antora 3.2.0-alpha.4">
 <link rel="stylesheet" href="../_/css/site.css">
@@ -127,7 +127,7 @@
     <a class="nav-link" href="markers.html">Markers</a>
   </li>
   <li class="nav-item is-current-page" data-depth="2">
-    <a class="nav-link" href="eventlogging.html">Event Logging</a>
+    <a class="nav-link" href="eventlogging.html">Event Logging with Log4j</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="messages.html">Messages</a>
@@ -292,7 +292,7 @@
     <li><a href="../index.html">Home</a></li>
     <li><a href="index.html">Manual</a></li>
     <li><a href="api.html">Log4j API</a></li>
-    <li><a href="eventlogging.html">Event Logging</a></li>
+    <li><a href="eventlogging.html">Event Logging with Log4j</a></li>
   </ul>
 </nav>
 <div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/main/src/site/antora/modules/ROOT/pages/manual/eventlogging.adoc">Edit this Page</a></div>
@@ -302,40 +302,193 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Event Logging</h1>
+<h1 class="page">Event Logging with Log4j</h1>
+<div id="preamble">
+<div class="sectionbody">
 <div class="paragraph">
-<p>The <code>EventLogger</code> class provides a simple mechanism for logging events
-that occur in an application. While the <code>EventLogger</code> is useful as a way
-of initiating events that should be processed by an audit Logging
-system, by itself it does not implement any of the features an audit
-logging system would require such as guaranteed delivery.</p>
+<p>The <code>EventLogger</code> class provides a mechanism for logging significant events
+in an application using structured data. This approach is beneficial for
+tracking user actions, monitoring system behavior, and debugging issues.</p>
 </div>
 <div class="paragraph">
-<p>The recommended way of using the <code>EventLogger</code> in a typical web
-application is to populate the <code>ThreadContext</code> Map with data that is
-related to the entire lifespan of the request such as the user&#8217;s id, the
-user&#8217;s IP address, the product name, etc. This can easily be done in a
-servlet filter where the <code>ThreadContext</code> Map can also be cleared at the
-end of the request. When an event that needs to be recorded occurs a
-<code>StructuredDataMessage</code> should be created and populated. Then call
-<code>EventLogger.logEvent(msg)</code> where msg is a reference to the
-<code>StructuredDataMessage</code>.</p>
+<p>Theoretically, every <code>Logger</code> can be used to perform this kind of action;
+however, the <code>EventLogger</code> class provides a shortcut to log events with structured data
+since it allows for a static method to log events.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_advantages_of_structured_logging"><a class="anchor" href="#_advantages_of_structured_logging"></a>Advantages of Structured Logging</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Structured logging means events Log4j records events with detailed and structured information.
+That way, logs are easier to read and process. They provide better context and
+are also more consistent than plain text logs.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_integration_with_syslog"><a class="anchor" href="#_integration_with_syslog"></a>Integration with Syslog</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Log4j complies with Syslogs RFC5424 standard.
+This feature allows for easy integration with existing log management and monitoring systems.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_example_configuration"><a class="anchor" href="#_example_configuration"></a>Example Configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To configure Log4j to output logs in Syslog (RFC5424) format, one needs to use the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StructuredDataLayout.html"><code>StructuredDataLayout</code></a> layout.
+Developers can use the following configuration to log events to a local Syslog server:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Appenders&gt;
+    &lt;Syslog name="Syslog" host="localhost" port="514"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+        &lt;StructuredDataLayout complete="true" /&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+    &lt;/Syslog&gt;
+&lt;/Appenders&gt;
+
+&lt;Loggers&gt;
+    &lt;Logger name="MyApp" level="info" additivity="false"&gt;
+        &lt;AppenderRef ref="Syslog"/&gt;
+    &lt;/Logger&gt;
+&lt;/Loggers&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>Syslog</code> appender sends logs to a local Syslog server.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>StructuredDataLayout</code> layout formats logs in RFC5424 format.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Of course, sending logs to a Syslog server is unnecessary.
+Developers can use the <code>StructuredDataLayout</code> layout with any other appender, such as <code>FileAppender</code> or <code>ConsoleAppender</code>.</p>
+</div>
+<div class="paragraph">
+<p>As an example, the output could look like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">&lt;165&gt;1 2024-05-16T12:34:56.789Z myapp MyApp - ID47 [transfer@12345 toAccount="123456" fromAccount="654321" amount="1000"] User 654321 has transferred 1000 to account 123456</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_using_the_eventlogger"><a class="anchor" href="#_using_the_eventlogger"></a>Using the <code>EventLogger</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>EventLogger</code> class provides a simple way to log structured events.
+It uses the <code>StructuredDataMessage</code> class to create structured log messages.</p>
+</div>
+<div class="paragraph">
+<p>Assume a simple application that performs funds transfers between accounts.
+This application should send a certain amount of funds from one account to another and log the event.</p>
+</div>
+<div class="paragraph">
+<p>The account class is defined as follows, with a unique ID and a balance:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">class Account {
+    private String id;
+    private long balance;
+    // Getters and setters omitted for brevity
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>transfer()</code> method transfers funds between two accounts and logs the event.
+It needs to take two accounts and the amount to transfer as parameters.</p>
+</div>
+<div class="paragraph">
+<p>Apart from the key-value pairs provided in the map of the <code>StructuredDataMessage,</code>
+the <code>StructuredDataMessage</code> also takes a unique ID, a free-form message, and a type as parameters.</p>
+</div>
+<div class="paragraph">
+<p>The free-form message is a human-readable description of the event.
+This message is good for operators who need to understand the event quickly,
+but not so much for automated processing.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public static String transferFunds(Account toAccount, Account fromAccount, long amount) {
+    toAccount.deposit(amount);
+    fromAccount.withdraw(amount);
+
+    // Create a unique ID for the transaction
+    String confirm = UUID.randomUUID().toString();
+
+    String freeFormMessage = "User " + fromAccount.getId() + " has transferred " + amount + " to account " + toAccount.getId(); <i class="conum" data-value="1"></i><b>(1)</b>
+
+    // Create the StructuredDataMessage
+    StructuredDataMessage msg = new StructuredDataMessage(confirm, freeFormMessage, "transfer"); <i class="conum" data-value="2"></i><b>(2)</b>
+    msg.put("toAccount", toAccount.getId()); <i class="conum" data-value="3"></i><b>(3)</b>
+    msg.put("fromAccount", fromAccount.getId());
+    msg.put("amount", amount);
+
+    // Log the event
+    EventLogger.logEvent(msg); <i class="conum" data-value="4"></i><b>(4)</b>
+
+    return confirm;
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The free-form message is a human-readable description of the event.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>StructuredDataMessage</code> constructor takes an ID, the free-form message, and a type.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Developers can add key-value pairs to the message.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The <code>EventLogger</code> logs the event.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>That way, the <code>transferFunds()</code> method logs the event with structured data
+by using the <code>EventLogger</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_web_application_example"><a class="anchor" href="#_web_application_example"></a>Web Application Example</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In a web application, developers can use a servlet filter to populate the
+<code>ThreadContext</code> map with data related to the request.</p>
+</div>
+<div class="paragraph">
+<p>The following example demonstrates how a <code>Filter</code> could investigate the request
+and populate the <code>ThreadContext</code> map with data such as the user&#8217;s IP address,
+the user&#8217;s login ID, the server&#8217;s hostname, the product name, the locale, and the timezone.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import org.apache.logging.log4j.ThreadContext;
 import org.apache.commons.lang.time.DateUtils;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.FilterChain;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.*;
+import javax.servlet.http.*;
 import java.io.IOException;
 import java.util.TimeZone;
 
@@ -343,9 +496,7 @@ public class RequestFilter implements Filter {
     private FilterConfig filterConfig;
     private static String TZ_NAME = "timezoneOffset";
 
-    public void init(FilterConfig filterConfig) throws ServletException {
-        this.filterConfig = filterConfig;
-    }
+    // Other methods ommitted for brevity
 
     /**
      * Sample filter that populates the MDC on every request.
@@ -353,80 +504,136 @@ public class RequestFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest)servletRequest;
-        HttpServletResponse response = (HttpServletResponse)servletResponse;
-        ThreadContext.put("ipAddress", request.getRemoteAddr());
+
+        ThreadContext.put("ipAddress", request.getRemoteAddr()); <i class="conum" data-value="1"></i><b>(1)</b>
+
         HttpSession session = request.getSession(false);
-        TimeZone timeZone = null;
         if (session != null) {
-            // Something should set this after authentication completes
-            String loginId = (String)session.getAttribute("LoginId");
+            // Assuming, an authentication filter has already populated the loginId in the session
+            String loginId = (String)session.getAttribute("loginId");
             if (loginId != null) {
                 ThreadContext.put("loginId", loginId);
             }
-            // This assumes there is some javascript on the user's page to create the cookie.
-            if (session.getAttribute(TZ_NAME) == null) {
-                if (request.getCookies() != null) {
-                    for (Cookie cookie : request.getCookies()) {
-                        if (TZ_NAME.equals(cookie.getName())) {
-                            int tzOffsetMinutes = Integer.parseInt(cookie.getValue());
-                            timeZone = TimeZone.getTimeZone("GMT");
-                            timeZone.setRawOffset((int)(tzOffsetMinutes * DateUtils.MILLIS_PER_MINUTE));
-                            request.getSession().setAttribute(TZ_NAME, tzOffsetMinutes);
-                            cookie.setMaxAge(0);
-                            response.addCookie(cookie);
-                        }
-                    }
-                }
-            }
         }
+
         ThreadContext.put("hostname", servletRequest.getServerName());
         ThreadContext.put("productName", filterConfig.getInitParameter("ProductName"));
         ThreadContext.put("locale", servletRequest.getLocale().getDisplayName());
-        if (timeZone == null) {
-            timeZone = TimeZone.getDefault();
-        }
-        ThreadContext.put("timezone", timeZone.getDisplayName());
+        ThreadContext.put("timezone", TimeZone.getDefault().getDisplayName());
+
         filterChain.doFilter(servletRequest, servletResponse);
         ThreadContext.clear();
     }
-
-    public void destroy() {
-    }
 }</code></pre>
 </div>
 </div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>doFilter()</code> method populates the <code>ThreadContext</code> map with data related to the request.</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
-<p>Sample class that uses <code>EventLogger</code>.</p>
+<p>The <code>Filter</code> needs to be registered in your <code>web.xml</code> file:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import org.apache.logging.log4j.StructuredDataMessage;
-import org.apache.logging.log4j.EventLogger;
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;filter&gt;
+    &lt;filter-name&gt;RequestFilter&lt;/filter-name&gt;
+    &lt;filter-class&gt;com.example.RequestFilter&lt;/filter-class&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;ProductName&lt;/param-name&gt;
+        &lt;param-value&gt;YourProductName&lt;/param-value&gt;
+    &lt;/init-param&gt;
+&lt;/filter&gt;
+&lt;filter-mapping&gt;
+    &lt;filter-name&gt;RequestFilter&lt;/filter-name&gt;
+    &lt;url-pattern&gt;/*&lt;/url-pattern&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+&lt;/filter-mapping&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>RequestFilter</code> is mapped to all requests.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Eventually, a <code>Servlet</code> or any other related class, such as a Spring Controller, can be used to log events with structured data.
+The following example uses a <code>Servlet</code> to call the <code>EventLogger</code> and log a user action.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import javax.servlet.*;
+import javax.servlet.http.*;
+import java.io.IOException;
 
-import java.util.Date;
-import java.util.UUID;
+public class UserActionServlet extends HttpServlet {
 
-public class MyApp {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String userId = request.getParameter("userId");
+        String action = request.getParameter("action");
+        String details = request.getParameter("details");
 
-    public String doFundsTransfer(Account toAccount, Account fromAccount, long amount) {
-        toAccount.deposit(amount);
-        fromAccount.withdraw(amount);
-        String confirm = UUID.randomUUID().toString();
-        StructuredDataMessage msg = new StructuredDataMessage(confirm, null, "transfer");
-        msg.put("toAccount", toAccount);
-        msg.put("fromAccount", fromAccount);
-        msg.put("amount", amount);
+        // Perform and log the user action
+        String message = "User " + userId + " performed action: " + action;
+        StructuredDataMessage msg = new StructuredDataMessage(UUID.randomUUID().toString(), message, "userAction"); <i class="conum" data-value="1"></i><b>(1)</b>
+        msg.put("userId", userId);
+        msg.put("action", action);
+        msg.put("details", details);
+
+        // Log the event
         EventLogger.logEvent(msg);
-        return confirm;
+
+        // Respond to the client
+        response.getWriter().write("Action logged successfully");
     }
 }</code></pre>
 </div>
 </div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>userAction</code> is the name of the current transaction</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
-<p>The <code>EventLogger</code> class uses a <code>Logger</code> named "EventLogger". <code>EventLogger</code>
-uses a logging level of OFF as the default to indicate that it cannot be
-filtered. These events can be formatted for printing using the
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StructuredDataLayout.html"><code>StructuredDataLayout</code></a>.</p>
+<p>That way, not only the data provided to the <code>EventLogger</code> is used, but also all the
+data populated in the <code>ThreadContext</code> map is included in the log message.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_benefits_of_structured_logging"><a class="anchor" href="#_benefits_of_structured_logging"></a>Benefits of Structured Logging</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Improved Readability and Context:</strong>
+Structured logs include detailed information, making them easier to understand and analyze.</p>
+</li>
+<li>
+<p><strong>Better for Automated Processing:</strong>
+Structured logs are easily parsed by existing log management tools.</p>
+</li>
+<li>
+<p><strong>Consistency:</strong>
+Structured logging enforces a consistent format, helping to identify patterns in logs.</p>
+</li>
+<li>
+<p><strong>Performance Optimization:</strong>
+Structured messages are - as all messages - only constructed when necessary, keeping overhead low.</p>
+</li>
+</ol>
+</div>
+</div>
 </div>
 </article>
   </div>
