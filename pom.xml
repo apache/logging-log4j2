@@ -355,6 +355,7 @@
     <!-- Directories where `log4j-docgen` annotation processor will emit files to -->
     <log4j.docgen.pluginDescriptorsDir.phase1>${maven.multiModuleProjectDirectory}/target/plugin-descriptors/phase1</log4j.docgen.pluginDescriptorsDir.phase1>
     <log4j.docgen.pluginDescriptorsDir.phase2>${maven.multiModuleProjectDirectory}/target/plugin-descriptors/phase2</log4j.docgen.pluginDescriptorsDir.phase2>
+    <log4j.docgen.pluginDescriptorsDir.skipped>${maven.multiModuleProjectDirectory}/target/plugin-descriptors/skipped</log4j.docgen.pluginDescriptorsDir.skipped>
     <log4j.docgen.pluginDescriptorsDir>${log4j.docgen.pluginDescriptorsDir.phase2}</log4j.docgen.pluginDescriptorsDir>
 
   </properties>
@@ -825,14 +826,18 @@
             <phase>pre-site</phase>
             <configuration>
               <templateDirectory>${project.basedir}/src/docgen</templateDirectory>
-              <indexTemplate>
-                <source>index.adoc.ftl</source>
-                <target>${project.build.directory}/generated-site/antora/modules/ROOT/pages/plugin-reference.adoc</target>
-              </indexTemplate>
-              <typeTemplate>
-                <source>type.adoc.ftl</source>
-                <target>${project.build.directory}/generated-site/antora/modules/ROOT/pages/_plugin-reference/%g-%a-%c.adoc</target>
-              </typeTemplate>
+              <indexTemplates>
+                <template>
+                  <source>index.adoc.ftl</source>
+                  <target>${project.build.directory}/generated-site/antora/modules/ROOT/pages/plugin-reference.adoc</target>
+                </template>
+              </indexTemplates>
+              <typeTemplates>
+                <template>
+                  <source>type.adoc.ftl</source>
+                  <target>${project.build.directory}/generated-site/antora/modules/ROOT/pages/_plugin-reference/%g-%a-%c.adoc</target>
+                </template>
+              </typeTemplates>
             </configuration>
           </execution>
 
