@@ -28,8 +28,8 @@ import org.apache.logging.log4j.spi.ThreadContextMap;
 @ServiceProvider(value = Provider.class, resolution = Resolution.OPTIONAL)
 public class SLF4JProvider extends Provider {
 
-    private static final LoggerContextFactory CONTEXT_FACTORY = new SLF4JLoggerContextFactory();
-    private static final ThreadContextMap THREAD_CONTEXT_MAP = new MDCContextMap();
+    private final LoggerContextFactory CONTEXT_FACTORY = new SLF4JLoggerContextFactory();
+    private final ThreadContextMap THREAD_CONTEXT_MAP = new MDCContextMap();
 
     public SLF4JProvider() {
         super(15, CURRENT_VERSION);

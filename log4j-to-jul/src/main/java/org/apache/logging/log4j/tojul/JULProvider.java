@@ -19,7 +19,9 @@ package org.apache.logging.log4j.tojul;
 import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceProvider;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
+import org.apache.logging.log4j.spi.NoOpThreadContextMap;
 import org.apache.logging.log4j.spi.Provider;
+import org.apache.logging.log4j.spi.ThreadContextMap;
 
 /**
  * Bind the Log4j API to JUL.
@@ -28,7 +30,7 @@ import org.apache.logging.log4j.spi.Provider;
  */
 @ServiceProvider(value = Provider.class, resolution = Resolution.OPTIONAL)
 public class JULProvider extends Provider {
-    private static final LoggerContextFactory CONTEXT_FACTORY = new JULLoggerContextFactory();
+    private final LoggerContextFactory CONTEXT_FACTORY = new JULLoggerContextFactory();
 
     public JULProvider() {
         super(20, CURRENT_VERSION);
@@ -40,8 +42,7 @@ public class JULProvider extends Provider {
     }
 
     @Override
-    public String getThreadContextMap() {
-        // JUL does not provide an MDC implementation
-        return NO_OP_CONTEXT_MAP;
+    public ThreadContextMap getThreadContextMapInstance() {
+        return NoOpThreadContextMap.INSTANCE;
     }
 }
