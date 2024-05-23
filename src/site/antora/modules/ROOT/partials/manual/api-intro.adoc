@@ -46,7 +46,7 @@ The _generated_ **log event**, which contain the _user-provided_ **log message**
 It can be pretty-printed to the console, written to a file, or get totally ignored due to insufficient severity or some other filtering.
 
 Log levels are used to categorize log events by severity and control the verbosity of the logs.
-Log4j knows various levels, but the most common are `DEBUG`, `INFO`, `WARN`, and `ERROR`.
+Log4j contains various predefined levels, but the most common are `DEBUG`, `INFO`, `WARN`, and `ERROR`.
 With them, you can filter out less important logs and focus on the most critical ones.
 Previously we used `Logger#warn()` to log a warning message, which could mean that something is not right, but the application can continue.
 Log levels have a priority, and `WARN` is less severe than `ERROR`.

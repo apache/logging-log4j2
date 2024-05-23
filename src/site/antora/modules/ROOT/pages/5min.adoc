@@ -264,7 +264,7 @@ Save the following XML document to `src/**main**/resources/log4j2.xml`.
                        https://logging.apache.org/xml/ns/log4j-config-2.xsd">
 
   <appenders><!--1-->
-    <Console name="console"><!--2-->
+    <Console name="CONSOLE"><!--2-->
       <JsonTemplateLayout/><!--3-->
     </Console>
   </appenders>
@@ -272,7 +272,7 @@ Save the following XML document to `src/**main**/resources/log4j2.xml`.
   <loggers>
     <logger name="com.mycompany" level="INFO"/><!--4-->
     <root level="WARN"><!--5-->
-      <AppenderRef ref="console"/><!--6-->
+      <AppenderRef ref="CONSOLE"/><!--6-->
     </root>
   </loggers>
 
@@ -432,7 +432,7 @@ Save the following XML document to `src/**test**/resources/log4j2-test.xml`.
                        https://logging.apache.org/xml/ns/log4j-config-2.xsd">
 
   <appenders>
-    <Console name="console">
+    <Console name="CONSOLE">
       <PatternLayout pattern="%d [%t] %5p %c{1.} - %m%n"/><!--1-->
     </Console>
   </appenders>
@@ -440,7 +440,7 @@ Save the following XML document to `src/**test**/resources/log4j2-test.xml`.
   <loggers>
     <logger name="com.mycompany" level="DEBUG"/><!--2-->
     <root level="WARN">
-      <AppenderRef ref="console"/>
+      <AppenderRef ref="CONSOLE"/>
     </root>
   </loggers>
 
