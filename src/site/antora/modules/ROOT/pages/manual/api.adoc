@@ -115,7 +115,50 @@ public class LoggerNameTest {
 }
 ----
 
+[TIP]
+====
 **We suggest you to use `LogManager.getLogger()` without any arguments** since it delivers the same functionality with less characters and is not prone to copy-paste errors.
+====
+
+[#logger-message-factories]
+=== Logger message factories
+
+Loggers translate
+
+[source,java]
+----
+LOGGER.info("Hello, {}!", name)
+----
+
+calls to the appropriate canonical logging method:
+
+[source,java]
+----
+LOGGER.log(Level.INFO, messageFactory.createMessage("Hello, {}!", new Object[]{name}));
+----
+
+Note that how `Hello, {}!` should be encoded given the `\{name}` array as argument completely depends on the link:../javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory.html[`MessageFactory`] employed.
+Log4j allows users to customize this behaviour in several `getLogger()` methods of link:../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html[`LogManager`]:
+
+[source,java]
+----
+LogManager
+        .getLogger() // <1>
+        .info("Hello, {}!", name); // <2>
+
+LogManager
+        .getLogger(StringFormatterMessageFactory.INSTANCE) // <3>
+        .info("Hello, %s!", name); // <4>
+----
+<1> Create a logger using the default message factory
+<2> Use default parameter placeholders, that is, `{}` style
+<3> Explicitly provide the message factory, that is, link:../javadoc/log4j-api/org/apache/logging/log4j/message/StringFormatterMessageFactory.html[`StringFormatterMessageFactory`].
+Note that there are several other `getLogger()` methods accepting a `MessageFactory`.
+<4> Note the placeholder change from `{}` to `%s`!
+Passed `Hello, %s!` and `name` arguments will be implicitly translated to a `String.format("Hello, %s!", name)` call due to the employed `StringFormatterMessageFactory`.
+
+Log4j bundles several xref:manual/messages.adoc[predefined message factories].
+Some common ones are accessible through convenient factory methods, which we will cover below.
 
 [#formatter-logger]
 === Formatter logger
