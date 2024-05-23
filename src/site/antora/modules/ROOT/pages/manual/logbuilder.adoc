@@ -15,29 +15,74 @@
     limitations under the License.
 ////
 
-= Log Builder
+////
+    I think it is unfortunate that Log4j calls its *fluent API* "Log Builder".
+    As explained in this[1] "Fluent API vs. Builder Pattern" post, the difference lies in semantics.
+    That is, if `LogBuilder` had been designed as follows:
+
+        LOGGER
+                .newBuilder()
+                .setLevel(...)
+                .setMarker(...)
+                .setMessage(...)
+                // ...
+
+    It would be perfectly valid to call it "Log Builder".
+    But instead, we provide a semantic model, a domain-specific language to log by chaining methods:
+
+        LOGGER
+                .atInfo()
+                .withMarker(...)
+                .withLocation()
+                .log(...)
+
+    Hence, my insistence on calling it "Fluent API".
+    Not to mention, other Java logging software call it "Fluent API" too[2][3].
+
+    [1] https://stackoverflow.com/a/17940086/1278899
+    [2] https://www.slf4j.org/manual.html#fluent
+    [3] https://tinylog.org/v2/news/#tags-for-log-entries
+////
+
+= Fluent API
+
+Next to the traditional `info()`, `error()`, etc. `Logger` methods, Log4j API also provides a https://en.wikipedia.org/wiki/Fluent_interface[fluent interface] for logging.
+
+[#rationale]
+== Rationale
 
 Developers use Log4j traditionally with logging statements like:
 
 [source, java]
 ----
-logger.error("Unable to process request due to {}", code, exception);
+LOGGER.error("Unable to process request due to {}", errorCode, exception);
 ----
 
-This kind of statement has confused developers as to whether the exception 
-should be a parameter to the message, or Log4j should handle it as a throwable. 
+This style has certain drawbacks:
 
-The builder pattern has been added to the API to make logging more transparent and more readable. 
+* It is confusing whether the last argument, `exception`, is a parameter of the message to be formatted, or is separately attached to the log event.
+* One must know in which order `error()` arguments should be passed to specify, say, a xref:manual/markers.adoc[marker].
 
-[NOTE]
-.The Builder Pattern
-====
-The builder pattern is a design pattern that provides a flexible and fluent way 
-to construct complex objects. Instead of using a constructor or a method with many parameters, 
-the builder pattern allows for the step-by-step construction of an object through method chaining.
-==== 
+The fluent interface (also referred to as _the fluent API_) has been added to Log4j API to increase code legibility and avoid ambiguities.
+For instance, the above `error()` call can be expressed using the fluent API as follows:
 
-`Logger` objects return a `LogBuilder` when developers call of these methods:
+[source, java]
+----
+LOGGER
+    .atError() // <1>
+    .withThrowable(exception) // <2>
+    .log("Unable to process request due to {}", errorCode); // <3>
+----
+<1> The log level is set to `ERROR`
+<2> The associated exception is attached
+<3> The log message is formatted with the `errorCode` parameter
+
+With this syntax, it is clear that the `exception` is part of the log event and `errorCode` is a parameter of the message.
+
+[#usage]
+== Usage
+
+The fluent API entry point is link:../log4j-api/apidocs/org/apache/logging/log4j/LogBuilder.html[`LogBuilder`], which can be obtained by using one of the following `Logger` methods:
 
 - `atTrace()`
 - `atDebug()`
@@ -46,95 +91,49 @@ the builder pattern allows for the step-by-step construction of an object throug
 - `atError()`
 - `atFatal()`
 - `always()`
-- `atLevel(Level)` 
+- `atLevel(Level)`
 
-The `LogBuilder` allows adding a `Marker,` `Throwable,` and location to the event. 
-Developers can do this by calling one of the following methods:
+`LogBuilder` allows attaching a xref:manual/markers.adoc[marker], a `Throwable`, and a location to the log event by means of following methods:
 
-- `withMarker()`, 
-- `withThrowable()`, and 
+- `withMarker()`
+- `withThrowable()`
 - `withLocation()` 
 
 After that, developers can call the `log()` method to finalize and send the log event.
 
-Using the builder pattern, developers can write logging statements like the following.
-Log4j executes the statement at the `ERROR` level with the exception treated as a throwable.
-The log statement is substituted as expected.
+In the following example, we log a parameterized message at `INFO` level, and attach a marker and an exception to the log event:
 
 [source, java]
 ----
-logger
-    .atError() <1>
-    .withThrowable(exception) <2>
-    .log("Unable to process request due to {}", code); <3>
+LOGGER
+    .atInfo() // <1>
+    .withMarker(marker) // <2>
+    .withThrowable(exception) // <3>
+    .log("Unable to process request due to {}", errorCode); // <4>
 ----
-<1> The log level is set to ERROR.
-<2> The exception is treated as a Throwable.
-<3> The log message is formatted with the code parameter.
+<1> The log level is set to `INFO`
+<2> `marker` is attached to the log event
+<3> `exception` is attached to the log event
+<4> A message with `errorCode` parameter is provided and the statement is finalized
 
-With this syntax, it is clear that the exception is to be treated as a Throwable by Log4j.
-In addition, it is also more readable and more accessible for the developer to understand.
-
-Adding a marker to the log statement is also straightforward.
-In the following case, the developer added a marker and the location to the log event.
-
-[source, java]
-----
-logger
-    .atInfo()
-    .withMarker(marker) <1>
-    .withThrowable(exception)
-    .log("Login for user {} failed", userId);
-----
-<1> The marker is added to the log event.
-
+[#location-information]
 == Location information
 
-Developers can include location information in the log event by calling the `withLocation()` method.
+The fluent API allows users to instruct the location information to be *eagerly* populated in the log event using the `withLocation()` method:
 
 [source, java]
 ----
-logger
+LOGGER
     .atInfo()
-    .withMarker(marker)
-    .withLocation() <1>
-    .withThrowable(exception)
-    .log("Login for user {} failed", userId);
+    .withLocation() // <1>
+    .log("Login for user with ID `{}` failed", userId);
 ----
-<1> The location is added to the log event.
+<1> Instructing to eagerly populate the location information
 
-Providing the location method on the LogBuilder provides two distinct advantages:
+Capturing location information using `withLocation()` is orders of magnitude more efficient compared to letting the `Logger` to figure it out indirectly.
 
-1. Logging wrappers can use the location provided by Log4j.
-2. The overhead of capturing location information using the location method with no
-   parameters is much better than calculating the location information when needed. 
-   Log4j can simply ask for the stack trace entry at a fixed index instead of having to walk the stack trace
-   to determine the calling class. 
-   Of course, if the layout does not use the location information, this will result in slower performance.
-
-=== Location Performance
-
-The table below shows some results from the FileAppenderBenchmark and FileAppenderWithLocationBenchmark
-classes in the log4j-perf-test project when configured to use four threads. 
-The results show that lazily including the location information is about eight times slower than not including location information. 
-While using the `withLocation()` method of `LogBuilder` is about three times faster than lazily calculating the location information
-it is still about 2.5 times slower than not including location information.
-
-The tests were run on a 2018 MacBook Pro with a 2.9 GHz Intel Core i9 processor with six cores, 32 GB of memory and 1 TB of SSD storage on Java 11 using Log4j 2.13.0 and Logback 1.2.3.
-image:LocationPerf.png[Location Performance]
-
-|===
-|Test|Print Location Info|No Location Info Printed
-
-|Log4j2 File| 191,509.724 ± 11339.978  ops/s| 1,407,329.130 ± 22595.997  ops/s
-|Log4j2 Log Builder withLocation()|469,200.684 ± 50025.985  ops/s|577,127.463 ± 11464.342  ops/s
-|Logback File|159,116.538 ± 1884.969  ops/s|1,240,438.384 ± 76619.873  ops/s
-|===
-
-As expected, when using LogBuilder with a call to the `withLocation()` method, logging is much faster when location information is used in the output but significantly slower when it is not.
-
-[NOTE]
+[WARNING]
 ====
-Running the tests at various times provides varying results. 
-Although some results have been as much as 10% higher, all results are generally affected similarly, so their comparisons stay the same.
+You are strongly advised to use `withLocation()` if you are certain that the populated location information will be used.
+Otherwise – that is, if the log event might either get dropped due to some filtering or its location information not get used – it will only slow things down.
 ====
