@@ -277,7 +277,7 @@ xref:manual/markers.adoc[Read more on markers...]
 [#scoped-context]
 === Scoped Context
 
-Just like a https://docs.oracle.com/en/java/javase/22/docs/api/java.base/java/lang/ScopedValue.html[Java's `ScopedValue`], the visibility of tags are associated with the block they were introduced:
+Just like a https://docs.oracle.com/en/java/javase/22/docs/api/java.base/java/lang/ScopedValue.html[Java's `ScopedValue`], in Scoped Context, the visibility of tags are associated with the block they were introduced:
 
 [source,java]
 ----
@@ -311,7 +311,8 @@ xref:manual/scoped-context.adoc[Read more on Scoped Context...]
 [#thread-context]
 === Thread Context
 
-Just like https://docs.oracle.com/javase/8/docs/api/java/lang/ThreadLocal.html[Java's `ThreadLocal`], the visibility of tags are associated with the thread they were introduced:
+Just like https://docs.oracle.com/javase/8/docs/api/java/lang/ThreadLocal.html[Java's `ThreadLocal`], in Thread Context, the visibility of tags are associated with the thread they were introduced.
+Thread Context offers both a map-structured, called _Mapped Diagnostic Context (MDC)_, and a stack-structured, called _Nested Diagnostic Context (NDC)_, storage:
 
 [source,java]
 ----
@@ -319,10 +320,13 @@ ThreadContext.put("ipAddress", request.getRemoteAddr()); // <1>
 ThreadContext.put("hostName", request.getServerName()); // <1>
 ThreadContext.put("loginId", session.getAttribute("loginId")); // <1>
 
-LOGGER.debug("Performing work");
+ThreadContext.push("performWork()"); // <2>
+
+LOGGER.debug("Performing work"); // <3>
 ----
-<1> Associating properties **with the thread**.
-These properties can later on be used to, for instance, filter the log event, provide extra information in the layout, etc.
+<1> Associating properties with the logging context map of the thread
+<2> Pushing properties to the logging context stack of the thread
+<3> Added properties can later on be used to, for instance, filter the log event, provide extra information in the layout, etc.
 
 [CAUTION]
 ====
