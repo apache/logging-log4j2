@@ -158,6 +158,7 @@ You no longer need to explicitly check the log level:
 logger.trace("Some long-running operation returned {}", () -> expensiveOperation());
 ----
 
+[#logger-names]
 === Logger Names
 
 Most logging implementations use a hierarchical scheme for matching
