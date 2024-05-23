@@ -18,13 +18,13 @@
 
 Flow tracing in Log4j is an advanced logging technique designed to enhance 
 the visibility of application processes. With this technique, developers can track 
-the flow of data through their application by using special methods that log entry 
+data flow through their application using unique methods that log entry 
 and exit points within the code.
 
 These methods are:
 
-* `entry()` or `traceEntry()`
-* `exit()` or `traceExit()`
+* `traceEntry()` (Deprecated `entry()`)
+* `traceExit()` (Deprecated: `exit()`)
 * `throwing()`
 * `catching()`
 
@@ -36,33 +36,33 @@ Flow tracing offers a structured approach to all this.
 
 == Flow Tracing Methods
 
-The methods used most often are `entry()` or `traceEntry()` and `exit()` or `traceExit()`.
-As the name suggests, the "entry" methods are used at the beginning of a method,
-while the "exit" methods are used at the end of a method.
+The methods often used are `traceEntry()` and `traceExit()`.
+As the name suggests, the "entry" method is used at the beginning and the "exit" method at the end of a method.
 
 [source, java]
 ----
 public void someMethod() {
-    logger.entry(); <1>
+    logger.traceEntry(); <1>
     // method body
-    logger.exit(); <2>
+    logger.traceExit(); <2>
 }
 ----
 <1> The `entry()` method is called at the beginning of the method.
 <2> The `exit()` method is called at the end of the method.
 
-Both `entry()` and `exit()` methods can be called with or without parameters.
-In the case of `entry()` it makes sense to pass the method parameters as arguments.
+Developers can call both `traceEntry()` and `traceExit()` methods with or without parameters.
+In the case of `traceEntry()`, it makes sense to pass the method parameters on as arguments.
 
 [source, java]
 ----
 public void someMethod(String param) {
-    logger.entry(param); <1>
+    logger.traceEntry(param); <1>
     // method body
-    logger.exit(); <2>
+    logger.traceExit(); <2>
 }
 ----
-<1> The `entry()` method is called at the beginning of the method.
+<1> The `traceEntry()` method is called at the beginning of the method.
+<2> The `traceExit()` method is called at the end of the method.
 
 The `traceEntry()` also supports messages.
 
@@ -75,88 +75,88 @@ public void someMethod(String[] text) {
 ----
 <1> Using the `JsonMessage` class to log the `text` parameter.
 
-Very similar, it is possible to use `exit()` with methods that return a value.
+Very similar, it is possible to use `traceExit()` with methods that return a value.
 
 [source, java]
 ----
 public String someMethod() {
     String result = "Hello";
     // method body
-    return logger.exit(result); <1>
+    return logger.traceExit(result); <1>
 }
 ----
-<1> The `exit()` method can also return a value.
+<1> The `traceExit()` method can also return a value.
 
-To work with exceptions, the `catching()` and `throwing()` methods are used.
+Developers can use the `catching()` and `throwing()` methods to work with exceptions.
 
-The following code shows, how to use the `catching()` method. It will be called
+The following code shows the `catching()` method. It will be called
 inside the `catch` block of a try-catch statement.
 
 The `catching()` method can be used by an application when it catches an
-Exception that it is not going to rethrow, either explicitly or attached
-to another Exception. The logging event generated will have a level of `ERROR`.
+Exception that it will not rethrow, either explicitly or attached
+to another Exception. The generated logging event will have an `ERROR` level.
 
 [source, java]
 ----
 public void someMethod() {
     try {
-        // Lets assume an exception is thrown here
+        // Let's assume an exception is thrown here
         String msg = messages[messages.length];        
     } catch (Exception ex) {
         logger.catching(ex); <1>
     }
 }
 ----
-<1> The `catching()` method is used to log exceptions that are caught and not rethrown.
+<1> The `catching()` method logs exceptions that are caught and not rethrown.
 
 The `throwing()` method is used to log exceptions that are thrown and not caught.
-The code shows how to use the `throwing()` method- like `catching()` it will be called
+The code shows how to use the `throwing()` method- like `catching()`, which will be called
 inside the `catch` block of a try-catch statement.
 
 The `throwing()` method can be used by an application when it is throwing
 an exception that is unlikely to be handled, such as a RuntimeException.
-This will ensure that proper diagnostics are available if needed. The
-logging event generated will have a level of `ERROR`.
+This will ensure that proper diagnostics are available if needed. 
+The generated logging event will have an `ERROR` level.
 
 [source, java]
 ----
 public void someMethod() {
     try {
-        // Lets assume an exception is thrown here
+        // Let's assume an exception is thrown here
         String msg = messages[messages.length];        
     } catch (Exception ex) {
         logger.throwing(ex); <1>
     }
 }
 ----
-<1> The `throwing()` method is used to log exceptions that are thrown and not caught.
+<1> The `throwing()` method logs exceptions that are thrown and not caught.
 
 == Differences in flow tracing methods
 
 Flow tracing methods have specific markers assigned and logs with a level of `TRACE`.
-It's also noteworthy that all messages will begin with the word "event".
+It's also noteworthy that all messages begin with "event".
 
-The table below shows the methods and their special features.
+The table below shows the methods and their unique features.
 
 [cols="3,3,3", options="header"]
 |===
 | Method Name | Marker Name | Special Features
 
-| `entry()`
-| `ENTER`, `FLOW`
-| Accepts 0 to 4 parameters
-
 | `traceEntry()`
 | `ENTER`, `FLOW`
 | Can take a format string and a variable list of parameters.
 
-| `exit()`
-| `EXIT`, `FLOW`
-| Can be called with or without parameters.
+| `entry()`
+| `ENTER`, `FLOW`
+| DEPRECATED. Accepts 0 to 4 parameters
 
 | `traceExit()`
 | `EXIT`, `FLOW`
 | Handles return values differently based on the method signature.
+
+| `exit()`
+| `EXIT`, `FLOW`
+| DEPRECATED.  Can be called with or without parameters.
 
 | `throwing()`
 | `THROWING`, `EXCEPTION`
@@ -171,37 +171,26 @@ The table below shows the methods and their special features.
 == Flow Tracing Example Configuration
 
 The following example demonstrates how to configure Log4j to use flow tracing.
-While it is recommended to use the `JsonTemplateLayout` in production, we are using the
-`PatternLayout` in this example for simplicity.
+Note: While developers should prefer the `JsonTemplateLayout` in production, this example uses `PatternLayout` for simplicity.
 
-The configuration below will cause all output to be routed to
-target/test.log. The pattern for the FileAppender includes the class
-name, line number and method name. Including these in the pattern is
-critical for the log to be of value.
+Two appenders are defined: `Console` and `File`.
 
-The following example demonstrates how you could use flow tracing. 
-The Configuration element is set with a status of "error," which means Log4j 
-will only report issues that are of error severity or higher. 
-Within the Appenders section, two appenders are defined: Console and File.
-
-The Console appender is configured to output logs to `SYSTEM_OUT`, typically the console. 
+The `Console` appender outputs logs to `SYSTEM_OUT`, typically the console. 
 It includes a `ThresholdFilter` set to only accept messages at the `ERROR` level or above.
-This filters out less severe messages. 
-The output format is specified by a `PatternLayout`, designed to include detailed 
-trace information such as time, log level, class name, line number, and method name.
-Please note, that we are recommending `JsonTemplateLayout` over `PatternLayout` in production.
+Less severe messages are filtered.
 
 Similarly, the File appender directs logs to a file named `target/test.log`. 
 The appenders configuration will create a new file for every application run.
 
-Finally, in the Loggers section, the Root logger is set to a `TRACE` level which is necessary
-to see flow tracing in action. The Root logger references the File appender, directing
-its output to the configured file.
+Both appenders use the already mentioned `PatternLayout`, which includes detailed information such as time, log level, class name, line number, and method name.
+
+Finally, in the Loggers section, the Root logger is set to a `TRACE` level, which is necessary to see flow tracing in action. 
+The Root logger references the File appender, directing its output to the configured file.
 
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="error">
+<Configuration>
   <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
       <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
@@ -221,4 +210,4 @@ its output to the configured file.
 </Configuration>
 ----
 
-By changing the level of the Root logger to `DEBUG`, you can reduce the amount of output.
+By changing the Root logger's level to `DEBUG`, developers can reduce the amount of output.

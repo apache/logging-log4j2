@@ -16,85 +16,142 @@
 ////
 = Markers
 
-One of the primary purpose of a logging framework is to provide the
-means to generate debugging and diagnostic information only when it is
-needed, and to allow filtering of that information so that it does not
-overwhelm the system or the individuals who need to make use of it. As
-an example, an application desires to log its entry, exit and other
-operations separately from SQL statements being executed, and wishes to
-be able to log queries separate from updates. One way to accomplish this
-is shown below:
+Markers allow to _tag_ log statements with a
+link:../javadoc/log4j-api/org/apache/logging/log4j/Marker.html[`Marker`]
+object, labeling them as belonging to a specific type.
+For example, developers can use markers to tag log statements related to a particular subsystem or functionality.
 
-[source,java]
+By using markers, it is possible to filter log statements based on the `Marker`
+and display only those log statements that are of interest, such as those
+related to XML processing or SQL queries.
+
+Markers offer more fine-grained control over log filtering beyond log levels or package names.
+
+[#create]
+== Creating Markers
+
+[#simple-markers]
+=== Simple markers
+
+To create a `Marker`, create a field in your class using the `MarkerManager.getMarker()` method:
+
+[source, java, indent=0]
 ----
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.MarkerManager;
-import java.util.Map;
-
-public class MyApp {
-
-    private Logger logger = LogManager.getLogger(MyApp.class.getName());
-    private static final Marker SQL_MARKER = MarkerManager.getMarker("SQL");
-    private static final Marker UPDATE_MARKER = MarkerManager.getMarker("SQL_UPDATE").setParents(SQL_MARKER);
-    private static final Marker QUERY_MARKER = MarkerManager.getMarker("SQL_QUERY").setParents(SQL_MARKER);
-
-    public String doQuery(String table) {
-        logger.traceEntry();
-
-        logger.debug(QUERY_MARKER, "SELECT * FROM {}", table);
-
-        String result = ... 
-
-        return logger.traceExit(result);
-    }
-
-    public String doUpdate(String table, Map<String, String> params) {
-        logger.traceEntry();
-
-        if (logger.isDebugEnabled()) {
-            logger.debug(UPDATE_MARKER, "UPDATE {} SET {}", table, formatCols());
-        }
-    
-        String result = ... 
-
-        return logger.traceExit(result);
-    }
-
-    private String formatCols(Map<String, String> cols) {
-        StringBuilder sb = new StringBuilder();
-        boolean first = true;
-        for (Map.Entry<String, String> entry : cols.entrySet()) {
-            if (!first) {
-                sb.append(", ");
-            }
-            sb.append(entry.getKey()).append("=").append(entry.getValue());
-            first = false;
-        }
-        return sb.toString();
-    }
-}
+include::example$manual/markers/MarkerExample.java[tag=create-marker]
 ----
 
-In the example above it is now possible to add MarkerFilters to only
-allow SQL update operations to be logged, all SQL updates to be logged
-or to log everything in MyApp.
+Since a `Marker` is reusable across multiple log statements, storing it in a `static final` field makes it a constant.
+Once created, use it as the first argument in the log statement:
 
-Some important rules about Markers must be considered when using them.
+[source, java, indent=0]
+----
+include::example$manual/markers/MarkerExample.java[tag=use-marker]
+----
 
-1.  Markers must be unique. They are permanently registered by name so
-care should be taken to insure that Markers used in your application are
-distinct from those in the application's dependencies, unless that is
-what is desired.
-2.  Parent Markers can be added or removed dynamically. However, this is
-fairly expensive to do. Instead, it is recommended that the parents be
-identified when obtaining the Marker the first time as shown in the
-examples above. Specifically, the set method replaces all the markers in
-a single operation while add and remove act on only a single Marker at a
-time.
-3.  Evaluating Markers with multiple ancestors is much more expensive
-than Markers with no parents. For example, in one set of tests to
-evaluate whether a Marker matched its grandparent took 3 times longer
-than evaluating the Marker itself. Even then though, evaluating Markers
-is inexpensive compared to resolving the callers class name or line
-number.
+If you use the <<example-configuration,configuration example below>>, one can see the following log statement on your console:
+
+[source, text]
+----
+include::example$manual/markers/marker-filtering.log[tag=use-marker]
+----
+
+[#hierarchy]
+=== Parent and child markers
+
+A marker can have zero or more parent markers, allowing for a hierarchy of markers.
+To create such a hierarchy, you must use the `addParents()` method on the `Marker` object after you make the child marker.
+
+[source, java, indent=0]
+----
+include::example$manual/markers/MarkerExample.java[tag=create-marker-parent]
+----
+
+Child markers do not differ from simple markers; one must pass them on as the first argument of a logging call.
+
+[source, java, indent=0]
+----
+include::example$manual/markers/MarkerExample.java[tag=use-marker-parent]
+----
+
+Messages marked with children's markers behave as if they were both marked with the children's marker and all its parents.
+If you use the <<example-configuration,configuration example below>>, you'll see the following log statement on your console:
+
+[source, text]
+----
+include::example$manual/markers/marker-filtering.log[tag=use-marker-parent]
+----
+
+[#configuring-log4j]
+== Configuring filtering
+
+Developers can use markers to filter the log statements delivered to log files.
+Marker processing is supported at least by
+https://logback.qos.ch/manual/filters.html#TurboFilter[Logback]
+and the Log4j Core logging backends.
+We will discuss only the configuration of the latter.
+
+To filter messages by marker, you need to add
+xref:manual/filters.adoc#MarkerFilter[`MarkerFilter`]
+to your configuration file.
+For example, one can use the snippet below to redirect all SQL-related logs to the `SQL_LOG` appender:
+
+[[example-configuration]]
+[tabs]
+====
+XML::
++
+[source, xml]
+----
+include::example$manual/markers/log4j2.xml[tag=logger]
+----
+
+JSON::
++
+[source, json]
+----
+include::example$manual/markers/log4j2.json[tag=logger]
+----
+
+YAML::
++
+[source, yaml]
+----
+include::example$manual/markers/log4j2.yaml[tag=logger]
+----
+
+Java properties::
++
+[source, properties]
+----
+include::example$manual/markers/log4j2.properties[tag=logger]
+----
+====
+
+<1> Match all messages from `example` package from all levels
+<2> Only allow messages marker with `SQL` or one of its children to be sent to the `SQL_LOG` appender.
+
+[#pitfalls]
+== Pitfalls
+
+It is important to note that marker names must be unique, as Log4j registers them permanently by name.
+Developers should avoid generic marker names, as they may conflict with
+those provided by third parties. Except, of course, if the user is aware of the implications.
+
+While it is possible to add or remove parent markers dynamically through the `setParents()` method,
+it is generally advisable to set the parents when the marker is created for efficiency and performance reasons.
+
+It is also worth noting that markers without parents are more efficient to evaluate
+than markers with multiple parents. It is generally a good idea to avoid
+complex hierarchies of markers where possible.
+
+[#complete-example]
+== Complete example
+
+To try the examples on this page:
+
+* add
+{antora-examples-url}/manual/markers/MarkerExample.java[MarkerExample.java]
+to the `src/main/java/example` folder of your project,
+* add
+{antora-examples-url}/manual/markers/log4j2.xml[log4j2.xml]
+to the `src/main/resources` folder of your project.
