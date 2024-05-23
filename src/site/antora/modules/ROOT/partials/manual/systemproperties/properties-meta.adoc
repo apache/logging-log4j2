@@ -48,4 +48,5 @@ Setting this property to `true` switches Log4j Core into "garbage-free mode" (_"
 
 In this mode Log4j uses ``ThreadLocal``s for object pooling to prevent object allocations.
 
-This mode is incompatible with <<log4j2.isWebapp>>.
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/lang/ThreadLocal.html[`ThreadLocal`] fields holding non-JDK classes can cause memory leaks in web applications when the application server's thread pool continues to reference these fields after the web application is undeployed.
+Hence, to avoid causing memory leaks, `log4j2.enableThreadlocals` by default reflects the opposite of xref:#log4j2.isWebapp[`log4j2.isWebapp`].

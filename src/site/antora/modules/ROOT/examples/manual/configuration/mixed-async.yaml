@@ -14,19 +14,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-##
-# tag::loggers[]
-rootLogger.property.type = Property
-rootLogger.property.name = client.address
-rootLogger.property.value = $${web:request.remoteAddress}
-
-logger.0.name = org.hibernate
-logger.0.property.type = Property
-logger.0.property.name = subsystem
-logger.0.property.value = Database
-
-logger.1.name = io.netty
-logger.1.property.type = Property
-logger.1.property.name = subsystem
-logger.1.property.value = Networking
-# end::loggers[]
+Configuration:
+  Appenders:
+    File:
+      - name: "AUDIT"
+        fileName: "logs/audit.log"
+        ignoreExceptions: false
+        JsonTemplateLayout: {}
+      - name: "DEBUG_LOG"
+        fileName: "logs/debug.log"
+        PatternLayout: {}
+  Loggers:
+    Root:
+      level: "INFO"
+      AppenderRef: # <1>
+        ref: "AUDIT"
+        MarkerFilter:
+          marker: "AUDIT"
+          onMatch: "ACCEPT"
+          onMismatch: "DENY"
+    AsyncLogger:
+      name: "com.example"
+      level: "TRACE"
+      AppenderRef: # <2>
+        ref: "DEBUG_LOG"

@@ -14,19 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-##
-# tag::loggers[]
-rootLogger.property.type = Property
-rootLogger.property.name = client.address
-rootLogger.property.value = $${web:request.remoteAddress}
-
-logger.0.name = org.hibernate
-logger.0.property.type = Property
-logger.0.property.name = subsystem
-logger.0.property.value = Database
-
-logger.1.name = io.netty
-logger.1.property.type = Property
-logger.1.property.name = subsystem
-logger.1.property.value = Networking
-# end::loggers[]
+# tag::use-marker[]
+10:42:30.982 (SQL) SELECT * FROM my_table
+# end::use-marker[]
+# tag::use-marker-parent[]
+10:42:30.982 (SQL_QUERY[ SQL ]) SELECT * FROM my_table
+10:42:30.982 (SQL_UPDATE[ SQL ]) UPDATE my_table SET column = value
+# end::use-marker-parent[]
