@@ -50,6 +50,8 @@ If `true`, the `ThreadContext` stack is disabled.
 
 If `true`, the `ThreadContext` map is disabled.
 
+// tag::gcfree[]
+
 [id=log4j2.threadContextMap]
 == `log4j2.threadContextMap`
 
@@ -69,6 +71,8 @@ WebApp:: a web application-safe implementation, that only binds JRE classes to `
 CopyOnWrite:: a copy-on-write implementation,
 GarbageFree:: a garbage-free implementation.
 
+// end::gcfree[]
+
 [id=isThreadContextMapInheritable]
 == `log4j2.isThreadContextMapInheritable`
 
@@ -81,6 +85,8 @@ GarbageFree:: a garbage-free implementation.
 
 If `true` uses an `InheritableThreadLocal` to copy the thread context map to newly created threads.
 
+// tag::gcfree[]
+
 [id=log4j2.garbagefreeThreadContextMap]
 == `log4j2.garbagefreeThreadContextMap`
 
@@ -91,3 +97,5 @@ If `true` uses an `InheritableThreadLocal` to copy the thread context map to new
 |===
 
 If set to `true` selects a garbage-free thread context map implementation.
+
+// end::gcfree[]

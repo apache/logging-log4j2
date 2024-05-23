@@ -39,14 +39,17 @@ start_page: index.adoc
 asciidoc:
   attributes:
     # Commons
+    antora-examples-url: "https://raw.githubusercontent.com/apache/logging-log4j2/2.x/src/site/antora/modules/ROOT/examples"
     project-github-url: "${scm.url}"
     project-name: "Log4j"
     project-id: "log4j"
     java-target-version: "${maven.compiler.target}"
     java-compiler-version: "${minimalJavaBuildVersion}"
     logging-services-url: "https://logging.apache.org"
+    lmax-disruptor-url: "https://lmax-exchange.github.io/disruptor"
     # Dependency versions
     commons-logging-version: "${site-commons-logging.version}"
+    disruptor-version: "${site-disruptor.version}"
     jackson-version: "${site-jackson.version}"
     log4j-api-version: "${log4j-api.version}"
     log4j-core-version: "${site-log4j-core.version}"

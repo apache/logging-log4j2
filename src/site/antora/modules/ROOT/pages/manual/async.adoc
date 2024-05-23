@@ -14,524 +14,266 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-= Lock-free Asynchronous Loggers for Low-Latency Logging
+= Asynchronous loggers
 
-Asynchronous logging can improve your application's performance by
-executing the I/O operations in a separate thread. 
-Log4j 2 makes several improvements in this area.
+Asynchronous logging is a technique to improve application logging performance by executing all I/O operations in a separate thread.
 
-* *Asynchronous Loggers* are a new addition in Log4j 2. They aim to
-return the call to Logger.log to the application as soon as
-possible. You can choose between making all Loggers asynchronous or
-using a mixture of synchronous and asynchronous Loggers. Making all
-Loggers asynchronous will give the best performance, while mixing gives
-you more flexibility.
-* *LMAX Disruptor technology*. Asynchronous Loggers internally use the
-link:#UnderTheHood[Disruptor], a lock-free inter-thread communication
-library, instead of queues, resulting in higher throughput and lower
-latency.
-* As part of the work for Async Loggers, *Asynchronous Appenders* have
-been enhanced to flush to disk at the end of a batch (when the queue is
-empty). This produces the same result as configuring
-"immediateFlush=true", that is, all received log events are always
-available on disk but are more efficient because it does not need to
-touch the disk on every log event. (Async Appenders use
-ArrayBlockingQueue internally and do not need the disruptor jar on the
-classpath.)
+Log4j offers out-of-the-box two different asynchronous logging solutions:
 
-[#Trade-offs]
-== Trade-offs
-
-Although asynchronous logging can give significant performance benefits,
-there are situations where you may want to choose synchronous logging.
-This section describes some of the trade-offs of asynchronous logging.
-
-=== Benefits
-
-* Higher peak link:#Performance[throughput]. With an asynchronous logger
-your application can log messages at 6 - 68 times the rate of a
-synchronous logger.
+Asynchronous appender::
+A classical queue-based asynchronous appender, which is available since Log4j 1.
 +
-This is especially interesting for applications that occasionally need
-to log bursts of messages. Async logging can help prevent or dampen
-latency spikes by shortening the wait time until the next message can be
-logged. If the queue size is configured large enough to handle the
-burst, asynchronous logging will help prevent your application from
-falling behind (as much) during a sudden increase in activity.
-* Lower logging response time link:#Latency[latency]. Response time
-latency is the time it takes for a call to Logger.log to return under a
-given workload. Asynchronous Loggers have consistently lower latency
-than synchronous loggers or even queue-based asynchronous appenders.
+See xref:manual/appenders.adoc#AsyncAppender[Asynchronous appender] for more details.
 
-=== Drawbacks
+Asynchronous loggers::
+Asynchronous loggers are a new feature available since Log4j 2.
+They are based on
+{lmax-disruptor-url}[LMAX Disruptor],
+a lock-free inter-thread communication library, instead of queues, resulting in higher throughput and lower latency.
++
+The rest of this chapter is dedicated to this new component.
 
-* Error handling. If a problem happens during the logging process and an
-exception is thrown, it is less easy for an asynchronous logger or
-appender to signal this problem to the application. This can partly be
-alleviated by configuring an `ExceptionHandler`, but this may still not
-cover all cases. For this reason, if logging is part of your business
-logic, for example, if you are using Log4j as an audit logging framework,
-we would recommend synchronously logging those audit messages. (Note that
-you can still link:#MixedSync-Async[combine] them and use asynchronous
-logging for debug/trace logging in addition to synchronous logging for
-the audit trail.)
-* In some rare cases, care must be taken with mutable messages. Most of
-the time you don't need to worry about this. Log4 will ensure that log
-messages like `logger.debug("My object is {}", myObject)` will use the
-state of the `myObject` parameter at the time of the call to
-`logger.debug()`. The log message will not change even if `myObject` is
-modified later. It is safe to asynchronously log mutable objects because
-most
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html[`Message`]
-implementations built-in to Log4j take a snapshot of the parameters.
-There are some exceptions, however:
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html[`MapMessage`]
-and
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html[`StructuredDataMessage`]
-are mutable by design: fields can be added to these messages after the
-message object was created. These messages should not be modified after
-they are logged with asynchronous loggers or asynchronous appenders; you
-may or may not see the modifications in the resulting log output.
-Similarly, custom
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html[`Message`]
-implementations should be designed with asynchronous use in mind, and
-either take a snapshot of their parameters at construction time, or
-document their thread-safety characteristics.
+[CAUTION]
+====
+Logging performance depends greatly on the architecture of your application and the way you use logging.
+The solutions offered by this chapter should be evaluated using benchmarks against your own application.
+If benchmarks and profiling don't show a statistically significant difference between asynchronous and synchronous logging solutions, the latter one is recommended, since it is the simplest one.
+====
 
-* If your application is running in an environment where CPU resources
-are scarce, like a machine with one CPU with a single core, starting
-another thread is not likely to give better performance.
-* If the _sustained rate_ at which your application is logging messages
-is faster than the maximum sustained throughput of the underlying
-appender, the queue will fill up and the application will end up logging
-at the speed of the slowest appender. If this happens, consider
-selecting an xref:manual/performance.adoc#whichAppender[faster appender], or
-logging less. If neither of these is an option, you may get better
-throughput and fewer latency spikes by logging synchronously.
+include::partial$manual/async-trade-offs.adoc[leveloffset=+1]
+
+[#installation]
+== Installation
+
+In order to use async loggers, you need to add LMAX Disruptor to you application's dependencies, by adding the following dependency to your build tool:
+
+[tabs]
+====
+Maven::
++
+[source,xml,subs="+attributes"]
+----
+<dependency>
+  <groupId>com.lmax</groupId>
+  <artifactId>disruptor</artifactId>
+  <version>{disruptor-version}</version>
+  <scope>runtime</scope>
+</dependency>
+----
+
+Gradle::
++
+[source,groovy,subs="+attributes"]
+----
+runtimeOnly 'com.lmax:disruptor:{disruptor-version}'
+----
+====
+
+[#configuration]
+== Configuration
+
+There are two ways asynchronous loggers can be used in Log4j.
+You can:
+
+** <<AllAsync>>, which gives a better performance,
+** <<MixedSync-Async>>, which gives more flexibility.
+
+Under the hood these methods use different Log4j plugins, but also share a
+<<common-configuration-properties,set of common configuration properties>>.
 
 [#AllAsync]
-== Making All Loggers Asynchronous
+=== Making all loggers asynchronous
 
-NOTE: _Log4j-2.9 and higher require disruptor-3.3.4.jar or higher on the
-classpath. Prior to Log4j-2.9, disruptor-3.0.0.jar or higher was
-required._
+This is the simplest to configure and gives the best performance: to make all logger asynchronous, **all** you need to set the
+xref:manual/systemproperties.adoc#log4j2.contextSelector[log4j2.contextSelector]
+property to one of the asynchronous logger context selectors:
 
-This is the simplest to configure and gives the best performance.
-To make all loggers asynchronous, add the disruptor jar to the classpath and set the system property xref:manual/systemproperties.adoc#log4j2.contextSelector[log4j2.contextSelector] to `org.apache.logging.log4j.core.async.AsyncLoggerContextSelector` or `org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector`.
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/BasicAsyncLoggerContextSelector[org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector]::
+This will create a single logger context and disruptor for all the classes in the JVM,
 
-By default, link:#Location[location] is not passed to the I/O thread by
-asynchronous loggers. If one of your layouts or custom filters needs
-location information, you need to set "includeLocation=true" in the
-configuration of all relevant loggers, including the root logger.
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerContextSelector[org.apache.logging.log4j.core.async.AsyncLoggerContextSelector]::
+This will create a different logger context and disruptor for each classloader in the JVM.
 
-A configuration that does not require location might look like:
+[IMPORTANT]
+====
+When using an asynchronous logger context you should use only `Root` and `Logger` elements (cf.
+xref:manual/configuration.adoc#configuring-loggers[Logger configuration]).
 
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
+If you use `AsyncRoot` and `AsyncLogger` configuration elements, two asynchronous barriers will be created instead of one, which will impair performance.
+====
 
-<!-- Don't forget to set system property
--Dlog4j2.contextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
-or
--Dlog4j2.contextSelector=org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector
-     to make all loggers asynchronous. -->
+[#SysPropsAllAsync]
+=== Tuning a fully asynchronous configuration
 
-<Configuration status="WARN">
-  <Appenders>
-    <!-- Async Loggers will auto-flush in batches, so switch off immediateFlush. -->
-    <RandomAccessFile name="RandomAccessFile" fileName="async.log" immediateFlush="false" append="false">
-      <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %m %ex%n</Pattern>
-      </PatternLayout>
-    </RandomAccessFile>
-  </Appenders>
-  <Loggers>
-    <Root level="info" includeLocation="false">
-      <AppenderRef ref="RandomAccessFile"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
+Since Disruptor is initialized at the same time as the logger context and before any Log4j configuration file is loaded, tuning async loggers is only possible through configuration properties.
 
-When `AsyncLoggerContextSelector` or
-`BasicAsyncLoggerContextSelector` is used to make all loggers
-asynchronous, make sure to use normal `<root>` and `<logger>` elements
-in the configuration. The context selector will ensure that
-all loggers are asynchronous, using a mechanism that is different from
-what happens when you configure `<asyncRoot>` or `<asyncLogger>`. The
-latter elements are intended for mixing async with sync loggers. If you
-use both mechanisms together you will end up with two background
-threads, where your application passes the log message to thread A,
-which passes the message to thread B, which then finally logs the
-message to disk. This works, but there will be an unnecessary step in
-the middle.
+Beyond the <<common-configuration-properties,common configuration properties>>, the following additional elements are configurable:
 
-There are a few system properties you can use to control aspects of the
-asynchronous logging subsystem. Some of these can be used to tune
-logging performance.
+include::partial$manual/systemproperties/properties-async-logger.adoc[leveloffset=+2]
 
-The below properties can also be specified by creating a file named
-`log4j2.component.properties` and including this file in the classpath
-of the application.
+* the generic behavior of asynchronous components, such as the queue full policy and message formatting.
++
+See xref:manual/systemproperties.adoc#properties-async[common asynchronous logging configurations] for more details.
 
-[[SysPropsAllAsync]]
-=== Configuration Properties
+* the parameters of the disruptor, such as the size of the ring buffer and the wait strategy to use.
++
+See xref:manual/systemproperties.adoc#properties-async-logger[asynchronous logger configuration] for more details.
 
-include::partial$properties-async-logger.adoc[leveloffset=+2]
+[TIP]
+====
+You can place the selected value of the
+xref:manual/systemproperties.adoc#log4j2.contextSelector[log4j2.contextSelector] and other configuration properties in a `log4j2.component.properties` file at the root of your application's classpath.
 
-There are also a few system properties that can be used to maintain
-application throughput even when the underlying appender cannot keep up
-with the logging rate and the queue is filling up. See the details for
-system properties
-xref:manual/systemproperties.adoc#log4j2.asyncQueueFullPolicy[`log4j2.asyncQueueFullPolicy`
-and `log4j2.discardThreshold`].
+See xref:manual/systemproperties.adoc#property-sources[Property Sources] for more details.
+====
 
 [#MixedSync-Async]
-== Mixing Synchronous and Asynchronous Loggers
+=== Mixing synchronous and asynchronous loggers
 
-NOTE: _Log4j-2.9 and higher require disruptor-3.3.4.jar or higher on the
-classpath. Before Log4j-2.9, disruptor-3.0.0.jar or higher was
-required. There is no need to set the system property "Log4jContextSelector"
-to any value._
+Synchronous and asynchronous loggers can be combined in a single configuration.
+This gives you more flexibility at the cost of a slight loss in performance (compared to making all loggers asynchronous).
 
-Synchronous and asynchronous loggers can be combined in configuration.
-This gives you more flexibility at the cost of a slight loss in
-performance (compared to making all loggers asynchronous). Use the
-`<asyncRoot>` or `<asyncLogger>` configuration elements specify the
-loggers that need to be asynchronous. A configuration can contain only
-one root logger (either a `<root>` or an `<asyncRoot>` element), but
-otherwise, async and non-async loggers may be combined. For example, a
-configuration file containing `<asyncLogger>` elements can also contain
-`<root>` and `<logger>` elements for the synchronous loggers.
-
-By default, link:#Location[location] is not passed to the I/O thread by
-asynchronous loggers. If one of your layouts or custom filters needs
-location information, you need to set "includeLocation=true" in the
-configuration of all relevant loggers, including the root logger.
+In order to use this configuration, you need to keep the
+xref:manual/systemproperties.adoc#log4j2.contextSelector[log4j2.contextSelector] at its default value and use one of the
+`AsyncRoot` and `AsyncLogger` configuration elements to designate the loggers that you want to be asynchronous.
 
 A configuration that mixes asynchronous loggers might look like:
 
+[tabs]
+====
+XML::
++
 [source,xml]
 ----
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!-- No need to set system property "log4j2.contextSelector" to any value
-     when using <asyncLogger> or <asyncRoot>. -->
-
-<Configuration status="WARN">
-  <Appenders>
-    <!-- Async Loggers will auto-flush in batches, so switch off immediateFlush. -->
-    <RandomAccessFile name="RandomAccessFile" fileName="asyncWithLocation.log"
-              immediateFlush="false" append="false">
-      <PatternLayout>
-        <Pattern>%d %p %class{1.} [%t] %location %m %ex%n</Pattern>
-      </PatternLayout>
-    </RandomAccessFile>
-  </Appenders>
-  <Loggers>
-    <!-- pattern layout actually uses location, so we need to include it -->
-    <AsyncLogger name="com.foo.Bar" level="trace" includeLocation="true">
-      <AppenderRef ref="RandomAccessFile"/>
-    </AsyncLogger>
-    <Root level="info" includeLocation="true">
-      <AppenderRef ref="RandomAccessFile"/>
-    </Root>
-  </Loggers>
-</Configuration>
+include::example$manual/configuration/mixed-async.xml[lines=1;18..-1]
 ----
 
-There are a few system properties you can use to control aspects of the
-asynchronous logging subsystem. Some of these can be used to tune
-logging performance.
+JSON::
++
+[source,json]
+----
+include::example$manual/configuration/mixed-async.json[]
+----
 
-The below properties can also be specified by creating a file named
-`log4j2.component.properties` and including this file in the classpath
-of the application.
+YAML::
++
+[source,yaml]
+----
+include::example$manual/configuration/mixed-async.yaml[lines=17..-1]
+----
+
+Java properties::
++
+[source,properties]
+----
+include::example$manual/configuration/mixed-async.properties[lines=17..-1]
+----
+====
+
+<1> All the appenders referenced by `Root` and `Logger` are called synchronously.
+This is especially important for audit logging, since exceptions can be forwarded to the caller.
+<2> All the appenders references by `AsyncRoot` and `AsyncLogger` are called asynchronously.
+These log statements will cause a smaller latency for the caller.
 
 [[SysPropsMixedSync-Async]]
-=== Configuration Properties
+=== Tuning a mixed synchronous/asynchronous configuration
 
-include::partial$properties-async-logger-config.adoc[leveloffset=+2]
+Since all `AsyncRoot` and `AsyncLogger` components share the same Disruptor instance, its configuration is available through configuration properties.
 
-There are also a few system properties that can be used to maintain
-application throughput even when the underlying appender cannot keep up
-with the logging rate and the queue is filling up. See the details for
-system properties
-xref:manual/systemproperties.adoc#log4j2.asyncQueueFullPolicy[`log4j2.asyncQueueFullPolicy`
-and `log4j2.discardThreshold`].
+Beyond the <<common-configuration-properties,common configuration properties>>, the following additional elements are configurable:
+
+include::partial$manual/systemproperties/properties-async-logger-config.adoc[leveloffset=+2]
+
+[TIP]
+====
+You can place the values of configuration properties in a `log4j2.component.properties` file at the root of your application's classpath.
+
+See xref:manual/systemproperties.adoc#property-sources[Property Sources] for more details.
+====
+
+[#common-configuration-properties]
+=== Common configuration properties
+
+Regardless of the way you configure asynchronous loggers in Log4j, you can use the following properties to further tune your installation:
+
+include::partial$manual/systemproperties/properties-async.adoc[leveloffset=+2]
 
 [#custom-waitstrategy]
-== Custom WaitStrategy
-The system properties mentioned above allow only choice from among a fixed set of predefined WaitStrategies.
-There may be cases where you want to configure a custom WaitStrategy that is not in this list.
-This is possible by using a `AsyncWaitStrategyFactory` element in the Log4j configuration.
+== Custom `WaitStrategy`
 
-A configuration that configures a custom WaitStrategy can look as follows:
+The system properties mentioned in the section above allow only to choose from among a fixed set of wait strategies.
 
+In order to use a custom wait strategy you need to:
+
+. Use the <<MixedSync-Async,mixed sync/async configuration method>> above,
+. Implement the interface
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncWaitStrategyFactory.html[AsyncWaitStrategyFactory]; the implementation must have a public no-arg constructor,
+. Add an xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-AsyncWaitStrategyFactoryConfig[AsyncWaitStrategyFactory Log4j plugin]
+to your configuration.
+
+[tabs]
+====
+XML::
++
 [source,xml]
 ----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN">
-
-  <AsyncWaitStrategyFactory
-      class="my.custom.AsyncWaitStrategyFactory" />
-
-  <Appenders>
-    <File name="MyFile" fileName="logs/app.log">
-      <PatternLayout pattern="%d %p %c{1.} [%t] %m%n" />
-    </File>
-  </Appenders>
-  <Loggers>
-    <AsyncRoot level="info">
-      <AppenderRef ref="MyFile"/>
-    </AsyncRoot>
-  </Loggers>
-</Configuration>
+include::example$manual/configuration/custom-wait-strategy.xml[lines=1;18..-1]
 ----
 
-The specified class must implement the
-`org.apache.logging.log4j.core.async.AsyncWaitStrategyFactory` interface, which is defined as follows:
-
-[source,java]
+JSON::
++
+[source,json]
 ----
-public interface AsyncWaitStrategyFactory {
-  /**
-  * Returns a non-null implementation of the LMAX Disruptor's WaitStrategy interface.
-  * This WaitStrategy will be used by Log4j Async Loggers and Async LoggerConfigs.
-  *
-  * @return the WaitStrategy instance to be used by Async Loggers and Async LoggerConfigs
-  */
-  WaitStrategy createWaitStrategy();
-}
+include::example$manual/configuration/custom-wait-strategy.json[]
 ----
 
-The specified class must also have a public no-argument constructor;
-Log4j will instantiate an instance of the specified factory class and use this factory to create the WaitStrategy used by all Async Loggers.
+YAML::
++
+[source,yaml]
+----
+include::example$manual/configuration/custom-wait-strategy.yaml[lines=17..-1]
+----
 
-WaitStrategy-related system properties are ignored if an `AsyncWaitStrategyFactory` is configured.
-
+Java properties::
++
+[source,properties]
+----
+include::example$manual/configuration/custom-wait-strategy.properties[lines=17..-1]
+----
+====
 
 [#Location]
-== Location, location, location...
+== Location information
 
-If one of the layouts is configured with a location-related attribute
-like HTML xref:manual/layouts.adoc#HtmlLocationInfo[locationInfo], or one of
-the patterns xref:manual/layouts.adoc#PatternClass[%C or $class],
-xref:manual/layouts.adoc#PatternFile[%F or %file],
-xref:manual/layouts.adoc#PatternLocation[%l or %location],
-xref:manual/layouts.adoc#PatternLine[%L or %line],
-xref:manual/layouts.adoc#PatternMethod[%M or %method], Log4j will take a
-snapshot of the stack, and walk the stack trace to find the location
-information.
+xref:manual/layouts.adoc#location-information[Computing the location information (i.e., the caller class, method, file, and line number) of a log event is an expensive operation.]
+The impact on asynchronous loggers and appenders is even higher, since the component must decide whether to compute it or not **before** crossing the asynchronous barrier.
+Hence, the location information is disabled by default for asynchronous loggers and appenders.
+In order to enable it for a certain logger, set its xref:manual/configuration.adoc#logger-attributes-includeLocation[`includeLocation`] attribute to `true`.
 
-This is an expensive operation: 1.3 - 5 times slower for synchronous
-loggers. Synchronous loggers wait as long as possible before they take
-this stack snapshot. If no location is required, the snapshot will never
-be taken.
+[id=exception-handler]
+== Exception handler
 
-However, asynchronous loggers need to make this decision before passing
-the log message to another thread; the location information will be lost
-after that point. The
-xref:manual/performance.adoc#asyncLoggingWithLocation[performance impact] of
-taking a stack trace snapshot is even higher for asynchronous loggers:
-logging with location is 30-100 times slower than without location. For
-this reason, asynchronous loggers and asynchronous appenders do not
-include location information by default.
+In order to handle exceptions that occur on the asynchronous thread, you can configure a custom
+https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html[ExceptionHandler<T>].
 
-You can override the default behavior in your logger or asynchronous
-appender configuration by specifying `includeLocation="true"`.
+The exact type of handler depends on the configuration mode:
 
-[#Performance]
-== Asynchronous Logging Performance
+Full asynchronous::
++
+If all the loggers are asynchronous you need to:
++
+* implement an
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/RingBufferLogEvent.html[ExceptionHandler<? super RingBufferLogEvent>]
+* set its fully qualified class name as value of the
+xref:manual/systemproperties.adoc#log4j2.asyncLoggerExceptionHandler[log4j2.asyncLoggerExceptionHandler]
+configuration property.
 
-The throughput performance results below were derived from running the
-PerfTest, MTPerfTest and PerfTestDriver classes which can be found in
-the Log4j 2 unit test source directory. For throughput tests, the
-methodology used was:
-
-* First, warm up the JVM by logging 200,000 log messages of 500
-characters.
-* Repeat the warm-up 10 times, then wait 10 seconds for the I/O thread
-to catch up and buffers to drain.
-* Measure how long it takes to execute 256 * 1024 / threadCount calls to
-Logger.log and express the result in messages per second.
-* Repeat the test 5 times and average the results.
-
-The results below were obtained with log4j-2.0-beta5,
-disruptor-3.0.0.beta3, log4j-1.2.17 and logback-1.0.10.
-
-=== Logging Peak Throughput
-
-The graph below compares the throughput of synchronous loggers,
-asynchronous appenders and asynchronous loggers. This is the total
-throughput of all threads together. In the test with 64 threads,
-asynchronous loggers are 12 times faster than asynchronous appenders,
-and 68 times faster than synchronous loggers.
-
-Asynchronous loggers' throughput increases with the number of threads,
-whereas both synchronous loggers and asynchronous appenders have more or
-less constant throughput regardless of the number of threads that are
-doing the logging.
-
-image:async-vs-sync-throughput.png[Async loggers have much
-higher throughput than sync loggers.]
-
-=== Asynchronous Throughput Comparison with Other Logging Packages
-
-We also compared the peak throughput of asynchronous loggers to the
-synchronous loggers and asynchronous appenders available in other
-logging packages, specifically log4j-1.2.17 and logback-1.0.10, with
-similar results. For asynchronous appenders, the total logging throughput of
-all threads together remains roughly constant when adding more threads.
-Asynchronous loggers make more effective use of the multiple cores
-available on the machine in multi-threaded scenarios.
-
-image:async-throughput-comparison.png[Async loggers have the
-highest throughput.]
-
-On Solaris 10 (64bit) with JDK1.7.0_06, 4-core Xeon X5570 dual CPU
-@2.93Ghz with hyperthreading switched on (16 virtual cores):
-
-.Throughput per thread in messages/second
-[cols="h,>,>,>,>,>,>,>",options="header",]
-|=======================================================================
-|Logger |1 thread |2 threads |4 threads |8 threads |16 threads |32
-threads |64 threads
-|Log4j 2: Loggers all asynchronous |2,652,412 |909,119 |776,993 |516,365
-|239,246 |253,791 |288,997
-
-|Log4j 2: Loggers mixed sync/async |2,454,358 |839,394 |854,578 |597,913
-|261,003 |216,863 |218,937
-
-|Log4j 2: Async Appender |1,713,429 |603,019 |331,506 |149,408 |86,107
-|45,529 |23,980
-
-|Log4j1: Async Appender |2,239,664 |494,470 |221,402 |109,314 |60,580
-|31,706 |14,072
-
-|Logback: Async Appender |2,206,907 |624,082 |307,500 |160,096 |85,701
-|43,422 |21,303
-
-|Log4j 2: Synchronous |273,536 |136,523 |67,609 |34,404 |15,373 |7,903
-|4,253
-
-|Log4j1: Synchronous |326,894 |105,591 |57,036 |30,511 |13,900 |7,094
-|3,509
-
-|Logback: Synchronous |178,063 |65,000 |34,372 |16,903 |8,334 |3,985
-|1,967
-|=======================================================================
-
-On Windows 7 (64bit) with JDK1.7.0_11, 2-core Intel i5-3317u CPU
-@1.70Ghz with hyperthreading switched on (4 virtual cores):
-
-.Throughput per thread in messages/second
-[cols="h,>,>,>,>,>,>",options="header",]
-|=======================================================================
-|Logger |1 thread |2 threads |4 threads |8 threads |16 threads |32
-threads
-|Log4j 2: Loggers all asynchronous |1,715,344 |928,951 |1,045,265
-|1,509,109 |1,708,989 |773,565
-
-|Log4j 2: Loggers mixed sync/async |571,099 |1,204,774 |1,632,204
-|1,368,041 |462,093 |908,529
-
-|Log4j 2: Async Appender |1,236,548 |1,006,287 |511,571 |302,230
-|160,094 |60,152
-
-|Log4j1: Async Appender |1,373,195 |911,657 |636,899 |406,405 |202,777
-|162,964
-
-|Logback: Async Appender |1,979,515 |783,722 |582,935 |289,905 |172,463
-|133,435
-
-|Log4j 2: Synchronous |281,250 |225,731 |129,015 |66,590 |34,401 |17,347
-
-|Log4j1: Synchronous |147,824 |72,383 |32,865 |18,025 |8,937 |4,440
-
-|Logback: Synchronous |149,811 |66,301 |32,341 |16,962 |8,431 |3,610
-|=======================================================================
-
-[#Latency]
-=== Response Time Latency
-
-This section has been rewritten with the Log4j 2.6 release. The
-previous version only reported _service time_ instead of _response
-time_. See the xref:manual/performance.adoc#responseTime[response time] sidebar on the performance page on why this is too optimistic. 
-Furthermore, the previous version reported average latency, which does not make sense
-since latency is not a normal distribution. Finally, the previous
-version of this section only reported the maximum latency of up to
-99.99% of the measurements, which does not tell you how bad the worst
-0.01% were. This is unfortunate because often the "outliers" are all
-that matter when it comes to response time. From this release, we will
-try to do better and report response time latency across the full range
-of percentages, including all the outliers. Our thanks to Gil Tene for
-his http://www.infoq.com/presentations/latency-response-time[How NOT to
-measure latency] presentation. (Now we know why this is also known as
-the "Oh s#@t!" presentation.)
-
-xref:manual/performance.adoc#responseTime[Response time] is how long it
-takes to log a message under a certain load. What is often reported as
-latency is _service time_: how long it took to operate. 
-This hides the fact that a single spike in service time adds
-a queueing delay for many of the subsequent operations. Service time is
-easy to measure (and often looks good on paper) but is irrelevant for
-users since it omits the time spent waiting for service. For this reason,
-we report response time: service time plus wait time.
-
-The response time test results below were all derived from running the
-ResponseTimeTest class which can be found in the Log4j 2 unit test
-source directory. If you want to run these tests yourself, here are the
-command line options we used:
-
-* -Xms1G -Xmx1G (prevent heap resizing during the test)
-* -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
--DAsyncLogger.WaitStrategy=busyspin (to use Async Loggers. The BusySpin
-wait strategy reduces some jitter.)
-* *classic mode:* -Dlog4j2.enable.direct.encoders=false +
-*garbage-free mode:* -Dlog4j2.enable.direct.encoders=true
-* -XX:CompileCommand=dontinline,org.apache.logging.log4j.core.async.perftest.NoOpIdleStrategy::idle
-* -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps
--XX:+PrintTenuringDistribution -XX:+PrintGCApplicationConcurrentTime
--XX:+PrintGCApplicationStoppedTime (to eyeball GC and savepoint pauses)
-
-The graph below compares the response time latency of the
-ArrayBlockingQueue-based asynchronous appenders in Logback 1.1.7, Log4j
-1.2.17 to the various options for asynchronous logging that Log4j 2.6
-offers. Under a workload of 128,000 messages per second, using 16
-threads (each logging at a rate of 8,000 messages per second), we see
-that Logback 1.1.7, Log4j 1.2.17 experience latency spikes that are
-orders of magnitude larger than Log4j 2.
-
-image:ResponseTimeAsyncLogging16Threads_8kEach.png[When 16
-threads generate a total workload of 128,000 msg/sec, Logback 1.1.7 and
-Log4j 1.2.17 experiences latency spikes that are orders of magnitude
-larger than Log4j 2]
-
-The graph below zooms in on the Log4j 2 results for the same test. We
-see that the worst-case response time is highest for the
-ArrayBlockingQueue-based Async Appender.
-xref:manual/garbagefree.adoc[Garbage-free] async loggers have the best response
-time behavior.
-
-image:ResponseTimeAsyncLogging16Threads_8kEachLog4j2Only-labeled.png[image]
-
-[#UnderTheHood]
-== Under The Hood
-
-Asynchronous Loggers are implemented using the
-https://lmax-exchange.github.io/disruptor/[LMAX Disruptor] inter-thread
-messaging library. From the LMAX website:
-
-____
-...using queues to pass data between stages of the system was
-introducing latency, so we focused on optimizing this area. The
-Disruptor is the result of our research and testing. We found that cache
-misses at the CPU level, and locks requiring kernel arbitration are both
-extremely costly, so we created a framework that has "mechanical
-sympathy" for the hardware it's running on, and that's lock-free.
-____
-
-LMAX Disruptor internal performance comparisons with
-`java.util.concurrent.ArrayBlockingQueue` can be found
-https://github.com/LMAX-Exchange/disruptor/wiki/Performance-Results[here].
+Mixed synchronous/asynchronous::
++
+If you use a mix of synchronous and asynchronous loggers you need to:
++
+* implement a
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerConfigDisruptor.Log4jEventWrapper.html[ExceptionHandler<? super AsyncLoggerConfigDisruptor.Log4jEventWrapper>]
+* set its fully qualified class name as value of the
+xref:manual/systemproperties.adoc#log4j2.asyncLoggerConfigExceptionHandler[log4j2.asyncLoggerConfigExceptionHandler]
+configuration property.

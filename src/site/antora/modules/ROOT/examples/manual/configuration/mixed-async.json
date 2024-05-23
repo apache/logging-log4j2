@@ -1,0 +1,37 @@
+{
+  "Configuration": {
+    "Appenders": [
+      {
+        "name": "AUDIT",
+        "fileName": "logs/audit.log",
+        "ignoreExceptions": false,
+        "JsonTemplateLayout": {}
+      },
+      {
+        "name": "DEBUG_LOG",
+        "fileName": "logs/debug.log",
+        "PatternLayout": {}
+      }
+    ]
+  },
+  "Loggers": {
+    "Root": {
+      "level": "INFO",
+      "AppenderRef": { // <1>
+        "ref": "AUDIT",
+        "MarkerFilter": {
+          "marker": "AUDIT",
+          "onMatch": "ACCEPT",
+          "onMismatch": "DENY"
+        }
+      }
+    },
+    "AsyncLogger": { // <2>
+      "name": "com.example",
+      "level": "TRACE",
+      "AppenderRef": {
+        "ref": "DEBUG_LOG"
+      }
+    }
+  }
+}
