@@ -54,9 +54,9 @@ public class MessagesExample {
         // tag::complex[]
         logger.info(
                 "Connection closed by authenticating user {} {} port {} [preauth]",
-                event.getUserName(),
-                event.getRemoteAddress().getHostName(),
-                event.getRemoteAddress().getPort());
+                event.userName(),
+                event.remoteAddress().getHostName(),
+                event.remoteAddress().getPort());
         // end::complex[]
         // tag::complex-message[]
         logger.info(event);
