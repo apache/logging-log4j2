@@ -45,7 +45,7 @@ RewriteRule "^runtime-dependencies\.html$" "manual/installation.html" [R=permane
 # 2. we replaced a directory like `log4j-api/` with a file that has the same prefix like `log4j-api.html`,
 #
 # if the URI path is `/log4j/2.x/log4j-api/foo` we must match `log4j-api.html/foo`.
-RewriteRule "^log4j-1\.2-api\.html/" "log4j-1.2-api.html" [R=permanent]
+RewriteRule "^log4j-1\.2-api\.html/index\.html$" "log4j-1.2-api.html" [R=permanent]
 RewriteRule "^log4j-api\.html/apidocs(.*)$" "javadoc/log4j-api$1" [R=permanent]
 RewriteRule "^log4j-api\.html/index\.html" "log4j-api.html" [R=permanent]
 RewriteRule "^log4j-appserver\.html/index\.html$" "log4j-appserver.html" [R=permanent]
