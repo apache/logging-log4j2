@@ -19,12 +19,8 @@ package org.apache.logging.log4j.core.impl;
 import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceConsumer;
 import aQute.bnd.annotation.spi.ServiceProvider;
-import java.util.ServiceLoader;
-import org.apache.logging.log4j.core.impl.internal.QueuedScopedContextProvider;
 import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.spi.ScopedContextProvider;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.ServiceLoaderUtil;
 
 /**
  * Binding for the Log4j API.
@@ -34,15 +30,5 @@ import org.apache.logging.log4j.util.ServiceLoaderUtil;
 public class Log4jProvider extends Provider {
     public Log4jProvider() {
         super(10, CURRENT_VERSION, Log4jContextFactory.class);
-    }
-
-    @Override
-    public ScopedContextProvider getScopedContextProvider() {
-        return ServiceLoaderUtil.safeStream(
-                        ScopedContextProvider.class,
-                        ServiceLoader.load(ScopedContextProvider.class),
-                        StatusLogger.getLogger())
-                .findFirst()
-                .orElse(QueuedScopedContextProvider.INSTANCE);
     }
 }

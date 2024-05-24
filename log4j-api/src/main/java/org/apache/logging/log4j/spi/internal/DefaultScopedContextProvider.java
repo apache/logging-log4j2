@@ -16,49 +16,59 @@
  */
 package org.apache.logging.log4j.spi.internal;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Optional;
 import org.apache.logging.log4j.spi.AbstractScopedContextProvider;
 import org.apache.logging.log4j.spi.ScopedContextProvider;
 
 /**
- * An implementation of {@link ScopedContextProvider} that uses the simplest implementation.
+ * An implementation of {@link ScopedContextProvider}.
  * @since 2.24.0
  */
 public class DefaultScopedContextProvider extends AbstractScopedContextProvider {
 
     public static final ScopedContextProvider INSTANCE = new DefaultScopedContextProvider();
 
-    private final ThreadLocal<MapInstance> scopedContext = new ThreadLocal<>();
+    private final ThreadLocal<Deque<Instance>> scopedContext = new ThreadLocal<>();
 
     /**
      * Returns an immutable Map containing all the key/value pairs as Object objects.
-     * @return The current context Instance.
+     * @return An immutable copy of the Map at the current scope.
      */
+    @Override
     protected Optional<Instance> getContext() {
-        return Optional.ofNullable(scopedContext.get());
+        final Deque<Instance> stack = scopedContext.get();
+        return stack != null ? Optional.of(stack.getFirst()) : Optional.empty();
     }
 
     /**
      * Add the ScopeContext.
      * @param context The ScopeContext.
      */
+    @Override
     protected void addScopedContext(final MapInstance context) {
-        scopedContext.set(context);
+        Deque<Instance> stack = scopedContext.get();
+        if (stack == null) {
+            stack = new ArrayDeque<>();
+            scopedContext.set(stack);
+        }
+        stack.addFirst(context);
     }
 
     /**
      * Remove the top ScopeContext.
      */
+    @Override
     protected void removeScopedContext() {
-        MapInstance current = scopedContext.get();
-        if (current == null) {
-            return;
-        }
-        MapInstance previous = current.getPrevious();
-        if (previous != null) {
-            scopedContext.set(previous);
-        } else {
-            scopedContext.remove();
+        final Deque<Instance> stack = scopedContext.get();
+        if (stack != null) {
+            if (!stack.isEmpty()) {
+                stack.removeFirst();
+            }
+            if (stack.isEmpty()) {
+                scopedContext.remove();
+            }
         }
     }
 }
