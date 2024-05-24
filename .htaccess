@@ -22,12 +22,13 @@ RewriteBase "/log4j/2.x/"
 ##
 # To simplify the redirection rules, we normalized them:
 #
-# 1. If the request URIs points to a directory, we add `index.html` to it
+# 1. If the request URIs points to a (non-existent) directory, we add `index.html` to it
+RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule "^(.*)/$" "$1/index.html" [DPI]
 # 2. If the request URI points to a (non-existent) file, we make sure it ends with `.html`:
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond $1 "!\.html$"
-RewriteRule "^(+*)$" "$1.html"
+RewriteRule "^(.*)$" "$1.html"
 #
 # From this point rules match against the URI to the real file, with "/log4j/2.x/" stripped.
 
