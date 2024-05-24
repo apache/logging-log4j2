@@ -49,7 +49,6 @@ class TruncatingBufferedWriterTest {
         writer.append("yo");
         writer.append(null);
         writer.append("yo dog", 3, 6);
-        writer.append("nothing", 3, 0);
         writer.append(null, -1, -1);
         writer.append("", -1, -1);
         writer.append("");

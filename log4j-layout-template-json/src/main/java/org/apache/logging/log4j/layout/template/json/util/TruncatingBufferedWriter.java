@@ -178,11 +178,8 @@ final class TruncatingBufferedWriter extends Writer implements CharSequence {
             return this;
         }
 
+        // Short-circuit on empty sequence
         if (seq.length() == 0) {
-            return this;
-        }
-
-        if (end == 0) {
             return this;
         }
 
