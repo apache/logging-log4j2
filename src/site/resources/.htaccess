@@ -17,8 +17,18 @@
 # under the License.
 #
 RewriteEngine On
-RewriteRule "^(/log4j/[23].x)/log4j-(core|api)/apidocs(.*)" "$1/javadoc/$2$3" [R=permanent]
-RewriteRule "^(/log4j/[23].x)/manual/api-separation.html" "$1/manual/api.html" [R=permanent]
-RewriteRule "^(/log4j/[23].x)/manual/scala-api.html" "/log4j/scala" [R=permanent]
-RewriteRule "^(/log4j/[23].x)/manual/usage.html" "$1/manual/api.html" [R=permanent]
-RewriteRule "^(/log4j/[23].x)/release-notes/index.html" "$1/release-notes.html" [R=permanent]
+
+RewriteCond "%{REQUEST_URI}" "^(/log4j/[23]\.x)/"
+RewriteRule "^log4j-(core|api)/apidocs(.*)$" "%1/javadoc/log4j-$1$2" [R=permanent]
+
+RewriteCond "%{REQUEST_URI}" "^(/log4j/[23]\.x)/"
+RewriteRule "^manual/api-separation(\.html)?$" "%1/manual/api.html" [R=permanent]
+
+RewriteCond "%{REQUEST_URI}" "^(/log4j/[23]\.x)/"
+RewriteRule "^manual/scala-api(\.html)?$" "/log4j/scala/index.html" [R=permanent]
+
+RewriteCond "%{REQUEST_URI}" "^(/log4j/[23]\.x)/"
+RewriteRule "^manual/usage(\.html)?$" "%1/manual/api.html" [R=permanent]
+
+RewriteCond "%{REQUEST_URI}" "^(/log4j/[23]\.x)/"
+RewriteRule "^release-notes/(index(\.html)?)?$" "%1/release-notes.html" [R=permanent]
