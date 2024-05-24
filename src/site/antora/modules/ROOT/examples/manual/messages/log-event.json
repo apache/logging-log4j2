@@ -1,0 +1,40 @@
+{
+  // <1>
+  "log.level": "INFO",
+  "message": "Unable to insert data into my_table.",
+  "error.type": "java.lang.RuntimeException",
+  "error.message": null,
+  "error.stack_trace": [
+    {
+      "class": "com.example.Main",
+      "method": "doQuery",
+      "file.name": "Main.java",
+      "file.line": 36
+    },
+    {
+      "class": "com.example.Main",
+      "method": "main",
+      "file.name": "Main.java",
+      "file.line": 25
+    }
+  ],
+  "marker": "SQL",
+  "log.logger": "com.example.Main",
+  // <2>
+  "tags": [
+    "SQL query"
+  ],
+  "labels": {
+    "span_id": "3df85580-f001-4fb2-9e6e-3066ed6ddbb1",
+    "trace_id": "1b1f8fc9-1a0c-47b0-a06f-af3c1dd1edf9"
+  },
+  // <3>
+  "@timestamp": "2024-05-23T09:32:24.163Z",
+  "log.origin.class": "com.example.Main",
+  "log.origin.method": "doQuery",
+  "log.origin.file.name": "Main.java",
+  "log.origin.file.line": 36,
+  "process.thread.id": 1,
+  "process.thread.name": "main",
+  "process.thread.priority": 5
+}
