@@ -69,6 +69,7 @@ request or when there are more than one or two items.
 To uniquely stamp each request using the Thread Context Stack, the user
 pushes contextual information on to the Stack.
 
+[#nested-diagnostic-context]
 [source,java]
 ----
 ThreadContext.push(UUID.randomUUID().toString()); // Add the fishtag;
@@ -88,6 +89,7 @@ The alternative to the Thread Context Stack is the Thread Context Map.
 In this case, attributes associated with the request being processed are
 adding at the beginning and removed at the end as follows:
 
+[#mapped-diagnostic-context]
 [source,java]
 ----
 ThreadContext.put("id", UUID.randomUUID().toString()); // Add the fishtag;
