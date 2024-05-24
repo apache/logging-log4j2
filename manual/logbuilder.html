@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Log Builder :: Apache Log4j</title>
+    <title>Fluent API :: Apache Log4j</title>
     <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/logbuilder.html">
     <meta name="generator" content="Antora 3.2.0-alpha.4">
 <link rel="stylesheet" href="../_/css/site.css">
@@ -118,7 +118,7 @@
     <a class="nav-link" href="api.html">Log4j API</a>
 <ul class="nav-list">
   <li class="nav-item is-current-page" data-depth="2">
-    <a class="nav-link" href="logbuilder.html">Log Builder</a>
+    <a class="nav-link" href="logbuilder.html">Fluent API</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
@@ -334,7 +334,7 @@
     <li><a href="../index.html">Home</a></li>
     <li><a href="index.html">Manual</a></li>
     <li><a href="api.html">Log4j API</a></li>
-    <li><a href="logbuilder.html">Log Builder</a></li>
+    <li><a href="logbuilder.html">Fluent API</a></li>
   </ul>
 </nav>
 <div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/manual/logbuilder.adoc">Edit this Page</a></div>
@@ -344,116 +344,197 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Log Builder</h1>
+<h1 class="page">Fluent API</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Log4j has traditionally been used with logging statements like</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">logger.error("Unable to process request due to {}", code, exception);</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This has resulted in some confusion as to whether the exception should be a parameter to the message or
-if Log4j should handle it as a throwable. In order to make logging clearer a builder pattern has been
-added to the API. Using the builder syntax the above would be handled as:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">logger.atError().withThrowable(exception).log("Unable to process request due to {}", code);</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>With this syntax it is clear that the exception is to be treated as a Throwable by Log4j.</p>
-</div>
-<div class="paragraph">
-<p>The Logger class now returns a LogBuilder when any of the atTrace, atDebug, atInfo, atWarn, atError,
-atFatal, always, or atLevel(Level) methods are called. The logBuilder then allows a Marker, Throwable,
-and/or location to be added to the event before it is logged. A call to the log method always causes the
-log event to be finalized and sent.</p>
-</div>
-<div class="paragraph">
-<p>A logging statement with a Marker, Throwable, and location would look like:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">logger.atInfo().withMarker(marker).withLocation().withThrowable(exception).log("Login for user {} failed", userId);</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Providing the location method on the LogBuilder provides two distinct advantages:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Logging wrappers can use it to provide the location information to be used by Log4j.&lt;/li&gt;</p>
-</li>
-<li>
-<p>The overhead of capturing location information when using the location method with no
-parameters is much better than having to calculate the location information when it is needed. Log4j
-can simply ask for the stack trace entry at a fixed index instead of having to walk the stack trace
-to determine the calling class. Of course, if the location information will not be used by the layout
-this will result in slower performance.&lt;/li&gt;</p>
-</li>
-</ol>
+<p>Next to the traditional <code>info()</code>, <code>error()</code>, etc. <code>Logger</code> methods, Log4j API also provides a <a href="https://en.wikipedia.org/wiki/Fluent_interface">fluent interface</a> for logging.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_location_performance"><a class="anchor" href="#_location_performance"></a>Location Performance</h2>
+<h2 id="rationale"><a class="anchor" href="#rationale"></a>Rationale</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The table below shows some of the results from the FileAppenderBenchmark and FileAppenderWithLocationBenchmark
-classes in the log4j-perf-test project when configured to use 4 threads. The results show that lazily including
-the location information is about 8 times slower than not including location information. While using the
-withLocation method of LogBuilder is about 3 times faster than lazily calculating the location information
-it is still about 2.5 times slower than not including location information.</p>
+<p>Developers use Log4j traditionally with logging statements like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.error("Unable to process request due to {}", errorCode, exception);</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>The tests were run on a 2018 MacBook Pro with a 2.9 GHz Intel Core i9 processor with 6 cores, 32 GB of memory
-and 1 TB of SSD storage on Java 11 using Log4j 2.13.0 and Logback 1.2.3.
-<span class="image"><img src="../_images/LocationPerf.png" alt="Location Performance"></span></p>
+<p>This style has certain drawbacks:</p>
 </div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
+<div class="ulist">
+<ul>
+<li>
+<p>It is confusing whether the last argument, <code>exception</code>, is a parameter of the message to be formatted, or is separately attached to the log event.</p>
+</li>
+<li>
+<p>One must know in which order <code>error()</code> arguments should be passed to specify, say, a <a href="markers.html" class="xref page">marker</a>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The fluent interface (also referred to as <em>the fluent API</em>) has been added to Log4j API to increase code legibility and avoid ambiguities.
+For instance, the above <code>error()</code> call can be expressed using the fluent API as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER
+    .atError() <i class="conum" data-value="1"></i><b>(1)</b>
+    .withThrowable(exception) <i class="conum" data-value="2"></i><b>(2)</b>
+    .log("Unable to process request due to {}", errorCode); <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
 <tr>
-<th class="tableblock halign-left valign-top">Test</th>
-<th class="tableblock halign-left valign-top">Print Location Info</th>
-<th class="tableblock halign-left valign-top">No Location Info Printed</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Log4j2 File</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">191,509.724 ± 11339.978  ops/s</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1,407,329.130 ± 22595.997  ops/s</p></td>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The log level is set to <code>ERROR</code></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Log4j2 Log Builder withLocation()</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">469,200.684 ± 50025.985  ops/s</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">577,127.463 ± 11464.342  ops/s</p></td>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The associated exception is attached</td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Logback File</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">159,116.538 ± 1884.969  ops/s</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1,240,438.384 ± 76619.873  ops/s</p></td>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The log message is formatted with the <code>errorCode</code> parameter</td>
 </tr>
-</tbody>
 </table>
-<div class="paragraph">
-<p>As expected, when using LogBuilder with a call to the withLocation() method logging is much faster when
-location information is used in the output but significantly slower when it is not.</p>
 </div>
 <div class="paragraph">
-<p>Note: Running the tests at various times provides varying results. Although some results have been as much
-as 10% higher all results are generally affected similarly so the comparisons between them stay the same.</p>
+<p>With this syntax, it is clear that the <code>exception</code> is part of the log event and <code>errorCode</code> is a parameter of the message.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="usage"><a class="anchor" href="#usage"></a>Usage</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The fluent API entry point is <a href="../log4j-api/apidocs/org/apache/logging/log4j/LogBuilder.html"><code>LogBuilder</code></a>, which can be obtained by using one of the following <code>Logger</code> methods:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>atTrace()</code></p>
+</li>
+<li>
+<p><code>atDebug()</code></p>
+</li>
+<li>
+<p><code>atInfo()</code></p>
+</li>
+<li>
+<p><code>atWarn()</code></p>
+</li>
+<li>
+<p><code>atError()</code></p>
+</li>
+<li>
+<p><code>atFatal()</code></p>
+</li>
+<li>
+<p><code>always()</code></p>
+</li>
+<li>
+<p><code>atLevel(Level)</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><code>LogBuilder</code> allows attaching a <a href="markers.html" class="xref page">marker</a>, a <code>Throwable</code>, and a location to the log event by means of following methods:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>withMarker()</code></p>
+</li>
+<li>
+<p><code>withThrowable()</code></p>
+</li>
+<li>
+<p><code>withLocation()</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>After that, developers can call the <code>log()</code> method to finalize and send the log event.</p>
+</div>
+<div class="paragraph">
+<p>In the following example, we log a parameterized message at <code>INFO</code> level, and attach a marker and an exception to the log event:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER
+    .atInfo() <i class="conum" data-value="1"></i><b>(1)</b>
+    .withMarker(marker) <i class="conum" data-value="2"></i><b>(2)</b>
+    .withThrowable(exception) <i class="conum" data-value="3"></i><b>(3)</b>
+    .log("Unable to process request due to {}", errorCode); <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The log level is set to <code>INFO</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>marker</code> is attached to the log event</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td><code>exception</code> is attached to the log event</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>A message with <code>errorCode</code> parameter is provided and the statement is finalized</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="location-information"><a class="anchor" href="#location-information"></a>Location information</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The fluent API allows users to instruct the location information to be <strong>eagerly</strong> populated in the log event using the <code>withLocation()</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER
+    .atInfo()
+    .withLocation() <i class="conum" data-value="1"></i><b>(1)</b>
+    .log("Login for user with ID `{}` failed", userId);</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Instructing to eagerly populate the location information</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Capturing location information using <code>withLocation()</code> is orders of magnitude more efficient compared to letting the <code>Logger</code> to figure it out indirectly.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You are strongly advised to use <code>withLocation()</code> if you are certain that the populated location information will be used.
+Otherwise – that is, if the log event might either get dropped due to some filtering or its location information not get used – it will only slow things down.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
