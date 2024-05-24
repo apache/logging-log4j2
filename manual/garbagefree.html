@@ -67,7 +67,7 @@
     <a class="nav-link" href="../download.html">Download</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../runtime-dependencies.html">Runtime Dependencies</a>
+    <a class="nav-link" href="#runtime-dependencies.adoc">runtime-dependencies.adoc</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../release-notes.html">Release Notes</a>
@@ -96,7 +96,7 @@
     <a class="nav-link" href="../faq.html">F.A.Q.</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../5min.html">Log4j explained in 5 minutes</a>
+    <a class="nav-link" href="../getting-started.html">Getting started</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="migration.html">Migrating from Log4j 1</a>
@@ -230,24 +230,6 @@
     <button class="nav-item-toggle"></button>
     <span class="nav-text">Components</span>
 <ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-api.html">Log4j API</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-1.2-api.html">Log4j 1.2 Bridge</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-slf4j-impl.html">Log4j SLF4J Binding</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-jul.html">Log4j JDK Logging Adapter</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-jpl.html">Log4j JDK Platform Logging Adapter</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-to-slf4j.html">Log4j to SLF4J Adapter</a>
-  </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-flume-ng.html">Flume Appender</a>
   </li>
@@ -1008,7 +990,10 @@ The <code>Unbox.box(primitive)</code> methods write directly into a <code>String
 <p>The <code>ThreadContext</code> map (aka. MDC) is not garbage-free by default, but can be configured to be garbage-free by setting <a href="#log4j2.garbagefreeThreadContextMap">the <code>log4j2.garbagefreeThreadContextMap</code> system property</a> to <code>true</code>.</p>
 </li>
 <li>
-<p>The <code>ThreadContext</code> stack is not garbage-free.</p>
+<p>The <code>ThreadContext</code> stack (aka. NDC) is not garbage-free.</p>
+</li>
+<li>
+<p><a href="scoped-context.html" class="xref page">Scoped Context</a> is not garbage-free.</p>
 </li>
 <li>
 <p>Logging very large messages (i.e., more than <a href="#log4j2.maxReusableMsgSize"><code>log4j2.maxReusableMsgSize</code></a> characters, which defaults to 518), when all loggers are <a href="async.html" class="xref page">asynchronous loggers</a>, will cause the internal <code>StringBuilder</code> in the

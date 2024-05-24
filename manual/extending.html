@@ -67,7 +67,7 @@
     <a class="nav-link" href="../download.html">Download</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../runtime-dependencies.html">Runtime Dependencies</a>
+    <a class="nav-link" href="#runtime-dependencies.adoc">runtime-dependencies.adoc</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../release-notes.html">Release Notes</a>
@@ -96,7 +96,7 @@
     <a class="nav-link" href="../faq.html">F.A.Q.</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../5min.html">Log4j explained in 5 minutes</a>
+    <a class="nav-link" href="../getting-started.html">Getting started</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="migration.html">Migrating from Log4j 1</a>
@@ -230,24 +230,6 @@
     <button class="nav-item-toggle"></button>
     <span class="nav-text">Components</span>
 <ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-api.html">Log4j API</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-1.2-api.html">Log4j 1.2 Bridge</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-slf4j-impl.html">Log4j SLF4J Binding</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-jul.html">Log4j JDK Logging Adapter</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-jpl.html">Log4j JDK Platform Logging Adapter</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-to-slf4j.html">Log4j to SLF4J Adapter</a>
-  </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-flume-ng.html">Flume Appender</a>
   </li>
@@ -986,40 +968,6 @@ programmatically:</p>
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">ListAppender list1 = ListAppender.createAppender("List1", true, false, null, null);
 ListAppender list2 = ListAppender.newBuilder().setName("List1").setEntryPerNewLine(true).build();</code></pre>
 </div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="Custom_ContextDataProvider"><a class="anchor" href="#Custom_ContextDataProvider"></a>Custom ContextDataProvider</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/ContextDataProvider.html"><code>ContextDataProvider</code></a>
-(introduced in Log4j 2.13.2) is an interface applications and libraries can use to inject
-additional key-value pairs into the LogEvent&#8217;s context data. Log4j
-uses <code>java.util.ServiceLoader</code> to locate and load <code>ContextDataProvider</code> instances.
-Log4j itself adds the ThreadContext data to the LogEvent using
-<code>org.apache.logging.log4j.core.impl.ThreadContextDataProvider</code>. Custom implementations
-should implement the <code>org.apache.logging.log4j.core.util.ContextDataProvider</code> interface and
-declare it as a service by defining the implmentation class in a file named
-<code>META-INF/services/org.apache.logging.log4j.core.util.ContextDataProvider</code>.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_custom_threadcontextmap_implementations"><a class="anchor" href="#_custom_threadcontextmap_implementations"></a>Custom ThreadContextMap implementations</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>A garbage-free <code>StringMap</code>-based context map can be installed by setting
-system property <code>log4j2.garbagefreeThreadContextMap</code> to true.</p>
-</div>
-<div class="paragraph">
-<p>Any custom <a href="../javadoc/log4j-core/org/apache/logging/log4j/spi/ThreadContextMap.html"><code>ThreadContextMap</code></a>
-implementation can be installed by setting system property <code>log4j2.threadContextMap</code>
-to the fully qualified class name of the class implementing the <code>ThreadContextMap</code>
-interface. By also implementing the <code>ReadOnlyThreadContextMap</code> interface, your custom
-<code>ThreadContextMap</code> implementation will be accessible to applications via the
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html#getThreadContextMap()"><code>ThreadContext::getThreadContextMap</code></a>
-method.</p>
 </div>
 </div>
 </div>

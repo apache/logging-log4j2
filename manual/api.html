@@ -67,7 +67,7 @@
     <a class="nav-link" href="../download.html">Download</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../runtime-dependencies.html">Runtime Dependencies</a>
+    <a class="nav-link" href="#runtime-dependencies.adoc">runtime-dependencies.adoc</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../release-notes.html">Release Notes</a>
@@ -96,7 +96,7 @@
     <a class="nav-link" href="../faq.html">F.A.Q.</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../5min.html">Log4j explained in 5 minutes</a>
+    <a class="nav-link" href="../getting-started.html">Getting started</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="migration.html">Migrating from Log4j 1</a>
@@ -231,24 +231,6 @@
     <span class="nav-text">Components</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-api.html">Log4j API</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-1.2-api.html">Log4j 1.2 Bridge</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-slf4j-impl.html">Log4j SLF4J Binding</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-jul.html">Log4j JDK Logging Adapter</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-jpl.html">Log4j JDK Platform Logging Adapter</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-to-slf4j.html">Log4j to SLF4J Adapter</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-flume-ng.html">Flume Appender</a>
   </li>
   <li class="nav-item" data-depth="1">
@@ -351,7 +333,7 @@ Log4j Core, <a href="https://docs.oracle.com/en/java/javase/8/core/java-logging-
 <td class="content">
 <div class="paragraph">
 <p>Are you looking for a crash course on how to use Log4j in your application or library?
-See <a href="../5min.html" class="xref page">Log4j explained in 5 minutes</a>.
+See <a href="../getting-started.html" class="xref page">Getting started</a>.
 You can also check out <a href="installation.html" class="xref page">Installation</a> for the complete installation instructions.</p>
 </div>
 </td>
@@ -373,6 +355,21 @@ You can also check out <a href="installation.html" class="xref page">Installatio
 </div>
 <div class="paragraph">
 <p>This page tries to cover the most prominent Log4j API features that libraries and applications can code to.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Did you know that Log4j provides specialized APIs for Kotlin and Scala?
+Check out <a href="https://logging.apache.org/log4j/kotlin">Log4j Kotlin</a> and <a href="https://logging.apache.org/log4j/scala">Log4j Scala</a> projects for details.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -816,7 +813,7 @@ You might reconsider your formatter logger usages for latency sensitive applicat
 <h2 id="fish-tagging"><a class="anchor" href="#fish-tagging"></a>Fish tagging</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Just as a fish can be tagged and have its movement tracked (aka. <em>fish tagging</em>), stamping log events with a common tag or set of data
+<p>Just as a fish can be tagged and have its movement tracked (aka. <em>fish tagging</em> <sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup>), stamping log events with a common tag or set of data
 elements allows the complete flow of a transaction or a request to be tracked.
 You can use them for several purposes, such as:</p>
 </div>
@@ -872,7 +869,7 @@ Log4j also allows you to introduce your own custom levels too.</p>
 <div class="sect2">
 <h3 id="scoped-context"><a class="anchor" href="#scoped-context"></a>Scoped Context</h3>
 <div class="paragraph">
-<p>Just like a <a href="https://docs.oracle.com/en/java/javase/22/docs/api/java.base/java/lang/ScopedValue.html">Java&#8217;s <code>ScopedValue</code></a>, in Scoped Context, the visibility of tags are associated with the block they were introduced:</p>
+<p>Just like a <a href="https://docs.oracle.com/en/java/javase/22/docs/api/java.base/java/lang/ScopedValue.html">Java&#8217;s <code>ScopedValue</code></a>, <em>Scoped Context</em> facilitates associating information with a certain block of code and makings this accessible to the rest of the logging system:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -920,8 +917,21 @@ These properties can later on be used to, for instance, filter the log event, pr
 <div class="sect2">
 <h3 id="thread-context"><a class="anchor" href="#thread-context"></a>Thread Context</h3>
 <div class="paragraph">
-<p>Just like <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/ThreadLocal.html">Java&#8217;s <code>ThreadLocal</code></a>, in Thread Context, the visibility of tags are associated with the thread they were introduced.
-Thread Context offers both a map-structured, called <em>Mapped Diagnostic Context (MDC)</em>, and a stack-structured, called <em>Nested Diagnostic Context (NDC)</em>, storage:</p>
+<p>Just like <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/ThreadLocal.html">Java&#8217;s <code>ThreadLocal</code></a>, <em>Thread Context</em> facilitates associating information with the executing thread and making this information accessible to the rest of the logging system.
+Thread Context offers both</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>map-structured – referred to as <em>Thread Context Map</em> or <em>Mapped Diagnostic Context (MDC)</em></p>
+</li>
+<li>
+<p>stack-structured – referred to as <em>Thread Context Stack</em> or <em>Nested Diagnostic Context (NDC)</em></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>storage:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -929,24 +939,39 @@ Thread Context offers both a map-structured, called <em>Mapped Diagnostic Contex
 ThreadContext.put("hostName", request.getServerName()); <i class="conum" data-value="1"></i><b>(1)</b>
 ThreadContext.put("loginId", session.getAttribute("loginId")); <i class="conum" data-value="1"></i><b>(1)</b>
 
-ThreadContext.push("performWork()"); <i class="conum" data-value="2"></i><b>(2)</b>
+void performWork() {
+    ThreadContext.push("performWork()"); <i class="conum" data-value="2"></i><b>(2)</b>
 
-LOGGER.debug("Performing work"); <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+    LOGGER.debug("Performing work"); <i class="conum" data-value="3"></i><b>(3)</b>
+    // Perform the work
+
+    ThreadContext.pop(); <i class="conum" data-value="4"></i><b>(4)</b>
+}
+
+ThreadContext.clear(); <i class="conum" data-value="5"></i><b>(5)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Associating properties with the logging context map of the thread</td>
+<td>Adding properties to the thread context map</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Pushing properties to the logging context stack of the thread</td>
+<td>Pushing properties to the thread context stack</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
 <td>Added properties can later on be used to, for instance, filter the log event, provide extra information in the layout, etc.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Popping the last pushed property from the thread context stack</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Clearing the thread context (for both stack and map!)</td>
 </tr>
 </table>
 </div>
@@ -1038,6 +1063,12 @@ These methods generate log events that can be filtered separately from other deb
 <div class="paragraph">
 <p><a href="flowtracing.html" class="xref page">Read more on flow tracing&#8230;&#8203;</a></p>
 </div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnotedef_1">
+<a href="#_footnoteref_1">1</a>. Fish tagging is first described by Neil Harrison in the <em>"Patterns for Logging Diagnostic Messages"</em> chapter of <a href="https://dl.acm.org/doi/10.5555/273448"><em>"Pattern Languages of Program Design 3"</em> edited by R. Martin, D. Riehle, and F. Buschmann in 1997</a>.
 </div>
 </div>
 </article>
