@@ -21,6 +21,9 @@
   .doc .colist>table code, .doc p code, .doc thead code { font-size: 0.8em; }
   .doc pre { font-size: 0.7rem; }
   .doc .colist { font-size: 0.75rem; }
+  /* Make links more visible: */
+  .doc a { text-decoration: underline; }
+  .doc a code { text-decoration: underline; color: #1565c0; }
   /* Tab header fonts aren't rendered good, adjusting the font weight: */
   .tablist > ul li { font-weight: 500; }
   /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
@@ -96,6 +99,12 @@
     <a class="nav-link" href="../5min.html">Log4j explained in 5 minutes</a>
   </li>
   <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="migration.html">Migrating from Log4j 1</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
+  </li>
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../development.html">Development</a>
   </li>
 </ul>
@@ -111,35 +120,35 @@
     <a class="nav-link" href="architecture.html">Architecture</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="migration.html">Migrating from Log4j 1.x to 2.x</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="api.html">Log4j API</a>
+    <a class="nav-link" href="api.html">API</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="logbuilder.html">Fluent API</a>
+    <a class="nav-link" href="customloglevels.html">Levels</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
+    <a class="nav-link" href="logbuilder.html">Fluent API</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="markers.html">Markers</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="eventlogging.html">Event Logging with Log4j</a>
+    <a class="nav-link" href="scoped-context.html">Scoped Context</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="thread-context.html">Thread Context</a>
   </li>
   <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="messages.html">Messages</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="thread-context.html">Thread Context</a>
+    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="scoped-context.html">Scoped Context</a>
+    <a class="nav-link" href="eventlogging.html">Event Logging</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="resource-logger.html">Resource Logging</a>
+    <a class="nav-link" href="resource-logger.html">Resource Loggers</a>
   </li>
 </ul>
   </li>
@@ -149,6 +158,12 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="configuration.html">Configuration file</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="systemproperties.html">Configuration properties</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="appenders.html">Appenders</a>
@@ -166,66 +181,24 @@
     <a class="nav-link" href="lookups.html">Lookups</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="customloglevels.html">Log Levels</a>
-  </li>
-  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="filters.html">Filters</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="scripts.html">Scripts</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="systemproperties.html">Configuration properties</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="usage.html">Usage</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="lookups.html">Lookups</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="appenders.html">Appenders</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="layouts.html">Layouts</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="filters.html">Filters</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="extending.html">Extending Log4j</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="plugins.html">Plugins</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="customloglevels.html">Log Levels</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="jmx.html">JMX</a>
   </li>
+</ul>
+  </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="logsep.html">Logging Separation</a>
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="extending.html">Extending</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="plugins.html">Plugins</a>
+  </li>
+</ul>
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
@@ -333,7 +306,7 @@
   <ul>
     <li><a href="../index.html">Home</a></li>
     <li><a href="index.html">Manual</a></li>
-    <li><a href="api.html">Log4j API</a></li>
+    <li><a href="api.html">API</a></li>
     <li><a href="messages.html">Messages</a></li>
   </ul>
 </nav>
@@ -375,7 +348,7 @@ Log4j API provides a rich set of methods to specify log messages, which will be 
 </li>
 <li>
 <p>Some fields are contextual and is either provided explicitly by developers of other parts of the application (see
-<a href="thread-context.html" class="xref page">Thread context</a>)
+<a href="thread-context.html" class="xref page">Thread Context</a>)
 or is injected by Java instrumentation.</p>
 </li>
 <li>
@@ -514,8 +487,8 @@ In case you are using Log4j Core, the following fields can be automatically gene
 <p>To create a <a href="#SimpleMessage"><code>SimpleMessage</code></a> from a <code>String</code> argument, the following logger calls are equivalent:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">logger.error("Houston, we have a problem.", e);
-logger.error(new SimpleMessage("Houston, we have a problem."), e);</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.error("Houston, we have a problem.", exception);
+LOGGER.error(new SimpleMessage("Houston, we have a problem."), exception);</code></pre>
 </div>
 </div>
 </li>
@@ -523,8 +496,8 @@ logger.error(new SimpleMessage("Houston, we have a problem."), e);</code></pre>
 <p>To create a <a href="#ParameterizedMessage"><code>ParameterizedMessage</code></a> from a format <code>String</code> and an array of object parameters, the following logger calls are equivalent:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">logger.error("Unable to {}, because {} occurred", action, cause, e);
-logger.error(new ParameterizedMessage("Unable to {}, because {} occurred", action, cause), e);</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.error("Unable process user with ID `{}`", userId, exception);
+LOGGER.error(new ParameterizedMessage("Unable process user with ID `{}`", userId), exception);</code></pre>
 </div>
 </div>
 </li>
@@ -548,7 +521,7 @@ we can see that the string construction becomes more challenging to read:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">logger.info(
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.info(
         "Connection closed by authenticating user {} {} port {} [preauth]",
         event.userName(),
         event.remoteAddress().getHostName(),
@@ -587,7 +560,7 @@ we can see that the string construction becomes more challenging to read:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">logger.info(event);</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.info(event);</code></pre>
 </div>
 </div>
 </div>
@@ -653,29 +626,31 @@ has the name of the Logger used to log the event when Log4j formats the message.
 </div>
 </div>
 <div class="sect2">
-<h3 id="MapMessage"><a class="anchor" href="#MapMessage"></a>MapMessage</h3>
+<h3 id="MapMessage"><a class="anchor" href="#MapMessage"></a><code>MapMessage</code></h3>
 <div class="paragraph">
-<p>A <code>MapMessage</code> contains a Map of String keys and values.</p>
+<p>A <code>MapMessage</code> contains a <code>Map</code> of <code>String</code>-typed keys and values.</p>
 </div>
 <div class="paragraph">
 <p><code>MapMessage</code> implements <code>FormattedMessage</code> and accepts the following format specifiers:</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>"XML" - format the Map as XML</p>
-</li>
-<li>
-<p>"JSON" - format the Map as JSON</p>
-</li>
-<li>
-<p>"JAVA" - format the Map as a Java object</p>
-</li>
-</ul>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>XML</code></dt>
+<dd>
+<p>format the map as XML</p>
+</dd>
+<dt class="hdlist1"><code>JSON</code></dt>
+<dd>
+<p>format the map as JSON</p>
+</dd>
+<dt class="hdlist1"><code>JAVA</code></dt>
+<dd>
+<p>format the map as a Java object</p>
+</dd>
+</dl>
 </div>
 <div class="paragraph">
-<p>Otherwise, it will format the Map as documented in
-<a href="https://docs.oracle.com/javase/7/docs/api/java/util/AbstractMap.html#toString()"><code>java.util.AbstractMap.toString()</code></a>.</p>
+<p>Otherwise, it will format the map as documented in <a href="https://docs.oracle.com/javase/7/docs/api/java/util/AbstractMap.html#toString()"><code>java.util.AbstractMap.toString()</code></a>.</p>
 </div>
 <div class="paragraph">
 <p>Some appenders convert the <code>MapMessage</code> objects differently when there is no layout:</p>
@@ -686,7 +661,7 @@ has the name of the Logger used to log the event when Log4j formats the message.
 <p>JMS Appender converts to a JMS <code>javax.jms.MapMessage</code>.</p>
 </li>
 <li>
-<p><a href="appenders.html#JDBCAppender" class="xref page">JDBC Appender</a> converts to values in a SQL INSERT statement</p>
+<p><a href="appenders.html#JDBCAppender" class="xref page">JDBC Appender</a> converts to values in an <code>SQL INSERT</code> statement</p>
 </li>
 <li>
 <p><a href="appenders.html#NoSQLAppenderMongoDBMain" class="xref page">MongoDB Appender</a> converts to fields in MongoDB object</p>
@@ -695,7 +670,7 @@ has the name of the Logger used to log the event when Log4j formats the message.
 </div>
 </div>
 <div class="sect2">
-<h3 id="MessageFormatMessage"><a class="anchor" href="#MessageFormatMessage"></a>MessageFormatMessage</h3>
+<h3 id="MessageFormatMessage"><a class="anchor" href="#MessageFormatMessage"></a><code>MessageFormatMessage</code></h3>
 <div class="paragraph">
 <p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/MessageFormatMessage.html"><code>MessageFormatMessage</code></a>
 handles messages that use a
@@ -706,22 +681,21 @@ handles messages that use a
 </div>
 </div>
 <div class="sect2">
-<h3 id="MultiformatMessage"><a class="anchor" href="#MultiformatMessage"></a>MultiformatMessage</h3>
+<h3 id="MultiformatMessage"><a class="anchor" href="#MultiformatMessage"></a><code>MultiformatMessage</code></h3>
 <div class="paragraph">
-<p>A <code>MultiformatMessage</code> has the <code>getFormats()</code> and <code>getFormattedMessage()</code> method that accepts an array of format Strings.</p>
+<p>A <code>MultiformatMessage</code> has the <code>getFormats()</code> and <code>getFormattedMessage()</code> methods that accept an array of format <code>String</code>s.</p>
 </div>
 <div class="paragraph">
 <p>Layouts may use the <code>getFormats()</code> method to provide information on the formatting options the message supports.
-The Layout may then call <code>getFormattedMessage()</code> with one or more formats.
+The layout may then call <code>getFormattedMessage()</code> with one or more formats.
 The message will be shown in the default format when the format name is not recognized.</p>
 </div>
 <div class="paragraph">
-<p>For example, the <code>StructuredDataMessage</code> accepts the "XML" format name to
-format the message as XML instead of the default RFC5424 format.</p>
+<p>For example, the <code>StructuredDataMessage</code> accepts the <code>XML</code> format name to format the message as XML instead of the default RFC5424 format.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="ObjectMessage"><a class="anchor" href="#ObjectMessage"></a>ObjectMessage</h3>
+<h3 id="ObjectMessage"><a class="anchor" href="#ObjectMessage"></a><code>ObjectMessage</code></h3>
 <div class="paragraph">
 <p>Formats an <code>Object</code> by calling its <code>toString()</code> method.</p>
 </div>
@@ -730,60 +704,59 @@ format the message as XML instead of the default RFC5424 format.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="ParameterizedMessage"><a class="anchor" href="#ParameterizedMessage"></a>ParameterizedMessage</h3>
+<h3 id="ParameterizedMessage"><a class="anchor" href="#ParameterizedMessage"></a><code>ParameterizedMessage</code></h3>
 <div class="paragraph">
-<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ParameterizedMessage.html"><code>ParameterizedMessage</code></a>
-handles messages that contain "\{}" in the format to represent replaceable tokens and the replacement parameters.</p>
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ParameterizedMessage.html"><code>ParameterizedMessage</code></a> handles messages that contain <code>{}</code> in the format to represent replaceable tokens and the replacement parameters.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="ReusableObjectMessage"><a class="anchor" href="#ReusableObjectMessage"></a>ReusableObjectMessage</h3>
+<h3 id="ReusableObjectMessage"><a class="anchor" href="#ReusableObjectMessage"></a><code>ReusableObjectMessage</code></h3>
 <div class="paragraph">
-<p><code>ReusableObjectMessage</code> provides functionally equivalent to <a href="#ObjectMessage">ObjectMessage</a>.</p>
+<p><code>ReusableObjectMessage</code> provides functionally equivalent to <a href="#ObjectMessage"><code>ObjectMessage</code></a>.</p>
 </div>
 <div class="paragraph">
-<p>Log4j uses this message in garbage-free mode to pass logged Objects to the Layout and Appenders.</p>
+<p>Log4j uses this message in garbage-free mode to pass logged <code>Object</code>s to layouts and appenders.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="ReusableParameterizedMessage"><a class="anchor" href="#ReusableParameterizedMessage"></a>ReusableParameterizedMessage</h3>
+<h3 id="ReusableParameterizedMessage"><a class="anchor" href="#ReusableParameterizedMessage"></a><code>ReusableParameterizedMessage</code></h3>
 <div class="paragraph">
-<p><code>ReusableParameterizedMessage</code> provides functionally equivalent to <a href="#ParameterizedMessage">ParameterizedMessage</a>.</p>
+<p><code>ReusableParameterizedMessage</code> provides functionally equivalent to <a href="#ParameterizedMessage"><code>ParameterizedMessage</code></a>.</p>
 </div>
 <div class="paragraph">
 <p>Log4j uses this message in garbage-free mode to handle messages containing <code>{}</code> in the format representing replaceable tokens and the replacement parameters.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="ReusableSimpleMessage"><a class="anchor" href="#ReusableSimpleMessage"></a>ReusableSimpleMessage</h3>
+<h3 id="ReusableSimpleMessage"><a class="anchor" href="#ReusableSimpleMessage"></a><code>ReusableSimpleMessage</code></h3>
 <div class="paragraph">
-<p><code>ReusableSimpleMessage</code> provides functionally equivalent to <a href="#SimpleMessage">SimpleMessage</a>.</p>
+<p><code>ReusableSimpleMessage</code> provides functionally equivalent to <a href="#SimpleMessage"><code>SimpleMessage</code></a>.</p>
 </div>
 <div class="paragraph">
 <p>Log4j uses this message in garbage-free mode to pass logged <code>String</code> and <code>CharSequence</code> objects to the Layout and Appenders.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="SimpleMessage"><a class="anchor" href="#SimpleMessage"></a>SimpleMessage</h3>
+<h3 id="SimpleMessage"><a class="anchor" href="#SimpleMessage"></a><code>SimpleMessage</code></h3>
 <div class="paragraph">
 <p><code>SimpleMessage</code> contains a <code>String</code> or <code>CharSequence</code> that requires no formatting.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="StringFormattedMessage"><a class="anchor" href="#StringFormattedMessage"></a>StringFormattedMessage</h3>
+<h3 id="StringFormattedMessage"><a class="anchor" href="#StringFormattedMessage"></a><code>StringFormattedMessage</code></h3>
 <div class="paragraph">
 <p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/StringFormattedMessage.html"><code>StringFormattedMessage</code></a>
 handles messages that use a
 <a href="https://docs.oracle.com/javase/7/docs/api/java/util/Formatter.html#syntax">conversion format</a>
 that is compliant with
-<a href="https://docs.oracle.com/javase/7/docs/api/java/lang/String.html#format(java.lang.String,%20java.lang.Object&#8230;&#8203;)">java.lang.String.format()</a>.</p>
+<a href="https://docs.oracle.com/javase/7/docs/api/java/lang/String.html#format(java.lang.String,%20java.lang.Object&#8230;&#8203;)">java.lang.String#format()</a>.</p>
 </div>
 <div class="paragraph">
-<p>This message is more flexible than <code>ParameterizedMessage</code> but 5 to 10 times slower.</p>
+<p>This message is more flexible than <code>ParameterizedMessage</code>, but significantly slower.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="StructuredDataMessage"><a class="anchor" href="#StructuredDataMessage"></a>StructuredDataMessage</h3>
+<h3 id="StructuredDataMessage"><a class="anchor" href="#StructuredDataMessage"></a><code>StructuredDataMessage</code></h3>
 <div class="paragraph">
 <p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html"><code>StructuredDataMessage</code></a>
 allows applications to add items to a <code>Map</code> and set the ID to allow Log4j to format the message as a "Structured Data Element."</p>
@@ -793,14 +766,14 @@ allows applications to add items to a <code>Map</code> and set the ID to allow L
 </div>
 </div>
 <div class="sect2">
-<h3 id="ThreadDumpMessage"><a class="anchor" href="#ThreadDumpMessage"></a>ThreadDumpMessage</h3>
+<h3 id="ThreadDumpMessage"><a class="anchor" href="#ThreadDumpMessage"></a><code>ThreadDumpMessage</code></h3>
 <div class="paragraph">
 <p>If a <code>ThreadDumpMessage</code> is logged, Log4j generates stack traces for all threads.
 These stack traces will include any held locks.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="TimestampMessage"><a class="anchor" href="#TimestampMessage"></a>TimestampMessage</h3>
+<h3 id="TimestampMessage"><a class="anchor" href="#TimestampMessage"></a><code>TimestampMessage</code></h3>
 <div class="paragraph">
 <p>A <code>TimestampMessage</code> provides a <code>getTimestamp()</code> method that Log4j calls during event construction.
 The timestamp in the Message will be used instead of the current timestamp.</p>
@@ -809,7 +782,7 @@ The timestamp in the Message will be used instead of the current timestamp.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_performance_and_benefits"><a class="anchor" href="#_performance_and_benefits"></a>Performance and benefits</h2>
+<h2 id="performance"><a class="anchor" href="#performance"></a>Performance</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Although it may initially seem counterintuitive, there is no performance benefit to using strings instead of messages.

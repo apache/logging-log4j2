@@ -21,6 +21,9 @@
   .doc .colist>table code, .doc p code, .doc thead code { font-size: 0.8em; }
   .doc pre { font-size: 0.7rem; }
   .doc .colist { font-size: 0.75rem; }
+  /* Make links more visible: */
+  .doc a { text-decoration: underline; }
+  .doc a code { text-decoration: underline; color: #1565c0; }
   /* Tab header fonts aren't rendered good, adjusting the font weight: */
   .tablist > ul li { font-weight: 500; }
   /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
@@ -96,6 +99,12 @@
     <a class="nav-link" href="../5min.html">Log4j explained in 5 minutes</a>
   </li>
   <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="migration.html">Migrating from Log4j 1</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
+  </li>
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../development.html">Development</a>
   </li>
 </ul>
@@ -111,35 +120,35 @@
     <a class="nav-link" href="architecture.html">Architecture</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="migration.html">Migrating from Log4j 1.x to 2.x</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="api.html">Log4j API</a>
+    <a class="nav-link" href="api.html">API</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="logbuilder.html">Fluent API</a>
+    <a class="nav-link" href="customloglevels.html">Levels</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
+    <a class="nav-link" href="logbuilder.html">Fluent API</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="markers.html">Markers</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="eventlogging.html">Event Logging with Log4j</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="messages.html">Messages</a>
+    <a class="nav-link" href="scoped-context.html">Scoped Context</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="thread-context.html">Thread Context</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="scoped-context.html">Scoped Context</a>
+    <a class="nav-link" href="messages.html">Messages</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="resource-logger.html">Resource Logging</a>
+    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="eventlogging.html">Event Logging</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="resource-logger.html">Resource Loggers</a>
   </li>
 </ul>
   </li>
@@ -149,6 +158,12 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="configuration.html">Configuration file</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="systemproperties.html">Configuration properties</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="appenders.html">Appenders</a>
@@ -166,66 +181,24 @@
     <a class="nav-link" href="lookups.html">Lookups</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="customloglevels.html">Log Levels</a>
-  </li>
-  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="filters.html">Filters</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="scripts.html">Scripts</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="systemproperties.html">Configuration properties</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="usage.html">Usage</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="lookups.html">Lookups</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="appenders.html">Appenders</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="layouts.html">Layouts</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="filters.html">Filters</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="extending.html">Extending Log4j</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item is-current-page" data-depth="1">
-    <a class="nav-link" href="plugins.html">Plugins</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="customloglevels.html">Log Levels</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="jmx.html">JMX</a>
   </li>
+</ul>
+  </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="logsep.html">Logging Separation</a>
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="extending.html">Extending</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="plugins.html">Plugins</a>
+  </li>
+</ul>
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
@@ -333,6 +306,7 @@
   <ul>
     <li><a href="../index.html">Home</a></li>
     <li><a href="index.html">Manual</a></li>
+    <li><a href="extending.html">Extending</a></li>
     <li><a href="plugins.html">Plugins</a></li>
   </ul>
 </nav>

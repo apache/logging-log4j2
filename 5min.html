@@ -21,6 +21,9 @@
   .doc .colist>table code, .doc p code, .doc thead code { font-size: 0.8em; }
   .doc pre { font-size: 0.7rem; }
   .doc .colist { font-size: 0.75rem; }
+  /* Make links more visible: */
+  .doc a { text-decoration: underline; }
+  .doc a code { text-decoration: underline; color: #1565c0; }
   /* Tab header fonts aren't rendered good, adjusting the font weight: */
   .tablist > ul li { font-weight: 500; }
   /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
@@ -96,6 +99,12 @@
     <a class="nav-link" href="5min.html">Log4j explained in 5 minutes</a>
   </li>
   <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="manual/migration.html">Migrating from Log4j 1</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="manual/cloud.html">Using Log4j in Cloud Enabled Applications</a>
+  </li>
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="development.html">Development</a>
   </li>
 </ul>
@@ -111,35 +120,35 @@
     <a class="nav-link" href="manual/architecture.html">Architecture</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="manual/migration.html">Migrating from Log4j 1.x to 2.x</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="manual/api.html">Log4j API</a>
+    <a class="nav-link" href="manual/api.html">API</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="manual/logbuilder.html">Fluent API</a>
+    <a class="nav-link" href="manual/customloglevels.html">Levels</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="manual/flowtracing.html">Flow Tracing</a>
+    <a class="nav-link" href="manual/logbuilder.html">Fluent API</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="manual/markers.html">Markers</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="manual/eventlogging.html">Event Logging with Log4j</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="manual/messages.html">Messages</a>
+    <a class="nav-link" href="manual/scoped-context.html">Scoped Context</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="manual/thread-context.html">Thread Context</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="manual/scoped-context.html">Scoped Context</a>
+    <a class="nav-link" href="manual/messages.html">Messages</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="manual/resource-logger.html">Resource Logging</a>
+    <a class="nav-link" href="manual/flowtracing.html">Flow Tracing</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/eventlogging.html">Event Logging</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/resource-logger.html">Resource Loggers</a>
   </li>
 </ul>
   </li>
@@ -149,6 +158,12 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="manual/configuration.html">Configuration file</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/systemproperties.html">Configuration properties</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/customconfig.html">Programmatic Configuration</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="manual/appenders.html">Appenders</a>
@@ -166,66 +181,24 @@
     <a class="nav-link" href="manual/lookups.html">Lookups</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="manual/customloglevels.html">Log Levels</a>
-  </li>
-  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="manual/filters.html">Filters</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="manual/scripts.html">Scripts</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="manual/systemproperties.html">Configuration properties</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="manual/usage.html">Usage</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="manual/cloud.html">Using Log4j in Cloud Enabled Applications</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="manual/lookups.html">Lookups</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="manual/appenders.html">Appenders</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="manual/layouts.html">Layouts</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="manual/json-template-layout.html">JSON Template Layout</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="manual/filters.html">Filters</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="manual/extending.html">Extending Log4j</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="manual/customconfig.html">Programmatic Configuration</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="manual/plugins.html">Plugins</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="manual/customconfig.html">Programmatic Configuration</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="manual/customloglevels.html">Log Levels</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="manual/jmx.html">JMX</a>
   </li>
+</ul>
+  </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="manual/logsep.html">Logging Separation</a>
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="manual/extending.html">Extending</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/plugins.html">Plugins</a>
+  </li>
+</ul>
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
@@ -514,12 +487,9 @@ In addition, we will need the <code>log4j-api</code> dependency itself.</p>
 <h2 id="logging"><a class="anchor" href="#logging"></a>How do I write logs using Log4j?</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>To write logs, you need a <code>Logger</code> instance which you will retrieve from the <code>LogManager</code>.
-The <code>Logger</code> instance is thread-safe and reusable.</p>
-</div>
-<div class="paragraph">
-<p>Second, you can use the <code>Logger</code> instance to write logs by using methods like <code>info()</code>, <code>warn()</code>, <code>error()</code>, etc.
-These methods are named after the log levels they represent, a way to categorize log events by severity.
+<p>To write logs, you need a <a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html"><code>Logger</code></a> instance which you will retrieve from the <a href="../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html"><code>LogManager</code></a>.
+You can use the <code>Logger</code> instance to write logs by using methods like <code>info()</code>, <code>warn()</code>, <code>error()</code>, etc.
+These methods are named after the <em>log levels</em> they represent, a way to categorize log events by severity.
 The log message can also contain placeholders written as <code>{}</code> that will be replaced by the arguments passed to the method.</p>
 </div>
 <div class="listingblock">
@@ -543,7 +513,8 @@ public class DbTableService {
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>This is a thread-safe, reusable <code>Logger</code> instance.</td>
+<td>The returned <code>Logger</code> instance is thread-safe and reusable.
+Unless explicitly provided as an argument, <code>getLogger()</code> associates the returned <code>Logger</code> with the enclosing class, that is, <code>DbTableService</code> in this example.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -552,20 +523,24 @@ public class DbTableService {
 </table>
 </div>
 <div class="paragraph">
-<p>The generated <strong>log event</strong> will be enriched with the <strong>log level</strong> (i.e., <code>WARN</code>),
-but also timestamp, class &amp; method name, line number, and several other information.</p>
+<p>The <em>generated</em> <strong>log event</strong>, which contain the <em>user-provided</em> <strong>log message</strong> and <strong>log level</strong> (i.e., <code>WARN</code>), will be enriched with several other implicitly derived contextual information: timestamp, class &amp; method name, line number, etc.</p>
 </div>
 <div class="paragraph">
-<p>As already mentioned Log levels are used to categorize log events by severity and control the verbosity of the logs.
-Log4j knows various levels, but the most common are <code>DEBUG</code>, <code>INFO</code>, <code>WARN</code>, and <code>ERROR</code>.
+<p><strong>What happens to the generated log event will vary significantly depending on the configuration used.</strong>
+It can be pretty-printed to the console, written to a file, or get totally ignored due to insufficient severity or some other filtering.</p>
+</div>
+<div class="paragraph">
+<p>Log levels are used to categorize log events by severity and control the verbosity of the logs.
+Log4j contains various predefined levels, but the most common are <code>DEBUG</code>, <code>INFO</code>, <code>WARN</code>, and <code>ERROR</code>.
 With them, you can filter out less important logs and focus on the most critical ones.
-Previously we used <code>LOGGER.warn()</code> to log a warning message, which could mean that something is not right, but the application can continue.
+Previously we used <code>Logger#warn()</code> to log a warning message, which could mean that something is not right, but the application can continue.
 Log levels have a priority, and <code>WARN</code> is less severe than <code>ERROR</code>.</p>
 </div>
 <div class="paragraph">
 <p>Exceptions are often also errors.
 In this case, we might use the <code>ERROR</code> log level.
-Make sure to log exceptions that have diagnostics value - we can simply pass the exception as the last argument to the log method.</p>
+Make sure to log exceptions that have diagnostics value.
+This is simply done by passing the exception as the last argument to the log method:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -591,13 +566,14 @@ try {
 Log4j will attach the last extra argument of type <code>Throwable</code> in a separate field to the generated log event.</p>
 </div>
 <div class="sect2">
-<h3 id="pitfalls"><a class="anchor" href="#pitfalls"></a>Common pitfalls</h3>
+<h3 id="best-practice"><a class="anchor" href="#best-practice"></a>Best practices</h3>
 <div class="paragraph">
-<p>There are several widespread bad practices.
-Let&#8217;s try to walk through the most common ones.</p>
+<p>There are several widespread bad practices while using Log4j API.
+Below we will walk through the most common ones and see how to fix them.
+For a complete list, refer to <a href="manual/api.html#best-practice" class="xref page">the Log4j API best practices page</a>.</p>
 </div>
 <div class="sect3">
-<h4 id="pitfal-toString"><a class="anchor" href="#pitfal-toString"></a>Don&#8217;t use <code>toString()</code></h4>
+<h4 id="best-practice-toString"><a class="anchor" href="#best-practice-toString"></a>Don&#8217;t use <code>toString()</code></h4>
 <div class="ulist checklist">
 <ul class="checklist">
 <li>
@@ -620,7 +596,7 @@ Let&#8217;s try to walk through the most common ones.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="pitfall-exception"><a class="anchor" href="#pitfall-exception"></a>Pass exception as the last extra argument</h4>
+<h4 id="best-practice-exception"><a class="anchor" href="#best-practice-exception"></a>Pass exception as the last extra argument</h4>
 <div class="ulist checklist">
 <ul class="checklist">
 <li>
@@ -664,7 +640,7 @@ This bloats the log message with a duplicate exception message.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="pitfal-concat"><a class="anchor" href="#pitfal-concat"></a>Don&#8217;t use string concatenation</h4>
+<h4 id="best-practice-concat"><a class="anchor" href="#best-practice-concat"></a>Don&#8217;t use string concatenation</h4>
 <div class="paragraph">
 <p>If you are using <code>String</code> concatenation while logging, you are doing something very wrong and dangerous!</p>
 </div>
@@ -697,7 +673,7 @@ Imagine <code>userId</code> being provided by the user with the following conten
 </div>
 </div>
 <div class="sect1">
-<h2 id="basic-log4j-architecture"><a class="anchor" href="#basic-log4j-architecture"></a>Basic Log4j Architecture</h2>
+<h2 id="architecture"><a class="anchor" href="#architecture"></a>Architecture</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>In a nutshell, Log4j operates with two main parts: the API and the Core.
@@ -853,7 +829,7 @@ Finally, the <code>&lt;root&gt;</code> logger defines that log events of level <
                        https://logging.apache.org/xml/ns/log4j-config-2.xsd"&gt;
 
   &lt;appenders&gt;<i class="conum" data-value="1"></i><b>(1)</b>
-    &lt;Console name="console"&gt;<i class="conum" data-value="2"></i><b>(2)</b>
+    &lt;Console name="CONSOLE"&gt;<i class="conum" data-value="2"></i><b>(2)</b>
       &lt;JsonTemplateLayout/&gt;<i class="conum" data-value="3"></i><b>(3)</b>
     &lt;/Console&gt;
   &lt;/appenders&gt;
@@ -861,7 +837,7 @@ Finally, the <code>&lt;root&gt;</code> logger defines that log events of level <
   &lt;loggers&gt;
     &lt;logger name="com.mycompany" level="INFO"/&gt;<i class="conum" data-value="4"></i><b>(4)</b>
     &lt;root level="WARN"&gt;<i class="conum" data-value="5"></i><b>(5)</b>
-      &lt;AppenderRef ref="console"/&gt;<i class="conum" data-value="6"></i><b>(6)</b>
+      &lt;AppenderRef ref="CONSOLE"/&gt;<i class="conum" data-value="6"></i><b>(6)</b>
     &lt;/root&gt;
   &lt;/loggers&gt;
 
@@ -1110,7 +1086,7 @@ which level and the <code>&lt;root&gt;</code> logger serves as a default configu
                        https://logging.apache.org/xml/ns/log4j-config-2.xsd"&gt;
 
   &lt;appenders&gt;
-    &lt;Console name="console"&gt;
+    &lt;Console name="CONSOLE"&gt;
       &lt;PatternLayout pattern="%d [%t] %5p %c{1.} - %m%n"/&gt;<i class="conum" data-value="1"></i><b>(1)</b>
     &lt;/Console&gt;
   &lt;/appenders&gt;
@@ -1118,7 +1094,7 @@ which level and the <code>&lt;root&gt;</code> logger serves as a default configu
   &lt;loggers&gt;
     &lt;logger name="com.mycompany" level="DEBUG"/&gt;<i class="conum" data-value="2"></i><b>(2)</b>
     &lt;root level="WARN"&gt;
-      &lt;AppenderRef ref="console"/&gt;
+      &lt;AppenderRef ref="CONSOLE"/&gt;
     &lt;/root&gt;
   &lt;/loggers&gt;
 
