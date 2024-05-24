@@ -32,3 +32,6 @@ RewriteRule "^manual/usage(\.html)?$" "%1/manual/api.html" [R=permanent]
 
 RewriteCond "%{REQUEST_URI}" "^(/log4j/[23]\.x)/"
 RewriteRule "^release-notes/(index(\.html)?)?$" "%1/release-notes.html" [R=permanent]
+
+RewriteCond "%{REQUEST_URI}" "^(/log4j/[23]\.x)/"
+RewriteRule "^runtime-dependencies\.html" "%1/manual/installation.html" [R=permanent]
