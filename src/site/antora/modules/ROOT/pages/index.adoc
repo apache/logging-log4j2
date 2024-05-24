@@ -23,7 +23,7 @@ The project is actively maintained by a {logging-services-url}/team-list.html[te
 [#shortcuts]
 == Shortcuts
 
-- xref:5min.adoc[]
+- xref:getting-started.adoc[]
 - xref:manual/installation.adoc[How can I install Log4j? Which dependencies are needed?]
 - xref:manual/configuration.adoc[How can I configure my `log4j2.xml`?]
 - xref:release-notes.adoc[Where are the release notes?]

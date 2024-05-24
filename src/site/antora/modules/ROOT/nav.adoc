@@ -24,7 +24,7 @@
 
 .Resources
 * xref:faq.adoc[F.A.Q.]
-* xref:5min.adoc[]
+* xref:getting-started.adoc[]
 * xref:manual/migration.adoc[]
 * xref:manual/cloud.adoc[]
 * xref:development.adoc[]

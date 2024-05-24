@@ -42,7 +42,7 @@ Log4j Core, {jul-link}, {logback-link} are the most well-known logging implement
 [TIP]
 ====
 Are you looking for a crash course on how to use Log4j in your application or library?
-See xref:5min.adoc[].
+See xref:getting-started.adoc[].
 You can also check out xref:manual/installation.adoc[] for the complete installation instructions.
 ====
 
