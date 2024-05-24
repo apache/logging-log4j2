@@ -64,12 +64,6 @@
 * xref:javadoc.adoc[Java API reference]
 
 .Components
-* xref:log4j-api.adoc[]
-* xref:log4j-1.2-api.adoc[]
-* xref:log4j-slf4j-impl.adoc[]
-* xref:log4j-jul.adoc[]
-* xref:log4j-jpl.adoc[]
-* xref:log4j-to-slf4j.adoc[]
 * xref:log4j-flume-ng.adoc[]
 * xref:log4j-mongodb3.adoc[]
 * xref:log4j-mongodb4.adoc[]
