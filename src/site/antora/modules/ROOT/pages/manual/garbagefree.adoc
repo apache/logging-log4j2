@@ -209,7 +209,8 @@ The `Unbox.box(primitive)` methods write directly into a `StringBuilder`, and th
 Not all Log4j API feature set is garbage-free, specifically:
 
 * The `ThreadContext` map (aka. MDC) is not garbage-free by default, but can be configured to be garbage-free by setting xref:#log4j2.garbagefreeThreadContextMap[the `log4j2.garbagefreeThreadContextMap` system property] to `true`.
-* The `ThreadContext` stack is not garbage-free.
+* The `ThreadContext` stack (aka. NDC) is not garbage-free.
+* xref:manual/scoped-context.adoc[] is not garbage-free.
 * Logging very large messages (i.e., more than xref:#log4j2.maxReusableMsgSize[`log4j2.maxReusableMsgSize`] characters, which defaults to 518), when all loggers are xref:manual/async.adoc[asynchronous loggers], will cause the internal `StringBuilder` in the
 `RingBuffer` to be trimmed back to their configured maximum size.
 * Logging messages containing `$\{variable}` substitutions creates temporary objects.

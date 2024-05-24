@@ -580,32 +580,6 @@ ListAppender list1 = ListAppender.createAppender("List1", true, false, null, nul
 ListAppender list2 = ListAppender.newBuilder().setName("List1").setEntryPerNewLine(true).build();
 ----
 
-[#Custom_ContextDataProvider]
-== Custom ContextDataProvider
-
-The link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/ContextDataProvider.html[`ContextDataProvider`]
-(introduced in Log4j 2.13.2) is an interface applications and libraries can use to inject
-additional key-value pairs into the LogEvent's context data. Log4j
-uses `java.util.ServiceLoader` to locate and load `ContextDataProvider` instances.
-Log4j itself adds the ThreadContext data to the LogEvent using 
-`org.apache.logging.log4j.core.impl.ThreadContextDataProvider`. Custom implementations
-should implement the `org.apache.logging.log4j.core.util.ContextDataProvider` interface and
-declare it as a service by defining the implmentation class in a file named
-`META-INF/services/org.apache.logging.log4j.core.util.ContextDataProvider`.
-
-== Custom ThreadContextMap implementations
-
-A garbage-free `StringMap`-based context map can be installed by setting
-system property `log4j2.garbagefreeThreadContextMap` to true.
-
-Any custom link:../javadoc/log4j-core/org/apache/logging/log4j/spi/ThreadContextMap.html[`ThreadContextMap`]
-implementation can be installed by setting system property `log4j2.threadContextMap` 
-to the fully qualified class name of the class implementing the `ThreadContextMap` 
-interface. By also implementing the `ReadOnlyThreadContextMap` interface, your custom
-`ThreadContextMap` implementation will be accessible to applications via the
-link:../javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html#getThreadContextMap()[`ThreadContext::getThreadContextMap`]
-method.
-
 [#Custom_Plugins]
 == Custom Plugins
 

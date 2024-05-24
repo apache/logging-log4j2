@@ -239,7 +239,7 @@ xref:manual/logbuilder.adoc[Read more on the Fluent API...]
 [#fish-tagging]
 == Fish tagging
 
-Just as a fish can be tagged and have its movement tracked (aka. _fish tagging_), stamping log events with a common tag or set of data
+Just as a fish can be tagged and have its movement tracked (aka. _fish tagging_ footnote:[Fish tagging is first described by Neil Harrison in the _"Patterns for Logging Diagnostic Messages"_ chapter of https://dl.acm.org/doi/10.5555/273448[_"Pattern Languages of Program Design 3"_ edited by R. Martin, D. Riehle, and F. Buschmann in 1997].]), stamping log events with a common tag or set of data
 elements allows the complete flow of a transaction or a request to be tracked.
 You can use them for several purposes, such as:
 
@@ -283,7 +283,7 @@ xref:manual/markers.adoc[Read more on markers...]
 [#scoped-context]
 === Scoped Context
 
-Just like a https://docs.oracle.com/en/java/javase/22/docs/api/java.base/java/lang/ScopedValue.html[Java's `ScopedValue`], in Scoped Context, the visibility of tags are associated with the block they were introduced:
+Just like a https://docs.oracle.com/en/java/javase/22/docs/api/java.base/java/lang/ScopedValue.html[Java's `ScopedValue`], _Scoped Context_ facilitates associating information with a certain block of code and makings this accessible to the rest of the logging system:
 
 [source,java]
 ----
@@ -317,8 +317,13 @@ xref:manual/scoped-context.adoc[Read more on Scoped Context...]
 [#thread-context]
 === Thread Context
 
-Just like https://docs.oracle.com/javase/8/docs/api/java/lang/ThreadLocal.html[Java's `ThreadLocal`], in Thread Context, the visibility of tags are associated with the thread they were introduced.
-Thread Context offers both a map-structured, called _Mapped Diagnostic Context (MDC)_, and a stack-structured, called _Nested Diagnostic Context (NDC)_, storage:
+Just like https://docs.oracle.com/javase/8/docs/api/java/lang/ThreadLocal.html[Java's `ThreadLocal`], _Thread Context_ facilitates associating information with the executing thread and making this information accessible to the rest of the logging system.
+Thread Context offers both
+
+* map-structured – referred to as _Thread Context Map_ or _Mapped Diagnostic Context (MDC)_
+* stack-structured – referred to as _Thread Context Stack_ or _Nested Diagnostic Context (NDC)_
+
+storage:
 
 [source,java]
 ----
@@ -326,13 +331,22 @@ ThreadContext.put("ipAddress", request.getRemoteAddr()); // <1>
 ThreadContext.put("hostName", request.getServerName()); // <1>
 ThreadContext.put("loginId", session.getAttribute("loginId")); // <1>
 
-ThreadContext.push("performWork()"); // <2>
+void performWork() {
+    ThreadContext.push("performWork()"); // <2>
 
-LOGGER.debug("Performing work"); // <3>
+    LOGGER.debug("Performing work"); // <3>
+    // Perform the work
+
+    ThreadContext.pop(); // <4>
+}
+
+ThreadContext.clear(); // <5>
 ----
-<1> Associating properties with the logging context map of the thread
-<2> Pushing properties to the logging context stack of the thread
+<1> Adding properties to the thread context map
+<2> Pushing properties to the thread context stack
 <3> Added properties can later on be used to, for instance, filter the log event, provide extra information in the layout, etc.
+<4> Popping the last pushed property from the thread context stack
+<5> Clearing the thread context (for both stack and map!)
 
 [CAUTION]
 ====
