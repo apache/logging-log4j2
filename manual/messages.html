@@ -166,7 +166,7 @@
     <a class="nav-link" href="lookups.html">Lookups</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="customloglevels.html">Custom Log Levels</a>
+    <a class="nav-link" href="customloglevels.html">Log Levels</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="filters.html">Filters</a>
@@ -219,7 +219,7 @@
     <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="customloglevels.html">Custom Log Levels</a>
+    <a class="nav-link" href="customloglevels.html">Log Levels</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="jmx.html">JMX</a>
@@ -348,380 +348,524 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Although Log4j 2 provides Logger methods that accept Strings and
-Objects, all of these are ultimately captured in Message objects that
-are then associated with the log event. Applications are free to
-construct Messages of their own and pass them to the Logger. Although it
-may seem more expensive than passing the message format and parameters
-directly to the event, testing has shown that with modern JVMs the cost
-of creating and destroying events is minor, especially when complex
-tasks are encapsulated in the Message instead of the application. In
-addition, when using the methods that accept Strings and parameters, the
-underlying Message object will only be created if any configured global
-filters or the Logger&#8217;s log level allow the message to be processed.</p>
+<p>Unlike other logging APIs, which either restrict the description of log events to (possibly interpolated) Java
+<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html"><code>String</code></a>s
+or allow generic Java
+<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html"><code>Object</code></a>s,
+the Log4j API encapsulates every log message into the logging-specific
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html"><code>Message</code></a>
+interface, before passing it to the logging backend. Such an approach opens to developers a wide range of customization possibilities.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="anatomy-log-event"><a class="anchor" href="#anatomy-log-event"></a>Anatomy of a logging event</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Logging events are complex objects that contain many fields that can be classified into three categories:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Some fields are provided explicitly, in a
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html"><code>Logger</code></a>
+method call.
+The most important are the log level and the <strong>log message</strong>, which is a description of what happened addressed to humans.
+Log4j API provides a rich set of methods to specify log messages, which will be described in this chapter.</p>
+</li>
+<li>
+<p>Some fields are contextual and is either provided explicitly by developers of other parts of the application (see
+<a href="thread-context.html" class="xref page">Thread context</a>)
+or is injected by Java instrumentation.</p>
+</li>
+<li>
+<p>The last category of fields is those that are computed automatically by the logging backend you use.</p>
+</li>
+</ol>
 </div>
 <div class="paragraph">
-<p>Consider an application that has a Map object containing \{"Name" =
-"John Doe", "Address" = "123 Main St.", "Phone" = "(999) 555-1212"} and
-a User object that has a getId method that returns "jdoe". The developer
-would like to add an informational message that returns "User John Doe
-has logged in using id jdoe". The way this could be accomplished is by
-doing:</p>
+<p>For clarity&#8217;s sake let us look at a possible log event formatted as JSON:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">logger.info("User {} has logged in using id {}", map.get("Name"), user.getId());</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>While there is nothing inherently wrong with this, as the complexity of
-the objects and desired output increases this technique becomes harder
-to use. As an alternative, using Messages allows:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">logger.info(new LoggedInMessage(map, user));</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In this alternative the formatting is delegated to the <code>LoggedInMessage</code>
-object&#8217;s <code>getFormattedMessage</code> method. Although in this alternative a new
-object is created, none of the methods on the objects passed to the
-<code>LoggedInMessage</code> are invoked until the <code>LoggedInMessage</code> is formatted. This
-is especially useful when an <code>Object&#8217;s `toString</code> method does not produce
-the information you would like to appear in the log.</p>
-</div>
-<div class="paragraph">
-<p>Another advantage to Messages is that they simplify writing Layouts. In
-other logging frameworks the Layout must loop through the parameters
-individually and determine what to do based on what objects are
-encountered. With Messages the Layout has the option of delegating the
-formatting to the Message or performing its formatting based on the type
-of Message encountered.</p>
-</div>
-<div class="paragraph">
-<p>Borrowing from the earlier example illustrating Markers to identify SQL
-statements being logged, Messages can also be leveraged. First, the
-Message is defined.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public class SQLMessage implements Message {
-  public enum SQLType {
-      UPDATE,
-      QUERY
-  }
-
-  private final SQLType type;
-  private final String table;
-  private final Map&lt;String, String&gt; cols;
-
-  public SQLMessage(SQLType type, String table) {
-      this(type, table, null);
-  }
-
-  public SQLMessage(SQLType type, String table, Map&lt;String, String&gt; cols) {
-      this.type = type;
-      this.table = table;
-      this.cols = cols;
-  }
-
-  public String getFormattedMessage() {
-      switch (type) {
-          case UPDATE:
-            return createUpdateString();
-            break;
-          case QUERY:
-            return createQueryString();
-            break;
-          default:
-              throw new UnsupportedOperationException();
-      }
-  }
-
-  public String getMessageFormat() {
-      return type + " " + table;
-  }
-
-  public Object getParameters() {
-      return cols;
-  }
-
-  private String createUpdateString() {
-  }
-
-  private String createQueryString() {
-  }
-
-  private String formatCols(Map&lt;String, String&gt; cols) {
-      StringBuilder sb = new StringBuilder();
-      boolean first = true;
-      for (Map.Entry&lt;String, String&gt; entry : cols.entrySet()) {
-          if (!first) {
-              sb.append(", ");
-          }
-          sb.append(entry.getKey()).append("=").append(entry.getValue());
-          first = false;
-      }
-      return sb.toString();
-  }
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  <i class="conum" data-value="1"></i><b>(1)</b>
+  "log.level": "INFO",
+  "message": "Unable to insert data into my_table.",
+  "error.type": "java.lang.RuntimeException",
+  "error.message": null,
+  "error.stack_trace": [
+    {
+      "class": "com.example.Main",
+      "method": "doQuery",
+      "file.name": "Main.java",
+      "file.line": 36
+    },
+    {
+      "class": "com.example.Main",
+      "method": "main",
+      "file.name": "Main.java",
+      "file.line": 25
+    }
+  ],
+  "marker": "SQL",
+  "log.logger": "com.example.Main",
+  <i class="conum" data-value="2"></i><b>(2)</b>
+  "tags": [
+    "SQL query"
+  ],
+  "labels": {
+    "span_id": "3df85580-f001-4fb2-9e6e-3066ed6ddbb1",
+    "trace_id": "1b1f8fc9-1a0c-47b0-a06f-af3c1dd1edf9"
+  },
+  <i class="conum" data-value="3"></i><b>(3)</b>
+  "@timestamp": "2024-05-23T09:32:24.163Z",
+  "log.origin.class": "com.example.Main",
+  "log.origin.method": "doQuery",
+  "log.origin.file.name": "Main.java",
+  "log.origin.file.line": 36,
+  "process.thread.id": 1,
+  "process.thread.name": "main",
+  "process.thread.priority": 5
 }</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Next we can use the message in our application.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
-import java.util.Map;
-
-public class MyApp {
-
-    private Logger logger = LogManager.getLogger(MyApp.class.getName());
-    private static final Marker SQL_MARKER = MarkerManager.getMarker("SQL");
-    private static final Marker UPDATE_MARKER = MarkerManager.getMarker("SQL_UPDATE", SQL_MARKER);
-    private static final Marker QUERY_MARKER = MarkerManager.getMarker("SQL_QUERY", SQL_MARKER);
-
-    public String doQuery(String table) {
-        logger.entry(param);
-
-        logger.debug(QUERY_MARKER, new SQLMessage(SQLMessage.SQLType.QUERY, table));
-
-        return logger.exit();
-    }
-
-    public String doUpdate(String table, Map&lt;String, String&gt; params) {
-        logger.entry(param);
-
-        logger.debug(UPDATE_MARKER, new SQLMessage(SQLMessage.SQLType.UPDATE, table, parmas));
-
-        return logger.exit();
-    }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Notice that in contrast to the prior version of this example, the
-<code>logger.debug</code> in <code>doUpdate</code> no longer needs to be wrapped in an
-<code>isDebugEnabled</code> call as creation of the <code>SQLMessage</code> is on the same order
-of magnitude of performing that check. Furthermore, all the formatting
-of the SQL columns is now hidden in the <code>SQLMessage</code> instead of having to
-take place in the business logic. Finally, if desired, Filters and/or
-Layouts can be written to take special action when an <code>SQLMessage</code> is
-encountered.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="FormattedMessage"><a class="anchor" href="#FormattedMessage"></a>FormattedMessage</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The message pattern passed to a
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/FormattedMessage.html"><code>FormattedMessage</code></a>
-is first checked to see if it is a valid <code>java.text.MessageFormat</code>
-pattern. If it is, a <code>MessageFormatMessage</code> is used to format it. If not
-it is next checked to see if it contains any tokens that are valid
-format specifiers for <code>String.format()</code>. If so, a <code>StringFormattedMessage</code>
-is used to format it. Finally, if the pattern doesn&#8217;t match either of
-those then a <code>ParameterizedMessage</code> is used to format it.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="LocalizedMessage"><a class="anchor" href="#LocalizedMessage"></a>LocalizedMessage</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/LocalizedMessage.html"><code>LocalizedMessage</code></a>
-is provided primarily to provide compatibility with Log4j 1.x.
-Generally, the best approach to localization is to have the client UI
-render the events in the client&#8217;s locale.</p>
-</div>
-<div class="paragraph">
-<p><code>LocalizedMessage</code> incorporates a <code>ResourceBundle</code> and allows the message
-pattern parameter to be the key to the message pattern in the bundle. If
-no bundle is specified, <code>LocalizedMessage</code> will attempt to locate a bundle
-with the name of the Logger used to log the event. The message retrieved
-from the bundle will be formatted using a FormattedMessage.</p>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Explicitly supplied fields:
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>log.level</code></dt>
+<dd>
+<p>The <a href="customloglevels.html" class="xref page">log level</a> of the event, either explicitly provided as an argument to the logging call or implied by the name of the logging method,</p>
+</dd>
+<dt class="hdlist1"><code>message</code></dt>
+<dd>
+<p>The <strong>log message</strong> that describes what happened.</p>
+</dd>
+<dt class="hdlist1"><code>error.*</code></dt>
+<dd>
+<p>An <em>optional</em>
+<a href="https://docs.oracle.com/javase/{/docs/api/java/lang/Throwable.html"><code>Throwable</code></a> explicitly passed as an argument to the logging call.</p>
+</dd>
+<dt class="hdlist1"><code>marker</code></dt>
+<dd>
+<p>An <em>optional</em> <a href="markers.html" class="xref page">marker</a> explicitly passed as an argument to the logging call.</p>
+</dd>
+<dt class="hdlist1"><code>log.logger</code></dt>
+<dd>
+<p>The <a href="api.html#logger-names" class="xref page">logger name</a> provided explicitly to <code>LogManager.getLogger()</code> or inferred by Log4j API.</p>
+</dd>
+</dl>
+</div></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Contextual fields:
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>tags</code></dt>
+<dd>
+<p>The stack of <a href="thread-context.html#nested-diagnostic-context" class="xref page">nested diagnostic context</a> messages.</p>
+</dd>
+<dt class="hdlist1"><code>labels</code></dt>
+<dd>
+<p>The key/value pairs of the current <a href="thread-context.html#mapped-diagnostic-context" class="xref page">mapped diagnostic context</a>.</p>
+</dd>
+</dl>
+</div></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Logging backend specific fields.
+In case you are using Log4j Core, the following fields can be automatically generated:
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>@timestamp</code></dt>
+<dd>
+<p>The timestamp, when the log event occurs.</p>
+</dd>
+<dt class="hdlist1"><code>log.origin.*</code></dt>
+<dd>
+<p>The <a href="layouts.html#LocationInformation" class="xref page">location</a> of the logging call in the source code.</p>
+</dd>
+<dt class="hdlist1"><code>process.thread.*</code></dt>
+<dd>
+<p>The Java thread that generates the logging event.</p>
+</dd>
+</dl>
+</div></td>
+</tr>
+</table>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="LoggerNameAwareMessage"><a class="anchor" href="#LoggerNameAwareMessage"></a>LoggerNameAwareMessage</h2>
+<h2 id="_creating_log_messages"><a class="anchor" href="#_creating_log_messages"></a>Creating log messages</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><code>LoggerNameAwareMessage</code> is an interface with a <code>setLoggerName</code> method. This
-method will be called during event construction so that the Message has
-the name of the Logger used to log the event when the message is being
-formatted.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="MapMessage"><a class="anchor" href="#MapMessage"></a>MapMessage</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>A <code>MapMessage</code> contains a Map of String keys and values. <code>MapMessage</code>
-implements <code>FormattedMessage</code> and accepts format specifiers of "XML",
-"JSON" or "JAVA", in which case the Map will be formatted as XML, JSON
-or as documented by
-<a href="https://docs.oracle.com/javase/7/docs/api/java/util/AbstractMap.html#toString()"><code>java.util.AbstractMap.toString()</code></a>.
-Otherwise, the Map will be formatted as <code>"key1=value1 key2=value2 &#8230;&#8203;"</code>.</p>
-</div>
-<div class="paragraph">
-<p>Some Appenders make special use of <code>MapMessage</code> objects:</p>
+<p>While internally Log4j uses <code>Message</code> objects, the <code>Logger</code> interface provides various shortcut methods to create the most commonly used messages:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>When a JMS Appender is configured
-with a no layout, it converts a Log4j <code>MapMessage</code> to a JMS
-<code>javax.jms.MapMessage</code>.</p>
+<p>To create a <a href="#SimpleMessage"><code>SimpleMessage</code></a> from a <code>String</code> argument, the following logger calls are equivalent:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">logger.error("Houston, we have a problem.", e);
+logger.error(new SimpleMessage("Houston, we have a problem."), e);</code></pre>
+</div>
+</div>
 </li>
 <li>
-<p>When a <a href="appenders.html#JDBCAppender" class="xref page">JDBC Appender</a> is configured
-with no layout, it converts a Log4j <code>MapMessage</code> to values in a
-SQL INSERT statement.</p>
+<p>To create a <a href="#ParameterizedMessage"><code>ParameterizedMessage</code></a> from a format <code>String</code> and an array of object parameters, the following logger calls are equivalent:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">logger.error("Unable to {}, because {} occurred", action, cause, e);
+logger.error(new ParameterizedMessage("Unable to {}, because {} occurred", action, cause), e);</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In small and austere environments, this is sufficient. However, in more complex scenarios,
+the string one wants to log may require more complex construction.</p>
+</div>
+<div class="paragraph">
+<p>Imagine a scenario that uses a domain event to signal authentication failures:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">record LoginFailureEvent(String userName, InetSocketAddress remoteAddress) {}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When the developer wants to log a message reporting the event,
+we can see that the string construction becomes more challenging to read:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">logger.info(
+        "Connection closed by authenticating user {} {} port {} [preauth]",
+        event.userName(),
+        event.remoteAddress().getHostName(),
+        event.remoteAddress().getPort());</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By extending the <code>Message</code> interface, developers can simplify the reporting of a login failure:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">record LoginFailureEvent(String userName, InetSocketAddress remoteAddress) implements Message { <i class="conum" data-value="1"></i><b>(1)</b>
+    @Override
+    public String getFormattedMessage() { <i class="conum" data-value="2"></i><b>(2)</b>
+        return "Connection closed by authenticating user " + userName() + " "
+                + remoteAddress().getHostName() + " port " + remoteAddress().getPort() + " [preauth]";
+    }
+    // Other methods
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Developers need to implement the <code>Message</code> interface.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>getFormattedMessage()</code> provides the <code>String</code> to be logged.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The code is then reusable, by simply calling:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">logger.info(event);</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_message_types"><a class="anchor" href="#_message_types"></a>Message types</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Log4j provides several message types that developers can use to create log messages.</p>
+</div>
+<div class="sect2">
+<h3 id="FormattedMessage"><a class="anchor" href="#FormattedMessage"></a>FormattedMessage</h3>
+<div class="paragraph">
+<p>The message pattern passed to a
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/FormattedMessage.html"><code>FormattedMessage</code></a>
+undergoes a series of checks to determine the appropriate formatting method.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>First, the pattern is checked for a valid <code>java.text.MessageFormat</code> pattern.</p>
 </li>
 <li>
-<p>When a <a href="appenders.html#NoSQLAppenderMongoDBMain" class="xref page">MongoDB Appender</a> is
-configured with no layout, it converts a Log4j <code>MapMessage</code> to
-fields in a MongoDB object.</p>
+<p>If it is, a <code>MessageFormatMessage</code> is used for formatting.</p>
+</li>
+<li>
+<p>If it is not, the pattern is then checked for any tokens that are valid format specifiers for <code>String.format()</code>.
+A <code>StringFormattedMessage</code> is used to format the message when Log4j finds such tokens.</p>
+</li>
+<li>
+<p>Finally, if the pattern does not match either of these formats, a <code>ParameterizedMessage</code> is used for formatting.</p>
 </li>
 </ul>
 </div>
 </div>
+<div class="sect2">
+<h3 id="LocalizedMessage"><a class="anchor" href="#LocalizedMessage"></a>LocalizedMessage</h3>
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/LocalizedMessage.html"><code>LocalizedMessage</code></a>
+is provided primarily to provide compatibility with Log4j 1.x.</p>
 </div>
-<div class="sect1">
-<h2 id="MessageFormatMessage"><a class="anchor" href="#MessageFormatMessage"></a>MessageFormatMessage</h2>
-<div class="sectionbody">
+<div class="paragraph">
+<p>Generally, the best approach to localization is to have the client&#8217;s UI render the events in the client&#8217;s locale.</p>
+</div>
+<div class="paragraph">
+<p><code>LocalizedMessage</code> incorporates a <code>ResourceBundle</code> and allows the message pattern parameter
+to be the key to the message pattern in the bundle.</p>
+</div>
+<div class="paragraph">
+<p>If no bundle is specified, <code>LocalizedMessage</code> will attempt to locate a bundle
+with the name of the Logger used to log the event. The message retrieved
+from the bundle will be formatted using a FormattedMessage.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="LoggerNameAwareMessage"><a class="anchor" href="#LoggerNameAwareMessage"></a>LoggerNameAwareMessage</h3>
+<div class="paragraph">
+<p><code>LoggerNameAwareMessage</code> is an interface with a <code>setLoggerName()</code> method.</p>
+</div>
+<div class="paragraph">
+<p>This method will be called during event construction so that the Message
+has the name of the Logger used to log the event when Log4j formats the message.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="MapMessage"><a class="anchor" href="#MapMessage"></a>MapMessage</h3>
+<div class="paragraph">
+<p>A <code>MapMessage</code> contains a Map of String keys and values.</p>
+</div>
+<div class="paragraph">
+<p><code>MapMessage</code> implements <code>FormattedMessage</code> and accepts the following format specifiers:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>"XML" - format the Map as XML</p>
+</li>
+<li>
+<p>"JSON" - format the Map as JSON</p>
+</li>
+<li>
+<p>"JAVA" - format the Map as a Java object</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Otherwise, it will format the Map as documented in
+<a href="https://docs.oracle.com/javase/7/docs/api/java/util/AbstractMap.html#toString()"><code>java.util.AbstractMap.toString()</code></a>.</p>
+</div>
+<div class="paragraph">
+<p>Some appenders convert the <code>MapMessage</code> objects differently when there is no layout:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>JMS Appender converts to a JMS <code>javax.jms.MapMessage</code>.</p>
+</li>
+<li>
+<p><a href="appenders.html#JDBCAppender" class="xref page">JDBC Appender</a> converts to values in a SQL INSERT statement</p>
+</li>
+<li>
+<p><a href="appenders.html#NoSQLAppenderMongoDBMain" class="xref page">MongoDB Appender</a> converts to fields in MongoDB object</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="MessageFormatMessage"><a class="anchor" href="#MessageFormatMessage"></a>MessageFormatMessage</h3>
 <div class="paragraph">
 <p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/MessageFormatMessage.html"><code>MessageFormatMessage</code></a>
 handles messages that use a
-<a href="https://docs.oracle.com/javase/7/docs/api/java/text/MessageFormat.html">conversion
-format</a>. While this <code>Message</code> has more flexibility than
-<code>ParameterizedMessage</code>, it is also about two times slower.</p>
+<a href="https://docs.oracle.com/javase/7/docs/api/java/text/MessageFormat.html">conversion format</a>.</p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="MultiformatMessage"><a class="anchor" href="#MultiformatMessage"></a>MultiformatMessage</h2>
-<div class="sectionbody">
 <div class="paragraph">
-<p>A <code>MultiformatMessage</code> will have a getFormats method and a
-<code>getFormattedMessage</code> method that accepts and array of format Strings. The
-<code>getFormats</code> method may be called by a Layout to provide it information on
-what formatting options the Message supports. The Layout may then call
-<code>getFormattedMessage</code> with one or more for the formats. If the Message
-doesn&#8217;t recognize the format name it will simply format the data using
-its default format. An example of this is <code>StructuredDataMessage</code>
-which accepts a format String of "XML" which will cause it to format the
-event data as XML instead of the RFC 5424 format.</p>
+<p>While this <code>Message</code> has more flexibility than <code>ParameterizedMessage,</code> it is also about two times slower.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="ObjectMessage"><a class="anchor" href="#ObjectMessage"></a>ObjectMessage</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="MultiformatMessage"><a class="anchor" href="#MultiformatMessage"></a>MultiformatMessage</h3>
 <div class="paragraph">
-<p>Formats an <code>Object</code> by calling its <code>toString</code> method. Since Log4j 2.6,
-Layouts trying to be low-garbage or garbage-free will call the
-<code>formatTo(StringBuilder)</code> method instead.</p>
+<p>A <code>MultiformatMessage</code> has the <code>getFormats()</code> and <code>getFormattedMessage()</code> method that accepts an array of format Strings.</p>
+</div>
+<div class="paragraph">
+<p>Layouts may use the <code>getFormats()</code> method to provide information on the formatting options the message supports.
+The Layout may then call <code>getFormattedMessage()</code> with one or more formats.
+The message will be shown in the default format when the format name is not recognized.</p>
+</div>
+<div class="paragraph">
+<p>For example, the <code>StructuredDataMessage</code> accepts the "XML" format name to
+format the message as XML instead of the default RFC5424 format.</p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="ObjectMessage"><a class="anchor" href="#ObjectMessage"></a>ObjectMessage</h3>
+<div class="paragraph">
+<p>Formats an <code>Object</code> by calling its <code>toString()</code> method.</p>
 </div>
-<div class="sect1">
-<h2 id="ParameterizedMessage"><a class="anchor" href="#ParameterizedMessage"></a>ParameterizedMessage</h2>
-<div class="sectionbody">
+<div class="paragraph">
+<p>Since Log4j 2.6, low-garbage or garbage-free layouts call the <code>formatTo(StringBuilder)</code> method instead.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="ParameterizedMessage"><a class="anchor" href="#ParameterizedMessage"></a>ParameterizedMessage</h3>
 <div class="paragraph">
 <p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ParameterizedMessage.html"><code>ParameterizedMessage</code></a>
-handles messages that contain "\{}" in the format to represent
-replaceable tokens and the replacement parameters.</p>
+handles messages that contain "\{}" in the format to represent replaceable tokens and the replacement parameters.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="ReusableObjectMessage"><a class="anchor" href="#ReusableObjectMessage"></a>ReusableObjectMessage</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="ReusableObjectMessage"><a class="anchor" href="#ReusableObjectMessage"></a>ReusableObjectMessage</h3>
 <div class="paragraph">
-<p>In garbage-free mode, this message is used to pass logged Objects to the
-Layout and Appenders. Functionally equivalent to
-<a href="#ObjectMessage">ObjectMessage</a>.</p>
+<p><code>ReusableObjectMessage</code> provides functionally equivalent to <a href="#ObjectMessage">ObjectMessage</a>.</p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="ReusableParameterizedMessage"><a class="anchor" href="#ReusableParameterizedMessage"></a>ReusableParameterizedMessage</h2>
-<div class="sectionbody">
 <div class="paragraph">
-<p>In garbage-free mode, this message is used to handle messages that
-contain "\{}" in the format to represent replaceable tokens and the
-replacement parameters. Functionally equivalent to
-<a href="#ParameterizedMessage">ParameterizedMessage</a>.</p>
+<p>Log4j uses this message in garbage-free mode to pass logged Objects to the Layout and Appenders.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="ReusableSimpleMessage"><a class="anchor" href="#ReusableSimpleMessage"></a>ReusableSimpleMessage</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="ReusableParameterizedMessage"><a class="anchor" href="#ReusableParameterizedMessage"></a>ReusableParameterizedMessage</h3>
 <div class="paragraph">
-<p>In garbage-free mode, this message is used to pass logged `String`s and
-`CharSequence`s to the Layout and Appenders. Functionally equivalent to
-<a href="#SimpleMessage">SimpleMessage</a>.</p>
+<p><code>ReusableParameterizedMessage</code> provides functionally equivalent to <a href="#ParameterizedMessage">ParameterizedMessage</a>.</p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="SimpleMessage"><a class="anchor" href="#SimpleMessage"></a>SimpleMessage</h2>
-<div class="sectionbody">
 <div class="paragraph">
-<p><code>SimpleMessage</code> contains a <code>String</code> or <code>CharSequence</code> that requires no
-formatting.</p>
+<p>Log4j uses this message in garbage-free mode to handle messages containing <code>{}</code> in the format representing replaceable tokens and the replacement parameters.</p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="ReusableSimpleMessage"><a class="anchor" href="#ReusableSimpleMessage"></a>ReusableSimpleMessage</h3>
+<div class="paragraph">
+<p><code>ReusableSimpleMessage</code> provides functionally equivalent to <a href="#SimpleMessage">SimpleMessage</a>.</p>
 </div>
-<div class="sect1">
-<h2 id="StringFormattedMessage"><a class="anchor" href="#StringFormattedMessage"></a>StringFormattedMessage</h2>
-<div class="sectionbody">
+<div class="paragraph">
+<p>Log4j uses this message in garbage-free mode to pass logged <code>String</code> and <code>CharSequence</code> objects to the Layout and Appenders.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="SimpleMessage"><a class="anchor" href="#SimpleMessage"></a>SimpleMessage</h3>
+<div class="paragraph">
+<p><code>SimpleMessage</code> contains a <code>String</code> or <code>CharSequence</code> that requires no formatting.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="StringFormattedMessage"><a class="anchor" href="#StringFormattedMessage"></a>StringFormattedMessage</h3>
 <div class="paragraph">
 <p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/StringFormattedMessage.html"><code>StringFormattedMessage</code></a>
 handles messages that use a
-<a href="https://docs.oracle.com/javase/7/docs/api/java/util/Formatter.html#syntax">conversion
-format</a> that is compliant with
-<a href="https://docs.oracle.com/javase/7/docs/api/java/lang/String.html#format(java.lang.String,%20java.lang.Object&#8230;&#8203;)">java.lang.String.format()</a>.
-While this Message has more flexibility than <code>ParameterizedMessage</code>, it is
-also 5 to 10 times slower.</p>
+<a href="https://docs.oracle.com/javase/7/docs/api/java/util/Formatter.html#syntax">conversion format</a>
+that is compliant with
+<a href="https://docs.oracle.com/javase/7/docs/api/java/lang/String.html#format(java.lang.String,%20java.lang.Object&#8230;&#8203;)">java.lang.String.format()</a>.</p>
+</div>
+<div class="paragraph">
+<p>This message is more flexible than <code>ParameterizedMessage</code> but 5 to 10 times slower.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="StructuredDataMessage"><a class="anchor" href="#StructuredDataMessage"></a>StructuredDataMessage</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="StructuredDataMessage"><a class="anchor" href="#StructuredDataMessage"></a>StructuredDataMessage</h3>
 <div class="paragraph">
 <p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html"><code>StructuredDataMessage</code></a>
-allows applications to add items to a <code>Map</code> as well as set the id to allow
-a message to be formatted as a Structured Data element in accordance
-with <a href="http://tools.ietf.org/html/rfc5424">RFC 5424</a>.</p>
+allows applications to add items to a <code>Map</code> and set the ID to allow Log4j to format the message as a "Structured Data Element."</p>
+</div>
+<div class="paragraph">
+<p>See: <a href="http://tools.ietf.org/html/rfc5424">RFC 5424</a> for details.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="ThreadDumpMessage"><a class="anchor" href="#ThreadDumpMessage"></a>ThreadDumpMessage</h3>
+<div class="paragraph">
+<p>If a <code>ThreadDumpMessage</code> is logged, Log4j generates stack traces for all threads.
+These stack traces will include any held locks.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="TimestampMessage"><a class="anchor" href="#TimestampMessage"></a>TimestampMessage</h3>
+<div class="paragraph">
+<p>A <code>TimestampMessage</code> provides a <code>getTimestamp()</code> method that Log4j calls during event construction.
+The timestamp in the Message will be used instead of the current timestamp.</p>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="ThreadDumpMessage"><a class="anchor" href="#ThreadDumpMessage"></a>ThreadDumpMessage</h2>
+<h2 id="_performance_and_benefits"><a class="anchor" href="#_performance_and_benefits"></a>Performance and benefits</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>A ThreadDumpMessage, if logged, will generate stack traces for all
-threads. The stack traces will include any locks that are held.</p>
+<p>Although it may initially seem counterintuitive, there is no performance benefit to using strings instead of messages.
+Testing has shown that modern JVMs can create and destroy log events quickly,
+especially when encapsulating complex tasks in the <code>Message</code> object instead of the application.</p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="TimestampMessage"><a class="anchor" href="#TimestampMessage"></a>TimestampMessage</h2>
-<div class="sectionbody">
 <div class="paragraph">
-<p>A TimestampMessage will provide a <code>getTimestamp</code> method that is called
-during event construction. The timestamp in the Message will be used in
-lieu of the current timestamp.</p>
+<p>Applications that care about
+<a href="garbagefree.html" class="xref page">garbage-free logging</a>
+should consider implementing both the <code>Message</code> and
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/util/StringBuilderFormattable.html"><code>StringBuilderFormattable</code></a>,
+which allows to format a message without the creation of temporary <code>String</code> objects.</p>
+</div>
+<div class="paragraph">
+<p>Implementing <code>StringBuilderFormattable</code> is straightforward:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">record LoginFailureEvent(String userName, InetSocketAddress remoteAddress)
+        implements Message, StringBuilderFormattable { <i class="conum" data-value="1"></i><b>(1)</b>
+    @Override
+    public void formatTo(StringBuilder buffer) { <i class="conum" data-value="2"></i><b>(2)</b>
+        buffer.append("Connection closed by authenticating user ")
+                .append(userName())
+                .append(" ")
+                .append(remoteAddress().getHostName())
+                .append(" port ")
+                .append(remoteAddress().getPort())
+                .append(" [preauth]");
+    }
+
+    @Override
+    public String getFormattedMessage() { <i class="conum" data-value="3"></i><b>(3)</b>
+        StringBuilder buffer = new StringBuilder();
+        formatTo(buffer);
+        return buffer.toString();
+    }
+    // Other methods
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Developers need to implement both the <code>Message</code> and <code>StringBuilderformattable</code> interface.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>formatTo()</code> method formats the message directly into a buffer.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The <code>getFormattedMessage()</code> method can be easily implemented in terms of <code>formatTo()</code>.</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
