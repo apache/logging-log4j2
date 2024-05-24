@@ -105,11 +105,16 @@ public class ThreadContextVsScopedContextBenchmark {
 
     @Benchmark
     public void threadContextMap(final Blackhole blackhole) {
-        for (int i = 0; i < count; i++) {
-            ThreadContext.put(keys[i], values[i]);
+        try {
+            for (int i = 0; i < count; i++) {
+                ThreadContext.put(keys[i], values[i]);
+            }
+            for (int i = 0; i < count; i++) {
+                blackhole.consume(ThreadContext.get(keys[i]));
+            }
+        } finally {
+            ThreadContext.clearMap();
         }
-        blackhole.consume(values);
-        ThreadContext.clearMap();
     }
 
     @Benchmark
@@ -118,6 +123,10 @@ public class ThreadContextVsScopedContextBenchmark {
         for (int i = 1; i < count; i++) {
             instance.where(keys[i], values[i]);
         }
-        instance.run(() -> blackhole.consume(values));
+        instance.run(() -> {
+            for (int i = 0; i < count; i++) {
+                ScopedContext.get(keys[i]);
+            }
+        });
     }
 }
