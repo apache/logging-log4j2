@@ -24,42 +24,43 @@ import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 
 public class MessagesExample {
-    private static final Logger logger = LogManager.getLogger();
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static void main(String[] args) {
-        Throwable e = new RuntimeException();
-        doLogSimple(e);
-        doLogParameterized("foo", "bar", e);
+        Throwable exception = new RuntimeException();
+        doLogSimple(exception);
+        doLogParameterized("foo", "bar", exception);
 
         InetSocketAddress socketAddress = InetSocketAddress.createUnresolved("192.0.2.17", 1234);
         LoginFailureEvent event = new LoginFailureEvent("root", socketAddress);
         failedLogin(event);
     }
 
-    private static void doLogSimple(Throwable e) {
+    private static void doLogSimple(Throwable exception) {
         // tag::simple[]
-        logger.error("Houston, we have a problem.", e);
-        logger.error(new SimpleMessage("Houston, we have a problem."), e);
+        LOGGER.error("Houston, we have a problem.", exception);
+        LOGGER.error(new SimpleMessage("Houston, we have a problem."), exception);
         // end::simple[]
     }
 
-    private static void doLogParameterized(String action, String cause, Throwable e) {
+    private static void doLogParameterized(String userId, Throwable exception) {
         // tag::parameterized[]
-        logger.error("Unable to {}, because {} occurred", action, cause, e);
-        logger.error(new ParameterizedMessage("Unable to {}, because {} occurred", action, cause), e);
+        LOGGER.error("Unable process user with ID `{}`", userId, exception);
+        LOGGER.error(new ParameterizedMessage("Unable process user with ID `{}`", userId), exception);
         // end::parameterized[]
     }
 
     private static void failedLogin(LoginFailureEvent event) {
         // tag::complex[]
-        logger.info(
+        LOGGER.info(
                 "Connection closed by authenticating user {} {} port {} [preauth]",
                 event.userName(),
                 event.remoteAddress().getHostName(),
                 event.remoteAddress().getPort());
         // end::complex[]
         // tag::complex-message[]
-        logger.info(event);
+        LOGGER.info(event);
         // end::complex-message[]
     }
 
