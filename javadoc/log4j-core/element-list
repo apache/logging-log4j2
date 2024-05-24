@@ -32,7 +32,6 @@ org.apache.logging.log4j.core.config.yaml
 org.apache.logging.log4j.core.filter
 org.apache.logging.log4j.core.filter.mutable
 org.apache.logging.log4j.core.impl
-org.apache.logging.log4j.core.impl.internal
 org.apache.logging.log4j.core.jackson
 org.apache.logging.log4j.core.jmx
 org.apache.logging.log4j.core.layout
