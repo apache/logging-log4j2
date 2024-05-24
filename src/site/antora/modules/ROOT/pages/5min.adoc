@@ -129,144 +129,32 @@ dependencies {
 [#logging]
 == How do I write logs using Log4j?
 
-To write logs, you need a `Logger` instance which you will retrieve from the `LogManager`. 
-The `Logger` instance is thread-safe and reusable.
+include::partial$manual/api-intro.adoc[]
 
-Second, you can use the `Logger` instance to write logs by using methods like `info()`, `warn()`, `error()`, etc.
-These methods are named after the log levels they represent, a way to categorize log events by severity.
-The log message can also contain placeholders written as `{}` that will be replaced by the arguments passed to the method.
+[#best-practice]
+=== Best practices
 
-[source,java]
-----
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
+There are several widespread bad practices while using Log4j API.
+Below we will walk through the most common ones and see how to fix them.
+For a complete list, refer to xref:manual/api.adoc#best-practice[the Log4j API best practices page].
 
-public class DbTableService {
-
-    private static final Logger LOGGER = LogManager.getLogger(); // <1>
-
-    public void truncateTable(String tableName) throws IOException {
-        LOGGER.warn("truncating table `{}`", tableName); // <2>
-        db.truncate(tableName);
-    }
-
-}
-----
-<1> This is a thread-safe, reusable `Logger` instance.
-<2> The placeholder `{}` in the message will be replaced with the value of `tableName`
-
-The generated **log event** will be enriched with the **log level** (i.e., `WARN`),
-but also timestamp, class & method name, line number, and several other information.
-
-As already mentioned Log levels are used to categorize log events by severity and control the verbosity of the logs.  
-Log4j knows various levels, but the most common are `DEBUG`, `INFO`, `WARN`, and `ERROR`.
-With them, you can filter out less important logs and focus on the most critical ones.
-Previously we used `LOGGER.warn()` to log a warning message, which could mean that something is not right, but the application can continue.
-Log levels have a priority, and `WARN` is less severe than `ERROR`.
-
-Exceptions are often also errors. 
-In this case, we might use the `ERROR` log level.
-Make sure to log exceptions that have diagnostics value - we can simply pass the exception as the last argument to the log method.
-
-[source,java]
-----
-LOGGER.warn("truncating table `{}`", tableName);
-try {
-    db.truncate(tableName);
-} catch (IOException exception) {
-    LOGGER.error("failed truncating table `{}`", tableName, exception); // <1>
-    throw new IOException("failed truncating table: " + tableName, exception);
-}
-----
-<1> By using `error()` instead of `warn()`, we signal that the operation failed.
-
-While there is only one placeholder in the message, we pass two arguments: `tableName` and `exception`.
-Log4j will attach the last extra argument of type `Throwable` in a separate field to the generated log event.
-
-[#pitfalls]
-=== Common pitfalls
-
-There are several widespread bad practices.
-Let's try to walk through the most common ones.
-
-[#pitfal-toString]
+[#best-practice-toString]
 ==== Don't use `toString()`
 
-* [ ] Don't use `Object#toString()` in arguments, it is redundant!
-+
-[source,java]
-----
-/* BAD! */ LOGGER.info("userId: {}", userId.toString());
-----
+include::partial$manual/api-best-practice-dont-use-toString.adoc[]
 
-* [x] Underlying message type and layout will deal with arguments:
-+
-[source,java]
-----
-/* GOOD */ LOGGER.info("userId: {}", userId);
-----
-
-[#pitfall-exception]
+[#best-practice-exception]
 ==== Pass exception as the last extra argument
 
-* [ ] Don't call `Throwable#printStackTrace()`!
-This not only circumvents the logging but can also leak sensitive information!
-+
-[source,java]
-----
-/* BAD! */ exception.printStackTrace();
-----
+include::partial$manual/api-best-practice-exception-as-last-argument.adoc[]
 
-* [ ] Don't use `Throwable#getMessage()`!
-This prevents the log event from getting enriched with the exception.
-+
-[source,java]
-----
-/* BAD! */ LOGGER.info("failed", exception.getMessage());
-/* BAD! */ LOGGER.info("failed for user ID `{}`: {}", userId, exception.getMessage());
-----
-
-* [ ] Don't provide both `Throwable#getMessage()` and `Throwable` itself!
-This bloats the log message with a duplicate exception message.
-+
-[source,java]
-----
-/* BAD! */ LOGGER.info("failed for user ID `{}`: {}", userId, exception.getMessage(), exception);
-----
-
-* [x] Pass exception as the last extra argument:
-+
-[source,java]
-----
-/* GOOD */ LOGGER.error("failed", exception);
-/* GOOD */ LOGGER.error("failed for user ID `{}`", userId, exception);
-----
-
-[#pitfal-concat]
+[#best-practice-concat]
 ==== Don't use string concatenation
 
-If you are using `String` concatenation while logging, you are doing something very wrong and dangerous!
+include::partial$manual/api-best-practice-dont-use-string-concat.adoc[]
 
-* [ ] Don't use `String` concatenation to format arguments!
-This circumvents the handling of arguments by message type and layout.
-More importantly, **this approach is prone to attacks!**
-Imagine `userId` being provided by the user with the following content:
-`placeholders for non-existing args to trigger failure: {} {} \{dangerousLookup}`
-+
-[source,java]
-----
-/* BAD! */ LOGGER.info("failed for user ID: " + userId);
-----
-
-* [x] Use message parameters
-+
-[source,java]
-----
-/* GOOD */ LOGGER.info("failed for user ID `{}`", userId);
-----
-
-[#basic-log4j-architecture]
-== Basic Log4j Architecture
+[#architecture]
+== Architecture
 
 In a nutshell, Log4j operates with two main parts: the API and the Core.
 With this structure, Log4j allows you to log events using the API and route them through the Core.
@@ -376,7 +264,7 @@ Save the following XML document to `src/**main**/resources/log4j2.xml`.
                        https://logging.apache.org/xml/ns/log4j-config-2.xsd">
 
   <appenders><!--1-->
-    <Console name="console"><!--2-->
+    <Console name="CONSOLE"><!--2-->
       <JsonTemplateLayout/><!--3-->
     </Console>
   </appenders>
@@ -384,7 +272,7 @@ Save the following XML document to `src/**main**/resources/log4j2.xml`.
   <loggers>
     <logger name="com.mycompany" level="INFO"/><!--4-->
     <root level="WARN"><!--5-->
-      <AppenderRef ref="console"/><!--6-->
+      <AppenderRef ref="CONSOLE"/><!--6-->
     </root>
   </loggers>
 
@@ -544,7 +432,7 @@ Save the following XML document to `src/**test**/resources/log4j2-test.xml`.
                        https://logging.apache.org/xml/ns/log4j-config-2.xsd">
 
   <appenders>
-    <Console name="console">
+    <Console name="CONSOLE">
       <PatternLayout pattern="%d [%t] %5p %c{1.} - %m%n"/><!--1-->
     </Console>
   </appenders>
@@ -552,7 +440,7 @@ Save the following XML document to `src/**test**/resources/log4j2-test.xml`.
   <loggers>
     <logger name="com.mycompany" level="DEBUG"/><!--2-->
     <root level="WARN">
-      <AppenderRef ref="console"/>
+      <AppenderRef ref="CONSOLE"/>
     </root>
   </loggers>
 

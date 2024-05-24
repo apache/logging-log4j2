@@ -14,188 +14,370 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
+
+:jboss-logging-link: https://github.com/jboss-logging/jboss-logging[JBoss Logging]
+:jcl-link: https://commons.apache.org/proper/commons-logging/[JCL (Apache Commons Logging)]
+:jpl-link: https://openjdk.org/jeps/264[JPL (Java Platform Logging)]
+:jul-link: https://docs.oracle.com/en/java/javase/{java-target-version}/core/java-logging-overview.html[JUL (Java Logging)]
+:logback-link: https://logback.qos.ch/[Logback]
+:slf4j-link: https://www.slf4j.org/[SLF4J]
+
 = Log4j API
 
-== Overview
+Log4j is essentially composed of a logging API called *Log4j API*, and its reference implementation called *Log4j Core*.
 
-The Log4j 2 API provides the interface that applications should code to
-and provides the adapter components required for implementers to create
-a logging implementation. Although Log4j 2 is broken up between an API
-and an implementation, the primary purpose of doing so was not to allow
-multiple implementations, although that is certainly possible, but to
-clearly define what classes and methods are safe to use in "normal"
-application code.
+.What is a logging API and a logging implementation?
+[%collapsible]
+====
+Logging APIs::
+A logging API is an interface your code or your dependencies directly logs against.
+It is implementation agnostic.
+Log4j API, {slf4j-link}, {jul-link}, {jcl-link}, {jpl-link} and {jboss-logging-link} are major logging APIs.
 
-=== Hello World!
+Logging implementation::
+A logging implementation is only required at runtime and can be changed without the need to recompile your software.
+Log4j Core, {jul-link}, {logback-link} are the most well-known logging implementations.
+====
 
-No introduction would be complete without the customary Hello, World
-example. Here is ours. First, a Logger with the name "HelloWorld" is
-obtained from the
-link:../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html[`LogManager`].
-Next, the logger is used to write the "Hello, World!" message, however
-the message will be written only if the Logger is configured to allow
-informational messages.
+[TIP]
+====
+Are you looking for a crash course on how to use Log4j in your application or library?
+See xref:5min.adoc[].
+You can also check out xref:manual/installation.adoc[] for the complete installation instructions.
+====
+
+Log4j API provides
+
+* A logging API that libraries and applications can code to
+* Adapter components to create a logging implementation
+
+This page tries to cover the most prominent Log4j API features that libraries and applications can code to.
+
+== Introduction
+
+include::partial$manual/api-intro.adoc[leveloffset=+1]
+
+[#best-practice]
+== Best practices
+
+There are several widespread bad practices while using Log4j API.
+Let's try to walk through the most common ones and see how to fix them.
+
+[#best-practice-toString]
+=== Don't use `toString()`
+
+include::partial$manual/api-best-practice-dont-use-toString.adoc[]
+
+[#best-practice-exception]
+=== Pass exception as the last extra argument
+
+include::partial$manual/api-best-practice-exception-as-last-argument.adoc[]
+
+[#best-practice-concat]
+=== Don't use string concatenation
+
+include::partial$manual/api-best-practice-dont-use-string-concat.adoc[]
+
+[#best-practice-supplier]
+=== Use ``Supplier``s to pass computationally expensive arguments
+
+include::partial$manual/api-best-practice-use-supplier.adoc[]
+
+[#loggers]
+== Loggers
+
+link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html[`Logger`]s obtained using link:../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html[`LogManager`] is the primary entry point for logging.
+In this section we will introduce you to further details about ``Logger``s.
+
+[#logger-names]
+=== Logger names
+
+Most logging implementations use a hierarchical scheme for matching logger names with logging configuration.
+In this scheme, the logger name hierarchy is represented by `.` (dot) characters in the logger name, in a fashion very similar to the hierarchy used for Java package names.
+For example, `org.apache.logging.appender` and `org.apache.logging.filter` both have `org.apache.logging` as their parent.
+
+In most cases, applications name their loggers by passing the current class's name to `LogManager.getLogger(...)`.
+Because this usage is so common, Log4j provides that as the default when the logger name parameter is either omitted or is null.
+For example, all `Logger`-typed variables below will have a name of `com.mycompany.LoggerNameTest`:
 
 [source,java]
 ----
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+package com.mycompany;
 
-public class HelloWorld {
-    private static final Logger logger = LogManager.getLogger("HelloWorld");
-    public static void main(String[] args) {
-        logger.info("Hello, World!");
-    }
+public class LoggerNameTest {
+
+    Logger logger1 = LogManager.getLogger(LoggerNameTest.class);
+
+    Logger logger2 = LogManager.getLogger(LoggerNameTest.class.getName());
+
+    Logger logger3 = LogManager.getLogger();
+
 }
 ----
 
-The output from the call to `logger.info()` will vary significantly
-depending on the configuration used. See the
-xref:manual/configuration.adoc[Configuration] section for more details.
+[TIP]
+====
+**We suggest you to use `LogManager.getLogger()` without any arguments** since it delivers the same functionality with less characters and is not prone to copy-paste errors.
+====
 
-=== Substituting Parameters
+[#logger-message-factories]
+=== Logger message factories
 
-Frequently the purpose of logging is to provide information about what
-is happening in the system, which requires including information about
-the objects being manipulated. In Log4j 1.x this could be accomplished
-by doing:
-
-[source,java]
-----
-if (logger.isDebugEnabled()) {
-    logger.debug("Logging in user " + user.getName() + " with birthday " + user.getBirthdayCalendar());
-}
-----
-
-Doing this repeatedly has the effect of making the code feel like it is
-more about logging than the actual task at hand. In addition, it results
-in the logging level being checked twice; once on the call to
-isDebugEnabled and once on the debug method. A better alternative would
-be:
+Loggers translate
 
 [source,java]
 ----
-logger.debug("Logging in user {} with birthday {}", user.getName(), user.getBirthdayCalendar());
+LOGGER.info("Hello, {}!", name)
 ----
 
-With the code above the logging level will only be checked once and the
-String construction will only occur when debug logging is enabled.
-
-=== Formatting Parameters
-
-Formatter Loggers leave formatting up to you if `toString()` is not what
-you want. To facilitate formatting, you can use the same format strings
-as Java's
-http://docs.oracle.com/javase/6/docs/api/java/util/Formatter.html#syntax[`Formatter`].
-For example:
+calls to the appropriate canonical logging method:
 
 [source,java]
 ----
-public static Logger logger = LogManager.getFormatterLogger("Foo");
+LOGGER.log(Level.INFO, messageFactory.createMessage("Hello, {}!", new Object[]{name}));
+----
 
+Note that how `Hello, {}!` should be encoded given the `\{name}` array as argument completely depends on the link:../javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory.html[`MessageFactory`] employed.
+Log4j allows users to customize this behaviour in several `getLogger()` methods of link:../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html[`LogManager`]:
+
+[source,java]
+----
+LogManager
+        .getLogger() // <1>
+        .info("Hello, {}!", name); // <2>
+
+LogManager
+        .getLogger(StringFormatterMessageFactory.INSTANCE) // <3>
+        .info("Hello, %s!", name); // <4>
+----
+<1> Create a logger using the default message factory
+<2> Use default parameter placeholders, that is, `{}` style
+<3> Explicitly provide the message factory, that is, link:../javadoc/log4j-api/org/apache/logging/log4j/message/StringFormatterMessageFactory.html[`StringFormatterMessageFactory`].
+Note that there are several other `getLogger()` methods accepting a `MessageFactory`.
+<4> Note the placeholder change from `{}` to `%s`!
+Passed `Hello, %s!` and `name` arguments will be implicitly translated to a `String.format("Hello, %s!", name)` call due to the employed `StringFormatterMessageFactory`.
+
+Log4j bundles several xref:manual/messages.adoc[predefined message factories].
+Some common ones are accessible through convenient factory methods, which we will cover below.
+
+[#formatter-logger]
+=== Formatter logger
+
+The `Logger` instance returned by default replaces the occurrences of `{}` placeholders with the `toString()` output of the associated parameter.
+If you need more control over how the parameters are formatted, you can also use the http://docs.oracle.com/javase/6/docs/api/java/util/Formatter.html#syntax[`java.util.Formatter`] format strings by obtaining your `Logger` using link:../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#getFormatterLogger(java.lang.Class)[`LogManager#getFormatterLogger()`]:
+
+[source,java]
+----
+Logger logger = LogManager.getFormatterLogger();
 logger.debug("Logging in user %s with birthday %s", user.getName(), user.getBirthdayCalendar());
 logger.debug("Logging in user %1$s with birthday %2$tm %2$te,%2$tY", user.getName(), user.getBirthdayCalendar());
 logger.debug("Integer.MAX_VALUE = %,d", Integer.MAX_VALUE);
 logger.debug("Long.MAX_VALUE = %,d", Long.MAX_VALUE);
 ----
 
-To use a formatter Logger, you must call one of the `LogManager`
-link:../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#getFormatterLogger(java.lang.Class)[`getFormatterLogger`]
-methods. The output for this example shows that `Calendar::toString` is
-verbose compared to custom formatting:
+Loggers returned by `getFormatterLogger()` are referred as *formatter loggers*.
+
+[#printf]
+==== `printf()` method
+
+Formatter loggers give fine-grained control over the output format, but have the drawback that the correct type must be specified.
+For example, passing anything other than a decimal integer for a `%d` format parameter gives an exception.
+If your main usage is to use `{}`-style parameters, but occasionally you need fine-grained control over the output format, you can use the `Logger#printf()` method:
 
 [source,java]
 ----
-2012-12-12 11:56:19,633 [main] DEBUG: User John Smith with birthday java.util.GregorianCalendar[time=?,areFieldsSet=false,areAllFieldsSet=false,lenient=true,zone=sun.util.calendar.ZoneInfo[id="America/New_York",offset=-18000000,dstSavings=3600000,useDaylight=true,transitions=235,lastRule=java.util.SimpleTimeZone[id=America/New_York,offset=-18000000,dstSavings=3600000,useDaylight=true,startYear=0,startMode=3,startMonth=2,startDay=8,startDayOfWeek=1,startTime=7200000,startTimeMode=0,endMode=3,endMonth=10,endDay=1,endDayOfWeek=1,endTime=7200000,endTimeMode=0]],firstDayOfWeek=1,minimalDaysInFirstWeek=1,ERA=?,YEAR=1995,MONTH=4,WEEK_OF_YEAR=?,WEEK_OF_MONTH=?,DAY_OF_MONTH=23,DAY_OF_YEAR=?,DAY_OF_WEEK=?,DAY_OF_WEEK_IN_MONTH=?,AM_PM=0,HOUR=0,HOUR_OF_DAY=0,MINUTE=0,SECOND=0,MILLISECOND=?,ZONE_OFFSET=?,DST_OFFSET=?]
-2012-12-12 11:56:19,643 [main] DEBUG: User John Smith with birthday 05 23, 1995
-2012-12-12 11:56:19,643 [main] DEBUG: Integer.MAX_VALUE = 2,147,483,647
-2012-12-12 11:56:19,643 [main] DEBUG: Long.MAX_VALUE = 9,223,372,036,854,775,807
-----
-
-=== Mixing Loggers with Formatter Loggers
-
-Formatter loggers give fine-grained control over the output format, but
-have the drawback that the correct type must be specified (for example,
-passing anything other than a decimal integer for a %d format parameter
-gives an exception).
-
-If your main usage is to use \{}-style parameters, but occasionally you
-need fine-grained control over the output format, you can use the
-`printf` method:
-
-[source,java]
-----
-public static Logger logger = LogManager.getLogger("Foo");
-
+Logger logger = LogManager.getLogger("Foo");
 logger.debug("Opening connection to {}...", someDataSource);
-logger.printf(Level.INFO, "Logging in user %1$s with birthday %2$tm %2$te,%2$tY", user.getName(), user.getBirthdayCalendar());
+logger.printf(Level.INFO, "Hello, %s!", userName);
 ----
 
-[#LambdaSupport]
-=== Java 8 lambda support for lazy logging
+[#formatter-perf]
+==== Formatter performance
 
-In release 2.4, the `Logger` interface added support for lambda
-expressions. This allows client code to lazily log messages without
-explicitly checking if the requested log level is enabled. For example,
-previously you would write:
+Keep in mind that, contrary to the formatter logger, the default Log4j logger (i.e., `{}`-style parameters) is heavily optimized for several use cases and can operate xref:manual/garbagefree.adoc[garbage-free] when configured correctly.
+You might reconsider your formatter logger usages for latency sensitive applications.
+
+[#resource-logger]
+=== Resource logger
+
+Resource loggers, introduced in Log4j API `2.24.0`, is a special kind of `Logger` that:
+
+* is a regular class member variable that will be garbage collected along with the class instance
+* enriches generated log events with data associated with the resource (i.e., the class instance)
+
+xref:manual/resource-logger.adoc[Read more on resource loggers...]
+
+[#event-logger]
+=== Event logger
+
+link:../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html[`EventLogger`] provides a simple way to log structured events conforming with the `STRCUTURED-DATA` format defined in https://tools.ietf.org/html/rfc5424[RFC 5424 (The Syslog Protocol)].
+
+xref:manual/eventlogging.adoc[Read more on event loggers...]
+
+[#feature-fluent-api]
+== Fluent API
+
+The fluent API allows you to log using a fluent interface:
 
 [source,java]
 ----
-// pre-Java 8 style optimization: explicitly check the log level
-// to make sure the expensiveOperation() method is only called if necessary
-if (logger.isTraceEnabled()) {
-    logger.trace("Some long-running operation returned {}", expensiveOperation());
+logger.atInfo()
+      .withMarker(marker)
+      .withLocation()
+      .withThrowable(exception)
+      .log("Login for user `{}` failed", userId);
+----
+
+xref:manual/logbuilder.adoc[Read more on the Fluent API...]
+
+[#fish-tagging]
+== Fish tagging
+
+Just as a fish can be tagged and have its movement tracked (aka. _fish tagging_), stamping log events with a common tag or set of data
+elements allows the complete flow of a transaction or a request to be tracked.
+You can use them for several purposes, such as:
+
+* Provide extra information while serializing the log event
+* Allow filtering of information so that it does not overwhelm the system or the individuals who need to make use of it
+
+Log4j provides fish tagging in several flavors:
+
+[#levels]
+=== Levels
+
+Log levels are used to categorize log events by severity.
+Log4j contains predefined levels, of which the most common are `DEBUG`, `INFO`, `WARN`, and `ERROR`.
+Log4j also allows you to introduce your own custom levels too.
+
+xref:manual/customloglevels.adoc[Read more on custom levels...]
+
+[#markers]
+=== Markers
+
+Markers are programmatic labels developers can associate to log statements:
+
+[source,java]
+----
+public class MyApp {
+
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    private static final Marker ACCOUNT_MARKER = MarkerManager.getMarker("ACCOUNT");
+
+    public void removeUser(String userId) {
+        logger.debug(ACCOUNT_MARKER, "Removing user with ID `{}`", userId);
+        // ...
+    }
+
 }
 ----
 
-With Java 8 you can achieve the same effect with a lambda expression.
-You no longer need to explicitly check the log level:
+xref:manual/markers.adoc[Read more on markers...]
+
+[#scoped-context]
+=== Scoped Context
+
+Just like a https://docs.oracle.com/en/java/javase/22/docs/api/java.base/java/lang/ScopedValue.html[Java's `ScopedValue`], in Scoped Context, the visibility of tags are associated with the block they were introduced:
 
 [source,java]
 ----
-// Java-8 style optimization: no need to explicitly check the log level:
-// the lambda expression is not evaluated if the TRACE level is not enabled
-logger.trace("Some long-running operation returned {}", () -> expensiveOperation());
-----
 
-[#logger-names]
-=== Logger Names
+private class Worker implements Runnable {
 
-Most logging implementations use a hierarchical scheme for matching
-logger names with logging configuration. In this scheme, the logger name
-hierarchy is represented by `'.'` characters in the logger name, in a
-fashion very similar to the hierarchy used for Java package names. For
-example, `org.apache.logging.appender` and `org.apache.logging.filter`
-both have `org.apache.logging` as their parent. In most cases,
-applications name their loggers by passing the current class's name to
-`LogManager.getLogger(...)`. Because this usage is so common, Log4j 2
-provides that as the default when the logger name parameter is either
-omitted or is null. For example, in all examples below the Logger will
-have a name of `"org.apache.test.MyTest"`.
+    private static final Logger LOGGER = LogManager.getLogger();
 
-[source,java]
-----
-package org.apache.test;
+    public void authUser(Request request, Session session) {
+         // ... // <3>
+        ScopedContext
+                .where("ipAddress", request.getRemoteAddr()) // <1>
+                .where("hostName", request.getServerName()) // <1>
+                .where("loginId", session.getAttribute("loginId")) // <1>
+                .run(() -> { // <2>
+                    LOGGER.debug("Authenticating user");
+                    // ...
+                });
+         // ... // <3>
+    }
 
-public class MyTest {
-    private static final Logger logger = LogManager.getLogger(MyTest.class);
 }
 ----
+<1> Associating properties such that they will only be visible to Log4j **within the scope of the `run()` method**.
+These properties can later on be used to, for instance, filter the log event, provide extra information in the layout, etc.
+<2> The block determining the visibility scope of the provided properties.
+<3> Outside the scope of the `run()` method provided properties will not be visible.
+
+xref:manual/scoped-context.adoc[Read more on Scoped Context...]
+
+[#thread-context]
+=== Thread Context
+
+Just like https://docs.oracle.com/javase/8/docs/api/java/lang/ThreadLocal.html[Java's `ThreadLocal`], in Thread Context, the visibility of tags are associated with the thread they were introduced.
+Thread Context offers both a map-structured, called _Mapped Diagnostic Context (MDC)_, and a stack-structured, called _Nested Diagnostic Context (NDC)_, storage:
 
 [source,java]
 ----
-package org.apache.test;
+ThreadContext.put("ipAddress", request.getRemoteAddr()); // <1>
+ThreadContext.put("hostName", request.getServerName()); // <1>
+ThreadContext.put("loginId", session.getAttribute("loginId")); // <1>
 
-public class MyTest {
-    private static final Logger logger = LogManager.getLogger(MyTest.class.getName());
-}
+ThreadContext.push("performWork()"); // <2>
+
+LOGGER.debug("Performing work"); // <3>
 ----
+<1> Associating properties with the logging context map of the thread
+<2> Pushing properties to the logging context stack of the thread
+<3> Added properties can later on be used to, for instance, filter the log event, provide extra information in the layout, etc.
 
+[CAUTION]
+====
+**Thread Context is mostly superseded by Scoped Context**, which, unlike Thread Context,
+
+* is safe to use in servlet applications
+* can store any `Object`-typed value
+====
+
+xref:manual/thread-context.adoc[Read more on Thread Context]...
+
+[#messages]
+== Messages
+
+Whereas almost every other logging API and implementation accepts only `String`-typed input as message, Log4j generalizes this concept with a `Message` contract.
+Customizability of the message type enables users to **have complete control over how a message is encoded** by Log4j.
+This liberal approach allows applications to choose the message type best fitting to their logging needs; they can log plain ``String``s, or custom `PurchaseOrder` objects.
+
+Log4j provides several predefined message types to cater for common use cases:
+
+* Simple `String`-typed messages:
++
 [source,java]
 ----
-package org.apache.test;
-
-public class MyTest {
-    private static final Logger logger = LogManager.getLogger();
-}
+LOGGER.info("foo");
+LOGGER.info(new SimpleMessage("foo"));
 ----
+
+* `String`-typed parameterized messages:
++
+[source,java]
+----
+LOGGER.info("foo {} {}", "bar", "baz");
+LOGGER.info(new ParameterizedMessage("foo {} {}", new Object[]{"bar", "baz"}));
+----
+
+* `Map`-typed messages:
++
+[source,java]
+----
+LOGGER.info(new StringMapMessage()
+    .with("key1", "val1")
+    .with("key2", "val2"));
+----
+
+xref:manual/messages.adoc[Read more on messages...]
+
+[#flow-tracing]
+== Flow tracing
+
+The `Logger` class provides `traceEntry()`, `traceExit()`, `catching()`, `throwing()` methods that are quite useful for following the execution path of applications.
+These methods generate log events that can be filtered separately from other debug logging.
+
+xref:manual/flowtracing.adoc[Read more on flow tracing...]

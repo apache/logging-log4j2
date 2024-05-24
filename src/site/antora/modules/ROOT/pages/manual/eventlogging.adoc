@@ -14,7 +14,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-= Event Logging with Log4j
+= Event Logging
 
 The `EventLogger` class provides a mechanism for logging significant events 
 in an application using structured data. This approach is beneficial for 

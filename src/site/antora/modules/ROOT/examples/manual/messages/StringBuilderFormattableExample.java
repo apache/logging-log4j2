@@ -23,7 +23,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 
 public class StringBuilderFormattableExample {
-    private static final Logger logger = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static void main(String[] args) {
         InetSocketAddress socketAddress = InetSocketAddress.createUnresolved("192.0.2.17", 1234);
@@ -32,7 +32,7 @@ public class StringBuilderFormattableExample {
     }
 
     private static void failedLogin(LoginFailureEvent event) {
-        logger.info(event);
+        LOGGER.info(event);
     }
 
     // tag::loginFailure[]

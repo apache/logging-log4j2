@@ -19,8 +19,7 @@
 == Welcome to Apache Log4j!
 
 Apache Log4j is a versatile, industrial-grade Java logging framework composed of an API, its implementation,  and components to assist the deployment for various use cases.
-Log4j is https://security.googleblog.com/2021/12/apache-log4j-vulnerability.html[used by 8% of the Maven ecosystem] and listed as one of https://docs.google.com/spreadsheets/d/1ONZ4qeMq8xmeCHX03lIgIYE4MEXVfVL6oj05lbuXTDM/edit#gid=1024997528[the top 100 critical open source software projects].
-The project is actively maintained by a {logging-services-url}/team-list.html[team] of several volunteers and {logging-services-url}/support[support]ed by a big community.
+The project is actively maintained by a {logging-services-url}/team-list.html[team] of volunteers and {logging-services-url}/support[support]ed by a big community.
 
 Logging is an essential part of the software development process. 
 It provides a way to track the flow of execution in a program, allowing developers 

@@ -23,7 +23,7 @@ import org.apache.logging.log4j.MarkerManager;
 
 public final class MarkerExample {
 
-    private static final Logger logger = LogManager.getLogger("example.MarkerExample");
+    private static final Logger LOGGER = LogManager.getLogger("example.MarkerExample");
     // tag::create-marker[]
     private static final Marker SQL_MARKER = MarkerManager.getMarker("SQL");
     // end::create-marker[]
@@ -43,21 +43,21 @@ public final class MarkerExample {
     public static void doQuery(String table) {
         // Do business logic here
         // tag::use-marker[]
-        logger.debug(SQL_MARKER, "SELECT * FROM {}", table);
+        LOGGER.debug(SQL_MARKER, "SELECT * FROM {}", table);
         // end::use-marker[]
     }
 
     public static void doQueryParent(String table) {
         // Do business logic here
         // tag::use-marker-parent[]
-        logger.debug(QUERY_MARKER, "SELECT * FROM {}", table);
+        LOGGER.debug(QUERY_MARKER, "SELECT * FROM {}", table);
         // end::use-marker-parent[]
     }
 
     public static void doUpdate(String table, String column, String value) {
         // Do business logic here
         // tag::use-marker-parent[]
-        logger.debug(UPDATE_MARKER, "UPDATE {} SET {} = {}", table, column, value);
+        LOGGER.debug(UPDATE_MARKER, "UPDATE {} SET {} = {}", table, column, value);
         // end::use-marker-parent[]
     }
 }
