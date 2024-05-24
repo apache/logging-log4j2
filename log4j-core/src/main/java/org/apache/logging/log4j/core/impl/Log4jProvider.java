@@ -18,9 +18,7 @@ package org.apache.logging.log4j.core.impl;
 
 import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceProvider;
-import java.util.ServiceLoader;
 import org.apache.logging.log4j.core.impl.CoreProperties.ThreadContextProperties;
-import org.apache.logging.log4j.core.impl.internal.QueuedScopedContextProvider;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
@@ -28,11 +26,8 @@ import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.Provider;
-import org.apache.logging.log4j.spi.ScopedContextProvider;
 import org.apache.logging.log4j.spi.ThreadContextMap;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Constants;
-import org.apache.logging.log4j.util.ServiceLoaderUtil;
 
 /**
  * Binding for the Log4j API.
@@ -79,15 +74,5 @@ public class Log4jProvider extends Provider {
     @Override
     public ThreadContextMap getThreadContextMapInstance() {
         return instanceFactory.getInstance(Key.forClass(ThreadContextMap.class));
-    }
-
-    @Override
-    public ScopedContextProvider getScopedContextProvider() {
-        return ServiceLoaderUtil.safeStream(
-                        ScopedContextProvider.class,
-                        ServiceLoader.load(ScopedContextProvider.class),
-                        StatusLogger.getLogger())
-                .findFirst()
-                .orElse(QueuedScopedContextProvider.INSTANCE);
     }
 }
