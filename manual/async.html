@@ -145,10 +145,10 @@
     <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="eventlogging.html">Event Logging</a>
+    <a class="nav-link" href="eventlogging.html">Event Logger</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="resource-logger.html">Resource Loggers</a>
+    <a class="nav-link" href="resource-logger.html">Resource Logger</a>
   </li>
 </ul>
   </li>
@@ -1496,7 +1496,7 @@ strategy.class = com.exampleAsyncWaitStrategyFactory</code></pre>
 <h2 id="Location"><a class="anchor" href="#Location"></a>Location information</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><a href="layouts.html#location-information" class="xref page">Computing the location information (i.e., the caller class, method, file, and line number) of a log event is an expensive operation.</a>
+<p><a href="layouts.html#LocationInformation" class="xref page">Computing the location information (i.e., the caller class, method, file, and line number) of a log event is an expensive operation.</a>
 The impact on asynchronous loggers and appenders is even higher, since the component must decide whether to compute it or not <strong>before</strong> crossing the asynchronous barrier.
 Hence, the location information is disabled by default for asynchronous loggers and appenders.
 In order to enable it for a certain logger, set its <a href="configuration.html#logger-attributes-includeLocation" class="xref page"><code>includeLocation</code></a> attribute to <code>true</code>.</p>
