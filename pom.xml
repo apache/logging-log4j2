@@ -803,6 +803,24 @@
             </configuration>
           </execution>
 
+          <!-- Copies the static resources in `src/site/resources` directly to `target/site`.
+               These resources are not handled by Antora. -->
+          <execution>
+            <id>copy-site-resources</id>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <phase>site</phase>
+            <configuration>
+              <resources>
+                <resource>
+                  <directory>src/site/resources</directory>
+                </resource>
+              </resources>
+              <outputDirectory>target/site</outputDirectory>
+            </configuration>
+          </execution>
+
         </executions>
 
       </plugin>
