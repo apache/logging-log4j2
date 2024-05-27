@@ -232,7 +232,6 @@
 
     <!-- Last comes the rest of the modules in alphabetical order.
          Note that modules here must have a corresponding entry in `dependencyManagement > dependencies` block below! -->
-    <module>log4j-1.2-api</module>
     <module>log4j-async-logger</module>
     <module>log4j-config-jackson</module>
     <module>log4j-config-properties</module>
@@ -365,12 +364,6 @@
 
   <dependencyManagement>
     <dependencies>
-
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-1.2-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
 
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -841,9 +834,8 @@
                Assume that the filesystem walks folder contents in alphanumeric order.
                Sourcing `log4j-docgen:generate-*` from that folder will consume descriptors in the following order:
 
-               1. `log4j-1.2.api`
-               2. `log4j-cassandra`
-               3. `log4j-core`
+               1. `log4j-cassandra`
+               2. `log4j-core`
                4. ...
 
                For instance, `AbstractFilterable` is defined by the descriptors of both `log4j-cassandra` and `log4j-core`.

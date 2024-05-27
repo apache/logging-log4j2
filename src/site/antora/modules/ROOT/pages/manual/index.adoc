@@ -62,5 +62,4 @@ include::partial$log4j-features.adoc[]
 * xref:manual/configuration.adoc[How can I configure Log4j?]
 * xref:manual/api.adoc[How can I use Log4j API?]
 * xref:manual/performance.adoc[How can I tune my Log4j setup for performance?]
-* xref:manual/migration.adoc[How can I migrate from Log4j 1 to Log4j 2]?
 * xref:manual/plugins.adoc[What are Log4j plugins] and xref:manual/extending.adoc[how can I use them to extend Log4j?]

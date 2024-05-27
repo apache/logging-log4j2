@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.util.OptionConverter;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
