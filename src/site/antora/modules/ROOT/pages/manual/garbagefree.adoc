@@ -264,7 +264,7 @@ Logging more than 10 parameters creates https://docs.oracle.com/javase/8/docs/te
 
 When a message parameter contains an unknown type by the layout, it will encode by calling `toString()` on these objects.
 Most objects don't have garbage-free `toString()` methods.
-Objects themselves can implement their own garbage-free encoders by either extending from https://docs.oracle.com/javase/8/docs/api/java/lang/CharSequence.html[Java's `CharSequence`] or link:../javadoc/log4j-api/org/apache/logging/log4j/util/StringBuilderFormattable.html[Log4j's `StringBuilderFormattable`].
+Objects themselves can implement their own garbage-free encoders by either extending from https://docs.oracle.com/javase/8/docs/api/java/lang/CharSequence.html[Java's `CharSequence`] or {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/util/StringBuilderFormattable.html[Log4j's `StringBuilderFormattable`].
 
 [#codeImpact]
 === Avoiding autoboxing
@@ -310,5 +310,5 @@ LOGGER.debug(() -> callExpensiveMethod());
 ----
 +
 is garbage-free.
-* The link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#traceEntry()[`traceEntry()`] and link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#traceExit()[`traceExit()`] methods create temporary objects.
+* The {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Logger.html#traceEntry()[`traceEntry()`] and {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Logger.html#traceExit()[`traceExit()`] methods create temporary objects.
 * Time calculations are not garbage-free when the `log4j2.usePreciseClock` system property (defaults to `false`) is set to `true`.

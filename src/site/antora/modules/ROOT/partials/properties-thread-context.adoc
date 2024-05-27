@@ -58,13 +58,13 @@ If `true`, the `ThreadContext` map is disabled.
 [cols="1h,5"]
 |===
 | Env. variable | LOG4J_THREAD_CONTEXT_MAP
-| Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap[Class<? extends ThreadContextMap>] or predefined constant
+| Type          | {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap[Class<? extends ThreadContextMap>] or predefined constant
 | Default value | `WebApp`
 
 (GC-free mode: `CopyOnWrite`)
 |===
 
-Fully specified class name of a custom link:../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap[ThreadContextMap] implementation class or one of the predefined constants:
+Fully specified class name of a custom {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap[ThreadContextMap] implementation class or one of the predefined constants:
 
 NoOp:: to disable the thread context,
 WebApp:: a web application-safe implementation, that only binds JRE classes to `ThreadLocal` to prevent memory leaks,

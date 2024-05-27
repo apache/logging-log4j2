@@ -23,14 +23,14 @@
 | LOG4J_LOG_EVENT_CONTEXT_DATA_TYPE
 
 | Type
-| link:../javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html[Class<? extends StringMap>]
+| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html[Class<? extends StringMap>]
 
 | Default value
-| link:../javadoc/log4j-api/org/apache/logging/log4j/util/SortedArrayStringMap.html[SortedArrayStringMap]
+| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/util/SortedArrayStringMap.html[SortedArrayStringMap]
 |===
 
 Fully qualified class name of a
-link:../javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html[StringMap]
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html[StringMap]
 implementation to use to store context data in log events.
 The implementation must have:
 

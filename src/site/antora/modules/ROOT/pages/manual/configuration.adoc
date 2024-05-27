@@ -1703,7 +1703,7 @@ initialization. In addition, normal logging within appenders could
 create infinite recursion which Log4j will detect and cause the
 recursive events to be ignored. To accomodate this need, the Log4j 2 API
 includes a
-link:../javadoc/log4j-api/org/apache/logging/log4j/status/StatusLogger.html[`StatusLogger`].
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/status/StatusLogger.html[`StatusLogger`].
 Components declare an instance of the StatusLogger similar to:
 
 [source,java]

@@ -24,7 +24,7 @@ Log4j bundles a rich set of components to assist various use cases.
 
 API separation::
 The API for Log4j (i.e., `log4j-api`) is separate from the implementation (i.e., `log4j-core`), making it straightforward for application developers which classes and methods to use while ensuring forward compatibility.
-(See xref:manual/api-separation.adoc[API Separation] for details.)
+(See xref:manual/api.adoc[API Separation] for details.)
 The Log4j API also provides the most feature-rich logging facade in the market; support for various `Message` types (such as `Object` or `Map`) besides plain `String`, lambda expressions, parametrized logging, markers, levels, diagnostic contexts (aka. MDC/NDC), etc.
 Check out the xref:manual/api.adoc[Java API], {logging-services-url}/log4j/kotlin[Kotlin API], and {logging-services-url}/log4j/scala[Scala API] pages for further information.
 

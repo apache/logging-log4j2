@@ -46,6 +46,7 @@ asciidoc:
     java-target-version: "17"
     java-compiler-version: "[17,18)"
     logging-services-url: "https://logging.apache.org"
+    log4j2-url: "https://logging.apache.org/log4j/2.x"
     lmax-disruptor-url: "https://lmax-exchange.github.io/disruptor"
     # Dependency versions
     commons-logging-version: "1.4.0"

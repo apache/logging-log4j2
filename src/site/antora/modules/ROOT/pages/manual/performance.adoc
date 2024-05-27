@@ -75,7 +75,7 @@ Consider the following example:
 /* BAD! */ LOGGER.info("failed for user ID `{}` and role `{}`", userId, db.findUserRoleById(userId));
 ----
 
-The database query (i.e., `db.findUserNameById(userId)`) can be a significant bottleneck if the created the log event will be discarded anyway – maybe the `INFO` level or the associated xref:manual/markers.adoc[marker] is not accepted for this package, or due to some other filtering.
+The database query (i.e., `db.findUserNameById(userId)`) can be a significant bottleneck if the created the log event will be discarded anyway – maybe the `INFO` level or the associated {log4j2-url}/manual/markers.adoc[marker] is not accepted for this package, or due to some other filtering.
 
 * [ ] The old-school way of solving this problem is to level-guard the log statement:
 +
@@ -84,7 +84,7 @@ The database query (i.e., `db.findUserNameById(userId)`) can be a significant bo
 /* BAD! */ if (LOGGER.isInfoEnabled()) { LOGGER.info(...); }
 ----
 +
-While this would work for cases where the message can be dropped due to insufficient level, this approach is still prone to other filtering cases; e.g., maybe the associated xref:manual/markers.adoc[marker] is not accepted.
+While this would work for cases where the message can be dropped due to insufficient level, this approach is still prone to other filtering cases; e.g., maybe the associated {log4j2-url}/manual/markers.adoc[marker] is not accepted.
 
 * [x] Use ``Supplier``s to pass arguments containing computationally expensive items:
 +

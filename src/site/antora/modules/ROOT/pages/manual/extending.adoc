@@ -606,7 +606,7 @@ implementation can be installed by setting system property `log4j2.threadContext
 to the fully qualified class name of the class implementing the `ThreadContextMap` 
 interface. By also implementing the `ReadOnlyThreadContextMap` interface, your custom
 `ThreadContextMap` implementation will be accessible to applications via the
-link:../javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html#getThreadContextMap()[`ThreadContext::getThreadContextMap`]
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html#getThreadContextMap()[`ThreadContext::getThreadContextMap`]
 method.
 
 [#Custom_Plugins]

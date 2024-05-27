@@ -903,7 +903,7 @@ The STYLE value can be one of:
 *map*\{key} +
 *MAP*\{key}
 |Outputs the entries in a
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html[MapMessage],
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html[MapMessage],
 if one is present in the event. The `K` conversion character can be
 followed by the key for the map placed between braces, as in
 `%K\{clientNumber}` where `clientNumber` is the key. The value in the
@@ -1295,7 +1295,7 @@ value pair set is output using a format {key1=val1, key2=val2}. The
 key/value pairs will be printed in sorted order.
 
 See the
-link:../javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html[ThreadContext]
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html[ThreadContext]
 class for more details.
 
 |[[PatternUUID]] *u*{"RANDOM" \| "TIME"} +
@@ -1684,7 +1684,7 @@ resulting from evaluation of the pattern - garbage-free since 2.8
 
 |%K\{key}, %map\{key}, %MAP\{key}
 |Outputs the entries in a
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html[MapMessage],
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html[MapMessage],
 if one is present in the event - garbage-free since 2.8.
 
 |%m, %msg, %message

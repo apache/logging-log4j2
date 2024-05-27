@@ -162,7 +162,7 @@ Equivalent functionality is provided in the Log4j 2 implementation classes, see 
 | Parameterized messages like `logger.info("hi {}", userName)`
 
 | http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/MDC.html[`org.apache.log4j.MDC`] and http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/NDC.html[`org.apache.log4j.NDC`]
-| xref:manual/thread-context.adoc[Thread Context]
+| {log4j2-url}/manual/thread-context.adoc[Thread Context]
 |===
 
 [#Log4j2ConfigurationFormat]
