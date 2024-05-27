@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="2471" link="https://github.com/apache/logging-log4j2/pull/2471"/>
-  <description format="asciidoc">Update `io.netty:netty-bom` to version `4.1.109.Final`</description>
+  <issue id="2601" link="https://github.com/apache/logging-log4j2/pull/2601"/>
+  <description format="asciidoc">Update `io.netty:netty-bom` to version ``</description>
 </entry>
