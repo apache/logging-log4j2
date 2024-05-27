@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Thread Context :: Apache Log4j</title>
-    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/thread-context.html">
+    <title>Status Logger :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/status-logger.html">
     <meta name="generator" content="Antora 3.2.0-alpha.4">
 <link rel="stylesheet" href="../_/css/site.css">
 <link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
@@ -135,7 +135,7 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="scoped-context.html">Scoped Context</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="2">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="thread-context.html">Thread Context</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -153,7 +153,7 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="simple-logger.html">Simple Logger</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="status-logger.html">Status Logger</a>
   </li>
 </ul>
@@ -295,22 +295,22 @@
     <li><a href="../index.html">Home</a></li>
     <li><a href="index.html">Manual</a></li>
     <li><a href="api.html">API</a></li>
-    <li><a href="thread-context.html">Thread Context</a></li>
+    <li><a href="status-logger.html">Status Logger</a></li>
   </ul>
 </nav>
-<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/manual/thread-context.adoc">Edit this Page</a></div>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/manual/status-logger.adoc">Edit this Page</a></div>
 </div>
   <div class="content">
 <aside class="toc sidebar" data-title="Contents" data-levels="4">
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Thread Context</h1>
+<h1 class="page">Status Logger</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Just like <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/ThreadLocal.html">Java&#8217;s <code>ThreadLocal</code></a>, <em>Thread Context</em> facilitates associating information with the executing thread and making this information accessible to the rest of the logging system.
-Thread Context is one of many <a href="api.html#fish-tagging" class="xref page"><em>fish tagging</em> capabilities provided by Log4j API</a>.</p>
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/status/StatusLogger.html"><code>StatusLogger</code></a> is a standalone, self-sufficient <code>Logger</code> implementation to record events that occur in the logging system (i.e., Log4j) itself.
+It is the logging system used by Log4j for reporting status of its internals.</p>
 </div>
 </div>
 </div>
@@ -318,139 +318,47 @@ Thread Context is one of many <a href="api.html#fish-tagging" class="xref page">
 <h2 id="usage"><a class="anchor" href="#usage"></a>Usage</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The entry point for associating logging-related information with the executing thread is <a href="../log4j-api/apidocs/org/apache/logging/log4j/ThreadContext.html"><code>ThreadContext</code></a>.
-It offers both</p>
+<p>You can use the status logger for several purposes:</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>map-structured – referred to as <em>Thread Context Map</em> or <em>Mapped Diagnostic Context (MDC)</em></p>
-</li>
-<li>
-<p>stack-structured – referred to as <em>Thread Context Stack</em> or <em>Nested Diagnostic Context (NDC)</em></p>
-</li>
-</ul>
+<div id="usage-troubleshoot" class="dlist">
+<dl>
+<dt class="hdlist1">Troubleshooting</dt>
+<dd>
+<p>When Log4j is not behaving in the way you expect it to, you can increase the verbosity of status logger messages emitted using <a href="#log4j2.debug">the <code>log4j2.debug</code> system property</a> for troubleshooting.
+See <a href="#config">Configuration</a> for details.</p>
+</dd>
+</dl>
 </div>
-<div class="paragraph">
-<p>storage:</p>
-</div>
+<div id="usage-report" class="dlist">
+<dl>
+<dt class="hdlist1">Reporting internal status</dt>
+<dd>
+<p>If you have custom Log4j components (layouts, appenders, etc.), you cannot use Log4j API itself for logging, since this will result in a chicken and egg problem.
+This is where <code>StatusLogger</code> comes into play:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">ThreadContext.put("ipAddress", request.getRemoteAddr()); <i class="conum" data-value="1"></i><b>(1)</b>
-ThreadContext.put("hostName", request.getServerName()); <i class="conum" data-value="1"></i><b>(1)</b>
-ThreadContext.put("loginId", session.getAttribute("loginId")); <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">private class CustomLog4jComponent {
 
-void performWork() {
-    ThreadContext.push("performWork()"); <i class="conum" data-value="2"></i><b>(2)</b>
+    private static final Logger LOGGER = StatusLogger.getInstance();
 
-    LOGGER.debug("Performing work"); <i class="conum" data-value="3"></i><b>(3)</b>
-    // Perform the work
-
-    ThreadContext.pop(); <i class="conum" data-value="4"></i><b>(4)</b>
-}
-
-ThreadContext.clear(); <i class="conum" data-value="5"></i><b>(5)</b></code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Adding properties to the thread context map</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Pushing properties to the thread context stack</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Added properties can later on be used to, for instance, filter the log event, provide extra information in the layout, etc.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Popping the last pushed property from the thread context stack</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>Clearing the thread context (for both stack and map!)</td>
-</tr>
-</table>
-</div>
-<div class="sect2">
-<h3 id="CloseableThreadContext"><a class="anchor" href="#CloseableThreadContext"></a>Auto-clearing thread context</h3>
-<div class="paragraph">
-<p>When placing items on the thread context stack or map, it&#8217;s necessary to remove them again when appropriate.
-To assist with this, you can use <a href="../log4j-api/apidocs/org/apache/logging/log4j/CloseableThreadContext.html"><code>CloseableThreadContext</code></a> (implementing <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/AutoCloseable.html"><code>AutoCloseable</code></a>) in a try-with-resources block:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">try (CloseableThreadContext.Instance ignored = CloseableThreadContext
-        .put("ipAddress", request.getRemoteAddr()) <i class="conum" data-value="1"></i><b>(1)</b>
-        .push("performWork()")) { <i class="conum" data-value="1"></i><b>(1)</b>
-
-    LOGGER.debug("Performing work"); <i class="conum" data-value="2"></i><b>(2)</b>
-    // Perform the work
-
-}
-
-// ... <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Making thread context changes that will only be visible <strong>within the scope of the try-with-resources block</strong></td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Added properties can later on be used to, for instance, filter the log event, provide extra information in the layout, etc.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Outside the scope of the try-with-resources block made thread context changes will not be visible</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="init"><a class="anchor" href="#init"></a>Initializing thread context</h3>
-<div class="paragraph">
-<p>It is a common use case that a single threaded execution fans out to multiple threads by means of a thread pool.
-In such a case, you need to clone the context of the current thread to the ones in the pool.
-For that purpose, you can use <code>putAll()</code> and <code>pushAll()</code> methods that are provided by both <code>ThreadContext</code> and <code>CloseableThreadContext</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.debug("Starting background thread for user");
-
-Map&lt;String, String&gt; mdc = ThreadContext.getImmutableContext(); <i class="conum" data-value="1"></i><b>(1)</b>
-List&lt;String&gt; ndc = ThreadContext.getImmutableStack().asList(); <i class="conum" data-value="1"></i><b>(1)</b>
-
-executor.submit(() -&gt; {
-    try (CloseableThreadContext.Instance ignored = CloseableThreadContext
-            .putAll(values) <i class="conum" data-value="2"></i><b>(2)</b>
-            .pushAll(messages)) { <i class="conum" data-value="2"></i><b>(2)</b>
-
-        LOGGER.debug("Processing for user started");
-        // ...
-
+    void doSomething(String input) {
+        LOGGER.trace("doing something with input: `{}`", input);
     }
-});</code></pre>
+
+}</code></pre>
 </div>
 </div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Taking a snapshot of the thread context</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Initializing the thread context for the background task</td>
-</tr>
-</table>
+</dd>
+</dl>
 </div>
+<div id="usage-listen" class="dlist">
+<dl>
+<dt class="hdlist1">Listening internal status</dt>
+<dd>
+<p>You can configure where the status logger messages are delivered to.
+See <a href="#listeners">Listeners</a>.</p>
+</dd>
+</dl>
 </div>
 </div>
 </div>
@@ -458,10 +366,84 @@ executor.submit(() -&gt; {
 <h2 id="config"><a class="anchor" href="#config"></a>Configuration</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You can configure thread context using following properties:</p>
+<p><code>StatusLogger</code> can be configured in following ways:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Passing system properties to the Java process (e.g., <a href="#log4j2.statusLoggerLevel"><code>-Dlog4j2.statusLoggerLevel=INFO</code></a>}</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Due to several complexities involved, <strong>you are strongly advised to <a href="#properties">configure the status logger only using system properties</a>!</strong></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Providing properties in a <code>"log4j2.StatusLogger.properties"</code> file in the classpath</p>
+</li>
+<li>
+<p>Using Log4j configuration (i.e., <code>&lt;Configuration status="WARN" dest="out"&gt;</code> in a <code>log4j2.xml</code> in the classpath)</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Since version <code>2.24.0</code>, <code>status</code> attribute in the <code>Configuration</code> element is deprecated and should be replaced with the <a href="systemproperties.html#log4j2.statusLoggerLevel" class="xref page">log4j2.statusLoggerLevel</a> configuration property.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Programmatically (e.g., <code>StatusLogger.getLogger().setLevel(Level.WARN)</code>)</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>It is crucial to understand that there is a time between the first <code>StatusLogger</code> access and a configuration file (e.g., <code>log4j2.xml</code>) read.
+Consider the following example:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The default level (of fallback listener) is <code>ERROR</code></p>
+</li>
+<li>
+<p>You have <code>&lt;Configuration status="WARN"&gt;</code> in your <code>log4j2.xml</code></p>
+</li>
+<li>
+<p>Until your <code>log4j2.xml</code> configuration is read, the effective level will be <code>ERROR</code></p>
+</li>
+<li>
+<p>Once your <code>log4j2.xml</code> configuration is read, the effective level will be <code>WARN</code> as you configured</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Hence, unless you use either system properties or <code>"log4j2.StatusLogger.properties"</code> file in the classpath, there is a time window that only the defaults will be effective.</p>
+</div>
+<div class="paragraph">
+<p><code>StatusLogger</code> is designed as a singleton class accessed statically.
+If you are running an application containing multiple Log4j configurations (e.g., in a servlet environment with multiple containers), and you happen to have differing <code>StatusLogger</code> configurations (e.g, one <code>log4j2.xml</code> containing <code>&lt;Configuration status="ERROR"&gt;</code> while the other <code>&lt;Configuration status="INFO"&gt;</code>), the last loaded configuration will be the effective one.</p>
 </div>
 <div class="sect2">
-<h3 id="log4j2.disableThreadContext"><a class="anchor" href="#log4j2.disableThreadContext"></a><code>log4j2.disableThreadContext</code></h3>
+<h3 id="properties"><a class="anchor" href="#properties"></a>Properties</h3>
+<div class="paragraph">
+<p><code>StatusLogger</code> can be configured using the following system properties:</p>
+</div>
+<div class="sect3">
+<h4 id="log4j2.debug"><a class="anchor" href="#log4j2.debug"></a><code>log4j2.debug</code></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 16.6666%;">
@@ -470,7 +452,7 @@ executor.submit(() -&gt; {
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_DISABLE_THREAD_CONTEXT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_DEBUG</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -483,11 +465,11 @@ executor.submit(() -&gt; {
 </tbody>
 </table>
 <div class="paragraph">
-<p>If <code>true</code>, the <code>ThreadContext</code> stack and map are disabled.</p>
+<p>If set to a value different from <code>false</code>, sets the level of the status logger to <code>TRACE</code> overriding any other system property.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="log4j2.disableThreadContextStack"><a class="anchor" href="#log4j2.disableThreadContextStack"></a><code>log4j2.disableThreadContextStack</code></h3>
+<div class="sect3">
+<h4 id="log4j2.statusEntries"><a class="anchor" href="#log4j2.statusEntries"></a><code>log4j2.statusEntries</code></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 16.6666%;">
@@ -496,24 +478,25 @@ executor.submit(() -&gt; {
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_DISABLE_THREAD_CONTEXT_STACK</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_STATUS_ENTRIES</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>If <code>true</code>, the <code>ThreadContext</code> stack is disabled.</p>
+<p>Specifies the number of status logger entries to cache.
+Once the limit is reached newer entries will overwrite the oldest ones.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="log4j2.disableThreadContextMap"><a class="anchor" href="#log4j2.disableThreadContextMap"></a><code>log4j2.disableThreadContextMap</code></h3>
+<div class="sect3">
+<h4 id="log4j2.statusLoggerLevel"><a class="anchor" href="#log4j2.statusLoggerLevel"></a><code>log4j2.statusLoggerLevel</code></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 16.6666%;">
@@ -522,24 +505,25 @@ executor.submit(() -&gt; {
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_DISABLE_THREAD_CONTEXT_MAP</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_STATUS_LOGGER_LEVEL</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level">Level</a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>If <code>true</code>, the <code>ThreadContext</code> map is disabled.</p>
+<p>Specifies the level of the status logger.
+Can be overridden by <a href="#log4j2.debug"><code>log4j2.debug</code></a>.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="log4j2.threadContextMap"><a class="anchor" href="#log4j2.threadContextMap"></a><code>log4j2.threadContextMap</code></h3>
+<div class="sect3">
+<h4 id="log4j2.statusLoggerDateFormat"><a class="anchor" href="#log4j2.statusLoggerDateFormat"></a><code>log4j2.statusLoggerDateFormat</code></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 16.6666%;">
@@ -548,45 +532,24 @@ executor.submit(() -&gt; {
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_THREAD_CONTEXT_MAP</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_STATUS_LOGGER_DATE_FORMAT</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap">Class&lt;? extends ThreadContextMap&gt;</a> or predefined constant</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter">DateTimeFormatter</a> pattern</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WebApp</code></p>
-<p class="tableblock">(GC-free mode: <code>CopyOnWrite</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html#ISO_INSTANT">DateTimeFormatter.ISO_INSTANT</a></p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Fully specified class name of a custom <a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap">ThreadContextMap</a> implementation class or one of the predefined constants:</p>
-</div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">NoOp</dt>
-<dd>
-<p>to disable the thread context,</p>
-</dd>
-<dt class="hdlist1">WebApp</dt>
-<dd>
-<p>a web application-safe implementation, that only binds JRE classes to <code>ThreadLocal</code> to prevent memory leaks,</p>
-</dd>
-<dt class="hdlist1">CopyOnWrite</dt>
-<dd>
-<p>a copy-on-write implementation,</p>
-</dd>
-<dt class="hdlist1">GarbageFree</dt>
-<dd>
-<p>a garbage-free implementation.</p>
-</dd>
-</dl>
+<p>Sets the <a href="https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html">DateTimeFormatter</a> pattern used by status logger to format dates.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="isThreadContextMapInheritable"><a class="anchor" href="#isThreadContextMapInheritable"></a><code>log4j2.isThreadContextMapInheritable</code></h3>
+<div class="sect3">
+<h4 id="log4j2.statusLoggerDateFormatZone"><a class="anchor" href="#log4j2.statusLoggerDateFormatZone"></a><code>log4j2.statusLoggerDateFormatZone</code></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 16.6666%;">
@@ -595,90 +558,44 @@ executor.submit(() -&gt; {
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_IS_THREAD_CONTEXT_MAP_INHERITABLE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_STATUS_LOGGER_DATE_FORMAT_ZONE</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/time/ZoneId.html">ZoneId</a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/time/ZoneId.html#systemDefault()">ZoneId.systemDefault()</a></p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>If <code>true</code> uses an <code>InheritableThreadLocal</code> to copy the thread context map to newly created threads.</p>
+<p>Sets the timezone id used by status logger.
+See <a href="https://docs.oracle.com/javase/8/docs/api/java/time/ZoneId.html">ZoneId</a> for the accepted formats.</p>
 </div>
-<div class="paragraph">
-<p>Note that, as explained in
-<a href="http://docs.oracle.com/javase/6/docs/api/java/util/concurrent/Executors.html#privilegedThreadFactory()">Java&#8217;s <code>Executors#privilegedThreadFactory()</code></a>, when you are dealing with <em>privileged threads</em>, thread context might not get propagated completely.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="log4j2.garbagefreeThreadContextMap"><a class="anchor" href="#log4j2.garbagefreeThreadContextMap"></a><code>log4j2.garbagefreeThreadContextMap</code></h3>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 83.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_GARBAGEFREE_THREAD_CONTEXT_MAP</p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>If set to <code>true</code> selects a garbage-free thread context map implementation.</p>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="extending"><a class="anchor" href="#extending"></a>Extending</h2>
+<h2 id="debug"><a class="anchor" href="#debug"></a>Debug mode</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Certain thread context implementation details can be customized to fit your use case.</p>
+<p>When the <code>log4j2.debug</code> system property is present, any level-related filtering will be skipped and all events will be notified to listeners.
+If no listeners are available, the fallback listener of type <code>StatusConsoleListener</code> will be used.</p>
 </div>
-<div class="sect2">
-<h3 id="custom-ContextDataProvider"><a class="anchor" href="#custom-ContextDataProvider"></a>Custom thread context data provider</h3>
+</div>
+</div>
+<div class="sect1">
+<h2 id="listeners"><a class="anchor" href="#listeners"></a>Listeners</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>The <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/ContextDataProvider.html"><code>ContextDataProvider</code></a> is an interface applications and libraries can use to inject additional properties into a log events' context data.
-Log4j uses <code>java.util.ServiceLoader</code> to locate and load <code>ContextDataProvider</code> instances.
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/impl/ThreadContextDataProvider.html"><code>ThreadContextDataProvider</code></a> is the default implementation provided.
-You can provide a custom <code>ContextDataProvider</code> implementation as follows:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Create the following file in your class path:</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">META-INF/services/org.apache.logging.log4j.core.util.ContextDataProvider</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Write the fully-qualified class name of your custom implementation (e.g., <code>com.mycompany.CustomContextDataProvider</code>) to the file created in the previous step</p>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect2">
-<h3 id="custom-ThreadContextMap"><a class="anchor" href="#custom-ThreadContextMap"></a>Custom thread context map</h3>
-<div class="paragraph">
-<p>Custom thread context map implementations can be provided by setting <a href="#log4j2.threadContextMap">the <code>log4j2.threadContextMap</code> system property</a> to the fully-qualified class name of the custom implementation class extending from <a href="../javadoc/log4j-core/org/apache/logging/log4j/spi/ThreadContextMap.html"><code>ThreadContextMap</code></a>.</p>
+<p>Each recorded log event by <code>StatusLogger</code> will first get buffered and then used to notify the registered <a href="../javadoc/log4j-api/org/apache/logging/log4j/status/StatusListener.html"><code>StatusListener</code></a>s.
+If none are available, <strong>the fallback listener</strong> of type <a href="../javadoc/log4j-api/org/apache/logging/log4j/status/StatusConsoleListener.html"><code>StatusConsoleListener</code></a> will be used.</p>
 </div>
 <div class="paragraph">
-<p>While providing a custom thread context map implementation, you are advised to also extend from <a href="../javadoc/log4j-core/org/apache/logging/log4j/spi/ReadOnlyThreadContextMap.html"><code>ReadOnlyThreadContextMap</code></a> too.
-By this way, your custom thread context map implementation will be accessible to applications via
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html#getThreadContextMap()"><code>ThreadContext.getThreadContextMap()</code></a>.</p>
-</div>
+<p>You can programmatically register listeners using <a href="../javadoc/log4j-api/org/apache/logging/log4j/status/StatusLogger.html#registerListener(org.apache.logging.log4j.status.StatusListener)">the <code>StatusLogger#registerListener(StatusListener)</code> method</a>.</p>
 </div>
 </div>
 </div>

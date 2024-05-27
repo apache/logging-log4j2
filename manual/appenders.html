@@ -150,6 +150,12 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="resource-logger.html">Resource Logger</a>
   </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="simple-logger.html">Simple Logger</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="status-logger.html">Status Logger</a>
+  </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="1">
@@ -2764,7 +2770,9 @@ Each log event is sent as a Kafka record.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">syncSend</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The default is <code>true</code>, causing sends to block until the record has been acknowledged by the Kafka server. When set to <code>false</code>, sends a return immediately, allowing for lower latency and significantly higher throughput. <em>New since 2.8. Be aware that this is a new addition, and it has not been extensively tested. Any failure sending to Kafka will be reported as an error to StatusLogger and the log event will be dropped (the ignoreExceptions parameter will not be effective). Log events may arrive out of order on the Kafka server.</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The default is <code>true</code>, causing sends to block until the record has been acknowledged by the Kafka server. When set to <code>false</code>, sends a return immediately, allowing for lower latency and significantly higher throughput. <em>New since 2.8. Be aware that this is a new addition, and it has not been extensively tested.
+Any failure sending to Kafka will be reported as an error to <a href="status-logger.html" class="xref page">Status Logger</a> and the log event will be dropped (the ignoreExceptions parameter will not be effective).
+Log events may arrive out of order on the Kafka server.</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">properties</p></td>
@@ -4624,7 +4632,7 @@ false.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">testMode</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">If true, files are not deleted but instead a message
-is printed to the <a href="configuration.html#StatusMessages" class="xref page">status logger</a>
+is printed to the <a href="status-logger.html" class="xref page">Status Logger</a>
 at INFO level. Use this to do a dry run to test if the configuration
 works as expected. The default is false.</p></td>
 </tr>
@@ -5027,7 +5035,7 @@ modified files first. The script is free to modify and return this list.</p></td
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">statusLogger</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">StatusLogger</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The StatusLogger that can be used to log
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <a href="status-logger.html" class="xref page">Status Logger</a> that can be used to log
 internal events during script execution.</p></td>
 </tr>
 <tr>

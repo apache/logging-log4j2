@@ -150,6 +150,12 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="resource-logger.html">Resource Logger</a>
   </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="simple-logger.html">Simple Logger</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="status-logger.html">Status Logger</a>
+  </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="1">
@@ -349,12 +355,15 @@ You can also check out <a href="installation.html" class="xref page">Installatio
 <p>A logging API that libraries and applications can code to</p>
 </li>
 <li>
+<p><a href="#simple-logger">A minimal logging implementation (aka. Simple logger)</a></p>
+</li>
+<li>
 <p>Adapter components to create a logging implementation</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>This page tries to cover the most prominent Log4j API features that libraries and applications can code to.</p>
+<p>This page tries to cover the most prominent Log4j API features.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -613,7 +622,7 @@ Consider the following example:</p>
 <h2 id="loggers"><a class="anchor" href="#loggers"></a>Loggers</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html"><code>Logger</code></a>s obtained using <a href="../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html"><code>LogManager</code></a> is the primary entry point for logging.
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html"><code>Logger</code></a>s are the primary entry point for logging.
 In this section we will introduce you to further details about <code>Logger</code>s.</p>
 </div>
 <div class="sect2">
@@ -787,10 +796,32 @@ You might reconsider your formatter logger usages for latency sensitive applicat
 <p><a href="eventlogging.html" class="xref page">Read more on event loggers&#8230;&#8203;</a></p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="simple-logger"><a class="anchor" href="#simple-logger"></a>Simple logger</h3>
+<div class="paragraph">
+<p>Even though Log4j Core is the reference implementation of Log4j API, Log4j API itself also provides a very minimalist implementation: <em>Simple Logger</em>.
+This is a convenience for environments where either a fully-fledged logging implementation is missing, or cannot be included for other reasons.
+<code>SimpleLogger</code> is the fallback Log4j API implementation if no other is available in the classpath.</p>
+</div>
+<div class="paragraph">
+<p><a href="simple-logger.html" class="xref page">Read more on the simple logger&#8230;&#8203;</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="status-logger"><a class="anchor" href="#status-logger"></a>Status logger</h3>
+<div class="paragraph">
+<p><em>Status Logger</em> is a standalone, self-sufficient <code>Logger</code> implementation to record events that occur in the logging system (i.e., Log4j) itself.
+It is the logging system used by Log4j for reporting status of its internals.
+Users can use the status logger to either emit logs in their custom Log4j components, or troubleshoot a Log4j configuration.</p>
+</div>
+<div class="paragraph">
+<p><a href="status-logger.html" class="xref page">Read more on the status logger&#8230;&#8203;</a></p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="feature-fluent-api"><a class="anchor" href="#feature-fluent-api"></a>Fluent API</h2>
+<h2 id="fluent-api"><a class="anchor" href="#fluent-api"></a>Fluent API</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The fluent API allows you to log using a fluent interface:</p>

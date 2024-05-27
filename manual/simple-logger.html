@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>JMX :: Apache Log4j</title>
-    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/jmx.html">
+    <title>Simple Logger :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/simple-logger.html">
     <meta name="generator" content="Antora 3.2.0-alpha.4">
 <link rel="stylesheet" href="../_/css/site.css">
 <link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
@@ -150,7 +150,7 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="resource-logger.html">Resource Logger</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="simple-logger.html">Simple Logger</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -192,7 +192,7 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="scripts.html">Scripts</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="2">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="jmx.html">JMX</a>
   </li>
 </ul>
@@ -294,152 +294,263 @@
   <ul>
     <li><a href="../index.html">Home</a></li>
     <li><a href="index.html">Manual</a></li>
-    <li>Configuration</li>
-    <li><a href="jmx.html">JMX</a></li>
+    <li><a href="api.html">API</a></li>
+    <li><a href="simple-logger.html">Simple Logger</a></li>
   </ul>
 </nav>
-<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/manual/jmx.adoc">Edit this Page</a></div>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/manual/simple-logger.adoc">Edit this Page</a></div>
 </div>
   <div class="content">
 <aside class="toc sidebar" data-title="Contents" data-levels="4">
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">JMX</h1>
+<h1 class="page">Simple Logger</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Log4j 2 has built-in support for JMX.</p>
-</div>
-<div class="paragraph">
-<p>When JMX support is enabled, <a href="status-logger.html" class="xref page">Status Logger</a>, ContextSelector, and all LoggerContexts, LoggerConfigs, and <a href="appenders.html" class="xref page">Appenders</a> are instrumented with MBeans.</p>
-</div>
-<div class="paragraph">
-<p>Also included is a simple client GUI that can be used to monitor the
-status logger output, as well as to remotely reconfigure Log4j with a
-different configuration file, or to edit the current configuration
-directly.</p>
+<p>Even though Log4j Core is the reference implementation of <a href="api.html" class="xref page">Log4j API</a>, Log4j API itself also provides a very minimalist implementation: <a href="../javadoc/log4j-api/org/apache/logging/log4j/simple/SimpleLogger.html"><code>SimpleLogger</code></a>.
+This is a convenience for environments where either a fully-fledged logging implementation is missing, or cannot be included for other reasons.
+<code>SimpleLogger</code> is the default Log4j API implementation if no other is available in the classpath.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="Enabling_JMX"><a class="anchor" href="#Enabling_JMX"></a>Enabling JMX</h2>
+<h2 id="config"><a class="anchor" href="#config"></a>Configuration</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>JMX support is disabled by default.</p>
+<p><code>SimpleLogger</code> can be configured using the following system properties:</p>
 </div>
-<div class="admonitionblock note">
-<table>
+<div class="sect2">
+<h3 id="log4j2.simplelogLevel"><a class="anchor" href="#log4j2.simplelogLevel"></a><code>log4j2.simplelogLevel</code></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
 <tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-JMX support was enabled by default in Log4j 2 versions before 2.24.0.
-</td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_SIMPLELOG_LEVEL</p></td>
 </tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level">Level</a></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
+</tr>
+</tbody>
 </table>
+<div class="paragraph">
+<p>Default level for new logger instances.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="log4j2.simplelog.loggerName.level"><a class="anchor" href="#log4j2.simplelog.loggerName.level"></a><code>log4j2.simplelog.&lt;loggerName&gt;.level</code></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_SIMPLELOG_&lt;LOGGER_NAME&gt;_LEVEL</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level">Level</a></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">value of <a href="#log4j2.simplelogLevel"><code>log4j2.simplelogLevel</code></a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Log level for a logger instance named <code>&lt;loggerName&gt;</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="log4j2.simplelogShowContextMap"><a class="anchor" href="#log4j2.simplelogShowContextMap"></a><code>log4j2.simplelogShowContextMap</code></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_SIMPLELOG_SHOW_CONTEXT_MAP</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>If <code>true</code>, the full thread context map is included in each log message.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="log4j2.simplelogShowlogname"><a class="anchor" href="#log4j2.simplelogShowlogname"></a><code>log4j2.simplelogShowlogname</code></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_SIMPLELOG_SHOWLOGNAME</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>If <code>true</code>, the logger name is included in each log message.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="log4j2.simplelogShowShortLogname"><a class="anchor" href="#log4j2.simplelogShowShortLogname"></a><code>log4j2.simplelogShowShortLogname</code></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_SIMPLELOG_SHOW_SHORT_LOGNAME</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>If <code>true</code>, only the last component of a logger name is included in each log message.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="log4j2.simplelogShowdatetime"><a class="anchor" href="#log4j2.simplelogShowdatetime"></a><code>log4j2.simplelogShowdatetime</code></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_SIMPLELOG_SHOWDATETIME</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>If <code>true</code>, a timestamp is included in each log message.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="log4j2.simplelogDateTimeFormat"><a class="anchor" href="#log4j2.simplelogDateTimeFormat"></a><code>log4j2.simplelogDateTimeFormat</code></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_SIMPLELOG_DATE_TIME_FORMAT</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a> pattern</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>yyyy/MM/dd HH:mm:ss:SSS zzz</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Date-time format to use.
+Ignored if <a href="#log4j2.simplelogShowdatetime"><code>log4j2.simplelogShowdatetime</code></a> is <code>false</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="log4j2.simplelogLogFile"><a class="anchor" href="#log4j2.simplelogLogFile"></a><code>log4j2.simplelogLogFile</code></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_SIMPLELOG_LOG_FILE</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a> or predefined constant</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>System.err</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Specifies the output stream used by all loggers.</p>
 </div>
 <div class="paragraph">
-<p>To enable JMX support, set the
-<a href="systemproperties.html#log4j2.disableJmx" class="xref page">log4j2.disableJmx</a>
-system property when starting the Java VM:</p>
+<p>Its value can be the path to a log file or one of these constants:</p>
 </div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">System.err</dt>
+<dd>
+<p>logs to the standard error output stream,</p>
+</dd>
+<dt class="hdlist1">System.out</dt>
+<dd>
+<p>logs to the standard output stream,</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_thread_context"><a class="anchor" href="#_thread_context"></a>Thread context</h3>
 <div class="paragraph">
-<p><code>log4j2.disableJmx=false</code></p>
+<p>Simple Logger supports the same properties as Log4j Core for the configuration of the thread context.
+See <a href="systemproperties.html#properties-thread-context" class="xref page">manual/systemproperties.adoc#properties-thread-context</a> for details.</p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="Local"><a class="anchor" href="#Local"></a>Local Monitoring and Management</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>To perform local monitoring you need to set the
-<a href="systemproperties.html#log4j2.disableJmx" class="xref page">log4j2
-.disableJmx</a>
-system property to <code>false</code>.
-The JConsole tool that is included in the Java JDK can be
-used to monitor your application. Start JConsole by typing
-<code>$JAVA_HOME/bin/jconsole</code> in a command shell. For more details,
-see Oracle&#8217;s documentation at
-<a href="https://docs.oracle.com/javase/7/docs/technotes/guides/management/jconsole.html">how
-to use JConsole</a>.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="Remote"><a class="anchor" href="#Remote"></a>Remote Monitoring and Management</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>To enable monitoring and management from remote systems, set the
-following two system properties when starting the Java VM:</p>
-</div>
-<div class="paragraph">
-<p><code>log4j2.disableJmx=false</code></p>
-</div>
-<div class="paragraph">
-<p>and</p>
-</div>
-<div class="paragraph">
-<p><code>com.sun.management.jmxremote.port=portNum</code></p>
-</div>
-<div class="paragraph">
-<p>In the property above, <code>portNum</code> is the port number through which you
-want to enable JMX RMI connections.</p>
-</div>
-<div class="paragraph">
-<p>For more details, see Oracle&#8217;s documentation at
-<a href="https://docs.oracle.com/javase/7/docs/technotes/guides/management/agent.html#gdenl">Remote
-Monitoring and Management</a>.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="RMI_GC"><a class="anchor" href="#RMI_GC"></a>RMI impact on Garbage Collection</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Be aware that RMI by default triggers a full GC every hour. See the
-<a href="https://docs.oracle.com/javase/7/docs/technotes/guides/rmi/sunrmiproperties.html">Oracle
-documentation</a> for the <code>sun.rmi.dgc.server.gcInterval</code> and
-<code>sun.rmi.dgc.client.gcInterval</code> properties. The default value of both
-properties is 3600000 milliseconds (one hour). Before Java 6, it was one
-minute.</p>
-</div>
-<div class="paragraph">
-<p>The two <code>sun.rmi</code> arguments reflect whether your JVM is running in server
-or client mode. If you want to modify the GC interval time it may be
-best to specify both properties to ensure the argument is picked up by
-the JVM.</p>
-</div>
-<div class="paragraph">
-<p>An alternative may be to disable explicit calls to <code>System.gc()</code>
-altogether with <code>-XX:+DisableExplicitGC</code>, or (if you are using the CMS
-or G1 collector) add <code>-XX:+ExplicitGCInvokesConcurrent</code> to ensure the
-full GCs are done concurrently in parallel with your application instead
-of forcing a stop-the-world collection.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="Log4j_MBeans"><a class="anchor" href="#Log4j_MBeans"></a>Log4j Instrumented Components</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The best way to find out which methods and attributes of the various  Log4j components are accessible via JMX is to look at the <code>org.apache.logging.log4j.core.jmx</code> package contents in the <code>log4j-core</code> artifact or by exploring directly in JConsole.</p>
-</div>
-<div class="paragraph">
-<p>The screenshot below shows the Log4j MBeans in JConsole.</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="../_images/jmx-jconsole-mbeans.png" alt="JConsole screenshot of the MBeans tab"></span></p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="ClientGUI"><a class="anchor" href="#ClientGUI"></a>Client GUI</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p><a href="https://github.com/apache/logging-log4j-jmx-gui">The Apache Log4j JMX GUI</a> is a basic client GUI that can be used to monitor the <code>StatusLogger</code> output and to remotely modify the Log4j configuration.
-The client GUI can be run as a stand-alone application or as a JConsole plug-in.</p>
 </div>
 </div>
 </div>

@@ -150,6 +150,12 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="manual/resource-logger.html">Resource Logger</a>
   </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/simple-logger.html">Simple Logger</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/status-logger.html">Status Logger</a>
+  </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="1">
@@ -449,12 +455,12 @@ Note the <code>2</code> in the file name!
 (See <a href="manual/configuration.html" class="xref page">the Configuration page</a> for more details.)</p>
 </li>
 <li>
-<p>Increase the logging verbosity of the internal status logger:<br>
+<p>Increase the logging verbosity of the internal <a href="manual/status-logger.html" class="xref page">Status Logger</a>:<br>
 <code>-Dlog4j2.statusLoggerLevel=TRACE</code></p>
 </li>
 <li>
 <p>Enable all internal debug logging: <code>-Dlog4j2.debug</code>.
-This disables level-based status logger filtering and effectively allows all status logs.</p>
+This disables level-based <a href="manual/status-logger.html" class="xref page">Status Logger</a> filtering and effectively allows all status logs.</p>
 </li>
 </ol>
 </div>
@@ -497,7 +503,7 @@ Messages allow support for interesting and complex constructs to be passed throu
 Users are free to create their own message types and write custom layouts, filters and lookups to manipulate them.</p>
 </li>
 <li>
-<p>Log4j API supports <a href="manual/api.html#LambdaSupport" class="xref page">lambda expressions</a> both in its plain and fluent API.</p>
+<p>Log4j API supports <a href="manual/api.html#fluent-api" class="xref page">lambda expressions</a> both in its plain and fluent API.</p>
 </li>
 <li>
 <p>Log4j API has better support for <a href="manual/garbagefree.html" class="xref page">garbage-free logging</a>: it avoids creating <code>vararg</code> arrays and avoids creating <code>String</code>s when logging <code>CharSequence</code>s.</p>
