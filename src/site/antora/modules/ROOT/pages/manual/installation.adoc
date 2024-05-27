@@ -33,7 +33,7 @@ Below we share some shortcuts for the impatient.
 
 [WARNING]
 ====
-We strongly advise you to skim through this page to get a grip on fundamental logging concepts and understand which recipe fits to your bill best.
+We strongly advise you to skim through this page to get a grip on fundamental logging concepts and understand which recipe fits your bill best.
 ====
 
 Are you a library developer?::
@@ -262,7 +262,7 @@ implementation 'org.apache.logging.log4j:log4j-api'
 [#impl]
 == Installing a logging implementation
 
-Log4j provides several modules to facilitate deployment of different logging implementations:
+Log4j provides several modules to facilitate the deployment of different logging implementations:
 
 `log4j-core`::
 The reference implementation.
@@ -280,7 +280,7 @@ https://logback.qos.ch/[Logback] implements SLF4J natively, refer to <<impl-logb
 
 [IMPORTANT]
 ====
-In order to ensure that your code does not directly depend on a particular logging implementation, the logging backend should be put in the appropriate scope of your dependency manager:
+To ensure that your code does not directly depend on a particular logging implementation, the logging backend should be put in the appropriate scope of your dependency manager:
 
 [cols="2,1m,1m"]
 |===
@@ -346,7 +346,7 @@ runtimeOnly 'org.apache.logging.log4j:log4j-core'
 [#impl-core-bridges]
 ==== Installing bridges
 
-If either your application or one if its dependencies logs against a logging API that is different from Log4j API, you need to xref:#logging-bridge[bridge] that API to Log4j API.
+If either your application or one of its dependencies logs against a logging API that is different from Log4j API, you need to xref:#logging-bridge[bridge] that API to Log4j API.
 
 [TIP]
 ====
@@ -358,7 +358,7 @@ And if so, which ones?**
 * If it is a standalone application (i.e., not running in a Java EE container), you will probably need xref:#impl-core-bridge-jul[JUL-to-Log4j] and xref:#impl-core-bridge-jpl[JPL-to-Log4j] bridges.
 ====
 
-Following sections explain installation of Log4j-provided bridges.
+The following sections explain the installation of Log4j-provided bridges.
 
 [#impl-core-bridge-slf4j]
 ===== Installing SLF4J-to-Log4j bridge
@@ -482,7 +482,7 @@ Gradle users should refer to the https://docs.gradle.org/current/userguide/platf
 [#impl-core-bridge-jboss-logging]
 ===== Installing JBoss Logging-to-Log4j bridge
 
-The JBoss Logging API is shipped with an integrated bridge to Log4j API and requires no steps from your part. See
+The JBoss Logging API is shipped with an integrated bridge to Log4j API and requires no steps on your part. See
 https://github.com/jboss-logging/jboss-logging?tab=readme-ov-file#supported-log-managers[Supported Log Managers] for more information.
 
 [#impl-core-spring-boot]
@@ -541,7 +541,7 @@ See https://docs.spring.io/spring-boot/docs/current/reference/html/features.html
 [#impl-core-config]
 ==== Configuring Log4j Core
 
-As any other logging implementation, Log4j Core needs to be properly configured.
+As with any other logging implementation, Log4j Core needs to be properly configured.
 Log4j Core supports many different configuration formats: JSON, XML, YAML, and Java properties.
 To configure Log4j Core, see xref:manual/configuration.adoc[].
 A basic configuration can be obtained by adding one of these files to your application's classpath:
@@ -632,93 +632,9 @@ rootLogger.appenderRef.0.ref = CONSOLE
 ====
 <1> While xref:manual/layouts.adoc#PatternLayout[Pattern Layout] is a good first choice and preferable for tests, we recommend using a structured format such as xref:manual/json-template-layout.adoc[] for production deployments.
 
-In order to use these formats, the following additional dependencies are required:
+To use these formats, the following additional dependencies are required:
 
-[tabs]
-====
-
-Maven::
-+
-[tabs]
-=====
-
-log4j2.xml::
-+
-JPMS users need to add:
-+
-[source,java]
-----
-module foo.bar {
-    requires java.xml;
-}
-----
-+
-to their `module-info.java` descriptor.
-
-log4j2.json::
-+
-No dependency required.
-
-log4j2.yaml::
-+
-[source,xml]
-----
-<dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-config-yaml</artifactId>
-</dependency>
-----
-
-log4j2.properties::
-+
-[source,xml]
-----
-<dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-config-properties</artifactId>
-</dependency>
-----
-
-=====
-
-Gradle::
-+
-[tabs]
-=====
-
-log4j2.xml::
-+
-JPMS users need to add:
-+
-[source,java]
-----
-module foo.bar {
-    requires java.xml;
-}
-----
-+
-to their `module-info.java` descriptor.
-
-log4j2.json::
-+
-No dependency required.
-
-log4j2.yaml::
-+
-[source,groovy]
-----
-runtimeOnly 'org.apache.logging.log4j:log4j-config-yaml'
-----
-
-log4j2.properties::
-+
-[source,groovy]
-----
-runtimeOnly 'org.apache.logging.log4j:log4j-config-properties'
-----
-
-=====
-====
+include::partial$configuration-file-format-deps.adoc[]
 
 [#impl-jul]
 === Installing JUL

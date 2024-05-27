@@ -14,22 +14,17 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-= Javadoc API Documentation
 
-The table below contains links to the Javadoc API Documentation for the components you are most likely to use directly in code.
+* [ ] Don't use `Object#toString()` in arguments, it is redundant!
++
+[source,java]
+----
+/* BAD! */ LOGGER.info("userId: {}", userId.toString());
+----
 
-|===
-|Component |Description
-
-|{log4j2-url}/javadoc/log4j-api[Log4j 2 API]
-|The interface that applications should use and code against.
-
-|link:javadoc/log4j-kit/index.html[Implementation helper kit]
-|Common helper functions for Log4j API implementations.
-
-|link:javadoc/log4j-core/index.html[Reference implementation]
-|The standard implementation, also called the Log4j 3 Core, that contains Appenders, Filters, and more.
-
-|link:javadoc/log4j-async-logger/index.html[Asynchronous logger]
-|An alternative asynchronous logger implementation for Log4j 3 Core, based on LMAX Disruptor.
-|===
+* [x] Underlying message type and layout will deal with arguments:
++
+[source,java]
+----
+/* GOOD */ LOGGER.info("userId: {}", userId);
+----

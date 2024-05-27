@@ -53,3 +53,9 @@ In the above example, if _the caller class_ (which is expensive to compute!) is 
 Asynchronous loggers need to capture the location information before passing the log message to another thread; otherwise the location information will be lost after that point.
 Due to associated performance implications, xref:manual/async.adoc[asynchronous loggers] and xref:manual/appenders.adoc#AsyncAppender[asynchronous appenders] do **not** include location information by default.
 You can override the default behaviour in your asynchronous logger or asynchronous appender configuration.
+
+[NOTE]
+====
+Even if a layout is configured not to **request** location information, it might use it if the information is already available.
+This is always the case of information location computed at build time using the link:/log4j/transform/latest/#log4j-transform-maven-plugin[Log4j Transform Maven Plugin].
+====

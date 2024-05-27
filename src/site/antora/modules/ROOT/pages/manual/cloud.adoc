@@ -282,7 +282,7 @@ message would be redundant.
     "$resolver": "level",
     "field": "name"
   },
-  "application": "\${lower:\${spring:spring.application.name}}",
+  "application": "\\${lower:\\${spring:spring.application.name}}",
   "short_message": {
     "$resolver": "message",
     "stringified": true
@@ -526,20 +526,20 @@ The sample application used can be found under the in https://github.com/apache/
 | - Flume Avro - 1000 - JSON  | 0.76     | 0.37      | 0.45      | 0.68
 |===========================================================================
 
-
 Notes:
-1. Flume Avro - Buffering is controlled by the batch size. Each send is complete when the remote
+
+. Flume Avro - Buffering is controlled by the batch size. Each send is complete when the remote
 acknowledges the batch was written to its channel. These number seem to indicate Flume Avro could
 benefit from using a pool of RPCClients, at least for a batchSize of 1.
-1. Flume Embedded - This is essentially asynchronous as it writes to an in-memory buffer. It is
+. Flume Embedded - This is essentially asynchronous as it writes to an in-memory buffer. It is
 unclear why the performance isn't closer to the AsyncLogger results.
-1. Kafka was run in standalone mode on the same laptop as the application. See  sendSync set to true
+. Kafka was run in standalone mode on the same laptop as the application. See  sendSync set to true
 requires waiting for an ack from Kafka for each log event.
-1. Console - System.out is redirected to a file by Docker. Testing shows that it would be much
+. Console - System.out is redirected to a file by Docker. Testing shows that it would be much
 slower if it was writing to the terminal screen.
-1. Rolling File - Test uses the default buffer size of 8K.
-1. TCP to Fluent Bit - The Socket Appender uses a default buffer size of 8K.
-1. Async Loggers - These all write to a circular buffer and return to the application. The actual
+. Rolling File - Test uses the default buffer size of 8K.
+. TCP to Fluent Bit - The Socket Appender uses a default buffer size of 8K.
+. Async Loggers - These all write to a circular buffer and return to the application. The actual
 I/O will take place on a separate thread. If writing the events is performed more slowly than
 events are being created eventually the buffer will fill up and logging will be performed at
 the same pace that log events are written.

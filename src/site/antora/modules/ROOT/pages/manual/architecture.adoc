@@ -29,12 +29,13 @@ created it will be associated with the LoggerConfig that contains either
 a) the same name as the Logger, b) the name of a parent package, or c)
 the root LoggerConfig. LoggerConfig objects are created from Logger
 declarations in the configuration. The LoggerConfig is associated with
-the Appenders that actually deliver the LogEvents.
+the Appenders that deliver the LogEvents.
 
+[id=logger-hierarchy]
 === Logger Hierarchy
 
 The first and foremost advantage of any logging API over plain
-`System.out.println` resides in its ability to disable certain log
+`System.out.println()` resides in its ability to disable certain log
 statements while allowing others to print unhindered. This capability
 assumes that the logging space, that is, the space of all possible
 logging statements, is categorized according to some developer-chosen
@@ -97,8 +98,8 @@ xref:manual/logsep.adoc[Log Separation] section.
 Every LoggerContext has an active
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html[`Configuration`].
 The Configuration contains all the Appenders, context-wide Filters,
-LoggerConfigs and contains the reference to the StrSubstitutor. During
-reconfiguration two Configuration objects will exist. Once all Loggers
+LoggerConfigs and contains the reference to the StrSubstitutor. 
+During reconfiguration, two Configuration objects will exist. Once all Loggers
 have been redirected to the new Configuration, the old Configuration
 will be stopped and discarded.
 
@@ -116,7 +117,7 @@ causing their behavior to be modified.
 Retrieving Loggers
 
 Calling the `LogManager.getLogger` method with the same name will always
-return a reference to the exact same Logger object.
+return a reference to the same Logger object.
 
 For example, in
 
@@ -150,6 +151,7 @@ Logger name.
 Nevertheless, naming loggers after the class where they are located
 seems to be the best strategy known so far.
 
+[#loggerconfig]
 === LoggerConfig
 
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/LoggerConfig.html[`LoggerConfig`]
@@ -228,7 +230,7 @@ In example 3, the loggers`root`, `X` and `X.Y.Z` each have a configured
 LoggerConfig with the same name. The Logger `X.Y` does not have a
 configured LoggerConfig with a matching name so uses the configuration
 of LoggerConfig `X` since that is the LoggerConfig whose name has the
-longest match to the start of the Logger's name.
+the longest match to the start of the Logger's name.
 
 .Example 4
 [cols=",,,",options="header",]
@@ -243,7 +245,7 @@ longest match to the start of the Logger's name.
 In example 4, the loggers `root` and `X` each have a Configured
 LoggerConfig with the same name. The loggers `X.Y` and `X.Y.Z` do not
 have configured LoggerConfigs and so get their Level from the
-LoggerConfig assigned to them,`X`, since it is the LoggerConfig whose
+LoggerConfig assigned to them, `X`, since it is the LoggerConfig whose
 name has the longest match to the start of the Logger's name.
 
 .Example 5
@@ -256,10 +258,10 @@ name has the longest match to the start of the Logger's name.
 |X.YZ |X |ERROR |ERROR
 |=============================================================
 
-In example 5, the loggers`root`.`X`, and `X.Y` each have a Configured
+In example 5, the loggers `root`.`X`, and `X.Y` each has a configured
 LoggerConfig with the same name. The logger `X.YZ` does not have
 configured LoggerConfig and so gets its Level from the LoggerConfig
-assigned to it,`X`, since it is the LoggerConfig whose name has the
+assigned to it, `X`, since it is the LoggerConfig whose name has the
 longest match to the start of the Logger's name. It is not associated
 with LoggerConfig `X.Y` since tokens after periods must match exactly.
 
@@ -273,13 +275,13 @@ with LoggerConfig `X.Y` since tokens after periods must match exactly.
 |X.Y.Z |X.Y | |ERROR
 |===
 
-In example 6, LoggerConfig X.Y it has no configured level so it inherits
+In example 6, LoggerConfig X.Y has no configured level so it inherits
 its level from LoggerConfig X. Logger X.Y.Z uses LoggerConfig X.Y since
 it doesn't have a LoggerConfig with a name that exactly matches. It too
 inherits its logging level from LoggerConfig X.
 
-The table below illustrates how Level filtering works. In the table, the
-vertical header shows the Level of the LogEvent, while the horizontal
+The table below illustrates how Level filtering works. In the table, 
+the vertical header shows the Level of the LogEvent, while the horizontal
 header shows the Level associated with the appropriate LoggerConfig. The
 intersection identifies whether the LogEvent would be allowed to pass
 for further processing (Yes) or discarded (No).
@@ -346,7 +348,7 @@ be attached to a Logger.
 An Appender can be added to a Logger by calling the
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html#addLoggerAppender(org.apache.logging.log4j.core.Logger,%20org.apache.logging.log4j.core.Appender)[`addLoggerAppender`]
 method of the current Configuration. If a LoggerConfig matching the name
-of the Logger does not exist, one will be created, the Appender will be
+of the Logger does not exist, one will be created, and the Appender will be
 attached to it and then all Loggers will be notified to update their
 LoggerConfig references.
 
@@ -432,7 +434,7 @@ sending the formatted output to its destination. The
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/PatternLayout.html[`PatternLayout`],
 part of the standard log4j distribution, lets the user specify the
 output format according to conversion patterns similar to the C language
-`printf` function.
+`printf()` function.
 
 For example, the PatternLayout with the conversion pattern "%r [%t] %-5p
 %c - %m%n" will output something akin to:
@@ -453,7 +455,7 @@ use cases such as JSON, XML, HTML, and Syslog (including the new RFC
 specified fields instead of a particular textual layout.
 
 Just as importantly, log4j will render the content of the log message
-according to user specified criteria. For example, if you frequently
+according to user-specified criteria. For example, if you frequently
 need to log `Oranges`, an object type used in your current project, then
 you can create an OrangeMessage that accepts an Orange instance and pass
 that to Log4j so that the Orange object can be formatted into an
@@ -465,16 +467,16 @@ The
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrSubstitutor.html[`StrSubstitutor`]
 class and
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrLookup.html[`StrLookup`]
-interface were borrowed from
+interface was borrowed from
 https://commons.apache.org/proper/commons-lang/[Apache Commons Lang] and
 then modified to support evaluating LogEvents. In addition the
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/Interpolator.html[`Interpolator`]
 class was borrowed from Apache Commons Configuration to allow the
-StrSubstitutor to evaluate variables that from multiple StrLookups. It
+StrSubstitutor to evaluate variables from multiple StrLookups. It
 too was modified to support evaluating LogEvents. Together these provide
 a mechanism to allow the configuration to reference variables coming
 from System Properties, the configuration file, the ThreadContext Map,
 StructuredData in the LogEvent. The variables can either be resolved
-when the configuration is processed or as each event is processed, if
+when the configuration is processed or as each event is processed if
 the component is capable of handling it. See xref:manual/lookups.adoc[Lookups]
 for more information.

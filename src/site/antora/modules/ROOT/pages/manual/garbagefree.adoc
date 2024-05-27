@@ -56,7 +56,7 @@ If not for yours, keep on reading.
 
 In order to have a garbage-free Log4j Core, you need to
 
-* xref:#properties[configure it using properties],
+* xref:#core-properties[configure it using properties],
 * and employ garbage-free xref:#Layouts[layouts], xref:Appenders[appenders], and xref:#Filters[filters].
 
 [#core-properties]
@@ -68,6 +68,8 @@ Garbage-free logging can be configured for Log4j Core using properties listed be
 include::partial$manual/systemproperties/properties-meta.adoc[leveloffset=+2]
 
 include::partial$manual/systemproperties/properties-garbage-collection.adoc[leveloffset=+2]
+
+include::partial$manual/systemproperties/properties-thread-context.adoc[leveloffset=+2,tag=gcfree]
 
 [#Layouts]
 === Layouts
@@ -264,14 +266,22 @@ Logging more than 10 parameters creates https://docs.oracle.com/javase/8/docs/te
 
 When a message parameter contains an unknown type by the layout, it will encode by calling `toString()` on these objects.
 Most objects don't have garbage-free `toString()` methods.
-Objects themselves can implement their own garbage-free encoders by either extending from https://docs.oracle.com/javase/8/docs/api/java/lang/CharSequence.html[Java's `CharSequence`] or {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/util/StringBuilderFormattable.html[Log4j's `StringBuilderFormattable`].
+Objects themselves can implement their own garbage-free encoders by either extending from https://docs.oracle.com/javase/8/docs/api/java/lang/CharSequence.html[Java's `CharSequence`] or link:../javadoc/log4j-api/org/apache/logging/log4j/util/StringBuilderFormattable.html[Log4j's `StringBuilderFormattable`].
 
 [#codeImpact]
 === Avoiding autoboxing
 
-We made an effort to make logging garbage-free without requiring code changes in existing applications, but there is one area where this was not possible.
-https://docs.oracle.com/javase/tutorial/java/data/autoboxing.html[When logging primitive values (i.e., `int`, `double`, `boolean`, etc.) the JVM autoboxes these primitive values to their `Object` wrapper equivalents, creating garbage.]
-Log4j provides an `Unbox` utility to prevent autoboxing of primitive parameters:
+We made an effort to make logging garbage-free without requiring code
+changes in existing applications, but there is one area where this was
+not possible. When logging primitive values (i.e. int, double, boolean,
+etc.) the JVM autoboxes these primitive values to their Object wrapper
+equivalents, creating garbage.
+
+Log4j provides an `Unbox` utility to prevent autoboxing of primitive
+parameters. This utility contains a thread-local pool of reused
+`StringBuilder`s. The `Unbox.box(primitive)` methods write directly into
+a StringBuilder, and the resulting text will be copied into the final
+log message text without creating temporary objects.
 
 [source,java]
 ----
@@ -290,7 +300,8 @@ The `Unbox.box(primitive)` methods write directly into a `StringBuilder`, and th
 Not all Log4j API feature set is garbage-free, specifically:
 
 * The `ThreadContext` map (aka. MDC) is not garbage-free by default, but can be configured to be garbage-free by setting xref:#log4j2.garbagefreeThreadContextMap[the `log4j2.garbagefreeThreadContextMap` system property] to `true`.
-* The `ThreadContext` stack is not garbage-free.
+* The `ThreadContext` stack (aka. NDC) is not garbage-free.
+* {log4j2-url}/manual/scoped-context.adoc[] is not garbage-free.
 * Logging very large messages (i.e., more than xref:#log4j2.maxReusableMsgSize[`log4j2.maxReusableMsgSize`] characters, which defaults to 518), when all loggers are xref:manual/async.adoc[asynchronous loggers], will cause the internal `StringBuilder` in the
 `RingBuffer` to be trimmed back to their configured maximum size.
 * Logging messages containing `$\{variable}` substitutions creates temporary objects.

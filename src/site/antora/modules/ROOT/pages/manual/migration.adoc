@@ -15,7 +15,7 @@ Licensed to the Apache Software Foundation (ASF) under one or more
  limitations under the License.
 ////
 
-= Migrating from Log4j 1.x to 2.x
+= Migrating from Log4j 1
 
 http://logging.apache.org/log4j/1.2/[Log4j 1.x] has https://blogs.apache.org/foundation/entry/apache_logging_services_project_announces[reached End of Life] in 2015 and is no longer supported.
 
@@ -39,7 +39,7 @@ image:whichjar-log4j-1.2-api.png[Using log4j 2 via the log4j 1.x API]
 For most applications this is sufficient.
 This is a low-effort way to migrate, and may also allow for migration to proceed gradually over time.
 
-[#EnablingLog4j12Bridge]
+[id=enabling-the-log4j-1-x-bridge]
 === Enabling the Log4j 1.x bridge
 
 Enable the Log4j 1.x bridge via one of the following steps:

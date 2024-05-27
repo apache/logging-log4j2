@@ -50,6 +50,8 @@ If `false`, the `ThreadContext` stack is disabled.
 
 If `false`, the `ThreadContext` map is disabled.
 
+// tag::gcfree[]
+
 [id=log4j.threadContext.map.type]
 == `log4j.threadContext.map.type`
 
@@ -84,3 +86,5 @@ GarbageFree:: a garbage-free implementation.
 |===
 
 If set to `true` selects a garbage-free thread context map implementation.
+
+// end::gcfree[]
