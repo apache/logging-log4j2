@@ -136,7 +136,7 @@
     <pax-exam.version>4.13.5</pax-exam.version>
     <plexus-utils.version>3.5.1</plexus-utils.version>
     <spring-boot.version>2.7.18</spring-boot.version>
-    <spring-framework.version>5.3.35</spring-framework.version>
+    <spring-framework.version>5.3.36</spring-framework.version>
     <system-stubs.version>2.0.3</system-stubs.version>
     <tomcat-juli.version>10.0.27</tomcat-juli.version>
     <velocity.version>1.7</velocity.version>
