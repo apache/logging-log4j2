@@ -27,3 +27,8 @@ This is a convenience for environments where either a fully-fledged logging impl
 `SimpleLogger` can be configured using the following system properties:
 
 include::partial$manual/systemproperties/properties-simple-logger.adoc[leveloffset=+1]
+
+=== Thread context
+
+Simple Logger supports the same properties as Log4j Core for the configuration of the thread context.
+See xref:manual/systemproperties.adoc#properties-thread-context[] for details.

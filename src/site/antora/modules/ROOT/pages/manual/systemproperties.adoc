@@ -88,41 +88,6 @@ In the particular case, when multiple implementations are present, you can selec
 
 include::partial$manual/systemproperties/properties-provider.adoc[leveloffset=+2]
 
-[id=properties-status-logger]
-=== Status Logger
-
-NOTE: To configure xref:manual/status-logger.adoc[] you can also place its configuration in a file named `log4j2.StatusLogger.properties`.
-
-Log4j contains an internal logging mechanism called `StatusLogger` that is used by all Log4j components.
-By default, the status logger only reports errors on the standard error stream, but you can configure it using the following properties.
-
-include::partial$manual/systemproperties/properties-status-logger.adoc[leveloffset=+2]
-
-[id=properties-simple-logger]
-=== Simple logger
-
-NOTE: To configure xref:manual/simple-logger.adoc[] you can also place its configuration in a file named `log4j2.simplelog.properties`.
-
-The xref:manual/simple-logger.adoc[] implementation contained in `log4j-api` can be configured using these properties:
-
-include::partial$manual/systemproperties/properties-simple-logger.adoc[leveloffset=+2]
-
-[id=properties-simple-logger-thread-context]
-=== Thread context (Simple Logger)
-
-The behavior of the `ThreadContext` class can be fine-tuned using the following properties.
-
-[WARNING]
-====
-These configuration properties are only used by the Log4j Core and xref:manual/simple-logger.adoc[] implementations of Log4j API.
-
-The `log4j-to-slf4j` logging bridge delegates `ThreadContext` calls to the SLF4J https://slf4j.org/api/org/slf4j/MDC.html[MDC] class.
-
-The `log4j-to-jul` logging bridge ignores all `ThreadContext` method calls.
-====
-
-include::partial$manual/systemproperties/properties-thread-context.adoc[leveloffset=+2]
-
 [id=properties-log4j-core]
 == Log4j Core properties
 
@@ -203,11 +168,21 @@ Moreover, each JNDI usage must be **explicitly** enabled by the user through the
 
 include::partial$manual/systemproperties/properties-jndi.adoc[leveloffset=+2]
 
-[id=properties-log4j-core-thread-context]
-=== Thread context (Log4j Core)
+[id=properties-thread-context]
+=== Thread context
 
-Log4j Core supports the same properties as xref:manual/simple-logger.adoc[] for the configuration of the thread context.
-See <<properties-simple-logger-thread-context>> for more details.
+The behavior of the `ThreadContext` class can be fine-tuned using the following properties.
+
+[WARNING]
+====
+These configuration properties are only used by the Log4j Core and xref:manual/simple-logger.adoc[] implementations of Log4j API.
+
+The `log4j-to-slf4j` logging bridge delegates `ThreadContext` calls to the SLF4J https://slf4j.org/api/org/slf4j/MDC.html[MDC] class.
+
+The `log4j-to-jul` logging bridge ignores all `ThreadContext` method calls.
+====
+
+include::partial$manual/systemproperties/properties-thread-context.adoc[leveloffset=+2]
 
 [id=properties-transport-security]
 === Transport security

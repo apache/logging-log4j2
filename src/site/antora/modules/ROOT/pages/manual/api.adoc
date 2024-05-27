@@ -226,7 +226,7 @@ xref:manual/eventlogging.adoc[Read more on event loggers...]
 
 Even though Log4j Core is the reference implementation of Log4j API, Log4j API itself also provides a very minimalist implementation: _Simple Logger_.
 This is a convenience for environments where either a fully-fledged logging implementation is missing, or cannot be included for other reasons.
-`SimpleLogger` is the default Log4j API implementation if no other is available in the classpath.
+`SimpleLogger` is the fallback Log4j API implementation if no other is available in the classpath.
 
 xref:manual/simple-logger.adoc[Read more on the simple logger...]
 
