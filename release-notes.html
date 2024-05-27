@@ -66,9 +66,6 @@
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="download.html">Download</a>
 <ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="runtime-dependencies.html">Runtime Dependencies</a>
-  </li>
   <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="release-notes.html">Release Notes</a>
   </li>
@@ -99,7 +96,7 @@
     <a class="nav-link" href="getting-started.html">Getting started</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="manual/migration.html">Migrating from Log4j 1</a>
+    <a class="nav-link" href="manual/migration.html">Migrating from Log4j 2</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="manual/cloud.html">Using Log4j in Cloud Enabled Applications</a>
@@ -315,6 +312,9 @@
 <li>
 <p>Remove deprecated <code>org.apache.logging.log4j.core.appender.rolling.action.Duration</code> class.</p>
 </li>
+<li>
+<p>Remove <code>log4j-1.2-api</code> module (<a href="https://github.com/apache/logging-log4j2/pull/2621">2621</a>)</p>
+</li>
 </ul>
 </div>
 </div>
@@ -353,7 +353,7 @@
 <p>Update <code>commons-logging:commons-logging</code> to version <code>1.3.2</code> (<a href="https://github.com/apache/logging-log4j2/pull/2586">2586</a>)</p>
 </li>
 <li>
-<p>Update <code>io.netty:netty-bom</code> to version <code>4.1.109.Final</code> (<a href="https://github.com/apache/logging-log4j2/pull/2474">2474</a>)</p>
+<p>Update <code>io.netty:netty-bom</code> to version `` (<a href="https://github.com/apache/logging-log4j2/pull/2603">2603</a>)</p>
 </li>
 <li>
 <p>Update <code>net.bytebuddy:byte-buddy</code> to version <code>1.14.16</code> (<a href="https://github.com/apache/logging-log4j2/pull/2608">2608</a>)</p>
@@ -377,7 +377,13 @@
 <p>Update <code>org.apache.logging:logging-parent</code> to version `` (<a href="https://github.com/apache/logging-log4j2/pull/2599">2599</a>)</p>
 </li>
 <li>
+<p>Update <code>org.apache.maven:maven-core</code> to version <code>3.9.7</code> (<a href="https://github.com/apache/logging-log4j2/pull/2615">2615</a>)</p>
+</li>
+<li>
 <p>Update <code>org.apache.tomcat:tomcat-juli</code> to version <code>10.1.24</code> (<a href="https://github.com/apache/logging-log4j2/pull/2580">2580</a>)</p>
+</li>
+<li>
+<p>Update <code>org.assertj:assertj-core</code> to version <code>3.26.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/2617">2617</a>)</p>
 </li>
 <li>
 <p>Update <code>org.awaitility:awaitility</code> to version <code>4.2.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/2388">2388</a>)</p>
