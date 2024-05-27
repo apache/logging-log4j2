@@ -1904,21 +1904,83 @@ The following example demonstrates how log events are persisted in NoSQL databas
 }
 ----
 
-[#NoSQLAppenderMongoDBMain]
-== NoSQL Appenders for MongoDB
+[#NoSQLAppenderMongoDB]
+=== NoSQL providers for MongoDB
 
-Starting with Log4 2.11.0, we provide the following MongoDB modules:
+[#mongo-installation]
+==== Installation
 
-* Added in 2.11.0, removed in 2.14.0: `log4j-mongodb2` defines the configuration element MongoDb2 matching the MongoDB Driver version 2.
-* Added in 2.11.0, removed in 2.24.0: `log4j-mongodb3` defines the configuration element MongoDb3 matching the MongoDB Driver version 3.
-* Added in 2.14.0, deprecated in 2.24.0: `log4j-mongodb4` defines the configuration element
-link:#NoSQLAppenderMongoDB4[`MongoDb4`] matching the MongoDB Driver version 4.
-* Added in 2.24.0: `log4j-mongodb` defines the configuration element
-link:#NoSQLAppenderMongoDBCurrent[`MongoDb`] matching the current MongoDB Driver (version 5).
-This module tracks the current MongoDB Driver.
+Starting with version 2.11.0, Log4j supplies providers for the
+https://www.mongodb.com/[MongoDB]
+NoSQL database engine, based on the
+https://www.mongodb.com/docs/drivers/java/sync/current/[MongoDB synchronous Java driver].
+The choice of the provider to user depends on:
 
-[#NoSQLAppenderMongoDBCurrent]
-== NoSQL Appender for MongoDB
+* the major version of the MongoDB Java driver your application uses: Log4j supports all major versions starting from version 2.
+* the type of driver API used: either the _Legacy API_ or the _Modern API_.
+See https://www.mongodb.com/docs/drivers/java/sync/current/legacy/[MongoDB documentation]
+for the difference between APIs.
+
+[NOTE]
+====
+The list of dependencies of your application provides a hint as to which driver API your application is using.
+If your application contains any one of these dependencies, it might use the **Legacy API**:
+
+* `org.mongodb:mongo-java-driver`
+* `org.mongodb:mongodb-driver-legacy`
+
+If you application only uses `org.mongodb:mongodb-driver-sync`, it uses the **Modern API**.
+====
+
+[CAUTION]
+====
+The version of the MongoDB Java driver is not the same as the version of the MongoDB server.
+See
+https://www.mongodb.com/docs/drivers/java/sync/current/compatibility/[MongoDB compatibility matrix]
+for more information.
+====
+
+In order to use a Log4j MongoDB appender you need to add the following dependencies to your application:
+
+.MongoDB providers compatibility table
+[cols="2,2,2,5"]
+|===
+| Driver version | Driver API | Log4j artifact | Notes
+
+| `2.x`
+| Legacy
+| https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-mongodb2[`log4j-mongodb2`]
+| Reached end-of-support.
+
+Last released version: `2.12.4`
+
+| [[NoSQLAppenderMongoDB3]]`3.x`
+| Legacy
+| https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-mongodb3[`log4j-mongodb3`]
+| Reached end-of-support.
+
+Last released version: `2.23.1`
+
+| `4.x`
+| Modern
+| https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-mongodb4[`log4j-mongodb4`]
+| Reached end-of-support.
+
+Last released version: `2.23.1`
+
+| `5.x` or later
+| Modern
+| https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-mongodb[`log4j-mongodb`]
+|
+|===
+
+[TIP]
+====
+If you are note sure, which implementation to choose, `log4j-mongodb` is the recommended choice.
+====
+
+[#log4j-mongodb]
+==== NoSQL provider for MongoDB (current)
 
 This section details specializations of the
 link:#NoSQLAppender[NoSQLAppender] provider for MongoDB using the current MongoDB driver (version 5).
@@ -2003,159 +2065,6 @@ You can define additional fields to log using KeyValuePair elements, for example
             <AppenderRef ref="MongoDbAppender" />
         </Root>
     </Loggers>
-</Configuration>
-----
-
-[#NoSQLAppenderMongoDB4]
-== (Deprecated) No SQLAppender for MongoDB 4
-
-The `log4j-mongodb4` module is deprecated in favor of link:#NoSQLAppenderMongoDBCurrent[NoSQLAppender for MongoDB].
-
-This section details specializations of the
-link:#NoSQLAppender[NoSQLAppender] provider for MongoDB using the MongoDB driver version 4. The NoSQLAppender Appender writes log events to a NoSQL database using an internal lightweight provider interface.
-
-.MongoDB Provider Parameters
-[cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|connection |String |_Required._ The MongoDB
-http://mongodb.github.io/mongo-java-driver/4.0/apidocs/mongodb-driver-core/com/mongodb/ConnectionString.html?is-external=true"[connection string]
-in the format `mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database.collection][?options]]`.
-
-|capped |boolean |Enable support for
-https://docs.mongodb.com/manual/core/capped-collections/[capped
-collections]
-
-|collectionSize |long |Specify the size in bytes of the capped collection
-to use if enabled. The minimum size is 4096 bytes, and larger sizes will
-be increased to the nearest integer multiple of 256. See the capped
-collection documentation linked above for more information.
-|=======================================================================
-
-This appender is xref:manual/messages.adoc#MapMessage[MapMessage]-aware.
-
-Here are a few sample configurations for the NoSQLAppender and MongoDB4 provider:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN">
-  <Appenders>
-    <NoSql name="MongoDbAppender">
-      <MongoDb4 connection="mongodb://log4jUser:12345678@localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection" />
-    </NoSql>
-  </Appenders>
-  <Loggers>
-    <Root level="ALL">
-      <AppenderRef ref="MongoDbAppender" />
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN">
-  <Appenders>
-    <NoSql name="MongoDbAppender">
-      <MongoDb4 
-        connection="mongodb://localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection" 
-        capped="true" 
-        collectionSize="1073741824"/>
-    </NoSql>
-  </Appenders>
-  <Loggers>
-    <Root level="ALL">
-      <AppenderRef ref="MongoDbAppender" />
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-You can define additional fields to log using KeyValuePair elements, for example:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN">
-    <Appenders>
-        <NoSql name="MongoDbAppender">
-            <MongoDb4 connection="mongodb://localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection" />
-            <KeyValuePair key="A" value="1" />
-            <KeyValuePair key="B" value="2" />
-            <KeyValuePair key="env1" value="${env:PATH}" />
-            <KeyValuePair key="env2" value="$${env:PATH}" />
-        </NoSql>
-    </Appenders>
-    <Loggers>
-        <Root level="ALL">
-            <AppenderRef ref="MongoDbAppender" />
-        </Root>
-    </Loggers>
-</Configuration>
-----
-
-[[NoSQLAppenderApacheCouchDB]]
-== NoSQLAppender for Apache CouchDB
-
-This section details specializations of the link:#NoSQLAppender[NoSQLAppender] provider for CouchDB.
-The NoSQLAppender writes log events to a NoSQL database using an internal lightweight provider interface.
-
-[width="100%",options="header"]
-|===
-|Parameter Name |Type |Description
-
-|factoryClassName
-|Class
-|To provide a connection to the CouchDB database, you can use this attribute and `factoryMethodName` to specify a class and static method to retrieve the connection. The method must return an `org.lightcouch.CouchDbClient` or a `org.lightcouch.CouchDbProperties`. If you use the factory method for providing a connection, you must not specify the `databaseName`, `protocol`, `server`, `port`, `username`, or `password` attributes.
-
-|factoryMethodName
-|Method
-|See the documentation for attribute `factoryClassName`.
-
-|databaseName
-|String
-|If you do not specify a `factoryClassName` and `factoryMethodName` for providing a CouchDB connection, you must specify a CouchDB database name using this attribute. You must also specify a `username` and `password`. You can optionally also specify a `protocol` (defaults to `http`), `server` (defaults to localhost), and a `port` (defaults to 80 for `http` and 443 for `https`).
-
-|protocol
-|String
-|Must either be "http" or "https." See the documentation for attribute `databaseName`.
-
-|server
-|String
-|See the documentation for attribute `databaseName`.
-
-|port
-|int
-|See the documentation for attribute `databaseName`.
-
-|username
-|String
-|See the documentation for attributes `databaseName`.
-
-|password
-|String
-|See the documentation for attributes `databaseName`.
-|===
-
-Here are a few sample configurations for the NoSQLAppender and CouchDB provider:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="error">
-  <Appenders>
-    <NoSql name="databaseAppender">
-      <CouchDb databaseName="applicationDb" protocol="https" server="couch.example.org"
-               username="loggingUser" password="abc123" />
-    </NoSql>
-  </Appenders>
-  <Loggers>
-    <Root level="warn">
-      <AppenderRef ref="databaseAppender"/>
-    </Root>
-  </Loggers>
 </Configuration>
 ----
 
