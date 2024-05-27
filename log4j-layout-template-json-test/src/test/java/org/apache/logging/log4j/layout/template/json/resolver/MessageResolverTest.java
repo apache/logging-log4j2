@@ -45,36 +45,6 @@ import org.junit.jupiter.api.Test;
 
 class MessageResolverTest {
 
-    /**
-     * Tests the inconsistent <code>fallbackKey</code> behaviour described in <a href="https://issues.apache.org/jira/browse/LOG4J2-3080">LOG4J2-3080</a>.
-     */
-    @Test
-    @LoggerContextSource("messageFallbackKeyUsingJsonTemplateLayout.xml")
-    void log4j1_logger_calls_should_use_fallbackKey(final @Named(value = "List") ListAppender appender) {
-
-        // Log using legacy Log4j 1 API.
-        final String log4j1Message = "Message logged using org.apache.log4j.Category.info(Object)";
-        org.apache.log4j.LogManager.getLogger(MessageResolverTest.class).info(log4j1Message);
-
-        // Log using Log4j 2 API.
-        final String log4j2Message = "Message logged using org.apache.logging.log4j.Logger.info(String)";
-        org.apache.logging.log4j.LogManager.getLogger(MessageResolverTest.class).info(log4j2Message);
-
-        // Collect and parse logged messages.
-        final List<Object> actualLoggedEvents = appender.getData().stream()
-                .map(jsonBytes -> {
-                    final String json = new String(jsonBytes, StandardCharsets.UTF_8);
-                    return JsonReader.read(json);
-                })
-                .collect(Collectors.toList());
-
-        // Verify logged messages.
-        final List<Object> expectedLoggedEvents = Stream.of(log4j1Message, log4j2Message)
-                .map(message -> Collections.singletonMap("message", Collections.singletonMap("fallback", message)))
-                .collect(Collectors.toList());
-        Assertions.assertThat(actualLoggedEvents).isEqualTo(expectedLoggedEvents);
-    }
-
     @Test
     void test_message_fallbackKey() {
 

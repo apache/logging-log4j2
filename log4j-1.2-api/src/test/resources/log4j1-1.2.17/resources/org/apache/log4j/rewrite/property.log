@@ -1,2 +1,0 @@
-INFO org.apache.log4j.rewrite.RewriteAppenderTest - p1:Hello p2:World Message 0
-INFO org.apache.log4j.rewrite.RewriteAppenderTest - p1:Hola p2:World Message 1

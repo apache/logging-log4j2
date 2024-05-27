@@ -1,3 +1,0 @@
-INFO org.apache.log4j.rewrite.RewriteAppenderTest - p1: p2: Message 0
-INFO org.apache.log4j.rewrite.RewriteAppenderTest - p1: p2:Hello I am bean.
-INFO org.apache.log4j.rewrite.RewriteAppenderTest - p1:Hola p2:Hello Welcome to The Hub

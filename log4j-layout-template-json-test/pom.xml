@@ -47,13 +47,6 @@
       <artifactId>log4j-layout-template-json</artifactId>
     </dependency>
 
-    <!-- needed for `MessageResolverTest#log4j1_logger_calls_should_use_fallbackKey` -->
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-1.2-api</artifactId>
-      <scope>test</scope>
-    </dependency>
-
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-config-properties</artifactId>

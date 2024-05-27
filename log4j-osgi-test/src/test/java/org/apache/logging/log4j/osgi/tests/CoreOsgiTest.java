@@ -90,19 +90,6 @@ public class CoreOsgiTest {
         custom.clearEvents();
     }
 
-    @Test
-    public void testLog4j12InAnOsgiContext() {
-        final CustomConfiguration custom = getConfiguration();
-        // Logging
-        final org.apache.log4j.Logger logger = org.apache.log4j.LogManager.getLogger(getClass());
-        logger.info("Hello OSGI from Log4j 1.2!");
-        assertEquals(1, custom.getEvents().size());
-        final LogEvent event = custom.getEvents().get(0);
-        assertEquals("Hello OSGI from Log4j 1.2!", event.getMessage().getFormattedMessage());
-        assertEquals(Level.INFO, event.getLevel());
-        custom.clearEvents();
-    }
-
     private static CustomConfiguration getConfiguration() {
         final LoggerContextFactory factory = LogManager.getFactory();
         assertEquals(Log4jContextFactory.class, factory.getClass());
