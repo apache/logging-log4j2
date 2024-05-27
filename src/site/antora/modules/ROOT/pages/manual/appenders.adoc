@@ -1904,21 +1904,81 @@ The following example demonstrates how log events are persisted in NoSQL databas
 }
 ----
 
-[#NoSQLAppenderMongoDBMain]
-== NoSQL Appenders for MongoDB
+[#NoSQLAppenderMongoDB]
+=== NoSQL providers for MongoDB
 
-Starting with Log4 2.11.0, we provide the following MongoDB modules:
+[#mongo-installation]
+==== Installation
 
-* Added in 2.11.0, removed in 2.14.0: `log4j-mongodb2` defines the configuration element MongoDb2 matching the MongoDB Driver version 2.
-* Added in 2.11.0, removed in 2.24.0: `log4j-mongodb3` defines the configuration element MongoDb3 matching the MongoDB Driver version 3.
-* Added in 2.14.0, deprecated in 2.24.0: `log4j-mongodb4` defines the configuration element
-link:#NoSQLAppenderMongoDB4[`MongoDb4`] matching the MongoDB Driver version 4.
-* Added in 2.24.0: `log4j-mongodb` defines the configuration element
-link:#NoSQLAppenderMongoDBCurrent[`MongoDb`] matching the current MongoDB Driver (version 5).
-This module tracks the current MongoDB Driver.
+Starting with version 2.11.0, Log4j supplies providers for the
+https://www.mongodb.com/[MongoDB]
+NoSQL database engine, based on the
+https://www.mongodb.com/docs/drivers/java/sync/current/[MongoDB synchronous Java driver].
+The choice of the provider to user depends on:
 
-[#NoSQLAppenderMongoDBCurrent]
-== NoSQL Appender for MongoDB
+* the major version of the MongoDB Java driver your application uses: Log4j supports all major versions starting from version 2.
+* the type of driver API used: either the _Legacy API_ or the _Modern API_.
+See https://www.mongodb.com/docs/drivers/java/sync/current/legacy/[MongoDB documentation]
+for the difference between APIs.
+
+[NOTE]
+====
+The list of dependencies of your application provides a hint as to which driver API your application is using.
+If your application contains any one of these dependencies, it might use the **Legacy API**:
+
+* `org.mongodb:mongo-java-driver`
+* `org.mongodb:mongodb-driver-legacy`
+
+If you application only uses `org.mongodb:mongodb-driver-sync`, it uses the **Modern API**.
+====
+
+[CAUTION]
+====
+The version of the MongoDB Java driver is not the same as the version of the MongoDB server.
+See
+https://www.mongodb.com/docs/drivers/java/sync/current/compatibility/[MongoDB compatibility matrix]
+for more information.
+====
+
+In order to use a Log4j MongoDB appender you need to add the following dependencies to your application:
+
+.MongoDB providers compatibility table
+[cols="2,2,2,5"]
+|===
+| Driver version | Driver API | Log4j artifact | Notes
+
+| `2.x`
+| Legacy
+| https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-mongodb2[`log4j-mongodb2`]
+| Reached end-of-support.
+
+Last released version: `2.12.4`
+
+| [[NoSQLAppenderMongoDB3]]`3.x`
+| Legacy
+| https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-mongodb3[`log4j-mongodb3`]
+| Reached end-of-support.
+
+Last released version: `2.23.1`
+
+| `4.x`
+| Modern
+| https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-mongodb4[`log4j-mongodb4`]
+|
+
+| `5.x` or later
+| Modern
+| https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-mongodb[`log4j-mongodb`]
+|
+|===
+
+[TIP]
+====
+If you are note sure, which implementation to choose, `log4j-mongodb` is the recommended choice.
+====
+
+[#log4j-mongodb]
+==== NoSQL provider for MongoDB (current)
 
 This section details specializations of the
 link:#NoSQLAppender[NoSQLAppender] provider for MongoDB using the current MongoDB driver (version 5).
@@ -2006,10 +2066,10 @@ You can define additional fields to log using KeyValuePair elements, for example
 </Configuration>
 ----
 
-[#NoSQLAppenderMongoDB4]
-== (Deprecated) No SQLAppender for MongoDB 4
+[#log4j-mongodb4]
+==== [[NoSQLAppenderMongoDB4]] NoSQL provider  for MongoDB 4 (deprecated)
 
-The `log4j-mongodb4` module is deprecated in favor of link:#NoSQLAppenderMongoDBCurrent[NoSQLAppender for MongoDB].
+The `log4j-mongodb4` module is deprecated in favor of link:#log4j-mongodb[NoSQL provider for MongoDB].
 
 This section details specializations of the
 link:#NoSQLAppender[NoSQLAppender] provider for MongoDB using the MongoDB driver version 4. The NoSQLAppender Appender writes log events to a NoSQL database using an internal lightweight provider interface.
