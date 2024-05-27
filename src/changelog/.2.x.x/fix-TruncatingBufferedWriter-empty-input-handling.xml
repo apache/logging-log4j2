@@ -4,8 +4,5 @@
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
   <issue id="2609" link="https://github.com/apache/logging-log4j2/pull/2609"/>
-  <description format="asciidoc">
-    Fix empty string handling for TruncatingBufferedWriter
-    The expected behavior is to handle empty strings as a no-op. The actual behavior was an IndexOutOfBoundException being thrown.
-  </description>
+  <description format="asciidoc">Fix empty string handling for `TruncatingBufferedWriter`</description>
 </entry>
