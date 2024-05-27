@@ -245,7 +245,7 @@ include::example$manual/configuration/custom-wait-strategy.properties[lines=17..
 [#Location]
 == Location information
 
-xref:manual/layouts.adoc#location-information[Computing the location information (i.e., the caller class, method, file, and line number) of a log event is an expensive operation.]
+xref:manual/layouts.adoc#LocationInformation[Computing the location information (i.e., the caller class, method, file, and line number) of a log event is an expensive operation.]
 The impact on asynchronous loggers and appenders is even higher, since the component must decide whether to compute it or not **before** crossing the asynchronous barrier.
 Hence, the location information is disabled by default for asynchronous loggers and appenders.
 In order to enable it for a certain logger, set its xref:manual/configuration.adoc#logger-attributes-includeLocation[`includeLocation`] attribute to `true`.

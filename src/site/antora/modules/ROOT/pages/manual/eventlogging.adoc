@@ -14,7 +14,8 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-= Event Logging
+
+= Event Logger
 
 The `EventLogger` class provides a mechanism for logging significant events 
 in an application using structured data. This approach is beneficial for 

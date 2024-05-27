@@ -497,7 +497,7 @@ include::example$manual/configuration/loggers.properties[tags=loggers]
 
 In the example above, we have four logger configurations.
 They differ from each other regarding the level of log messages that they allow, whether
-xref:manual/layouts.adoc#location-information[location information]
+xref:manual/layouts.adoc#LocationInformation[location information]
 will be printed, and which appenders will be used.
 The table below summarizes the effects of each logger configuration:
 
@@ -623,7 +623,7 @@ https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/
 .withLocation()]
 methods.
 
-See xref:manual/layouts.adoc#location-information[Location information] for more details.
+See xref:manual/layouts.adoc#LocationInformation[Location information] for more details.
 
 [id=logger-elements-appenderrefs]
 ==== Appender references

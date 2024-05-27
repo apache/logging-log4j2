@@ -15,7 +15,7 @@
     limitations under the License.
 ////
 
-= Resource Loggers
+= Resource Logger
 
 == ScopedResourceLogger
 
