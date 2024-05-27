@@ -77,6 +77,11 @@ final class TruncatingBufferedWriter extends Writer implements CharSequence {
 
         // Check arguments.
         Objects.requireNonNull(source, "source");
+
+        if (source.length == 0) {
+            return;
+        }
+
         if (offset < 0 || offset >= source.length) {
             throw new IndexOutOfBoundsException("invalid offset: " + offset);
         }
@@ -126,6 +131,11 @@ final class TruncatingBufferedWriter extends Writer implements CharSequence {
 
         // Check arguments.
         Objects.requireNonNull(string, "string");
+
+        if (string.isEmpty()) {
+            return;
+        }
+
         if (offset < 0 || offset >= string.length()) {
             throw new IndexOutOfBoundsException("invalid offset: " + offset);
         }
@@ -165,6 +175,11 @@ final class TruncatingBufferedWriter extends Writer implements CharSequence {
         // Short-circuit on null sequence.
         if (seq == null) {
             write("null");
+            return this;
+        }
+
+        // Short-circuit on empty sequence
+        if (seq.length() == 0) {
             return this;
         }
 
