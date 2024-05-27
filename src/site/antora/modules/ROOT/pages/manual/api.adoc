@@ -49,9 +49,10 @@ You can also check out xref:manual/installation.adoc[] for the complete installa
 Log4j API provides
 
 * A logging API that libraries and applications can code to
+* xref:#simple-logger[A minimal logging implementation (aka. Simple logger)]
 * Adapter components to create a logging implementation
 
-This page tries to cover the most prominent Log4j API features that libraries and applications can code to.
+This page tries to cover the most prominent Log4j API features.
 
 [TIP]
 ====
@@ -92,7 +93,7 @@ include::partial$manual/api-best-practice-use-supplier.adoc[]
 [#loggers]
 == Loggers
 
-link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html[`Logger`]s obtained using link:../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html[`LogManager`] is the primary entry point for logging.
+link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html[`Logger`]s are the primary entry point for logging.
 In this section we will introduce you to further details about ``Logger``s.
 
 [#logger-names]
@@ -220,7 +221,25 @@ link:../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html[`EventLogger`
 
 xref:manual/eventlogging.adoc[Read more on event loggers...]
 
-[#feature-fluent-api]
+[#simple-logger]
+=== Simple logger
+
+Even though Log4j Core is the reference implementation of Log4j API, Log4j API itself also provides a very minimalist implementation: _Simple Logger_.
+This is a convenience for environments where either a fully-fledged logging implementation is missing, or cannot be included for other reasons.
+`SimpleLogger` is the fallback Log4j API implementation if no other is available in the classpath.
+
+xref:manual/simple-logger.adoc[Read more on the simple logger...]
+
+[#status-logger]
+=== Status logger
+
+_Status Logger_ is a standalone, self-sufficient `Logger` implementation to record events that occur in the logging system (i.e., Log4j) itself.
+It is the logging system used by Log4j for reporting status of its internals.
+Users can use the status logger to either emit logs in their custom Log4j components, or troubleshoot a Log4j configuration.
+
+xref:manual/status-logger.adoc[Read more on the status logger...]
+
+[#fluent-api]
 == Fluent API
 
 The fluent API allows you to log using a fluent interface:

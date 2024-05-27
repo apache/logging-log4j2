@@ -28,7 +28,7 @@
 Fully qualified class name of the Log4j API link:../javadoc/log4j-api/org/apache/logging/log4j/spi/Provider[Provider] to use.
 
 By default, Log4j uses https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html[ServiceLoader] to select the provider to use.
-In case multiple providers are found on the classpath the provider with the highest priority is selected and a `WARN` message is logger by the status logger.
+In case multiple providers are found on the classpath the provider with the highest priority is selected and a `WARN` message is logger by xref:manual/status-logger.adoc[].
 
 [id=log4j2.loggerContextFactory]
 == `log4j2.loggerContextFactory`
