@@ -42,6 +42,8 @@
 ** xref:manual/flowtracing.adoc[]
 ** xref:manual/eventlogging.adoc[]
 ** xref:manual/resource-logger.adoc[]
+** xref:manual/simple-logger.adoc[]
+** xref:manual/status-logger.adoc[]
 * Configuration
 ** xref:manual/configuration.adoc[Configuration file]
 ** xref:manual/systemproperties.adoc[]

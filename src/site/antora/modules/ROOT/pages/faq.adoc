@@ -156,7 +156,7 @@ It is the responsibility of the logging _implementation_ to handle this object, 
 * Log4j API offers support for logging xref:manual/messages.adoc[`Message` objects].
 Messages allow support for interesting and complex constructs to be passed through the logging system and be efficiently manipulated.
 Users are free to create their own message types and write custom layouts, filters and lookups to manipulate them.
-* Log4j API supports xref:manual/api.adoc#LambdaSupport[lambda expressions] both in its plain and fluent API.
+* Log4j API supports xref:manual/api.adoc#fluent-api[lambda expressions] both in its plain and fluent API.
 * Log4j API has better support for xref:manual/garbagefree.adoc[garbage-free logging]: it avoids creating `vararg` arrays and avoids creating ``String``s when logging ``CharSequence``s.
 
 [#gc-free-slf4j]
