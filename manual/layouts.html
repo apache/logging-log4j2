@@ -325,70 +325,58 @@ See each layout below.</p>
 <h2 id="common-concerns"><a class="anchor" href="#common-concerns"></a>Common concerns</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="location-information"><a class="anchor" href="#location-information"></a>Location information</h3>
+<h3 id="LocationInformation"><a class="anchor" href="#LocationInformation"></a>Location information</h3>
 <div class="paragraph">
-<p>Computing the location information of a logging statement is an expensive operation.
-For this reason many Log4j components implement the
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/impl/LocationAware.html">LocationAware</a>
-interface to only compute location information when needed.</p>
+<p>Several layouts offer directives to include the <em>location information</em>: the caller class, method, file, and line.
+Log4j takes a snapshot of the stack, and walks the stack trace to find the location information.
+<strong>This is an expensive operation</strong> and should be avoided in performance-sensitive setups.</p>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
 <div class="paragraph">
-<p>Some layouts implement <code>LocationAware</code> and they determine if a location information is required according to these rules:</p>
+<p>Note that <em>the caller class</em> of the location information and <em>the logger name</em> are two different things.
+In most setups just using <em>the logger name</em> – which doesn&#8217;t incur any overhead to obtain while logging! – is a sufficient and <strong>zero-cost substitute for the caller class</strong>.</p>
 </div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1"><a href="#GELFLayout">GelfLayout</a></dt>
-<dd>
-<div class="paragraph">
-<p>The GELF layout requires location information only if the pattern of the <code>messagePattern</code> requires location information.</p>
+<details>
+<summary class="title">Example demonstrating that the logger name can be a substitute for the caller name</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package com.mycompany;
+
+public class PaymentService {
+
+    // Logger name: `com.mycompany.PaymentService`
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    private static final class PaymentTransaction {
+        void doPayment() {
+            // Caller class: `com.mycompany.PaymentService$PaymentTransaction`
+            LOGGER.trace("...");
+        }
+    }
+
+}</code></pre>
 </div>
-<div class="paragraph">
-<p>See <a href="#location-pattern-layout">PatternLayout case</a> below.</p>
-</div>
-</dd>
-<dt class="hdlist1"><a href="#HTMLLayout">HtmlLayout</a></dt>
-<dd>
-<div class="paragraph">
-<p>The HTML layout requires location information if the <a href="#HtmlLocationInfo">locationInfo</a> configuration attribute is set to <code>true</code>.</p>
-</div>
-</dd>
-<dt class="hdlist1"><a id="location-pattern-layout"></a><a href="#PatternLayout">PatternLayout</a></dt>
-<dd>
-<div class="paragraph">
-<p>The pattern layout will require location information if at least one of these patterns is used:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="#PatternClass"><code>%C</code> or <code>%class</code></a>,</p>
-</li>
-<li>
-<p><a href="#PatternFile"><code>%F</code> or <code>%file</code></a>,</p>
-</li>
-<li>
-<p><a href="#PatternLocation"><code>%l</code> or <code>%location</code></a>,</p>
-</li>
-<li>
-<p><a href="#PatternLine"><code>%L</code> or <code>%line</code></a>,</p>
-</li>
-<li>
-<p><a href="#PatternMethod"><code>%M</code> or <code>%method</code></a>.</p>
-</li>
-</ul>
-</div>
-</dd>
-<dt class="hdlist1"><a href="json-template-layout.html" class="xref page">JsonTemplateLayout</a></dt>
-<dd>
-<div class="paragraph">
-<p>The JSON template layout will require location information if the
-<a href="json-template-layout.html#locationInfoEnabled" class="xref page">locationInfoEnabled</a>
-configuration attribute is set to <code>true</code>.</p>
-</div>
-</dd>
-</dl>
 </div>
 <div class="paragraph">
-<p>The remaining layouts do not require location information.</p>
+<p>In the above example, if <em>the caller class</em> (which is expensive to compute!) is omitted in the layout, the produced log line will still be likely to contain sufficient information to trace back the source by just looking at <em>the logger name</em>.</p>
+</div>
+</div>
+</details>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Asynchronous loggers need to capture the location information before passing the log message to another thread; otherwise the location information will be lost after that point.
+Due to associated performance implications, <a href="async.html" class="xref page">asynchronous loggers</a> and <a href="appenders.html#AsyncAppender" class="xref page">asynchronous appenders</a> do <strong>not</strong> include location information by default.
+You can override the default behaviour in your asynchronous logger or asynchronous appender configuration.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -399,8 +387,7 @@ configuration attribute is set to <code>true</code>.</p>
 <td class="content">
 <div class="paragraph">
 <p>Even if a layout is configured not to <strong>request</strong> location information, it might use it if the information is already available.
-This is always the case of information location computed at build time using the
-<a href="/log4j/transform/latest/#log4j-transform-maven-plugin">Log4j Transform Maven Plugin</a>.</p>
+This is always the case of information location computed at build time using the <a href="/log4j/transform/latest/#log4j-transform-maven-plugin">Log4j Transform Maven Plugin</a>.</p>
 </div>
 </td>
 </tr>
@@ -3795,78 +3782,6 @@ The values support <a href="lookups.html" class="xref page">lookups</a>.</p>
 </td>
 <td class="content">
 Additional <a href="#runtime-dependencies.adoc" class="xref unresolved">runtime dependencies</a> are required for using YamlLayout.
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="LocationInformation"><a class="anchor" href="#LocationInformation"></a>Location information</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Several layouts offer directives to include the <em>location information</em>: the caller class, method, file, and line.
-Log4j takes a snapshot of the stack, and walks the stack trace to find the location information.
-<strong>This is an expensive operation</strong> and should be avoided in performance-sensitive setups.</p>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Note that <em>the caller class</em> of the location information and <em>the logger name</em> are two different things.
-In most setups just using <em>the logger name</em> – which doesn&#8217;t incur any overhead to obtain while logging! – is a sufficient and <strong>zero-cost substitute for the caller class</strong>.</p>
-</div>
-<details>
-<summary class="title">Example demonstrating that the logger name can be a substitute for the caller name</summary>
-<div class="content">
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package com.mycompany;
-
-public class PaymentService {
-
-    // Logger name: `com.mycompany.PaymentService`
-    private static final Logger LOGGER = LogManager.getLogger();
-
-    private static final class PaymentTransaction {
-        void doPayment() {
-            // Caller class: `com.mycompany.PaymentService$PaymentTransaction`
-            LOGGER.trace("...");
-        }
-    }
-
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In the above example, if <em>the caller class</em> (which is expensive to compute!) is omitted in the layout, the produced log line will still be likely to contain sufficient information to trace back the source by just looking at <em>the logger name</em>.</p>
-</div>
-</div>
-</details>
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Asynchronous loggers need to capture the location information before passing the log message to another thread; otherwise the location information will be lost after that point.
-Due to associated performance implications, <a href="async.html" class="xref page">asynchronous loggers</a> and <a href="appenders.html#AsyncAppender" class="xref page">asynchronous appenders</a> do <strong>not</strong> include location information by default.
-You can override the default behaviour in your asynchronous logger or asynchronous appender configuration.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Even if a layout is configured not to <strong>request</strong> location information, it might use it if the information is already available.
-This is always the case of information location computed at build time using the <a href="/log4j/transform/latest/#log4j-transform-maven-plugin">Log4j Transform Maven Plugin</a>.</p>
-</div>
 </td>
 </tr>
 </table>
