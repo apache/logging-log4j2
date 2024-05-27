@@ -126,11 +126,11 @@ By default, Log4j looks for a configuration file named `log4j2.xml` on the class
 Note the `2` in the file name!
 (See xref:manual/configuration.adoc[the Configuration page] for more details.)
 
-. Increase the logging verbosity of the internal status logger: +
+. Increase the logging verbosity of the internal xref:manual/status-logger.adoc[]: +
 `-Dlog4j2.statusLoggerLevel=TRACE`
 
 . Enable all internal debug logging: `-Dlog4j2.debug`.
-This disables level-based status logger filtering and effectively allows all status logs.
+This disables level-based xref:manual/status-logger.adoc[] filtering and effectively allows all status logs.
 
 [#separate_log_files]
 == How do I dynamically write to separate log files?

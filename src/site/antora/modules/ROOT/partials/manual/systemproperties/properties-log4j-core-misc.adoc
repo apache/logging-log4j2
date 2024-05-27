@@ -207,7 +207,7 @@ Fully qualified class name of a link:../javadoc/log4j-api/org/apache/logging/log
 | Default value | `false`
 |===
 
-Prints a stacktrace to the xref:manual/configuration.adoc#StatusMessages[status logger] at `DEBUG` level when the LoggerContext is started.
+Prints a stacktrace to the xref:manual/status-logger.adoc[] at `DEBUG` level when the `LoggerContext` is started.
 
 For debug purposes only.
 

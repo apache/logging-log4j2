@@ -16,7 +16,7 @@ Licensed to the Apache Software Foundation (ASF) under one or more
 ////
 = Log4j JMX GUI
 
-https://github.com/apache/logging-log4j-jmx-gui[The Apache Log4j JMX GUI] is a basic client GUI that can be used to monitor the `StatusLogger` output and to remotely modify the Log4j configuration.
+https://github.com/apache/logging-log4j-jmx-gui[The Apache Log4j JMX GUI] is a basic client GUI that can be used to monitor the xref:manual/status-logger.adoc[] output and to remotely modify the Log4j configuration.
 The client GUI can be run as a stand-alone application or as a JConsole plug-in.
 
 [NOTE]

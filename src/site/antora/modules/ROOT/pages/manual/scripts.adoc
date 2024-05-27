@@ -115,7 +115,7 @@ interface if they support compiling their scripts.
 Beanshell does extend the `Compilable` interface, but an attempt to compile a script ends up in an
 https://docs.oracle.com/javase/{java-target-version}/docs/api/java/lang/Error.html[Error]
 being thrown.
-Log4j catches the throwable, but issues a warning in the status logger.
+Log4j catches the throwable, but issues a warning in xref:manual/status-logger.adoc[].
 
 ----
 2015-09-27 16:13:23,095 main DEBUG Script BeanShellSelector is compilable

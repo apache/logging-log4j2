@@ -1671,7 +1671,9 @@ Each log event is sent as a Kafka record.
 
 |syncSend
 |boolean
-|The default is `true`, causing sends to block until the record has been acknowledged by the Kafka server. When set to `false`, sends a return immediately, allowing for lower latency and significantly higher throughput. _New since 2.8. Be aware that this is a new addition, and it has not been extensively tested. Any failure sending to Kafka will be reported as an error to StatusLogger and the log event will be dropped (the ignoreExceptions parameter will not be effective). Log events may arrive out of order on the Kafka server._
+|The default is `true`, causing sends to block until the record has been acknowledged by the Kafka server. When set to `false`, sends a return immediately, allowing for lower latency and significantly higher throughput. _New since 2.8. Be aware that this is a new addition, and it has not been extensively tested.
+Any failure sending to Kafka will be reported as an error to xref:manual/status-logger.adoc[] and the log event will be dropped (the ignoreExceptions parameter will not be effective).
+Log events may arrive out of order on the Kafka server._
 
 |properties
 |Property[]
@@ -2925,7 +2927,7 @@ default is 1, meaning only the files in the specified base directory.
 false.
 
 |testMode |boolean |If true, files are not deleted but instead a message
-is printed to the xref:manual/configuration.adoc#StatusMessages[status logger]
+is printed to the xref:manual/status-logger.adoc[]
 at INFO level. Use this to do a dry run to test if the configuration
 works as expected. The default is false.
 
@@ -3170,7 +3172,7 @@ the paths in the `pathList`.
 under the base path up to the specified max depth, sorted most recently
 modified files first. The script is free to modify and return this list.
 
-|statusLogger |StatusLogger |The StatusLogger that can be used to log
+|statusLogger |StatusLogger |The xref:manual/status-logger.adoc[] that can be used to log
 internal events during script execution.
 
 |configuration |Configuration |The Configuration that owns this
