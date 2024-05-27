@@ -21,6 +21,9 @@
   .doc .colist>table code, .doc p code, .doc thead code { font-size: 0.8em; }
   .doc pre { font-size: 0.7rem; }
   .doc .colist { font-size: 0.75rem; }
+  /* Make links more visible: */
+  .doc a { text-decoration: underline; }
+  .doc a code { text-decoration: underline; color: #1565c0; }
   /* Tab header fonts aren't rendered good, adjusting the font weight: */
   .tablist > ul li { font-weight: 500; }
   /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
@@ -114,34 +117,7 @@
     <a class="nav-link" href="migration.html">Migrating from Log4j 1.x to 2.x</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="api.html">Log4j API</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="logbuilder.html">Log Builder</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="markers.html">Markers</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="eventlogging.html">Event Logging with Log4j</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="messages.html">Messages</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="thread-context.html">Thread Context</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="scoped-context.html">Scoped Context</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="resource-logger.html">Resource Logging</a>
-  </li>
-</ul>
+    <a class="nav-link" href="api.html">API</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="configuration.html">Configuration</a>
@@ -178,9 +154,6 @@
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="customloglevels.html">Custom Log Levels</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="jmx.html">JMX</a>
@@ -376,8 +349,8 @@ This can partly be alleviated by configuring an exception handler, but this may 
 Most of the time you don&#8217;t need to worry about this.
 Log4 will ensure that log messages like <code>logger.debug("My object is {}", myObject)</code> will use the state of the <code>myObject</code> parameter at the time of the call to <code>logger.debug()</code>.
 The log message will not change even if <code>myObject</code> is modified later.
-It is safe to asynchronously log mutable objects because most <a href="messages.html" class="xref page">built-in <code>Message</code> implementations</a> take a snapshot of the parameters.
-There are some exceptions however: <a href="messages.html#MapMessage" class="xref page"><code>MapMessage</code></a> and <a href="messages.html#StructuredDataMessage" class="xref page"><code>StructuredDataMessage</code></a> are mutable by design, fields can be added to these messages after the message object was created.
+It is safe to asynchronously log mutable objects because most <a href="https://logging.apache.org/log4j/2.x/manual/messages.adoc">built-in <code>Message</code> implementations</a> take a snapshot of the parameters.
+There are some exceptions however: <a href="https://logging.apache.org/log4j/2.x/manual/messages.adoc#MapMessage"><code>MapMessage</code></a> and <a href="https://logging.apache.org/log4j/2.x/manual/messages.adoc#StructuredDataMessage"><code>StructuredDataMessage</code></a> are mutable by design, fields can be added to these messages after the message object was created.
 These messages should not be modified after they are logged with asynchronous loggers or asynchronous appenders; you may or may not see the modifications in the resulting log output.
 Similarly, custom <code>Message</code> implementations should be designed with asynchronous use in mind, and either take a snapshot of their parameters at construction time, or document their thread-safety characteristics.</p>
 </dd>

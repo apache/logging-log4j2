@@ -21,6 +21,9 @@
   .doc .colist>table code, .doc p code, .doc thead code { font-size: 0.8em; }
   .doc pre { font-size: 0.7rem; }
   .doc .colist { font-size: 0.75rem; }
+  /* Make links more visible: */
+  .doc a { text-decoration: underline; }
+  .doc a code { text-decoration: underline; color: #1565c0; }
   /* Tab header fonts aren't rendered good, adjusting the font weight: */
   .tablist > ul li { font-weight: 500; }
   /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
@@ -114,34 +117,7 @@
     <a class="nav-link" href="migration.html">Migrating from Log4j 1.x to 2.x</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="api.html">Log4j API</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="logbuilder.html">Log Builder</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="markers.html">Markers</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="eventlogging.html">Event Logging with Log4j</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="messages.html">Messages</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="thread-context.html">Thread Context</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="scoped-context.html">Scoped Context</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="resource-logger.html">Resource Logging</a>
-  </li>
-</ul>
+    <a class="nav-link" href="api.html">API</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="configuration.html">Configuration</a>
@@ -178,9 +154,6 @@
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="customloglevels.html">Custom Log Levels</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="jmx.html">JMX</a>
@@ -1016,7 +989,7 @@ implementation can be installed by setting system property <code>log4j2.threadCo
 to the fully qualified class name of the class implementing the <code>ThreadContextMap</code>
 interface. By also implementing the <code>ReadOnlyThreadContextMap</code> interface, your custom
 <code>ThreadContextMap</code> implementation will be accessible to applications via the
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html#getThreadContextMap()"><code>ThreadContext::getThreadContextMap</code></a>
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html#getThreadContextMap()"><code>ThreadContext::getThreadContextMap</code></a>
 method.</p>
 </div>
 </div>

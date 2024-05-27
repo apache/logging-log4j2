@@ -21,6 +21,9 @@
   .doc .colist>table code, .doc p code, .doc thead code { font-size: 0.8em; }
   .doc pre { font-size: 0.7rem; }
   .doc .colist { font-size: 0.75rem; }
+  /* Make links more visible: */
+  .doc a { text-decoration: underline; }
+  .doc a code { text-decoration: underline; color: #1565c0; }
   /* Tab header fonts aren't rendered good, adjusting the font weight: */
   .tablist > ul li { font-weight: 500; }
   /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
@@ -114,34 +117,7 @@
     <a class="nav-link" href="manual/migration.html">Migrating from Log4j 1.x to 2.x</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="manual/api.html">Log4j API</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="manual/logbuilder.html">Log Builder</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="manual/flowtracing.html">Flow Tracing</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="manual/markers.html">Markers</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="manual/eventlogging.html">Event Logging with Log4j</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="manual/messages.html">Messages</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="manual/thread-context.html">Thread Context</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="manual/scoped-context.html">Scoped Context</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="manual/resource-logger.html">Resource Logging</a>
-  </li>
-</ul>
+    <a class="nav-link" href="manual/api.html">API</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="manual/configuration.html">Configuration</a>
@@ -178,9 +154,6 @@
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="manual/customconfig.html">Programmatic Configuration</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="manual/customloglevels.html">Custom Log Levels</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="manual/jmx.html">JMX</a>
@@ -380,7 +353,7 @@ Configurator.reconfigure(configSourceUri);</code></pre>
 Each <code>LoggerContext</code> registers a shutdown hook that takes care of releasing resources when the JVM exits, unless the <code>log4j.shutdownHookEnabled</code> system property is set to <code>false</code>.
 Likewise, <a href="https://logging.apache.org/log4j/jakarta">Web applications</a> replace the shutdown hook with their own resource management mechanisms.
 That is, they clean up necessary resources when the web application is stopped.
-However, if you need to manually shut down Log4j, you can use one of the <code>shutdown()</code> methods of <a href="../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#shutdown()"><code>LogManager</code></a>.</p>
+However, if you need to manually shut down Log4j, you can use one of the <code>shutdown()</code> methods of <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#shutdown()"><code>LogManager</code></a>.</p>
 </div>
 </div>
 </div>
@@ -495,12 +468,12 @@ Log4j API supports logging any <code>CharSequence</code> if you want to log text
 It is the responsibility of the logging <em>implementation</em> to handle this object, and we consider it a design mistake to limit applications to logging <code>String</code>s.</p>
 </li>
 <li>
-<p>Log4j API offers support for logging <a href="manual/messages.html" class="xref page"><code>Message</code> objects</a>.
+<p>Log4j API offers support for logging <a href="https://logging.apache.org/log4j/2.x/manual/messages.adoc"><code>Message</code> objects</a>.
 Messages allow support for interesting and complex constructs to be passed through the logging system and be efficiently manipulated.
 Users are free to create their own message types and write custom layouts, filters and lookups to manipulate them.</p>
 </li>
 <li>
-<p>Log4j API supports <a href="manual/api.html#LambdaSupport" class="xref page">lambda expressions</a> both in its plain and fluent API.</p>
+<p>Log4j API supports <a href="https://logging.apache.org/log4j/2.x/manual/api.adoc#fluent-api">lambda expressions</a> both in its plain and fluent API.</p>
 </li>
 <li>
 <p>Log4j API has better support for <a href="manual/garbagefree.html" class="xref page">garbage-free logging</a>: it avoids creating <code>vararg</code> arrays and avoids creating <code>String</code>s when logging <code>CharSequence</code>s.</p>
@@ -577,7 +550,7 @@ If an object is logged that implements this interface, its <code>formatTo(String
 <p>The solution is to provide the correct FQCN.
 The easiest way to do this is to let Log4j generate the logger wrapper for you.
 Log4j comes with a Logger wrapper generator tool.
-This tool was originally meant to support custom log levels and is documented <a href="manual/customloglevels.html#CustomLoggers" class="xref page">here</a>.
+This tool was originally meant to support custom log levels and is documented <a href="https://logging.apache.org/log4j/2.x/manual/customloglevels.adoc#CustomLoggers">here</a>.
 The generated logger code will take care of the FQCN.</p>
 </div>
 </div>

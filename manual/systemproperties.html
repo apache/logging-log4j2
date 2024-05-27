@@ -21,6 +21,9 @@
   .doc .colist>table code, .doc p code, .doc thead code { font-size: 0.8em; }
   .doc pre { font-size: 0.7rem; }
   .doc .colist { font-size: 0.75rem; }
+  /* Make links more visible: */
+  .doc a { text-decoration: underline; }
+  .doc a code { text-decoration: underline; color: #1565c0; }
   /* Tab header fonts aren't rendered good, adjusting the font weight: */
   .tablist > ul li { font-weight: 500; }
   /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
@@ -114,34 +117,7 @@
     <a class="nav-link" href="migration.html">Migrating from Log4j 1.x to 2.x</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="api.html">Log4j API</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="logbuilder.html">Log Builder</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="markers.html">Markers</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="eventlogging.html">Event Logging with Log4j</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="messages.html">Messages</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="thread-context.html">Thread Context</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="scoped-context.html">Scoped Context</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="resource-logger.html">Resource Logging</a>
-  </li>
-</ul>
+    <a class="nav-link" href="api.html">API</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="configuration.html">Configuration</a>
@@ -178,9 +154,6 @@
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="customloglevels.html">Custom Log Levels</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="jmx.html">JMX</a>
@@ -581,7 +554,7 @@ resources and use only Log4j 3 property names.</p>
 <p>If <code>false</code>, Log4j will make sure the message is formatted in the caller thread, otherwise the formatting will occur on the asynchronous thread.</p>
 </div>
 <div class="paragraph">
-<p><strong>Remark</strong>: messages annotated with <a href="../javadoc/log4j-api/org/apache/logging/log4j/message/AsynchronouslyFormattable">AsynchronouslyFormattable</a> will be formatted on the async thread regardless of this setting.</p>
+<p><strong>Remark</strong>: messages annotated with <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/AsynchronouslyFormattable">AsynchronouslyFormattable</a> will be formatted on the async thread regardless of this setting.</p>
 </div>
 </div>
 <div class="sect3">
@@ -640,7 +613,7 @@ resources and use only Log4j 3 property names.</p>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level">Level</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level">Level</a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -662,7 +635,7 @@ See also <a href="#log4j.async.queueFullPolicy.type"><code>log4j.async.queueFull
 <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LoggerContext.html">LoggerContext</a>
 is one of the principal Log4j components (see
 <a href="architecture.html" class="xref page">Architecture</a>), which determines among other things, the way
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html">Logger</a>s are created.</p>
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Logger.html">Logger</a>s are created.</p>
 </div>
 <div class="paragraph">
 <p>It can be customized using these properties:</p>
@@ -702,7 +675,7 @@ is one of the principal Log4j components (see
 </li>
 <li>
 <p>the
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html">Logger</a>
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Logger.html">Logger</a>
 implementation to use.</p>
 </li>
 </ul>
@@ -938,7 +911,7 @@ See <a href="#properties-transport-security">Transport security</a> for details.
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level">Level</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level">Level</a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -991,7 +964,7 @@ See <a href="#properties-transport-security">Transport security</a> for details.
 <h3 id="properties-message"><a class="anchor" href="#properties-message"></a>Log messages</h3>
 <div class="paragraph">
 <p>The way Log4j builds
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html">Message</a>s can be customized using these properties:</p>
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/Message.html">Message</a>s can be customized using these properties:</p>
 </div>
 <div class="sect3">
 <h4 id="log4j.message.factory"><a class="anchor" href="#log4j.message.factory"></a><code>log4j.message.factory</code></h4>
@@ -1007,16 +980,16 @@ See <a href="#properties-transport-security">Transport security</a> for details.
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory">Class&lt;? extends MessageFactory&gt;</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory">Class&lt;? extends MessageFactory&gt;</a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessageFactory">ReusableMessageFactory</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessageFactory">ReusableMessageFactory</a></p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Fully qualified class name of a <a href="../javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory">MessageFactory</a> implementation that will be used by loggers if no explicit factory was specified.</p>
+<p>Fully qualified class name of a <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory">MessageFactory</a> implementation that will be used by loggers if no explicit factory was specified.</p>
 </div>
 </div>
 </div>
@@ -1040,17 +1013,17 @@ See <a href="#properties-transport-security">Transport security</a> for details.
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html">Class&lt;? extends StringMap&gt;</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html">Class&lt;? extends StringMap&gt;</a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/util/SortedArrayStringMap.html">SortedArrayStringMap</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/SortedArrayStringMap.html">SortedArrayStringMap</a></p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
 <p>Fully qualified class name of a
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html">StringMap</a>
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html">StringMap</a>
 implementation to use to store context data in log events.
 The implementation must have:</p>
 </div>
@@ -1233,7 +1206,7 @@ The implementation must have:</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>In GC-free mode, this property determines the initial size of the reusable <code>StringBuilder</code>s used by <a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage">ReusableMessages</a> for formatting purposes.</p>
+<p>In GC-free mode, this property determines the initial size of the reusable <code>StringBuilder</code>s used by <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage">ReusableMessages</a> for formatting purposes.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1259,7 +1232,7 @@ The implementation must have:</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>In GC-free mode, this property determines the maximum size of the reusable <code>StringBuilder</code>s used by <a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage">ReusableMessages</a> for formatting purposes.</p>
+<p>In GC-free mode, this property determines the maximum size of the reusable <code>StringBuilder</code>s used by <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage">ReusableMessages</a> for formatting purposes.</p>
 </div>
 <div class="paragraph">
 <p>The default value allows is equal to <code>2 &times; (2 &times; log4j.initialReusableMsgSize + 2) + 2</code> and allows the
@@ -1435,7 +1408,7 @@ The implementation must have:</p>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap">Class&lt;? extends ThreadContextMap&gt;</a> or predefined constant</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap">Class&lt;? extends ThreadContextMap&gt;</a> or predefined constant</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -1445,7 +1418,7 @@ The implementation must have:</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Fully specified class name of a custom <a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap">ThreadContextMap</a> implementation class or one of the predefined constants:</p>
+<p>Fully specified class name of a custom <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap">ThreadContextMap</a> implementation class or one of the predefined constants:</p>
 </div>
 <div class="dlist">
 <dl>
@@ -2767,7 +2740,7 @@ If a property is not defined in a logger context specific environment, the corre
 <h3 id="global-environment"><a class="anchor" href="#global-environment"></a>Global environment</h3>
 <div class="paragraph">
 <p>The global environment delegates property resolution to the Log4j 2 API
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/util/PropertiesUtil.html">PropertiesUtil</a>
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/PropertiesUtil.html">PropertiesUtil</a>
 service (see
 <a href="../../2.x/manual/systemproperties.adoc#property-sources">Log4j 2 API documentation</a>).</p>
 </div>

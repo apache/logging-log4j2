@@ -21,6 +21,9 @@
   .doc .colist>table code, .doc p code, .doc thead code { font-size: 0.8em; }
   .doc pre { font-size: 0.7rem; }
   .doc .colist { font-size: 0.75rem; }
+  /* Make links more visible: */
+  .doc a { text-decoration: underline; }
+  .doc a code { text-decoration: underline; color: #1565c0; }
   /* Tab header fonts aren't rendered good, adjusting the font weight: */
   .tablist > ul li { font-weight: 500; }
   /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
@@ -114,34 +117,7 @@
     <a class="nav-link" href="migration.html">Migrating from Log4j 1.x to 2.x</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="api.html">Log4j API</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="logbuilder.html">Log Builder</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="markers.html">Markers</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="eventlogging.html">Event Logging with Log4j</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="messages.html">Messages</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="thread-context.html">Thread Context</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="scoped-context.html">Scoped Context</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="resource-logger.html">Resource Logging</a>
-  </li>
-</ul>
+    <a class="nav-link" href="api.html">API</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="configuration.html">Configuration</a>
@@ -178,9 +154,6 @@
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="customloglevels.html">Custom Log Levels</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="jmx.html">JMX</a>
@@ -383,7 +356,7 @@ to consider not using logging at all.</p>
 <dt class="hdlist1">API separation</dt>
 <dd>
 <p>The API for Log4j (i.e., <code>log4j-api</code>) is separate from the implementation (i.e., <code>log4j-core</code>), making it straightforward for application developers which classes and methods to use while ensuring forward compatibility.
-(See <a href="api-separation.html" class="xref page">API Separation</a> for details.)
+(See <a href="api.html" class="xref page">API Separation</a> for details.)
 The Log4j API also provides the most feature-rich logging facade in the market; support for various <code>Message</code> types (such as <code>Object</code> or <code>Map</code>) besides plain <code>String</code>, lambda expressions, parametrized logging, markers, levels, diagnostic contexts (aka. MDC/NDC), etc.
 Check out the <a href="api.html" class="xref page">Java API</a>, <a href="https://logging.apache.org/log4j/kotlin">Kotlin API</a>, and <a href="https://logging.apache.org/log4j/scala">Scala API</a> pages for further information.</p>
 </dd>

@@ -21,6 +21,9 @@
   .doc .colist>table code, .doc p code, .doc thead code { font-size: 0.8em; }
   .doc pre { font-size: 0.7rem; }
   .doc .colist { font-size: 0.75rem; }
+  /* Make links more visible: */
+  .doc a { text-decoration: underline; }
+  .doc a code { text-decoration: underline; color: #1565c0; }
   /* Tab header fonts aren't rendered good, adjusting the font weight: */
   .tablist > ul li { font-weight: 500; }
   /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
@@ -114,34 +117,7 @@
     <a class="nav-link" href="migration.html">Migrating from Log4j 1.x to 2.x</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="api.html">Log4j API</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="logbuilder.html">Log Builder</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="markers.html">Markers</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="eventlogging.html">Event Logging with Log4j</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="messages.html">Messages</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="thread-context.html">Thread Context</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="scoped-context.html">Scoped Context</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="resource-logger.html">Resource Logging</a>
-  </li>
-</ul>
+    <a class="nav-link" href="api.html">API</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="configuration.html">Configuration</a>
@@ -178,9 +154,6 @@
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="customloglevels.html">Custom Log Levels</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="jmx.html">JMX</a>
@@ -380,7 +353,7 @@ be obtained as follows:</p>
 </div>
 <div class="paragraph">
 <p>All other Loggers can be retrieved using the
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#getLogger(java.lang.String)"><code>LogManager.getLogger</code></a>
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#getLogger(java.lang.String)"><code>LogManager.getLogger</code></a>
 static method by passing the name of the desired Logger. Further
 information on the Logging API can be found in the
 <a href="api.html" class="xref page">Log4j API</a>.</p>
@@ -413,10 +386,10 @@ will be stopped and discarded.</p>
 <h3 id="_logger"><a class="anchor" href="#_logger"></a>Logger</h3>
 <div class="paragraph">
 <p>As stated previously, Loggers are created by calling
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#getLogger(java.lang.String)"><code>LogManager.getLogger</code></a>.
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#getLogger(java.lang.String)"><code>LogManager.getLogger</code></a>.
 The Logger itself performs no direct actions. It simply has a name and
 is associated with a LoggerConfig. It extends
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/AbstractLogger.html"><code>AbstractLogger</code></a>
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/AbstractLogger.html"><code>AbstractLogger</code></a>
 and implements the required methods. As the configuration is modified
 Loggers may become associated with a different LoggerConfig, thus
 causing their behavior to be modified.</p>
@@ -481,11 +454,11 @@ process the event.</p>
 <h4 id="_log_levels"><a class="anchor" href="#_log_levels"></a>Log Levels</h4>
 <div class="paragraph">
 <p>LoggerConfigs will be assigned a Log
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html"><code>Level</code></a>.
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html"><code>Level</code></a>.
 The set of built-in levels includes ALL, TRACE, DEBUG, INFO, WARN, ERROR,
-FATAL, and OFF. Log4j 2 also supports <a href="customloglevels.html" class="xref page">custom log
+FATAL, and OFF. Log4j 2 also supports <a href="https://logging.apache.org/log4j/2.x/manual/customloglevels.adoc">custom log
 levels</a>. Another mechanism for getting more granularity is to use
-<a href="markers.html" class="xref page">markers</a> instead. The OFF and ALL
+<a href="https://logging.apache.org/log4j/2.x/manual/markers.adoc">markers</a> instead. The OFF and ALL
 levels are not intended to be used on calls to the logging API.
 Specifying OFF in the configuration implies no logging events should
 match while specifying ALL would mean all events match, including custom
