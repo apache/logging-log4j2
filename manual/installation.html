@@ -96,7 +96,13 @@
     <a class="nav-link" href="../faq.html">F.A.Q.</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../5min.html">Learn Log4j in 5 minutes!</a>
+    <a class="nav-link" href="../getting-started.html">Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="migration.html">Migrating from Log4j 1</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../development.html">Development</a>
@@ -114,52 +120,55 @@
     <a class="nav-link" href="architecture.html">Architecture</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="migration.html">Migrating from Log4j 1.x to 2.x</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="api.html">API</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="configuration.html">Configuration</a>
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Configuration</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="configuration.html">Configuration file</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="usage.html">Usage</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="systemproperties.html">Configuration properties</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="lookups.html">Lookups</a>
-  </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="appenders.html">Appenders</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="layouts.html">Layouts</a>
 <ul class="nav-list">
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="filters.html">Filters</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="extending.html">Extending Log4j 3</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="scripts.html">Scripts</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="plugins.html">Plugins</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
-  </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="jmx.html">JMX</a>
   </li>
+</ul>
+  </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="logsep.html">Logging Separation</a>
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="extending.html">Extending</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="plugins.html">Plugins</a>
+  </li>
+</ul>
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
@@ -192,24 +201,6 @@
     <span class="nav-text">Components</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-api.html">Log4j API</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-1.2-api.html">Log4j 1.2 Bridge</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-slf4j-impl.html">Log4j SLF4J Binding</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-jul.html">Log4j JDK Logging Adapter</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-jpl.html">Log4j JDK Platform Logging Adapter</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-to-slf4j.html">Log4j to SLF4J Adapter</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-flume-ng.html">Flume Appender</a>
   </li>
   <li class="nav-item" data-depth="1">
@@ -230,6 +221,9 @@
     <button class="nav-item-toggle"></button>
     <span class="nav-text">Related projects</span>
 <ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/2.x">Log4j 2</a>
+  </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="/log4j/jakarta">Log4j Jakarta EE</a>
   </li>
@@ -296,7 +290,7 @@
 </td>
 <td class="content">
 <div class="paragraph">
-<p>We strongly advise you to skim through this page to get a grip on fundamental logging concepts and understand which recipe fits to your bill best.</p>
+<p>We strongly advise you to skim through this page to get a grip on fundamental logging concepts and understand which recipe fits your bill best.</p>
 </div>
 </td>
 </tr>
@@ -582,7 +576,7 @@ You can import the BOM in your build tool of preference:</p>
 <h2 id="impl"><a class="anchor" href="#impl"></a>Installing a logging implementation</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Log4j provides several modules to facilitate deployment of different logging implementations:</p>
+<p>Log4j provides several modules to facilitate the deployment of different logging implementations:</p>
 </div>
 <div class="dlist">
 <dl>
@@ -613,7 +607,7 @@ Since currently only
 </td>
 <td class="content">
 <div class="paragraph">
-<p>In order to ensure that your code does not directly depend on a particular logging implementation, the logging backend should be put in the appropriate scope of your dependency manager:</p>
+<p>To ensure that your code does not directly depend on a particular logging implementation, the logging backend should be put in the appropriate scope of your dependency manager:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -713,7 +707,7 @@ You can directly skip to <a href="#impl-core-spring-boot">Installing Log4j Core 
 <div class="sect3">
 <h4 id="impl-core-bridges"><a class="anchor" href="#impl-core-bridges"></a>Installing bridges</h4>
 <div class="paragraph">
-<p>If either your application or one if its dependencies logs against a logging API that is different from Log4j API, you need to <a href="#logging-bridge">bridge</a> that API to Log4j API.</p>
+<p>If either your application or one of its dependencies logs against a logging API that is different from Log4j API, you need to <a href="#logging-bridge">bridge</a> that API to Log4j API.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -744,7 +738,7 @@ And if so, which ones?</strong></p>
 </table>
 </div>
 <div class="paragraph">
-<p>Following sections explain installation of Log4j-provided bridges.</p>
+<p>The following sections explain the installation of Log4j-provided bridges.</p>
 </div>
 <div class="sect4">
 <h5 id="impl-core-bridge-slf4j"><a class="anchor" href="#impl-core-bridge-slf4j"></a>Installing SLF4J-to-Log4j bridge</h5>
@@ -922,7 +916,7 @@ build tool:</p>
 <div class="sect4">
 <h5 id="impl-core-bridge-jboss-logging"><a class="anchor" href="#impl-core-bridge-jboss-logging"></a>Installing JBoss Logging-to-Log4j bridge</h5>
 <div class="paragraph">
-<p>The JBoss Logging API is shipped with an integrated bridge to Log4j API and requires no steps from your part. See
+<p>The JBoss Logging API is shipped with an integrated bridge to Log4j API and requires no steps on your part. See
 <a href="https://github.com/jboss-logging/jboss-logging?tab=readme-ov-file#supported-log-managers">Supported Log Managers</a> for more information.</p>
 </div>
 </div>
@@ -994,7 +988,7 @@ See <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/feat
 <div class="sect3">
 <h4 id="impl-core-config"><a class="anchor" href="#impl-core-config"></a>Configuring Log4j Core</h4>
 <div class="paragraph">
-<p>As any other logging implementation, Log4j Core needs to be properly configured.
+<p>As with any other logging implementation, Log4j Core needs to be properly configured.
 Log4j Core supports many different configuration formats: JSON, XML, YAML, and Java properties.
 To configure Log4j Core, see <a href="configuration.html" class="xref page">Configuration</a>.
 A basic configuration can be obtained by adding one of these files to your application&#8217;s classpath:</p>
@@ -1108,7 +1102,7 @@ rootLogger.appenderRef.0.ref = CONSOLE</code></pre>
 </table>
 </div>
 <div class="paragraph">
-<p>In order to use these formats, the following additional dependencies are required:</p>
+<p>To use these formats, the following additional dependencies are required:</p>
 </div>
 <div id="_tabs_11" class="openblock tabs is-loading">
 <div class="content">
@@ -1143,42 +1137,36 @@ rootLogger.appenderRef.0.ref = CONSOLE</code></pre>
 </div>
 <div id="_tabs_12_log4j2_xml--panel" class="tabpanel" aria-labelledby="_tabs_12_log4j2_xml">
 <div class="paragraph">
-<p>JPMS users need to add:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">module foo.bar {
-    requires java.xml;
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>to their <code>module-info.java</code> descriptor.</p>
+<p>No dependency required.</p>
 </div>
 </div>
 <div id="_tabs_12_log4j2_json--panel" class="tabpanel" aria-labelledby="_tabs_12_log4j2_json">
-<div class="paragraph">
-<p>No dependency required.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;
+    &lt;artifactId&gt;jackson-databind&lt;/artifactId&gt;
+    &lt;version&gt;${site-jackson.version}&lt;/version&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
 </div>
 </div>
 <div id="_tabs_12_log4j2_yaml--panel" class="tabpanel" aria-labelledby="_tabs_12_log4j2_yaml">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
-    &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
-    &lt;artifactId&gt;log4j-config-yaml&lt;/artifactId&gt;
+    &lt;groupId&gt;com.fasterxml.jackson.dataformat&lt;/groupId&gt;
+    &lt;artifactId&gt;jackson-dataformat-yaml&lt;/artifactId&gt;
+    &lt;version&gt;${site-jackson.version}&lt;/version&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
 </div>
 <div id="_tabs_12_log4j2_properties--panel" class="tabpanel" aria-labelledby="_tabs_12_log4j2_properties">
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
-    &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
-    &lt;artifactId&gt;log4j-config-properties&lt;/artifactId&gt;
-&lt;/dependency&gt;</code></pre>
-</div>
+<div class="paragraph">
+<p>No dependency required.</p>
 </div>
 </div>
 </div>
@@ -1205,36 +1193,26 @@ rootLogger.appenderRef.0.ref = CONSOLE</code></pre>
 </div>
 <div id="_tabs_13_log4j2_xml--panel" class="tabpanel" aria-labelledby="_tabs_13_log4j2_xml">
 <div class="paragraph">
-<p>JPMS users need to add:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">module foo.bar {
-    requires java.xml;
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>to their <code>module-info.java</code> descriptor.</p>
+<p>No dependency required.</p>
 </div>
 </div>
 <div id="_tabs_13_log4j2_json--panel" class="tabpanel" aria-labelledby="_tabs_13_log4j2_json">
-<div class="paragraph">
-<p>No dependency required.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.core:jackson-databind:${site-jackson.version}'</code></pre>
+</div>
 </div>
 </div>
 <div id="_tabs_13_log4j2_yaml--panel" class="tabpanel" aria-labelledby="_tabs_13_log4j2_yaml">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-config-yaml'</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${site-jackson.version}'</code></pre>
 </div>
 </div>
 </div>
 <div id="_tabs_13_log4j2_properties--panel" class="tabpanel" aria-labelledby="_tabs_13_log4j2_properties">
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-config-properties'</code></pre>
-</div>
+<div class="paragraph">
+<p>No dependency required.</p>
 </div>
 </div>
 </div>

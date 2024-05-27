@@ -96,7 +96,13 @@
     <a class="nav-link" href="../faq.html">F.A.Q.</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../5min.html">Learn Log4j in 5 minutes!</a>
+    <a class="nav-link" href="../getting-started.html">Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="migration.html">Migrating from Log4j 1</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../development.html">Development</a>
@@ -114,52 +120,55 @@
     <a class="nav-link" href="architecture.html">Architecture</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="migration.html">Migrating from Log4j 1.x to 2.x</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="api.html">API</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="configuration.html">Configuration</a>
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Configuration</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="configuration.html">Configuration file</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="usage.html">Usage</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="systemproperties.html">Configuration properties</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="lookups.html">Lookups</a>
-  </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="appenders.html">Appenders</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="layouts.html">Layouts</a>
 <ul class="nav-list">
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="filters.html">Filters</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="extending.html">Extending Log4j 3</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="scripts.html">Scripts</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="plugins.html">Plugins</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
-  </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="jmx.html">JMX</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="1">
-    <a class="nav-link" href="logsep.html">Logging Separation</a>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="extending.html">Extending</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="plugins.html">Plugins</a>
+  </li>
+</ul>
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
@@ -192,24 +201,6 @@
     <span class="nav-text">Components</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-api.html">Log4j API</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-1.2-api.html">Log4j 1.2 Bridge</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-slf4j-impl.html">Log4j SLF4J Binding</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-jul.html">Log4j JDK Logging Adapter</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-jpl.html">Log4j JDK Platform Logging Adapter</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-to-slf4j.html">Log4j to SLF4J Adapter</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-flume-ng.html">Flume Appender</a>
   </li>
   <li class="nav-item" data-depth="1">
@@ -230,6 +221,9 @@
     <button class="nav-item-toggle"></button>
     <span class="nav-text">Related projects</span>
 <ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/2.x">Log4j 2</a>
+  </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="/log4j/jakarta">Log4j Jakarta EE</a>
   </li>
@@ -263,7 +257,6 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">Home</a></li>
-    <li><a href="index.html">Manual</a></li>
     <li><a href="logsep.html">Logging Separation</a></li>
   </ul>
 </nav>

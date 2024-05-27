@@ -96,7 +96,13 @@
     <a class="nav-link" href="../faq.html">F.A.Q.</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../5min.html">Learn Log4j in 5 minutes!</a>
+    <a class="nav-link" href="../getting-started.html">Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="migration.html">Migrating from Log4j 1</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../development.html">Development</a>
@@ -114,52 +120,55 @@
     <a class="nav-link" href="architecture.html">Architecture</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="migration.html">Migrating from Log4j 1.x to 2.x</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="api.html">API</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="configuration.html">Configuration</a>
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Configuration</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="configuration.html">Configuration file</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="usage.html">Usage</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="systemproperties.html">Configuration properties</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="lookups.html">Lookups</a>
-  </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="appenders.html">Appenders</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="layouts.html">Layouts</a>
 <ul class="nav-list">
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="filters.html">Filters</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="extending.html">Extending Log4j 3</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="scripts.html">Scripts</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="plugins.html">Plugins</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
-  </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="jmx.html">JMX</a>
   </li>
+</ul>
+  </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="logsep.html">Logging Separation</a>
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="extending.html">Extending</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="plugins.html">Plugins</a>
+  </li>
+</ul>
   </li>
   <li class="nav-item is-current-page" data-depth="1">
     <button class="nav-item-toggle"></button>
@@ -192,24 +201,6 @@
     <span class="nav-text">Components</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-api.html">Log4j API</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-1.2-api.html">Log4j 1.2 Bridge</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-slf4j-impl.html">Log4j SLF4J Binding</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-jul.html">Log4j JDK Logging Adapter</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-jpl.html">Log4j JDK Platform Logging Adapter</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-to-slf4j.html">Log4j to SLF4J Adapter</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-flume-ng.html">Flume Appender</a>
   </li>
   <li class="nav-item" data-depth="1">
@@ -230,6 +221,9 @@
     <button class="nav-item-toggle"></button>
     <span class="nav-text">Related projects</span>
 <ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/2.x">Log4j 2</a>
+  </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="/log4j/jakarta">Log4j Jakarta EE</a>
   </li>
@@ -364,7 +358,7 @@ Consider the following example:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The database query (i.e., <code>db.findUserNameById(userId)</code>) can be a significant bottleneck if the created the log event will be discarded anyway – maybe the <code>INFO</code> level or the associated <a href="https://logging.apache.org/log4j/2.x/manual/markers.adoc">marker</a> is not accepted for this package, or due to some other filtering.</p>
+<p>The database query (i.e., <code>db.findUserNameById(userId)</code>) can be a significant bottleneck if the created the log event will be discarded anyway – maybe the <code>INFO</code> level or the associated <a href="#manual/markers.adoc" class="xref unresolved">marker</a> is not accepted for this package, or due to some other filtering.</p>
 </div>
 <div class="ulist checklist">
 <ul class="checklist">
@@ -376,7 +370,7 @@ Consider the following example:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>While this would work for cases where the message can be dropped due to insufficient level, this approach is still prone to other filtering cases; e.g., maybe the associated <a href="https://logging.apache.org/log4j/2.x/manual/markers.adoc">marker</a> is not accepted.</p>
+<p>While this would work for cases where the message can be dropped due to insufficient level, this approach is still prone to other filtering cases; e.g., maybe the associated <a href="#manual/markers.adoc" class="xref unresolved">marker</a> is not accepted.</p>
 </div>
 </li>
 <li>
@@ -498,6 +492,21 @@ public class PaymentService {
 Due to associated performance implications, <a href="async.html" class="xref page">asynchronous loggers</a> and <a href="appenders.html#AsyncAppender" class="xref page">asynchronous appenders</a> do <strong>not</strong> include location information by default.
 You can override the default behaviour in your asynchronous logger or asynchronous appender configuration.</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Even if a layout is configured not to <strong>request</strong> location information, it might use it if the information is already available.
+This is always the case of information location computed at build time using the <a href="/log4j/transform/latest/#log4j-transform-maven-plugin">Log4j Transform Maven Plugin</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect3">
 <h4 id="layouts-efficiency"><a class="anchor" href="#layouts-efficiency"></a>Layout efficiency</h4>
@@ -528,40 +537,90 @@ How this works is that a minimum amount of work is done by the application threa
 As long as the queue is sized large enough, the application threads should be able to spend very little time on the logging call and return to the business logic very quickly.</p>
 </div>
 <div class="sect3">
-<h4 id="async-drawbacks"><a class="anchor" href="#async-drawbacks"></a>Asynchronous logging drawbacks</h4>
-<details>
-<summary class="title">There are certain drawbacks associated with asynchronous logging:</summary>
-<div class="content">
+<h4 id="trade-offs"><a class="anchor" href="#trade-offs"></a><a id="Trade-offs"></a>Trade-offs</h4>
+<div class="paragraph">
+<p>There are certain trade-offs associated with asynchronous logging:</p>
+</div>
+<div class="sect4">
+<h5 id="async-benefits"><a class="anchor" href="#async-benefits"></a>Benefits</h5>
 <div class="dlist">
 <dl>
-<dt class="hdlist1">Error handling</dt>
+<dt class="hdlist1">Higher peak throughput</dt>
 <dd>
-<p>If a problem happens during the logging process and an exception is thrown, it is less easy for an asynchronous setting to signal this problem to the application.
-This can partly be alleviated by configuring an exception handler, but this may still not cover all cases.</p>
+<p>Applications that occasionally need to log bursts of messages, can take advantage of asynchronous logging.
+It can prevent or dampen latency spikes by shortening the wait time until the next message can be logged.
+If the queue size is large enough to handle the burst, asynchronous logging will prevent your application from falling behind during a sudden increase of activity.</p>
 </dd>
-<dt class="hdlist1">Stateful messages</dt>
+<dt class="hdlist1">Lower logging latency</dt>
 <dd>
-<p>In some rare cases, care must be taken with mutable messages.
-Most of the time you don&#8217;t need to worry about this.
-Log4 will ensure that log messages like <code>logger.debug("My object is {}", myObject)</code> will use the state of the <code>myObject</code> parameter at the time of the call to <code>logger.debug()</code>.
-The log message will not change even if <code>myObject</code> is modified later.
-It is safe to asynchronously log mutable objects because most <a href="https://logging.apache.org/log4j/2.x/manual/messages.adoc">built-in <code>Message</code> implementations</a> take a snapshot of the parameters.
-There are some exceptions however: <a href="https://logging.apache.org/log4j/2.x/manual/messages.adoc#MapMessage"><code>MapMessage</code></a> and <a href="https://logging.apache.org/log4j/2.x/manual/messages.adoc#StructuredDataMessage"><code>StructuredDataMessage</code></a> are mutable by design, fields can be added to these messages after the message object was created.
-These messages should not be modified after they are logged with asynchronous loggers or asynchronous appenders; you may or may not see the modifications in the resulting log output.
-Similarly, custom <code>Message</code> implementations should be designed with asynchronous use in mind, and either take a snapshot of their parameters at construction time, or document their thread-safety characteristics.</p>
-</dd>
-<dt class="hdlist1">Computational overhead</dt>
-<dd>
-<p>If your application is running in an environment where CPU resources are scarce, like a machine with one CPU with a single core, starting another thread is not likely to give better performance.</p>
-</dd>
-<dt class="hdlist1">Appender performance</dt>
-<dd>
-<p>If the sustained rate at which your application is logging messages is faster than the maximum sustained throughput of the underlying appender, the queue will fill up and the application will end up logging at the speed of the slowest appender. If this happens, consider selecting a faster appender, or logging less. If neither of these is an option, you may get better throughput and fewer latency spikes by logging synchronously.</p>
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html">Logger</a>
+method calls return faster, since most of the work is done on the I/O thread.</p>
 </dd>
 </dl>
 </div>
 </div>
-</details>
+<div class="sect4">
+<h5 id="async-drawbacks"><a class="anchor" href="#async-drawbacks"></a>Drawbacks</h5>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Lower sustainable throughput</dt>
+<dd>
+<p>If the <em>sustained rate</em> at which your application is logging messages is faster than the maximum sustained throughput of the underlying appender, the queue will fill up and the application will end up logging at the speed of the slowest appender.
+If this happens, consider selecting a faster appender, or logging less.
+If neither of these is an option, you may get better throughput and fewer latency spikes by logging synchronously.</p>
+</dd>
+<dt class="hdlist1">Error handling</dt>
+<dd>
+<p>If a problem happens during the logging process and an exception is thrown, it is less easy for an asynchronous setting to signal this problem to the application.
+This can partly be alleviated by configuring an exception handler, but this may still not cover all cases.</p>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If logging is part of your business logic, e.g. you are using Log4j as an audit logging framework, we would recommend to synchronously log those audit messages.</p>
+</div>
+<div class="paragraph">
+<p>See
+<a href="async.html#MixedSync-Async" class="xref page">mixed synchronous/asynchronous loggers</a> on how to log some messages synchronously.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</dd>
+<dt class="hdlist1">Stateful messages</dt>
+<dd>
+<p>Most
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html"><code>Message</code></a>
+implementations take a snapshot of the formatted message on the calling thread (cf.
+<a href="systemproperties.html#log4j2.formatMsgAsync" class="xref page"><code>log4j2.formatMsgAsync</code></a>).
+The log message will not change even if the arguments of the logging call are modified later.</p>
+<div class="paragraph">
+<p>There are some exceptions to this rule.
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html"><code>MapMessage</code></a>
+and
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html"><code>StructuredDataMessage</code></a>
+for example are mutable by design: fields can be added to these messages after the message object was created.
+These messages should not be modified after they are logged with asynchronous loggers or asynchronous appenders.</p>
+</div>
+<div class="paragraph">
+<p>Similarly, custom
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html"><code>Message</code></a>
+implementations should be designed with asynchronous use in mind, and either take a snapshot of their parameters at construction time, or document their thread-safety characteristics (see
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/AsynchronouslyFormattable.html"><code>AsynchronouslyFormattable</code></a>).</p>
+</div>
+</dd>
+<dt class="hdlist1">Computational overhead</dt>
+<dd>
+<p>If your application is running in an environment where CPU resources are scarce, like a VM with a single vCPU, starting another thread is not likely to give better performance.</p>
+</dd>
+</dl>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="async-strategies"><a class="anchor" href="#async-strategies"></a>Asynchronous logging strategies</h4>

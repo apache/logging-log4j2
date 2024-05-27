@@ -96,7 +96,13 @@
     <a class="nav-link" href="../faq.html">F.A.Q.</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../5min.html">Learn Log4j in 5 minutes!</a>
+    <a class="nav-link" href="../getting-started.html">Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="migration.html">Migrating from Log4j 1</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../development.html">Development</a>
@@ -114,52 +120,55 @@
     <a class="nav-link" href="architecture.html">Architecture</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="migration.html">Migrating from Log4j 1.x to 2.x</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="api.html">API</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="configuration.html">Configuration</a>
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Configuration</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="configuration.html">Configuration file</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="usage.html">Usage</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="systemproperties.html">Configuration properties</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="lookups.html">Lookups</a>
-  </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="appenders.html">Appenders</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="layouts.html">Layouts</a>
 <ul class="nav-list">
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="filters.html">Filters</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="extending.html">Extending Log4j 3</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="scripts.html">Scripts</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="plugins.html">Plugins</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
-  </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="jmx.html">JMX</a>
   </li>
+</ul>
+  </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="logsep.html">Logging Separation</a>
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="extending.html">Extending</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="plugins.html">Plugins</a>
+  </li>
+</ul>
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
@@ -192,24 +201,6 @@
     <span class="nav-text">Components</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-api.html">Log4j API</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-1.2-api.html">Log4j 1.2 Bridge</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-slf4j-impl.html">Log4j SLF4J Binding</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-jul.html">Log4j JDK Logging Adapter</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-jpl.html">Log4j JDK Platform Logging Adapter</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-to-slf4j.html">Log4j to SLF4J Adapter</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-flume-ng.html">Flume Appender</a>
   </li>
   <li class="nav-item" data-depth="1">
@@ -230,6 +221,9 @@
     <button class="nav-item-toggle"></button>
     <span class="nav-text">Related projects</span>
 <ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/2.x">Log4j 2</a>
+  </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="/log4j/jakarta">Log4j Jakarta EE</a>
   </li>
@@ -388,7 +382,7 @@ If not for yours, keep on reading.</p>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#properties">configure it using properties</a>,</p>
+<p><a href="#core-properties">configure it using properties</a>,</p>
 </li>
 <li>
 <p>and employ garbage-free <a href="#Layouts">layouts</a>, <a href="#Appenders">appenders</a>, and <a href="#Filters">filters</a>.</p>
@@ -634,6 +628,75 @@ If not for yours, keep on reading.</p>
 </table>
 <div class="paragraph">
 <p>This property determines the maximum size of the reusable <code>StringBuilder</code>s used to format <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent">LogEvents</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="log4j.threadContext.map.type"><a class="anchor" href="#log4j.threadContext.map.type"></a><code>log4j.threadContext.map.type</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_THREAD_CONTEXT_MAP_TYPE</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap">Class&lt;? extends ThreadContextMap&gt;</a> or predefined constant</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WebApp</code></p>
+<p class="tableblock">(GC-free mode: <code>CopyOnWrite</code>)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Fully specified class name of a custom <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap">ThreadContextMap</a> implementation class or one of the predefined constants:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">NoOp</dt>
+<dd>
+<p>to disable the thread context,</p>
+</dd>
+<dt class="hdlist1">WebApp</dt>
+<dd>
+<p>a web application-safe implementation, that only binds JRE classes to <code>ThreadLocal</code> to prevent memory leaks,</p>
+</dd>
+<dt class="hdlist1">CopyOnWrite</dt>
+<dd>
+<p>a copy-on-write implementation,</p>
+</dd>
+<dt class="hdlist1">GarbageFree</dt>
+<dd>
+<p>a garbage-free implementation.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect3">
+<h4 id="log4j.threadContext.map.garbageFree"><a class="anchor" href="#log4j.threadContext.map.garbageFree"></a><code>log4j.threadContext.map.garbageFree</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_THREAD_CONTEXT_MAP_GARBAGE_FREE</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>If set to <code>true</code> selects a garbage-free thread context map implementation.</p>
 </div>
 </div>
 </div>
@@ -964,15 +1027,24 @@ Logging more than 10 parameters creates <a href="https://docs.oracle.com/javase/
 <div class="paragraph">
 <p>When a message parameter contains an unknown type by the layout, it will encode by calling <code>toString()</code> on these objects.
 Most objects don&#8217;t have garbage-free <code>toString()</code> methods.
-Objects themselves can implement their own garbage-free encoders by either extending from <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/CharSequence.html">Java&#8217;s <code>CharSequence</code></a> or <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/StringBuilderFormattable.html">Log4j&#8217;s <code>StringBuilderFormattable</code></a>.</p>
+Objects themselves can implement their own garbage-free encoders by either extending from <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/CharSequence.html">Java&#8217;s <code>CharSequence</code></a> or <a href="../javadoc/log4j-api/org/apache/logging/log4j/util/StringBuilderFormattable.html">Log4j&#8217;s <code>StringBuilderFormattable</code></a>.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="codeImpact"><a class="anchor" href="#codeImpact"></a>Avoiding autoboxing</h3>
 <div class="paragraph">
-<p>We made an effort to make logging garbage-free without requiring code changes in existing applications, but there is one area where this was not possible.
-<a href="https://docs.oracle.com/javase/tutorial/java/data/autoboxing.html">When logging primitive values (i.e., <code>int</code>, <code>double</code>, <code>boolean</code>, etc.) the JVM autoboxes these primitive values to their <code>Object</code> wrapper equivalents, creating garbage.</a>
-Log4j provides an <code>Unbox</code> utility to prevent autoboxing of primitive parameters:</p>
+<p>We made an effort to make logging garbage-free without requiring code
+changes in existing applications, but there is one area where this was
+not possible. When logging primitive values (i.e. int, double, boolean,
+etc.) the JVM autoboxes these primitive values to their Object wrapper
+equivalents, creating garbage.</p>
+</div>
+<div class="paragraph">
+<p>Log4j provides an <code>Unbox</code> utility to prevent autoboxing of primitive
+parameters. This utility contains a thread-local pool of reused
+<code>StringBuilder`s. The `Unbox.box(primitive)</code> methods write directly into
+a StringBuilder, and the resulting text will be copied into the final
+log message text without creating temporary objects.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -998,7 +1070,10 @@ The <code>Unbox.box(primitive)</code> methods write directly into a <code>String
 <p>The <code>ThreadContext</code> map (aka. MDC) is not garbage-free by default, but can be configured to be garbage-free by setting <a href="#log4j2.garbagefreeThreadContextMap">the <code>log4j2.garbagefreeThreadContextMap</code> system property</a> to <code>true</code>.</p>
 </li>
 <li>
-<p>The <code>ThreadContext</code> stack is not garbage-free.</p>
+<p>The <code>ThreadContext</code> stack (aka. NDC) is not garbage-free.</p>
+</li>
+<li>
+<p><a href="https://logging.apache.org/log4j/2.x/manual/scoped-context.adoc" class="bare">https://logging.apache.org/log4j/2.x/manual/scoped-context.adoc</a> is not garbage-free.</p>
 </li>
 <li>
 <p>Logging very large messages (i.e., more than <a href="#log4j2.maxReusableMsgSize"><code>log4j2.maxReusableMsgSize</code></a> characters, which defaults to 518), when all loggers are <a href="async.html" class="xref page">asynchronous loggers</a>, will cause the internal <code>StringBuilder</code> in the

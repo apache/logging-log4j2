@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Learn Log4j in 5 minutes! :: Apache Log4j</title>
-    <link rel="canonical" href="https://logging.apache.org/log4j/3.x/5min.html">
+    <title>Getting started :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/3.x/getting-started.html">
     <meta name="generator" content="Antora 3.2.0-alpha.4">
 <link rel="stylesheet" href="./_/css/site.css">
 <link rel="icon" href="./_/../_images/favicon.ico" type="image/x-icon">
@@ -96,7 +96,13 @@
     <a class="nav-link" href="faq.html">F.A.Q.</a>
   </li>
   <li class="nav-item is-current-page" data-depth="1">
-    <a class="nav-link" href="5min.html">Learn Log4j in 5 minutes!</a>
+    <a class="nav-link" href="getting-started.html">Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="manual/migration.html">Migrating from Log4j 1</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="manual/cloud.html">Using Log4j in Cloud Enabled Applications</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="development.html">Development</a>
@@ -114,52 +120,55 @@
     <a class="nav-link" href="manual/architecture.html">Architecture</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="manual/migration.html">Migrating from Log4j 1.x to 2.x</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="manual/api.html">API</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="manual/configuration.html">Configuration</a>
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Configuration</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/configuration.html">Configuration file</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="manual/usage.html">Usage</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/systemproperties.html">Configuration properties</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="manual/cloud.html">Using Log4j in Cloud Enabled Applications</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/customconfig.html">Programmatic Configuration</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="manual/lookups.html">Lookups</a>
-  </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="manual/appenders.html">Appenders</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="manual/layouts.html">Layouts</a>
 <ul class="nav-list">
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="manual/json-template-layout.html">JSON Template Layout</a>
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="manual/filters.html">Filters</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="manual/extending.html">Extending Log4j 3</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/scripts.html">Scripts</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="manual/plugins.html">Plugins</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="manual/customconfig.html">Programmatic Configuration</a>
-  </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="manual/jmx.html">JMX</a>
   </li>
+</ul>
+  </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="manual/logsep.html">Logging Separation</a>
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="manual/extending.html">Extending</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/plugins.html">Plugins</a>
+  </li>
+</ul>
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
@@ -192,24 +201,6 @@
     <span class="nav-text">Components</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="log4j-api.html">Log4j API</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="log4j-1.2-api.html">Log4j 1.2 Bridge</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="log4j-slf4j-impl.html">Log4j SLF4J Binding</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="log4j-jul.html">Log4j JDK Logging Adapter</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="log4j-jpl.html">Log4j JDK Platform Logging Adapter</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="log4j-to-slf4j.html">Log4j to SLF4J Adapter</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="log4j-flume-ng.html">Flume Appender</a>
   </li>
   <li class="nav-item" data-depth="1">
@@ -230,6 +221,9 @@
     <button class="nav-item-toggle"></button>
     <span class="nav-text">Related projects</span>
 <ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/2.x">Log4j 2</a>
+  </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="/log4j/jakarta">Log4j Jakarta EE</a>
   </li>
@@ -264,44 +258,103 @@
   <ul>
     <li><a href="index.html">Home</a></li>
     <li>Resources</li>
-    <li><a href="5min.html">Learn Log4j in 5 minutes!</a></li>
+    <li><a href="getting-started.html">Getting started</a></li>
   </ul>
 </nav>
-<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/main/src/site/antora/modules/ROOT/pages/5min.adoc">Edit this Page</a></div>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/main/src/site/antora/modules/ROOT/pages/getting-started.adoc">Edit this Page</a></div>
 </div>
   <div class="content">
 <aside class="toc sidebar" data-title="Contents" data-levels="4">
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Learn Log4j in 5 minutes!</h1>
+<h1 class="page">Getting started</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>You need a crash course on Log4j?
-You are at the right place!</p>
+<p>This document aims to guide you through the most important aspects of logging with Log4j.
+It is not a comprehensive guide, but it should give you a good starting point.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="what"><a class="anchor" href="#what"></a>What is logging and Log4j?</h2>
+<h2 id="what"><a class="anchor" href="#what"></a>What is logging?</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Logging is the action of publishing diagnostics information at certain points of a program execution:</p>
+<p>Logging is the action of publishing diagnostics information at certain points of a program execution.
+It means you can write messages to a log file or console to help you understand what your application is doing.</p>
+</div>
+<div class="paragraph">
+<p>The simplest way to log in Java is to use <code>System.out.println()</code>, like this:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">private void truncateTable(String tableName) {
-    System.out.format("[WARN] Truncating table `%s`!%n", tableName);
+  System.out.println("Truncating table"); <i class="conum" data-value="1"></i><b>(1)</b>
+  db.truncate(tableName);
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The information that a table is being truncated is written to the console.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This is already useful, but the reader of this message does not know what table is being truncated.
+Usually, we would like to include the table name in the message, which quickly leads
+developers to use the <code>System.out.format</code> (or similar) methods.
+Log4j helps with formatting strings as we will see later, but for now, let&#8217;s see how to work without it.</p>
+</div>
+<div class="paragraph">
+<p>The following code shows how this method could be used to provide more context information.
+<code>%s</code> will be replaced with the value of <code>tableName</code>, and <code>%n</code> will be replaced with a new line.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">private void truncateTable(String tableName) {
+    System.out.format("[WARN] Truncating table `%s`%n", tableName); <i class="conum" data-value="1"></i><b>(1)</b>
     db.truncate(tableName);
 }</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>This provides observability into an application&#8217;s runtime. (See <a href="https://logging.apache.org/what-is-logging.html">What is logging?</a> page for a longer read.)</p>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>format</code> writes the message to the console, replacing <code>%s</code> with the value of <code>tableName</code>.</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>But we can do way better than a <code>printf()</code> statement!</p>
+<p>If the developer decides the truncate the table "fruits", the output of this code will look like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[WARN] Truncating table `fruits`</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This provides observability into an application&#8217;s runtime and we can follow the execution flow.</p>
+</div>
+<div class="paragraph">
+<p>However, there are several drawbacks with the above approach and this is where Log4j comes in.
+Log4j will help you to write logs in a more structured way, with more information, and with more flexibility.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="why"><a class="anchor" href="#why"></a>Why should I use Log4j?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Log4j is a versatile, industrial-grade Java logging framework, maintained by many contributors.
+It can help us with common logging tasks and lets us focus on the application logic.</p>
+</div>
+<div class="paragraph">
+<p>It will:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -309,7 +362,7 @@ You are at the right place!</p>
 <p>Enhance the message with additional information (timestamp, class &amp; method name, line number, host, severity, etc.)</p>
 </li>
 <li>
-<p>Write the message in a different way, using a different <strong>layout</strong> (CSV, JSON, etc.)</p>
+<p>Write the message differently, using a different <strong>layout</strong> (CSV, JSON, etc.)</p>
 </li>
 <li>
 <p>Write the message to a different medium, using a different <strong>appender</strong> (file, socket, database, queue, etc.)</p>
@@ -319,31 +372,14 @@ You are at the right place!</p>
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>Log4j is versatile, industrial-grade Java logging framework delivering all these and more in one product.
-It is essentially composed of a <strong>logging API</strong> and its <strong>implementation</strong>:</p>
-</div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Log4j API</dt>
-<dd>
-<p>The logging API your code (programmatically) logs through.
-This needs to be available at compile-time and no configuration is needed.</p>
-</dd>
-<dt class="hdlist1">Log4j Core</dt>
-<dd>
-<p>The logging implementation which is responsible for filtering, routing, encoding, and appending log events.
-This needs to be available at runtime and configured by the user.</p>
-</dd>
-</dl>
-</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="logging"><a class="anchor" href="#logging"></a>How do I log using Log4j?</h2>
+<h2 id="install"><a class="anchor" href="#install"></a>Prerequisites</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Add the <code>log4j-api</code> dependency to your application:</p>
+<p>We will need a <strong>BOM</strong> (Bill of Materials) to manage the versions of the dependencies.
+In addition, we will need the <code>log4j-api</code> dependency itself.</p>
 </div>
 <div id="_tabs_1" class="openblock tabs is-loading">
 <div class="content">
@@ -397,8 +433,16 @@ This needs to be available at runtime and configured by the user.</p>
 </div>
 </div>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="logging"><a class="anchor" href="#logging"></a>How do I write logs using Log4j?</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>And start logging:</p>
+<p>To write logs, you need a <a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html"><code>Logger</code></a> instance which you will retrieve from the <a href="../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html"><code>LogManager</code></a>.
+You can use the <code>Logger</code> instance to write logs by using methods like <code>info()</code>, <code>warn()</code>, <code>error()</code>, etc.
+These methods are named after the <em>log levels</em> they represent, a way to categorize log events by severity.
+The log message can also contain placeholders written as <code>{}</code> that will be replaced by the arguments passed to the method.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -421,17 +465,34 @@ public class DbTableService {
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>This is a thread-safe, reusable <code>Logger</code> instance.
-The associated class will be captured at initialization – no need for a <code>getLogger(DbTableService.class)</code>.</td>
+<td>The returned <code>Logger</code> instance is thread-safe and reusable.
+Unless explicitly provided as an argument, <code>getLogger()</code> associates the returned <code>Logger</code> with the enclosing class, that is, <code>DbTableService</code> in this example.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The parameter placeholders <code>{}</code> in the message will be automatically replaced with the value of <code>tableName</code> and the generated <strong>log event</strong> will be enriched with <strong>level</strong> (i.e., <code>WARN</code>), timestamp, class &amp; method name, line number, and several other information.</td>
+<td>The placeholder <code>{}</code> in the message will be replaced with the value of <code>tableName</code></td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>Make sure to log exceptions that have diagnostics value:</p>
+<p>The <em>generated</em> <strong>log event</strong>, which contain the <em>user-provided</em> <strong>log message</strong> and <strong>log level</strong> (i.e., <code>WARN</code>), will be enriched with several other implicitly derived contextual information: timestamp, class &amp; method name, line number, etc.</p>
+</div>
+<div class="paragraph">
+<p><strong>What happens to the generated log event will vary significantly depending on the configuration used.</strong>
+It can be pretty-printed to the console, written to a file, or get totally ignored due to insufficient severity or some other filtering.</p>
+</div>
+<div class="paragraph">
+<p>Log levels are used to categorize log events by severity and control the verbosity of the logs.
+Log4j contains various predefined levels, but the most common are <code>DEBUG</code>, <code>INFO</code>, <code>WARN</code>, and <code>ERROR</code>.
+With them, you can filter out less important logs and focus on the most critical ones.
+Previously we used <code>Logger#warn()</code> to log a warning message, which could mean that something is not right, but the application can continue.
+Log levels have a priority, and <code>WARN</code> is less severe than <code>ERROR</code>.</p>
+</div>
+<div class="paragraph">
+<p>Exceptions are often also errors.
+In this case, we might use the <code>ERROR</code> log level.
+Make sure to log exceptions that have diagnostics value.
+This is simply done by passing the exception as the last argument to the log method:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -448,31 +509,27 @@ try {
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Notice the <code>error()</code> method?
-Yup, the level is set to <code>ERROR</code>.
-<div class="paragraph">
-<p>What about the <code>exception</code> in the last argument?
-Wait a second!
-There is one placeholder in the format (i.e., <code>{}</code>), but there are two parameters passed in arguments: <code>tableName</code> and <code>exception</code>!
-What the heck?
-Yep, you guessed it right!
-Log4j API will attach the last extra argument of type <code>Throwable</code> in a separate field to the generated log event.</p>
-</div></td>
+<td>By using <code>error()</code> instead of <code>warn()</code>, we signal that the operation failed.</td>
 </tr>
 </table>
 </div>
-<div class="sect2">
-<h3 id="pitfalls"><a class="anchor" href="#pitfalls"></a>Common pitfalls</h3>
 <div class="paragraph">
-<p>There are several widespread bad practices.
-Let&#8217;s try to walk through the most common ones.</p>
+<p>While there is only one placeholder in the message, we pass two arguments: <code>tableName</code> and <code>exception</code>.
+Log4j will attach the last extra argument of type <code>Throwable</code> in a separate field to the generated log event.</p>
+</div>
+<div class="sect2">
+<h3 id="best-practice"><a class="anchor" href="#best-practice"></a>Best practices</h3>
+<div class="paragraph">
+<p>There are several widespread bad practices while using Log4j API.
+Below we will walk through the most common ones and see how to fix them.
+For a complete list, refer to <a href="https://logging.apache.org/log4j/2.x/manual/api.adoc#best-practice">the Log4j API best practices page</a>.</p>
 </div>
 <div class="sect3">
-<h4 id="pitfal-toString"><a class="anchor" href="#pitfal-toString"></a>Don&#8217;t use <code>toString()</code></h4>
+<h4 id="best-practice-toString"><a class="anchor" href="#best-practice-toString"></a>Don&#8217;t use <code>toString()</code></h4>
 <div class="ulist checklist">
 <ul class="checklist">
 <li>
-<p><i class="fa fa-square-o"></i> <code>Object#toString()</code> is redundant in arguments</p>
+<p><i class="fa fa-square-o"></i> Don&#8217;t use <code>Object#toString()</code> in arguments, it is redundant!</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">/* BAD! */ LOGGER.info("userId: {}", userId.toString());</code></pre>
@@ -480,7 +537,7 @@ Let&#8217;s try to walk through the most common ones.</p>
 </div>
 </li>
 <li>
-<p><i class="fa fa-check-square-o"></i> Underlying message type and layout will deal with arguments</p>
+<p><i class="fa fa-check-square-o"></i> Underlying message type and layout will deal with arguments:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">/* GOOD */ LOGGER.info("userId: {}", userId);</code></pre>
@@ -491,16 +548,12 @@ Let&#8217;s try to walk through the most common ones.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="pitfall-exception"><a class="anchor" href="#pitfall-exception"></a>Pass exception as the last extra argument</h4>
-<div class="paragraph">
-<p>Using <code>Throwable#printStackTrace()</code> or <code>Throwable#getMessage()</code> while logging?
-Please, don&#8217;t!</p>
-</div>
+<h4 id="best-practice-exception"><a class="anchor" href="#best-practice-exception"></a>Pass exception as the last extra argument</h4>
 <div class="ulist checklist">
 <ul class="checklist">
 <li>
-<p><i class="fa fa-square-o"></i> Don&#8217;t call <code>Throwable#printStackTrace()</code>.
-This not only circumvents the logging, but can also leak sensitive information!</p>
+<p><i class="fa fa-square-o"></i> Don&#8217;t call <code>Throwable#printStackTrace()</code>!
+This not only circumvents the logging but can also leak sensitive information!</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">/* BAD! */ exception.printStackTrace();</code></pre>
@@ -508,7 +561,7 @@ This not only circumvents the logging, but can also leak sensitive information!<
 </div>
 </li>
 <li>
-<p><i class="fa fa-square-o"></i> Don&#8217;t use <code>Throwable#getMessage()</code>.
+<p><i class="fa fa-square-o"></i> Don&#8217;t use <code>Throwable#getMessage()</code>!
 This prevents the log event from getting enriched with the exception.</p>
 <div class="listingblock">
 <div class="content">
@@ -518,7 +571,8 @@ This prevents the log event from getting enriched with the exception.</p>
 </div>
 </li>
 <li>
-<p><i class="fa fa-square-o"></i> This bloats the log message with duplicate exception message</p>
+<p><i class="fa fa-square-o"></i> Don&#8217;t provide both <code>Throwable#getMessage()</code> and <code>Throwable</code> itself!
+This bloats the log message with a duplicate exception message.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">/* BAD! */ LOGGER.info("failed for user ID `{}`: {}", userId, exception.getMessage(), exception);</code></pre>
@@ -526,7 +580,7 @@ This prevents the log event from getting enriched with the exception.</p>
 </div>
 </li>
 <li>
-<p><i class="fa fa-check-square-o"></i> Pass exception as the last extra argument</p>
+<p><i class="fa fa-check-square-o"></i> Pass exception as the last extra argument:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">/* GOOD */ LOGGER.error("failed", exception);
@@ -538,16 +592,17 @@ This prevents the log event from getting enriched with the exception.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="pitfal-concat"><a class="anchor" href="#pitfal-concat"></a>Don&#8217;t use string concatenation</h4>
+<h4 id="best-practice-concat"><a class="anchor" href="#best-practice-concat"></a>Don&#8217;t use string concatenation</h4>
 <div class="paragraph">
 <p>If you are using <code>String</code> concatenation while logging, you are doing something very wrong and dangerous!</p>
 </div>
 <div class="ulist checklist">
 <ul class="checklist">
 <li>
-<p><i class="fa fa-square-o"></i> Circumvents the handling of arguments by message type and layout.
-More importantly, this code is prone to attacks!
-Imagine <code>userId</code> being provided by user with the following content:
+<p><i class="fa fa-square-o"></i> Don&#8217;t use <code>String</code> concatenation to format arguments!
+This circumvents the handling of arguments by message type and layout.
+More importantly, <strong>this approach is prone to attacks!</strong>
+Imagine <code>userId</code> being provided by the user with the following content:
 <code>placeholders for non-existing args to trigger failure: {} {} {dangerousLookup}</code></p>
 <div class="listingblock">
 <div class="content">
@@ -570,12 +625,50 @@ Imagine <code>userId</code> being provided by user with the following content:
 </div>
 </div>
 <div class="sect1">
+<h2 id="architecture"><a class="anchor" href="#architecture"></a>Architecture</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In a nutshell, Log4j operates with two main parts: the API and the Core.
+With this structure, Log4j allows you to log events using the API and route them through the Core.</p>
+</div>
+<div class="paragraph">
+<p>Optionally you can also route the log events through other logging frameworks
+like SLF4J or JUL (Java Util Logging) by adding a bridge.</p>
+</div>
+<div id="log4j-api" class="dlist">
+<dl>
+<dt class="hdlist1">Log4j API</dt>
+<dd>
+<p>This is the interface that you use in your application to log events.
+It needs to be available at compile-time and no configuration is needed.
+By using it, you ensure that your application can write logs but is not tied to a specific logging implementation.</p>
+</dd>
+</dl>
+</div>
+<div id="log4j-core" class="dlist">
+<dl>
+<dt class="hdlist1">Log4j Core</dt>
+<dd>
+<p>The Log4j Core is a logging implementation that processes log events.
+It is responsible for filtering, routing, encoding, and appending log events.
+This needs to be available at runtime and requires configuration by the user.
+When you deploy your application, you must also deploy the Log4j Core or any
+other logging implementation along with its configuration to consume all generated log events</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>The following sections show you examples of how you can get started quickly with Log4j.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="config-app"><a class="anchor" href="#config-app"></a>How do I configure Log4j to run my <strong>application</strong>?</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Your code logs through a logging API.
-So your dependencies and their dependencies too.
-While deploying your application, you need to provide a <strong>logging implementation</strong> along with its configuration to consume all generated log events.</p>
+<p>The following section describes, how an application can be configured to use Log4j.
+It will add a configuration and some other artifacts to your application.
+The configuration shown here enhances the security and usability of your application.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -593,7 +686,10 @@ Please skip to the <a href="#config-lib">How do I configure Log4j for my <strong
 </table>
 </div>
 <div class="paragraph">
-<p>Add the <code>log4j-core</code> <strong>runtime</strong> dependency to your application:</p>
+<p>As mentioned, Log4j is using a logging API.
+First of all, add the <code>log4j-core</code> <strong>runtime</strong> dependency to our application.
+Second, it is highly recommended to add the <code>log4j-layout-template-json</code> <strong>runtime</strong> dependency to encode log events in JSON.
+This is the most secure way to format log events and should preferred over the default <code>PatternLayout</code>, at least for production deployments.</p>
 </div>
 <div id="_tabs_2" class="openblock tabs is-loading">
 <div class="content">
@@ -611,12 +707,11 @@ Please skip to the <a href="#config-lib">How do I configure Log4j for my <strong
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;project&gt;
-
-  &lt;!-- Assuming you already have the `dependencyManagement &gt; dependencies &gt; dependency` entry for `log4j-bom` --&gt;
+  &lt;!-- Assuming `log4j-bom` is already added --&gt;
 
   &lt;dependency&gt;
 
-    &lt;!-- The logging implementation (i.e., Log4j Core) --&gt;
+    &lt;!-- Logging implementation (Log4j Core) --&gt;
     &lt;dependency&gt;
       &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
       &lt;artifactId&gt;log4j-core&lt;/artifactId&gt;
@@ -629,7 +724,142 @@ Please skip to the <a href="#config-lib">How do I configure Log4j for my <strong
       &lt;artifactId&gt;log4j-layout-template-json&lt;/artifactId&gt;
       &lt;scope&gt;runtime&lt;/scope&gt;<i class="conum" data-value="1"></i><b>(1)</b>
     &lt;/dependency&gt;
+  &lt;/dependency&gt;
 
+&lt;/project&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_2_gradle--panel" class="tabpanel" aria-labelledby="_tabs_2_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">dependencies {
+
+  // Assuming `log4j-bom` is already added
+
+  // The logging implementation (i.e., Log4j Core)
+  runtimeOnly 'org.apache.logging.log4j:log4j-core' <i class="conum" data-value="1"></i><b>(1)</b>
+
+  // Log4j JSON-encoding support
+  runtimeOnly 'org.apache.logging.log4j:log4j-layout-template-json' <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Note that the logging implementation and bridges are only needed at runtime.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Now it is time to configure Log4j and instruct how the log events should be routed.</p>
+</div>
+<div class="paragraph">
+<p>The <a href="manual/json-template-layout.html" class="xref page">JSON Template Layout</a> is used to encode log events in JSON.
+Once encoded <a href="manual/appenders.html" class="xref page">Appenders</a> are responsible for writing log events to the console, file, socket, database, etc.</p>
+</div>
+<div class="paragraph">
+<p>The <code>&lt;logger&gt;</code> defines, that log events generated by classes in the <code>com.mycompany</code> package (incl. its sub-packages) and that are of level <code>INFO</code> and higher (i.e., <code>WARN</code>, <code>ERROR</code>, <code>FATAL</code>) will be consumed.
+Finally, the <code>&lt;root&gt;</code> logger defines that log events of level <code>WARN</code> and higher will be consumed unless specified otherwise. It serves as a default configuration.</p>
+</div>
+<div class="paragraph">
+<p>Save the following XML document to <code>src/<strong>main</strong>/resources/log4j2.xml</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">An example <code>src/<strong>main</strong>/resources/log4j2.xml</code></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xmlns="https://logging.apache.org/xml/ns"
+               xsi:schemaLocation="
+                       https://logging.apache.org/xml/ns
+                       https://logging.apache.org/xml/ns/log4j-config-3.xsd"&gt;
+
+  &lt;appenders&gt;<i class="conum" data-value="1"></i><b>(1)</b>
+    &lt;Console name="CONSOLE"&gt;<i class="conum" data-value="2"></i><b>(2)</b>
+      &lt;JsonTemplateLayout/&gt;<i class="conum" data-value="3"></i><b>(3)</b>
+    &lt;/Console&gt;
+  &lt;/appenders&gt;
+
+  &lt;loggers&gt;
+    &lt;logger name="com.mycompany" level="INFO"/&gt;<i class="conum" data-value="4"></i><b>(4)</b>
+    &lt;root level="WARN"&gt;<i class="conum" data-value="5"></i><b>(5)</b>
+      &lt;AppenderRef ref="CONSOLE"/&gt;<i class="conum" data-value="6"></i><b>(6)</b>
+    &lt;/root&gt;
+  &lt;/loggers&gt;
+
+&lt;/Configuration&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><a href="manual/appenders.html" class="xref page">Appenders</a> are responsible for writing log events to their target</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><a href="manual/appenders.html#ConsoleAppender" class="xref page">Console Appender</a> writes logs to the console.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td><a href="manual/json-template-layout.html" class="xref page">JSON Template Layout</a> encodes log events in JSON.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Log events from <code>com.mycompany</code> and its sub-packages, at <code>INFO</code> level or higher, are consumed.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Unless specified otherwise, log events of level <code>WARN</code> and higher will be consumed.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Unless specified otherwise, log events will be forwarded to the <code>console</code> appender defined earlier.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>If you want to configure Log4j for tests, you are strongly advised to use a different Log4j configuration.
+Continue to <a href="#config-test">How do I configure Log4j for tests?</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="integrating-log4j"><a class="anchor" href="#integrating-log4j"></a>Integrating Log4j with SLF4J</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In many cases, you might have a library that logs through SLF4J.
+Due to the separation of Log4js API and Core, you can add a bridge to forward SLF4J calls to the Log4j API.
+This way, SLF4J calls will be processed by Log4j Core too.</p>
+</div>
+<div class="paragraph">
+<p>It is similarly easy: just add the new dependency `log4j-slf4j2-impl to your application.</p>
+</div>
+<div id="_tabs_3" class="openblock tabs is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_3_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_3_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_3_maven--panel" class="tabpanel" aria-labelledby="_tabs_3_maven">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;project&gt;
+  &lt;!-- Other dependencies --&gt;
+
+  &lt;dependency&gt;
     &lt;!-- SLF4J-to-Log4j bridge --&gt;<i class="conum" data-value="2"></i><b>(2)</b>
     &lt;dependency&gt;
         &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
@@ -643,18 +873,11 @@ Please skip to the <a href="#config-lib">How do I configure Log4j for my <strong
 </div>
 </div>
 </div>
-<div id="_tabs_2_gradle--panel" class="tabpanel" aria-labelledby="_tabs_2_gradle">
+<div id="_tabs_3_gradle--panel" class="tabpanel" aria-labelledby="_tabs_3_gradle">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">dependencies {
-
-  // Assuming you already have the `implementation platform(...)` entry for `log4j-bom`
-
-  // The logging implementation (i.e., Log4j Core)
-  runtimeOnly 'org.apache.logging.log4j:log4j-core' <i class="conum" data-value="1"></i><b>(1)</b>
-
-  // Log4j JSON-encoding support
-  runtimeOnly 'org.apache.logging.log4j:log4j-layout-template-json' <i class="conum" data-value="1"></i><b>(1)</b>
+  // Other dependencies
 
   // SLF4J-to-Log4j bridge <i class="conum" data-value="2"></i><b>(2)</b>
   runtimeOnly 'org.apache.logging.log4j:log4j-slf4j2-impl' <i class="conum" data-value="1"></i><b>(1)</b>
@@ -669,76 +892,16 @@ Please skip to the <a href="#config-lib">How do I configure Log4j for my <strong
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Note that the logging implementation and bridges are only needed at runtime!</td>
+<td>Again, we only need a runtime dependency.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>SLF4J is another widely used logging API.
-<code>log4j-slf4j2-impl</code> forwards SLF4J calls to Log4j API, which effectively gets processed by Log4j Core too.</td>
+<td>This dependency will forward SLF4J calls to the Log4j API.</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>Now it is time to configure Log4j and instruct how the log events should be routed.
-Save the following XML document to <code>src/<strong>main</strong>/resources/log4j2.xml</code>:</p>
-</div>
-<div class="listingblock">
-<div class="title">An example <code>src/<strong>main</strong>/resources/log4j2.xml</code></div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xmlns="https://logging.apache.org/xml/ns"
-               xsi:schemaLocation="
-                       https://logging.apache.org/xml/ns
-                       https://logging.apache.org/xml/ns/log4j-config-2.xsd"&gt;
-
-  &lt;appenders&gt;<i class="conum" data-value="1"></i><b>(1)</b>
-    &lt;Console name="console"&gt;<i class="conum" data-value="2"></i><b>(2)</b>
-      &lt;JsonTemplateLayout/&gt;<i class="conum" data-value="3"></i><b>(3)</b>
-    &lt;/Console&gt;
-  &lt;/appenders&gt;
-
-  &lt;loggers&gt;
-    &lt;logger name="com.mycompany" level="INFO"/&gt;<i class="conum" data-value="4"></i><b>(4)</b>
-    &lt;root level="WARN"&gt;<i class="conum" data-value="5"></i><b>(5)</b>
-      &lt;AppenderRef ref="console"/&gt;<i class="conum" data-value="6"></i><b>(6)</b>
-    &lt;/root&gt;
-  &lt;/loggers&gt;
-
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td><a href="manual/appenders.html" class="xref page">Appenders</a> are responsible for writing log events to console, file, socket, database, etc.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td><a href="manual/appenders.html#ConsoleAppender" class="xref page">Console Appender</a> is used to write logs to the console.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td><a href="manual/json-template-layout.html" class="xref page">JSON Template Layout</a> is used to encode log events in JSON.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Log events generated by classes in the <code>com.mycompany</code> package (incl. its subpackages) and that are of level <code>INFO</code> and higher (i.e., <code>WARN</code>, <code>ERROR</code>, <code>FATAL</code>) will be consumed.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>Unless specified otherwise, log events of level <code>WARN</code> and and higher will be consumed.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="6"></i><b>6</b></td>
-<td>Unless specified otherwise, log events will be forwarded to the <code>console</code> appender defined earlier.</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>You are strongly advised to use a different Log4j configuration for tests.
-Continue to <a href="#config-test">How do I configure Log4j for tests?</a></p>
+<p><code>log4j-slf4j2-impl</code> forwards SLF4J calls to Log4j API, which effectively gets processed by Log4j Core too.</p>
 </div>
 </div>
 </div>
@@ -766,26 +929,27 @@ Please skip to the <a href="#config-app">How do I configure Log4j to run my <str
 </table>
 </div>
 <div class="paragraph">
-<p>Add the <code>log4j-core</code> <strong>test</strong> dependency to your library:</p>
+<p>Add the <code>log4j-core</code> dependency in <strong>test</strong> scope to your library.
+Very similar to the previous section, in most cases it is useful to also add the <code>log4j-slf4j2-impl</code> dependency.
+SLF4J is a widely used logging API and this way, SLF4J calls will be processed by Log4j Core too.</p>
 </div>
-<div id="_tabs_3" class="openblock tabs is-loading">
+<div id="_tabs_4" class="openblock tabs is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_3_maven" class="tab">
+<li id="_tabs_4_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_3_gradle" class="tab">
+<li id="_tabs_4_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_3_maven--panel" class="tabpanel" aria-labelledby="_tabs_3_maven">
+<div id="_tabs_4_maven--panel" class="tabpanel" aria-labelledby="_tabs_4_maven">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;project&gt;
-
-  &lt;!-- Assuming you already have the `dependencyManagement &gt; dependencies &gt; dependency` entry for `log4j-bom` --&gt;
+  &lt;!-- Assuming `log4j-bom` is already added  --&gt;
 
   &lt;dependency&gt;
 
@@ -809,12 +973,12 @@ Please skip to the <a href="#config-app">How do I configure Log4j to run my <str
 </div>
 </div>
 </div>
-<div id="_tabs_3_gradle--panel" class="tabpanel" aria-labelledby="_tabs_3_gradle">
+<div id="_tabs_4_gradle--panel" class="tabpanel" aria-labelledby="_tabs_4_gradle">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">dependencies {
 
-  // Assuming you already have the `implementation platform(...)` entry for `log4j-bom`
+  // Assuming `log4j-bom` is already added
 
   // The logging implementation (i.e., Log4j Core)
   testRuntimeOnly 'org.apache.logging.log4j:log4j-core' <i class="conum" data-value="1"></i><b>(1)</b>
@@ -832,12 +996,11 @@ Please skip to the <a href="#config-app">How do I configure Log4j to run my <str
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Note that the logging implementation and bridges are only needed for tests!</td>
+<td>Note that the logging implementation and bridges are only needed for tests.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>SLF4J is another widely used logging API.
-<code>log4j-slf4j2-impl</code> forwards SLF4J calls to Log4j API, which effectively gets processed by Log4j Core too.</td>
+<td><code>log4j-slf4j2-impl</code> forwards SLF4J calls to the Log4j API.</td>
 </tr>
 </table>
 </div>
@@ -852,7 +1015,17 @@ See <a href="#config-test">How do I configure Log4j for tests?</a></p>
 <div class="sectionbody">
 <div class="paragraph">
 <p>For tests, prefer a human-readable layout with increased verbosity.
-Save the following XML document to <code>src/<strong>test</strong>/resources/log4j2-test.xml</code>:</p>
+While it is not recommended to use the <code>PatternLayout</code> in production for security reasons, it is a good choice for tests.</p>
+</div>
+<div class="paragraph">
+<p>The <a href="manual/layouts.html#PatternLayout" class="xref page">Pattern Layout</a> is used for formatting strings in a specific way.
+In the below case, it will include the timestamp, thread name, log level, class name, and the message and
+print it to the Console.
+Very similar to the earlier configuration, the <code>&lt;logger&gt;</code> defines what should be logged on
+which level and the <code>&lt;root&gt;</code> logger serves as a default configuration.</p>
+</div>
+<div class="paragraph">
+<p>Save the following XML document to <code>src/<strong>test</strong>/resources/log4j2-test.xml</code>.</p>
 </div>
 <div class="listingblock">
 <div class="title">An example <code>src/<strong>test</strong>/resources/log4j2-test.xml</code></div>
@@ -862,10 +1035,10 @@ Save the following XML document to <code>src/<strong>test</strong>/resources/log
                xmlns="https://logging.apache.org/xml/ns"
                xsi:schemaLocation="
                        https://logging.apache.org/xml/ns
-                       https://logging.apache.org/xml/ns/log4j-config-2.xsd"&gt;
+                       https://logging.apache.org/xml/ns/log4j-config-3.xsd"&gt;
 
   &lt;appenders&gt;
-    &lt;Console name="console"&gt;
+    &lt;Console name="CONSOLE"&gt;
       &lt;PatternLayout pattern="%d [%t] %5p %c{1.} - %m%n"/&gt;<i class="conum" data-value="1"></i><b>(1)</b>
     &lt;/Console&gt;
   &lt;/appenders&gt;
@@ -873,7 +1046,7 @@ Save the following XML document to <code>src/<strong>test</strong>/resources/log
   &lt;loggers&gt;
     &lt;logger name="com.mycompany" level="DEBUG"/&gt;<i class="conum" data-value="2"></i><b>(2)</b>
     &lt;root level="WARN"&gt;
-      &lt;AppenderRef ref="console"/&gt;
+      &lt;AppenderRef ref="CONSOLE"/&gt;
     &lt;/root&gt;
   &lt;/loggers&gt;
 
@@ -899,9 +1072,13 @@ Save the following XML document to <code>src/<strong>test</strong>/resources/log
 <div class="sectionbody">
 <div class="dlist">
 <dl>
+<dt class="hdlist1">More details</dt>
+<dd>
+<p>If you are looking for a more detailed read, please see <a href="https://logging.apache.org/what-is-logging.html">What is logging?</a>.</p>
+</dd>
 <dt class="hdlist1">Installation</dt>
 <dd>
-<p>While shared dependency management snippets should get you going, it can also be challenging depending on your use case.
+<p>While shared dependency management snippets should get you going, your case might necessitate a more intricate setup.
 Are you dealing with a Spring Boot application?
 Is it running in a Java EE container?
 Do you need to take into account other logging APIs such as JUL, JPL, JCL, etc.?
@@ -929,7 +1106,7 @@ See the <a href="manual/architecture.html" class="xref page">Architecture</a> pa
 <dt class="hdlist1">Support</dt>
 <dd>
 <p>Confused?
-Having problem while setting up Log4j?
+Having a problem while setting up Log4j?
 See the <a href="https://logging.apache.org/support.html">Support</a> page.</p>
 </dd>
 </dl>
