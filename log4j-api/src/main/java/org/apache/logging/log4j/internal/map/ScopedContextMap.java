@@ -25,8 +25,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import org.apache.logging.log4j.util.ReadOnlyStringMap;
-import org.apache.logging.log4j.util.TriConsumer;
 
 /**
  * This class represents an immutable map, which stores its state inside a single Object[]:
@@ -57,13 +55,13 @@ import org.apache.logging.log4j.util.TriConsumer;
  * </ul>
  *
  */
-class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements Serializable, ReadOnlyStringMap {
+public class ScopedContextMap extends AbstractMap<String, Object> implements Serializable {
     /**
      * Implementation of Map.Entry. The implementation is simple since each instance
      * contains an index in the array, then getKey() and getValue() retrieve from
      * the array. Blocks modifications.
      */
-    private class UnmodifiableEntry implements Map.Entry<String, String> {
+    private class UnmodifiableEntry implements Entry<String, Object> {
         /**
          * This field is functionally final, but marking it as such can cause
          * performance problems. Consider marking it final after
@@ -81,8 +79,8 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
         }
 
         @Override
-        public String getValue() {
-            return (String) backingArray[getArrayIndexForValue(index)];
+        public Object getValue() {
+            return backingArray[getArrayIndexForValue(index)];
         }
 
         /**
@@ -91,12 +89,12 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
          */
         public int hashCode() {
             String key = (String) backingArray[getArrayIndexForKey(index)];
-            String value = (String) backingArray[getArrayIndexForValue(index)];
+            Object value = backingArray[getArrayIndexForValue(index)];
             return Objects.hashCode(key) ^ Objects.hashCode(value);
         }
 
         @Override
-        public String setValue(String value) {
+        public String setValue(Object value) {
             throw new UnsupportedOperationException("Cannot update Entry instances in UnmodifiableArrayBackedMap");
         }
     }
@@ -105,7 +103,7 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
      * Simple Entry iterator, tracking solely the index in the array. Blocks
      * modifications.
      */
-    private class UnmodifiableEntryIterator implements Iterator<Map.Entry<String, String>> {
+    private class UnmodifiableEntryIterator implements Iterator<Entry<String, Object>> {
         private int index;
 
         @Override
@@ -114,7 +112,7 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
         }
 
         @Override
-        public Entry<String, String> next() {
+        public Entry<String, Object> next() {
             return new UnmodifiableEntry(index++);
         }
     }
@@ -123,20 +121,20 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
      * Simple Entry set, providing a reference to UnmodifiableEntryIterator and
      * blocking modifications.
      */
-    private class UnmodifiableEntrySet extends AbstractSet<Map.Entry<String, String>> {
+    private class UnmodifiableEntrySet extends AbstractSet<Entry<String, Object>> {
 
         @Override
-        public boolean add(Entry<String, String> e) {
+        public boolean add(Entry<String, Object> e) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public boolean addAll(Collection<? extends Entry<String, String>> c) {
+        public boolean addAll(Collection<? extends Entry<String, Object>> c) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public Iterator<Entry<String, String>> iterator() {
+        public Iterator<Entry<String, Object>> iterator() {
             return new UnmodifiableEntryIterator();
         }
 
@@ -148,7 +146,7 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
 
     private static final long serialVersionUID = 6849423432534211514L;
 
-    public static final UnmodifiableArrayBackedMap EMPTY_MAP = new UnmodifiableArrayBackedMap(0);
+    public static final ScopedContextMap EMPTY_MAP = new ScopedContextMap(0);
 
     private static final int NUM_FIXED_ARRAY_ENTRIES = 1;
 
@@ -160,12 +158,35 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
         return 2 * entryIndex + 1 + NUM_FIXED_ARRAY_ENTRIES;
     }
 
-    static UnmodifiableArrayBackedMap getInstance(Object[] backingArray) {
+    static ScopedContextMap getInstance(Object[] backingArray) {
         if (backingArray == null || backingArray.length == 1) {
             return EMPTY_MAP;
         } else {
-            return new UnmodifiableArrayBackedMap(backingArray);
+            return new ScopedContextMap(backingArray);
         }
+    }
+
+    public static ScopedContextMap getInstance(String key, Object value) {
+        ScopedContextMap newMap = new ScopedContextMap(1);
+        newMap.add(key, value);
+        return newMap;
+    }
+
+    /**
+     * Creates a new instance that contains the entries in the Map.
+     *
+     * @param entriesToAdd the Map.
+     * @return The new Map.
+     */
+    public static ScopedContextMap getInstance(Map<String, Object> entriesToAdd) {
+        // create a new array that can hold the maximum output size
+        ScopedContextMap newMap = new ScopedContextMap(entriesToAdd.size());
+
+        for (Entry<String, Object> entry : entriesToAdd.entrySet()) {
+            newMap.add(entry.getKey(), entry.getValue());
+        }
+        newMap.updateNumEntriesInArray();
+        return newMap;
     }
 
     /**
@@ -177,22 +198,22 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
 
     private int numEntries;
 
-    protected UnmodifiableArrayBackedMap(int capacity) {
+    public ScopedContextMap(int capacity) {
         this.backingArray = new Object[capacity * 2 + 1];
         this.backingArray[0] = 0;
     }
 
-    protected UnmodifiableArrayBackedMap(Object[] backingArray) {
+    private ScopedContextMap(Object[] backingArray) {
         this.numEntries = (backingArray == null ? 0 : (int) backingArray[0]);
         this.backingArray = backingArray;
     }
 
-    UnmodifiableArrayBackedMap(UnmodifiableArrayBackedMap other) {
+    ScopedContextMap(ScopedContextMap other) {
         this.backingArray = other.backingArray;
         this.numEntries = other.numEntries;
     }
 
-    private void add(String key, String value) {
+    private void add(String key, Object value) {
         backingArray[getArrayIndexForKey(numEntries)] = key;
         backingArray[getArrayIndexForValue(numEntries)] = value;
         numEntries++;
@@ -211,7 +232,6 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
         return containsKey((String) key);
     }
 
-    @Override
     public boolean containsKey(String key) {
         int hashCode = key.hashCode();
         for (int i = 0; i < numEntries; i++) {
@@ -251,12 +271,12 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
      * Creates a new instance that contains the same entries as this map, plus
      * either the new entry or updated value passed in the parameters.
      *
-     * @param key
-     * @param value
-     * @return
+     * @param key The key.
+     * @param value The value.
+     * @return A new Map.
      */
-    UnmodifiableArrayBackedMap copyAndPut(String key, String value) {
-        UnmodifiableArrayBackedMap newMap = new UnmodifiableArrayBackedMap(numEntries + 1);
+    public ScopedContextMap copyAndPut(String key, Object value) {
+        ScopedContextMap newMap = new ScopedContextMap(numEntries + 1);
         // include the numEntries value (array index 0)
         if (this.numEntries > 0) {
             System.arraycopy(this.backingArray, 1, newMap.backingArray, 1, numEntries * 2);
@@ -271,22 +291,21 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
      * Creates a new instance that contains the same entries as this map, plus the
      * new entries or updated values passed in the parameters.
      *
-     * @param key
-     * @param value
-     * @return
+     * @param entriesToAdd the Map to add to this one.
+     * @return The new Map.
      */
-    UnmodifiableArrayBackedMap copyAndPutAll(Map<String, String> entriesToAdd) {
+    public ScopedContextMap copyAndPutAll(Map<String, Object> entriesToAdd) {
         // create a new array that can hold the maximum output size
-        UnmodifiableArrayBackedMap newMap = new UnmodifiableArrayBackedMap(numEntries + entriesToAdd.size());
+        ScopedContextMap newMap = new ScopedContextMap(numEntries + entriesToAdd.size());
 
         // copy the contents of the current map (if any)
         if (numEntries > 0) {
             System.arraycopy(backingArray, 0, newMap.backingArray, 0, numEntries * 2 + 1);
         }
 
-        for (Map.Entry<String, String> entry : entriesToAdd.entrySet()) {
+        for (Entry<String, Object> entry : entriesToAdd.entrySet()) {
             String key = entry.getKey();
-            String value = entry.getValue();
+            Object value = entry.getValue();
             if (!this.isEmpty()) {
                 // The unique elements passed in may overlap the unique elements here - must
                 // check
@@ -305,11 +324,10 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
      * Creates a new instance that contains the same entries as this map, minus the
      * entry with the specified key (if such an entry exists).
      *
-     * @param key
-     * @param value
-     * @return
+     * @param key The key to remove.
+     * @return The new Map.
      */
-    UnmodifiableArrayBackedMap copyAndRemove(String key) {
+    public ScopedContextMap copyAndRemove(String key) {
         int indexToRemove = -1;
         for (int oldIndex = 0; oldIndex < numEntries; oldIndex++) {
             if (backingArray[getArrayIndexForKey(oldIndex)].hashCode() == key.hashCode()
@@ -326,7 +344,7 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
             // we have 1 item and we're about to remove it
             return EMPTY_MAP;
         }
-        UnmodifiableArrayBackedMap newMap = new UnmodifiableArrayBackedMap(numEntries);
+        ScopedContextMap newMap = new ScopedContextMap(numEntries);
         if (indexToRemove > 0) {
             // copy entries before the removed one
             System.arraycopy(backingArray, 1, newMap.backingArray, 1, indexToRemove * 2);
@@ -352,11 +370,10 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
      * Creates a new instance that contains the same entries as this map, minus all
      * of the keys passed in the arguments.
      *
-     * @param key
-     * @param value
-     * @return
+     * @param keysToRemoveIterable the keys to remove.
+     * @return The new Map.
      */
-    UnmodifiableArrayBackedMap copyAndRemoveAll(Iterable<String> keysToRemoveIterable) {
+    ScopedContextMap copyAndRemoveAll(Iterable<String> keysToRemoveIterable) {
         if (isEmpty()) {
             // shortcut: if this map is empty, the result will continue to be empty
             return EMPTY_MAP;
@@ -380,7 +397,7 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
         int destinationIndex = 0;
         int numEntriesKept = 0;
         // build the new map
-        UnmodifiableArrayBackedMap newMap = new UnmodifiableArrayBackedMap(numEntries);
+        ScopedContextMap newMap = new ScopedContextMap(numEntries);
         for (int indexInCurrentMap = 0; indexInCurrentMap < numEntries; indexInCurrentMap++) {
             // for each key in this map, check whether it's in the set we built above
             Object key = backingArray[getArrayIndexForKey(indexInCurrentMap)];
@@ -441,41 +458,17 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
      * This version of forEach is defined on the Map interface.
      */
     @Override
-    public void forEach(java.util.function.BiConsumer<? super String, ? super String> action) {
+    public void forEach(java.util.function.BiConsumer<? super String, ? super Object> action) {
         for (int i = 0; i < numEntries; i++) {
             // BiConsumer should be able to handle values of any type V. In our case the values are of type String.
             final String key = (String) backingArray[getArrayIndexForKey(i)];
-            final String value = (String) backingArray[getArrayIndexForValue(i)];
+            final Object value = backingArray[getArrayIndexForValue(i)];
             action.accept(key, value);
         }
     }
 
-    /**
-     * This version of forEach is defined on the ReadOnlyStringMap interface.
-     */
-    @SuppressWarnings("unchecked")
     @Override
-    public <V> void forEach(final org.apache.logging.log4j.util.BiConsumer<String, ? super V> action) {
-        for (int i = 0; i < numEntries; i++) {
-            // BiConsumer should be able to handle values of any type V. In our case the values are of type String.
-            final String key = (String) backingArray[getArrayIndexForKey(i)];
-            final V value = (V) backingArray[getArrayIndexForValue(i)];
-            action.accept(key, value);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public <V, S> void forEach(final TriConsumer<String, ? super V, S> action, final S state) {
-        for (int i = 0; i < numEntries; i++) {
-            // TriConsumer should be able to handle values of any type V. In our case the values are of type String.
-            final String key = (String) backingArray[getArrayIndexForKey(i)];
-            final V value = (V) backingArray[getArrayIndexForValue(i)];
-            action.accept(key, value, state);
-        }
-    }
-
-    @Override
-    public Set<Entry<String, String>> entrySet() {
+    public Set<Entry<String, Object>> entrySet() {
         return new UnmodifiableEntrySet();
     }
 
@@ -483,13 +476,7 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
      * Scans the array to find a matching key. Linear-time.
      */
     @Override
-    public String get(Object key) {
-        return getValue((String) key);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <V> V getValue(String key) {
+    public Object get(Object key) {
         if (numEntries == 0) {
             return null;
         }
@@ -497,7 +484,7 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
         for (int i = 0; i < numEntries; i++) {
             if (backingArray[getArrayIndexForKey(i)].hashCode() == hashCode
                     && backingArray[getArrayIndexForKey(i)].equals(key)) {
-                return (V) backingArray[getArrayIndexForValue(i)];
+                return backingArray[getArrayIndexForValue(i)];
             }
         }
         return null;
@@ -506,11 +493,10 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
     /**
      * Find an existing entry (if any) and overwrites the value, if found
      *
-     * @param key
-     * @param value
-     * @return
+     * @param key The key to add.
+     * @param value The value.
      */
-    private void addOrOverwriteKey(String key, String value) {
+    private void addOrOverwriteKey(String key, Object value) {
         int keyHashCode = key.hashCode();
         for (int i = 0; i < numEntries; i++) {
             if (backingArray[getArrayIndexForKey(i)].hashCode() == keyHashCode
@@ -526,12 +512,7 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
     }
 
     @Override
-    public String put(String key, String value) {
-        throw new UnsupportedOperationException("put() is not supported, use copyAndPut instead");
-    }
-
-    @Override
-    public void putAll(Map<? extends String, ? extends String> m) {
+    public void putAll(Map<? extends String, ? extends Object> m) {
         throw new UnsupportedOperationException("putAll() is not supported, use copyAndPutAll instead");
     }
 
@@ -545,8 +526,7 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
         return numEntries;
     }
 
-    @Override
-    public Map<String, String> toMap() {
+    public Map<String, Object> toMap() {
         return this;
     }
 }

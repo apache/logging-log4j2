@@ -60,12 +60,6 @@ public interface ScopedContextProvider {
 
     /**
      * Creates a new context containing the current context data from {@link org.apache.logging.log4j.ThreadContext}.
-     * @return A new instance of a scoped context.
-     */
-    ScopedContext.Instance newScopedContext();
-
-    /**
-     * Creates a new context containing the current context data from {@link org.apache.logging.log4j.ThreadContext}.
      * @param key An additional key for the context.
      * @param value An additional value for the context.
      * @return A new instance of a scoped context.

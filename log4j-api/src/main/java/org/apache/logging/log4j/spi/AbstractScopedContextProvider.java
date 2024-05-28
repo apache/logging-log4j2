@@ -27,6 +27,7 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ScopedContext;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.internal.map.ScopedContextMap;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StringMap;
 
@@ -48,7 +49,7 @@ public abstract class AbstractScopedContextProvider implements ScopedContextProv
      * Add the ScopeContext.
      * @param context The ScopeContext.
      */
-    protected abstract void addScopedContext(final MapInstance context);
+    protected abstract void addScopedContext(final Instance context);
 
     /**
      * Remove the top ScopeContext.
@@ -59,7 +60,7 @@ public abstract class AbstractScopedContextProvider implements ScopedContextProv
     public Map<String, Object> getContextMap() {
         final Optional<Instance> context = getContext();
         if (context.isPresent()) {
-            return ((MapInstance) context.get()).contextMap;
+            return (context.get()).contextMap;
         }
         return Collections.emptyMap();
     }
@@ -93,16 +94,11 @@ public abstract class AbstractScopedContextProvider implements ScopedContextProv
     public void addContextMapTo(final StringMap map) {
         final Optional<Instance> context = getContext();
         if (context.isPresent()) {
-            final Map<String, ?> contextMap = ((MapInstance) context.get()).contextMap;
+            final Map<String, ?> contextMap = (context.get()).contextMap;
             if (contextMap != null && !contextMap.isEmpty()) {
                 contextMap.forEach((key, value) -> map.putValue(key, value.toString()));
             }
         }
-    }
-
-    @Override
-    public ScopedContext.Instance newScopedContext() {
-        return getContext().isPresent() ? getContext().get() : null;
     }
 
     /**
@@ -116,9 +112,9 @@ public abstract class AbstractScopedContextProvider implements ScopedContextProv
     @Override
     public ScopedContext.Instance newScopedContext(final String key, final Object value) {
         Optional<Instance> context = getContext();
-        final MapInstance parent = (MapInstance) context.orElse(null);
+        final Instance parent = context.orElse(null);
         final boolean withThreadContext = parent != null && parent.withThreadContext;
-        return newKeyValueInstance(parent, key, value, withThreadContext);
+        return newInstance(parent, key, value, withThreadContext);
     }
 
     /**
@@ -138,7 +134,7 @@ public abstract class AbstractScopedContextProvider implements ScopedContextProv
                 }
             });
         }
-        return newMapInstance(null, objectMap, false);
+        return newInstance(null, objectMap, false);
     }
 
     /**
@@ -148,29 +144,21 @@ public abstract class AbstractScopedContextProvider implements ScopedContextProv
      */
     @Override
     public ScopedContext.Instance newScopedContext(final boolean withThreadContext) {
-        MapInstance parent = (MapInstance) getContext().orElse(null);
+        Instance parent = getContext().orElse(null);
         return newInstance(parent, withThreadContext);
     }
 
-    protected KeyValueInstance newKeyValueInstance(
-            Instance instance, String key, Object value, boolean withThreadContext) {
-        return new KeyValueInstance(this, instance, key, value, withThreadContext);
+    protected Instance newInstance(Instance instance, String key, Object value, boolean withThreadContext) {
+        return new Instance(this, instance, key, value, withThreadContext);
     }
 
     protected Instance newInstance(Instance instance, boolean withThreadContext) {
         return new Instance(this, instance, withThreadContext);
     }
 
-    protected MapInstance newMapInstance(
+    protected Instance newInstance(
             final Instance instance, final Map<String, Object> map, final Boolean withThreadContext) {
-        final Map<String, Object> objectMap = new HashMap<>(getContextMap());
-        Instance parent = instance;
-        while (parent != null && !(parent instanceof MapInstance)) {
-            if (parent instanceof KeyValueInstance) {
-                objectMap.put(((KeyValueInstance) parent).key, ((KeyValueInstance) parent).value);
-            }
-            parent = parent.getParent();
-        }
+        final Map<String, Object> objectMap = instance == null ? new HashMap<>() : new HashMap<>(instance.contextMap);
         map.forEach((key, value) -> {
             if (value == null || (value instanceof String && ((String) value).isEmpty())) {
                 objectMap.remove(key);
@@ -178,7 +166,7 @@ public abstract class AbstractScopedContextProvider implements ScopedContextProv
                 objectMap.put(key, value);
             }
         });
-        return new MapInstance(this, instance, (MapInstance) getContext().orElse(null), objectMap, withThreadContext);
+        return new Instance(this, instance, objectMap, withThreadContext);
     }
 
     /**
@@ -191,16 +179,57 @@ public abstract class AbstractScopedContextProvider implements ScopedContextProv
 
         protected final AbstractScopedContextProvider provider;
         protected final Instance parent;
+        private final Map<String, Object> contextMap;
         protected final boolean withThreadContext;
 
         protected boolean isWithThreadContext() {
             return withThreadContext;
         }
 
+        public Instance(
+                final AbstractScopedContextProvider provider,
+                final Instance parent,
+                Map<String, Object> map,
+                final boolean withThreadContext) {
+            this.provider = provider != null ? provider : parent.provider;
+            this.parent = parent;
+            this.withThreadContext = withThreadContext;
+            if (parent == null) {
+                contextMap = ScopedContextMap.getInstance(map);
+            } else {
+                if (map != null && !map.isEmpty()) {
+                    contextMap = ((ScopedContextMap) parent.contextMap).copyAndPutAll(map);
+                } else {
+                    contextMap = new ScopedContextMap(0);
+                }
+            }
+        }
+
+        public Instance(
+                final AbstractScopedContextProvider provider,
+                final Instance parent,
+                String key,
+                Object value,
+                final boolean withThreadContext) {
+            this.provider = provider != null ? provider : parent.provider;
+            this.parent = parent;
+            this.withThreadContext = withThreadContext;
+            if (parent == null) {
+                contextMap = ScopedContextMap.getInstance(key, value);
+            } else {
+                if (value == null) {
+                    contextMap = ((ScopedContextMap) parent.contextMap).copyAndRemove(key);
+                } else {
+                    contextMap = ((ScopedContextMap) parent.contextMap).copyAndPut(key, value);
+                }
+            }
+        }
+
         private Instance(
                 final AbstractScopedContextProvider provider, final Instance parent, final boolean withThreadContext) {
             this.provider = provider != null ? provider : parent.provider;
             this.parent = parent;
+            contextMap = parent == null ? new ScopedContextMap(0) : parent.contextMap;
             this.withThreadContext = withThreadContext;
         }
 
@@ -247,7 +276,7 @@ public abstract class AbstractScopedContextProvider implements ScopedContextProv
         }
 
         protected Instance addObject(final String key, final Object obj) {
-            return obj != null ? provider.newKeyValueInstance(this, key, obj, this.withThreadContext) : this;
+            return provider.newInstance(this, key, obj, this.withThreadContext);
         }
 
         /**
@@ -262,8 +291,7 @@ public abstract class AbstractScopedContextProvider implements ScopedContextProv
         public Future<Void> runWhere(String key, Object value, ExecutorService executorService, Runnable task) {
             Map<String, String> map = this.withThreadContext ? ThreadContext.getContext() : null;
             Instance instance = addObject(key, value);
-            final MapInstance context = provider.newMapInstance(instance, new HashMap<>(), this.withThreadContext);
-            return executorService.submit(new Runner(context, map, ThreadContext.getImmutableStack(), task), null);
+            return executorService.submit(new Runner(instance, map, ThreadContext.getImmutableStack(), task), null);
         }
 
         /**
@@ -293,8 +321,7 @@ public abstract class AbstractScopedContextProvider implements ScopedContextProv
             Map<String, String> map = this.withThreadContext ? ThreadContext.getContext() : null;
             ThreadContext.ContextStack stack = withThreadContext ? ThreadContext.getImmutableStack() : null;
             Instance instance = addObject(key, value);
-            final MapInstance context = provider.newMapInstance(instance, new HashMap<>(), this.withThreadContext);
-            return executorService.submit(new Caller<>(context, map, stack, task));
+            return executorService.submit(new Caller<>(instance, map, stack, task));
         }
 
         /**
@@ -318,10 +345,7 @@ public abstract class AbstractScopedContextProvider implements ScopedContextProv
          */
         @Override
         public void run(final Runnable task) {
-            final MapInstance context = this instanceof MapInstance
-                    ? (MapInstance) this
-                    : provider.newMapInstance(this, new HashMap<>(), this.withThreadContext);
-            new Runner(context, null, null, task).run();
+            runTask(null, null, task);
         }
 
         /**
@@ -333,10 +357,7 @@ public abstract class AbstractScopedContextProvider implements ScopedContextProv
         @Override
         public Future<Void> run(final ExecutorService executorService, final Runnable task) {
             Map<String, String> map = this.withThreadContext ? ThreadContext.getContext() : null;
-            final MapInstance context = this instanceof MapInstance
-                    ? (MapInstance) this
-                    : provider.newMapInstance(this, new HashMap<>(), this.withThreadContext);
-            return executorService.submit(new Runner(context, map, ThreadContext.getImmutableStack(), task), null);
+            return executorService.submit(new Runner(this, map, ThreadContext.getImmutableStack(), task), null);
         }
 
         /**
@@ -347,10 +368,7 @@ public abstract class AbstractScopedContextProvider implements ScopedContextProv
          */
         @Override
         public <R> R call(final Callable<R> task) throws Exception {
-            final MapInstance context = this instanceof MapInstance
-                    ? (MapInstance) this
-                    : provider.newMapInstance(this, new HashMap<>(), this.withThreadContext);
-            return new Caller<>(context, null, null, task).call();
+            return callTask(null, null, task);
         }
 
         /**
@@ -363,10 +381,7 @@ public abstract class AbstractScopedContextProvider implements ScopedContextProv
         public <R> Future<R> call(final ExecutorService executorService, final Callable<R> task) {
             Map<String, String> map = this.withThreadContext ? ThreadContext.getContext() : null;
             ThreadContext.ContextStack stack = withThreadContext ? ThreadContext.getImmutableStack() : null;
-            final MapInstance context = this instanceof MapInstance
-                    ? (MapInstance) this
-                    : provider.newMapInstance(this, new HashMap<>(), this.withThreadContext);
-            return executorService.submit(new Caller<>(context, map, stack, task));
+            return executorService.submit(new Caller<>(this, map, stack, task));
         }
 
         /**
@@ -379,10 +394,7 @@ public abstract class AbstractScopedContextProvider implements ScopedContextProv
         public Runnable wrap(Runnable task) {
             Map<String, String> map = this.withThreadContext ? ThreadContext.getContext() : null;
             ThreadContext.ContextStack stack = withThreadContext ? ThreadContext.getImmutableStack() : null;
-            final MapInstance context = this instanceof MapInstance
-                    ? (MapInstance) this
-                    : provider.newMapInstance(this, new HashMap<>(), this.withThreadContext);
-            return new Runner(context, map, stack, task);
+            return new Runner(this, map, stack, task);
         }
 
         /**
@@ -395,68 +407,36 @@ public abstract class AbstractScopedContextProvider implements ScopedContextProv
         public <R> Callable<R> wrap(Callable<R> task) {
             Map<String, String> map = this.withThreadContext ? ThreadContext.getContext() : null;
             ThreadContext.ContextStack stack = withThreadContext ? ThreadContext.getImmutableStack() : null;
-            final MapInstance context = this instanceof MapInstance
-                    ? (MapInstance) this
-                    : provider.newMapInstance(this, new HashMap<>(), this.withThreadContext);
-            return new Caller<>(context, map, stack, task);
-        }
-    }
-
-    protected static class MapInstance extends Instance {
-        private final Map<String, Object> contextMap;
-        private final MapInstance previous;
-
-        public MapInstance(
-                final AbstractScopedContextProvider provider,
-                final Instance parent,
-                final MapInstance previous,
-                final Map<String, Object> map,
-                Boolean withThreadContext) {
-            super(provider, parent, withThreadContext);
-            this.contextMap = map;
-            this.previous = previous;
+            return new Caller<>(this, map, stack, task);
         }
 
-        public MapInstance getPrevious() {
-            return previous;
-        }
-    }
-
-    /**
-     *
-     */
-    protected static class KeyValueInstance extends Instance {
-        protected final String key;
-        protected final Object value;
-
-        public KeyValueInstance(
-                final AbstractScopedContextProvider provider,
-                final Instance parent,
-                final String key,
-                final Object value,
-                Boolean withThreadContext) {
-            super(provider, parent, withThreadContext);
-            this.key = key;
-            this.value = value;
-        }
-    }
-
-    protected abstract static class AbstractWorker {
-        private final Map<String, Object> contextMap = new HashMap<>();
-        private final Map<String, String> threadContextMap;
-        private final ThreadContext.ContextStack contextStack;
-        private final MapInstance context;
-
-        protected AbstractWorker(
-                final MapInstance context,
+        private void runTask(
                 final Map<String, String> threadContextMap,
-                final ThreadContext.ContextStack contextStack) {
-            this.context = context;
-            this.threadContextMap = threadContextMap;
-            this.contextStack = contextStack;
+                final ThreadContext.ContextStack contextStack,
+                final Runnable task) {
+            setupContext(threadContextMap, contextStack);
+            try {
+                task.run();
+            } finally {
+                restoreContext(threadContextMap, contextStack);
+            }
         }
 
-        protected void setupContext() {
+        private <R> R callTask(
+                final Map<String, String> threadContextMap,
+                final ThreadContext.ContextStack contextStack,
+                final Callable<R> task)
+                throws Exception {
+            setupContext(threadContextMap, contextStack);
+            try {
+                return task.call();
+            } finally {
+                restoreContext(threadContextMap, contextStack);
+            }
+        }
+
+        private void setupContext(
+                final Map<String, String> threadContextMap, final ThreadContext.ContextStack contextStack) {
             if (threadContextMap != null) {
                 ThreadContext.clearMap();
                 ThreadContext.putAll(threadContextMap);
@@ -465,11 +445,12 @@ public abstract class AbstractScopedContextProvider implements ScopedContextProv
                 ThreadContext.clearStack();
                 ThreadContext.setStack(contextStack);
             }
-            context.getProvider().addScopedContext(context);
+            this.getProvider().addScopedContext(this);
         }
 
-        protected void restoreContext() {
-            context.getProvider().removeScopedContext();
+        private void restoreContext(
+                final Map<String, String> threadContextMap, final ThreadContext.ContextStack contextStack) {
+            this.getProvider().removeScopedContext();
             if (threadContextMap != null) {
                 ThreadContext.clearMap();
             }
@@ -479,11 +460,26 @@ public abstract class AbstractScopedContextProvider implements ScopedContextProv
         }
     }
 
+    protected abstract static class AbstractWorker {
+        protected final Map<String, String> threadContextMap;
+        protected final ThreadContext.ContextStack contextStack;
+        protected final Instance context;
+
+        protected AbstractWorker(
+                final Instance context,
+                final Map<String, String> threadContextMap,
+                final ThreadContext.ContextStack contextStack) {
+            this.context = context;
+            this.threadContextMap = threadContextMap;
+            this.contextStack = contextStack;
+        }
+    }
+
     private static class Runner extends AbstractWorker implements Runnable {
         private final Runnable op;
 
         public Runner(
-                final MapInstance context,
+                final Instance context,
                 final Map<String, String> threadContextMap,
                 final ThreadContext.ContextStack contextStack,
                 final Runnable op) {
@@ -493,12 +489,7 @@ public abstract class AbstractScopedContextProvider implements ScopedContextProv
 
         @Override
         public void run() {
-            setupContext();
-            try {
-                op.run();
-            } finally {
-                restoreContext();
-            }
+            context.runTask(threadContextMap, contextStack, op);
         }
     }
 
@@ -506,7 +497,7 @@ public abstract class AbstractScopedContextProvider implements ScopedContextProv
         private final Callable<R> op;
 
         public Caller(
-                final MapInstance context,
+                final Instance context,
                 final Map<String, String> threadContextMap,
                 final ThreadContext.ContextStack contextStack,
                 final Callable<R> op) {
@@ -516,12 +507,7 @@ public abstract class AbstractScopedContextProvider implements ScopedContextProv
 
         @Override
         public R call() throws Exception {
-            setupContext();
-            try {
-                return op.call();
-            } finally {
-                restoreContext();
-            }
+            return context.callTask(threadContextMap, contextStack, op);
         }
     }
 }

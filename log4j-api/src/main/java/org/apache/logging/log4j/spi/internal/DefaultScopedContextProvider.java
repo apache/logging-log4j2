@@ -47,7 +47,7 @@ public class DefaultScopedContextProvider extends AbstractScopedContextProvider 
      * @param context The ScopeContext.
      */
     @Override
-    protected void addScopedContext(final MapInstance context) {
+    protected void addScopedContext(final Instance context) {
         Deque<Instance> stack = scopedContext.get();
         if (stack == null) {
             stack = new ArrayDeque<>();
