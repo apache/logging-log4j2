@@ -581,9 +581,44 @@ specified value. One of: <code>ALL</code>, <code>MINIMAL</code>, <code>NON_NUMER
 <pre>0,1441617184044,DEBUG,main,"one=1, two=2, three=3",org.apache.logging.log4j.spi.AbstractLogger,,,,org.apache.logging.log4j.core.layout.CsvLogEventLayoutTest.testLayout(CsvLogEventLayoutTest.java:98),{},[]</pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Additional <a href="#runtime-dependencies.adoc" class="xref unresolved">runtime dependencies</a> are required for using CSV layouts.</p>
+<details id="log4j-csv-deps">
+<summary class="title">Additional runtime dependencies are required for using CSV layouts</summary>
+<div class="content">
+<div id="_tabs_1" class="openblock tabs is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_1_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
 </div>
+<div id="_tabs_1_maven--panel" class="tabpanel" aria-labelledby="_tabs_1_maven">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.commons&lt;/groupId&gt;
+  &lt;artifactId&gt;commons-csv&lt;/artifactId&gt;
+  &lt;version&gt;1.11.0&lt;/version&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_gradle--panel" class="tabpanel" aria-labelledby="_tabs_1_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.commons:commons-csv:1.11.0'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</details>
 </div>
 </div>
 <div class="sect1">
@@ -1034,9 +1069,44 @@ Of course, the message content may contain, escaped end-of-lines.</p>
 <p>Custom fields are always last, in the order they are declared.
 The values support <a href="lookups.html" class="xref page">lookups</a>.</p>
 </div>
-<div class="paragraph">
-<p>Additional <a href="#runtime-dependencies.adoc" class="xref unresolved">runtime dependencies</a> are required for using JsonLayout.</p>
+<details id="log4j-layout-json-deps">
+<summary class="title">Additional runtime dependencies are required for using <code>JsonLayout</code></summary>
+<div class="content">
+<div id="_tabs_2" class="openblock tabs is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_2_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_2_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
 </div>
+<div id="_tabs_2_maven--panel" class="tabpanel" aria-labelledby="_tabs_2_maven">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;
+  &lt;artifactId&gt;jackson-databind&lt;/artifactId&gt;
+  &lt;version&gt;2.17.1&lt;/version&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_2_gradle--panel" class="tabpanel" aria-labelledby="_tabs_2_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.core:jackson-databind:2.17.1'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</details>
 </div>
 </div>
 </div>
@@ -1145,6 +1215,44 @@ Logstash <code>JSONEventLayoutV1</code></a></p>
 }</code></pre>
 </div>
 </div>
+<details id="log4j-layout-template-json-deps">
+<summary class="title">Additional runtime dependencies are required for using JSON Template Layout</summary>
+<div class="content">
+<div id="_tabs_3" class="openblock tabs is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_3_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_3_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_3_maven--panel" class="tabpanel" aria-labelledby="_tabs_3_maven">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+  &lt;artifactId&gt;log4j-layout-template-json&lt;/artifactId&gt;
+  &lt;version&gt;2.23.1&lt;/version&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_3_gradle--panel" class="tabpanel" aria-labelledby="_tabs_3_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-layout-template-json:2.23.1'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</details>
 <div class="paragraph">
 <p>See <a href="json-template-layout.html" class="xref page">JSON Template Layout</a> page for the complete documentation.</p>
 </div>
@@ -2958,7 +3066,7 @@ If the Marker in the log event is equal to or is an ancestor of the name specifi
 <h4 id="ScriptPatternSelector"><a class="anchor" href="#ScriptPatternSelector"></a>ScriptPatternSelector</h4>
 <div class="paragraph">
 <p>The ScriptPatternSelector executes a script as described in the
-<a href="configuration.html#Scripts" class="xref page">Scripts</a> section of the Configuration chapter.
+<a href="scripts.html" class="xref page">Scripts</a> section of the Configuration chapter.
 The script is passed all the properties configured in the Properties section of the configuration, the StrSubstitutor used by the Configuration in the "substitutor" variables, and the log event in the "logEvent" variable, and is expected to return the value of the PatternMatch key that should be used, or null if the default pattern should be used.</p>
 </div>
 <div class="listingblock">
@@ -3278,7 +3386,8 @@ To get the most out of it, mind the following checklist:</p>
 <p>Mind <a href="#PatternLayout-gcfree">the garbage footprint of features you use</a></p>
 </li>
 <li>
-<p>Don&#8217;t give too much slack to <a href="configuration.html#log4j2.layoutStringBuilderMaxSize" class="xref page"><code>log4j2.layoutStringBuilderMaxSize</code></a> and try to keep it relatively tight</p>
+<p>Don&#8217;t give too much slack to <a href="systemproperties.html#log4j2.layoutStringBuilderMaxSize" class="xref page"><code>log4j2
+.layoutStringBuilderMaxSize</code></a> and try to keep it relatively tight</p>
 </li>
 </ul>
 </div>
@@ -3651,18 +3760,44 @@ Message content may contain, of course, end-of-lines.</p>
 <p>Custom fields are always last, in the order they are declared.
 The values support <a href="lookups.html" class="xref page">lookups</a>.</p>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-Additional <a href="#runtime-dependencies.adoc" class="xref unresolved">runtime dependencies</a> are required for using XmlLayout.
-</td>
-</tr>
-</table>
+<details id="log4j-layout-xml-deps">
+<summary class="title">Additional runtime dependencies are required for using <code>XmlLayout</code></summary>
+<div class="content">
+<div id="_tabs_4" class="openblock tabs is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_4_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_4_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
 </div>
+<div id="_tabs_4_maven--panel" class="tabpanel" aria-labelledby="_tabs_4_maven">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.fasterxml.jackson.dataformat&lt;/groupId&gt;
+  &lt;artifactId&gt;jackson-dataformat-xml&lt;/artifactId&gt;
+  &lt;version&gt;2.17.1&lt;/version&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_4_gradle--panel" class="tabpanel" aria-labelledby="_tabs_4_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.17.1'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</details>
 </div>
 </div>
 </div>
@@ -3780,18 +3915,44 @@ source:
 <p>Custom fields are always last, in the order they are declared.
 The values support <a href="lookups.html" class="xref page">lookups</a>.</p>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-Additional <a href="#runtime-dependencies.adoc" class="xref unresolved">runtime dependencies</a> are required for using YamlLayout.
-</td>
-</tr>
-</table>
+<details id="log4j-layout-yaml-deps">
+<summary class="title">Additional runtime dependencies are required for using <code>YamlLayout</code></summary>
+<div class="content">
+<div id="_tabs_5" class="openblock tabs is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_5_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_5_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
 </div>
+<div id="_tabs_5_maven--panel" class="tabpanel" aria-labelledby="_tabs_5_maven">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.fasterxml.jackson.dataformat&lt;/groupId&gt;
+  &lt;artifactId&gt;jackson-dataformat-yaml&lt;/artifactId&gt;
+  &lt;version&gt;2.17.1&lt;/version&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_5_gradle--panel" class="tabpanel" aria-labelledby="_tabs_5_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.17.1'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</details>
 </div>
 </div>
 </article>

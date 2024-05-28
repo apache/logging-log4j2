@@ -410,7 +410,7 @@ The AsyncAppender should be configured after the appenders it references to allo
 <a href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ArrayBlockingQueue.html"><code>java.util.concurrent.ArrayBlockingQueue</code></a>
 which does not require any external libraries.
 Note that multi-threaded applications should exercise care when using this appender as such: the blocking queue is susceptible to lock contention and our
-<a href="performance.html#asyncLogging" class="xref page">tests showed</a> performance may become worse when more threads are logging concurrently.
+<a href="performance.html#async" class="xref page">tests showed</a> performance may become worse when more threads are logging concurrently.
 Consider using
 <a href="async.html" class="xref page">lock-free Async Loggers</a> for optimal performance.</p>
 </div>
@@ -1560,7 +1560,7 @@ indicate which variation of the Appender is desired.</p></td>
 </div>
 <div class="paragraph">
 <p>The JDBC Appender configured with a <code>DataSource</code> requires JNDI support so as of release 2.17.1 this appender will not function unless <code>log4j2.enableJndiJdbc=true</code> is configured as a system property or environment variable.
-See the <a href="configuration.html#enableJndiJdbc" class="xref page">enableJndiJdbc</a> system property.</p>
+See the <a href="systemproperties.html#log4j2.enableJndiJdbc" class="xref page">log4j2.enableJndiJdbc</a> system property.</p>
 </div>
 <div class="paragraph">
 <p>The JDBCAppender writes log events to a relational database table using standard JDBC.
@@ -3553,7 +3553,7 @@ The OutputStreamAppender uses an OutputStreamManager to handle the actual I/O, a
 <a href="#FileAppender">FileAppender</a> except it is always buffered (this cannot be switched off) and internally it uses a
 <code>ByteBuffer + RandomAccessFile</code> instead of a <code>BufferedOutputStream</code>.
 We saw a 20-200% performance improvement compared to FileAppender with "bufferedIO=true" in our
-<a href="performance.html#whichAppender" class="xref page">measurements</a>.
+measurements.
 Similar to the FileAppender, RandomAccessFileAppender uses a RandomAccessFileManager to perform the file I/O. While RandomAccessFileAppender from different Configurations cannot be shared, the RandomAccessFileManagers can be if the Manager is accessible.
 For example, two web applications in a servlet container can have their configuration and safely write to the same file if Log4j is in a ClassLoader that is common to both of them.</p>
 </div>
@@ -5368,8 +5368,7 @@ file attribute view.</p>
 <p>The RollingRandomAccessFileAppender is similar to the standard
 <a href="#RollingFileAppender">RollingFileAppender</a> except it is always buffered (this cannot be switched off) and internally it uses a
 <code>ByteBuffer + RandomAccessFile</code> instead of a <code>BufferedOutputStream</code>.
-We saw a 20-200% performance improvement compared to RollingFileAppender with "bufferedIO=true" in our
-<a href="performance.html#whichAppender" class="xref page">measurements</a>.
+We saw a 20-200% performance improvement compared to RollingFileAppender with "bufferedIO=true" in our measurements.
 The
 <code>RollingRandomAccessFileAppender</code> writes to the file named in the fileName parameter and rolls the file over according to the TriggeringPolicy and the RolloverPolicy.
 Similar to the RollingFileAppender, RollingRandomAccessFileAppender uses a RollingRandomAccessFileManager to perform the file I/O and perform the rollover.
