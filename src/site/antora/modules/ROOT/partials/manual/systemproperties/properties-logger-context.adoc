@@ -95,6 +95,8 @@ The default implementation executes all shutdown actions in a separate `Thread` 
 | Default value | `false`
 |===
 
-Prints a stacktrace to the xref:manual/configuration.adoc#StatusMessages[status logger] at `DEBUG` level when the LoggerContext is started.
+Prints a stacktrace to the
+{log4j2-url}/manual/status-logger.html[status logger]
+at `DEBUG` level when the LoggerContext is started.
 
 For debug purposes only.

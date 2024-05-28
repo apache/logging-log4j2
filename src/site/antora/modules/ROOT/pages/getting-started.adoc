@@ -413,7 +413,7 @@ See xref:#config-test[]
 For tests, prefer a human-readable layout with increased verbosity.
 While it is not recommended to use the `PatternLayout` in production for security reasons, it is a good choice for tests.
 
-The xref:manual/layouts.adoc#PatternLayout[Pattern Layout] is used for formatting strings in a specific way.
+The xref:manual/layouts.adoc#pattern-layout[Pattern Layout] is used for formatting strings in a specific way.
 In the below case, it will include the timestamp, thread name, log level, class name, and the message and
 print it to the Console.
 Very similar to the earlier configuration, the `<logger>` defines what should be logged on
@@ -446,7 +446,7 @@ Save the following XML document to `src/**test**/resources/log4j2-test.xml`.
 
 </Configuration>
 ----
-<1> xref:manual/layouts.adoc#PatternLayout[Pattern Layout] is used for a human-readable layout.
+<1> xref:manual/layouts.adoc#pattern-layout[Pattern Layout] is used for a human-readable layout.
 <2> Increased logging verbosity for the `com.mycompany` package.
 
 [#next]

@@ -24,7 +24,6 @@ With Log4j 2 as the implementation these would normally be formatted only when t
 == Requirements
 
 The Log4j 2 to JUL adapter is dependent on the Log4j 2 API.
-For more information, see xref:runtime-dependencies.adoc[Runtime Dependencies].
 
 == Usage
 

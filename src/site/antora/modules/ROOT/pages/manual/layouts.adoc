@@ -154,8 +154,16 @@ Produces a CSV record with the following fields:
 0,1441617184044,DEBUG,main,"one=1, two=2, three=3",org.apache.logging.log4j.spi.AbstractLogger,,,,org.apache.logging.log4j.core.layout.CsvLogEventLayoutTest.testLayout(CsvLogEventLayoutTest.java:98),{},[]
 ....
 
-Additional xref:runtime-dependencies.adoc[runtime dependencies] are
-required for using CSV layouts.
+[NOTE]
+======
+Additional runtime dependencies are required for using CSV layouts:
+
+.Runtime dependencies
+[%collapsible,id=log4j-csv-deps]
+=====
+include::partial$manual/dependencies-log4j-csv.adoc[]
+=====
+======
 
 [#HTMLLayout]
 == HTML Layout
@@ -324,6 +332,17 @@ JSON Template Layout will render JSON documents as follows:
   "logger_name": "org.apache.logging.log4j.JsonTemplateLayoutDemo"
 }
 ----
+
+[NOTE]
+======
+Additional runtime dependencies are required for using JSON Template Layout:
+
+.Runtime dependencies
+[%collapsible,id=log4j-layout-template-json-deps]
+=====
+include::partial$manual/dependencies-log4j-layout-template-json.adoc[]
+=====
+======
 
 See xref:manual/json-template-layout.adoc[JSON Template Layout] page for the complete documentation.
 
@@ -1539,7 +1558,7 @@ If the Marker in the log event is equal to or is an ancestor of the name specifi
 ==== ScriptPatternSelector
 
 The ScriptPatternSelector executes a script as described in the
-xref:manual/configuration.adoc#Scripts[Scripts] section of the Configuration chapter.
+xref:manual/scripts.adoc[Scripts] section of the Configuration chapter.
 The script is passed all the properties configured in the Properties section of the configuration, the StrSubstitutor used by the Configuration in the "substitutor" variables, and the log event in the "logEvent" variable, and is expected to return the value of the PatternMatch key that should be used, or null if the default pattern should be used.
 
 [source,xml]
@@ -1751,7 +1770,9 @@ To get the most out of it, mind the following checklist:
 
 * Enable xref:manual/garbagefree.adoc[garbage-free logging]
 * Mind xref:#PatternLayout-gcfree[the garbage footprint of features you use]
-* Don't give too much slack to xref:manual/configuration.adoc#log4j2.layoutStringBuilderMaxSize[`log4j2.layoutStringBuilderMaxSize`] and try to keep it relatively tight
+* Don't give too much slack to
+xref:manual/systemproperties.adoc#log4j.gc.layoutStringBuilderMaxSize[`log4j.gc.layoutStringBuilderMaxSize`]
+and try to keep it relatively tight
 
 [#RFC5424Layout]
 == RFC5424 Layout

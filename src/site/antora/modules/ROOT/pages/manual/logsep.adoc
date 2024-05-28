@@ -111,8 +111,6 @@ or environment variable. See the
 xref:manual/systemproperties.adoc#log4j.jndi.enableContextSelector[log4j.jndi.enableContextSelector]
 configuration property.
 
-xref:manual/systemproperties.adoc#log4j2
-
 The exact method for setting system properties depends on the container.
 For Tomcat, edit `$CATALINA_HOME/conf/catalina.properties`. Consult the
 documentation for other web containers.

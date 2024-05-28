@@ -21,7 +21,7 @@ arbitrary places. They are a particular type of Plugin that implements
 the
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrLookup.html[`StrLookup`]
 interface. Information on how to use Lookups in configuration files can
-be found in the xref:manual/configuration.adoc#PropertySubstitution[Property
+be found in the xref:manual/configuration.adoc#property-substitution[Property
 Substitution] section of the xref:manual/configuration.adoc[Configuration]
 page.
 
@@ -269,7 +269,8 @@ For example:
 
 As of Log4j 2.15.1 JNDI operations require that `log4j2.enableJndi=true` be set as a system property or the
 corresponding environment variable for this lookup to function. See the
-xref:manual/configuration.adoc#enableJndiLookup[log4j2.enableJndiLookup] system property.
+xref:manual/systemproperties.adoc#log4j.jndi.enableLookup[log4j.jndi.enableLookup]
+system property.
 
 The JndiLookup allows variables to be retrieved via JNDI. By default the
 key will be prefixed with java:comp/env/, however if the key contains a
@@ -448,7 +449,7 @@ RollingFileAppender for each unique value of the key named "type" in the
 MapMessage. Note that when used this way a value for "type" should be
 declared in the properties declaration to provide a default value in
 case the message is not a MapMessage or the MapMessage does not contain
-the key. See the xref:manual/configuration.adoc#PropertySubstitution[Property
+the key. See the xref:manual/configuration.adoc#property-substitution[Property
 Substitution] section of the xref:manual/configuration.adoc[Configuration]
 page for information on how to set the default values.
 

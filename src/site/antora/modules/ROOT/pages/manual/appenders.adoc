@@ -59,7 +59,9 @@ If set to `true`, Log4j will flush all Java buffers at the end of each event:
 * for appenders based on Java's
 https://docs.oracle.com/javase/{java-target-version}/docs/api/java/io/OutputStream.html[OutputStream]
 a call to the `OutputStream.flush()` method is performed.
-* if xref:manual/systemproperties.adoc#log4j2.enableDirectEncoders[log4j2.enableDirectEncoders] is set to `true`, many Log4j appenders use a
+* if
+xref:manual/systemproperties.adoc#log4j.gc.enableDirectEncoders[log4j.gc.enableDirectEncoders]
+is set to `true`, many Log4j appenders use a
 https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html[ByteBuffer]
 to format log events before sending them to the underlying resource.
 Setting `immediateFlush` to `true` flushes these buffers at each event.
@@ -81,7 +83,7 @@ By default, AsyncAppender uses
 https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ArrayBlockingQueue.html[`java.util.concurrent.ArrayBlockingQueue`]
 which does not require any external libraries.
 Note that multi-threaded applications should exercise care when using this appender as such: the blocking queue is susceptible to lock contention and our
-xref:manual/performance.adoc#asyncLogging[tests showed] performance may become worse when more threads are logging concurrently.
+xref:manual/performance.adoc#async[tests showed] performance may become worse when more threads are logging concurrently.
 Consider using
 xref:manual/async.adoc[lock-free Async Loggers] for optimal performance.
 
@@ -723,10 +725,8 @@ A sample FlumeAppender configuration that is configured with a primary and a sec
 As of Log4j 2.11.0, JDBC support has moved from the existing module
 `log4j-core` to the new module `log4j-jdbc`.
 
-The JDBC Appender configured with a `DataSource` requires JNDI support so as of release 2.17.1
-this appender will not function unless `log4j.jndi.enableJdbc=true` is configured as a system property
-or environment variable. See the xref:manual/systemproperties.adoc#log4j.jndi.enableJdbc[log4j.jndi.enableJdbc] system
-property.
+The JDBC Appender configured with a `DataSource` requires JNDI support so as of release 2.17.1 this appender will not function unless `log4j2.enableJndiJdbc=true` is configured as a system property or environment variable.
+See the xref:manual/systemproperties.adoc#log4j.jndi.enableJdbc[log4j.jndi.enableJdbc] system property.
 
 The JDBCAppender writes log events to a relational database table using standard JDBC.
 It can be configured to obtain JDBC connections using a JNDI `DataSource` or a custom factory method.
@@ -1078,7 +1078,8 @@ public class ConnectionFactory {
 }
 ----
 
-This appender is xref:manual/messages.adoc#MapMessage[`MapMessage`]-aware.
+This appender is
+link:../../2.x/manual/messages.html#MapMessage[`MapMessage`]-aware.
 
 The following configuration uses no layout to indicate that the appender should match the keys of a `MapMessage` to the names of
 `ColumnMapping`s when setting the values of the Appender's SQL INSERT
@@ -1867,7 +1868,8 @@ be increased to the nearest integer multiple of 256. See the capped
 collection documentation linked above for more information.
 |=======================================================================
 
-This appender is xref:manual/messages.adoc#MapMessage[MapMessage]-aware.
+This appender is
+link:../../manual/messages.html#MapMessage[`MapMessage`]-aware.
 
 Here are a few sample configurations for the NoSQLAppender and MongoDB4 provider:
 
@@ -1946,7 +1948,7 @@ The RandomAccessFileAppender is similar to the standard
 link:#FileAppender[FileAppender] except it is always buffered (this cannot be switched off) and internally it uses a
 `ByteBuffer + RandomAccessFile` instead of a `BufferedOutputStream`.
 We saw a 20-200% performance improvement compared to FileAppender with "bufferedIO=true" in our
-xref:manual/performance.adoc#whichAppender[measurements].
+measurements.
 Similar to the FileAppender, RandomAccessFileAppender uses a RandomAccessFileManager to perform the file I/O. While RandomAccessFileAppender from different Configurations cannot be shared, the RandomAccessFileManagers can be if the Manager is accessible.
 For example, two web applications in a servlet container can have their configuration and safely write to the same file if Log4j is in a ClassLoader that is common to both of them.
 
@@ -2697,7 +2699,8 @@ default is 1, meaning only the files in the specified base directory.
 false.
 
 |testMode |boolean |If true, files are not deleted but instead a message
-is printed to the xref:manual/configuration.adoc#StatusMessages[status logger]
+is printed to the
+{log4j2-url}/manual/status-logger.html[status logger]
 at INFO level. Use this to do a dry run to test if the configuration
 works as expected. The default is false.
 
@@ -3115,8 +3118,7 @@ Below is a sample configuration that uses a RollingFileAppender and defines diff
 The RollingRandomAccessFileAppender is similar to the standard
 link:#RollingFileAppender[RollingFileAppender] except it is always buffered (this cannot be switched off) and internally it uses a
 `ByteBuffer + RandomAccessFile` instead of a `BufferedOutputStream`.
-We saw a 20-200% performance improvement compared to RollingFileAppender with "bufferedIO=true" in our
-xref:manual/performance.adoc#whichAppender[measurements].
+We saw a 20-200% performance improvement compared to RollingFileAppender with "bufferedIO=true" in our measurements.
 The
 `RollingRandomAccessFileAppender` writes to the file named in the fileName parameter and rolls the file over according to the TriggeringPolicy and the RolloverPolicy.
 Similar to the RollingFileAppender, RollingRandomAccessFileAppender uses a RollingRandomAccessFileManager to perform the file I/O and perform the rollover.

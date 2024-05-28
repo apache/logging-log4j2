@@ -42,14 +42,6 @@ As detailed in the table below, some configuration formats require additional de
 
 include::partial$configuration-file-format-deps.adoc[]
 
-[WARNING]
-====
-The format of the configuration file changed between Log4j{nbsp}1 and Log4j{nbsp}2.
-Files in the Log4j{nbsp}1 format are ignored by default.
-
-To enable partial support for old configuration formats, see xref:manual/migration.adoc#enabling-the-log4j-1-x-bridge[Enabling the Log4j{nbsp}1 bridge].
-====
-
 [id=automatic-configuration]
 === [[AutomaticConfiguration]] Configuration file location
 
@@ -358,7 +350,8 @@ CustomLevels::
 +
 Log4j allows the configuration of custom log-level names.
 +
-See xref:manual/customloglevels.adoc[Custom log level configuration] for details.
+See
+{log4j2-url}/manual/customloglevels.html#DefiningLevelsInConfiguration[Defining custom log levels in configuration] for details.
 
 Filters::
 +
@@ -502,7 +495,7 @@ include::example$manual/configuration/loggers.properties[tags=loggers]
 
 In the example above, we have four logger configurations.
 They differ from each other regarding the level of log messages that they allow, whether
-xref:manual/layouts.adoc#location-information[location information]
+xref:manual/layouts.adoc#LocationInformation[location information]
 will be printed, and which appenders will be used.
 The table below summarizes the effects of each logger configuration:
 
@@ -628,7 +621,7 @@ https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/
 .withLocation()]
 methods.
 
-See xref:manual/layouts.adoc#location-information[Location information] for more details.
+See xref:manual/layouts.adoc#LocationInformation[Location information] for more details.
 
 [id=logger-elements-appenderrefs]
 ==== Appender references
@@ -640,7 +633,8 @@ See <<configuring-appenderrefs>> below for more details.
 [id=logger-elements-properties]
 ==== Additional context properties
 
-Loggers can emit additional context data that will be integrated with other context data sources such as xref:manual/thread-context.adoc[ThreadContext].
+Loggers can emit additional context data that will be integrated with other context data sources such as
+{log4j2-url}/manual/thread-context.html[ThreadContext].
 
 [CAUTION]
 ====

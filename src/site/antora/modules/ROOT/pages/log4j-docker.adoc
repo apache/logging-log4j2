@@ -40,5 +40,6 @@ Log4j Docker provides access to the following container attributes:
 Attributes may be accessed by adding `${docker:containerId}` to the configuration.
 Note that docker variables are only resolved once during logging initialization so they shouldn't be referenced with more than one `$` character.
 
-== Requirements Log4j Docker requires Log4j Core, Log4j API and a minimum of Java 8.
-For more information, see xref:runtime-dependencies.adoc[Runtime Dependencies].
+== Requirements
+
+Log4j Docker requires Log4j Core, Log4j API and a minimum of Java 8.
