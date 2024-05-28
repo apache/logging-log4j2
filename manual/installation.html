@@ -1076,12 +1076,10 @@ A basic configuration can be obtained by adding one of these files to your appli
 <div id="_tabs_10_log4j2_properties--panel" class="tabpanel" aria-labelledby="_tabs_10_log4j2_properties">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = Console
-appender.0.name = CONSOLE
-appender.0.layout = PatternLayout <i class="conum" data-value="1"></i><b>(1)</b>
-appender.0.layout.pattern = %d [%t] %5p %c{1.} - %m%n
-rootLogger.level = INFO
-rootLogger.appenderRef.0.ref = CONSOLE</code></pre>
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">Appenders.Console.name = CONSOLE
+Appenders.Console.PatternLayout.pattern = %d [%t] %5p %c{1.} - %m%n <i class="conum" data-value="1"></i><b>(1)</b>
+Loggers.Root.level = INFO
+Loggers.Root.AppenderRef.ref = CONSOLE</code></pre>
 </div>
 </div>
 </div>
@@ -1131,36 +1129,42 @@ rootLogger.appenderRef.0.ref = CONSOLE</code></pre>
 </div>
 <div id="_tabs_12_log4j2_xml--panel" class="tabpanel" aria-labelledby="_tabs_12_log4j2_xml">
 <div class="paragraph">
-<p>No dependency required.</p>
+<p>JPMS users need to add:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">module foo.bar {
+    requires java.xml;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>to their <code>module-info.java</code> descriptor.</p>
 </div>
 </div>
 <div id="_tabs_12_log4j2_json--panel" class="tabpanel" aria-labelledby="_tabs_12_log4j2_json">
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
-    &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;
-    &lt;artifactId&gt;jackson-databind&lt;/artifactId&gt;
-    &lt;version&gt;${site-jackson.version}&lt;/version&gt;
-    &lt;scope&gt;runtime&lt;/scope&gt;
-&lt;/dependency&gt;</code></pre>
-</div>
+<div class="paragraph">
+<p>No dependency required.</p>
 </div>
 </div>
 <div id="_tabs_12_log4j2_yaml--panel" class="tabpanel" aria-labelledby="_tabs_12_log4j2_yaml">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
-    &lt;groupId&gt;com.fasterxml.jackson.dataformat&lt;/groupId&gt;
-    &lt;artifactId&gt;jackson-dataformat-yaml&lt;/artifactId&gt;
-    &lt;version&gt;${site-jackson.version}&lt;/version&gt;
-    &lt;scope&gt;runtime&lt;/scope&gt;
+    &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+    &lt;artifactId&gt;log4j-config-yaml&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
 </div>
 <div id="_tabs_12_log4j2_properties--panel" class="tabpanel" aria-labelledby="_tabs_12_log4j2_properties">
-<div class="paragraph">
-<p>No dependency required.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+    &lt;artifactId&gt;log4j-config-properties&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -1187,26 +1191,36 @@ rootLogger.appenderRef.0.ref = CONSOLE</code></pre>
 </div>
 <div id="_tabs_13_log4j2_xml--panel" class="tabpanel" aria-labelledby="_tabs_13_log4j2_xml">
 <div class="paragraph">
-<p>No dependency required.</p>
+<p>JPMS users need to add:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">module foo.bar {
+    requires java.xml;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>to their <code>module-info.java</code> descriptor.</p>
 </div>
 </div>
 <div id="_tabs_13_log4j2_json--panel" class="tabpanel" aria-labelledby="_tabs_13_log4j2_json">
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.core:jackson-databind:${site-jackson.version}'</code></pre>
-</div>
+<div class="paragraph">
+<p>No dependency required.</p>
 </div>
 </div>
 <div id="_tabs_13_log4j2_yaml--panel" class="tabpanel" aria-labelledby="_tabs_13_log4j2_yaml">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${site-jackson.version}'</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-config-yaml'</code></pre>
 </div>
 </div>
 </div>
 <div id="_tabs_13_log4j2_properties--panel" class="tabpanel" aria-labelledby="_tabs_13_log4j2_properties">
-<div class="paragraph">
-<p>No dependency required.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-config-properties'</code></pre>
+</div>
 </div>
 </div>
 </div>

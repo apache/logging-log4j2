@@ -280,7 +280,7 @@
 <td class="content">
 <div class="paragraph">
 <p>In order to enable a scripting language, its name must be included in the
-<a href="systemproperties.html#log4j2.scriptEnableLanguages" class="xref page">log4j2.scriptEnableLanguages</a>
+<a href="systemproperties.html#log4j.script.enableLanguages" class="xref page">log4j.script.enableLanguages</a>
 configuration property.</p>
 </div>
 </td>
@@ -585,62 +585,48 @@ container plugin in the configuration file.</p>
 <div id="_tabs_1_java_properties--panel" class="tabpanel" aria-labelledby="_tabs_1_java_properties">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = Console
-appender.0.name = STDOUT
-appender.0.layout.type = PatternLayout
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">Appenders.Console.name = STDOUT
 
-appender.0.layout.selector = ScriptPatternSelector
-appender.0.layout.selector.defaultPattern = %d %p %m%n
-appender.0.layout.selector.scriptRef.type = ScriptRef
-appender.0.layout.selector.scriptRef.ref = SELECTOR_SCRIPT
-appender.0.layout.selector.match[0].type = PatternMatch
-appender.0.layout.selector.match[0].key = NoLocation
-appender.0.layout.selector.match[0].pattern = [%-5level] %c{1.} %msg%n
-appender.0.layout.selector.match[1].type = PatternMatch
-appender.0.layout.selector.match[1].key = Flow
-appender.0.layout.selector.match[1].pattern = \
+Appenders.Console.PatternLayout.ScriptPatternSelector.defaultPattern = %d %p %m%n
+Appenders.Console.PatternLayout.ScriptPatternSelector.ScriptRef.ref = SELECTOR_SCRIPT
+Appenders.Console.PatternLayout.ScriptPatternSelector.PatternMatch[1].key = NoLocation
+Appenders.Console.PatternLayout.ScriptPatternSelector.PatternMatch[1].pattern = [%-5level] %c{1.} %msg%n
+Appenders.Console.PatternLayout.ScriptPatternSelector.PatternMatch[2].key = Flow
+Appenders.Console.PatternLayout.ScriptPatternSelector.PatternMatch[2].pattern = \
   [%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n
 
-logger.0.name = EventLogger
-logger.0.filter.0.type = ScriptFilter
-logger.0.filter.0.onMatch = ACCEPT
-logger.0.filter.0.onMismatch = DENY
-logger.0.filter.0.script.type = Script
-logger.0.filter.0.script.name = EVENT_LOGGER_FILTER
-logger.0.filter.0.script.language = groovy
-logger.0.filter.0.script.scriptText = \
-  if (logEvent.getMarker() != null\
-      &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW"))) {\
+Loggers.Logger.name = EventLogger
+Loggers.Logger.ScriptFilter.onMatch = ACCEPT
+Loggers.Logger.ScriptFilter.onMismatch = DENY
+Loggers.Logger.ScriptFilter.Script.name = EVENT_LOGGER_FILTER
+Loggers.Logger.ScriptFilter.Script.language = groovy
+Loggers.Logger.ScriptFilter.Script.scriptText = \
+  if (logEvent.getMarker() != null &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW"))) {\
     return true;\
   } else if (logEvent.getContextMap().containsKey("UserId")) {\
     return true;\
   }\
   return false;
 
-rootLogger.level = INFO
-rootLogger.filter.0.type = ScriptFilter
-rootLogger.filter.0.onMatch = ACCEPT
-rootLogger.filter.0.onMismatch = DENY
-rootLogger.filter.0.scriptRef.type = ScriptRef
-rootLogger.filter.0.scriptRef.ref = ROOT_FILTER
-rootLogger.appenderRef.0.ref = STDOUT
+Loggers.Root.level = INFO
+Loggers.Root.ScriptFilter.onMatch = ACCEPT
+Loggers.Root.ScriptFilter.onMismatch = DENY
+Loggers.Root.ScriptFilter.ScriptRef.ref = ROOT_FILTER
+Loggers.Root.AppenderRef.ref = STDOUT
 
-script.0.type = Script
-script.0.name = SELECTOR_SCRIPT
-script.0.language = javascript
-script.0.scriptText = \
+Scripts.Script.name = SELECTOR_SCRIPT
+Scripts.Script.language = javascript
+Scripts.Script.scriptText = \
   var result;\
   if (logEvent.getLoggerName().equals("JavascriptNoLocation")) {\
     result = "NoLocation";\
-  } else if (logEvent.getMarker() != null\
-      &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW")) {\
+  } else if (logEvent.getMarker() != null &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW")) {\
     result = "Flow";\
   }\
   result;
 
-script.1.type = ScriptFile
-script.1.name = ROOT_FILTER
-script.1.path = scripts/filter.groovy</code></pre>
+Scripts.ScriptFile.name = ROOT_FILTER
+Scripts.ScriptFile.path = scripts/filter.groovy</code></pre>
 </div>
 </div>
 </div>

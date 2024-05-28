@@ -510,9 +510,9 @@ documentation</a> for more details.</p></td>
 <div class="paragraph">
 <p>There are also a few system properties that can be used to maintain application throughput even when the underlying appender cannot keep up with the logging rate and the queue is filling up.
 See the details for system properties
-<a href="systemproperties.html#log4j2.asyncQueueFullPolicy" class="xref page"><code>log4j2.asyncQueueFullPolicy</code></a>
+<a href="systemproperties.html#log4j.async.queueFullPolicy.type" class="xref page"><code>log4j.async.queueFullPolicy.type</code></a>
 and
-<a href="systemproperties.html#log4j2.discardThreshold" class="xref page"><code>log4j2.DiscardThreshold</code></a>.</p>
+<a href="systemproperties.html#log4j.async.queueFullPolicy.discardThreshold" class="xref page"><code>log4j.async.queueFullPolicy.discardThreshold</code></a>.</p>
 </div>
 <div class="paragraph">
 <p>A typical AsyncAppender configuration might look like this:</p>
@@ -611,176 +611,6 @@ maximum capacity.</p></td>
 </div>
 </div>
 <div class="sect1">
-<h2 id="CassandraAppender"><a class="anchor" href="#CassandraAppender"></a>CassandraAppender</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The CassandraAppender writes its output to an <a href="https://cassandra.apache.org/">Apache Cassandra</a>
-database.
-A keyspace and table must be configured ahead of time, and the columns of that table are mapped in a configuration file.
-Each column can specify either a <a href="https://logging.apache.org/log4j/2.x/manual/layouts.html#PatternLayout">StringLayout</a> (e.g., a PatternLayout) along with an optional conversion type, or only a conversion type for <code>org.apache.logging.log4j.spi.ThreadContextMap</code> or
-<code>org.apache.logging.log4j.spi.ThreadContextStack</code> to store the MDC or NDC in a map or list column respectively.
-A conversion type compatible with <code>java.util.Date</code> will use the log event timestamp converted to that type (e.g., use <code>java.util.Date</code> to fill a
-<code>timestamp</code> column type in Cassandra).</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. CassandraAppender Parameters</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">batched</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Whether or not to use batch statements to write log messages to Cassandra. By default, this is <code>false</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">batchType</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.datastax.com/en/drivers/java/3.0/com/datastax/driver/core/BatchStatement.Type.html">BatchStatement.Type</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The batch type to use when using batched writes. By default, this is <code>LOGGED</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">bufferSize</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The number of log messages to buffer or batch before writing. By default, no buffering is done.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">clusterName</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the Cassandra cluster to connect to.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">columns</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ColumnMapping[]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A list of column mapping configurations. Each column must specify a column name. Each column can
-have a conversion type specified by its fully qualified class name. By default, the conversion type is
-<code>String</code>. If the configured type is assignment-compatible with
-ReadOnlyStringMap /
-ThreadContextMap or
-ThreadContextStack,
-then that column will be populated with the MDC or NDC respectively. If the configured type is
-assignment-compatible with <code>java.util.Date</code>, then the log timestamp will be converted to
-that configured date type. If a <code>literal</code> attribute is given, then its value will be used as
-is in the <code>INSERT</code> query without any escaping. Otherwise, the layout or pattern specified
-will be converted into the configured type and stored in that column.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">contactPoints</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SocketAddress[]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A list of hosts and ports of Cassandra nodes to connect to. These must be valid hostnames or IP
-addresses. By default, if a port is not specified for a host or it is set to 0, then the default
-Cassandra port of 9042 will be used. By default, <code>localhost:9042</code> will be used.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">filter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Filter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A Filter to determine if the event should be handled by this Appender. More than one Filter may be used
-by using a CompositeFilter.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ignoreExceptions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The default is <code>true</code>, causing exceptions encountered while appending events to be
-internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
-caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
-FailoverAppender.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">keyspace</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the keyspace containing the table that log messages will be written to.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the Appender.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">password</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The password to use (along with the username) to connect to Cassandra.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">table</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the table to write log messages to.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">useClockForTimestampGenerator</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Whether or not to use the configured <code>org.apache.logging.log4j.core.util.Clock</code> as a
-TimestampGenerator. By default, this is <code>false</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">username</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The username to use to connect to Cassandra. By default, no username or password is used.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">useTls</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Whether or not to use TLS/SSL to connect to Cassandra. This is <code>false</code> by default.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Here is an example <code>CassandraAppender</code> configuration:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Configuration name="CassandraAppenderTest"&gt;
-  &lt;Appenders&gt;
-    &lt;Cassandra name="Cassandra" clusterName="Test Cluster" keyspace="test" table="logs" bufferSize="10" batched="true"&gt;
-      &lt;SocketAddress host="localhost" port="9042"/&gt;
-      &lt;ColumnMapping name="id" pattern="%uuid{TIME}" type="java.util.UUID"/&gt;
-      &lt;ColumnMapping name="timeid" literal="now()"/&gt;
-      &lt;ColumnMapping name="message" pattern="%message"/&gt;
-      &lt;ColumnMapping name="level" pattern="%level"/&gt;
-      &lt;ColumnMapping name="marker" pattern="%marker"/&gt;
-      &lt;ColumnMapping name="logger" pattern="%logger"/&gt;
-      &lt;ColumnMapping name="timestamp" type="java.util.Date"/&gt;
-      &lt;ColumnMapping name="mdc" type="org.apache.logging.log4j.spi.ThreadContextMap"/&gt;
-      &lt;ColumnMapping name="ndc" type="org.apache.logging.log4j.spi.ThreadContextStack"/&gt;
-    &lt;/Cassandra&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Logger name="org.apache.logging.log4j.cassandra" level="DEBUG"&gt;
-      &lt;AppenderRef ref="Cassandra"/&gt;
-    &lt;/Logger&gt;
-    &lt;Root level="ERROR"/&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This example configuration uses the following table schema:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-sql hljs" data-lang="sql">CREATE TABLE logs (
-    id timeuuid PRIMARY KEY,
-    timeid timeuuid,
-    message text,
-    level text,
-    marker text,
-    logger text,
-    timestamp timestamp,
-    mdc map&lt;text,text&gt;,
-    ndc list&lt;text&gt;
-);</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
 <h2 id="consoleappender"><a class="anchor" href="#consoleappender"></a><a id="ConsoleAppender"></a> ConsoleAppender</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -789,7 +619,7 @@ TimestampGenerator. By default, this is <code>false</code>.</p></td>
 A Layout must be provided to format the LogEvent.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. ConsoleAppender Parameters</caption>
+<caption class="title">Table 3. ConsoleAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -888,7 +718,7 @@ Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
 If the primary Appender fails the secondary appenders will be tried in order until one succeeds or there are no more secondaries to try.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. FailoverAppender Parameters</caption>
+<caption class="title">Table 4. FailoverAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -990,7 +820,7 @@ While FileAppenders from different Configurations cannot be shared, the FileMana
 For example, two web applications in a servlet container can have their configuration and safely write to the same file if Log4j is in a ClassLoader that is common to both of them.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. FileAppender Parameters</caption>
+<caption class="title">Table 5. FileAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -1209,7 +1039,7 @@ Setting the "type" attribute to "Embedded" will force the use of the embedded ag
 In addition, configuring agent properties in the appender configuration will also cause the embedded agent to be used.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 7. FlumeAppender Parameters</caption>
+<caption class="title">Table 6. FlumeAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -1517,8 +1347,10 @@ indicate which variation of the Appender is desired.</p></td>
 <code>log4j-core</code> to the new module <code>log4j-jdbc</code>.</p>
 </div>
 <div class="paragraph">
-<p>The JDBC Appender configured with a <code>DataSource</code> requires JNDI support so as of release 2.17.1 this appender will not function unless <code>log4j2.enableJndiJdbc=true</code> is configured as a system property or environment variable.
-See the <a href="configuration.html#enableJndiJdbc" class="xref page">enableJndiJdbc</a> system property.</p>
+<p>The JDBC Appender configured with a <code>DataSource</code> requires JNDI support so as of release 2.17.1
+this appender will not function unless <code>log4j.jndi.enableJdbc=true</code> is configured as a system property
+or environment variable. See the <a href="systemproperties.html#log4j.jndi.enableJdbc" class="xref page">log4j.jndi.enableJdbc</a> system
+property.</p>
 </div>
 <div class="paragraph">
 <p>The JDBCAppender writes log events to a relational database table using standard JDBC.
@@ -1535,7 +1367,7 @@ This connection source uses a JDBC connection string, a username, and a password
 Optionally, you can also use properties.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 8. JDBCAppender Parameters</caption>
+<caption class="title">Table 7. JDBCAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -1657,7 +1489,7 @@ You must use exactly one of the following nested elements:</p>
 </ul>
 </div>
 <table id="JDBCDataSource" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 9. DataSource Parameters</caption>
+<caption class="title">Table 8. DataSource Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -1682,7 +1514,7 @@ by a connection pool; otherwise, logging will be very slow.</p></td>
 </tbody>
 </table>
 <table id="JDBCConnectionFactory" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. ConnectionFactory Parameters</caption>
+<caption class="title">Table 9. ConnectionFactory Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -1717,7 +1549,7 @@ be backed by a connection pool for the same reasons.</p></td>
 </tbody>
 </table>
 <table id="JDBCDriverManager" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. DriverManager Parameters</caption>
+<caption class="title">Table 10. DriverManager Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -1764,7 +1596,7 @@ properties and a username or password.</p></td>
 </tbody>
 </table>
 <table id="JDBCPoolingDriver" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. PoolingDriver Parameters (Apache Commons DBCP)</caption>
+<caption class="title">Table 11. PoolingDriver Parameters (Apache Commons DBCP)</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -1801,7 +1633,7 @@ a pooled connection elsewhere. For example:
 </tbody>
 </table>
 <table id="JDBCPoolableConnectionFactory" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. PoolableConnectionFactory Parameters (Apache Commons DBCP)</caption>
+<caption class="title">Table 12. PoolableConnectionFactory Parameters (Apache Commons DBCP)</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -1903,7 +1735,7 @@ The JDBCAppender uses this information to formulate a
 <code>PreparedStatement</code> to insert records without SQL injection vulnerability.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. Column Parameters</caption>
+<caption class="title">Table 13. Column Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -1991,7 +1823,7 @@ the value will be inserted as a VARCHAR or NVARCHAR (<code>setString</code> or
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. ColumnMapping Parameters</caption>
+<caption class="title">Table 14. ColumnMapping Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -2194,7 +2026,7 @@ Starting in Log4j 2.1, these appenders were combined into the JMS Appender, whic
 However, configurations written for 2.0 that use the <code>&lt;JMSQueue/&gt;</code> or <code>&lt;JMSTopic/&gt;</code> elements will continue to work with the new <code>&lt;JMS/&gt;</code> configuration element.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. JMS Appender Parameters</caption>
+<caption class="title">Table 15. JMS Appender Parameters</caption>
 <colgroup>
 <col style="width: 16.6666%;">
 <col style="width: 16.6666%;">
@@ -2567,7 +2399,7 @@ Additional headers can be specified with embedded Property elements.</p>
 <a href="https://docs.oracle.com/javase/7/docs/api/java/net/HttpURLConnection.html">HttpURLConnection</a>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 17. HttpAppender Parameters</caption>
+<caption class="title">Table 16. HttpAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -2805,7 +2637,7 @@ The default region size is 32 MB, which should strike a reasonable balance betwe
 For example, two web applications in a servlet container can have its own configuration and safely write to the same file if Log4j is in a ClassLoader that is common to both of them.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 18. MemoryMappedFileAppender Parameters</caption>
+<caption class="title">Table 17. MemoryMappedFileAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -2927,7 +2759,7 @@ Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
 Provider implementations currently exist for MongoDB, and writing a custom provider is quite simple.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 19. NoSQLAppender Parameters</caption>
+<caption class="title">Table 18. NoSQLAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -3112,7 +2944,7 @@ for more information.</p>
 <p>In order to use a Log4j MongoDB appender you need to add the following dependencies to your application:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. MongoDB providers compatibility table</caption>
+<caption class="title">Table 19. MongoDB providers compatibility table</caption>
 <colgroup>
 <col style="width: 18.1818%;">
 <col style="width: 18.1818%;">
@@ -3180,7 +3012,7 @@ for more information.</p>
 The NoSQLAppender Appender writes log events to a NoSQL database using an internal lightweight provider interface.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. MongoDB Provider Parameters</caption>
+<caption class="title">Table 20. MongoDB Provider Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -3313,7 +3145,7 @@ Similar to the FileAppender, RandomAccessFileAppender uses a RandomAccessFileMan
 For example, two web applications in a servlet container can have their configuration and safely write to the same file if Log4j is in a ClassLoader that is common to both of them.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 22. RandomAccessFileAppender Parameters</caption>
+<caption class="title">Table 21. RandomAccessFileAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -3433,7 +3265,7 @@ The RewriteAppender must be configured with a RewritePolicy.
 The RewriteAppender should be configured after any Appenders it references to allow it to shut down properly.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 23. RewriteAppender Parameters</caption>
+<caption class="title">Table 22. RewriteAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -3701,7 +3533,7 @@ view action</a> can be configured in the DefaultRolloverStrategy to run at rollo
 <p>File locking is not supported by the RollingFileAppender.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 24. RollingFileAppender Parameters</caption>
+<caption class="title">Table 23. RollingFileAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -3913,7 +3745,7 @@ This policy is controlled by a timer and is asynchronous in processing log event
 The <code>filePattern</code> attribute of the Appender should contain a timestamp otherwise the target file will be overwritten on each rollover.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 25. CronTriggeringPolicy Parameters</caption>
+<caption class="title">Table 24. CronTriggeringPolicy Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -3952,7 +3784,7 @@ and the current time the file will be immediately rolled over.</p></td>
 <p>The <code>OnStartupTriggeringPolicy</code> policy causes a rollover if the log file is older than the current JVM&#8217;s start time and the minimum file size is met or exceeded.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 26. OnStartupTriggeringPolicy Parameters</caption>
+<caption class="title">Table 25. OnStartupTriggeringPolicy Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4004,7 +3836,7 @@ This policy accepts an
 <code>interval</code> attribute which indicates how frequently the rollover should occur based on the time pattern and a <code>modulate</code> boolean attribute.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 27. TimeBasedTriggeringPolicy Parameters</caption>
+<caption class="title">Table 26. TimeBasedTriggeringPolicy Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4195,7 +4027,7 @@ foo-1.log. A new foo.log file is created and starts being written to.</p></td>
 then the min and max values will be ignored and file numbering will increment by 1 and each rollover will have an incrementally higher value with no maximum number of files.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 28. DefaultRolloverStrategy Parameters</caption>
+<caption class="title">Table 27. DefaultRolloverStrategy Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4260,7 +4092,7 @@ If the size-based triggering policy causes multiple files to be written during t
 Furthermore, if the time changes such that the file pattern no longer matches the current file it will not be compressed at startup either.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 29. DirectWriteRolloverStrategy Parameters</caption>
+<caption class="title">Table 28. DirectWriteRolloverStrategy Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4449,7 +4281,7 @@ The Delete action lets users configure one or more conditions that select the fi
 With the <code>testMode</code> parameter you can test your configuration without accidentally deleting the wrong files.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 30. Delete Parameters</caption>
+<caption class="title">Table 29. Delete Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4587,7 +4419,7 @@ and must return a list with the paths to delete.</p>
 <h2 id="DeleteIfFileName"><a class="anchor" href="#DeleteIfFileName"></a>DeleteIfFileName</h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 31. IfFileName Condition Parameters</caption>
+<caption class="title">Table 30. IfFileName Condition Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4636,7 +4468,7 @@ the path name matches).</p></td>
 <h2 id="DeleteIfLastModified"><a class="anchor" href="#DeleteIfLastModified"></a>DeleteIfLastModified</h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 32. IfLastModified Condition Parameters</caption>
+<caption class="title">Table 31. IfLastModified Condition Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4675,7 +4507,7 @@ the file is old enough).</p></td>
 <h2 id="DeleteIfAccumulatedFileCount"><a class="anchor" href="#DeleteIfAccumulatedFileCount"></a>DeleteIfAccumulatedFileCount</h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 33. IfAccumulatedFileCount Condition Parameters</caption>
+<caption class="title">Table 32. IfAccumulatedFileCount Condition Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4712,7 +4544,7 @@ the threshold count has been exceeded).</p></td>
 <h2 id="DeleteIfAccumulatedFileSize"><a class="anchor" href="#DeleteIfAccumulatedFileSize"></a>DeleteIfAccumulatedFileSize</h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 34. IfAccumulatedFileSize Condition Parameters</caption>
+<caption class="title">Table 33. IfAccumulatedFileSize Condition Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4828,7 +4660,7 @@ During every rollover, this configuration will delete files that match "<strong>
 <h2 id="ScriptCondition"><a class="anchor" href="#ScriptCondition"></a>ScriptCondition</h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 35. ScriptCondition Parameters</caption>
+<caption class="title">Table 34. ScriptCondition Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4860,7 +4692,7 @@ how ScriptFiles and ScriptRefs can be configured.</p></td>
 <h2 id="ScriptParameters"><a class="anchor" href="#ScriptParameters"></a>ScriptParameters</h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 36. Script Parameters</caption>
+<caption class="title">Table 35. Script Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4990,7 +4822,7 @@ The Delete action will delete all files returned by the script.</p>
 The PosixViewAttribute action lets users configure one or more conditions that select the eligible files relative to a base directory.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 37. PosixViewAttribute Parameters</caption>
+<caption class="title">Table 36. PosixViewAttribute Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -5145,7 +4977,7 @@ Since log4j-2.5, a <a href="#CustomDeleteOnRollover">custom delete action</a> ca
 <p>File locking is not supported by the RollingRandomAccessFileAppender.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 38. RollingRandomAccessFileAppender Parameters</caption>
+<caption class="title">Table 37. RollingRandomAccessFileAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -5404,7 +5236,7 @@ The <code>RoutingAppender</code> should be configured after any Appenders it ref
 <p>You can also configure a <code>RoutingAppender</code> with scripts: you can run a script when the appender starts and when a route is chosen for an log event.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 39. RoutingAppender Parameters</caption>
+<caption class="title">Table 38. RoutingAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -5540,7 +5372,7 @@ If the <code>Route</code> contains an <code>Appender</code> definition then an
 <p>This script is passed the following variables:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 40. RoutingAppender Routes Script Parameters</caption>
+<caption class="title">Table 39. RoutingAppender Routes Script Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -5866,7 +5698,7 @@ Due to limitations in the TCP protocol that means that when the target server cl
 If guaranteed delivery is required a protocol that requires acknowledgments must be used.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 41. <code>SocketAppender</code> Parameters</caption>
+<caption class="title">Table 40. <code>SocketAppender</code> Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -6031,7 +5863,7 @@ Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
 This section documents the parameters available for SSL configuration.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 42. SSL Configuration Parameters</caption>
+<caption class="title">Table 41. SSL Configuration Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -6074,7 +5906,7 @@ counterparty. Determines whether the remote authentication credentials
 <p>The Keystore is meant to contain your private keys and certificates, and determines which authentication credentials to send to the remote host.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 43. KeyStore Configuration Parameters</caption>
+<caption class="title">Table 42. KeyStore Configuration Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -6142,7 +5974,7 @@ Determines whether the remote authentication credentials (and thus the connectio
 <p>In some cases, they can be the same store, although it is often better practice to use distinct stores (especially when they are file-based).</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 44. TrustStore Configuration Parameters</caption>
+<caption class="title">Table 43. TrustStore Configuration Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -6221,7 +6053,7 @@ algorithms</a>.</p></td>
 The data can be sent over either TCP or UDP.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 45. <code>SyslogAppender</code> Parameters</caption>
+<caption class="title">Table 44. <code>SyslogAppender</code> Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
