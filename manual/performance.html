@@ -591,13 +591,13 @@ This can partly be alleviated by configuring an exception handler, but this may 
 <p>Most
 <a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html"><code>Message</code></a>
 implementations take a snapshot of the formatted message on the calling thread (cf.
-<a href="systemproperties.html#log4j2.formatMsgAsync" class="xref page"><code>log4j2.formatMsgAsync</code></a>).
+<a href="systemproperties.html#log4j.async.formatMessagesInBackground" class="xref page"><code>log4j.async.formatMessagesInBackground</code></a>).
 The log message will not change even if the arguments of the logging call are modified later.</p>
 <div class="paragraph">
 <p>There are some exceptions to this rule.
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html"><code>MapMessage</code></a>
+<a href="https://logging.apache.org/log4j/2.x/manual/messages.html#MapMessage"><code>MapMessage</code></a>
 and
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html"><code>StructuredDataMessage</code></a>
+<a href="https://logging.apache.org/log4j/2.x/manual/messages.html#StructuredDataMessage"><code>StructuredDataMessage</code></a>
 for example are mutable by design: fields can be added to these messages after the message object was created.
 These messages should not be modified after they are logged with asynchronous loggers or asynchronous appenders.</p>
 </div>
