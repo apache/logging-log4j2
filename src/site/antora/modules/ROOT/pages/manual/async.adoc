@@ -47,27 +47,7 @@ include::partial$manual/async-trade-offs.adoc[leveloffset=+1]
 
 In order to use async loggers, you need to add LMAX Disruptor to you application's dependencies, by adding the following dependency to your build tool:
 
-[tabs]
-====
-Maven::
-+
-[source,xml,subs="+attributes"]
-----
-<dependency>
-  <groupId>com.lmax</groupId>
-  <artifactId>disruptor</artifactId>
-  <version>{disruptor-version}</version>
-  <scope>runtime</scope>
-</dependency>
-----
-
-Gradle::
-+
-[source,groovy,subs="+attributes"]
-----
-runtimeOnly 'com.lmax:disruptor:{disruptor-version}'
-----
-====
+include::partial$manual/dependencies-log4j-async-logger.adoc[]
 
 [#configuration]
 == Configuration
