@@ -56,6 +56,7 @@ The size in ``char``s of the link:../https://docs.oracle.com/javase/8/docs/api/j
 
 This setting is only used if <<log4j.gc.enableDirectEncoders>> is set to `true`.
 
+// tag::api[]
 [id=log4j.gc.initialReusableMsgSize]
 == `log4j.gc.initialReusableMsgSize`
 
@@ -82,6 +83,7 @@ In GC-free mode, this property determines the maximum size of the reusable ``Str
 
 The default value allows is equal to `2 &times; (2 &times; log4j.initialReusableMsgSize + 2) + 2` and allows the
 ``StringBuilder`` to be resized twice by the current JVM resize algorithm.
+// end::api[]
 
 [id=log4j.gc.layoutStringBuilderMaxSize]
 == `log4j.gc.layoutStringBuilderMaxSize`
@@ -94,3 +96,51 @@ The default value allows is equal to `2 &times; (2 &times; log4j.initialReusable
 |===
 
 This property determines the maximum size of the reusable ``StringBuilder``s used to format link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent[LogEvents].
+
+// tag::api[]
+
+[id=log4j2.unboxRingbufferSize]
+== `log4j2.unboxRingbufferSize`
+
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_UNBOX_RINGBUFFER_SIZE
+| Type          | `int`
+| Default value | `32`
+|===
+
+The {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/util/Unbox[Unbox] utility class can be used by users to format primitive values without incurring in the boxing allocation cost.
+
+This property specifies the maximum number of primitive arguments to a log message that will be cached and usually does not need to be changed.
+
+// end::api[]
+
+[id=log4j.recycler.capacity]
+== `log4j.recycler.capacity`
+
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_RECYCLER_CAPACITY
+| Type          | `int`
+| Default value | `2C+1` (`C` denoting the number of available processors)
+|===
+
+Denotes the buffer capacity for a recycler.
+For a queueing recycler, it corresponds to the queue size.
+For a thread local recycler, it corresponds to the per-thread buffer size.
+
+If an invalid capacity is provided (i.e., if the capacity is zero or negative), the default value will be used.
+
+[id=log4j.recycler.factory]
+== `log4j.recycler.factory`
+
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_RECYCLER_FACTORY
+| Type          | `String`
+| Default value | `null`
+|===
+
+If provided, available recycler factory providers will be sorted in order, and the first one whose name matching with this property value will be used.
+
+If missing or the selection fails, the default will be used.
