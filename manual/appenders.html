@@ -246,12 +246,6 @@
     <a class="nav-link" href="../log4j-flume-ng.html">Flume Appender</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-mongodb3.html">MongoDB 3 appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-mongodb4.html">MongoDB 4 appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
   </li>
   <li class="nav-item" data-depth="1">
@@ -3090,45 +3084,146 @@ We recommend you review the source code for the MongoDB providers as a guide for
 }</code></pre>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="NoSQLAppenderMongoDBMain"><a class="anchor" href="#NoSQLAppenderMongoDBMain"></a>NoSQL Appenders for MongoDB</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="NoSQLAppenderMongoDB"><a class="anchor" href="#NoSQLAppenderMongoDB"></a>NoSQL providers for MongoDB</h3>
+<div class="sect3">
+<h4 id="mongo-installation"><a class="anchor" href="#mongo-installation"></a>Installation</h4>
 <div class="paragraph">
-<p>Starting with Log4 2.11.0, we provide the following MongoDB modules:</p>
+<p>Starting with version 2.11.0, Log4j supplies providers for the
+<a href="https://www.mongodb.com/">MongoDB</a>
+NoSQL database engine, based on the
+<a href="https://www.mongodb.com/docs/drivers/java/sync/current/">MongoDB synchronous Java driver</a>.
+The choice of the provider to user depends on:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Added in 2.11.0, removed in 2.14.0: <code>log4j-mongodb2</code> defines the configuration element MongoDb2 matching the MongoDB Driver version 2.</p>
+<p>the major version of the MongoDB Java driver your application uses: Log4j supports all major versions starting from version 2.</p>
 </li>
 <li>
-<p>Added in 2.11.0, removed in 2.24.0: <code>log4j-mongodb3</code> defines the configuration element MongoDb3 matching the MongoDB Driver version 3.</p>
-</li>
-<li>
-<p>Added in 2.14.0, deprecated in 2.24.0: <code>log4j-mongodb4</code> defines the configuration element
-<a href="#NoSQLAppenderMongoDB4"><code>MongoDb4</code></a> matching the MongoDB Driver version 4.</p>
-</li>
-<li>
-<p>Added in 2.24.0: <code>log4j-mongodb</code> defines the configuration element
-<a href="#NoSQLAppenderMongoDBCurrent"><code>MongoDb</code></a> matching the current MongoDB Driver (version 5).
-This module tracks the current MongoDB Driver.</p>
+<p>the type of driver API used: either the <em>Legacy API</em> or the <em>Modern API</em>.
+See <a href="https://www.mongodb.com/docs/drivers/java/sync/current/legacy/">MongoDB documentation</a>
+for the difference between APIs.</p>
 </li>
 </ul>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The list of dependencies of your application provides a hint as to which driver API your application is using.
+If your application contains any one of these dependencies, it might use the <strong>Legacy API</strong>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>org.mongodb:mongo-java-driver</code></p>
+</li>
+<li>
+<p><code>org.mongodb:mongodb-driver-legacy</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If you application only uses <code>org.mongodb:mongodb-driver-sync</code>, it uses the <strong>Modern API</strong>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The version of the MongoDB Java driver is not the same as the version of the MongoDB server.
+See
+<a href="https://www.mongodb.com/docs/drivers/java/sync/current/compatibility/">MongoDB compatibility matrix</a>
+for more information.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In order to use a Log4j MongoDB appender you need to add the following dependencies to your application:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 20. MongoDB providers compatibility table</caption>
+<colgroup>
+<col style="width: 18.1818%;">
+<col style="width: 18.1818%;">
+<col style="width: 18.1818%;">
+<col style="width: 45.4546%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Driver version</th>
+<th class="tableblock halign-left valign-top">Driver API</th>
+<th class="tableblock halign-left valign-top">Log4j artifact</th>
+<th class="tableblock halign-left valign-top">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.x</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Legacy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-mongodb2"><code>log4j-mongodb2</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reached end-of-support.</p>
+<p class="tableblock">Last released version: <code>2.12.4</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a id="NoSQLAppenderMongoDB3"></a><code>3.x</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Legacy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-mongodb3"><code>log4j-mongodb3</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reached end-of-support.</p>
+<p class="tableblock">Last released version: <code>2.23.1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>4.x</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Modern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-mongodb4"><code>log4j-mongodb4</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>5.x</code> or later</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Modern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-mongodb"><code>log4j-mongodb</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you are note sure, which implementation to choose, <code>log4j-mongodb</code> is the recommended choice.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
-<div class="sect1">
-<h2 id="NoSQLAppenderMongoDBCurrent"><a class="anchor" href="#NoSQLAppenderMongoDBCurrent"></a>NoSQL Appender for MongoDB</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="log4j-mongodb"><a class="anchor" href="#log4j-mongodb"></a>NoSQL provider for MongoDB (current)</h4>
 <div class="paragraph">
 <p>This section details specializations of the
 <a href="#NoSQLAppender">NoSQLAppender</a> provider for MongoDB using the current MongoDB driver (version 5).
 The NoSQLAppender Appender writes log events to a NoSQL database using an internal lightweight provider interface.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. MongoDB Provider Parameters</caption>
+<caption class="title">Table 21. MongoDB Provider Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -3234,19 +3329,17 @@ collection documentation linked above for more information.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="NoSQLAppenderMongoDB4"><a class="anchor" href="#NoSQLAppenderMongoDB4"></a>(Deprecated) No SQLAppender for MongoDB 4</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="log4j-mongodb4"><a class="anchor" href="#log4j-mongodb4"></a><a id="NoSQLAppenderMongoDB4"></a> NoSQL provider  for MongoDB 4 (deprecated)</h4>
 <div class="paragraph">
-<p>The <code>log4j-mongodb4</code> module is deprecated in favor of <a href="#NoSQLAppenderMongoDBCurrent">NoSQLAppender for MongoDB</a>.</p>
+<p>The <code>log4j-mongodb4</code> module is deprecated in favor of <a href="#log4j-mongodb">NoSQL provider for MongoDB</a>.</p>
 </div>
 <div class="paragraph">
 <p>This section details specializations of the
 <a href="#NoSQLAppender">NoSQLAppender</a> provider for MongoDB using the MongoDB driver version 4. The NoSQLAppender Appender writes log events to a NoSQL database using an internal lightweight provider interface.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. MongoDB Provider Parameters</caption>
+<caption class="title">Table 22. MongoDB Provider Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -3349,6 +3442,8 @@ collection documentation linked above for more information.</p></td>
         &lt;/Root&gt;
     &lt;/Loggers&gt;
 &lt;/Configuration&gt;</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -3463,7 +3558,7 @@ Similar to the FileAppender, RandomAccessFileAppender uses a RandomAccessFileMan
 For example, two web applications in a servlet container can have their configuration and safely write to the same file if Log4j is in a ClassLoader that is common to both of them.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 22. RandomAccessFileAppender Parameters</caption>
+<caption class="title">Table 23. RandomAccessFileAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -3583,7 +3678,7 @@ The RewriteAppender must be configured with a RewritePolicy.
 The RewriteAppender should be configured after any Appenders it references to allow it to shut down properly.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 23. RewriteAppender Parameters</caption>
+<caption class="title">Table 24. RewriteAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -3851,7 +3946,7 @@ view action</a> can be configured in the DefaultRolloverStrategy to run at rollo
 <p>File locking is not supported by the RollingFileAppender.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 24. RollingFileAppender Parameters</caption>
+<caption class="title">Table 25. RollingFileAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4063,7 +4158,7 @@ This policy is controlled by a timer and is asynchronous in processing log event
 The <code>filePattern</code> attribute of the Appender should contain a timestamp otherwise the target file will be overwritten on each rollover.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 25. CronTriggeringPolicy Parameters</caption>
+<caption class="title">Table 26. CronTriggeringPolicy Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4102,7 +4197,7 @@ and the current time the file will be immediately rolled over.</p></td>
 <p>The <code>OnStartupTriggeringPolicy</code> policy causes a rollover if the log file is older than the current JVM&#8217;s start time and the minimum file size is met or exceeded.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 26. OnStartupTriggeringPolicy Parameters</caption>
+<caption class="title">Table 27. OnStartupTriggeringPolicy Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4154,7 +4249,7 @@ This policy accepts an
 <code>interval</code> attribute which indicates how frequently the rollover should occur based on the time pattern and a <code>modulate</code> boolean attribute.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 27. TimeBasedTriggeringPolicy Parameters</caption>
+<caption class="title">Table 28. TimeBasedTriggeringPolicy Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4345,7 +4440,7 @@ foo-1.log. A new foo.log file is created and starts being written to.</p></td>
 then the min and max values will be ignored and file numbering will increment by 1 and each rollover will have an incrementally higher value with no maximum number of files.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 28. DefaultRolloverStrategy Parameters</caption>
+<caption class="title">Table 29. DefaultRolloverStrategy Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4410,7 +4505,7 @@ If the size-based triggering policy causes multiple files to be written during t
 Furthermore, if the time changes such that the file pattern no longer matches the current file it will not be compressed at startup either.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 29. DirectWriteRolloverStrategy Parameters</caption>
+<caption class="title">Table 30. DirectWriteRolloverStrategy Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4599,7 +4694,7 @@ The Delete action lets users configure one or more conditions that select the fi
 With the <code>testMode</code> parameter you can test your configuration without accidentally deleting the wrong files.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 30. Delete Parameters</caption>
+<caption class="title">Table 31. Delete Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4737,7 +4832,7 @@ and must return a list with the paths to delete.</p>
 <h2 id="DeleteIfFileName"><a class="anchor" href="#DeleteIfFileName"></a>DeleteIfFileName</h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 31. IfFileName Condition Parameters</caption>
+<caption class="title">Table 32. IfFileName Condition Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4786,7 +4881,7 @@ the path name matches).</p></td>
 <h2 id="DeleteIfLastModified"><a class="anchor" href="#DeleteIfLastModified"></a>DeleteIfLastModified</h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 32. IfLastModified Condition Parameters</caption>
+<caption class="title">Table 33. IfLastModified Condition Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4825,7 +4920,7 @@ the file is old enough).</p></td>
 <h2 id="DeleteIfAccumulatedFileCount"><a class="anchor" href="#DeleteIfAccumulatedFileCount"></a>DeleteIfAccumulatedFileCount</h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 33. IfAccumulatedFileCount Condition Parameters</caption>
+<caption class="title">Table 34. IfAccumulatedFileCount Condition Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4862,7 +4957,7 @@ the threshold count has been exceeded).</p></td>
 <h2 id="DeleteIfAccumulatedFileSize"><a class="anchor" href="#DeleteIfAccumulatedFileSize"></a>DeleteIfAccumulatedFileSize</h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 34. IfAccumulatedFileSize Condition Parameters</caption>
+<caption class="title">Table 35. IfAccumulatedFileSize Condition Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4978,7 +5073,7 @@ During every rollover, this configuration will delete files that match "<strong>
 <h2 id="ScriptCondition"><a class="anchor" href="#ScriptCondition"></a>ScriptCondition</h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 35. ScriptCondition Parameters</caption>
+<caption class="title">Table 36. ScriptCondition Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -5010,7 +5105,7 @@ how ScriptFiles and ScriptRefs can be configured.</p></td>
 <h2 id="ScriptParameters"><a class="anchor" href="#ScriptParameters"></a>ScriptParameters</h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 36. Script Parameters</caption>
+<caption class="title">Table 37. Script Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -5140,7 +5235,7 @@ The Delete action will delete all files returned by the script.</p>
 The PosixViewAttribute action lets users configure one or more conditions that select the eligible files relative to a base directory.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 37. PosixViewAttribute Parameters</caption>
+<caption class="title">Table 38. PosixViewAttribute Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -5295,7 +5390,7 @@ Since log4j-2.5, a <a href="#CustomDeleteOnRollover">custom delete action</a> ca
 <p>File locking is not supported by the RollingRandomAccessFileAppender.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 38. RollingRandomAccessFileAppender Parameters</caption>
+<caption class="title">Table 39. RollingRandomAccessFileAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -5554,7 +5649,7 @@ The <code>RoutingAppender</code> should be configured after any Appenders it ref
 <p>You can also configure a <code>RoutingAppender</code> with scripts: you can run a script when the appender starts and when a route is chosen for an log event.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 39. RoutingAppender Parameters</caption>
+<caption class="title">Table 40. RoutingAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -5690,7 +5785,7 @@ If the <code>Route</code> contains an <code>Appender</code> definition then an
 <p>This script is passed the following variables:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 40. RoutingAppender Routes Script Parameters</caption>
+<caption class="title">Table 41. RoutingAppender Routes Script Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -6016,7 +6111,7 @@ Due to limitations in the TCP protocol that means that when the target server cl
 If guaranteed delivery is required a protocol that requires acknowledgments must be used.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 41. <code>SocketAppender</code> Parameters</caption>
+<caption class="title">Table 42. <code>SocketAppender</code> Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -6181,7 +6276,7 @@ Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
 This section documents the parameters available for SSL configuration.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 42. SSL Configuration Parameters</caption>
+<caption class="title">Table 43. SSL Configuration Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -6224,7 +6319,7 @@ counterparty. Determines whether the remote authentication credentials
 <p>The Keystore is meant to contain your private keys and certificates, and determines which authentication credentials to send to the remote host.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 43. KeyStore Configuration Parameters</caption>
+<caption class="title">Table 44. KeyStore Configuration Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -6292,7 +6387,7 @@ Determines whether the remote authentication credentials (and thus the connectio
 <p>In some cases, they can be the same store, although it is often better practice to use distinct stores (especially when they are file-based).</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 44. TrustStore Configuration Parameters</caption>
+<caption class="title">Table 45. TrustStore Configuration Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -6371,7 +6466,7 @@ algorithms</a>.</p></td>
 The data can be sent over either TCP or UDP.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 45. <code>SyslogAppender</code> Parameters</caption>
+<caption class="title">Table 46. <code>SyslogAppender</code> Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
