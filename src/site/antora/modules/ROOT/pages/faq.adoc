@@ -201,7 +201,8 @@ The problem with custom logger wrappers is that they have a different FQCN than 
 The solution is to provide the correct FQCN.
 The easiest way to do this is to let Log4j generate the logger wrapper for you.
 Log4j comes with a Logger wrapper generator tool.
-This tool was originally meant to support custom log levels and is documented xref:manual/customloglevels.adoc#CustomLoggers[here].
+This tool was originally meant to support custom log levels and was moved to the
+link:/log4j/transform/latest/index.html[Log4j Transform subproject].
 The generated logger code will take care of the FQCN.
 
 [#proguard-rules]

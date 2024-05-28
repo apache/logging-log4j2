@@ -1,5 +1,5 @@
 ////
-Licensed to the Apache Software Foundation (ASF) under one or more
+    Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
     The ASF licenses this file to You under the Apache License, Version 2.0
@@ -15,13 +15,24 @@ Licensed to the Apache Software Foundation (ASF) under one or more
     limitations under the License.
 ////
 
-// TODO: turn this into a velocity template for all the version numbers
-= Web Servlet Containers
+[tabs]
+====
+Maven::
++
+[source,xml,subs="+attributes"]
+----
+<dependency>
+  <groupId>com.fasterxml.jackson.dataformat</groupId>
+  <artifactId>jackson-dataformat-xml</artifactId>
+  <version>{jackson-version}</version>
+  <scope>runtime</scope>
+</dependency>
+----
 
-The Web module provides support for automatically enabling Log4j in Servlet containers.
-
-See the user manual page on xref:manual/webapp.adoc[Web Applications and JSPs] for details on using Log4j 2 in Web Applications.
-
-== Requirements
-
-The Web module requires Servlet 5.0 at minimum and is dependent on the Log4j 2 API and implementation.
+Gradle::
++
+[source,groovy,subs="+attributes"]
+----
+runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:{jackson-version}'
+----
+====

@@ -69,7 +69,8 @@ Due to several complexities involved, **you are strongly advised to xref:#proper
 . Providing properties in a `{status-logger-properties-file-name}` file in the classpath
 . Using Log4j configuration (i.e., `<Configuration status="WARN" dest="out">` in a `log4j2.xml` in the classpath)
 +
-WARNING: Since version `2.24.0`, `status` attribute in the `Configuration` element is deprecated and should be replaced with the xref:manual/systemproperties.adoc#log4j2.statusLoggerLevel[log4j2.statusLoggerLevel] configuration property.
+WARNING: Since version `2.24.0`, `status` attribute in the `Configuration` element is deprecated and should be
+replaced with the <<log4j2.statusLoggerLevel>> configuration property.
 . Programmatically (e.g., `StatusLogger.getLogger().setLevel(Level.WARN)`)
 
 It is crucial to understand that there is a time between the first `StatusLogger` access and a configuration file (e.g., `log4j2.xml`) read.

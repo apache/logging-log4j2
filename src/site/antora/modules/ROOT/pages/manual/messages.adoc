@@ -57,8 +57,8 @@ https://docs.oracle.com/javase/{/docs/api/java/lang/Throwable.html[`Throwable`] 
 `log.logger`:: The xref:manual/api.adoc#logger-names[logger name] provided explicitly to `LogManager.getLogger()` or inferred by Log4j API.
 
 <2> Contextual fields:
-`tags`:: The stack of xref:manual/thread-context.adoc#nested-diagnostic-context[nested diagnostic context] messages.
-`labels`:: The key/value pairs of the current xref:manual/thread-context.adoc#mapped-diagnostic-context[mapped diagnostic context].
+`tags`:: The stack of xref:manual/thread-context.adoc#usage[nested diagnostic context] messages.
+`labels`:: The key/value pairs of the current xref:manual/thread-context.adoc#usage[mapped diagnostic context].
 
 <3> Logging backend specific fields.
 In case you are using Log4j Core, the following fields can be automatically generated:
@@ -176,7 +176,7 @@ Some appenders convert the `MapMessage` objects differently when there is no lay
 
 * JMS Appender converts to a JMS `javax.jms.MapMessage`.
 * xref:manual/appenders.adoc#JDBCAppender[JDBC Appender] converts to values in an `SQL INSERT` statement
-* xref:manual/appenders.adoc#NoSQLAppenderMongoDBMain[MongoDB Appender] converts to fields in MongoDB object
+* xref:manual/appenders.adoc#NoSQLAppenderMongoDB[MongoDB NoSQL provider] converts to fields in MongoDB object
 
 [#MessageFormatMessage]
 === `MessageFormatMessage`

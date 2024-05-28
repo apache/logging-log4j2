@@ -18,13 +18,18 @@ Licensed to the Apache Software Foundation (ASF) under one or more
 
 == Log4j IOStreams
 
-The IOStreams component is a link:javadoc/log4j-api/index.html[Log4j API] extension that provides numerous classes from http://docs.oracle.com/javase/6/docs/api/java/io/package-summary.html[`java.io`] that can either write to a link:javadoc/log4j-api/org/apache/logging/log4j/Logger.html[`Logger`] while writing to another `OutputStream` or `Writer`, or the contents read by an `InputStream` or `Reader` can be http://www.eaipatterns.com/WireTap.html[wiretapped] by a `Logger`.
+The IOStreams component is a
+xref:manual/api.adoc[]
+extension that provides numerous classes from
+http://docs.oracle.com/javase/{java-target-version}/docs/api/java/io/package-summary.html[`java.io`]
+that can either write to a
+link:javadoc/log4j-api/org/apache/logging/log4j/Logger.html[`Logger`]
+while writing to another `OutputStream` or `Writer`, or the contents read by an `InputStream` or `Reader` can be http://www.eaipatterns.com/WireTap.html[wiretapped] by a `Logger`.
 
 == Requirements
 
 The Log4j IOStreams API extension requires the Log4j 2 API.
 This component was introduced in Log4j 2.1.
-For more information, see xref:runtime-dependencies.adoc[Runtime Dependencies].
 
 == Usage
 

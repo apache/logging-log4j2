@@ -81,7 +81,7 @@ By default, AsyncAppender uses
 https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ArrayBlockingQueue.html[`java.util.concurrent.ArrayBlockingQueue`]
 which does not require any external libraries.
 Note that multi-threaded applications should exercise care when using this appender as such: the blocking queue is susceptible to lock contention and our
-xref:manual/performance.adoc#asyncLogging[tests showed] performance may become worse when more threads are logging concurrently.
+xref:manual/performance.adoc#async[tests showed] performance may become worse when more threads are logging concurrently.
 Consider using
 xref:manual/async.adoc[lock-free Async Loggers] for optimal performance.
 
@@ -863,7 +863,7 @@ As of Log4j 2.11.0, JDBC support has moved from the existing module
 `log4j-core` to the new module `log4j-jdbc`.
 
 The JDBC Appender configured with a `DataSource` requires JNDI support so as of release 2.17.1 this appender will not function unless `log4j2.enableJndiJdbc=true` is configured as a system property or environment variable.
-See the xref:manual/configuration.adoc#enableJndiJdbc[enableJndiJdbc] system property.
+See the xref:manual/systemproperties.adoc#log4j2.enableJndiJdbc[log4j2.enableJndiJdbc] system property.
 
 The JDBCAppender writes log events to a relational database table using standard JDBC.
 It can be configured to obtain JDBC connections using a JNDI `DataSource` or a custom factory method.
@@ -2236,7 +2236,7 @@ The RandomAccessFileAppender is similar to the standard
 link:#FileAppender[FileAppender] except it is always buffered (this cannot be switched off) and internally it uses a
 `ByteBuffer + RandomAccessFile` instead of a `BufferedOutputStream`.
 We saw a 20-200% performance improvement compared to FileAppender with "bufferedIO=true" in our
-xref:manual/performance.adoc#whichAppender[measurements].
+measurements.
 Similar to the FileAppender, RandomAccessFileAppender uses a RandomAccessFileManager to perform the file I/O. While RandomAccessFileAppender from different Configurations cannot be shared, the RandomAccessFileManagers can be if the Manager is accessible.
 For example, two web applications in a servlet container can have their configuration and safely write to the same file if Log4j is in a ClassLoader that is common to both of them.
 
@@ -3405,8 +3405,7 @@ Below is a sample configuration that uses a RollingFileAppender and defines diff
 The RollingRandomAccessFileAppender is similar to the standard
 link:#RollingFileAppender[RollingFileAppender] except it is always buffered (this cannot be switched off) and internally it uses a
 `ByteBuffer + RandomAccessFile` instead of a `BufferedOutputStream`.
-We saw a 20-200% performance improvement compared to RollingFileAppender with "bufferedIO=true" in our
-xref:manual/performance.adoc#whichAppender[measurements].
+We saw a 20-200% performance improvement compared to RollingFileAppender with "bufferedIO=true" in our measurements.
 The
 `RollingRandomAccessFileAppender` writes to the file named in the fileName parameter and rolls the file over according to the TriggeringPolicy and the RolloverPolicy.
 Similar to the RollingFileAppender, RollingRandomAccessFileAppender uses a RollingRandomAccessFileManager to perform the file I/O and perform the rollover.

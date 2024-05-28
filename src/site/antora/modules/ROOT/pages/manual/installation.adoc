@@ -630,7 +630,8 @@ rootLogger.appenderRef.0.ref = CONSOLE
 ----
 
 ====
-<1> While xref:manual/layouts.adoc#PatternLayout[Pattern Layout] is a good first choice and preferable for tests, we recommend using a structured format such as xref:manual/json-template-layout.adoc[] for production deployments.
+<1> While xref:manual/layouts.adoc#pattern-layout[Pattern Layout] is a good first choice and preferable for tests, we recommend
+using a structured format such as xref:manual/json-template-layout.adoc[] for production deployments.
 
 To use these formats, the following additional dependencies are required:
 

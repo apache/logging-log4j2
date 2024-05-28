@@ -26,7 +26,6 @@ However, the "category" attribute from Jakarta has become the "logger" attribute
 == Requirements
 
 The Log4j Tag Library requires at least Servlet 2.5 (or Java EE 5), at least JSP 2.1 (or Java EE 5), and is dependent on the Log4j 2 API.
-For more information, see xref:runtime-dependencies.adoc[Runtime Dependencies].
 
 [IMPORTANT]
 ====

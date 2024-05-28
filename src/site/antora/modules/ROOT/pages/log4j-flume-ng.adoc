@@ -225,5 +225,6 @@ The following is a sample pom file for Maven that can be used as a template for 
 </project>
 ----
 
-== Requirements The Flume Appender requires the Log4J 2 API.
-For more information, see xref:runtime-dependencies.adoc[Runtime Dependencies].
+== Requirements
+
+The Flume Appender requires the Log4J 2 API and implementation.

@@ -269,7 +269,7 @@ For example:
 
 As of Log4j 2.15.1 JNDI operations require that `log4j2.enableJndi=true` be set as a system property or the
 corresponding environment variable for this lookup to function. See the
-xref:manual/configuration.adoc#enableJndiLookup[log4j2.enableJndiLookup] system property.
+xref:manual/systemproperties.adoc#log4j2.enableJndiLookup[log4j2.enableJndiLookup] system property.
 
 The JndiLookup allows variables to be retrieved via JNDI. By default the
 key will be prefixed with java:comp/env/, however if the key contains a

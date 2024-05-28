@@ -1171,7 +1171,7 @@ pattern           = "pattern" -> string
 stackTraceEnabled = "stackTraceEnabled" -> boolean
 ----
 
-Resolver delegating to xref:manual/layouts.adoc#PatternLayout[`PatternLayout`].
+Resolver delegating to xref:manual/layouts.adoc#pattern-layout[`PatternLayout`].
 
 The default value of `stackTraceEnabled` is inherited from the parent
 `JsonTemplateLayout`.

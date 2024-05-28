@@ -48,6 +48,7 @@ asciidoc:
     logging-services-url: "https://logging.apache.org"
     lmax-disruptor-url: "https://lmax-exchange.github.io/disruptor"
     # Dependency versions
+    commons-csv-version: "${site-commons-csv.version}"
     commons-logging-version: "${site-commons-logging.version}"
     disruptor-version: "${site-disruptor.version}"
     jackson-version: "${site-jackson.version}"

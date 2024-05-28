@@ -39,7 +39,9 @@ would set the Log4j applicationName property to the value of spring.application.
 === Spring Property Source
 
 Log4j uses property sources when resolving properties it uses internally.
-This support allows most of Log4j's xref:manual/configuration.adoc#SystemProperties[System Properties] to be specified in the Spring Configuration.
+This support allows most of Log4j's
+xref:manual/systemproperties.adoc[]
+to be specified in the Spring Configuration.
 However, some properties that are only referenced during the first Log4j initialization, such as the property Log4j uses to allow the default  Log4j implementation to be chosen, would not be available.
 
 === Spring Profile Arbiter
@@ -78,4 +80,3 @@ Below is an example:
 == Requirements
 
 The Log4j 2 Spring Cloud Configuration integration has a dependency on Log4j 2 API, Log4j 2 Core, and  Spring Boot versions 2.0.3.RELEASE or 2.1.1.RELEASE or later versions it either release series.
-For more information, see xref:runtime-dependencies.adoc[Runtime Dependencies].

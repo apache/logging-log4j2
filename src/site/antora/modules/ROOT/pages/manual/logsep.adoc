@@ -108,7 +108,8 @@ in each web application.
 
 The `JndiContextSelector` will not work unless `log4j2.enableJndi=true` is set as a system property
 or environment variable. See the
-xref:manual/configuration.adoc#enableJndi[log4j2.enableJndi] system property.
+xref:manual/systemproperties.adoc#log4j2.enableJndiContextSelector[log4j2.enableJndiContextSelector]
+configuration property.
 
 The exact method for setting system properties depends on the container.
 For Tomcat, edit `$CATALINA_HOME/conf/catalina.properties`. Consult the
