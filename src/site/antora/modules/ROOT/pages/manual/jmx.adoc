@@ -18,10 +18,10 @@
 
 Log4j 2 has built-in support for JMX.
 
-When JMX support is enabled, the StatusLogger, ContextSelector, and all LoggerContexts, LoggerConfigs, and Appenders are instrumented with MBeans.
+When JMX support is enabled, xref:manual/status-logger.adoc[], ContextSelector, and all LoggerContexts, LoggerConfigs, and xref:manual/appenders.adoc[] are instrumented with MBeans.
 
 Also included is a simple client GUI that can be used to monitor the
-StatusLogger output, as well as to remotely reconfigure Log4j with a
+status logger output, as well as to remotely reconfigure Log4j with a
 different configuration file, or to edit the current configuration
 directly.
 

@@ -32,14 +32,16 @@ RewriteRule "^(.+)$" "$1.html"
 # From this point rules match against the URI to the real file, with "/log4j/2.x/" stripped.
 
 # The content moved between pages
+RewriteRule "^articles\.html$" "manual/index.html" [R=permanent]
 RewriteRule "^log4j-core/apidocs(.*)$" "javadoc/log4j-core$1" [R=permanent]
 RewriteRule "^log4j-mongodb3\.html$" "manual/appenders.html#NoSQLAppenderMongoDB" [R=permanent]
 RewriteRule "^log4j-mongodb4\.html$" "manual/appenders.html#log4j-mongodb4" [R=permanent]
 RewriteRule "^manual/api-separation\.html$" "manual/api.html" [R=permanent]
-RewriteRule "^manual/scala-api\.html$" "/log4j/scala/index.html" [R=permanent]
+RewriteRule "^manual/scala-api\.html$" "/log4j/scala/latest/index.html" [R=permanent]
 RewriteRule "^manual/usage\.html$" "manual/api.html" [R=permanent]
 RewriteRule "^release-notes/index\.html$" "release-notes.html" [R=permanent]
 RewriteRule "^runtime-dependencies\.html$" "manual/installation.html" [R=permanent]
+RewriteRule "^thanks\.html$" "/support.html#sponsors" [R=permanent]
 
 # These redirects are special, since:
 #
@@ -49,7 +51,7 @@ RewriteRule "^runtime-dependencies\.html$" "manual/installation.html" [R=permane
 # if the URI path is `/log4j/2.x/log4j-api/foo` we must match `log4j-api.html/foo`.
 RewriteRule "^log4j-1\.2-api\.html/index\.html$" "log4j-1.2-api.html" [R=permanent]
 RewriteRule "^log4j-api\.html/apidocs(.*)$" "javadoc/log4j-api$1" [R=permanent]
-RewriteRule "^log4j-api\.html/index\.html" "log4j-api.html" [R=permanent]
+RewriteRule "^log4j-api\.html/index\.html" "manual/api.html" [R=permanent]
 RewriteRule "^log4j-appserver\.html/index\.html$" "log4j-appserver.html" [R=permanent]
 RewriteRule "^log4j-cassandra\.html/index\.html$" "log4j-cassandra.html" [R=permanent]
 RewriteRule "^log4j-couchdb\.html/index\.html$" "log4j-couchdb.html" [R=permanent]
@@ -57,14 +59,14 @@ RewriteRule "^log4j-docker\.html/index\.html$" "log4j-docker.html" [R=permanent]
 RewriteRule "^log4j-flume-ng\.html/index\.html$" "log4j-flume-ng.html" [R=permanent]
 RewriteRule "^log4j-iostreams\.html/index\.html$" "log4j-iostreams.html" [R=permanent]
 RewriteRule "^log4j-jakarta-web\.html/index\.html$" "log4j-jakarta-web.html" [R=permanent]
-RewriteRule "^log4j-jcl\.html/index\.html$" "log4j-jcl.html" [R=permanent]
-RewriteRule "^log4j-jmx-gui\.html/index\.html$" "log4j-jmx-gui.html" [R=permanent]
-RewriteRule "^log4j-jpl\.html/index\.html$" "log4j-jpl.html" [R=permanent]
-RewriteRule "^log4j-jul\.html/index\.html$" "log4j-jul.html" [R=permanent]
+RewriteRule "^log4j-jcl\.html/index\.html$" "manual/installation.html#impl-core-bridge-jcl" [R=permanent]
+RewriteRule "^log4j-jmx-gui\.html/index\.html$" "/log4j/jmx-gui/latest/index.html" [R=permanent]
+RewriteRule "^log4j-jpl\.html/index\.html$" "manual/installation.html#impl-core-bridge-jpl" [R=permanent]
+RewriteRule "^log4j-jul\.html/index\.html$" "manual/installation.html#impl-core-bridge-jul" [R=permanent]
 RewriteRule "^log4j-mongodb3\.html/index\.html$" "manual/appenders.html#NoSQLAppenderMongoDB" [R=permanent]
 RewriteRule "^log4j-mongodb4\.html/index\.html$" "manual/appenders.html#log4j-mongodb4" [R=permanent]
-RewriteRule "^log4j-slf4j-impl\.html/index\.html$" "log4j-slf4j-impl.html" [R=permanent]
-RewriteRule "^log4j-slf4j2-impl\.html/index\.html$" "log4j-slf4j2-impl.html" [R=permanent]
+RewriteRule "^log4j-slf4j-impl\.html/index\.html$" "manual/installation.html#impl-core-bridge-slf4j" [R=permanent]
+RewriteRule "^log4j-slf4j2-impl\.html/index\.html$" "manual/installation.html#impl-core-bridge-slf4j" [R=permanent]
 RewriteRule "^log4j-spring-boot\.html/index\.html$" "log4j-spring-boot.html" [R=permanent]
 RewriteRule "^log4j-spring-cloud-config\.html/index\.html$" "log4j-spring-cloud-config.html" [R=permanent]
 RewriteRule "^log4j-spring-cloud-config-client\.html/index\.html$" "log4j-spring-cloud-config-client.html" [R=permanent]

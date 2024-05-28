@@ -102,7 +102,7 @@ default ClassLoaderContextSelector.
 See the instructions shared in xref:manual/webapp.adoc[Log4j Web].
 Each application can be configured to share the same
 configuration used at the container or can be individually configured.
-If status logging is set to debug in the configuration there will be
+If xref:manual/status-logger.adoc[status logging] is set to debug in the configuration there will be
 output from when logging is initialized in the container and then again
 in each web application.
 
