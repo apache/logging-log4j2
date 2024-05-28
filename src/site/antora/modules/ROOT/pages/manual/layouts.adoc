@@ -154,16 +154,11 @@ Produces a CSV record with the following fields:
 0,1441617184044,DEBUG,main,"one=1, two=2, three=3",org.apache.logging.log4j.spi.AbstractLogger,,,,org.apache.logging.log4j.core.layout.CsvLogEventLayoutTest.testLayout(CsvLogEventLayoutTest.java:98),{},[]
 ....
 
-[NOTE]
-======
-Additional runtime dependencies are required for using CSV layouts:
-
-.Runtime dependencies
+.Additional runtime dependencies are required for using CSV layouts
 [%collapsible,id=log4j-csv-deps]
 =====
 include::partial$manual/dependencies-log4j-csv.adoc[]
 =====
-======
 
 [#GELFLayout]
 == GELF Layout
@@ -418,16 +413,11 @@ To include any custom field in the output, use the following syntax:
 Custom fields are always last, in the order they are declared.
 The values support xref:manual/lookups.adoc[lookups].
 
-[NOTE]
-======
-Additional runtime dependencies are required for using `JsonLayout`:
-
-.Runtime dependencies
+.Additional runtime dependencies are required for using `JsonLayout`
 [%collapsible,id=log4j-layout-json-deps]
 =====
 include::partial$manual/dependencies-log4j-layout-json.adoc[]
 =====
-======
 
 [#JSONTemplateLayout]
 == JSON Template Layout
@@ -531,16 +521,11 @@ JSON Template Layout will render JSON documents as follows:
 }
 ----
 
-[NOTE]
-======
-Additional runtime dependencies are required for using JSON Template Layout:
-
-.Runtime dependencies
+.Additional runtime dependencies are required for using JSON Template Layout
 [%collapsible,id=log4j-layout-template-json-deps]
 =====
 include::partial$manual/dependencies-log4j-layout-template-json.adoc[]
 =====
-======
 
 See xref:manual/json-template-layout.adoc[JSON Template Layout] page for the complete documentation.
 
@@ -2232,16 +2217,11 @@ To include any custom field in the output, use the following syntax:
 Custom fields are always last, in the order they are declared.
 The values support xref:manual/lookups.adoc[lookups].
 
-[NOTE]
-======
-Additional runtime dependencies are required for using `XmlLayout`:
-
-.Runtime dependencies
+.Additional runtime dependencies are required for using `XmlLayout`
 [%collapsible,id=log4j-layout-xml-deps]
 =====
 include::partial$manual/dependencies-log4j-layout-xml.adoc[]
 =====
-======
 
 [[YamlLayout]]
 == YAML Layout
@@ -2318,13 +2298,8 @@ To include any custom field in the output, use the following syntax:
 Custom fields are always last, in the order they are declared.
 The values support xref:manual/lookups.adoc[lookups].
 
-[NOTE]
-======
-Additional runtime dependencies are required for using `YamlLayout`:
-
-.Runtime dependencies
+.Additional runtime dependencies are required for using `YamlLayout`
 [%collapsible,id=log4j-layout-yaml-deps]
 =====
 include::partial$manual/dependencies-log4j-layout-yaml.adoc[]
 =====
-======
