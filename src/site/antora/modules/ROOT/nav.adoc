@@ -19,7 +19,6 @@
 ** xref:release-notes.adoc[]
 * link:{logging-services-url}/support[Support]
 ** link:{logging-services-url}/security[Security]
-** xref:thanks.adoc[Thanks]
 
 .Resources
 * xref:faq.adoc[F.A.Q.]
