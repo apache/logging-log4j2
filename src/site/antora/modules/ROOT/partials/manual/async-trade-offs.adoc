@@ -56,13 +56,13 @@ Stateful messages::
 Most
 link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html[`Message`]
 implementations take a snapshot of the formatted message on the calling thread (cf.
-xref:manual/systemproperties.adoc#log4j2.formatMsgAsync[`log4j2.formatMsgAsync`]).
+xref:manual/systemproperties.adoc#log4j.async.formatMessagesInBackground[`log4j.async.formatMessagesInBackground`]).
 The log message will not change even if the arguments of the logging call are modified later.
 +
 There are some exceptions to this rule.
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html[`MapMessage`]
+{log4j2-url}/manual/messages.html#MapMessage[`MapMessage`]
 and
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html[`StructuredDataMessage`]
+{log4j2-url}/manual/messages.html#StructuredDataMessage[`StructuredDataMessage`]
 for example are mutable by design: fields can be added to these messages after the message object was created.
 These messages should not be modified after they are logged with asynchronous loggers or asynchronous appenders.
 +
