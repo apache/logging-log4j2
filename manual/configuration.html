@@ -442,24 +442,6 @@ Log4j includes XML, JSON, YAML, and Java properties formats factories.</p>
 </div>
 </div>
 </div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>The format of the configuration file changed between Log4j&#160;1 and Log4j&#160;2.
-Files in the Log4j&#160;1 format are ignored by default.</p>
-</div>
-<div class="paragraph">
-<p>To enable partial support for old configuration formats, see <a href="migration.html#enabling-the-log4j-1-x-bridge" class="xref page">Enabling the Log4j&#160;1 bridge</a>.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
 <div class="sect2">
 <h3 id="automatic-configuration"><a class="anchor" href="#automatic-configuration"></a><a id="AutomaticConfiguration"></a> Configuration file location</h3>
 <div class="paragraph">
@@ -1168,7 +1150,8 @@ The logger is configured to forward messages to its parent (the root appender).<
 <p>Log4j allows the configuration of custom log-level names.</p>
 </div>
 <div class="paragraph">
-<p>See <a href="#manual/customloglevels.adoc" class="xref unresolved">Custom log level configuration</a> for details.</p>
+<p>See
+<a href="https://logging.apache.org/log4j/2.x/manual/customloglevels.html#DefiningLevelsInConfiguration">Defining custom log levels in configuration</a> for details.</p>
 </div>
 </dd>
 <dt class="hdlist1">Filters</dt>
@@ -1480,7 +1463,7 @@ Loggers.Logger[3].AppenderRef.ref = APPENDER4</code></pre>
 <div class="paragraph">
 <p>In the example above, we have four logger configurations.
 They differ from each other regarding the level of log messages that they allow, whether
-<a href="layouts.html#location-information" class="xref page">location information</a>
+<a href="layouts.html#LocationInformation" class="xref page">location information</a>
 will be printed, and which appenders will be used.
 The table below summarizes the effects of each logger configuration:</p>
 </div>
@@ -1682,7 +1665,7 @@ If set to <code>false</code>, Log4j will not attempt to infer the location of th
 methods.</p>
 </div>
 <div class="paragraph">
-<p>See <a href="layouts.html#location-information" class="xref page">Location information</a> for more details.</p>
+<p>See <a href="layouts.html#LocationInformation" class="xref page">Location information</a> for more details.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1697,7 +1680,8 @@ methods.</p>
 <div class="sect3">
 <h4 id="logger-elements-properties"><a class="anchor" href="#logger-elements-properties"></a>Additional context properties</h4>
 <div class="paragraph">
-<p>Loggers can emit additional context data that will be integrated with other context data sources such as <a href="#manual/thread-context.adoc" class="xref unresolved">ThreadContext</a>.</p>
+<p>Loggers can emit additional context data that will be integrated with other context data sources such as
+<a href="https://logging.apache.org/log4j/2.x/manual/thread-context.html">ThreadContext</a>.</p>
 </div>
 <div class="admonitionblock caution">
 <table>

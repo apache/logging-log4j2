@@ -272,7 +272,7 @@ arbitrary places. They are a particular type of Plugin that implements
 the
 <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrLookup.html"><code>StrLookup</code></a>
 interface. Information on how to use Lookups in configuration files can
-be found in the <a href="configuration.html#PropertySubstitution" class="xref page">Property
+be found in the <a href="configuration.html#property-substitution" class="xref page">Property
 Substitution</a> section of the <a href="configuration.html" class="xref page">Configuration</a>
 page.</p>
 </div>
@@ -640,7 +640,8 @@ convenient preformatted strings using the <code>java:</code> prefix.</p>
 <div class="paragraph">
 <p>As of Log4j 2.15.1 JNDI operations require that <code>log4j2.enableJndi=true</code> be set as a system property or the
 corresponding environment variable for this lookup to function. See the
-<a href="configuration.html#enableJndiLookup" class="xref page">log4j2.enableJndiLookup</a> system property.</p>
+<a href="systemproperties.html#log4j.jndi.enableLookup" class="xref page">log4j.jndi.enableLookup</a>
+system property.</p>
 </div>
 <div class="paragraph">
 <p>The JndiLookup allows variables to be retrieved via JNDI. By default the
@@ -878,7 +879,7 @@ RollingFileAppender for each unique value of the key named "type" in the
 MapMessage. Note that when used this way a value for "type" should be
 declared in the properties declaration to provide a default value in
 case the message is not a MapMessage or the MapMessage does not contain
-the key. See the <a href="configuration.html#PropertySubstitution" class="xref page">Property
+the key. See the <a href="configuration.html#property-substitution" class="xref page">Property
 Substitution</a> section of the <a href="configuration.html" class="xref page">Configuration</a>
 page for information on how to set the default values.</p>
 </div>

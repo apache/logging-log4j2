@@ -352,7 +352,9 @@ Consider the following example:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The database query (i.e., <code>db.findUserNameById(userId)</code>) can be a significant bottleneck if the created the log event will be discarded anyway – maybe the <code>INFO</code> level or the associated <a href="#manual/markers.adoc" class="xref unresolved">marker</a> is not accepted for this package, or due to some other filtering.</p>
+<p>The database query (i.e., <code>db.findUserNameById(userId)</code>) can be a significant bottleneck if the created the log event will be discarded anyway – maybe the <code>INFO</code> level or the associated
+<a href="https://logging.apache.org/log4j/2.x/manual/markers.html">marker</a>
+is not accepted for this package, or due to some other filtering.</p>
 </div>
 <div class="ulist checklist">
 <ul class="checklist">
@@ -364,7 +366,9 @@ Consider the following example:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>While this would work for cases where the message can be dropped due to insufficient level, this approach is still prone to other filtering cases; e.g., maybe the associated <a href="#manual/markers.adoc" class="xref unresolved">marker</a> is not accepted.</p>
+<p>While this would work for cases where the message can be dropped due to insufficient level, this approach is still prone to other filtering cases; e.g., maybe the associated
+<a href="https://logging.apache.org/log4j/2.x/manual/markers.html">marker</a>
+is not accepted.</p>
 </div>
 </li>
 <li>

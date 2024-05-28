@@ -331,8 +331,57 @@ The following Log4j 1.x methods will behave differently when the Log4j 2 Core mo
 <p>If log4j-core is not present location information will not be accurate in calls using the Log4j 1.2 API.
 The config package which attempts to convert Log4j 1.x configurations to Log4j 2 is not supported without Log4j 2.</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
 <div class="paragraph">
-<p>For more information, see <a href="#runtime-dependencies.adoc" class="xref unresolved">Runtime Dependencies</a>.</p>
+<p>In order to use the Log4j 1.2 Bridge, additional dependencies are required:</p>
+</div>
+<details id="log4j-1.2-api-deps">
+<summary class="title">Runtime dependencies</summary>
+<div class="content">
+<div id="_tabs_1" class="openblock tabs is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_1_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_1_maven--panel" class="tabpanel" aria-labelledby="_tabs_1_maven">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+  &lt;artifactId&gt;log4j-1.2-api&lt;/artifactId&gt;
+  &lt;version&gt;3.0.0-beta2&lt;/version&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_gradle--panel" class="tabpanel" aria-labelledby="_tabs_1_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-1.2-api:3.0.0-beta2'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</details>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>

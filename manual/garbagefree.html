@@ -335,10 +335,10 @@ If you use another setup (e.g., a different logging API or implementation) this 
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#log4j2.enableThreadlocals"><code>log4j2.enableThreadlocals</code></a></p>
+<p><a href="#log4j.enableThreadlocals"><code>log4j.enableThreadlocals</code></a></p>
 </li>
 <li>
-<p><a href="#log4j2.garbagefreeThreadContextMap"><code>log4j2.garbagefreeThreadContextMap</code></a></p>
+<p><a href="#log4j.threadContext.map.garbageFree"><code>log4j.threadContext.map.garbageFree</code></a></p>
 </li>
 </ul>
 </div>
@@ -793,9 +793,6 @@ To understand which configuration knobs exhibit what kind of allocation behaviou
 <div class="ulist">
 <ul>
 <li>
-<p><a href="layouts.html#GELFLayout" class="xref page"><code>GelfLayout</code></a></p>
-</li>
-<li>
 <p><a href="json-template-layout.html#faq-garbage-free" class="xref page"><code>JsonTemplateLayout</code></a></p>
 </li>
 <li>
@@ -878,7 +875,8 @@ To understand which configuration knobs exhibit what kind of allocation behaviou
 <div class="paragraph">
 <p>An effort has been made to minimize impact on custom appenders that extend <code>AbstractOutputStreamAppender</code>, but it is impossible to guarantee that changing the superclass will not impact any and all subclasses.
 Custom appenders that extend <code>AbstractOutputStreamAppender</code> should verify that they still function correctly.
-In case there is a problem, <a href="#log4j2.enableDirectEncoders">the <code>log4j2.enableDirectEncoders</code> system property</a> can be set to <code>false</code> to revert to the pre-Log4j 2.6 behaviour.</p>
+In case there is a problem, the
+<a href="#log4j.gc.enableDirectEncoders"><code>log4j.gc.enableDirectEncoders</code></a> configuration property can be set to <code>false</code> to revert to the pre-Log4j 2.6 behaviour.</p>
 </div>
 </td>
 </tr>
@@ -1077,7 +1075,8 @@ If pool runs out of capacity (see <a href="#log4j.recycler.capacity"><code>log4j
 <dl>
 <dt class="hdlist1"><code>&lt;Properties&gt;</code> section</dt>
 <dd>
-<p>A configuration containing <a href="configuration.html#PropertySubstitution" class="xref page">a <code>&lt;Properties&gt;</code> section</a> will result in temporary objects being created during steady-state logging.</p>
+<p>A configuration containing <a href="configuration.html#property-substitution" class="xref page">a <code>&lt;Properties&gt;</code> section</a> will result in temporary
+objects being created during steady-state logging.</p>
 </dd>
 </dl>
 </div>
@@ -1086,7 +1085,9 @@ If pool runs out of capacity (see <a href="#log4j.recycler.capacity"><code>log4j
 <dt class="hdlist1">Asynchronous logger wait strategies</dt>
 <dd>
 <p>As of version <code>2.18.0</code>, the default <a href="async.html" class="xref page">asynchronous logger</a> wait strategy (i.e., <code>Timeout</code>) is garbage-free while running against both LMAX Disruptor 3 and 4.
-See <a href="async.html#log4j2.asyncLoggerWaitStrategy" class="xref page"><code>log4j2.asyncLoggerWaitStrategy</code></a> for details on predefined wait strategies.</p>
+See
+<a href="async.html#log4j.async.logger.waitStrategy.type" class="xref page"><code>log4j.async.logger.waitStrategy.type</code></a>
+for details on predefined wait strategies.</p>
 </dd>
 </dl>
 </div>
@@ -1151,7 +1152,9 @@ The <code>Unbox.box(primitive)</code> methods write directly into a <code>String
 <div class="ulist">
 <ul>
 <li>
-<p>The <code>ThreadContext</code> map (aka. MDC) is not garbage-free by default, but can be configured to be garbage-free by setting <a href="#log4j2.garbagefreeThreadContextMap">the <code>log4j2.garbagefreeThreadContextMap</code> system property</a> to <code>true</code>.</p>
+<p>The <code>ThreadContext</code> map (aka. MDC) is not garbage-free by default, but can be configured to be garbage-free by setting the
+<a href="#log4j.threadContext.map.garbageFree"><code>log4j.threadContext.map.garbageFree</code></a>
+configuration property to <code>true</code>.</p>
 </li>
 <li>
 <p>The <code>ThreadContext</code> stack (aka. NDC) is not garbage-free.</p>
@@ -1160,7 +1163,9 @@ The <code>Unbox.box(primitive)</code> methods write directly into a <code>String
 <p><a href="https://logging.apache.org/log4j/2.x/manual/scoped-context.adoc" class="bare">https://logging.apache.org/log4j/2.x/manual/scoped-context.adoc</a> is not garbage-free.</p>
 </li>
 <li>
-<p>Logging very large messages (i.e., more than <a href="#log4j2.maxReusableMsgSize"><code>log4j2.maxReusableMsgSize</code></a> characters, which defaults to 518), when all loggers are <a href="async.html" class="xref page">asynchronous loggers</a>, will cause the internal <code>StringBuilder</code> in the
+<p>Logging very large messages (i.e., more than
+<a href="#log4j.gc.maxReusableMsgSize"><code>log4j.gc.maxReusableMsgSize</code></a>
+characters, which defaults to 518), when all loggers are <a href="async.html" class="xref page">asynchronous loggers</a>, will cause the internal <code>StringBuilder</code> in the
 <code>RingBuffer</code> to be trimmed back to their configured maximum size.</p>
 </li>
 <li>
