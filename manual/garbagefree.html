@@ -452,7 +452,8 @@ If not for yours, keep on reading.</p>
 <p>In this mode Log4j uses <code>ThreadLocal</code>s for object pooling to prevent object allocations.</p>
 </div>
 <div class="paragraph">
-<p>This mode is incompatible with <a href="#log4j.isWebapp"><code>log4j.isWebapp</code></a>.</p>
+<p><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/ThreadLocal.html"><code>ThreadLocal</code></a> fields holding non-JDK classes can cause memory leaks in web applications when the application server&#8217;s thread pool continues to reference these fields after the web application is undeployed.
+Hence, to avoid causing memory leaks, <code>log4j2.enableThreadlocals</code> by default reflects the opposite of <a href="#log4j.isWebapp"><code>log4j.isWebapp</code></a>.</p>
 </div>
 </div>
 <div class="sect3">
@@ -622,6 +623,95 @@ If not for yours, keep on reading.</p>
 </table>
 <div class="paragraph">
 <p>This property determines the maximum size of the reusable <code>StringBuilder</code>s used to format <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent">LogEvents</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="log4j2.unboxRingbufferSize"><a class="anchor" href="#log4j2.unboxRingbufferSize"></a><code>log4j2.unboxRingbufferSize</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_UNBOX_RINGBUFFER_SIZE</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>32</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/Unbox">Unbox</a> utility class can be used by users to format primitive values without incurring in the boxing allocation cost.</p>
+</div>
+<div class="paragraph">
+<p>This property specifies the maximum number of primitive arguments to a log message that will be cached and usually does not need to be changed.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="log4j.recycler.capacity"><a class="anchor" href="#log4j.recycler.capacity"></a><code>log4j.recycler.capacity</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_RECYCLER_CAPACITY</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2C+1</code> (<code>C</code> denoting the number of available processors)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Denotes the buffer capacity for a recycler.
+For a queueing recycler, it corresponds to the queue size.
+For a thread local recycler, it corresponds to the per-thread buffer size.</p>
+</div>
+<div class="paragraph">
+<p>If an invalid capacity is provided (i.e., if the capacity is zero or negative), the default value will be used.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="log4j.recycler.factory"><a class="anchor" href="#log4j.recycler.factory"></a><code>log4j.recycler.factory</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_RECYCLER_FACTORY</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>null</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>If provided, available recycler factory providers will be sorted in order, and the first one whose name matching with this property value will be used.</p>
+</div>
+<div class="paragraph">
+<p>If missing or the selection fails, the default will be used.</p>
 </div>
 </div>
 <div class="sect3">
@@ -857,7 +947,7 @@ Hence, you can easily implement custom recyclers and inject them using the <code
 <p>Sorts providers (the lower <code>order</code> value will come first)</p>
 </li>
 <li>
-<p>If <a href="#log4j.recycler.factory">[log4j.recycler.factory]</a> is provided, the first provider whose name matching with this property value will be used. Otherwise, the first provider will be used.</p>
+<p>If <a href="#log4j.recycler.factory"><code>log4j.recycler.factory</code></a> is provided, the first provider whose name matching with this property value will be used. Otherwise, the first provider will be used.</p>
 </li>
 </ol>
 </div>
@@ -917,7 +1007,7 @@ Intended as a test utility.)</p>
 </table>
 <div class="paragraph">
 <p>Pools objects in a fixed-size queue stored in a <code>ThreadLocal</code>.
-If pool runs out of capacity (see <a href="#log4j.recycler.capacity">[log4j.recycler.capacity]</a>), it will start creating fresh instances for new requests.</p>
+If pool runs out of capacity (see <a href="#log4j.recycler.capacity"><code>log4j.recycler.capacity</code></a>), it will start creating fresh instances for new requests.</p>
 </div>
 <div class="paragraph">
 <p>Note that it is effectively disabled for servlet environments.</p>
@@ -947,7 +1037,7 @@ If pool runs out of capacity (see <a href="#log4j.recycler.capacity">[log4j.recy
 </table>
 <div class="paragraph">
 <p>Pools objects in a fixed-size <code>ArrayBlockingQueue</code> queue.
-If pool runs out of capacity (see <a href="#log4j.recycler.capacity">[log4j.recycler.capacity]</a>), it will start creating fresh instances for new requests.</p>
+If pool runs out of capacity (see <a href="#log4j.recycler.capacity"><code>log4j.recycler.capacity</code></a>), it will start creating fresh instances for new requests.</p>
 </div>
 </div>
 <div class="sect3">
@@ -974,7 +1064,7 @@ If pool runs out of capacity (see <a href="#log4j.recycler.capacity">[log4j.recy
 </table>
 <div class="paragraph">
 <p>Pools objects in a fixed-size JCTools MPMC queue.
-If pool runs out of capacity (see <a href="#log4j.recycler.capacity">[log4j.recycler.capacity]</a>), it will start creating fresh instances for new requests.</p>
+If pool runs out of capacity (see <a href="#log4j.recycler.capacity"><code>log4j.recycler.capacity</code></a>), it will start creating fresh instances for new requests.</p>
 </div>
 </div>
 </div>
