@@ -201,9 +201,6 @@
     <a class="nav-link" href="../log4j-flume-ng.html">Flume Appender</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-mongodb.html">MongoDB 4 appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
   </li>
   <li class="nav-item" data-depth="1">
@@ -3043,45 +3040,147 @@ We recommend you review the source code for the MongoDB providers as a guide for
 }</code></pre>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="NoSQLAppenderMongoDBMain"><a class="anchor" href="#NoSQLAppenderMongoDBMain"></a>NoSQL Appenders for MongoDB</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="NoSQLAppenderMongoDB"><a class="anchor" href="#NoSQLAppenderMongoDB"></a>NoSQL providers for MongoDB</h3>
+<div class="sect3">
+<h4 id="mongo-installation"><a class="anchor" href="#mongo-installation"></a>Installation</h4>
 <div class="paragraph">
-<p>Starting with Log4 2.11.0, we provide the following MongoDB modules:</p>
+<p>Starting with version 2.11.0, Log4j supplies providers for the
+<a href="https://www.mongodb.com/">MongoDB</a>
+NoSQL database engine, based on the
+<a href="https://www.mongodb.com/docs/drivers/java/sync/current/">MongoDB synchronous Java driver</a>.
+The choice of the provider to user depends on:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Added in 2.11.0, removed in 2.14.0: <code>log4j-mongodb2</code> defines the configuration element MongoDb2 matching the MongoDB Driver version 2.</p>
+<p>the major version of the MongoDB Java driver your application uses: Log4j supports all major versions starting from version 2.</p>
 </li>
 <li>
-<p>Added in 2.11.0, removed in 2.24.0: <code>log4j-mongodb3</code> defines the configuration element MongoDb3 matching the MongoDB Driver version 3.</p>
-</li>
-<li>
-<p>Added in 2.14.0, deprecated in 2.24.0: <code>log4j-mongodb4</code> defines the configuration element
-<a href="#NoSQLAppenderMongoDB4"><code>MongoDb4</code></a> matching the MongoDB Driver version 4.</p>
-</li>
-<li>
-<p>Added in 2.24.0: <code>log4j-mongodb</code> defines the configuration element
-<a href="#NoSQLAppenderMongoDBCurrent"><code>MongoDb</code></a> matching the current MongoDB Driver (version 5).
-This module tracks the current MongoDB Driver.</p>
+<p>the type of driver API used: either the <em>Legacy API</em> or the <em>Modern API</em>.
+See <a href="https://www.mongodb.com/docs/drivers/java/sync/current/legacy/">MongoDB documentation</a>
+for the difference between APIs.</p>
 </li>
 </ul>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The list of dependencies of your application provides a hint as to which driver API your application is using.
+If your application contains any one of these dependencies, it might use the <strong>Legacy API</strong>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>org.mongodb:mongo-java-driver</code></p>
+</li>
+<li>
+<p><code>org.mongodb:mongodb-driver-legacy</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If you application only uses <code>org.mongodb:mongodb-driver-sync</code>, it uses the <strong>Modern API</strong>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The version of the MongoDB Java driver is not the same as the version of the MongoDB server.
+See
+<a href="https://www.mongodb.com/docs/drivers/java/sync/current/compatibility/">MongoDB compatibility matrix</a>
+for more information.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In order to use a Log4j MongoDB appender you need to add the following dependencies to your application:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 20. MongoDB providers compatibility table</caption>
+<colgroup>
+<col style="width: 18.1818%;">
+<col style="width: 18.1818%;">
+<col style="width: 18.1818%;">
+<col style="width: 45.4546%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Driver version</th>
+<th class="tableblock halign-left valign-top">Driver API</th>
+<th class="tableblock halign-left valign-top">Log4j artifact</th>
+<th class="tableblock halign-left valign-top">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.x</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Legacy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-mongodb2"><code>log4j-mongodb2</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reached end-of-support.</p>
+<p class="tableblock">Last released version: <code>2.12.4</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a id="NoSQLAppenderMongoDB3"></a><code>3.x</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Legacy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-mongodb3"><code>log4j-mongodb3</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reached end-of-support.</p>
+<p class="tableblock">Last released version: <code>2.23.1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>4.x</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Modern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-mongodb4"><code>log4j-mongodb4</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reached end-of-support.</p>
+<p class="tableblock">Last released version: <code>2.23.1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>5.x</code> or later</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Modern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-mongodb"><code>log4j-mongodb</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you are note sure, which implementation to choose, <code>log4j-mongodb</code> is the recommended choice.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
-<div class="sect1">
-<h2 id="NoSQLAppenderMongoDBCurrent"><a class="anchor" href="#NoSQLAppenderMongoDBCurrent"></a>NoSQL Appender for MongoDB</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="log4j-mongodb"><a class="anchor" href="#log4j-mongodb"></a>NoSQL provider for MongoDB (current)</h4>
 <div class="paragraph">
 <p>This section details specializations of the
 <a href="#NoSQLAppender">NoSQLAppender</a> provider for MongoDB using the current MongoDB driver (version 5).
 The NoSQLAppender Appender writes log events to a NoSQL database using an internal lightweight provider interface.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. MongoDB Provider Parameters</caption>
+<caption class="title">Table 21. MongoDB Provider Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -3186,208 +3285,6 @@ collection documentation linked above for more information.</p></td>
 &lt;/Configuration&gt;</code></pre>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="NoSQLAppenderMongoDB4"><a class="anchor" href="#NoSQLAppenderMongoDB4"></a>(Deprecated) No SQLAppender for MongoDB 4</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The <code>log4j-mongodb4</code> module is deprecated in favor of <a href="#NoSQLAppenderMongoDBCurrent">NoSQLAppender for MongoDB</a>.</p>
-</div>
-<div class="paragraph">
-<p>This section details specializations of the
-<a href="#NoSQLAppender">NoSQLAppender</a> provider for MongoDB using the MongoDB driver version 4. The NoSQLAppender Appender writes log events to a NoSQL database using an internal lightweight provider interface.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. MongoDB Provider Parameters</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">connection</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Required.</em> The MongoDB
-<a href="http://mongodb.github.io/mongo-java-driver/4.0/apidocs/mongodb-driver-core/com/mongodb/ConnectionString.html?is-external=true"">connection string</a>
-in the format <code>mongodb://[username:password@]host1[:port1][,host2[:port2],&#8230;&#8203;[,hostN[:portN]]][/[database.collection][?options]]</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">capped</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enable support for
-<a href="https://docs.mongodb.com/manual/core/capped-collections/">capped
-collections</a></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">collectionSize</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Specify the size in bytes of the capped collection
-to use if enabled. The minimum size is 4096 bytes, and larger sizes will
-be increased to the nearest integer multiple of 256. See the capped
-collection documentation linked above for more information.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>This appender is <a href="#manual/messages.adoc#MapMessage" class="xref unresolved">MapMessage</a>-aware.</p>
-</div>
-<div class="paragraph">
-<p>Here are a few sample configurations for the NoSQLAppender and MongoDB4 provider:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="WARN"&gt;
-  &lt;Appenders&gt;
-    &lt;NoSql name="MongoDbAppender"&gt;
-      &lt;MongoDb4 connection="mongodb://log4jUser:12345678@localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection" /&gt;
-    &lt;/NoSql&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="ALL"&gt;
-      &lt;AppenderRef ref="MongoDbAppender" /&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="WARN"&gt;
-  &lt;Appenders&gt;
-    &lt;NoSql name="MongoDbAppender"&gt;
-      &lt;MongoDb4
-        connection="mongodb://localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection"
-        capped="true"
-        collectionSize="1073741824"/&gt;
-    &lt;/NoSql&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="ALL"&gt;
-      &lt;AppenderRef ref="MongoDbAppender" /&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You can define additional fields to log using KeyValuePair elements, for example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="WARN"&gt;
-    &lt;Appenders&gt;
-        &lt;NoSql name="MongoDbAppender"&gt;
-            &lt;MongoDb4 connection="mongodb://localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection" /&gt;
-            &lt;KeyValuePair key="A" value="1" /&gt;
-            &lt;KeyValuePair key="B" value="2" /&gt;
-            &lt;KeyValuePair key="env1" value="${env:PATH}" /&gt;
-            &lt;KeyValuePair key="env2" value="$${env:PATH}" /&gt;
-        &lt;/NoSql&gt;
-    &lt;/Appenders&gt;
-    &lt;Loggers&gt;
-        &lt;Root level="ALL"&gt;
-            &lt;AppenderRef ref="MongoDbAppender" /&gt;
-        &lt;/Root&gt;
-    &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="NoSQLAppenderApacheCouchDB"><a class="anchor" href="#NoSQLAppenderApacheCouchDB"></a>NoSQLAppender for Apache CouchDB</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>This section details specializations of the <a href="#NoSQLAppender">NoSQLAppender</a> provider for CouchDB.
-The NoSQLAppender writes log events to a NoSQL database using an internal lightweight provider interface.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">factoryClassName</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Class</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">To provide a connection to the CouchDB database, you can use this attribute and <code>factoryMethodName</code> to specify a class and static method to retrieve the connection. The method must return an <code>org.lightcouch.CouchDbClient</code> or a <code>org.lightcouch.CouchDbProperties</code>. If you use the factory method for providing a connection, you must not specify the <code>databaseName</code>, <code>protocol</code>, <code>server</code>, <code>port</code>, <code>username</code>, or <code>password</code> attributes.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">factoryMethodName</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">See the documentation for attribute <code>factoryClassName</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">databaseName</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If you do not specify a <code>factoryClassName</code> and <code>factoryMethodName</code> for providing a CouchDB connection, you must specify a CouchDB database name using this attribute. You must also specify a <code>username</code> and <code>password</code>. You can optionally also specify a <code>protocol</code> (defaults to <code>http</code>), <code>server</code> (defaults to localhost), and a <code>port</code> (defaults to 80 for <code>http</code> and 443 for <code>https</code>).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">protocol</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Must either be "http" or "https." See the documentation for attribute <code>databaseName</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">server</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">See the documentation for attribute <code>databaseName</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">port</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">See the documentation for attribute <code>databaseName</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">username</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">See the documentation for attributes <code>databaseName</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">password</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">See the documentation for attributes <code>databaseName</code>.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Here are a few sample configurations for the NoSQLAppender and CouchDB provider:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="error"&gt;
-  &lt;Appenders&gt;
-    &lt;NoSql name="databaseAppender"&gt;
-      &lt;CouchDb databaseName="applicationDb" protocol="https" server="couch.example.org"
-               username="loggingUser" password="abc123" /&gt;
-    &lt;/NoSql&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="warn"&gt;
-      &lt;AppenderRef ref="databaseAppender"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
 </div>
 </div>
 </div>
