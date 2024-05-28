@@ -50,7 +50,6 @@ public class CoreOsgiTest {
                 linkBundle("org.apache.logging.log4j.plugins"),
                 linkBundle("org.apache.logging.log4j.kit"),
                 linkBundle("org.apache.logging.log4j.core"),
-                linkBundle("org.apache.logging.log4j.1.2.api").start(false),
                 // required by Pax Exam's logging
                 linkBundle("org.objectweb.asm"),
                 linkBundle("org.objectweb.asm.commons"),
@@ -86,19 +85,6 @@ public class CoreOsgiTest {
         assertEquals(1, custom.getEvents().size());
         final LogEvent event = custom.getEvents().get(0);
         assertEquals("Hello OSGI from Log4j2!", event.getMessage().getFormattedMessage());
-        assertEquals(Level.INFO, event.getLevel());
-        custom.clearEvents();
-    }
-
-    @Test
-    public void testLog4j12InAnOsgiContext() {
-        final CustomConfiguration custom = getConfiguration();
-        // Logging
-        final org.apache.log4j.Logger logger = org.apache.log4j.LogManager.getLogger(getClass());
-        logger.info("Hello OSGI from Log4j 1.2!");
-        assertEquals(1, custom.getEvents().size());
-        final LogEvent event = custom.getEvents().get(0);
-        assertEquals("Hello OSGI from Log4j 1.2!", event.getMessage().getFormattedMessage());
         assertEquals(Level.INFO, event.getLevel());
         custom.clearEvents();
     }

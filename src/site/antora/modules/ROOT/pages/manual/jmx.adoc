@@ -16,9 +16,9 @@
 ////
 = JMX
 
-Log4j 2 has built-in support for JMX. The StatusLogger, ContextSelector,
-and all LoggerContexts, LoggerConfigs and Appenders are instrumented
-with MBeans and can be remotely monitored and controlled.
+Log4j has built-in support for JMX.
+
+When JMX support is enabled, the StatusLogger, ContextSelector, and all LoggerContexts, LoggerConfigs, and Appenders are instrumented with MBeans.
 
 Also included is a simple client GUI that can be used to monitor the
 StatusLogger output, as well as to remotely reconfigure Log4j with a
@@ -28,20 +28,27 @@ directly.
 [#Enabling_JMX]
 == Enabling JMX
 
-JMX support is enabled by default. When Log4j initializes, the
-StatusLogger, ContextSelector, and all LoggerContexts, LoggerConfigs and
-Appenders are instrumented with MBeans. To disable JMX completely, and
-prevent these MBeans from being created, specify system property
-`log4j2.disableJmx` to `true` when you start the Java VM.
+JMX support is disabled by default.
+
+NOTE: JMX support was enabled by default in Log4j versions before `2.24.0`.
+
+To enable JMX support, set the
+xref:manual/systemproperties.adoc#log4j2.disableJmx[log4j2.disableJmx]
+system property when starting the Java VM:
+
+`log4j2.disableJmx=false`
 
 [#Local]
 == Local Monitoring and Management
 
-To perform local monitoring you don't need to specify any system
-properties. The JConsole tool that is included in the Java JDK can be
+To perform local monitoring you need to set the
+xref:manual/systemproperties.adoc#log4j2.disableJmx[log4j2
+.disableJmx]
+system property to `false`.
+The JConsole tool that is included in the Java JDK can be
 used to monitor your application. Start JConsole by typing
 `$JAVA_HOME/bin/jconsole` in a command shell. For more details,
-see Oracle's documentation on
+see Oracle's documentation at
 https://docs.oracle.com/javase/7/docs/technotes/guides/management/jconsole.html[how
 to use JConsole].
 
@@ -49,14 +56,18 @@ to use JConsole].
 == Remote Monitoring and Management
 
 To enable monitoring and management from remote systems, set the
-following system property when starting the Java VM.
+following two system properties when starting the Java VM:
+
+`log4j2.disableJmx=false`
+
+and
 
 `com.sun.management.jmxremote.port=portNum`
 
 In the property above, `portNum` is the port number through which you
 want to enable JMX RMI connections.
 
-For more details, see Oracle's documentation on
+For more details, see Oracle's documentation at
 https://docs.oracle.com/javase/7/docs/technotes/guides/management/agent.html#gdenl[Remote
 Monitoring and Management].
 
@@ -70,7 +81,7 @@ documentation] for the `sun.rmi.dgc.server.gcInterval` and
 properties is 3600000 milliseconds (one hour). Before Java 6, it was one
 minute.
 
-The two sun.rmi arguments reflect whether your JVM is running in server
+The two `sun.rmi` arguments reflect whether your JVM is running in server
 or client mode. If you want to modify the GC interval time it may be
 best to specify both properties to ensure the argument is picked up by
 the JVM.

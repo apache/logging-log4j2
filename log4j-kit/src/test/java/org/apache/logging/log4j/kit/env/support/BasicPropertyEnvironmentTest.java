@@ -19,6 +19,7 @@ package org.apache.logging.log4j.kit.env.support;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -88,6 +89,7 @@ class BasicPropertyEnvironmentTest {
             @Nullable Path pathAttr,
             @Nullable Locale localeAttr,
             @Nullable TimeZone timeZoneAttr,
+            @Nullable URI uriAttr,
             @Nullable ZoneId zoneIdAttr) {}
 
     @Log4jProperty
@@ -100,6 +102,7 @@ class BasicPropertyEnvironmentTest {
             @Log4jProperty(defaultValue = "app.log") Path pathAttr,
             @Log4jProperty(defaultValue = "en-US") Locale localeAttr,
             @Log4jProperty(defaultValue = "Europe/Warsaw") TimeZone timeZoneAttr,
+            @Log4jProperty(defaultValue = "https://localhost") URI uriAttr,
             @Log4jProperty(defaultValue = "UTC+01:00") ZoneId zoneIdAttr) {}
 
     private static final Map<String, String> SCALAR_PROPS = Map.of(
@@ -119,12 +122,14 @@ class BasicPropertyEnvironmentTest {
             "en-US",
             "ScalarValues.timeZoneAttr",
             "Europe/Warsaw",
+            "ScalarValues.uriAttr",
+            "https://localhost",
             "ScalarValues.zoneIdAttr",
             "UTC+01:00");
 
     @Test
     void should_support_scalar_values() {
-        assertMapConvertsTo(Map.of(), new ScalarValues(null, null, null, null, null, null, null, null, null));
+        assertMapConvertsTo(Map.of(), new ScalarValues(null, null, null, null, null, null, null, null, null, null));
         assertMapConvertsTo(
                 SCALAR_PROPS,
                 new ScalarValues(
@@ -136,6 +141,7 @@ class BasicPropertyEnvironmentTest {
                         Paths.get("app.log"),
                         Locale.forLanguageTag("en-US"),
                         TimeZone.getTimeZone("Europe/Warsaw"),
+                        URI.create("https://localhost"),
                         ZoneId.of("UTC+01:00")));
         // Default values
         assertMapConvertsTo(
@@ -149,6 +155,7 @@ class BasicPropertyEnvironmentTest {
                         Paths.get("app.log"),
                         Locale.forLanguageTag("en-US"),
                         TimeZone.getTimeZone("Europe/Warsaw"),
+                        URI.create("https://localhost"),
                         ZoneId.of("UTC+01:00")));
     }
 

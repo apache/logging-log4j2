@@ -19,7 +19,6 @@ package org.apache.logging.log4j.osgi.tests;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -86,10 +85,6 @@ abstract class AbstractLoadBundleTest {
 
     private Bundle getCoreBundle() throws BundleException {
         return installBundle("org.apache.logging.log4j.core");
-    }
-
-    private Bundle get12ApiBundle() throws BundleException {
-        return installBundle("org.apache.logging.log4j.1.2.api");
     }
 
     private Bundle getApiTestsBundle() throws BundleException {
@@ -159,40 +154,6 @@ abstract class AbstractLoadBundleTest {
 
         doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, core, plugins, kit, api);
         doOnBundlesAndVerifyState(Bundle::uninstall, Bundle.UNINSTALLED, core, plugins, kit, api);
-        uninstall(spiFly);
-    }
-
-    /**
-     * Tests the loading of the 1.2 Compatibility API bundle, its classes should be loadable from the Core bundle,
-     * and the class loader should be the same between a class from core and a class from compat
-     */
-    @Test
-    public void testLog4J12Fragement() throws BundleException, ReflectiveOperationException {
-
-        final List<Bundle> spiFly = startApacheSpiFly();
-        final Bundle api = getApiBundle();
-        final Bundle kit = getKitBundle();
-        final Bundle plugins = getPluginsBundle();
-        final Bundle core = getCoreBundle();
-        final Bundle compat = get12ApiBundle();
-
-        doOnBundlesAndVerifyState(Bundle::start, Bundle.ACTIVE, api, kit, plugins, core);
-
-        final Class<?> coreClassFromCore = core.loadClass("org.apache.logging.log4j.core.Core");
-        final Class<?> levelClassFrom12API = core.loadClass("org.apache.log4j.Level");
-        final Class<?> levelClassFromAPI = core.loadClass("org.apache.logging.log4j.Level");
-
-        assertEquals(
-                "expected 1.2 API Level to have the same class loader as Core",
-                levelClassFrom12API.getClassLoader(),
-                coreClassFromCore.getClassLoader());
-        Assert.assertNotEquals(
-                "expected 1.2 API Level NOT to have the same class loader as API Level",
-                levelClassFrom12API.getClassLoader(),
-                levelClassFromAPI.getClassLoader());
-
-        doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, core, plugins, kit, api);
-        doOnBundlesAndVerifyState(Bundle::uninstall, Bundle.UNINSTALLED, compat, core, plugins, kit, api);
         uninstall(spiFly);
     }
 

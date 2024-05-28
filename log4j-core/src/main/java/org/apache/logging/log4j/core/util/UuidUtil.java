@@ -21,7 +21,7 @@ import java.security.SecureRandom;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.apache.logging.log4j.core.impl.CoreProperties;
+import org.apache.logging.log4j.core.impl.CoreProperties.UuidProperties;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 
 /**
@@ -37,9 +37,8 @@ public final class UuidUtil {
     private static final byte VARIANT = (byte) 0x80;
     private static final int SEQUENCE_MASK = 0x3FFF;
     private static final long NUM_100NS_INTERVALS_SINCE_UUID_EPOCH = 0x01b21dd213814000L;
-    private static final long INITIAL_UUID_SEQNO = PropertyEnvironment.getGlobal()
-            .getProperty(CoreProperties.UuidProperties.class)
-            .sequence();
+    private static final long INITIAL_UUID_SEQNO =
+            PropertyEnvironment.getGlobal().getProperty(UuidProperties.class).sequence();
 
     private static final long LOW_MASK = 0xffffffffL;
     private static final long MID_MASK = 0xffff00000000L;
@@ -78,7 +77,7 @@ public final class UuidUtil {
         System.arraycopy(mac, index, node, 2, length);
         final ByteBuffer buf = ByteBuffer.wrap(node);
         long rand = INITIAL_UUID_SEQNO;
-        String assigned = PropertyEnvironment.getGlobal().getStringProperty(ASSIGNED_SEQUENCES);
+        String assigned = System.getProperty(ASSIGNED_SEQUENCES);
         final long[] sequences;
         if (assigned == null) {
             sequences = new long[0];

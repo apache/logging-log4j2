@@ -1,0 +1,46 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+Batteries included::
+Log4j bundles a rich set of components to assist various use cases.
+* xref:manual/appenders.adoc[Appenders] targeting files, network sockets, databases, SMTP servers, etc.
+* xref:manual/layouts.adoc[Layouts] that can render CSV, HTML, JSON, Syslog, etc. formatted outputs
+* xref:manual/filters.adoc[Filters] based on log event rates, regular expressions, scripts, time, etc.
+* xref:manual/lookups.adoc[Lookups] for accessing system properties, environment variables, log event fields, etc.
+
+Reliability::
+Log4j is built with solid reliability in mind.
+It can automatically reload its configuration upon modification and will do so without losing log events while reconfiguration occurs.
+
+Performance::
+When configured correctly, Log4j can deliver excelling performance without almost any burden on the Java garbage collector, and it will do so without sacrificing reliability.
+Check out the xref:manual/performance.adoc[Performance] page for details.
+
+Extensibility::
+Log4j contains a fully-fledged xref:manual/plugins.adoc[plugin support] that users can leverage to extend functionality.
+You can easily add your components (layouts, appenders, filters, etc.) or customize existing ones (e.g., adding new directives to xref:manual/extending.adoc#PatternConverters[Pattern Layout] or xref:manual/json-template-layout.adoc#extending[JSON Template Layout]).
+Check out the xref:manual/extending.adoc[Extending Log4j] page.
+
+Powerful API::
+Log4j is a logging system where the API (called Log4j API) and its implementation (called Log4j Core) is distinctly separate from each other.
+xref:manual/api.adoc[Log4j API] provides the most feature-rich logging facade in the market; support for various `Message` types (such as `Object` or `Map`) besides plain `String`, lambda expressions, parameterized logging, markers, levels, diagnostic contexts (aka. MDC/NDC), etc.
+Log4j team takes backward compatibility very seriously and makes sure people relying on Log4j API gets a logging facade that is straightforward to use in a correct and future-proof way.
+Check out the xref:manual/api.adoc[Java API], {logging-services-url}/log4j/kotlin[Kotlin API], and {logging-services-url}/log4j/scala[Scala API] pages for further information.
+
+No vendor lock-in::
+Log4j API is a generic logging facade for various logging frameworks.
+While Log4j Core implements it at its fullest, you can easily switch to other implementations such as Logback or JUL (`java.util.logging`).

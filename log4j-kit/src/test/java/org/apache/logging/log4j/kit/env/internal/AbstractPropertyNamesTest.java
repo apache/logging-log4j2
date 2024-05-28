@@ -36,7 +36,7 @@ public abstract class AbstractPropertyNamesTest {
 
     protected void assertPropertiesAreSet(final String expected, final PropertyEnvironment environment) {
         Assertions.assertThat(testPropertyNames())
-                .extracting(environment::getStringProperty)
+                .extracting(environment::getProperty)
                 .isSubsetOf(expected);
     }
 }

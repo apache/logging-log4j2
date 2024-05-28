@@ -71,7 +71,7 @@
       org.fusesource.jansi;transitive=false,
     </bnd-extra-module-options>
 
-    <log4j.docgen.pluginDescriptorsDir.effective>${log4j.docgen.pluginDescriptorsDir.phase1}</log4j.docgen.pluginDescriptorsDir.effective>
+    <log4j.docgen.pluginDescriptorsDir>${log4j.docgen.pluginDescriptorsDir.phase1}</log4j.docgen.pluginDescriptorsDir>
   </properties>
 
   <dependencies>

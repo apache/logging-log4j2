@@ -49,7 +49,6 @@ public final class QueueingRecyclerFactoryProvider implements RecyclerFactoryPro
     @Override
     public RecyclerFactory createForEnvironment(final PropertyEnvironment environment) {
         requireNonNull(environment, "environment");
-
         final int capacity = environment.getProperty(RecyclerProperties.class).capacity();
         return new QueueingRecyclerFactory(capacity);
     }

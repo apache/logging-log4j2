@@ -21,7 +21,7 @@ The table below contains links to the Javadoc API Documentation for the componen
 |===
 |Component |Description
 
-|link:/log4j/2.x/javadoc/log4j-api[Log4j 2 API]
+|{log4j2-url}/javadoc/log4j-api[Log4j 2 API]
 |The interface that applications should use and code against.
 
 |link:javadoc/log4j-kit/index.html[Implementation helper kit]

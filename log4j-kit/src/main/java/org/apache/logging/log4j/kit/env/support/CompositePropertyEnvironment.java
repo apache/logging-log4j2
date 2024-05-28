@@ -46,7 +46,7 @@ public class CompositePropertyEnvironment extends ClassLoaderPropertyEnvironment
     }
 
     @Override
-    public @Nullable String getStringProperty(final String name) {
+    public @Nullable String getProperty(final String name) {
         return sources.stream()
                 .map(source -> source.getProperty(name))
                 .filter(Objects::nonNull)
@@ -63,7 +63,7 @@ public class CompositePropertyEnvironment extends ClassLoaderPropertyEnvironment
 
         @Override
         public @Nullable String getProperty(final String name) {
-            return parentEnvironment.getStringProperty(name);
+            return parentEnvironment.getProperty(name);
         }
     }
 }

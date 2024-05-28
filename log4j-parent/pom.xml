@@ -93,22 +93,22 @@
     <!-- =====================================================
          Direct dependency version properties (in alphabetical order)
          ===================================================== -->
-    <assertj.version>3.25.3</assertj.version>
+    <assertj.version>3.26.0</assertj.version>
     <awaitility.version>4.2.1</awaitility.version>
     <bsh.version>2.0b6</bsh.version>
     <commons-codec.version>1.17.0</commons-codec.version>
-    <commons-compress.version>1.26.1</commons-compress.version>
+    <commons-compress.version>1.26.2</commons-compress.version>
     <commons-csv.version>1.11.0</commons-csv.version>
     <commons-dbcp2.version>2.12.0</commons-dbcp2.version>
     <commons-io.version>2.16.1</commons-io.version>
     <commons-lang3.version>3.14.0</commons-lang3.version>
-    <commons-logging.version>1.3.1</commons-logging.version>
+    <commons-logging.version>1.3.2</commons-logging.version>
     <conversant.disruptor.version>1.2.21</conversant.disruptor.version>
     <disruptor.version>4.0.0</disruptor.version>
     <elasticsearch.version>7.17.21</elasticsearch.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <felix.version>7.0.5</felix.version>
-    <flapdoodle-embed.version>4.8.1</flapdoodle-embed.version>
+    <flapdoodle-embed.version>4.11.0</flapdoodle-embed.version>
     <flapdoodle-reverse.version>1.7.2</flapdoodle-reverse.version>
     <flume.version>1.11.0</flume.version>
     <graalvm.version>24.0.1</graalvm.version>
@@ -119,7 +119,7 @@
     <hamcrest.version>2.2</hamcrest.version>
     <HdrHistogram.version>2.2.1</HdrHistogram.version>
     <hsqldb.version>2.7.2</hsqldb.version>
-    <jackson-bom.version>2.17.0</jackson-bom.version>
+    <jackson-bom.version>2.17.1</jackson-bom.version>
     <jansi.version>2.4.0</jansi.version>
     <javax-jms.version>2.0.1</javax-jms.version>
     <java-allocation-instrumenter.version>3.3.4</java-allocation-instrumenter.version>
@@ -138,11 +138,11 @@
     <log4j2-ecs-layout.version>1.6.0</log4j2-ecs-layout.version>
     <log4j2-logstash-layout.version>0.18</log4j2-logstash-layout.version>
     <logback.version>1.4.14</logback.version>
-    <maven.version>3.9.6</maven.version>
-    <mockito.version>5.11.0</mockito.version>
-    <mongodb.version>5.0.1</mongodb.version>
+    <maven.version>3.9.7</maven.version>
+    <mockito.version>5.12.0</mockito.version>
+    <mongodb.version>5.1.0</mongodb.version>
     <nashorn.version>15.4</nashorn.version>
-    <netty.version>4.1.109.Final</netty.version>
+    <netty.version>4.1.110.Final</netty.version>
     <opentest4j.version>1.3.0</opentest4j.version>
     <org.eclipse.osgi.version>3.19.0</org.eclipse.osgi.version>
     <oro.version>2.0.8</oro.version>
@@ -153,7 +153,7 @@
     <plexus-utils.version>3.5.1</plexus-utils.version>
     <slf4j2.version>2.0.13</slf4j2.version>
     <system-stubs.version>2.1.6</system-stubs.version>
-    <tomcat-juli.version>10.1.23</tomcat-juli.version>
+    <tomcat-juli.version>10.1.24</tomcat-juli.version>
     <velocity.version>1.7</velocity.version>
     <wiremock.version>2.35.2</wiremock.version>
     <xmlunit.version>2.10.0</xmlunit.version>
@@ -168,7 +168,7 @@
          of dependencies (requireUpperBoundDeps rule).
          ===================================================== -->
     <asm.version>9.6</asm.version>
-    <byte-buddy.version>1.14.14</byte-buddy.version>
+    <byte-buddy.version>1.14.16</byte-buddy.version>
     <commons-pool2.version>2.12.0</commons-pool2.version>
     <httpclient.version>4.5.14</httpclient.version>
     <httpcore.version>4.4.16</httpcore.version>
@@ -1043,19 +1043,21 @@
       </activation>
 
       <properties>
-        <log4j.docgen.pluginDescriptorsDir.effective>${log4j.docgen.pluginDescriptorsDir.phase2}</log4j.docgen.pluginDescriptorsDir.effective>
+        <log4j.docgen.pluginDescriptorsDir.skipped>${maven.multiModuleProjectDirectory}/target/plugin-descriptors/skipped</log4j.docgen.pluginDescriptorsDir.skipped>
+        <log4j.docgen.pluginDescriptorsDir>${log4j.docgen.pluginDescriptorsDir.phase2}</log4j.docgen.pluginDescriptorsDir>
       </properties>
 
       <build>
         <plugins>
 
-          <!-- Generate a random target package for `Log4jPlugins.java` -->
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>build-helper-maven-plugin</artifactId>
             <executions>
+
+              <!-- Generate a random target package for `Log4jPlugins.java` -->
               <execution>
-                <id>generate-plugin-package-for-tests</id>
+                <id>define-log4jPluginPackageForTests</id>
                 <goals>
                   <goal>bsh-property</goal>
                 </goals>
@@ -1081,6 +1083,36 @@
                   ]]></source>
                 </configuration>
               </execution>
+
+              <!-- This is a workaround to effectively disable Log4j Docgen `DescriptorGenerator` plugin processor.
+                   Once Log4j Docgen `>0.9.0` is released (containing the new `log4j.docgen.skip` argument to `DescriptorGenerator`):
+                   1. Remove this `build-helper:bsh-property` execution
+                   2. Remove the `log4j.docgen.pluginDescriptorsDir.skipped` property
+                   3. In the `PluginProcessor` execution configuration
+                      - Add `-Alog4j.docgen.skip=${log4j.docgen.skip}` argument
+                      - Set `-Alog4j.docgen.descriptorFilePath=${log4j.docgen.pluginDescriptorsDir}/${project.artifactId}-plugins.xml` argument -->
+              <execution>
+                <id>define-log4jDocgenDescriptorFilepath</id>
+                <goals>
+                  <goal>bsh-property</goal>
+                </goals>
+                <phase>process-resources</phase>
+                <configuration>
+                  <properties>
+                    <property>log4jDocgenDescriptorFilepath</property>
+                  </properties>
+                  <source><![CDATA[
+                    Properties properties = project.getProperties();
+                    String pluginDescriptorsDir = "true".equals(properties.getProperty("log4j.docgen.skip"))
+                            ? properties.getProperty("log4j.docgen.pluginDescriptorsDir.skipped")
+                            : properties.getProperty("log4j.docgen.pluginDescriptorsDir");
+                    String log4jDocgenDescriptorFilepath = String.format("%s/%s-plugins.xml", new Object[] {
+                        pluginDescriptorsDir, project.getArtifactId()
+                    });
+                  ]]></source>
+                </configuration>
+              </execution>
+
             </executions>
           </plugin>
 
@@ -1108,7 +1140,7 @@
               </annotationProcessorPaths>
               <compilerArgs combine.children="append">
                 <!-- Provide `org.apache.logging.log4j.docgen.processor.DescriptorGenerator` arguments: -->
-                <arg>-Alog4j.docgen.descriptorFilePath=${log4j.docgen.pluginDescriptorsDir.effective}/${project.artifactId}-plugins.xml</arg>
+                <arg>-Alog4j.docgen.descriptorFilePath=${log4jDocgenDescriptorFilepath}</arg>
                 <arg>-Alog4j.docgen.groupId=${project.groupId}</arg>
                 <arg>-Alog4j.docgen.artifactId=${project.artifactId}</arg>
                 <arg>-Alog4j.docgen.version=${project.version}</arg>

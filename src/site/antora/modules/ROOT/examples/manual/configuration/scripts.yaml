@@ -38,7 +38,8 @@ Configuration:
           name: "EVENT_LOGGER_FILTER"
           language: "groovy"
           scriptText: |
-            if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf("FLOW")) {
+            if (logEvent.getMarker() != null
+                && logEvent.getMarker().isInstanceOf("FLOW")) {
               return true;
             } else if (logEvent.getContextMap().containsKey("UserId")) {
               return true;
@@ -61,7 +62,8 @@ Configuration:
         var result;
         if (logEvent.getLoggerName().equals("JavascriptNoLocation")) {
           result = "NoLocation";
-        } else if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf("FLOW")) {
+        } else if (logEvent.getMarker() != null
+            && logEvent.getMarker().isInstanceOf("FLOW")) {
           result = "Flow";
         }
         result;

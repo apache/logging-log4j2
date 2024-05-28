@@ -19,6 +19,7 @@ package org.apache.logging.log4j.flume.appender;
 import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -31,13 +32,11 @@ import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.util.Strings;
 
 public class FlumeEmbeddedManager extends AbstractFlumeManager {
 
-    private static final String FILE_SEP = PropertyEnvironment.getGlobal().getStringProperty("file.separator");
-
+    private static final String FILE_SEP = File.separator;
     private static final String IN_MEMORY = "InMemory";
 
     private static final FlumeManagerFactory FACTORY = new FlumeManagerFactory();

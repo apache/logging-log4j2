@@ -130,7 +130,7 @@ The
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/LoggerContext.html[LoggerContext]
 is one of the principal Log4j components (see
 xref:manual/architecture.adoc[]), which determines among other things, the way
-link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html[Logger]s are created.
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Logger.html[Logger]s are created.
 
 It can be customized using these properties:
 
@@ -154,7 +154,7 @@ include::partial$manual/systemproperties/properties-configuration-factory.adoc[l
 === Log messages
 
 The way Log4j builds
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html[Message]s can be customized using these properties:
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/message/Message.html[Message]s can be customized using these properties:
 
 include::partial$manual/systemproperties/properties-message.adoc[leveloffset=+2]
 
@@ -251,7 +251,7 @@ If a property is not defined in a logger context specific environment, the corre
 === Global environment
 
 The global environment delegates property resolution to the Log4j 2 API
-link:../javadoc/log4j-api/org/apache/logging/log4j/util/PropertiesUtil.html[PropertiesUtil]
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/util/PropertiesUtil.html[PropertiesUtil]
 service (see
 link:../../2.x/manual/systemproperties.adoc#property-sources[Log4j 2 API documentation]).
 

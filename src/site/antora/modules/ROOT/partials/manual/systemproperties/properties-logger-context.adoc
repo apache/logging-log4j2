@@ -30,7 +30,7 @@ A `ContextSelector` decides:
 
 * how loggers are split among logger contexts,
 * the
-link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html[Logger]
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Logger.html[Logger]
 implementation to use.
 
 The implementations available by default are:

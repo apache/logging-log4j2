@@ -64,7 +64,7 @@ public class JndiRestrictedLookupTest {
         final int port = embeddedLdapRule.embeddedServerPort();
         final Context context = embeddedLdapRule.context();
         context.bind("cn=" + RESOURCE + "," + DOMAIN_DSN, new Fruit("Test Message"));
-        final StrLookup lookup = new JndiLookup();
+        final StrLookup lookup = JndiLookup.createLookup();
         final String result = lookup.lookup(
                 LDAP_URL + port + "/" + "cn=" + RESOURCE + "," + DOMAIN_DSN + "?Type=A Type&Name=1100110&Char=!");
         if (result != null) {
@@ -78,7 +78,7 @@ public class JndiRestrictedLookupTest {
         final int port = embeddedLdapRule.embeddedServerPort();
         final Context context = embeddedLdapRule.context();
         context.bind("cn=" + RESOURCE + "," + DOMAIN_DSN, new Fruit("Test Message"));
-        final StrLookup lookup = new JndiLookup();
+        final StrLookup lookup = JndiLookup.createLookup();
         final String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + RESOURCE + "," + DOMAIN_DSN);
         if (result != null) {
             fail("Lookup returned an object");
@@ -91,7 +91,7 @@ public class JndiRestrictedLookupTest {
         final int port = embeddedLdapRule.embeddedServerPort();
         final Context context = embeddedLdapRule.context();
         context.bind("cn=" + TEST_STRING + "," + DOMAIN_DSN, "Test Message");
-        final StrLookup lookup = new JndiLookup();
+        final StrLookup lookup = JndiLookup.createLookup();
         final String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + TEST_STRING + "," + DOMAIN_DSN);
         if (result != null) {
             fail("LDAP is enabled");
@@ -104,7 +104,7 @@ public class JndiRestrictedLookupTest {
         final int port = embeddedLdapRule.embeddedServerPort();
         final Context context = embeddedLdapRule.context();
         context.bind("cn=" + TEST_MESSAGE + "," + DOMAIN_DSN, new SerializableMessage("Test Message"));
-        final StrLookup lookup = new JndiLookup();
+        final StrLookup lookup = JndiLookup.createLookup();
         final String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + TEST_MESSAGE + "," + DOMAIN_DSN);
         if (result != null) {
             fail("Lookup returned an object");
@@ -113,7 +113,7 @@ public class JndiRestrictedLookupTest {
 
     @Test
     public void testDnsLookup() throws Exception {
-        final StrLookup lookup = new JndiLookup();
+        final StrLookup lookup = JndiLookup.createLookup();
         final String result = lookup.lookup("dns:/" + DOMAIN);
         if (result != null) {
             fail("No DNS data returned");

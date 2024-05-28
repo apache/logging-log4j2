@@ -14,9 +14,9 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-= Extending Log4j 3
+= Extending Log4j
 
-Log4j 3 provides numerous ways that it can be manipulated and extended.
+Log4j provides numerous ways that it can be manipulated and extended.
 This section includes an overview of the various ways that are directly
 supported by the Log4j 3 implementation.
 
@@ -197,9 +197,7 @@ public static class RootLogger extends LoggerConfig {
 [#LogEventFactory]
 == LogEventFactory
 
-A `LogEventFactory` is used to generate LogEvents.
-Applications may replace the standard `LogEventFactory` by binding a factory for `LogEventFactory` in `Injector`.
-If no binding is already present, the value of the system property `log4j2.logEventFactory` is checked for the name of the custom `LogEventFactory` class.
+A LogEventFactory is used to generate LogEvents. Applications may replace the standard LogEventFactory by setting the value of the system property Log4jLogEventFactory to the name of the custom LogEventFactory class.
 
 Note: When log4j is configured to have xref:manual/async.adoc#AllAsync[all
 loggers asynchronous], log events are pre-allocated in a ring buffer and
@@ -582,32 +580,6 @@ programmatically:
 ListAppender list1 = ListAppender.createAppender("List1", true, false, null, null);
 ListAppender list2 = ListAppender.newBuilder().setName("List1").setEntryPerNewLine(true).build();
 ----
-
-[#Custom_ContextDataProvider]
-== Custom ContextDataProvider
-
-The link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/ContextDataProvider.html[`ContextDataProvider`]
-(introduced in Log4j 2.13.2) is an interface applications and libraries can use to inject
-additional key-value pairs into the LogEvent's context data. Log4j
-uses `java.util.ServiceLoader` to locate and load `ContextDataProvider` instances.
-Log4j itself adds the ThreadContext data to the LogEvent using 
-`org.apache.logging.log4j.core.impl.ThreadContextDataProvider`. Custom implementations
-should implement the `org.apache.logging.log4j.core.util.ContextDataProvider` interface and 
-declare it as a service by defining the implmentation class in a file named
-`META-INF/services/org.apache.logging.log4j.core.util.ContextDataProvider`.
-
-== Custom ThreadContextMap implementations
-
-A garbage-free `StringMap`-based context map can be installed by setting
-system property `log4j2.garbagefreeThreadContextMap` to true.
-
-Any custom link:../javadoc/log4j-core/org/apache/logging/log4j/spi/ThreadContextMap.html[`ThreadContextMap`]
-implementation can be installed by setting system property `log4j2.threadContextMap` 
-to the fully qualified class name of the class implementing the `ThreadContextMap` 
-interface. By also implementing the `ReadOnlyThreadContextMap` interface, your custom
-`ThreadContextMap` implementation will be accessible to applications via the
-link:../javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html#getThreadContextMap()[`ThreadContext::getThreadContextMap`]
-method.
 
 [#Custom_Plugins]
 == Custom Plugins

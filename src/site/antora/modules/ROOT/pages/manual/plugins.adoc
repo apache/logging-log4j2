@@ -155,8 +155,6 @@ can be created as well.
   and empty `Map` instances.
 `RequiredClass`::
   This annotation validates that a class name can be loaded. This is useful for plugins that should only be loaded when an optional class is present.
-`RequiredProperty`::
-  This annotation validates that a system property is set to some value.
 `ValidHost`::
   This annotation validates that a value corresponds to a valid
   hostname. This uses the same validation as

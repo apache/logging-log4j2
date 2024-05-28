@@ -66,7 +66,7 @@ This setting is only used if <<log4j.gc.enableDirectEncoders>> is set to `true`.
 | Default value | `128`
 |===
 
-In GC-free mode, this property determines the initial size of the reusable ``StringBuilder``s used by link:../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage[ReusableMessages] for formatting purposes.
+In GC-free mode, this property determines the initial size of the reusable ``StringBuilder``s used by {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage[ReusableMessages] for formatting purposes.
 
 [id=log4j.gc.maxReusableMsgSize]
 == `log4j.gc.maxReusableMsgSize`
@@ -78,7 +78,7 @@ In GC-free mode, this property determines the initial size of the reusable ``Str
 | Default value | `518`
 |===
 
-In GC-free mode, this property determines the maximum size of the reusable ``StringBuilder``s used by link:../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage[ReusableMessages] for formatting purposes.
+In GC-free mode, this property determines the maximum size of the reusable ``StringBuilder``s used by {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage[ReusableMessages] for formatting purposes.
 
 The default value allows is equal to `2 &times; (2 &times; log4j.initialReusableMsgSize + 2) + 2` and allows the
 ``StringBuilder`` to be resized twice by the current JVM resize algorithm.

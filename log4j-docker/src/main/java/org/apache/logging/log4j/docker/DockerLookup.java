@@ -19,6 +19,7 @@ package org.apache.logging.log4j.docker;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +42,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 public class DockerLookup extends AbstractLookup {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
-    private static final String DOCKER_URI = "DOCKER_URI";
     private static final String HTTP = "http";
     private final Container container;
 
@@ -49,11 +49,9 @@ public class DockerLookup extends AbstractLookup {
      * Constructs a new instance.
      */
     public DockerLookup() {
-        String baseUri = System.getenv(DOCKER_URI);
-        if (baseUri == null) {
-            final PropertyEnvironment props = PropertyEnvironment.getGlobal();
-            baseUri = props.getStringProperty(DOCKER_URI);
-        }
+        final URI baseUri = PropertyEnvironment.getGlobal()
+                .getProperty(DockerProperties.class)
+                .uri();
         if (baseUri == null) {
             LOGGER.warn("No Docker URI provided. Docker information is unavailable");
             container = null;
@@ -61,12 +59,11 @@ public class DockerLookup extends AbstractLookup {
         }
         Container current = null;
         try {
-            final URL url = new URL(baseUri + "/containers/json");
+            final URL url = baseUri.resolve("/containers/json").toURL();
             if (url.getProtocol().equals(HTTP)) {
                 final String macAddr = NetUtils.getMacAddressString();
                 final ObjectMapper objectMapper = new ObjectMapper();
-                final List<Container> containerList =
-                        objectMapper.readValue(url, new TypeReference<List<Container>>() {});
+                final List<Container> containerList = objectMapper.readValue(url, new TypeReference<>() {});
 
                 for (final Container container : containerList) {
                     if (macAddr != null && container.getNetworkSettings() != null) {

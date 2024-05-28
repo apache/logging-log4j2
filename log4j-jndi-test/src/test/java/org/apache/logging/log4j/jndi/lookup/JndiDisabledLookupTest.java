@@ -16,19 +16,30 @@
  */
 package org.apache.logging.log4j.jndi.lookup;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 /**
  * JndiDisabledLookupTest
  *
  * Verifies the Lookups are disabled without the log4j2.enableJndiLookup property set to true.
  */
-public class JndiDisabledLookupTest {
+@SetSystemProperty(key = "log4j2.status.entries", value = "10")
+@SetSystemProperty(key = "log4j2.StatusLogger.level", value = "WARN")
+class JndiDisabledLookupTest {
 
     @Test
-    public void testLookup() {
-        assertThrows(IllegalStateException.class, JndiLookup::new);
+    void testLookup() {
+        assertThat(JndiLookup.createLookup()).isNull();
+        assertThat(StatusLogger.getLogger().getStatusData()).anySatisfy(data -> {
+            assertThat(data.getLevel()).isEqualTo(Level.ERROR);
+            assertThat(data.getMessage().getFormattedMessage())
+                    .isEqualTo(
+                            "Ignoring request to use JNDI lookup. JNDI must be enabled by setting log4j.enableJndiLookup=true");
+        });
     }
 }

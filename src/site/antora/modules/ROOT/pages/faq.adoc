@@ -67,7 +67,7 @@ Normally there is no need to do this manually.
 Each `LoggerContext` registers a shutdown hook that takes care of releasing resources when the JVM exits, unless the `log4j.shutdownHookEnabled` system property is set to `false`.
 Likewise, {logging-services-url}/log4j/jakarta[Web applications] replace the shutdown hook with their own resource management mechanisms.
 That is, they clean up necessary resources when the web application is stopped.
-However, if you need to manually shut down Log4j, you can use one of the `shutdown()` methods of link:../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#shutdown()[`LogManager`].
+However, if you need to manually shut down Log4j, you can use one of the `shutdown()` methods of {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#shutdown()[`LogManager`].
 
 [#reconfig_level_from_code]
 == How do I set a logger level programmatically?
@@ -153,10 +153,10 @@ There are several advantages to using Log4j API:
 * SLF4J forces your application to log ``String``s.
 Log4j API supports logging any `CharSequence` if you want to log text, but also supports logging any `Object` as is.
 It is the responsibility of the logging _implementation_ to handle this object, and we consider it a design mistake to limit applications to logging ``String``s.
-* Log4j API offers support for logging xref:manual/messages.adoc[`Message` objects].
+* Log4j API offers support for logging {log4j2-url}/manual/messages.adoc[`Message` objects].
 Messages allow support for interesting and complex constructs to be passed through the logging system and be efficiently manipulated.
 Users are free to create their own message types and write custom layouts, filters and lookups to manipulate them.
-* Log4j API supports xref:manual/api.adoc#LambdaSupport[lambda expressions] both in its plain and fluent API.
+* Log4j API supports {log4j2-url}/manual/api.adoc#fluent-api[lambda expressions] both in its plain and fluent API.
 * Log4j API has better support for xref:manual/garbagefree.adoc[garbage-free logging]: it avoids creating `vararg` arrays and avoids creating ``String``s when logging ``CharSequence``s.
 
 [#gc-free-slf4j]
@@ -201,7 +201,7 @@ The problem with custom logger wrappers is that they have a different FQCN than 
 The solution is to provide the correct FQCN.
 The easiest way to do this is to let Log4j generate the logger wrapper for you.
 Log4j comes with a Logger wrapper generator tool.
-This tool was originally meant to support custom log levels and is documented xref:manual/customloglevels.adoc#CustomLoggers[here].
+This tool was originally meant to support custom log levels and is documented {log4j2-url}/manual/customloglevels.adoc#CustomLoggers[here].
 The generated logger code will take care of the FQCN.
 
 [#proguard-rules]
