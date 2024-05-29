@@ -20,13 +20,18 @@
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_AUTH_PROVIDER
-| Type          | link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/AuthorizationProvider[Class<? extends AuthorizationProvider>]
-| Default value | link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/BasicAuthorizationProvider[BasicAuthorizationProvider]
+| Env. variable
+| LOG4J_AUTH_PROVIDER
+
+| Type
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/AuthorizationProvider.html[Class<? extends AuthorizationProvider>]
+
+| Default value
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/BasicAuthorizationProvider.html[BasicAuthorizationProvider]
 |===
 
 The fully qualified class name of the
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/AuthorizationProvider[AuthorizationProvider]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/AuthorizationProvider.html[AuthorizationProvider]
 implementation to use with `http` and `https` URL protocols.
 
 [id=log4j.auth.basic.password]
@@ -48,12 +53,19 @@ If used in conjunction with <<log4j.auth.basic.passwordDecryptor>> the contents 
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_AUTH_BASIC_PASSWORD_DECRYPTOR
-| Type          | link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/PasswordDecryptor[Class<? extends PasswordDecryptor>]
-| Default value | `null`
+| Env. variable
+| LOG4J_AUTH_BASIC_PASSWORD_DECRYPTOR
+
+| Type
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/PasswordDecryptor.html[Class<? extends PasswordDecryptor>]
+
+| Default value
+| `null`
 |===
 
-Fully qualified class name of an implementation of link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/PasswordDecryptor[PasswordDecryptor] to use for the value of the <<log4j.auth.basic.password>> property.
+Fully qualified class name of an implementation of
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/PasswordDecryptor.html[PasswordDecryptor]
+to use for the value of the <<log4j.auth.basic.password>> property.
 
 If `null`, the literal value of the password is used.
 

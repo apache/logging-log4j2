@@ -23,10 +23,12 @@
 | LOG4J_MESSAGE_FACTORY
 
 | Type
-| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory[Class<? extends MessageFactory>]
+| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory.html[Class<? extends MessageFactory>]
 
 | Default value
-| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessageFactory[ReusableMessageFactory]
+| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessageFactory.html[ReusableMessageFactory]
 |===
 
-Fully qualified class name of a {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory[MessageFactory] implementation that will be used by loggers if no explicit factory was specified.
+Fully qualified class name of a
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory.html[MessageFactory]
+implementation that will be used by loggers if no explicit factory was specified.

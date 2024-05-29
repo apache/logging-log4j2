@@ -20,11 +20,13 @@
 [cols="1h,5"]
 |===
 | Env. variable | LOG4J_CONFIGURATION_CLOCK
-| Type          | link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/Clock[Class<? extends Clock>] or predefined constant
+| Type          | link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/Clock.html[Class<? extends Clock>] or predefined constant
 | Default value | ``SystemClock``
 |===
 
-Specifies the link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/Clock[Clock] implementation used to timestamp log events.
+Specifies the
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/Clock.html[Clock]
+implementation used to timestamp log events.
 
 This must be the fully qualified class name of the implementation or one of these predefined constants:
 
@@ -34,10 +36,14 @@ See https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/Cloc
 SystemMillisClock:: same as `SystemClock`, but truncates the result to a millisecond.
 
 CachedClock:: uses a separate thread to update the timestamp value.
-See link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/CachedClock[JavaDoc] for details.
+See
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/CachedClock.html[JavaDoc]
+for details.
 
 CoarseCachedClock:: alternative implementation of `CachedClock` with a slightly lower precision.
-See link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/CoarseCachedClock[JavaDoc] for details.
+See
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/CoarseCachedClock.html[JavaDoc]
+for details.
 
 [id=log4j.configuration.usePreciseClock]
 == `log4j.configuration.usePreciseClock`
@@ -73,13 +79,20 @@ Otherwise, an attempt is made to load classes with the current thread's context 
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_CONFIGURATION_RELIABILITY_STRATEGY
-| Type          | link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ReliabilityStrategy[Class<? extends
- ReliabilityStrategy>] or predefined constant
-| Default value | `AwaitCompletion`
+| Env. variable
+| LOG4J_CONFIGURATION_RELIABILITY_STRATEGY
+
+| Type
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ReliabilityStrategy.html[Class<? extends ReliabilityStrategy>]
+or predefined constant
+
+| Default value
+| `AwaitCompletion`
 |===
 
-Specifies the link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ReliabilityStrategy[ReliabilityStrategy] to adopt in order to prevent loss of log events during a reconfiguration.
+Specifies the
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ReliabilityStrategy.html[ReliabilityStrategy]
+to adopt in order to prevent loss of log events during a reconfiguration.
 
 The value must be the fully qualified class name of a `ReliabilityStrategy` implementation or one of these predefined constants:
 

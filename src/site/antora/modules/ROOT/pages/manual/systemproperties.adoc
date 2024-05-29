@@ -127,10 +127,9 @@ include::partial$manual/systemproperties/properties-async.adoc[leveloffset=+2]
 === Logger context
 
 The
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/LoggerContext.html[LoggerContext]
-is one of the principal Log4j components (see
-xref:manual/architecture.adoc[]), which determines among other things, the way
-{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Logger.html[Logger]s are created.
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ContextSelector.html[ContextSelector]
+component specifies the strategy used by Log4j to create new logger contexts.
+The choice of `ContextSelector` determines in particular:
 
 It can be customized using these properties:
 
@@ -238,7 +237,7 @@ include::partial$manual/systemproperties/properties-log4j-script.adoc[leveloffse
 == Property sources
 
 The Log4j configuration properties sub-system is based on the
-link:../javadoc/log4j-kit/org/apache/logging/log4j/kit/env/PropertyEnvironment.html[PropertyEnvironment]
+{log4j2-url}/javadoc/log4j-kit/org/apache/logging/log4j/kit/env/PropertyEnvironment.html[PropertyEnvironment]
 interface, which provides a type-safe access to configuration properties.
 
 Two kinds of property environments are used by Log4j 3:

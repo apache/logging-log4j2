@@ -46,15 +46,19 @@ The implementation must have:
 | LOG4J_LOG_EVENT_CONTEXT_DATA_INJECTOR
 
 | Type
-| link:../javadoc/log4j-core/org/apache/logging/log4j/core/ContextDataInjector[Class<? extends ContextDataInjector>]
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/ContextDataInjector.html[Class<? extends ContextDataInjector>]
 
 | Default value
 | depends on the `ThreadContextMap` implementation
 |===
 
-Fully qualified class name of a link:../javadoc/log4j-core/org/apache/logging/log4j/core/ContextDataInjector[ContextDataInjector] implementation.
+Fully qualified class name of a
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/ContextDataInjector.html[ContextDataInjector]
+implementation.
 
-The default implementation uses all implementations of link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/ContextDataProvider[ContextDataProvider] registered with `ServiceLoader`.
+The default implementation uses all implementations of
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/ContextDataProvider.html[ContextDataProvider]
+registered with `ServiceLoader`.
 
 [id=log4j.logEvent.factory]
 == `log4j.logEvent.factory`
@@ -65,10 +69,12 @@ The default implementation uses all implementations of link:../javadoc/log4j-cor
 | LOG4J_LOG_EVENT_FACTORY
 
 | Type
-| link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/LogEventFactory[Class<? extends LogEventFactory>]
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/LogEventFactory.html[Class<? extends LogEventFactory>]
 
 | Default value
-| link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/ReusableLogEventFactory[`ReusableLogEventFactory`]
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/ReusableLogEventFactory.html[`ReusableLogEventFactory`]
 |===
 
-Specifies the link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/LogEventFactory[LogEventFactory] implementation to use to create log events.
+Specifies the
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/LogEventFactory.html[LogEventFactory]
+implementation to use to create log events.

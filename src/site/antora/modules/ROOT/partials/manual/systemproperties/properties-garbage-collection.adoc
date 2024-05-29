@@ -38,7 +38,8 @@ This prevents allocating temporary `String` and `char[]` instances.
 | Default value | `8192`
 |===
 
-The size in bytes of the link:../https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html[ByteBuffer]s stored in `ThreadLocal` fields by layouts and link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder[StringBuilderEncoder]s.
+The size in bytes of the https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html[ByteBuffer]s stored in `ThreadLocal` fields by layouts and
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder.html[StringBuilderEncoder]s.
 
 This setting is only used if <<log4j.gc.enableDirectEncoders>> is set to `true`.
 
@@ -52,7 +53,8 @@ This setting is only used if <<log4j.gc.enableDirectEncoders>> is set to `true`.
 | Default value | `4096`
 |===
 
-The size in ``char``s of the link:../https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html[ByteBuffer]s stored in `ThreadLocal` fields link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder[StringBuilderEncoder]s.
+The size in ``char``s of the https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html[ByteBuffer]s stored in `ThreadLocal` fields
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder.html[StringBuilderEncoder]s.
 
 This setting is only used if <<log4j.gc.enableDirectEncoders>> is set to `true`.
 
@@ -67,7 +69,9 @@ This setting is only used if <<log4j.gc.enableDirectEncoders>> is set to `true`.
 | Default value | `128`
 |===
 
-In GC-free mode, this property determines the initial size of the reusable ``StringBuilder``s used by {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage[ReusableMessages] for formatting purposes.
+In GC-free mode, this property determines the initial size of the reusable ``StringBuilder``s used by
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage.html[ReusableMessages]
+for formatting purposes.
 
 [id=log4j.gc.maxReusableMsgSize]
 == `log4j.gc.maxReusableMsgSize`
@@ -79,7 +83,9 @@ In GC-free mode, this property determines the initial size of the reusable ``Str
 | Default value | `518`
 |===
 
-In GC-free mode, this property determines the maximum size of the reusable ``StringBuilder``s used by {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage[ReusableMessages] for formatting purposes.
+In GC-free mode, this property determines the maximum size of the reusable ``StringBuilder``s used by
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage.html[ReusableMessages]
+for formatting purposes.
 
 The default value allows is equal to `2 &times; (2 &times; log4j.initialReusableMsgSize + 2) + 2` and allows the
 ``StringBuilder`` to be resized twice by the current JVM resize algorithm.
@@ -95,7 +101,8 @@ The default value allows is equal to `2 &times; (2 &times; log4j.initialReusable
 | Default value | `2048`
 |===
 
-This property determines the maximum size of the reusable ``StringBuilder``s used to format link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent[LogEvents].
+This property determines the maximum size of the reusable ``StringBuilder``s used to format
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html[`LogEvent`]s.
 
 // tag::api[]
 
@@ -109,7 +116,9 @@ This property determines the maximum size of the reusable ``StringBuilder``s use
 | Default value | `32`
 |===
 
-The {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/util/Unbox[Unbox] utility class can be used by users to format primitive values without incurring in the boxing allocation cost.
+The
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/util/Unbox.html[Unbox]
+utility class can be used by users to format primitive values without incurring in the boxing allocation cost.
 
 This property specifies the maximum number of primitive arguments to a log message that will be cached and usually does not need to be changed.
 
