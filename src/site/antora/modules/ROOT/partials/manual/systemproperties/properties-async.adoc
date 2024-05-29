@@ -63,7 +63,7 @@ Discard:: when the queue is full, it drops the events whose level is equal or le
 [cols="1h,5"]
 |===
 | Env. variable | LOG4J_DISCARD_THRESHOLD
-| Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/Level[Level]
+| Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[Level]
 | Default value | `INFO`
 |===
 
