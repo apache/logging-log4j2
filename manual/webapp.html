@@ -386,7 +386,7 @@ For performance reasons, containers often ignore certain JARs known not to conta
 <div class="sect3">
 <h4 id="_the_long_story"><a class="anchor" href="#_the_long_story"></a>The Long Story</h4>
 <div class="paragraph">
-<p>The Log4j 2 Web JAR file is a web-fragment configured to order before any other web fragments in your application. It contains a <code>ServletContainerInitializer</code> (<code>Log4jServletContainerInitializer</code>) that the container automatically discovers and initializes. This adds the <a href="../javadoc/log4j-core/org/apache/logging/log4j/web/Log4jServletContextListener.html">Log4jServletContextListener</a> and <code>Log4jServletFilter</code> to the <code>ServletContext</code>. These classes properly initialize and deinitialize the Log4j configuration.</p>
+<p>The Log4j 2 Web JAR file is a web-fragment configured to order before any other web fragments in your application. It contains a <code>ServletContainerInitializer</code> (<code>Log4jServletContainerInitializer</code>) that the container automatically discovers and initializes. This adds the <code>Log4jServletContextListener</code> and <code>Log4jServletFilter</code> to the <code>ServletContext</code>. These classes properly initialize and deinitialize the Log4j configuration.</p>
 </div>
 <div class="paragraph">
 <p>For some users, automatically starting Log4j is problematic or undesirable. You can easily disable this feature using the <code>isLog4jAutoInitializationDisabled</code> context parameter. Simply add it to your deployment descriptor with the value "true" to disable auto-initialization. You <em>must</em> define the context parameter in <code>web.xml</code>. If you set in programmatically, it will be too late for Log4j to detect the setting.</p>

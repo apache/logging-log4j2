@@ -319,7 +319,8 @@ Thread Context is one of many <a href="api.html#fish-tagging" class="xref page">
 <h2 id="usage"><a class="anchor" href="#usage"></a>Usage</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The entry point for associating logging-related information with the executing thread is <a href="../log4j-api/apidocs/org/apache/logging/log4j/ThreadContext.html"><code>ThreadContext</code></a>.
+<p>The entry point for associating logging-related information with the executing thread is
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html"><code>ThreadContext</code></a>.
 It offers both</p>
 </div>
 <div class="ulist">
@@ -381,7 +382,11 @@ ThreadContext.clear(); <i class="conum" data-value="5"></i><b>(5)</b></code></pr
 <h3 id="CloseableThreadContext"><a class="anchor" href="#CloseableThreadContext"></a>Auto-clearing thread context</h3>
 <div class="paragraph">
 <p>When placing items on the thread context stack or map, it&#8217;s necessary to remove them again when appropriate.
-To assist with this, you can use <a href="../log4j-api/apidocs/org/apache/logging/log4j/CloseableThreadContext.html"><code>CloseableThreadContext</code></a> (implementing <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/AutoCloseable.html"><code>AutoCloseable</code></a>) in a try-with-resources block:</p>
+To assist with this, you can use
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/CloseableThreadContext.html"><code>CloseableThreadContext</code></a>
+(implementing
+<a href="http://docs.oracle.com/javase/8/docs/api/java/lang/AutoCloseable.html"><code>AutoCloseable</code></a>)
+in a try-with-resources block:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -676,10 +681,13 @@ You can provide a custom <code>ContextDataProvider</code> implementation as foll
 <div class="sect2">
 <h3 id="custom-ThreadContextMap"><a class="anchor" href="#custom-ThreadContextMap"></a>Custom thread context map</h3>
 <div class="paragraph">
-<p>Custom thread context map implementations can be provided by setting <a href="#log4j2.threadContextMap">the <code>log4j2.threadContextMap</code> system property</a> to the fully-qualified class name of the custom implementation class extending from <a href="../javadoc/log4j-core/org/apache/logging/log4j/spi/ThreadContextMap.html"><code>ThreadContextMap</code></a>.</p>
+<p>Custom thread context map implementations can be provided by setting <a href="#log4j2.threadContextMap">the <code>log4j2.threadContextMap</code> system property</a> to the fully-qualified class name of the custom implementation class extending from
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html"><code>ThreadContextMap</code></a>.</p>
 </div>
 <div class="paragraph">
-<p>While providing a custom thread context map implementation, you are advised to also extend from <a href="../javadoc/log4j-core/org/apache/logging/log4j/spi/ReadOnlyThreadContextMap.html"><code>ReadOnlyThreadContextMap</code></a> too.
+<p>While providing a custom thread context map implementation, you are advised to also extend from
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/ReadOnlyThreadContextMap.html"><code>ReadOnlyThreadContextMap</code></a>
+too.
 By this way, your custom thread context map implementation will be accessible to applications via
 <a href="../javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html#getThreadContextMap()"><code>ThreadContext.getThreadContextMap()</code></a>.</p>
 </div>

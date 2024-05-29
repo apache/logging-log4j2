@@ -344,14 +344,16 @@ This feature allows for easy integration with existing log management and monito
 <h2 id="_example_configuration"><a class="anchor" href="#_example_configuration"></a>Example Configuration</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>To configure Log4j to output logs in Syslog (RFC5424) format, one needs to use the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StructuredDataLayout.html"><code>StructuredDataLayout</code></a> layout.
+<p>To configure Log4j to output logs in Syslog (RFC5424) format, one needs to use the
+<code><a href="layouts.html#RFC5424Layout" class="xref page">Rfc5424Layout</a></code>
+layout.
 Developers can use the following configuration to log events to a local Syslog server:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Appenders&gt;
     &lt;Syslog name="Syslog" host="localhost" port="514"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
-        &lt;StructuredDataLayout complete="true" /&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+        &lt;Rfc5424Layout/&gt; <i class="conum" data-value="2"></i><b>(2)</b>
     &lt;/Syslog&gt;
 &lt;/Appenders&gt;
 

@@ -351,10 +351,13 @@ and bound to the LogManager. In Log4j 2 this is provided by
 <p>Implement a new <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/impl/Log4jContextFactory.html"><code>LoggerContextFactory</code></a>.</p>
 </li>
 <li>
-<p>Implement a class that extends <a href="../javadoc/log4j-core/org/apache/logging/spi/Provider.html"><code>org.apache.logging.spi.Provider</code></a>
+<p>Implement a class that extends
+<a href="../javadoc/log4j-api/org/apache/logging/spi/Provider.html"><code>org.apache.logging.spi.Provider</code></a>
 with a no-arg constructor that calls super-class&#8217;s constructor with the
 Priority, the API version(s), <code>LoggerContextFactory</code> class, and
-optionally, a <a href="../javadoc/log4j-core/org/apache/logging/log4j/spi/ThreadContextMap.html"><code>ThreadContextMap</code></a> implementation class.</p>
+optionally, a
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html"><code>ThreadContextMap</code></a>
+implementation class.</p>
 </li>
 <li>
 <p>Create a <code>META-INF/services/org.apache.logging.spi.Provider</code> file
@@ -383,8 +386,7 @@ classpath.</p>
 <div class="sectionbody">
 <div class="paragraph">
 <p>ContextSelectors are called by the
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/impl/Log4jContextFactory.html">Log4j
-LoggerContext factory</a>. They perform the actual work of locating or
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/impl/Log4jContextFactory.html">Log4j LoggerContext factory</a>. They perform the actual work of locating or
 creating a LoggerContext, which is the anchor for Loggers and their
 configuration. ContextSelectors are free to implement any mechanism they
 desire to manage LoggerContexts. The default Log4jContextFactory checks
