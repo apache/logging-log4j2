@@ -20,24 +20,21 @@
                xsi:schemaLocation="
                    https://logging.apache.org/xml/ns
                    https://logging.apache.org/xml/ns/log4j-config-2.xsd">
-
-  <appenders>
+  <Appenders>
     <Console name="SQL_LOG">
       <PatternLayout pattern="%d{HH:mm:ss.SSS} (%marker) %m%n"/>
     </Console>
-  </appenders>
-
-  <loggers>
-    <root level="INFO"/>
+  </Appenders>
+  <Loggers>
+    <Root level="INFO"/>
     <!-- tag::logger[] -->
-    <logger name="example" level="ALL"><!--1-->
+    <Logger name="example" level="ALL"><!--1-->
       <AppenderRef ref="SQL_LOG">
         <MarkerFilter marker="SQL"
                       onMatch="ACCEPT"
                       onMismatch="DENY"/><!--2-->
       </AppenderRef>
-    </logger>
+    </Logger>
     <!-- end::logger[] -->
-  </loggers>
-
+  </Loggers>
 </Configuration>

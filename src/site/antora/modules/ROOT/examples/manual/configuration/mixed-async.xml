@@ -31,7 +31,7 @@
   <Loggers>
     <Root level="INFO">
       <AppenderRef ref="AUDIT"> <!--1-->
-        <MarkerFilter marker="AUDIT" onMatch="ACCEPT" onMimatch="DENY"/>
+        <MarkerFilter marker="AUDIT" onMatch="ACCEPT" onMismatch="DENY"/>
       </AppenderRef>
     </Root>
     <AsyncLogger name="com.example" level="TRACE">
