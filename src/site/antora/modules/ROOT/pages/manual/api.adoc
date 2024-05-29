@@ -22,9 +22,7 @@ Log4j is essentially composed of a logging API called *Log4j API*, and its refer
 .What is a logging API and a logging implementation?
 [%collapsible]
 ====
-
 include::partial$concepts.adoc[tags=inc;api;impl]
-
 ====
 
 [TIP]
