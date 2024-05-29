@@ -3131,9 +3131,61 @@ implementation to be used by all loggers.</p>
 <div class="paragraph">
 <p>Fully qualified name of an alternative <code>org.apache.logging.log4j.jul.LevelConverter</code> implementation.</p>
 </div>
-<div class="paragraph">
-<p>See <a href="#log4j-jul.adoc#default-level-conversions" class="xref unresolved">Default Level Conversions</a> for the default implementation.</p>
+<details>
+<summary class="title">Default level conversions</summary>
+<div class="content">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Java Level</th>
+<th class="tableblock halign-left valign-top">Log4j Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#OFF">OFF</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>OFF</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#SEVERE">SEVERE</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#WARNING">WARNING</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WARN</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#INFO">INFO</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFO</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#CONFIG">CONFIG</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CONFIG</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#FINE">FINE</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#FINER">FINER</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TRACE</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#FINEST">FINEST</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>FINEST</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#ALL">ALL</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ALL</code></p></td>
+</tr>
+</tbody>
+</table>
 </div>
+</details>
 </div>
 <div class="sect3">
 <h4 id="log4j2.julLoggerAdapter"><a class="anchor" href="#log4j2.julLoggerAdapter"></a><code>log4j2.julLoggerAdapter</code></h4>
