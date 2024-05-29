@@ -552,7 +552,7 @@ at its default value and use one of the
   &lt;Loggers&gt;
     &lt;Root level="INFO"&gt;
       &lt;AppenderRef ref="AUDIT"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
-        &lt;MarkerFilter marker="AUDIT" onMatch="ACCEPT" onMimatch="DENY"/&gt;
+        &lt;MarkerFilter marker="AUDIT" onMatch="ACCEPT" onMismatch="DENY"/&gt;
       &lt;/AppenderRef&gt;
     &lt;/Root&gt;
     &lt;AsyncLogger name="com.example" level="TRACE"&gt;
