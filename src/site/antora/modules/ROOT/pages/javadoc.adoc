@@ -27,6 +27,9 @@ The table below contains links to the Javadoc API Documentation for the componen
 |link:javadoc/log4j-kit/index.html[Implementation helper kit]
 |Common helper functions for Log4j API implementations.
 
+|link:javadoc/log4j-plugins/index.html[Dependency injection kit]
+|Dependency injection artifact used in Log4j 3 Core.
+
 |link:javadoc/log4j-core/index.html[Reference implementation]
 |The standard implementation, also called the Log4j 3 Core, that contains Appenders, Filters, and more.
 

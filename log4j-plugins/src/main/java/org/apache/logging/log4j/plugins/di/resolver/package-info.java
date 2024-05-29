@@ -20,7 +20,7 @@
  * org.apache.logging.log4j.plugins.di.spi.FactoryResolver#supportsKey(org.apache.logging.log4j.plugins.di.Key)
  * supported keys} from {@linkplain org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory existing instance
  * factories}. Resolvers should be
- * {@linkplain org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory#registerFactoryResolver(FactoryResolver<T>)
+ * {@linkplain org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory#registerFactoryResolver(org.apache.logging.log4j.plugins.di.spi.FactoryResolver)}
  * registered} via a {@link org.apache.logging.log4j.plugins.di.spi.ConfigurableInstanceFactoryPostProcessor
  * ConfigurableInstanceFactoryPostProcessor} service.
  */
@@ -29,7 +29,6 @@
 @NullMarked
 package org.apache.logging.log4j.plugins.di.resolver;
 
-import org.apache.logging.log4j.plugins.di.spi.FactoryResolver;
 import org.jspecify.annotations.NullMarked;
 import org.osgi.annotation.bundle.Export;
 import org.osgi.annotation.versioning.Version;

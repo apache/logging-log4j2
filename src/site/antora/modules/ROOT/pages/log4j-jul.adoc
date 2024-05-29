@@ -66,31 +66,31 @@ Using the default `LevelConverter` implementation, custom logging levels are map
 | Java Level | Log4j Level
 
 | http://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#OFF[OFF]
-| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#OFF[OFF]
+| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html#OFF[OFF]
 
 | http://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#SEVERE[SEVERE]
-| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#ERROR[ERROR]
+| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html#ERROR[ERROR]
 
 | http://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#WARNING[WARNING]
-| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#WARN[WARN]
+| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html#WARN[WARN]
 
 | http://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#OFF[OFF]
-| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#INFO[INFO]
+| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html#INFO[INFO]
 
 | http://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#CONFIG[CONFIG]
 | custom `CONFIG` level
 
 | http://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#FINE[FINE]
-| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#DEBUG[DEBUG]
+| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html#DEBUG[DEBUG]
 
 | http://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#FINER[FINER]
-| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#TRACE[TRACE]
+| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html#TRACE[TRACE]
 
 | http://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#FINEST[FINEST]
 | custom `FINEST` level
 
 | http://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#ALL[ALL]
-| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#ALL[ALL]
+| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html#ALL[ALL]
 |===
 
 == Log4j JDK Logging Bridge Handler

@@ -775,11 +775,11 @@ list of column mapping configurations. Each column must specify a column
 name. Each column can have a conversion type specified by its fully
 qualified class name. By default, the conversion type is `String`. If
 the configured type is assignment-compatible with
-link:../javadoc/log4j-api/org/apache/logging/log4j/util/ReadOnlyStringMap.html[`ReadOnlyStringMap`]
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/util/ReadOnlyStringMap.html[`ReadOnlyStringMap`]
 /
-link:../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html[`ThreadContextMap`]
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html[`ThreadContextMap`]
 or
-link:../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextStack.html[`ThreadContextStack`],
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextStack.html[`ThreadContextStack`],
 then that column will be populated with the MDC or NDC respectively
 (this is database-specific how they handle inserting a `Map` or `List`
 value). If the configured type is assignment-compatible with

@@ -29,7 +29,7 @@ It can prevent or dampen latency spikes by shortening the wait time until the ne
 If the queue size is large enough to handle the burst, asynchronous logging will prevent your application from falling behind during a sudden increase of activity.
 
 Lower logging latency::
-link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html[Logger]
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Logger.html[Logger]
 method calls return faster, since most of the work is done on the I/O thread.
 
 [#async-drawbacks]
@@ -54,7 +54,7 @@ xref:manual/async.adoc#MixedSync-Async[mixed synchronous/asynchronous loggers] o
 
 Stateful messages::
 Most
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html[`Message`]
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/message/Message.html[`Message`]
 implementations take a snapshot of the formatted message on the calling thread (cf.
 xref:manual/systemproperties.adoc#log4j.async.formatMessagesInBackground[`log4j.async.formatMessagesInBackground`]).
 The log message will not change even if the arguments of the logging call are modified later.
@@ -67,9 +67,9 @@ for example are mutable by design: fields can be added to these messages after t
 These messages should not be modified after they are logged with asynchronous loggers or asynchronous appenders.
 +
 Similarly, custom
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html[`Message`]
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/message/Message.html[`Message`]
 implementations should be designed with asynchronous use in mind, and either take a snapshot of their parameters at construction time, or document their thread-safety characteristics (see
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/AsynchronouslyFormattable.html[`AsynchronouslyFormattable`]).
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/message/AsynchronouslyFormattable.html[`AsynchronouslyFormattable`]).
 
 Computational overhead::
 If your application is running in an environment where CPU resources are scarce, like a VM with a single vCPU, starting another thread is not likely to give better performance.

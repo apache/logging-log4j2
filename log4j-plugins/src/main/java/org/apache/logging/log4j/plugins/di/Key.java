@@ -122,8 +122,9 @@ public class Key<T> implements StringBuilderFormattable, Comparable<Key<T>> {
 
     /**
      * Returns the name of this key. If this key has no defined name, then this returns an empty string.
-     *
-     * @apiNote Names are case-preserving but should be compared using case-insensitive string comparison.
+     * <p>
+     *     <strong>API note:</strong> names are case-preserving but should be compared using case-insensitive string comparison.
+     * </p>
      * @see Keys#hasName(AnnotatedElement)
      */
     public final String getName() {
@@ -132,8 +133,9 @@ public class Key<T> implements StringBuilderFormattable, Comparable<Key<T>> {
 
     /**
      * Returns the namespace of this key. If this key has no defined namespace, then this returns an empty string.
-     *
-     * @apiNote A namespace of the empty string is considered the default namespace which is used when no
+     * <p>
+     *     <strong>API note:</strong> a namespace of the empty string is considered the default namespace which is used when no namespace is defined or if the namespace is explicitly defined as the empty string.
+     * </p>
      * namespace is defined or if the namespace is explicitly defined as the empty string.
      * @see Keys#getNamespace(AnnotatedElement)
      */

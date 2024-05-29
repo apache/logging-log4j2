@@ -38,7 +38,9 @@ This prevents allocating temporary `String` and `char[]` instances.
 | Default value | `8192`
 |===
 
-The size in bytes of the https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html[ByteBuffer]s stored in `ThreadLocal` fields by layouts and
+The size in bytes of the
+https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html[ByteBuffer]s
+stored in `ThreadLocal` fields by layouts and
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder.html[StringBuilderEncoder]s.
 
 This setting is only used if <<log4j.gc.enableDirectEncoders>> is set to `true`.
@@ -53,7 +55,9 @@ This setting is only used if <<log4j.gc.enableDirectEncoders>> is set to `true`.
 | Default value | `4096`
 |===
 
-The size in ``char``s of the https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html[ByteBuffer]s stored in `ThreadLocal` fields
+The size in ``char``s of the
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/ByteBuffer.html[ByteBuffer]s
+stored in `ThreadLocal` fields
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder.html[StringBuilderEncoder]s.
 
 This setting is only used if <<log4j.gc.enableDirectEncoders>> is set to `true`.

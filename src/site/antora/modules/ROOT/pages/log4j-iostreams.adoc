@@ -23,7 +23,7 @@ xref:manual/api.adoc[]
 extension that provides numerous classes from
 http://docs.oracle.com/javase/{java-target-version}/docs/api/java/io/package-summary.html[`java.io`]
 that can either write to a
-link:javadoc/log4j-api/org/apache/logging/log4j/Logger.html[`Logger`]
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Logger.html[`Logger`]
 while writing to another `OutputStream` or `Writer`, or the contents read by an `InputStream` or `Reader` can be http://www.eaipatterns.com/WireTap.html[wiretapped] by a `Logger`.
 
 == Requirements

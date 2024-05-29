@@ -20,9 +20,10 @@ import java.lang.reflect.AnnotatedElement;
 
 /**
  * Checks an annotated element to see if it matches some condition.
- *
- * @implSpec Must have a default constructor. The class should be used in a {@link Conditional} annotation on an
- * annotation class to provide parameters to the condition.
+ * <p>
+ * <strong>Implementation note:</strong> must have a default constructor. The class should be used in a
+ * {@link Conditional} annotation on an annotation class to provide parameters to the condition.
+ * </p>
  */
 @FunctionalInterface
 public interface Condition {

@@ -61,7 +61,7 @@ If `false`, the `ThreadContext` map is disabled.
 | LOG4J_THREAD_CONTEXT_MAP_TYPE
 
 | Type
-| link:../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html[Class<? extends ThreadContextMap>]
+| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html[Class<? extends ThreadContextMap>]
 or predefined constant
 
 | Default value

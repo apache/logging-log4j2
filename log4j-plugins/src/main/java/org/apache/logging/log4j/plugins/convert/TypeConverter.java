@@ -22,9 +22,12 @@ import org.apache.logging.log4j.util.Cast;
 
 /**
  * Interface for doing automatic String conversion to a specific type.
+ * <p>
+ * <strong>Implementation note:</strong> type converter plugins must be annotated with {@link Plugin} and
+ * {@link TypeConverters}.
+ * </p>
  *
  * @param <T> Converts Strings into the given type {@code T}.
- * @implSpec Type converter plugins must be annotated with {@link Plugin} and {@link TypeConverters}.
  * @since 3.0.0 Moved to {@code log4j-plugins}.
  */
 @FunctionalInterface

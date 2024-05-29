@@ -30,6 +30,8 @@
   <description>Log4j Plugin Support</description>
 
   <properties>
+    <maven.javadoc.skip>false</maven.javadoc.skip>
+
     <bnd-extra-package-options>
       <!-- External optional dependencies -->
       com.google.errorprone.annotations.concurrent;resolution:=optional,

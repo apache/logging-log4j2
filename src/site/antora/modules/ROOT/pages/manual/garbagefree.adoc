@@ -269,7 +269,7 @@ Logging more than 10 parameters creates https://docs.oracle.com/javase/8/docs/te
 
 When a message parameter contains an unknown type by the layout, it will encode by calling `toString()` on these objects.
 Most objects don't have garbage-free `toString()` methods.
-Objects themselves can implement their own garbage-free encoders by either extending from https://docs.oracle.com/javase/8/docs/api/java/lang/CharSequence.html[Java's `CharSequence`] or link:../javadoc/log4j-api/org/apache/logging/log4j/util/StringBuilderFormattable.html[Log4j's `StringBuilderFormattable`].
+Objects themselves can implement their own garbage-free encoders by either extending from https://docs.oracle.com/javase/8/docs/api/java/lang/CharSequence.html[Java's `CharSequence`] or {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/util/StringBuilderFormattable.html[Log4j's `StringBuilderFormattable`].
 
 [#codeImpact]
 === Avoiding autoboxing

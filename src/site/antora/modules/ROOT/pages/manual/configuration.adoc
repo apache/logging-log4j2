@@ -119,7 +119,7 @@ The Log4j runtime is composed of xref:manual/plugins.adoc[plugins], which are li
 Appenders, layouts, filters, configuration loaders, and similar components are all accessed as plugins.
 
 All configuration files are represented internally as a tree of
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Node.html[Node]s,
+``link:../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Node.html[Node]``s,
 which is translated into a tree of Log4j plugins.
 The tree's root creates a
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html[Configuration]
@@ -419,13 +419,13 @@ To modify these options during a reconfiguration, you also need to change the re
 [cols="1h,5"]
 |===
 | Type
-| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[LEVEL]
+| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html[LEVEL]
 
 | Status
 | **DEPRECATED**
 
 | Default value
-| link:../../2.x/manual/systemproperties.html#log4j.sta.statusLoggerLevel[log4j2.statusLoggerLevel]
+| {log4j2-url}/manual/systemproperties.html#log4j.statusLoggerLevel[log4j2.statusLoggerLevel]
 |===
 
 Overrides the logging level of the status logger.
@@ -464,7 +464,7 @@ There **must** be at least a `Root` or `AsyncRoot` element in every configuratio
 Other logger configurations are optional.
 
 Every
-link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html[Logger]
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Logger.html[Logger]
 in your application is assigned to one of these logger configurations (see
 xref:manual/architecture.adoc#loggerconfig[architecture]), which determines the events that will be logged and those that won't.
 
@@ -587,7 +587,7 @@ xref:manual/architecture.adoc#logger-hierarchy[parent logger]).
 [cols="1h,5"]
 |===
 | Type
-| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[Level]
+| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html[Level]
 
 | Default value
 a|
@@ -714,7 +714,8 @@ Specifies the name of the appender to use.
 
 [cols="1h,5"]
 |===
-| Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[Level]
+| Type
+| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html[Level]
 |===
 
 Specifies the level threshold that a log event must have to be logged.

@@ -25,7 +25,7 @@
 |===
 
 Specifies the
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/Clock.html[Clock]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/time/Clock.html[Clock]
 implementation used to timestamp log events.
 
 This must be the fully qualified class name of the implementation or one of these predefined constants:
@@ -42,7 +42,7 @@ for details.
 
 CoarseCachedClock:: alternative implementation of `CachedClock` with a slightly lower precision.
 See
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/CoarseCachedClock.html[JavaDoc]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/time/internal/CoarseCachedClock.html[JavaDoc]
 for details.
 
 [id=log4j.configuration.usePreciseClock]
