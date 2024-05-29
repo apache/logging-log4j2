@@ -462,7 +462,11 @@ Log4j includes XML, JSON, YAML, and Java properties formats factories.</p>
 <p>Files named <code>log4j2.&lt;extension&gt;</code>,</p>
 </li>
 <li>
-<p>If no configuration file is found, Log4j uses the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/DefaultConfiguration">DefaultConfiguration</a>, and the status logger prints a warning.
+<p>If no configuration file is found, Log4j uses the
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/DefaultConfiguration.html">DefaultConfiguration</a>
+and the
+<a href="https://logging.apache.org/log4j/2.x/manual/status-logger.html">status logger</a>
+prints a warning.
 The default configuration prints all messages less specific than
 <a href="systemproperties.html#log4j.configuration.level" class="xref page">log4j.configuration.level</a>
 to the console.</p>
@@ -480,7 +484,8 @@ to the console.</p>
 <p>The configuration files prefixed by <code>log4j2-test</code> should only be used on the test classpath.</p>
 </div>
 <div class="paragraph">
-<p>If multiple configuration files in the same category are found, Log4j uses a deterministic order to choose one of them (see <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Order">@Order</a>).</p>
+<p>If multiple configuration files in the same category are found, Log4j uses a deterministic order to choose one of them (see
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Order.html"><code>@Order</code></a>).</p>
 </div>
 <div class="paragraph">
 <p>Nevertheless:</p>
@@ -586,8 +591,11 @@ Appenders, layouts, filters, configuration loaders, and similar components are a
 </div>
 <div class="paragraph">
 <p>All configuration files are represented internally as a tree of
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Node">Node</a>s, which is translated into a tree of Log4j plugins.
-The tree&#8217;s root creates a <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration">Configuration</a> object.</p>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Node.html">Node</a>s,
+which is translated into a tree of Log4j plugins.
+The tree&#8217;s root creates a
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html">Configuration</a>
+object.</p>
 </div>
 <div class="paragraph">
 <p>A node is a relatively simple structure representing a single Log4j plugin (see <a href="../plugin-reference.html" class="xref page">Plugin reference</a> for a complete list), such as an appender, layout, or logger configuration.</p>

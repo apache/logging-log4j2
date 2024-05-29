@@ -508,7 +508,8 @@ Hence, to avoid causing memory leaks, <code>log4j2.enableThreadlocals</code> by 
 </tbody>
 </table>
 <div class="paragraph">
-<p>The size in bytes of the <a href="../https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html">ByteBuffer</a>s stored in <code>ThreadLocal</code> fields by layouts and <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder">StringBuilderEncoder</a>s.</p>
+<p>The size in bytes of the <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html">ByteBuffer</a>s stored in <code>ThreadLocal</code> fields by layouts and
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder.html">StringBuilderEncoder</a>s.</p>
 </div>
 <div class="paragraph">
 <p>This setting is only used if <a href="#log4j.gc.enableDirectEncoders"><code>log4j.gc.enableDirectEncoders</code></a> is set to <code>true</code>.</p>
@@ -537,7 +538,8 @@ Hence, to avoid causing memory leaks, <code>log4j2.enableThreadlocals</code> by 
 </tbody>
 </table>
 <div class="paragraph">
-<p>The size in <code>char</code>s of the <a href="../https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html">ByteBuffer</a>s stored in <code>ThreadLocal</code> fields <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder">StringBuilderEncoder</a>s.</p>
+<p>The size in <code>char</code>s of the <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html">ByteBuffer</a>s stored in <code>ThreadLocal</code> fields
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder.html">StringBuilderEncoder</a>s.</p>
 </div>
 <div class="paragraph">
 <p>This setting is only used if <a href="#log4j.gc.enableDirectEncoders"><code>log4j.gc.enableDirectEncoders</code></a> is set to <code>true</code>.</p>
@@ -566,7 +568,9 @@ Hence, to avoid causing memory leaks, <code>log4j2.enableThreadlocals</code> by 
 </tbody>
 </table>
 <div class="paragraph">
-<p>In GC-free mode, this property determines the initial size of the reusable <code>StringBuilder</code>s used by <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage">ReusableMessages</a> for formatting purposes.</p>
+<p>In GC-free mode, this property determines the initial size of the reusable <code>StringBuilder</code>s used by
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage.html">ReusableMessages</a>
+for formatting purposes.</p>
 </div>
 </div>
 <div class="sect3">
@@ -592,7 +596,9 @@ Hence, to avoid causing memory leaks, <code>log4j2.enableThreadlocals</code> by 
 </tbody>
 </table>
 <div class="paragraph">
-<p>In GC-free mode, this property determines the maximum size of the reusable <code>StringBuilder</code>s used by <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage">ReusableMessages</a> for formatting purposes.</p>
+<p>In GC-free mode, this property determines the maximum size of the reusable <code>StringBuilder</code>s used by
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage.html">ReusableMessages</a>
+for formatting purposes.</p>
 </div>
 <div class="paragraph">
 <p>The default value allows is equal to <code>2 &times; (2 &times; log4j.initialReusableMsgSize + 2) + 2</code> and allows the
@@ -622,7 +628,8 @@ Hence, to avoid causing memory leaks, <code>log4j2.enableThreadlocals</code> by 
 </tbody>
 </table>
 <div class="paragraph">
-<p>This property determines the maximum size of the reusable <code>StringBuilder</code>s used to format <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent">LogEvents</a>.</p>
+<p>This property determines the maximum size of the reusable <code>StringBuilder</code>s used to format
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html"><code>LogEvent</code></a>s.</p>
 </div>
 </div>
 <div class="sect3">
@@ -648,7 +655,9 @@ Hence, to avoid causing memory leaks, <code>log4j2.enableThreadlocals</code> by 
 </tbody>
 </table>
 <div class="paragraph">
-<p>The <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/Unbox">Unbox</a> utility class can be used by users to format primitive values without incurring in the boxing allocation cost.</p>
+<p>The
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/Unbox.html">Unbox</a>
+utility class can be used by users to format primitive values without incurring in the boxing allocation cost.</p>
 </div>
 <div class="paragraph">
 <p>This property specifies the maximum number of primitive arguments to a log message that will be cached and usually does not need to be changed.</p>
@@ -728,7 +737,8 @@ For a thread local recycler, it corresponds to the per-thread buffer size.</p>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap">Class&lt;? extends ThreadContextMap&gt;</a> or predefined constant</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html">Class&lt;? extends ThreadContextMap&gt;</a>
+or predefined constant</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -738,7 +748,9 @@ For a thread local recycler, it corresponds to the per-thread buffer size.</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Fully specified class name of a custom <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap">ThreadContextMap</a> implementation class or one of the predefined constants:</p>
+<p>Fully specified class name of a custom
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html">ThreadContextMap</a>
+implementation class or one of the predefined constants:</p>
 </div>
 <div class="dlist">
 <dl>
