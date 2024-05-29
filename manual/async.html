@@ -512,11 +512,11 @@ property to one of the asynchronous logger context selectors:</p>
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/BasicAsyncLoggerContextSelector">org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector</a></dt>
+<dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/BasicAsyncLoggerContextSelector.html">org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector</a></dt>
 <dd>
 <p>This will create a single logger context and disruptor for all the classes in the JVM,</p>
 </dd>
-<dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerContextSelector">org.apache.logging.log4j.core.async.AsyncLoggerContextSelector</a></dt>
+<dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerContextSelector.html">org.apache.logging.log4j.core.async.AsyncLoggerContextSelector</a></dt>
 <dd>
 <p>This will create a different logger context and disruptor for each classloader in the JVM.</p>
 </dd>
@@ -567,7 +567,7 @@ property to one of the asynchronous logger context selectors:</p>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerDefaultExceptionHandler">AsyncLoggerDefaultExceptionHandler</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerDefaultExceptionHandler.html">AsyncLoggerDefaultExceptionHandler</a></p></td>
 </tr>
 </tbody>
 </table>
@@ -791,7 +791,7 @@ Setting this value to <code>false</code> may lead to very high CPU utilization w
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/ThreadNameCachingStrategy">ThreadNameCachingStrategy</a> (enumeration)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/ThreadNameCachingStrategy.html">ThreadNameCachingStrategy</a> (enumeration)</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -801,7 +801,10 @@ Setting this value to <code>false</code> may lead to very high CPU utilization w
 </tbody>
 </table>
 <div class="paragraph">
-<p>Specifies the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/ThreadNameCachingStrategy">ThreadNameCachingStrategy</a> to use to cache the result of <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Thread.html#getName--">Thread.getName()</a>.</p>
+<p>Specifies the
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/ThreadNameCachingStrategy.html">ThreadNameCachingStrategy</a>
+to use to cache the result of <a href="https://docs.oracle" class="bare">https://docs.oracle</a>
+.com/javase/8/docs/api/java/lang/Thread.html#getName--[Thread.getName()].</p>
 </div>
 <div class="paragraph">
 <p>This setting allows to cache the result of <code>Thread.getName()</code> calls and has two values:</p>
@@ -1073,7 +1076,7 @@ These log statements will cause a smaller latency for the caller.</td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerConfigDefaultExceptionHandler">AsyncLoggerConfigDefaultExceptionHandler</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerConfigDefaultExceptionHandler.html">AsyncLoggerConfigDefaultExceptionHandler</a></p></td>
 </tr>
 </tbody>
 </table>
@@ -1331,7 +1334,9 @@ Setting this value to <code>false</code> may lead to very high CPU utilization w
 <p>If <code>false</code>, Log4j will make sure the message is formatted in the caller thread, otherwise the formatting will occur on the asynchronous thread.</p>
 </div>
 <div class="paragraph">
-<p><strong>Remark</strong>: messages annotated with <a href="../javadoc/log4j-api/org/apache/logging/log4j/message/AsynchronouslyFormattable">AsynchronouslyFormattable</a> will be formatted on the async thread regardless of this setting.</p>
+<p><strong>Remark</strong>: messages annotated with
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/AsynchronouslyFormattable.html">AsynchronouslyFormattable</a>
+will be formatted on the async thread regardless of this setting.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1348,7 +1353,8 @@ Setting this value to <code>false</code> may lead to very high CPU utilization w
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy">Class&lt;? extends AsyncQueueFullPolicy&gt;</a> or predefined constant</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html">Class&lt;? extends AsyncQueueFullPolicy&gt;</a>
+or predefined constant</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -1357,11 +1363,12 @@ Setting this value to <code>false</code> may lead to very high CPU utilization w
 </tbody>
 </table>
 <div class="paragraph">
-<p>Determines the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy">AsyncQueueFullPolicy</a> to use when the underlying async component cannot keep up with the logging rate and the queue is filling up.</p>
+<p>Determines the
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html">AsyncQueueFullPolicy</a>
+to use when the underlying async component cannot keep up with the logging rate and the queue is filling up.</p>
 </div>
 <div class="paragraph">
-<p>Its value should be the fully qualified class name of an <code>AsyncQueueFullPolicy</code> implementation or one of these
-predefined constants:</p>
+<p>Its value should be the fully qualified class name of an <code>AsyncQueueFullPolicy</code> implementation or one of these predefined constants:</p>
 </div>
 <div class="dlist">
 <dl>
