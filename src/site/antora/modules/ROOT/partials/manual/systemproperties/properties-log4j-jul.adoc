@@ -26,7 +26,41 @@
 
 Fully qualified name of an alternative `org.apache.logging.log4j.jul.LevelConverter` implementation.
 
-See xref:log4j-jul.adoc#default-level-conversions[Default Level Conversions] for the default implementation.
+.Default level conversions
+[%collapsible]
+====
+[cols="1m,1m"]
+|===
+| Java Level | Log4j Level
+
+| http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#OFF[OFF]
+| OFF
+
+| http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#SEVERE[SEVERE]
+| ERROR
+
+| http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#WARNING[WARNING]
+| WARN
+
+| http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#INFO[INFO]
+| INFO
+
+| http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#CONFIG[CONFIG]
+| CONFIG
+
+| http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#FINE[FINE]
+| DEBUG
+
+| http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#FINER[FINER]
+| TRACE
+
+| http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#FINEST[FINEST]
+| FINEST
+
+| http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#ALL[ALL]
+| ALL
+|===
+====
 
 [id=log4j2.julLoggerAdapter]
 == `log4j2.julLoggerAdapter`
