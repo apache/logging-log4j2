@@ -68,10 +68,10 @@ This is the simplest to configure and gives the best performance: to make all lo
 xref:manual/systemproperties.adoc#log4j2.contextSelector[log4j2.contextSelector]
 property to one of the asynchronous logger context selectors:
 
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/BasicAsyncLoggerContextSelector[org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector]::
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/BasicAsyncLoggerContextSelector.html[org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector]::
 This will create a single logger context and disruptor for all the classes in the JVM,
 
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerContextSelector[org.apache.logging.log4j.core.async.AsyncLoggerContextSelector]::
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerContextSelector.html[org.apache.logging.log4j.core.async.AsyncLoggerContextSelector]::
 This will create a different logger context and disruptor for each classloader in the JVM.
 
 [IMPORTANT]

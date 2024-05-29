@@ -21,7 +21,7 @@
 |===
 | Env. variable | LOG4J_ASYNC_LOGGER_EXCEPTION_HANDLER
 | Type          | https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html[Class<? extends ExceptionHandler<? super RingBufferLogEvent>>]
-| Default value | link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerDefaultExceptionHandler[AsyncLoggerDefaultExceptionHandler]
+| Default value | link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerDefaultExceptionHandler.html[AsyncLoggerDefaultExceptionHandler]
 |===
 
 Fully qualified name of a class that implements the https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html[ExceptionHandler] interface, which will be notified when an exception occurs while logging messages.
@@ -135,14 +135,22 @@ Setting this value to `false` may lead to very high CPU utilization when the asy
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_ASYNC_LOGGER_HREAD_NAME_STRATEGY
-| Type          | link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/ThreadNameCachingStrategy[ThreadNameCachingStrategy] (enumeration)
-| Default value | `UNCACHED` for JRE 8u102 or later,
+| Env. variable
+| LOG4J_ASYNC_LOGGER_HREAD_NAME_STRATEGY
+
+| Type
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/ThreadNameCachingStrategy.html[ThreadNameCachingStrategy] (enumeration)
+
+| Default value
+| `UNCACHED` for JRE 8u102 or later,
 
 `CACHED` otherwise
 |===
 
-Specifies the link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/ThreadNameCachingStrategy[ThreadNameCachingStrategy] to use to cache the result of https://docs.oracle.com/javase/{java-target-version}/docs/api/java/lang/Thread.html#getName--[Thread.getName()].
+Specifies the
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/ThreadNameCachingStrategy.html[ThreadNameCachingStrategy]
+to use to cache the result of https://docs.oracle
+.com/javase/{java-target-version}/docs/api/java/lang/Thread.html#getName--[Thread.getName()].
 
 This setting allows to cache the result of `Thread.getName()` calls and has two values:
 

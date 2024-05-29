@@ -59,7 +59,9 @@ Upon initialization of a new logger context, Log4j assigns it a context name and
 . Files named `log4j2-test.<extension>`,
 . Files named `log4j2<contextName>.<extension>`
 . Files named `log4j2.<extension>`,
-. If no configuration file is found, Log4j uses the link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/DefaultConfiguration[DefaultConfiguration], and xref:manual/status-logger.adoc[] prints a warning.
+. If no configuration file is found, Log4j uses the
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/DefaultConfiguration.html[DefaultConfiguration]
+and the xref:manual/status-logger.adoc[status logger] prints a warning.
 The default configuration prints all messages less specific than
 xref:manual/systemproperties.adoc#log4j2.level[log4j2.level]
 to the console.
@@ -68,7 +70,8 @@ to the console.
 ====
 The configuration files prefixed by `log4j2-test` should only be used on the test classpath.
 
-If multiple configuration files in the same category are found, Log4j uses a deterministic order to choose one of them (see link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Order[@Order]).
+If multiple configuration files in the same category are found, Log4j uses a deterministic order to choose one of them (see
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Order.html[`@Order`]).
 
 Nevertheless:
 
@@ -121,8 +124,11 @@ The Log4j runtime is composed of xref:manual/plugins.adoc[plugins], which are li
 Appenders, layouts, filters, configuration loaders, and similar components are all accessed as plugins.
 
 All configuration files are represented internally as a tree of
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Node[Node]s, which is translated into a tree of Log4j plugins.
-The tree's root creates a link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration[Configuration] object.
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Node.html[Node]s,
+which is translated into a tree of Log4j plugins.
+The tree's root creates a
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html[Configuration]
+object.
 
 A node is a relatively simple structure representing a single Log4j plugin (see xref:plugin-reference.adoc[] for a complete list), such as an appender, layout, or logger configuration.
 

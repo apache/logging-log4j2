@@ -19,9 +19,14 @@
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_ASYNC_LOGGER_CONFIG_EXCEPTION_HANDLER
-| Type          | https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html[Class<? extends ExceptionHandler<? super Log4jEventWrapper>>]
-| Default value | link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerConfigDefaultExceptionHandler[AsyncLoggerConfigDefaultExceptionHandler]
+| Env. variable
+| LOG4J_ASYNC_LOGGER_CONFIG_EXCEPTION_HANDLER
+
+| Type
+| https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html[Class<? extends ExceptionHandler<? super Log4jEventWrapper>>]
+
+| Default value
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerConfigDefaultExceptionHandler.html[AsyncLoggerConfigDefaultExceptionHandler]
 |===
 
 Fully qualified name of a class that implements the https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html[ExceptionHandler] interface, which will be notified when an exception occurs while logging messages.

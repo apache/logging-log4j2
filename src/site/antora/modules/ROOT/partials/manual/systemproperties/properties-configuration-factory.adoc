@@ -20,11 +20,13 @@
 [cols="1h,5"]
 |===
 | Env. variable | LOG4J_CONFIGURATION_FACTORY
-| Type          | link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory[Class<? extends ConfigurationFactory>]
+| Type          | link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html[Class<? extends ConfigurationFactory>]
 | Default value | `null`
 |===
 
-Specifies the fully qualified class name of the **preferred** link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory[ConfigurationFactory] to use.
+Specifies the fully qualified class name of the **preferred**
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html[ConfigurationFactory]
+to use.
 
 Log4j will attempt to use the provided configuration factory before any other factory implementation.
 
@@ -70,9 +72,16 @@ Specifies the level of the root logger if:
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_MERGE_STRATEGY
-| Type          | link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy[Class<? extends MergeStrategy>]
-| Default value | `link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/DefaultMergeStrategy[DefaultMergeStrategy]`
+| Env. variable
+| LOG4J_MERGE_STRATEGY
+
+| Type
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy.html[Class<? extends MergeStrategy>]
+
+| Default value
+| `link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/DefaultMergeStrategy.html[DefaultMergeStrategy]`
 |===
 
-Specifies the fully qualified class name of the link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy[MergeStrategy] implementation used to merge multiple configuration files into one.
+Specifies the fully qualified class name of the
+`link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy.html[MergeStrategy]`
+implementation used to merge multiple configuration files into one.
