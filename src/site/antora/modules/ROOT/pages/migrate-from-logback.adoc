@@ -1,0 +1,65 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+:logback-link: https://logback.qos.ch/[Logback]
+:slf4j-link: https://www.slf4j.org/[SLF4J]
+
+= Migrating from Logback
+
+{logback-link} is a logging implementation for the {slf4j-link} logging API, just like Log4j Core is a logging implementation for the xref:manual/api.adoc[Log4j API].
+In this page we will guide you through migrating from Logback to Log4j Core as your logging implementation.
+
+[TIP]
+====
+Instead of migrating your logging implementation, Logback, are you looking for migrating your logging API, SLF4J?
+Please refer to xref:migrate-from-slf4j.adoc[].
+====
+
+.This guide assumes you know the logging API, implementation, and bridge concepts. If not, click for an introduction.
+[%collapsible]
+====
+
+include::partial$concepts.adoc[tag=!software-type]
+
+====
+
+[#migrating]
+== Migrating
+
+You either have an application using Logback at runtime, or have a library using Logback for tests.
+In either case, you can replace Logback with Log4j Core as follows:
+
+. Remove `ch.qos.logback:logback-classic` dependency
+
+. Remove `logback.xml` and `logback-test.xml` files
+
+. Follow the instructions shared in the _"Getting started"_ page
+** xref:manual/getting-started.adoc#install-app[for applications]
+** xref:manual/getting-started.adoc#install-lib[for libraries]
+
+. It is highly likely that either you or some of your (direct or transitive) dependencies using SLF4J too.
+If that is the case, make sure to install the SLF4J-to-Log4j bridge explained in xref:manual/getting-started.adoc[].
+
+It might not always be trivial to match the contents of the newly created `log4j2.xml` and `log4j2-test.xml` files with your old `logback.xml` and `logback-test.xml` files.
+While all Logback components have corresponding equivalents in Log4j Core, they might not be sharing the same name or configuration.
+To assist with migrating Logback configuration components to Log4j Core, see the following pages:
+
+* xref:manual/appenders.adoc[]
+* xref:manual/layouts.adoc[]
+* xref:manual/filters.adoc[]
+
+For the complete list of all Log4j configuration knobs, see xref:manual/configuration.adoc[the Configuration page].

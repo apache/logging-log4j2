@@ -16,8 +16,6 @@
 ////
 = Manual
 
-== Welcome to Apache Log4j!
-
 Apache Log4j is a versatile, industrial-grade Java logging framework composed of an API, its implementation,  and components to assist the deployment for various use cases.
 The project is actively maintained by a {logging-services-url}/team-list.html[team] of volunteers and {logging-services-url}/support[support]ed by a big community.
 
@@ -38,6 +36,7 @@ Log4j is an excellent choice for any Java application that needs logging capabil
 It is user-friendly, fast, and flexible. You can use it to log messages at 
 different levels of severity, from debug to fatal, and you can configure it to 
 log messages to various destinations, such as files, databases, or the console.
+See xref:manual/getting-started.adoc[] for an introduction.
 
 == When not to use Log4j?
 
@@ -58,6 +57,7 @@ include::partial$log4j-features.adoc[]
 
 == How to learn more?
 
+* xref:manual/getting-started.adoc[How can I get started with Log4j?]
 * xref:manual/installation.adoc[How can I install Log4j?]
 * xref:manual/configuration.adoc[How can I configure Log4j?]
 * xref:manual/api.adoc[How can I use Log4j API?]
