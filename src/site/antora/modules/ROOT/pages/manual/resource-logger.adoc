@@ -19,7 +19,7 @@
 
 == ScopedResourceLogger
 
-The link:../log4j-api/apidocs/org/apache/logging/log4j/ScopedResourceLogger.html[`ScopedResourceLogger`]
+The link:../javadoc/log4j-api/org/apache/logging/log4j/ScopedResourceLogger.html[`ScopedResourceLogger`]
 is available in Log4j API releases 2.24.0 and greater.
 
 A `ScopedResourceLogger` is a special kind of Logger that:

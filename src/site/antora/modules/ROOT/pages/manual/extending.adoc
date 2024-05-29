@@ -47,10 +47,13 @@ Applications may change the LoggerContextFactory that will be used by
 
 1.  Create a binding to the logging implementation.
 ..  Implement a new link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/Log4jContextFactory.html[`LoggerContextFactory`].
-..  Implement a class that extends link:../javadoc/log4j-core/org/apache/logging/spi/Provider.html[`org.apache.logging.spi.Provider`]
+..  Implement a class that extends
+link:../javadoc/log4j-api/org/apache/logging/spi/Provider.html[`org.apache.logging.spi.Provider`]
 with a no-arg constructor that calls super-class's constructor with the
 Priority, the API version(s), `LoggerContextFactory` class, and
-optionally, a link:../javadoc/log4j-core/org/apache/logging/log4j/spi/ThreadContextMap.html[`ThreadContextMap`] implementation class.
+optionally, a
+link:../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html[`ThreadContextMap`]
+implementation class.
 ..  Create a `META-INF/services/org.apache.logging.spi.Provider` file
 that contains the name of the class that implements
 `org.apache.logging.spi.Provider`.
@@ -65,8 +68,7 @@ classpath.
 == ContextSelector
 
 ContextSelectors are called by the
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/Log4jContextFactory.html[Log4j
-LoggerContext factory]. They perform the actual work of locating or
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/Log4jContextFactory.html[Log4j LoggerContext factory]. They perform the actual work of locating or
 creating a LoggerContext, which is the anchor for Loggers and their
 configuration. ContextSelectors are free to implement any mechanism they
 desire to manage LoggerContexts. The default Log4jContextFactory checks

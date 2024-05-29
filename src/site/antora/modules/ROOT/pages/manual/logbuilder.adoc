@@ -53,7 +53,7 @@ Next to the traditional `info()`, `error()`, etc. `Logger` methods, Log4j API al
 
 Developers use Log4j traditionally with logging statements like:
 
-[source, java]
+[source,java]
 ----
 LOGGER.error("Unable to process request due to {}", errorCode, exception);
 ----
@@ -66,13 +66,14 @@ This style has certain drawbacks:
 The fluent interface (also referred to as _the fluent API_) has been added to Log4j API to increase code legibility and avoid ambiguities.
 For instance, the above `error()` call can be expressed using the fluent API as follows:
 
-[source, java]
+[source,java]
 ----
 LOGGER
     .atError() // <1>
     .withThrowable(exception) // <2>
     .log("Unable to process request due to {}", errorCode); // <3>
 ----
+
 <1> The log level is set to `ERROR`
 <2> The associated exception is attached
 <3> The log message is formatted with the `errorCode` parameter
@@ -82,7 +83,9 @@ With this syntax, it is clear that the `exception` is part of the log event and 
 [#usage]
 == Usage
 
-The fluent API entry point is link:../log4j-api/apidocs/org/apache/logging/log4j/LogBuilder.html[`LogBuilder`], which can be obtained by using one of the following `Logger` methods:
+The fluent API entry point is
+link:../javadoc/log4j-api/org/apache/logging/log4j/LogBuilder.html[`LogBuilder`],
+which can be obtained by using one of the following `Logger` methods:
 
 - `atTrace()`
 - `atDebug()`
@@ -97,13 +100,13 @@ The fluent API entry point is link:../log4j-api/apidocs/org/apache/logging/log4j
 
 - `withMarker()`
 - `withThrowable()`
-- `withLocation()` 
+- `withLocation()`
 
 After that, developers can call the `log()` method to finalize and send the log event.
 
 In the following example, we log a parameterized message at `INFO` level, and attach a marker and an exception to the log event:
 
-[source, java]
+[source,java]
 ----
 LOGGER
     .atInfo() // <1>
@@ -111,6 +114,7 @@ LOGGER
     .withThrowable(exception) // <3>
     .log("Unable to process request due to {}", errorCode); // <4>
 ----
+
 <1> The log level is set to `INFO`
 <2> `marker` is attached to the log event
 <3> `exception` is attached to the log event
@@ -121,13 +125,14 @@ LOGGER
 
 The fluent API allows users to instruct the location information to be *eagerly* populated in the log event using the `withLocation()` method:
 
-[source, java]
+[source,java]
 ----
 LOGGER
     .atInfo()
     .withLocation() // <1>
     .log("Login for user with ID `{}` failed", userId);
 ----
+
 <1> Instructing to eagerly populate the location information
 
 Capturing location information using `withLocation()` is orders of magnitude more efficient compared to letting the `Logger` to figure it out indirectly.
