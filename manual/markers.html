@@ -429,13 +429,13 @@ For example, one can use the snippet below to redirect all SQL-related logs to t
 <div id="example_configuration_xml--panel" class="tabpanel" aria-labelledby="example_configuration_xml">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">    &lt;logger name="example" level="ALL"&gt;<i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">    &lt;Logger name="example" level="ALL"&gt;<i class="conum" data-value="1"></i><b>(1)</b>
       &lt;AppenderRef ref="SQL_LOG"&gt;
         &lt;MarkerFilter marker="SQL"
                       onMatch="ACCEPT"
                       onMismatch="DENY"/&gt;<i class="conum" data-value="2"></i><b>(2)</b>
       &lt;/AppenderRef&gt;
-    &lt;/logger&gt;</code></pre>
+    &lt;/Logger&gt;</code></pre>
 </div>
 </div>
 </div>
