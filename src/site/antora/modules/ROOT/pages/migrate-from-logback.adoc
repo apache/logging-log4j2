@@ -29,12 +29,10 @@ Instead of migrating your logging implementation, Logback, are you looking for m
 Please refer to xref:migrate-from-slf4j.adoc[].
 ====
 
-.This guide assumes you know the logging API, implementation, and bridge concepts. If not, click for an introduction.
+.Struggling with the logging API, implementation, and bridge concepts? Click for an introduction.
 [%collapsible]
 ====
-
 include::partial$concepts.adoc[tag=!software-type]
-
 ====
 
 [#migrating]
@@ -45,13 +43,15 @@ In either case, you can replace Logback with Log4j Core as follows:
 
 . Remove `ch.qos.logback:logback-classic` dependency
 
+. Remove `org.apache.logging.log4j:log4j-to-slf4j` dependency, if present
+
 . Remove `logback.xml` and `logback-test.xml` files
 
 . Follow the instructions shared in the _"Getting started"_ page
 ** xref:manual/getting-started.adoc#install-app[for applications]
 ** xref:manual/getting-started.adoc#install-lib[for libraries]
 
-. It is highly likely that either you or some of your (direct or transitive) dependencies using SLF4J too.
+. Logback accepts It is highly likely that you were routing all foreign logging APIs to Logback (you or some of your (direct or transitive) dependencies using SLF4J too.
 If that is the case, make sure to install the SLF4J-to-Log4j bridge explained in xref:manual/getting-started.adoc[].
 
 It might not always be trivial to match the contents of the newly created `log4j2.xml` and `log4j2-test.xml` files with your old `logback.xml` and `logback-test.xml` files.
