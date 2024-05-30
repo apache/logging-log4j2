@@ -28,6 +28,10 @@ content:
         - target/generated-site/antora
       edit_url:
 
+runtime:
+  log:
+    failure_level: error
+
 asciidoc:
   attributes:
     # JSON Template Layout manual page has a deep sectioning, support it.

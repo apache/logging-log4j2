@@ -128,9 +128,7 @@ If more extensive authentication is required an `AuthorizationProvider` can be i
 xref:manual/systemproperties.adoc#log4j.auth.provider[`log4j.auth.provider`]
 system property, in log4j2.component.properties or in Spring's `bootstrap.yml` using either the `log4j2.authorizationProvider` or `logging.auth.authorizationProvider` key.
 
-For the properties required by TLS configuration see
-xref:manual/systemproperties
-.adoc#properties-transport-security[the Transport Security configuration].
+For the properties required by TLS configuration see xref:manual/systemproperties.adoc#properties-transport-security[the Transport Security configuration].
 
 == Requirements
 
