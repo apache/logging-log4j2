@@ -394,8 +394,8 @@ Gradle users should refer to the https://docs.gradle.org/current/userguide/platf
 [#impl-core-bridge-jboss-logging]
 ===== Installing JBoss Logging-to-Log4j bridge
 
-The JBoss Logging API is shipped with an integrated bridge to Log4j API and requires no steps on your part.
-See https://github.com/jboss-logging/jboss-logging?tab=readme-ov-file#supported-log-managers[Supported Log Managers] for more information.
+JBoss Logging is shipped with an integrated bridge to Log4j API and requires no steps on your part.
+See https://github.com/jboss-logging/jboss-logging/blob/main/README.adoc#supported-log-managers[Supported Log Managers] for more information.
 
 [#impl-core-spring-boot]
 ==== Installing Log4j Core for Spring Boot applications
