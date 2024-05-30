@@ -269,7 +269,7 @@ To complete the installation, Log4j needs to be configured.
 Please continue with xref:#config-app[]
 
 [#config-app]
-== How do I configure Log4j Core to run my application?
+== How do I configure Log4j Core to run my **application**?
 
 This section explains configuring Log4j on how log events should be processed.
 
