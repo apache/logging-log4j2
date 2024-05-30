@@ -32,10 +32,17 @@
     <!-- Log just the SQL -->
     <Logger name="org.hibernate.SQL" level="DEBUG"/>
 
-    <!-- Log JDBC bind parameters and extracted values -->
+    <!-- Log JDBC bind parameters and extracted values
+
+         Warning! <1>
+         JDBC bind parameters can contain sensitive data!
+         Passwords, credit card numbers, etc.
+         Use these logger configurations with care! -->
+    <!--
     <Logger name="org.hibernate.type" level="TRACE"/>
     <Logger name="org.hibernate.orm.jdbc.bind" level="TRACE"/>
     <Logger name="org.hibernate.orm.jdbc.extract" level="TRACE"/>
+    -->
 
     <Root level="WARN">
       <AppenderRef ref="CONSOLE"/>

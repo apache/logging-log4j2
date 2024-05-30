@@ -42,7 +42,7 @@ XML::
 .Snippet from an example {antora-examples-url}/hibernate/log4j2.xml[`log4j2.xml`] configuring Hibernate-specific loggers
 [source,xml]
 ----
-include::example$hibernate/log4j2.xml[lines=30..38,indent=0]
+include::example$hibernate/log4j2.xml[lines=30..45,indent=0]
 ----
 
 JSON::
@@ -50,7 +50,7 @@ JSON::
 .Snippet from an example {antora-examples-url}/hibernate/log4j2.json[`log4j2.json`] configuring Hibernate-specific loggers
 [source,xml]
 ----
-include::example$hibernate/log4j2.json[lines=9..32,indent=0]
+include::example$hibernate/log4j2.json[lines=9..36,indent=0]
 ----
 
 YAML::
@@ -58,7 +58,7 @@ YAML::
 .Snippet from an example {antora-examples-url}/hibernate/log4j2.yaml[`log4j2.yaml`] configuring Hibernate-specific loggers
 [source,xml]
 ----
-include::example$hibernate/log4j2.yaml[lines=24..38,indent=0]
+include::example$hibernate/log4j2.yaml[lines=24..44,indent=0]
 ----
 
 Java properties::
@@ -66,9 +66,10 @@ Java properties::
 .Snippet from an example {antora-examples-url}/hibernate/log4j2.properties[`log4j2.properties`] configuring Hibernate-specific loggers
 [source,xml]
 ----
-include::example$hibernate/log4j2.properties[lines=21..31]
+include::example$hibernate/log4j2.properties[lines=21..37]
 ----
 ====
+<1> Due to the sensitivity of the data involved, you are strongly advised to use these logger configurations **only in development environments**.
 
 See {hibernate-manual-url}#best-practices-logging[the Logging Best Practices section in Hibernate Manual] for further details.
 
