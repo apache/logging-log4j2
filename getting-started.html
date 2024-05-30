@@ -375,7 +375,7 @@ It can help us with common logging tasks and lets us focus on the application lo
 <p>We will need a <strong>BOM</strong> (Bill of Materials) to manage the versions of the dependencies.
 In addition, we will need the <code>log4j-api</code> dependency itself.</p>
 </div>
-<div id="_tabs_1" class="openblock tabs is-loading">
+<div id="_tabs_1" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
@@ -685,7 +685,7 @@ First of all, add the <code>log4j-core</code> <strong>runtime</strong> dependenc
 Second, it is highly recommended to add the <code>log4j-layout-template-json</code> <strong>runtime</strong> dependency to encode log events in JSON.
 This is the most secure way to format log events and should preferred over the default <code>PatternLayout</code>, at least for production deployments.</p>
 </div>
-<div id="_tabs_2" class="openblock tabs is-loading">
+<div id="_tabs_2" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
@@ -835,7 +835,7 @@ This way, SLF4J calls will be processed by Log4j Core too.</p>
 <div class="paragraph">
 <p>It is similarly easy: just add the new dependency `log4j-slf4j2-impl to your application.</p>
 </div>
-<div id="_tabs_3" class="openblock tabs is-loading">
+<div id="_tabs_3" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
@@ -927,7 +927,7 @@ Please skip to the <a href="#config-app">How do I configure Log4j to run my <str
 Very similar to the previous section, in most cases it is useful to also add the <code>log4j-slf4j2-impl</code> dependency.
 SLF4J is a widely used logging API and this way, SLF4J calls will be processed by Log4j Core too.</p>
 </div>
-<div id="_tabs_4" class="openblock tabs is-loading">
+<div id="_tabs_4" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
