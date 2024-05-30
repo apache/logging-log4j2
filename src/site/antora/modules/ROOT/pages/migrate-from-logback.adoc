@@ -51,8 +51,31 @@ In either case, you can replace Logback with Log4j Core as follows:
 ** xref:manual/getting-started.adoc#install-app[for applications]
 ** xref:manual/getting-started.adoc#install-lib[for libraries]
 
-. Logback accepts It is highly likely that you were routing all foreign logging APIs to Logback (you or some of your (direct or transitive) dependencies using SLF4J too.
+. It is highly likely that you were routing all foreign logging APIs to Logback..
 If that is the case, make sure to install the SLF4J-to-Log4j bridge explained in xref:manual/getting-started.adoc[].
++
+In order to forward all foreign APIs **directly** to Log4j API, you can use the cheat shee below.
++
+.Dependency migration cheat sheet
+[cols="1,1"]
+|===
+| If dependency present | replace with
+
+| `https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-to-slf4j[org.apache.logging.log4j:log4j-to-slf4j]`
+| `https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-slf4j2-impl[org.apache.logging.log4j:log4j-slf4j2-impl]`
+
+| `https://central.sonatype.com/artifact/org.slf4j/jcl-over-slf4j[org.slf4j:jcl-over-slf4j]`
+| `https://central.sonatype.com/artifact/commons-logging/commons-logging[commons-logging:commons-logging]` version 1.3.0 or later
+
+| `https://central.sonatype.com/artifact/org.slf4j/jul-to-slf4j[org.slf4j:jul-to-slf4j]`
+| `https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-jul[org.apache.logging.log4j:log4j-jul]`
+
+| `https://central.sonatype.com/artifact/org.slf4j/log4j-over-slf4j[org.slf4j:log4j-over-slf4j]`
+| `https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-1.2-api[org.apache.logging.log4j:log4j-1.2-api]`
+
+| `https://central.sonatype.com/artifact/org.springframework.boot/spring-boot-starter-logging[org.springframework:spring-boot-starter-logging]`
+| `https://central.sonatype.com/artifact/org.springframework.boot/spring-boot-starter-log4j2[org.springframework:spring-boot-starter-log4j2]`
+|===
 
 It might not always be trivial to match the contents of the newly created `log4j2.xml` and `log4j2-test.xml` files with your old `logback.xml` and `logback-test.xml` files.
 While all Logback components have corresponding equivalents in Log4j Core, they might not be sharing the same name or configuration.
