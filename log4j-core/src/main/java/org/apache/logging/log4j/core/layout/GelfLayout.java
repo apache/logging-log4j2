@@ -67,7 +67,7 @@ import org.apache.logging.log4j.util.TriConsumer;
  * This layout does not implement chunking.
  * </p>
  *
- * @see <a href="http://docs.graylog.org/en/latest/pages/gelf.html#gelf">GELF specification</a>
+ * @see <a href="https://go2docs.graylog.org/current/getting_in_log_data/gelf.html#GELFPayloadSpecification">GELF specification</a>
  */
 @Plugin(name = "GelfLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class GelfLayout extends AbstractStringLayout {
