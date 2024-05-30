@@ -137,17 +137,22 @@ public final class MessageResolver implements EventResolver {
     private static EventResolver createObjectResolver(final String fallbackKey) {
         return (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
 
-            // Skip custom serializers for SimpleMessage.
+            // Skip custom serializers for `SimpleMessage`
             final Message message = logEvent.getMessage();
             final boolean simple = message instanceof SimpleMessage;
             if (!simple) {
 
-                // Try MultiformatMessage serializer.
+                // Try `Message` serializer
+                if (writeMessage(jsonWriter, message)) {
+                    return;
+                }
+
+                // Try `MultiformatMessage` serializer
                 if (writeMultiformatMessage(jsonWriter, message)) {
                     return;
                 }
 
-                // Try ObjectMessage serializer.
+                // Try `ObjectMessage` serializer
                 if (writeObjectMessage(jsonWriter, message)) {
                     return;
                 }
@@ -156,6 +161,20 @@ public final class MessageResolver implements EventResolver {
             // Fallback to plain String serializer.
             resolveString(fallbackKey, logEvent, jsonWriter);
         };
+    }
+
+    private static boolean writeMessage(final JsonWriter jsonWriter, final Message message) {
+
+        // Check the format
+        final String format = message.getFormat();
+        if (!FORMATS[0].equalsIgnoreCase(format)) {
+            return false;
+        }
+
+        // Write the formatted message
+        final String messageJson = message.getFormattedMessage();
+        jsonWriter.writeRawString(messageJson);
+        return true;
     }
 
     private static boolean writeMultiformatMessage(final JsonWriter jsonWriter, final Message message) {

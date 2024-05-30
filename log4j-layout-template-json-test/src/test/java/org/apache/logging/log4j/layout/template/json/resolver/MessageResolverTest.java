@@ -172,7 +172,7 @@ class MessageResolverTest {
     }
 
     @Test
-    void test_MapMessage_serialization() {
+    void test_MapMessage() {
 
         // Create the event template.
         final String eventTemplate = writeJson(asMap("message", asMap("$resolver", "message")));
@@ -200,5 +200,51 @@ class MessageResolverTest {
             assertThat(accessor.getString(new String[] {"message", "key3", "key3.1"}))
                     .isEqualTo("val3.1");
         });
+    }
+
+    @Test
+    void test_custom_Message() {
+
+        // Create the event template
+        final String eventTemplate = writeJson(asMap("$resolver", "message"));
+
+        // Create the layout
+        final JsonTemplateLayout layout = JsonTemplateLayout.newBuilder()
+                .setConfiguration(CONFIGURATION)
+                .setEventTemplate(eventTemplate)
+                .build();
+
+        // Create the log event with a `TestMessage`
+        final LogEvent logEvent = Log4jLogEvent.newBuilder()
+                .setMessage(new TestMessage())
+                .setTimeMillis(System.currentTimeMillis())
+                .build();
+
+        // Check the serialized event
+        usingSerializedLogEventAccessor(layout, logEvent, accessor -> assertThat(accessor.getString("foo"))
+                .isEqualTo("bar"));
+    }
+
+    private static final class TestMessage implements Message {
+
+        @Override
+        public String getFormattedMessage() {
+            return "{\"foo\": \"bar\"}";
+        }
+
+        @Override
+        public String getFormat() {
+            return "JSON";
+        }
+
+        @Override
+        public Object[] getParameters() {
+            return new Object[0];
+        }
+
+        @Override
+        public Throwable getThrowable() {
+            return null;
+        }
     }
 }
