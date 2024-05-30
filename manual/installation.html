@@ -88,29 +88,11 @@
   </li>
   <li class="nav-item" data-depth="0">
     <button class="nav-item-toggle"></button>
-    <span class="nav-text">Resources</span>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../faq.html">F.A.Q.</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../getting-started.html">Getting started</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="migration.html">Migrating from Log4j 2</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../development.html">Development</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-    <button class="nav-item-toggle"></button>
     <a class="nav-link" href="index.html">Manual</a>
 <ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="getting-started.html">Getting started</a>
+  </li>
   <li class="nav-item is-current-page" data-depth="1">
     <a class="nav-link" href="installation.html">Installation</a>
   </li>
@@ -196,6 +178,33 @@
   </li>
   <li class="nav-item" data-depth="0">
     <button class="nav-item-toggle"></button>
+    <span class="nav-text">Resources</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../faq.html">F.A.Q.</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="migration.html">Migrating from Log4j 2</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-logback.html">Migrating from Logback</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-slf4j.html">Migrating from SLF4J</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../hibernate.html">Integrating with Hibernate</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../development.html">Development</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
     <span class="nav-text">Components</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
@@ -272,7 +281,7 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="impatient"><a class="anchor" href="#impatient"></a>For the impatient</h2>
+<h2 id="shortcuts"><a class="anchor" href="#shortcuts"></a>Shortcuts</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Below we share some shortcuts for the impatient.</p>
@@ -322,7 +331,8 @@ See <a href="#impl-core">Installing Log4j Core</a>.</p>
 <dt class="hdlist1">Logging API</dt>
 <dd>
 <p>A logging API is an interface your code or your dependencies directly logs against.
-It is implementation agnostic.
+It is required at compile-time.
+It is implementation agnostic to ensure that your application can write logs, but is not tied to a specific logging implementation.
 Log4j API, <a href="https://www.slf4j.org/">SLF4J</a>, <a href="https://docs.oracle.com/en/java/javase/17/core/java-logging-overview.html">JUL (Java Logging)</a>, <a href="https://commons.apache.org/proper/commons-logging/">JCL (Apache Commons Logging)</a>, <a href="https://openjdk.org/jeps/264">JPL (Java Platform Logging)</a> and <a href="https://github.com/jboss-logging/jboss-logging">JBoss Logging</a> are major logging APIs.</p>
 </dd>
 </dl>
@@ -333,21 +343,6 @@ Log4j API, <a href="https://www.slf4j.org/">SLF4J</a>, <a href="https://docs.ora
 <dd>
 <p>A logging implementation is only required at runtime and can be changed without the need to recompile your software.
 Log4j Core, <a href="https://docs.oracle.com/en/java/javase/17/core/java-logging-overview.html">JUL (Java Logging)</a>, <a href="https://logback.qos.ch/">Logback</a> are the most well-known logging implementations.</p>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Note that JUL and Log4j provide both an API and its implementation.
-In the case of Log4j, the API is called <em>Log4j API</em>, and its reference implementation is called <em>Log4j Core</em>.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
 </dd>
 </dl>
 </div>
@@ -375,9 +370,8 @@ If a logging implementation is required by tests of the library, it should be in
 <dt class="hdlist1">Applications</dt>
 <dd>
 <p>They need a logging implementation, but also bridges of each of the major logging APIs to support log statements from the libraries they use.
-For instance, your application might be logging against Log4j API and one of its dependencies against SLF4J.
-In this case, you need to install <code>log4j-core</code> and <code>log4j-slf4j2-impl</code>.
-(This is an example, we will elaborate on this case more in <a href="#impl-core">Installing Log4j Core</a>.)</p>
+For example, your application might be logging against Log4j API and one of its dependencies against SLF4J.
+In this case, you need to install <code>log4j-core</code> and <code>log4j-slf4j2-impl</code>.</p>
 </dd>
 </dl>
 </div>
@@ -911,8 +905,8 @@ build tool:</p>
 <div class="sect4">
 <h5 id="impl-core-bridge-jboss-logging"><a class="anchor" href="#impl-core-bridge-jboss-logging"></a>Installing JBoss Logging-to-Log4j bridge</h5>
 <div class="paragraph">
-<p>The JBoss Logging API is shipped with an integrated bridge to Log4j API and requires no steps on your part. See
-<a href="https://github.com/jboss-logging/jboss-logging?tab=readme-ov-file#supported-log-managers">Supported Log Managers</a> for more information.</p>
+<p>JBoss Logging is shipped with an integrated bridge to Log4j API and requires no steps on your part.
+See <a href="https://github.com/jboss-logging/jboss-logging/blob/main/README.adoc#supported-log-managers">Supported Log Managers</a> for more information.</p>
 </div>
 </div>
 </div>

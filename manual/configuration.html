@@ -88,29 +88,11 @@
   </li>
   <li class="nav-item" data-depth="0">
     <button class="nav-item-toggle"></button>
-    <span class="nav-text">Resources</span>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../faq.html">F.A.Q.</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../getting-started.html">Getting started</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="migration.html">Migrating from Log4j 2</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../development.html">Development</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-    <button class="nav-item-toggle"></button>
     <a class="nav-link" href="index.html">Manual</a>
 <ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="getting-started.html">Getting started</a>
+  </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="installation.html">Installation</a>
   </li>
@@ -191,6 +173,33 @@
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../javadoc.html">Java API reference</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Resources</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../faq.html">F.A.Q.</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="migration.html">Migrating from Log4j 2</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-logback.html">Migrating from Logback</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-slf4j.html">Migrating from SLF4J</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../hibernate.html">Integrating with Hibernate</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../development.html">Development</a>
   </li>
 </ul>
   </li>
@@ -635,8 +644,8 @@ They are <strong>matched by type</strong> against the list of nested components 
 <li id="_tabs_4_yaml" class="tab">
 <p>YAML</p>
 </li>
-<li id="_tabs_4_java_properties" class="tab">
-<p>Java properties</p>
+<li id="_tabs_4_properties" class="tab">
+<p>Properties</p>
 </li>
 </ul>
 </div>
@@ -807,7 +816,7 @@ The snippet below represents two plugins of type <code>File</code>.</p>
 </table>
 </div>
 </div>
-<div id="_tabs_4_java_properties--panel" class="tabpanel" aria-labelledby="_tabs_4_java_properties">
+<div id="_tabs_4_properties--panel" class="tabpanel" aria-labelledby="_tabs_4_properties">
 <div class="admonitionblock warning">
 <table>
 <tr>
@@ -920,8 +929,8 @@ and
 <li id="_tabs_5_yaml" class="tab">
 <p>YAML</p>
 </li>
-<li id="_tabs_5_java_properties" class="tab">
-<p>Java properties</p>
+<li id="_tabs_5_properties" class="tab">
+<p>Properties</p>
 </li>
 </ul>
 </div>
@@ -1043,7 +1052,7 @@ and
 </div>
 </div>
 </div>
-<div id="_tabs_5_java_properties--panel" class="tabpanel" aria-labelledby="_tabs_5_java_properties">
+<div id="_tabs_5_properties--panel" class="tabpanel" aria-labelledby="_tabs_5_properties">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">Appenders.Console.name = CONSOLE <i class="conum" data-value="1"></i><b>(1)</b>
@@ -1361,8 +1370,8 @@ in your application is assigned to one of these logger configurations (see
 <li id="_tabs_6_yaml" class="tab">
 <p>YAML</p>
 </li>
-<li id="_tabs_6_java_properties" class="tab">
-<p>Java properties</p>
+<li id="_tabs_6_properties" class="tab">
+<p>Properties</p>
 </li>
 </ul>
 </div>
@@ -1447,7 +1456,7 @@ in your application is assigned to one of these logger configurations (see
 </div>
 </div>
 </div>
-<div id="_tabs_6_java_properties--panel" class="tabpanel" aria-labelledby="_tabs_6_java_properties">
+<div id="_tabs_6_properties--panel" class="tabpanel" aria-labelledby="_tabs_6_properties">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">Loggers.Root.level = INFO <i class="conum" data-value="1"></i><b>(1)</b>
@@ -1732,8 +1741,8 @@ methods.</p>
 <li id="_tabs_7_yaml" class="tab">
 <p>YAML</p>
 </li>
-<li id="_tabs_7_java_properties" class="tab">
-<p>Java properties</p>
+<li id="_tabs_7_properties" class="tab">
+<p>Properties</p>
 </li>
 </ul>
 </div>
@@ -1797,7 +1806,7 @@ methods.</p>
 </div>
 </div>
 </div>
-<div id="_tabs_7_java_properties--panel" class="tabpanel" aria-labelledby="_tabs_7_java_properties">
+<div id="_tabs_7_properties--panel" class="tabpanel" aria-labelledby="_tabs_7_properties">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">Loggers.Root.Property.name = client.address
@@ -1899,8 +1908,8 @@ Log events that are more specific than this setting will be filtered out.</p>
 <li id="_tabs_8_yaml" class="tab">
 <p>YAML</p>
 </li>
-<li id="_tabs_8_java_properties" class="tab">
-<p>Java properties</p>
+<li id="_tabs_8_properties" class="tab">
+<p>Properties</p>
 </li>
 </ul>
 </div>
@@ -1956,7 +1965,7 @@ Log events that are more specific than this setting will be filtered out.</p>
 </div>
 </div>
 </div>
-<div id="_tabs_8_java_properties--panel" class="tabpanel" aria-labelledby="_tabs_8_java_properties">
+<div id="_tabs_8_properties--panel" class="tabpanel" aria-labelledby="_tabs_8_properties">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">Properties.Property[1].name = log.dir
@@ -2128,8 +2137,8 @@ Otherwise, the expansion of <code>${name:-default}</code> is substituted.</p>
 <li id="_tabs_9_yaml" class="tab">
 <p>YAML</p>
 </li>
-<li id="_tabs_9_java_properties" class="tab">
-<p>Java properties</p>
+<li id="_tabs_9_properties" class="tab">
+<p>Properties</p>
 </li>
 </ul>
 </div>
@@ -2175,7 +2184,7 @@ Otherwise, the expansion of <code>${name:-default}</code> is substituted.</p>
 </div>
 </div>
 </div>
-<div id="_tabs_9_java_properties--panel" class="tabpanel" aria-labelledby="_tabs_9_java_properties">
+<div id="_tabs_9_properties--panel" class="tabpanel" aria-labelledby="_tabs_9_properties">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">Properties.Property[1].name = FOO
@@ -2271,8 +2280,8 @@ If your configuration contains, for example:</p>
 <li id="_tabs_10_yaml" class="tab">
 <p>YAML</p>
 </li>
-<li id="_tabs_10_java_properties" class="tab">
-<p>Java properties</p>
+<li id="_tabs_10_properties" class="tab">
+<p>Properties</p>
 </li>
 </ul>
 </div>
@@ -2325,7 +2334,7 @@ If your configuration contains, for example:</p>
 </div>
 </div>
 </div>
-<div id="_tabs_10_java_properties--panel" class="tabpanel" aria-labelledby="_tabs_10_java_properties">
+<div id="_tabs_10_properties--panel" class="tabpanel" aria-labelledby="_tabs_10_properties">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">Properties.Property[1].name = logging.file
@@ -2409,8 +2418,8 @@ In this case, you only need one dollar <code>$</code> sign.</p>
 <li id="_tabs_11_yaml" class="tab">
 <p>YAML</p>
 </li>
-<li id="_tabs_11_java_properties" class="tab">
-<p>Java properties</p>
+<li id="_tabs_11_properties" class="tab">
+<p>Properties</p>
 </li>
 </ul>
 </div>
@@ -2475,7 +2484,7 @@ In this case, you only need one dollar <code>$</code> sign.</p>
 </div>
 </div>
 </div>
-<div id="_tabs_11_java_properties--panel" class="tabpanel" aria-labelledby="_tabs_11_java_properties">
+<div id="_tabs_11_properties--panel" class="tabpanel" aria-labelledby="_tabs_11_properties">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">Appenders.Routing.name = ROUTING
@@ -2544,8 +2553,8 @@ and
 <li id="_tabs_12_yaml" class="tab">
 <p>YAML</p>
 </li>
-<li id="_tabs_12_java_properties" class="tab">
-<p>Java properties</p>
+<li id="_tabs_12_properties" class="tab">
+<p>Properties</p>
 </li>
 </ul>
 </div>
@@ -2641,7 +2650,7 @@ and
 </div>
 </div>
 </div>
-<div id="_tabs_12_java_properties--panel" class="tabpanel" aria-labelledby="_tabs_12_java_properties">
+<div id="_tabs_12_properties--panel" class="tabpanel" aria-labelledby="_tabs_12_properties">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">Appenders.File.name = MAIN
@@ -2695,8 +2704,8 @@ If none of the arbiters match, the configuration from the <code>DefaultArbiter</
 <li id="_tabs_13_yaml" class="tab">
 <p>YAML</p>
 </li>
-<li id="_tabs_13_java_properties" class="tab">
-<p>Java properties</p>
+<li id="_tabs_13_properties" class="tab">
+<p>Properties</p>
 </li>
 </ul>
 </div>
@@ -2743,7 +2752,7 @@ If none of the arbiters match, the configuration from the <code>DefaultArbiter</
 </div>
 </div>
 </div>
-<div id="_tabs_13_java_properties--panel" class="tabpanel" aria-labelledby="_tabs_13_java_properties">
+<div id="_tabs_13_properties--panel" class="tabpanel" aria-labelledby="_tabs_13_properties">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">Appenders.File.Select.SystemPropertyArbiter.propertyName = env <i class="conum" data-value="1"></i><b>(1)</b>

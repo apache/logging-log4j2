@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Javadoc API Documentation :: Apache Log4j</title>
-    <link rel="canonical" href="https://logging.apache.org/log4j/3.x/javadoc.html">
+    <title>Integrating with Hibernate :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/3.x/hibernate.html">
     <meta name="generator" content="Antora 3.2.0-alpha.4">
 <link rel="stylesheet" href="./_/css/site.css">
 <link rel="icon" href="./_/../_images/favicon.ico" type="image/x-icon">
@@ -171,7 +171,7 @@
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="plugin-reference.html">Plugin reference</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="1">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="javadoc.html">Java API reference</a>
   </li>
 </ul>
@@ -192,7 +192,7 @@
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="migrate-from-slf4j.html">Migrating from SLF4J</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item is-current-page" data-depth="1">
     <a class="nav-link" href="hibernate.html">Integrating with Hibernate</a>
   </li>
   <li class="nav-item" data-depth="1">
@@ -261,55 +261,237 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="index.html">Home</a></li>
-    <li>References</li>
-    <li><a href="javadoc.html">Java API reference</a></li>
+    <li>Resources</li>
+    <li><a href="hibernate.html">Integrating with Hibernate</a></li>
   </ul>
 </nav>
-<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/main/src/site/antora/modules/ROOT/pages/javadoc.adoc">Edit this Page</a></div>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/main/src/site/antora/modules/ROOT/pages/hibernate.adoc">Edit this Page</a></div>
 </div>
   <div class="content">
 <aside class="toc sidebar" data-title="Contents" data-levels="4">
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Javadoc API Documentation</h1>
+<h1 class="page">Integrating with Hibernate</h1>
+<div id="preamble">
+<div class="sectionbody">
 <div class="paragraph">
-<p>The table below contains links to the Javadoc API Documentation for the components you are most likely to use directly in code.</p>
+<p><a href="https://hibernate.org">Hibernate</a> is an Object/Relational Mapping (ORM) solution for Java environments.
+It uses <a href="https://github.com/jboss-logging/jboss-logging">JBoss Logging</a> as its logging API.
+If you have a working <a href="manual/installation.html#impl-core" class="xref page">Log4j installation</a>, JBoss Logging requires no extra installation steps on your part, since it is shipped with an integrated bridge to Log4j API – see <a href="https://github.com/jboss-logging/jboss-logging/blob/main/README.adoc#supported-log-managers">Supported Log Managers by JBoss Logging</a> for more information.</p>
 </div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
+<details>
+<summary class="title">Struggling with the logging API, implementation, and bridge concepts? Click for an introduction.</summary>
+<div class="content">
+<div id="logging-api" class="dlist">
+<dl>
+<dt class="hdlist1">Logging API</dt>
+<dd>
+<p>A logging API is an interface your code or your dependencies directly logs against.
+It is required at compile-time.
+It is implementation agnostic to ensure that your application can write logs, but is not tied to a specific logging implementation.
+Log4j API, <a href="https://www.slf4j.org/">SLF4J</a>, <a href="https://docs.oracle.com/en/java/javase/17/core/java-logging-overview.html">JUL (Java Logging)</a>, <a href="https://commons.apache.org/proper/commons-logging/">JCL (Apache Commons Logging)</a>, <a href="https://openjdk.org/jeps/264">JPL (Java Platform Logging)</a> and <a href="https://github.com/jboss-logging/jboss-logging">JBoss Logging</a> are major logging APIs.</p>
+</dd>
+</dl>
+</div>
+<div id="logging-impl" class="dlist">
+<dl>
+<dt class="hdlist1">Logging implementation</dt>
+<dd>
+<p>A logging implementation is only required at runtime and can be changed without the need to recompile your software.
+Log4j Core, <a href="https://docs.oracle.com/en/java/javase/17/core/java-logging-overview.html">JUL (Java Logging)</a>, <a href="https://logback.qos.ch/">Logback</a> are the most well-known logging implementations.</p>
+</dd>
+</dl>
+</div>
+<div id="logging-bridge" class="dlist">
+<dl>
+<dt class="hdlist1">Logging bridge</dt>
+<dd>
+<p>Logging implementations accept input from a single logging API of their preference; Log4j Core from Log4j API, Logback from SLF4J, etc.
+A logging bridge is a simple logging implementation of a logging API that forwards all messages to a foreign logging API.
+Logging bridges allow a logging implementation to accept input from other logging APIs that are not their primary logging API.
+For instance, <code>log4j-slf4j2-impl</code> <em>bridges</em> SLF4J calls to Log4 API and effectively enables Log4j Core to accept input from SLF4J.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>To make things a little bit more tangible, consider the following visualization of a typical Log4j Core installation with bridges for an application:</p>
+</div>
+<div class="imageblock kroki">
+<div class="content">
+<img src="_images/diag-1fd758c2554d79996565796f77cf0f8dc6b3bca2.svg" alt="Visualization of a typical Log4j Core installation with SLF4J, JUL, and JPL bridges.">
+</div>
+<div class="title">Figure 1. Visualization of a typical Log4j Core installation with SLF4J, JUL, and JPL bridges.</div>
+</div>
+</div>
+</details>
+</div>
+</div>
+<div class="sect1">
+<h2 id="config"><a class="anchor" href="#config"></a>Configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>After successfully wiring Hibernate – to be precise, JBoss Logging – to log using Log4j API, you can fine-tune the verbosity of Hibernate loggers in your Log4j Core installation to accommodate your needs:</p>
+</div>
+<div id="_tabs_1" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_1_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_1_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_1_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_1_xml--panel" class="tabpanel" aria-labelledby="_tabs_1_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://raw.githubusercontent.com/apache/logging-log4j2/2.x/src/site/antora/modules/ROOT/examples/hibernate/log4j2.xml"><code>log4j2.xml</code></a> configuring Hibernate-specific loggers</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Loggers&gt;
+
+  &lt;!-- Log just the SQL --&gt;
+  &lt;Logger name="org.hibernate.SQL" level="DEBUG"/&gt;
+
+  &lt;!-- Log JDBC bind parameters and extracted values
+
+       Warning! <i class="conum" data-value="1"></i><b>(1)</b>
+       JDBC bind parameters can contain sensitive data!
+       Passwords, credit card numbers, etc.
+       Use these logger configurations with care! --&gt;
+  &lt;!--
+  &lt;Logger name="org.hibernate.type" level="TRACE"/&gt;
+  &lt;Logger name="org.hibernate.orm.jdbc.bind" level="TRACE"/&gt;
+  &lt;Logger name="org.hibernate.orm.jdbc.extract" level="TRACE"/&gt;
+  --&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_json--panel" class="tabpanel" aria-labelledby="_tabs_1_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://raw.githubusercontent.com/apache/logging-log4j2/2.x/src/site/antora/modules/ROOT/examples/hibernate/log4j2.json"><code>log4j2.json</code></a> configuring Hibernate-specific loggers</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">"Loggers": {
+  "Logger": [
+
+    // Log just the SQL
+    {
+      "name": "org.hibernate.SQL",
+      "level": "DEBUG"
+    },
+
+    // Log JDBC bind parameters and extracted values
+    //
+    // Warning! <i class="conum" data-value="1"></i><b>(1)</b>
+    // JDBC bind parameters can contain sensitive data:
+    // Passwords, credit card numbers, etc.
+    // Use these logger configurations with care!
+    //{
+    //  "name": "org.hibernate.type",
+    //  "level": "TRACE"
+    //},
+    //{
+    //  "name": "org.hibernate.orm.jdbc.bind",
+    //  "level": "TRACE"
+    //},
+    //{
+    //  "name": "org.hibernate.orm.jdbc.extract",
+    //  "level": "TRACE"
+    //}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_yaml--panel" class="tabpanel" aria-labelledby="_tabs_1_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://raw.githubusercontent.com/apache/logging-log4j2/2.x/src/site/antora/modules/ROOT/examples/hibernate/log4j2.yaml"><code>log4j2.yaml</code></a> configuring Hibernate-specific loggers</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">Loggers:
+
+  Logger:
+
+    #  Log just the SQL
+    - name: "org.hibernate.SQL"
+      level: "DEBUG"
+
+    # Log JDBC bind parameters and extracted values
+    #
+    # Warning! <i class="conum" data-value="1"></i><b>(1)</b>
+    # JDBC bind parameters can contain sensitive data!
+    # Passwords, credit card numbers, etc.
+    # Use these logger configurations with care!
+    #- name: "org.hibernate.type"
+    #  level: "TRACE"
+    #- name: "org.hibernate.orm.jdbc.bind"
+    #  level: "TRACE"
+    #- name: "org.hibernate.orm.jdbc.extract"
+    #  level: "TRACE"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_properties--panel" class="tabpanel" aria-labelledby="_tabs_1_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://raw.githubusercontent.com/apache/logging-log4j2/2.x/src/site/antora/modules/ROOT/examples/hibernate/log4j2.properties"><code>log4j2.properties</code></a> configuring Hibernate-specific loggers</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">Loggers.1.name = org.hibernate.SQL
+Loggers.1.level = DEBUG
+
+# Log JDBC bind parameters and extracted values
+#
+# Warning! <i class="conum" data-value="1"></i><b>(1)</b>
+# JDBC bind parameters can contain sensitive data!
+# Passwords, credit card numbers, etc.
+# Use these logger configurations with great care!
+#Loggers.2.name = org.hibernate.type
+#Loggers.2.level = TRACE
+#Loggers.3.name = org.hibernate.orm.jdbc.bind
+#Loggers.3.level = TRACE
+#Loggers.4.name = org.hibernate.orm.jdbc.bind
+#Loggers.4.level = TRACE
+
+Loggers.Root.level = WARN</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
 <tr>
-<th class="tableblock halign-left valign-top">Component</th>
-<th class="tableblock halign-left valign-top">Description</th>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Due to the sensitivity of the data involved, you are strongly advised to use these logger configurations <strong>only in development environments</strong>.</td>
 </tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api">Log4j 2 API</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The interface that applications should use and code against.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="javadoc/log4j-kit/index.html">Implementation helper kit</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Common helper functions for Log4j API implementations.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="javadoc/log4j-plugins/index.html">Dependency injection kit</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Dependency injection artifact used in Log4j 3 Core.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="javadoc/log4j-core/index.html">Reference implementation</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The standard implementation, also called the Log4j 3 Core, that contains Appenders, Filters, and more.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="javadoc/log4j-async-logger/index.html">Asynchronous logger</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">An alternative asynchronous logger implementation for Log4j 3 Core, based on LMAX Disruptor.</p></td>
-</tr>
-</tbody>
 </table>
+</div>
+<div class="paragraph">
+<p>See <a href="https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html#best-practices-logging">the Logging Best Practices section in Hibernate Manual</a> for further details.</p>
+</div>
+<div id="show-sql" class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>We strongly advise you to <strong>avoid using <a href="https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html#settings-hibernate.show_sql">the <code>hibernate.show_sql</code> property</a>!</strong>
+(It maps to <code>spring.jpa.show-sql</code> in Spring Boot.)
+<code>hibernate.show_sql</code> writes to the standard error output stream, not to the logging API.
+Logger-based configuration exemplified above gives a finer-grained control over logging and integrates with the logging system.
+<a href="https://stackoverflow.com/q/73734494/1278899">Combining <code>hibernate.show_sql</code> with logger-based configuration duplicates the logging effort.</a></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
 </article>
   </div>
 </main>
