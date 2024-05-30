@@ -38,6 +38,7 @@ asciidoc:
     log4j-docgen-type-filter-exclude-pattern: ^java\..+
     log4j-docgen-type-target-template: |
       #{{{replaceAll sourcedType.groupId "." "-"}}}_{{{replaceAll sourcedType.artifactId "." "-"}}}_{{{replaceAll sourcedType.type.className "." "-"}}}
+    tabs-sync-option: true
     # Force Kroki to download images at build time
     kroki-fetch-diagram: true
   extensions:
