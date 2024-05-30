@@ -119,7 +119,7 @@ xref:manual/systemproperties.adoc#log4j2.contextSelector[log4j2.contextSelector]
 
 A configuration that mixes asynchronous loggers might look like:
 
-[tabs,opts=sync]
+[tabs]
 ====
 XML::
 +
@@ -191,7 +191,7 @@ link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncWaitStrategy
 . Add an xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-AsyncWaitStrategyFactoryConfig[AsyncWaitStrategyFactory Log4j plugin]
 to your configuration.
 
-[tabs,opts=sync]
+[tabs]
 ====
 XML::
 +

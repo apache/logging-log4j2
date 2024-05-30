@@ -96,7 +96,7 @@ to your configuration file.
 For example, one can use the snippet below to redirect all SQL-related logs to the `SQL_LOG` appender:
 
 [[example-configuration]]
-[tabs,opts=sync]
+[tabs]
 ====
 XML::
 +

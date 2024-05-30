@@ -74,7 +74,7 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 
 The environment in which the script runs is different for each Log4j script-based component.
 
-[tabs,opts=sync]
+[tabs]
 ====
 XML::
 +
