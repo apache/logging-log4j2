@@ -337,8 +337,7 @@ public class WatchManager extends AbstractLifeCycle {
      * @since 2.11.0
      */
     public void unwatchFile(final File file) {
-        final Source source = new Source(file);
-        unwatch(source);
+        unwatch(new Source(file));
     }
 
     /**
