@@ -1,0 +1,12 @@
+org.apache.logging.log4j.plugins
+org.apache.logging.log4j.plugins.condition
+org.apache.logging.log4j.plugins.convert
+org.apache.logging.log4j.plugins.di
+org.apache.logging.log4j.plugins.di.resolver
+org.apache.logging.log4j.plugins.di.spi
+org.apache.logging.log4j.plugins.model
+org.apache.logging.log4j.plugins.name
+org.apache.logging.log4j.plugins.util
+org.apache.logging.log4j.plugins.validation
+org.apache.logging.log4j.plugins.validation.constraints
+org.apache.logging.log4j.plugins.validation.validators

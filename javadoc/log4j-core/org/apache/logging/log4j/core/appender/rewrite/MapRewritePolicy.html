@@ -81,9 +81,9 @@ loadScripts(document, 'script');</script>
 <dd><code><a href="RewritePolicy.html" title="interface in org.apache.logging.log4j.core.appender.rewrite">RewritePolicy</a></code></dd>
 </dl>
 <hr>
-<div class="type-signature"><span class="annotations">@Configurable(elementType="rewritePolicy",
-              printObject=true)
-@Plugin
+<div class="type-signature"><span class="annotations"><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Configurable.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@Configurable</a>(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Configurable.html#elementType()" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">elementType</a>="rewritePolicy",
+              <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Configurable.html#printObject()" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">printObject</a>=true)
+<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Plugin.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@Plugin</a>
 </span><span class="modifiers">public final class </span><span class="element-name type-name-label">MapRewritePolicy</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
 implements <a href="RewritePolicy.html" title="interface in org.apache.logging.log4j.core.appender.rewrite">RewritePolicy</a></span></div>
@@ -138,8 +138,8 @@ implements <a href="RewritePolicy.html" title="interface in org.apache.logging.l
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="MapRewritePolicy.html" title="class in org.apache.logging.log4j.core.appender.rewrite">MapRewritePolicy</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createPolicy(java.lang.String,org.apache.logging.log4j.core.util.KeyValuePair%5B%5D)" class="member-name-link">createPolicy</a><wbr>(@PluginAttribute <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
- @PluginElement("KeyValuePair") <a href="../../util/KeyValuePair.html" title="class in org.apache.logging.log4j.core.util">KeyValuePair</a>[]&nbsp;pairs)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createPolicy(java.lang.String,org.apache.logging.log4j.core.util.KeyValuePair%5B%5D)" class="member-name-link">createPolicy</a><wbr>(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginAttribute.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginAttribute</a> <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
+ <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginElement.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginElement</a>("KeyValuePair") <a href="../../util/KeyValuePair.html" title="class in org.apache.logging.log4j.core.util">KeyValuePair</a>[]&nbsp;pairs)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">The factory method to create the MapRewritePolicy.</div>
 </div>
@@ -212,11 +212,11 @@ implements <a href="RewritePolicy.html" title="interface in org.apache.logging.l
 <li>
 <section class="detail" id="createPolicy(java.lang.String,org.apache.logging.log4j.core.util.KeyValuePair[])">
 <h3>createPolicy</h3>
-<div class="member-signature"><span class="annotations">@PluginFactory
-</span><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="MapRewritePolicy.html" title="class in org.apache.logging.log4j.core.appender.rewrite">MapRewritePolicy</a></span>&nbsp;<span class="element-name">createPolicy</span><wbr><span class="parameters">(@PluginAttribute
- @PluginAttribute <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
- @PluginElement("KeyValuePair")
- @PluginElement("KeyValuePair") <a href="../../util/KeyValuePair.html" title="class in org.apache.logging.log4j.core.util">KeyValuePair</a>[]&nbsp;pairs)</span></div>
+<div class="member-signature"><span class="annotations"><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginFactory.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginFactory</a>
+</span><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="MapRewritePolicy.html" title="class in org.apache.logging.log4j.core.appender.rewrite">MapRewritePolicy</a></span>&nbsp;<span class="element-name">createPolicy</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginAttribute.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginAttribute</a>
+ <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginAttribute.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginAttribute</a> <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
+ <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginElement.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginElement</a>("KeyValuePair")
+ <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginElement.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginElement</a>("KeyValuePair") <a href="../../util/KeyValuePair.html" title="class in org.apache.logging.log4j.core.util">KeyValuePair</a>[]&nbsp;pairs)</span></div>
 <div class="block">The factory method to create the MapRewritePolicy.</div>
 <dl class="notes">
 <dt>Parameters:</dt>

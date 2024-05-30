@@ -329,7 +329,7 @@ If the queue size is large enough to handle the burst, asynchronous logging will
 </dd>
 <dt class="hdlist1">Lower logging latency</dt>
 <dd>
-<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html">Logger</a>
+<p><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Logger.html">Logger</a>
 method calls return faster, since most of the work is done on the I/O thread.</p>
 </dd>
 </dl>
@@ -371,7 +371,7 @@ This can partly be alleviated by configuring an exception handler, but this may 
 <dt class="hdlist1">Stateful messages</dt>
 <dd>
 <p>Most
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html"><code>Message</code></a>
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/Message.html"><code>Message</code></a>
 implementations take a snapshot of the formatted message on the calling thread (cf.
 <a href="systemproperties.html#log4j.async.formatMessagesInBackground" class="xref page"><code>log4j.async.formatMessagesInBackground</code></a>).
 The log message will not change even if the arguments of the logging call are modified later.</p>
@@ -385,9 +385,9 @@ These messages should not be modified after they are logged with asynchronous lo
 </div>
 <div class="paragraph">
 <p>Similarly, custom
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html"><code>Message</code></a>
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/Message.html"><code>Message</code></a>
 implementations should be designed with asynchronous use in mind, and either take a snapshot of their parameters at construction time, or document their thread-safety characteristics (see
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/AsynchronouslyFormattable.html"><code>AsynchronouslyFormattable</code></a>).</p>
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/AsynchronouslyFormattable.html"><code>AsynchronouslyFormattable</code></a>).</p>
 </div>
 </dd>
 <dt class="hdlist1">Computational overhead</dt>
@@ -470,11 +470,11 @@ property to one of the asynchronous logger context selectors:</p>
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/BasicAsyncLoggerContextSelector.html">org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector</a></dt>
+<dt class="hdlist1"><a href="../javadoc/log4j-async-logger/org/apache/logging/log4j/async/logger/BasicAsyncLoggerContextSelector.html">org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector</a></dt>
 <dd>
 <p>This will create a single logger context and disruptor for all the classes in the JVM,</p>
 </dd>
-<dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerContextSelector.html">org.apache.logging.log4j.core.async.AsyncLoggerContextSelector</a></dt>
+<dt class="hdlist1"><a href="../javadoc/log4j-async-logger/org/apache/logging/log4j/async/logger/AsyncLoggerContextSelector.html">org.apache.logging.log4j.core.async.AsyncLoggerContextSelector</a></dt>
 <dd>
 <p>This will create a different logger context and disruptor for each classloader in the JVM.</p>
 </dd>
@@ -1134,7 +1134,7 @@ This strategy has very low impact on the application thread, in exchange for som
 </li>
 <li>
 <p>Implement the interface
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncWaitStrategyFactory.html">AsyncWaitStrategyFactory</a>; the implementation must have a public no-arg constructor,</p>
+<a href="../javadoc/log4j-async-logger/org/apache/logging/log4j/async/logger/AsyncWaitStrategyFactory.html">AsyncWaitStrategyFactory</a>; the implementation must have a public no-arg constructor,</p>
 </li>
 <li>
 <p>Add an <a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-AsyncWaitStrategyFactoryConfig" class="xref page">AsyncWaitStrategyFactory Log4j plugin</a>

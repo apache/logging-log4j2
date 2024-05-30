@@ -551,7 +551,7 @@ If the queue size is large enough to handle the burst, asynchronous logging will
 </dd>
 <dt class="hdlist1">Lower logging latency</dt>
 <dd>
-<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html">Logger</a>
+<p><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Logger.html">Logger</a>
 method calls return faster, since most of the work is done on the I/O thread.</p>
 </dd>
 </dl>
@@ -593,7 +593,7 @@ This can partly be alleviated by configuring an exception handler, but this may 
 <dt class="hdlist1">Stateful messages</dt>
 <dd>
 <p>Most
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html"><code>Message</code></a>
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/Message.html"><code>Message</code></a>
 implementations take a snapshot of the formatted message on the calling thread (cf.
 <a href="systemproperties.html#log4j.async.formatMessagesInBackground" class="xref page"><code>log4j.async.formatMessagesInBackground</code></a>).
 The log message will not change even if the arguments of the logging call are modified later.</p>
@@ -607,9 +607,9 @@ These messages should not be modified after they are logged with asynchronous lo
 </div>
 <div class="paragraph">
 <p>Similarly, custom
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html"><code>Message</code></a>
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/Message.html"><code>Message</code></a>
 implementations should be designed with asynchronous use in mind, and either take a snapshot of their parameters at construction time, or document their thread-safety characteristics (see
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/AsynchronouslyFormattable.html"><code>AsynchronouslyFormattable</code></a>).</p>
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/AsynchronouslyFormattable.html"><code>AsynchronouslyFormattable</code></a>).</p>
 </div>
 </dd>
 <dt class="hdlist1">Computational overhead</dt>

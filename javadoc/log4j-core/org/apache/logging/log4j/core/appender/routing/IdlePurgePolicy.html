@@ -83,8 +83,8 @@ loadScripts(document, 'script');</script>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Runnable.html" title="class or interface in java.lang" class="external-link">Runnable</a></code>, <code><a href="PurgePolicy.html" title="interface in org.apache.logging.log4j.core.appender.routing">PurgePolicy</a></code>, <code><a href="../../LifeCycle.html" title="interface in org.apache.logging.log4j.core">LifeCycle</a></code></dd>
 </dl>
 <hr>
-<div class="type-signature"><span class="annotations">@Configurable(printObject=true)
-@Plugin
+<div class="type-signature"><span class="annotations"><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Configurable.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@Configurable</a>(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Configurable.html#printObject()" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">printObject</a>=true)
+<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Plugin.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@Plugin</a>
 <a href="../../config/Scheduled.html" title="annotation interface in org.apache.logging.log4j.core.config">@Scheduled</a>
 </span><span class="modifiers">public class </span><span class="element-name type-name-label">IdlePurgePolicy</span>
 <span class="extends-implements">extends <a href="../../AbstractLifeCycle.html" title="class in org.apache.logging.log4j.core">AbstractLifeCycle</a>
@@ -138,9 +138,9 @@ implements <a href="PurgePolicy.html" title="interface in org.apache.logging.log
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="PurgePolicy.html" title="interface in org.apache.logging.log4j.core.appender.routing">PurgePolicy</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createPurgePolicy(java.lang.String,java.lang.String,java.lang.String,org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">createPurgePolicy</a><wbr>(@PluginAttribute <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;timeToLive,
- @PluginAttribute <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;checkInterval,
- @PluginAttribute <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;timeUnit,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createPurgePolicy(java.lang.String,java.lang.String,java.lang.String,org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">createPurgePolicy</a><wbr>(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginAttribute.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginAttribute</a> <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;timeToLive,
+ <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginAttribute.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginAttribute</a> <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;checkInterval,
+ <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginAttribute.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginAttribute</a> <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;timeUnit,
  <a href="../../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Create the PurgePolicy</div>
@@ -278,13 +278,13 @@ implements <a href="PurgePolicy.html" title="interface in org.apache.logging.log
 <li>
 <section class="detail" id="createPurgePolicy(java.lang.String,java.lang.String,java.lang.String,org.apache.logging.log4j.core.config.Configuration)">
 <h3>createPurgePolicy</h3>
-<div class="member-signature"><span class="annotations">@PluginFactory
-</span><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="PurgePolicy.html" title="interface in org.apache.logging.log4j.core.appender.routing">PurgePolicy</a></span>&nbsp;<span class="element-name">createPurgePolicy</span><wbr><span class="parameters">(@PluginAttribute
- @PluginAttribute <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;timeToLive,
- @PluginAttribute
- @PluginAttribute <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;checkInterval,
- @PluginAttribute
- @PluginAttribute <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;timeUnit,
+<div class="member-signature"><span class="annotations"><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginFactory.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginFactory</a>
+</span><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="PurgePolicy.html" title="interface in org.apache.logging.log4j.core.appender.routing">PurgePolicy</a></span>&nbsp;<span class="element-name">createPurgePolicy</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginAttribute.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginAttribute</a>
+ <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginAttribute.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginAttribute</a> <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;timeToLive,
+ <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginAttribute.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginAttribute</a>
+ <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginAttribute.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginAttribute</a> <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;checkInterval,
+ <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginAttribute.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginAttribute</a>
+ <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginAttribute.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginAttribute</a> <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;timeUnit,
  <a href="../../config/plugins/PluginConfiguration.html" title="annotation interface in org.apache.logging.log4j.core.config.plugins">@PluginConfiguration</a>
  <a href="../../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</span></div>
 <div class="block">Create the PurgePolicy</div>

@@ -81,8 +81,8 @@ loadScripts(document, 'script');</script>
 <dd><code><a href="PathCondition.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">PathCondition</a></code></dd>
 </dl>
 <hr>
-<div class="type-signature"><span class="annotations">@Configurable(printObject=true)
-@Plugin
+<div class="type-signature"><span class="annotations"><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Configurable.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@Configurable</a>(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Configurable.html#printObject()" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">printObject</a>=true)
+<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Plugin.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@Plugin</a>
 </span><span class="modifiers">public final class </span><span class="element-name type-name-label">IfFileName</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
 implements <a href="PathCondition.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">PathCondition</a></span></div>
@@ -129,9 +129,9 @@ implements <a href="PathCondition.html" title="interface in org.apache.logging.l
  tree walk</a> is started.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="IfFileName.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">IfFileName</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createNameCondition(java.lang.String,java.lang.String,org.apache.logging.log4j.core.appender.rolling.action.PathCondition...)" class="member-name-link">createNameCondition</a><wbr>(@PluginAttribute <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;glob,
- @PluginAttribute <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;regex,
- @PluginElement("PathConditions") <a href="PathCondition.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">PathCondition</a>...&nbsp;nestedConditions)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createNameCondition(java.lang.String,java.lang.String,org.apache.logging.log4j.core.appender.rolling.action.PathCondition...)" class="member-name-link">createNameCondition</a><wbr>(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginAttribute.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginAttribute</a> <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;glob,
+ <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginAttribute.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginAttribute</a> <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;regex,
+ <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginElement.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginElement</a>("PathConditions") <a href="PathCondition.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">PathCondition</a>...&nbsp;nestedConditions)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Creates a IfFileName condition that returns true if either the specified
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)" title="class or interface in java.nio.file" class="external-link">glob pattern</a> or the regular expression matches the relative path.</div>
@@ -219,13 +219,13 @@ implements <a href="PathCondition.html" title="interface in org.apache.logging.l
 <li>
 <section class="detail" id="createNameCondition(java.lang.String,java.lang.String,org.apache.logging.log4j.core.appender.rolling.action.PathCondition...)">
 <h3>createNameCondition</h3>
-<div class="member-signature"><span class="annotations">@PluginFactory
-</span><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="IfFileName.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">IfFileName</a></span>&nbsp;<span class="element-name">createNameCondition</span><wbr><span class="parameters">(@PluginAttribute
- @PluginAttribute <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;glob,
- @PluginAttribute
- @PluginAttribute <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;regex,
- @PluginElement("PathConditions")
- @PluginElement("PathConditions") <a href="PathCondition.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">PathCondition</a>...&nbsp;nestedConditions)</span></div>
+<div class="member-signature"><span class="annotations"><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginFactory.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginFactory</a>
+</span><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="IfFileName.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">IfFileName</a></span>&nbsp;<span class="element-name">createNameCondition</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginAttribute.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginAttribute</a>
+ <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginAttribute.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginAttribute</a> <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;glob,
+ <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginAttribute.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginAttribute</a>
+ <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginAttribute.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginAttribute</a> <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;regex,
+ <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginElement.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginElement</a>("PathConditions")
+ <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginElement.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginElement</a>("PathConditions") <a href="PathCondition.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">PathCondition</a>...&nbsp;nestedConditions)</span></div>
 <div class="block">Creates a IfFileName condition that returns true if either the specified
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)" title="class or interface in java.nio.file" class="external-link">glob pattern</a> or the regular expression matches the relative path.
  If both a regular expression and a glob pattern are specified the glob pattern is used and the regular expression

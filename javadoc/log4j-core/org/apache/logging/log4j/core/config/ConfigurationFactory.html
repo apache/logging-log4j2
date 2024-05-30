@@ -96,7 +96,7 @@ implements <a href="URIConfigurationFactory.html" title="interface in org.apache
  <ol>
  <li>A system property named "log4j.configuration.factory" can be set with the
  name of the ConfigurationFactory to be used.</li>
- <li>A <code>ConfigurableInstanceFactory</code> binding for ConfigurationFactory may be registered.</li>
+ <li>A <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/di/ConfigurableInstanceFactory.html" title="class or interface in org.apache.logging.log4j.plugins.di" class="external-link"><code>ConfigurableInstanceFactory</code></a> binding for ConfigurationFactory may be registered.</li>
  <li>
  A ConfigurationFactory implementation can be added to the classpath and configured as a plugin in the
  <a href="#NAMESPACE"><code>ConfigurationFactory</code></a> category. The <a href="Order.html" title="annotation interface in org.apache.logging.log4j.core.config"><code>Order</code></a> annotation should be used to configure the
@@ -125,7 +125,7 @@ implements <a href="URIConfigurationFactory.html" title="interface in org.apache
 <div class="col-last even-row-color">
 <div class="block">File name prefix for standard configurations.</div>
 </div>
-<div class="col-first odd-row-color"><code>static final org.apache.logging.log4j.plugins.di.Key&lt;<a href="ConfigurationFactory.html" title="class in org.apache.logging.log4j.core.config">ConfigurationFactory</a>&gt;</code></div>
+<div class="col-first odd-row-color"><code>static final <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/di/Key.html" title="class or interface in org.apache.logging.log4j.plugins.di" class="external-link">Key</a>&lt;<a href="ConfigurationFactory.html" title="class in org.apache.logging.log4j.core.config">ConfigurationFactory</a>&gt;</code></div>
 <div class="col-second odd-row-color"><code><a href="#KEY" class="member-name-link">KEY</a></code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>protected static final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
@@ -139,10 +139,10 @@ implements <a href="URIConfigurationFactory.html" title="interface in org.apache
 <div class="col-first even-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color"><code><a href="#NAMESPACE" class="member-name-link">NAMESPACE</a></code></div>
 <div class="col-last even-row-color">
-<div class="block">Plugin category used to inject a ConfigurationFactory <code>Plugin</code>
+<div class="block">Plugin category used to inject a ConfigurationFactory <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Plugin.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link"><code>Plugin</code></a>
  class.</div>
 </div>
-<div class="col-first odd-row-color"><code>static final org.apache.logging.log4j.plugins.di.Key&lt;org.apache.logging.log4j.plugins.model.PluginNamespace&gt;</code></div>
+<div class="col-first odd-row-color"><code>static final <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/di/Key.html" title="class or interface in org.apache.logging.log4j.plugins.di" class="external-link">Key</a>&lt;<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/model/PluginNamespace.html" title="class or interface in org.apache.logging.log4j.plugins.model" class="external-link">PluginNamespace</a>&gt;</code></div>
 <div class="col-second odd-row-color"><code><a href="#PLUGIN_NAMESPACE_KEY" class="member-name-link">PLUGIN_NAMESPACE_KEY</a></code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>protected static final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
@@ -258,7 +258,7 @@ implements <a href="URIConfigurationFactory.html" title="interface in org.apache
 <section class="detail" id="NAMESPACE">
 <h3>NAMESPACE</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">NAMESPACE</span></div>
-<div class="block">Plugin category used to inject a ConfigurationFactory <code>Plugin</code>
+<div class="block">Plugin category used to inject a ConfigurationFactory <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Plugin.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link"><code>Plugin</code></a>
  class.</div>
 <dl class="notes">
 <dt>Since:</dt>
@@ -275,13 +275,13 @@ implements <a href="URIConfigurationFactory.html" title="interface in org.apache
 <li>
 <section class="detail" id="KEY">
 <h3>KEY</h3>
-<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type">org.apache.logging.log4j.plugins.di.Key&lt;<a href="ConfigurationFactory.html" title="class in org.apache.logging.log4j.core.config">ConfigurationFactory</a>&gt;</span>&nbsp;<span class="element-name">KEY</span></div>
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/di/Key.html" title="class or interface in org.apache.logging.log4j.plugins.di" class="external-link">Key</a>&lt;<a href="ConfigurationFactory.html" title="class in org.apache.logging.log4j.core.config">ConfigurationFactory</a>&gt;</span>&nbsp;<span class="element-name">KEY</span></div>
 </section>
 </li>
 <li>
 <section class="detail" id="PLUGIN_NAMESPACE_KEY">
 <h3>PLUGIN_NAMESPACE_KEY</h3>
-<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type">org.apache.logging.log4j.plugins.di.Key&lt;org.apache.logging.log4j.plugins.model.PluginNamespace&gt;</span>&nbsp;<span class="element-name">PLUGIN_NAMESPACE_KEY</span></div>
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/di/Key.html" title="class or interface in org.apache.logging.log4j.plugins.di" class="external-link">Key</a>&lt;<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/model/PluginNamespace.html" title="class or interface in org.apache.logging.log4j.plugins.model" class="external-link">PluginNamespace</a>&gt;</span>&nbsp;<span class="element-name">PLUGIN_NAMESPACE_KEY</span></div>
 </section>
 </li>
 <li>

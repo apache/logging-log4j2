@@ -79,13 +79,13 @@ loadScripts(document, 'script');</script>
 <hr>
 <div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">ConfigurationProcessor</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
-<div class="block">Processes a parsed tree of configuration nodes into configurable plugin objects described
+<div class="block">Processes a parsed tree of configuration <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">nodes</a> into configurable plugin objects described
  by the configuration tree.</div>
 <dl class="notes">
 <dt>See Also:</dt>
 <dd>
 <ul class="see-list">
-<li><code>Configurable</code></li>
+<li><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Configurable.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link"><code>Configurable</code></a></li>
 </ul>
 </dd>
 </dl>
@@ -100,7 +100,7 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory)" class="member-name-link">ConfigurationProcessor</a><wbr>(org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory&nbsp;instanceFactory)</code></div>
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory)" class="member-name-link">ConfigurationProcessor</a><wbr>(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/di/ConfigurableInstanceFactory.html" title="class or interface in org.apache.logging.log4j.plugins.di" class="external-link">ConfigurableInstanceFactory</a>&nbsp;instanceFactory)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -117,7 +117,7 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T&gt;&nbsp;T</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#processNodeTree(org.apache.logging.log4j.plugins.Node)" class="member-name-link">processNodeTree</a><wbr>(org.apache.logging.log4j.plugins.Node&nbsp;node)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#processNodeTree(org.apache.logging.log4j.plugins.Node)" class="member-name-link">processNodeTree</a><wbr>(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a>&nbsp;node)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Processes a node in a configuration tree into a plugin instance.</div>
 </div>
@@ -141,7 +141,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="&lt;init&gt;(org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory)">
 <h3>ConfigurationProcessor</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">ConfigurationProcessor</span><wbr><span class="parameters">(org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory&nbsp;instanceFactory)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">ConfigurationProcessor</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/di/ConfigurableInstanceFactory.html" title="class or interface in org.apache.logging.log4j.plugins.di" class="external-link">ConfigurableInstanceFactory</a>&nbsp;instanceFactory)</span></div>
 </section>
 </li>
 </ul>
@@ -155,9 +155,9 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="processNodeTree(org.apache.logging.log4j.plugins.Node)">
 <h3>processNodeTree</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type">T</span>&nbsp;<span class="element-name">processNodeTree</span><wbr><span class="parameters">(org.apache.logging.log4j.plugins.Node&nbsp;node)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type">T</span>&nbsp;<span class="element-name">processNodeTree</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a>&nbsp;node)</span></div>
 <div class="block">Processes a node in a configuration tree into a plugin instance. Nodes are processed in a depth-first
- fashion unless a plugin enables the defer children option in
+ fashion unless a plugin enables the <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Configurable.html#deferChildren()" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">defer children</a> option in
  which case child nodes will be not be instantiated.</div>
 <dl class="notes">
 <dt>Type Parameters:</dt>

@@ -686,7 +686,7 @@ implementation to use.</p>
 <dd>
 <p>Creates a single logger context and synchronous loggers</p>
 </dd>
-<dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/BasicAsyncLoggerContextSelector.html">org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector</a></dt>
+<dt class="hdlist1"><a href="../javadoc/log4j-async-logger/org/apache/logging/log4j/async/logger/BasicAsyncLoggerContextSelector.html">org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector</a></dt>
 <dd>
 <p>Creates a single logger context and <a href="async.html" class="xref page">asynchronous loggers</a></p>
 </dd>
@@ -694,7 +694,7 @@ implementation to use.</p>
 <dd>
 <p>Creates a separate logger context per classloader and synchronous loggers</p>
 </dd>
-<dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerContextSelector.html">org.apache.logging.log4j.core.async.AsyncLoggerContextSelector</a></dt>
+<dt class="hdlist1"><a href="../javadoc/log4j-async-logger/org/apache/logging/log4j/async/logger/AsyncLoggerContextSelector.html">org.apache.logging.log4j.core.async.AsyncLoggerContextSelector</a></dt>
 <dd>
 <p>Creates a separate logger context per classloader and <a href="async.html" class="xref page">asynchronous loggers</a></p>
 </dd>
@@ -702,7 +702,7 @@ implementation to use.</p>
 <dd>
 <p>Creates a separate logger context per OSGi bundle and synchronous loggers</p>
 </dd>
-<dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/selector/JndiContextSelector.html">org.apache.logging.log4j.core.selector.JndiContextSelector</a></dt>
+<dt class="hdlist1">org.apache.logging.log4j.jndi.selector.JndiContextSelector</dt>
 <dd>
 <p>Creates loggers contexts based on a JNDI lookup and synchronous loggers.
 See
@@ -1161,7 +1161,9 @@ implementation to use to create log events.</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>The size in bytes of the <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html">ByteBuffer</a>s stored in <code>ThreadLocal</code> fields by layouts and
+<p>The size in bytes of the
+<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html">ByteBuffer</a>s
+stored in <code>ThreadLocal</code> fields by layouts and
 <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder.html">StringBuilderEncoder</a>s.</p>
 </div>
 <div class="paragraph">
@@ -1191,7 +1193,9 @@ implementation to use to create log events.</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>The size in <code>char</code>s of the <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html">ByteBuffer</a>s stored in <code>ThreadLocal</code> fields
+<p>The size in <code>char</code>s of the
+<a href="https://docs.oracle.com/javase/17/docs/api/java/nio/ByteBuffer.html">ByteBuffer</a>s
+stored in <code>ThreadLocal</code> fields
 <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder.html">StringBuilderEncoder</a>s.</p>
 </div>
 <div class="paragraph">
@@ -1519,7 +1523,7 @@ For a thread local recycler, it corresponds to the per-thread buffer size.</p>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html">Class&lt;? extends ThreadContextMap&gt;</a>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html">Class&lt;? extends ThreadContextMap&gt;</a>
 or predefined constant</p></td>
 </tr>
 <tr>
@@ -2105,7 +2109,7 @@ See <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/Sta
 </table>
 <div class="paragraph">
 <p>Specifies the
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/Clock.html">Clock</a>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/time/Clock.html">Clock</a>
 implementation used to timestamp log events.</p>
 </div>
 <div class="paragraph">
@@ -2133,7 +2137,7 @@ for details.</p>
 <dd>
 <p>alternative implementation of <code>CachedClock</code> with a slightly lower precision.
 See
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/CoarseCachedClock.html">JavaDoc</a>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/time/internal/CoarseCachedClock.html">JavaDoc</a>
 for details.</p>
 </dd>
 </dl>
