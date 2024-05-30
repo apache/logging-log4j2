@@ -64,6 +64,7 @@
 * xref:manual/migration.adoc[]
 * xref:migrate-from-logback.adoc[]
 * xref:migrate-from-slf4j.adoc[]
+* xref:hibernate.adoc[]
 * xref:manual/cloud.adoc[]
 * xref:development.adoc[]
 
