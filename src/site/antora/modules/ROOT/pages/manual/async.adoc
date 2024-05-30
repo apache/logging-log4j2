@@ -96,7 +96,7 @@ at its default value and use one of the
 
 A configuration that mixes asynchronous loggers might look like:
 
-[tabs,opts=sync]
+[tabs]
 ====
 XML::
 +
@@ -161,7 +161,7 @@ link:../javadoc/log4j-async-logger/org/apache/logging/log4j/async/logger/AsyncWa
 . Add an xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-AsyncWaitStrategyFactoryConfig[AsyncWaitStrategyFactory Log4j plugin]
 to your configuration.
 
-[tabs,opts=sync]
+[tabs]
 ====
 XML::
 +
