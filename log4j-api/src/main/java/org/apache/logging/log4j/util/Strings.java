@@ -25,7 +25,7 @@ import java.util.Objects;
 /**
  * <em>Consider this class private.</em>
  *
- * @see <a href="http://commons.apache.org/proper/commons-lang/">Apache Commons Lang</a>
+ * @see <a href="https://commons.apache.org/proper/commons-lang/index.html">Apache Commons Lang</a>
  */
 @InternalApi
 public final class Strings {
