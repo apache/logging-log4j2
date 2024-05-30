@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Log4j Spring Boot Support :: Apache Log4j</title>
-    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/log4j-spring-boot.html">
+    <title>Migrating from SLF4J :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/migrate-from-slf4j.html">
     <meta name="generator" content="Antora 3.2.0-alpha.4">
 <link rel="stylesheet" href="./_/css/site.css">
 <link rel="icon" href="./_/../_images/favicon.ico" type="image/x-icon">
@@ -233,7 +233,7 @@
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="migrate-from-logback.html">Migrating from Logback</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item is-current-page" data-depth="1">
     <a class="nav-link" href="migrate-from-slf4j.html">Migrating from SLF4J</a>
   </li>
   <li class="nav-item" data-depth="1">
@@ -299,105 +299,172 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="index.html">Home</a></li>
-    <li><a href="log4j-spring-boot.html">Log4j Spring Boot Support</a></li>
+    <li>Resources</li>
+    <li><a href="migrate-from-slf4j.html">Migrating from SLF4J</a></li>
   </ul>
 </nav>
-<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/log4j-spring-boot.adoc">Edit this Page</a></div>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/migrate-from-slf4j.adoc">Edit this Page</a></div>
 </div>
   <div class="content">
 <aside class="toc sidebar" data-title="Contents" data-levels="4">
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Log4j Spring Boot Support</h1>
+<h1 class="page">Migrating from SLF4J</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>This module provides enhanced support for Spring Boot beyond what Spring Boot itself provides.</p>
+<p><a href="https://www.slf4j.org/">SLF4J</a> is a logging API whose reference implementation is <a href="https://logback.qos.ch/">Logback</a>, just like <a href="manual/api.html" class="xref page">Log4j API</a> is a logging API whose reference implementation is Log4j Core.
+In this page we will guide you through migrating from SLF4J to Log4j API as your logging API.</p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_overview"><a class="anchor" href="#_overview"></a>Overview</h2>
-<div class="sectionbody">
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
 <div class="paragraph">
-<p>The components in this module require a Spring Environment to have been created.
-Spring Boot  applications initialize logging multiple times.
-The first initialization occurs before any initialization work is performed by Spring, thus no Environment will have been created and the components implemented in this module will not produce the desired results.
-Subsequent initializations of logging will have a Spring Environment.</p>
+<p>Instead of migrating your logging API, SLF4J, are you looking for migrating your logging implementation, Logback?
+Please refer to <a href="migrate-from-logback.html" class="xref page">Migrating from Logback</a>.</p>
 </div>
+</td>
+</tr>
+</table>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_usage"><a class="anchor" href="#_usage"></a>Usage</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_spring_lookup"><a class="anchor" href="#_spring_lookup"></a>Spring Lookup</h3>
-<div class="paragraph">
-<p>The Spring Lookup allows configuration files to reference properties defined in Spring configuration files from a Log4j configuration file.
-For example:</p>
-</div>
-<div class="literalblock">
+<details>
+<summary class="title">Struggling with the logging API, implementation, and bridge concepts? Click for an introduction.</summary>
 <div class="content">
-<pre>&lt;property name="applicationName"&gt;${spring:spring.application.name}&lt;/property&gt;</pre>
+<div id="logging-api" class="dlist">
+<dl>
+<dt class="hdlist1">Logging API</dt>
+<dd>
+<p>A logging API is an interface your code or your dependencies directly logs against.
+It is required at compile-time.
+It is implementation agnostic to ensure that your application can write logs, but is not tied to a specific logging implementation.
+Log4j API, <a href="https://www.slf4j.org/">SLF4J</a>, <a href="https://docs.oracle.com/en/java/javase/8/core/java-logging-overview.html">JUL (Java Logging)</a>, <a href="https://commons.apache.org/proper/commons-logging/">JCL (Apache Commons Logging)</a>, <a href="https://openjdk.org/jeps/264">JPL (Java Platform Logging)</a> and <a href="https://github.com/jboss-logging/jboss-logging">JBoss Logging</a> are major logging APIs.</p>
+</dd>
+</dl>
 </div>
+<div id="logging-impl" class="dlist">
+<dl>
+<dt class="hdlist1">Logging implementation</dt>
+<dd>
+<p>A logging implementation is only required at runtime and can be changed without the need to recompile your software.
+Log4j Core, <a href="https://docs.oracle.com/en/java/javase/8/core/java-logging-overview.html">JUL (Java Logging)</a>, <a href="https://logback.qos.ch/">Logback</a> are the most well-known logging implementations.</p>
+</dd>
+</dl>
+</div>
+<div id="logging-bridge" class="dlist">
+<dl>
+<dt class="hdlist1">Logging bridge</dt>
+<dd>
+<p>Logging implementations accept input from a single logging API of their preference; Log4j Core from Log4j API, Logback from SLF4J, etc.
+A logging bridge is a simple logging implementation of a logging API that forwards all messages to a foreign logging API.
+Logging bridges allow a logging implementation to accept input from other logging APIs that are not their primary logging API.
+For instance, <code>log4j-slf4j2-impl</code> <em>bridges</em> SLF4J calls to Log4 API and effectively enables Log4j Core to accept input from SLF4J.</p>
+</dd>
+</dl>
 </div>
 <div class="paragraph">
-<p>would set the Log4j applicationName property to the value of spring.application.name set in the  Spring configuration.</p>
+<p>To make things a little bit more tangible, consider the following visualization of a typical Log4j Core installation with bridges for an application:</p>
 </div>
-</div>
-<div class="sect2">
-<h3 id="_spring_property_source"><a class="anchor" href="#_spring_property_source"></a>Spring Property Source</h3>
-<div class="paragraph">
-<p>Log4j uses property sources when resolving properties it uses internally.
-This support allows most of Log4j&#8217;s
-<a href="manual/systemproperties.html" class="xref page">Configuration properties</a>
-to be specified in the Spring Configuration.
-However, some properties that are only referenced during the first Log4j initialization, such as the property Log4j uses to allow the default  Log4j implementation to be chosen, would not be available.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_spring_profile_arbiter"><a class="anchor" href="#_spring_profile_arbiter"></a>Spring Profile Arbiter</h3>
-<div class="paragraph">
-<p>New with Log4j 2.15.0 are "Arbiters" which are conditionals that can cause a portion of the Log4j configuration to  be included or excluded.
-log4j-spring-boot provides an Arbiter that allows a Spring profile value to be used for  this purpose.
-Below is an example:</p>
-</div>
-<div class="listingblock">
+<div class="imageblock kroki">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Configuration name="ConfigTest" status="ERROR" monitorInterval="5"&gt;
-  &lt;Appenders&gt;
-
-    &lt;SpringProfile name="dev | staging"&gt;
-      &lt;Console name="Out"&gt;
-        &lt;PatternLayout pattern="%m%n"/&gt;
-      &lt;/Console&gt;
-    &lt;/SpringProfile&gt;
-    &lt;SpringProfile name="prod"&gt;
-      &lt;List name="Out"&gt;
-      &lt;/List&gt;
-    &lt;/SpringProfile&gt;
-
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Logger name="org.apache.test" level="trace" additivity="false"&gt;
-      &lt;AppenderRef ref="Out"/&gt;
-    &lt;/Logger&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="Out"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
+<img src="_images/diag-1fd758c2554d79996565796f77cf0f8dc6b3bca2.svg" alt="Visualization of a typical Log4j Core installation with SLF4J, JUL, and JPL bridges.">
+</div>
+<div class="title">Figure 1. Visualization of a typical Log4j Core installation with SLF4J, JUL, and JPL bridges.</div>
 </div>
 </div>
-</div>
+</details>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_requirements"><a class="anchor" href="#_requirements"></a>Requirements</h2>
+<h2 id="migrating"><a class="anchor" href="#migrating"></a>Migrating</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The Log4j 2 Spring Cloud Configuration integration has a dependency on Log4j 2 API, Log4j 2 Core, and  Spring Boot versions 2.0.3.RELEASE or 2.1.1.RELEASE or later versions it either release series.</p>
+<p>If your application or library logs using SLF4J, you can migrate it to Log4j API as follows:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Remove <code>org.slf4j:slf4j-api</code> dependency</p>
+</li>
+<li>
+<p>Follow the instructions shared in the <em>"Getting started"</em> page for <a href="manual/getting-started.html#using-api" class="xref page">installing <code>log4j-api</code> and using it</a></p>
+</li>
+<li>
+<p>Search for <code>org.slf4j</code> usages in your project and replace them with Log4j API equivalents</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>For an exhaustive list of code changes that need to be carried out, refer to <a href="https://docs.openrewrite.org/recipes/java/logging/log4j/slf4jtolog4j">the SLF4J to Log4j API migration OpenRewrite recipe</a>.
+This you can use to</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>either manually follow the described migrations,</p>
+</li>
+<li>
+<p>or run OpenRewrite to automatically migrate the code.</p>
+</li>
+</ol>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><a href="https://www.slf4j.org/api/org/slf4j/LoggerFactory.html"><code>org.slf4j.LoggerFactory</code></a></dt>
+<dd>
+<p>Replace its usages with <a href="javadoc/log4j-api/org/apache/logging/log4j/LogManager.html"><code>org.apache.logging.log4j.LogManager</code></a>.
+Note that <code>LogManager.getLogger(Foo.class)</code> can be simplified as <code>LogManager.getLogger()</code>, if <code>Foo</code> is the enclosing class of the field.</p>
+</dd>
+<dt class="hdlist1"><a href="https://www.slf4j.org/api/org/slf4j/Logger.html"><code>org.slf4j.Logger</code></a></dt>
+<dd>
+<p>Replace its usages with <a href="javadoc/log4j-api/org/apache/logging/log4j/Logger.html"><code>org.apache.logging.log4j.Logger</code></a>.
+Since SLF4J&#8217;s <code>Logger</code> is almost a parent of Log4j&#8217;s <code>Logger</code>, most methods should work without any changes.</p>
+</dd>
+<dt class="hdlist1"><a href="https://www.slf4j.org/api/org/slf4j/MDC.html"><code>org.slf4j.MDC</code></a></dt>
+<dd>
+<p>Replace its usages with <a href="javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html"><code>org.apache.logging.log4j.ThreadContext</code></a>.</p>
+</dd>
+</dl>
+</div>
+</li>
+<li>
+<p>If you use <a href="https://projectlombok.org/features/log"><code>@Slf4j</code> from Lombok</a>, you need to replace them with <code>@Log4j2</code> instead.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>At this stage, you should have your application or library logging using Log4j API.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">If it is a library that you migrated,</dt>
+<dd>
+<p>then you don&#8217;t need to take any extra steps.
+Unlike applications, libraries should be logging implementation agnostic.
+That is, libraries should log through a logging API, but leave the decision of the logging implementation to the application.</p>
+</dd>
+<dt class="hdlist1">If it is an application that you migrated, and you are not using Log4j Core as your logging implementation,</dt>
+<dd>
+<p>then you can consider doing so.
+Certain <a href="manual/api.html" class="xref page">Log4j API features</a> (e.g., <a href="manual/garbagefree.html" class="xref page">garbage-free logging</a>) require an end-to-end setup which is mostly possible using Log4j API in combination with Log4j Core.</p>
+<div class="paragraph">
+<p>See <a href="manual/installation.html" class="xref page">Installation</a> for installing Log4j Core.<br>
+If you are using Logback, refer to <a href="migrate-from-logback.html" class="xref page">Migrating from Logback</a>.</p>
+</div>
+</dd>
+</dl>
 </div>
 </div>
 </div>

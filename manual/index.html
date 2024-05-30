@@ -82,31 +82,13 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-    <button class="nav-item-toggle"></button>
-    <span class="nav-text">Resources</span>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../faq.html">F.A.Q.</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../getting-started.html">Getting started</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="migration.html">Migrating from Log4j 1</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../development.html">Development</a>
-  </li>
-</ul>
-  </li>
   <li class="nav-item is-current-page" data-depth="0">
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="index.html">Manual</a>
 <ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="getting-started.html">Getting started</a>
+  </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="installation.html">Installation</a>
   </li>
@@ -240,6 +222,30 @@
   </li>
   <li class="nav-item" data-depth="0">
     <button class="nav-item-toggle"></button>
+    <span class="nav-text">Resources</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../faq.html">F.A.Q.</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="migration.html">Migrating from Log4j 1</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-logback.html">Migrating from Logback</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-slf4j.html">Migrating from SLF4J</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../development.html">Development</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
     <span class="nav-text">Components</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
@@ -304,8 +310,7 @@
 </aside>
 <article class="doc">
 <h1 class="page">Manual</h1>
-<div class="sect1">
-<h2 id="_welcome_to_apache_log4j"><a class="anchor" href="#_welcome_to_apache_log4j"></a>Welcome to Apache Log4j!</h2>
+<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>Apache Log4j is a versatile, industrial-grade Java logging framework composed of an API, its implementation,  and components to assist the deployment for various use cases.
@@ -334,7 +339,8 @@ In 2003, the project was donated to the Apache Software Foundation, which became
 <p>Log4j is an excellent choice for any Java application that needs logging capabilities.
 It is user-friendly, fast, and flexible. You can use it to log messages at
 different levels of severity, from debug to fatal, and you can configure it to
-log messages to various destinations, such as files, databases, or the console.</p>
+log messages to various destinations, such as files, databases, or the console.
+See <a href="getting-started.html" class="xref page">Getting started</a> for an introduction.</p>
 </div>
 </div>
 </div>
@@ -419,6 +425,9 @@ While Log4j Core implements it at its fullest, you can easily switch to other im
 <div class="sectionbody">
 <div class="ulist">
 <ul>
+<li>
+<p><a href="getting-started.html" class="xref page">How can I get started with Log4j?</a></p>
+</li>
 <li>
 <p><a href="installation.html" class="xref page">How can I install Log4j?</a></p>
 </li>
