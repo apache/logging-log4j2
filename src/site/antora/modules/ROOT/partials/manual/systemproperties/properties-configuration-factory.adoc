@@ -57,7 +57,7 @@ See also xref:manual/configuration.adoc#AutomaticConfiguration[Automatic Configu
 [cols="1h,5"]
 |===
 | Env. variable | LOG4J_LEVEL
-| Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/Level[Level]
+| Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[Level]
 | Default value | `ERROR`
 |===
 

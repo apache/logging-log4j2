@@ -32,7 +32,7 @@ NEUTRAL:: Log4j behaves as if the filter was not present.
 
 To decide whether a log event from a certain logger is delivered to a specific appender, the following procedure is followed:
 
-[tabs]
+[tabs,opts=sync]
 ====
 XML::
 +

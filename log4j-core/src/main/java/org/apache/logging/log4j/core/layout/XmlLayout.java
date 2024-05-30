@@ -29,7 +29,8 @@ import org.apache.logging.log4j.core.jackson.XmlConstants;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 
 /**
- * Appends a series of {@code event} elements as defined in the <a href="log4j.dtd">log4j.dtd</a>.
+ * Appends a series of {@code event} elements as defined in the
+ * <a href="https://raw.githubusercontent.com/apache/logging-log4j2/2.x/log4j-core/src/main/resources/Log4j-events.xsd">Log4j-events.xsd</a>.
  *
  * <h2>Complete well-formed XML vs. fragment XML</h2>
  * <p>

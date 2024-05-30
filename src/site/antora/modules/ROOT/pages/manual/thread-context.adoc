@@ -23,7 +23,8 @@ Thread Context is one of many xref:manual/api.adoc#fish-tagging[_fish tagging_ c
 [#usage]
 == Usage
 
-The entry point for associating logging-related information with the executing thread is link:../log4j-api/apidocs/org/apache/logging/log4j/ThreadContext.html[`ThreadContext`].
+The entry point for associating logging-related information with the executing thread is
+link:../javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html[`ThreadContext`].
 It offers both
 
 * map-structured – referred to as _Thread Context Map_ or _Mapped Diagnostic Context (MDC)_
@@ -48,6 +49,7 @@ void performWork() {
 
 ThreadContext.clear(); // <5>
 ----
+
 <1> Adding properties to the thread context map
 <2> Pushing properties to the thread context stack
 <3> Added properties can later on be used to, for instance, filter the log event, provide extra information in the layout, etc.
@@ -58,7 +60,11 @@ ThreadContext.clear(); // <5>
 === Auto-clearing thread context
 
 When placing items on the thread context stack or map, it's necessary to remove them again when appropriate.
-To assist with this, you can use link:../log4j-api/apidocs/org/apache/logging/log4j/CloseableThreadContext.html[`CloseableThreadContext`] (implementing http://docs.oracle.com/javase/7/docs/api/java/lang/AutoCloseable.html[`AutoCloseable`]) in a try-with-resources block:
+To assist with this, you can use
+link:../javadoc/log4j-api/org/apache/logging/log4j/CloseableThreadContext.html[`CloseableThreadContext`]
+(implementing
+http://docs.oracle.com/javase/{java-target-version}/docs/api/java/lang/AutoCloseable.html[`AutoCloseable`])
+in a try-with-resources block:
 
 [source,java]
 ----
@@ -73,6 +79,7 @@ try (CloseableThreadContext.Instance ignored = CloseableThreadContext
 
 // ... // <3>
 ----
+
 <1> Making thread context changes that will only be visible **within the scope of the try-with-resources block**
 <2> Added properties can later on be used to, for instance, filter the log event, provide extra information in the layout, etc.
 <3> Outside the scope of the try-with-resources block made thread context changes will not be visible
@@ -102,6 +109,7 @@ executor.submit(() -> {
     }
 });
 ----
+
 <1> Taking a snapshot of the thread context
 <2> Initializing the thread context for the background task
 
@@ -136,8 +144,11 @@ META-INF/services/org.apache.logging.log4j.core.util.ContextDataProvider
 [#custom-ThreadContextMap]
 === Custom thread context map
 
-Custom thread context map implementations can be provided by setting xref:#log4j2.threadContextMap[the `log4j2.threadContextMap` system property] to the fully-qualified class name of the custom implementation class extending from link:../javadoc/log4j-core/org/apache/logging/log4j/spi/ThreadContextMap.html[`ThreadContextMap`].
+Custom thread context map implementations can be provided by setting xref:#log4j2.threadContextMap[the `log4j2.threadContextMap` system property] to the fully-qualified class name of the custom implementation class extending from
+link:../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html[`ThreadContextMap`].
 
-While providing a custom thread context map implementation, you are advised to also extend from link:../javadoc/log4j-core/org/apache/logging/log4j/spi/ReadOnlyThreadContextMap.html[`ReadOnlyThreadContextMap`] too.
+While providing a custom thread context map implementation, you are advised to also extend from
+link:../javadoc/log4j-api/org/apache/logging/log4j/spi/ReadOnlyThreadContextMap.html[`ReadOnlyThreadContextMap`]
+too.
 By this way, your custom thread context map implementation will be accessible to applications via
 link:../javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html#getThreadContextMap()[`ThreadContext.getThreadContextMap()`].

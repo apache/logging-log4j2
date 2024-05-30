@@ -20,7 +20,7 @@
 [cols="1h,5"]
 |===
 | Env. variable | LOG4J_SIMPLELOG_LEVEL
-| Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/Level[Level]
+| Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[Level]
 | Default value | `ERROR`
 |===
 
@@ -32,7 +32,7 @@ Default level for new logger instances.
 [cols="1h,5"]
 |===
 | Env. variable | LOG4J_SIMPLELOG_&lt;LOGGER_NAME&gt;_LEVEL
-| Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/Level[Level]
+| Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[Level]
 | Default value | value of <<log4j2.simplelogLevel>>
 |===
 

@@ -69,7 +69,7 @@ The rest of the instructions in this page assume you use one of these.
 To keep your Log4j module versions in sync with each other, a BOM (Bill of Material) file is provided for your convenience.
 You can import the BOM in your build tool of preference:
 
-[tabs]
+[tabs,opts=sync]
 ====
 Maven::
 +
@@ -116,7 +116,7 @@ You can access the latest development snapshots by using the `https://repository
 Snapshots are published for development and testing purposes; **they should not be used at production!**
 =====
 
-[tabs]
+[tabs,opts=sync]
 =====
 Maven::
 +
@@ -151,7 +151,7 @@ repositories {
 
 The easiest way to install Log4j API is through a dependency management tool such as Maven or Gradle, by adding the following dependency:
 
-[tabs]
+[tabs,opts=sync]
 ====
 Maven::
 +
@@ -226,7 +226,7 @@ You can directly skip to xref:#impl-core-spring-boot[].
 
 To install Log4j Core as your logging implementation, you need to add the following dependency to your application:
 
-[tabs]
+[tabs,opts=sync]
 ====
 Maven::
 +
@@ -277,7 +277,7 @@ The following sections explain the installation of Log4j-provided bridges.
 
 You can translate {slf4j-link} calls to Log4j API using the `log4j-slf4j2-impl` artifact:
 
-[tabs]
+[tabs,opts=sync]
 ====
 Maven::
 +
@@ -304,7 +304,7 @@ runtimeOnly 'org.apache.logging.log4j:log4j-slf4j2-impl' // SLF4J-to-Log4j bridg
 
 You can translate {jul-link} calls to Log4j API using the `log4j-jul` artifact:
 
-[tabs]
+[tabs,opts=sync]
 ====
 Maven::
 +
@@ -340,7 +340,7 @@ to the JVM parameters in your application launcher.
 
 You can translate {jpl-link} calls to Log4j API using the `log4j-jpl` artifact:
 
-[tabs]
+[tabs,opts=sync]
 ====
 Maven::
 +
@@ -370,7 +370,7 @@ Since version `1.3.0` https://commons.apache.org/proper/commons-logging/[Apache 
 You can enforce the version of a transitive dependency using the dependency management mechanism appropriate to your
 build tool:
 
-[tabs]
+[tabs,opts=sync]
 ====
 Maven::
 Maven users should add an entry to the `<dependencyManagement>` section of their POM file:
@@ -402,7 +402,7 @@ See https://github.com/jboss-logging/jboss-logging/blob/main/README.adoc#support
 
 Spring Boot users should replace the `spring-boot-starter-logging` dependency with `spring-boot-starter-log4j2`:
 
-[tabs]
+[tabs,opts=sync]
 ====
 
 Maven::
@@ -458,7 +458,7 @@ Log4j Core supports many different configuration formats: JSON, XML, YAML, and J
 To configure Log4j Core, see xref:manual/configuration.adoc[].
 A basic configuration can be obtained by adding one of these files to your application's classpath:
 
-[tabs]
+[tabs,opts=sync]
 ====
 
 log4j2.xml::
@@ -561,7 +561,7 @@ You can skip this section and use the https://github.com/jboss-logging/log4j2-jb
 Java Platform contains a very simple logging API and its implementation called {jul-link}.
 Since it is embedded in the platform, it only requires the addition of bridges from Log4j API and SLF4J:
 
-[tabs]
+[tabs,opts=sync]
 ====
 
 Maven::
@@ -607,7 +607,7 @@ To configure JUL, see https://docs.oracle.com/en/java/javase/{java-target-versio
 
 To install https://logback.qos.ch/[Logback] as the logging implementation, you only need to add a Log4j-to-SLF4J bridge:
 
-[tabs]
+[tabs,opts=sync]
 ====
 
 Maven::

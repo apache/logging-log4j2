@@ -144,7 +144,7 @@ They are **matched by type** against the list of nested components a plugin acce
 
 Log4j maps the concepts above to the specifics of the configuration format as follows:
 
-[tabs]
+[tabs,opts=sync]
 =====
 XML::
 +
@@ -283,7 +283,7 @@ See xref:manual/layouts.adoc[Layout configuration] for details.
 
 A moderately complex configuration might look like this:
 
-[tabs]
+[tabs,opts=sync]
 ====
 XML::
 +
@@ -471,7 +471,7 @@ xref:manual/architecture.adoc#loggerconfig[architecture]), which determines the 
 
 Let's start with an example of logger configuration:
 
-[tabs]
+[tabs,opts=sync]
 ====
 XML::
 +
@@ -654,7 +654,7 @@ The `value` of each property is subject to <<property-substitution,property subs
 Therefore, if you wish to insert a value that changes in time, you must double the `$` sign, as shown in the example below.
 ====
 
-[tabs]
+[tabs,opts=sync]
 ====
 XML::
 +
@@ -732,7 +732,7 @@ Log4j provides a simple and extensible mechanism to reuse values in the configur
 
 Reusable configuration values can be added directly to a configuration file by using a xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-PropertiesPlugin[Properties] component.
 
-[tabs]
+[tabs,opts=sync]
 ====
 XML::
 +
@@ -831,7 +831,7 @@ The same rule applies to the `name` parameter: if it contains a `${` sequence, i
 =====
 
 If your configuration file contains the following definitions:
-[tabs]
+[tabs,opts=sync]
 ====
 XML::
 +
@@ -888,7 +888,7 @@ The only exception to this rule is the expansion of properties in the `Propertie
 Properties defined in the `Properties` container can depend on each other.
 If your configuration contains, for example:
 
-[tabs]
+[tabs,opts=sync]
 ====
 XML::
 +
@@ -950,7 +950,7 @@ In this case, you only need one dollar `$` sign.
 +
 This case happens for the children of the `Route` element below:
 
-[tabs]
+[tabs,opts=sync]
 ====
 XML::
 +
@@ -1006,7 +1006,7 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 
 For example, you might want to use a different layout in a production and development environment:
 
-[tabs]
+[tabs,opts=sync]
 ====
 XML::
 +
@@ -1046,7 +1046,7 @@ This is a case when the `Select` plugin is useful: this configuration element co
 `DefaultArbiter` element.
 If none of the arbiters match, the configuration from the `DefaultArbiter` element will be used:
 
-[tabs]
+[tabs,opts=sync]
 ====
 XML::
 +

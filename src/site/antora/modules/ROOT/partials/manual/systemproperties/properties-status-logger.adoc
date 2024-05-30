@@ -45,7 +45,7 @@ Once the limit is reached newer entries will overwrite the oldest ones.
 [cols="1h,5"]
 |===
 | Env. variable | LOG4J_STATUS_LOGGER_LEVEL
-| Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/Level[Level]
+| Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[Level]
 | Default value | `ERROR`
 |===
 
