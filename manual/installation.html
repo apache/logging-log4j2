@@ -455,7 +455,7 @@ The rest of the instructions in this page assume you use one of these.</p>
 <p>To keep your Log4j module versions in sync with each other, a BOM (Bill of Material) file is provided for your convenience.
 You can import the BOM in your build tool of preference:</p>
 </div>
-<div id="_tabs_1" class="openblock tabs is-loading">
+<div id="_tabs_1" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
@@ -524,7 +524,7 @@ You can import the BOM in your build tool of preference:</p>
 </tr>
 </table>
 </div>
-<div id="_tabs_2" class="openblock tabs is-loading">
+<div id="_tabs_2" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
@@ -575,7 +575,7 @@ You can import the BOM in your build tool of preference:</p>
 <div class="paragraph">
 <p>The easiest way to install Log4j API is through a dependency management tool such as Maven or Gradle, by adding the following dependency:</p>
 </div>
-<div id="_tabs_3" class="openblock tabs is-loading">
+<div id="_tabs_3" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
@@ -700,7 +700,7 @@ You can directly skip to <a href="#impl-core-spring-boot">Installing Log4j Core 
 <div class="paragraph">
 <p>To install Log4j Core as your logging implementation, you need to add the following dependency to your application:</p>
 </div>
-<div id="_tabs_4" class="openblock tabs is-loading">
+<div id="_tabs_4" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
@@ -781,7 +781,7 @@ And if so, which ones?</strong></p>
 <div class="paragraph">
 <p>You can translate <a href="https://www.slf4j.org/">SLF4J</a> calls to Log4j API using the <code>log4j-slf4j2-impl</code> artifact:</p>
 </div>
-<div id="_tabs_5" class="openblock tabs is-loading">
+<div id="_tabs_5" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
@@ -820,7 +820,7 @@ And if so, which ones?</strong></p>
 <div class="paragraph">
 <p>You can translate <a href="https://docs.oracle.com/en/java/javase/8/core/java-logging-overview.html">JUL (Java Logging)</a> calls to Log4j API using the <code>log4j-jul</code> artifact:</p>
 </div>
-<div id="_tabs_6" class="openblock tabs is-loading">
+<div id="_tabs_6" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
@@ -870,7 +870,7 @@ And if so, which ones?</strong></p>
 <div class="paragraph">
 <p>You can translate <a href="https://openjdk.org/jeps/264">JPL (Java Platform Logging)</a> calls to Log4j API using the <code>log4j-jpl</code> artifact:</p>
 </div>
-<div id="_tabs_7" class="openblock tabs is-loading">
+<div id="_tabs_7" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
@@ -913,7 +913,7 @@ And if so, which ones?</strong></p>
 <p>You can enforce the version of a transitive dependency using the dependency management mechanism appropriate to your
 build tool:</p>
 </div>
-<div id="_tabs_8" class="openblock tabs is-loading">
+<div id="_tabs_8" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
@@ -962,7 +962,7 @@ build tool:</p>
 <div class="paragraph">
 <p>Spring Boot users should replace the <code>spring-boot-starter-logging</code> dependency with <code>spring-boot-starter-log4j2</code>:</p>
 </div>
-<div id="_tabs_9" class="openblock tabs is-loading">
+<div id="_tabs_9" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
@@ -1029,7 +1029,7 @@ Log4j Core supports many different configuration formats: JSON, XML, YAML, and J
 To configure Log4j Core, see <a href="configuration.html" class="xref page">Configuration</a>.
 A basic configuration can be obtained by adding one of these files to your application&#8217;s classpath:</p>
 </div>
-<div id="_tabs_10" class="openblock tabs is-loading">
+<div id="_tabs_10" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
@@ -1280,7 +1280,7 @@ You can skip this section and use the <a href="https://github.com/jboss-logging/
 <p>Java Platform contains a very simple logging API and its implementation called <a href="https://docs.oracle.com/en/java/javase/8/core/java-logging-overview.html">JUL (Java Logging)</a>.
 Since it is embedded in the platform, it only requires the addition of bridges from Log4j API and SLF4J:</p>
 </div>
-<div id="_tabs_14" class="openblock tabs is-loading">
+<div id="_tabs_14" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
@@ -1337,7 +1337,7 @@ runtimeOnly 'org.slf4j:slf4j-jdk14:2.0.13' // SLF4J-to-JUL bridge</code></pre>
 <div class="paragraph">
 <p>To install <a href="https://logback.qos.ch/">Logback</a> as the logging implementation, you only need to add a Log4j-to-SLF4J bridge:</p>
 </div>
-<div id="_tabs_15" class="openblock tabs is-loading">
+<div id="_tabs_15" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
