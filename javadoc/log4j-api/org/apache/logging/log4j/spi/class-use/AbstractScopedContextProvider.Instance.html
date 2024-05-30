@@ -66,26 +66,17 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="org.apache.logging.log4j.spi">
 <h2>Uses of <a href="../AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a> in <a href="../package-summary.html">org.apache.logging.log4j.spi</a></h2>
-<div class="caption"><span>Subclasses of <a href="../AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a> in <a href="../package-summary.html">org.apache.logging.log4j.spi</a></span></div>
-<div class="summary-table three-column-summary">
-<div class="table-header col-first">Modifier and Type</div>
-<div class="table-header col-second">Class</div>
-<div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>protected static class&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../AbstractScopedContextProvider.KeyValueInstance.html" class="type-name-link" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.KeyValueInstance</a></code></div>
-<div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>protected static class&nbsp;</code></div>
-<div class="col-second odd-row-color"><code><a href="../AbstractScopedContextProvider.MapInstance.html" class="type-name-link" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.MapInstance</a></code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
-</div>
 <div class="caption"><span>Fields in <a href="../package-summary.html">org.apache.logging.log4j.spi</a> declared as <a href="../AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a></span></div>
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Field</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>protected final <a href="../AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">AbstractScopedContextProvider.Instance.</span><code><a href="../AbstractScopedContextProvider.Instance.html#parent" class="member-name-link">parent</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">AbstractScopedContextProvider.AbstractWorker.</span><code><a href="../AbstractScopedContextProvider.AbstractWorker.html#context" class="member-name-link">context</a></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>protected final <a href="../AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">AbstractScopedContextProvider.Instance.</span><code><a href="../AbstractScopedContextProvider.Instance.html#parent" class="member-name-link">parent</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 <div class="caption"><span>Methods in <a href="../package-summary.html">org.apache.logging.log4j.spi</a> that return <a href="../AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a></span></div>
 <div class="summary-table three-column-summary">
@@ -102,6 +93,17 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>protected <a href="../AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a></code></div>
 <div class="col-second even-row-color"><span class="type-name-label">AbstractScopedContextProvider.</span><code><a href="../AbstractScopedContextProvider.html#newInstance(org.apache.logging.log4j.spi.AbstractScopedContextProvider.Instance,boolean)" class="member-name-link">newInstance</a><wbr>(<a href="../AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a>&nbsp;instance,
  boolean&nbsp;withThreadContext)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>protected <a href="../AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">AbstractScopedContextProvider.</span><code><a href="../AbstractScopedContextProvider.html#newInstance(org.apache.logging.log4j.spi.AbstractScopedContextProvider.Instance,java.lang.String,java.lang.Object,boolean)" class="member-name-link">newInstance</a><wbr>(<a href="../AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a>&nbsp;instance,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;value,
+ boolean&nbsp;withThreadContext)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>protected <a href="../AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">AbstractScopedContextProvider.</span><code><a href="../AbstractScopedContextProvider.html#newInstance(org.apache.logging.log4j.spi.AbstractScopedContextProvider.Instance,java.util.Map,java.lang.Boolean)" class="member-name-link">newInstance</a><wbr>(<a href="../AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a>&nbsp;instance,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;&nbsp;map,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;withThreadContext)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code><a href="../AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a></code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">AbstractScopedContextProvider.Instance.</span><code><a href="../AbstractScopedContextProvider.Instance.html#where(java.lang.String,java.lang.Object)" class="member-name-link">where</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
@@ -137,41 +139,50 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>protected <a href="../AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">AbstractScopedContextProvider.</span><code><a href="../AbstractScopedContextProvider.html#newInstance(org.apache.logging.log4j.spi.AbstractScopedContextProvider.Instance,boolean)" class="member-name-link">newInstance</a><wbr>(<a href="../AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a>&nbsp;instance,
+<div class="col-first even-row-color"><code>protected abstract void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">AbstractScopedContextProvider.</span><code><a href="../AbstractScopedContextProvider.html#addScopedContext(org.apache.logging.log4j.spi.AbstractScopedContextProvider.Instance)" class="member-name-link">addScopedContext</a><wbr>(<a href="../AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a>&nbsp;context)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Add the ScopeContext.</div>
+</div>
+<div class="col-first odd-row-color"><code>protected <a href="../AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">AbstractScopedContextProvider.</span><code><a href="../AbstractScopedContextProvider.html#newInstance(org.apache.logging.log4j.spi.AbstractScopedContextProvider.Instance,boolean)" class="member-name-link">newInstance</a><wbr>(<a href="../AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a>&nbsp;instance,
  boolean&nbsp;withThreadContext)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>protected <a href="../AbstractScopedContextProvider.KeyValueInstance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.KeyValueInstance</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">AbstractScopedContextProvider.</span><code><a href="../AbstractScopedContextProvider.html#newKeyValueInstance(org.apache.logging.log4j.spi.AbstractScopedContextProvider.Instance,java.lang.String,java.lang.Object,boolean)" class="member-name-link">newKeyValueInstance</a><wbr>(<a href="../AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a>&nbsp;instance,
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>protected <a href="../AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">AbstractScopedContextProvider.</span><code><a href="../AbstractScopedContextProvider.html#newInstance(org.apache.logging.log4j.spi.AbstractScopedContextProvider.Instance,java.lang.String,java.lang.Object,boolean)" class="member-name-link">newInstance</a><wbr>(<a href="../AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a>&nbsp;instance,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;value,
  boolean&nbsp;withThreadContext)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><code>protected <a href="../AbstractScopedContextProvider.MapInstance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.MapInstance</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">AbstractScopedContextProvider.</span><code><a href="../AbstractScopedContextProvider.html#newMapInstance(org.apache.logging.log4j.spi.AbstractScopedContextProvider.Instance,java.util.Map,java.lang.Boolean)" class="member-name-link">newMapInstance</a><wbr>(<a href="../AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a>&nbsp;instance,
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>protected <a href="../AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">AbstractScopedContextProvider.</span><code><a href="../AbstractScopedContextProvider.html#newInstance(org.apache.logging.log4j.spi.AbstractScopedContextProvider.Instance,java.util.Map,java.lang.Boolean)" class="member-name-link">newInstance</a><wbr>(<a href="../AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a>&nbsp;instance,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;&nbsp;map,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;withThreadContext)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 <div class="caption"><span>Constructors in <a href="../package-summary.html">org.apache.logging.log4j.spi</a> with parameters of type <a href="../AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a></span></div>
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier</div>
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../AbstractScopedContextProvider.KeyValueInstance.html#%3Cinit%3E(org.apache.logging.log4j.spi.AbstractScopedContextProvider,org.apache.logging.log4j.spi.AbstractScopedContextProvider.Instance,java.lang.String,java.lang.Object,java.lang.Boolean)" class="member-name-link">KeyValueInstance</a><wbr>(<a href="../AbstractScopedContextProvider.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider</a>&nbsp;provider,
+<div class="col-first even-row-color"><code>protected </code></div>
+<div class="col-second even-row-color"><code><a href="../AbstractScopedContextProvider.AbstractWorker.html#%3Cinit%3E(org.apache.logging.log4j.spi.AbstractScopedContextProvider.Instance,java.util.Map,org.apache.logging.log4j.ThreadContext.ContextStack)" class="member-name-link">AbstractWorker</a><wbr>(<a href="../AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a>&nbsp;context,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;threadContextMap,
+ <a href="../../ThreadContext.ContextStack.html" title="interface in org.apache.logging.log4j">ThreadContext.ContextStack</a>&nbsp;contextStack)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../AbstractScopedContextProvider.Instance.html#%3Cinit%3E(org.apache.logging.log4j.spi.AbstractScopedContextProvider,org.apache.logging.log4j.spi.AbstractScopedContextProvider.Instance,java.lang.String,java.lang.Object,boolean)" class="member-name-link">Instance</a><wbr>(<a href="../AbstractScopedContextProvider.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider</a>&nbsp;provider,
  <a href="../AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a>&nbsp;parent,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;value,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;withThreadContext)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>&nbsp;</code></div>
-<div class="col-second odd-row-color"><code><a href="../AbstractScopedContextProvider.MapInstance.html#%3Cinit%3E(org.apache.logging.log4j.spi.AbstractScopedContextProvider,org.apache.logging.log4j.spi.AbstractScopedContextProvider.Instance,org.apache.logging.log4j.spi.AbstractScopedContextProvider.MapInstance,java.util.Map,java.lang.Boolean)" class="member-name-link">MapInstance</a><wbr>(<a href="../AbstractScopedContextProvider.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider</a>&nbsp;provider,
- <a href="../AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a>&nbsp;parent,
- <a href="../AbstractScopedContextProvider.MapInstance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.MapInstance</a>&nbsp;previous,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;&nbsp;map,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;withThreadContext)</code></div>
+ boolean&nbsp;withThreadContext)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../AbstractScopedContextProvider.Instance.html#%3Cinit%3E(org.apache.logging.log4j.spi.AbstractScopedContextProvider,org.apache.logging.log4j.spi.AbstractScopedContextProvider.Instance,java.util.Map,boolean)" class="member-name-link">Instance</a><wbr>(<a href="../AbstractScopedContextProvider.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider</a>&nbsp;provider,
+ <a href="../AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a>&nbsp;parent,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;&nbsp;map,
+ boolean&nbsp;withThreadContext)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
 </li>

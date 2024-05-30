@@ -109,12 +109,6 @@ implements <a href="ScopedContextProvider.html" title="interface in org.apache.l
 <div class="col-last odd-row-color">
 <div class="block">When an Instance is created it may contain a Key/Value pair from a Where method.</div>
 </div>
-<div class="col-first even-row-color"><code>protected static class&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="AbstractScopedContextProvider.KeyValueInstance.html" class="type-name-link" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.KeyValueInstance</a></code></div>
-<div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>protected static class&nbsp;</code></div>
-<div class="col-second odd-row-color"><code><a href="AbstractScopedContextProvider.MapInstance.html" class="type-name-link" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.MapInstance</a></code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
 </li>
@@ -163,7 +157,7 @@ implements <a href="ScopedContextProvider.html" title="interface in org.apache.l
 <div class="block">Adds all the String rendered objects in the context map to the provided Map.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>protected abstract void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#addScopedContext(org.apache.logging.log4j.spi.AbstractScopedContextProvider.MapInstance)" class="member-name-link">addScopedContext</a><wbr>(<a href="AbstractScopedContextProvider.MapInstance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.MapInstance</a>&nbsp;context)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#addScopedContext(org.apache.logging.log4j.spi.AbstractScopedContextProvider.Instance)" class="member-name-link">addScopedContext</a><wbr>(<a href="AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a>&nbsp;context)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Add the ScopeContext.</div>
 </div>
@@ -189,41 +183,36 @@ implements <a href="ScopedContextProvider.html" title="interface in org.apache.l
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#newInstance(org.apache.logging.log4j.spi.AbstractScopedContextProvider.Instance,boolean)" class="member-name-link">newInstance</a><wbr>(<a href="AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a>&nbsp;instance,
  boolean&nbsp;withThreadContext)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="AbstractScopedContextProvider.KeyValueInstance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.KeyValueInstance</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#newKeyValueInstance(org.apache.logging.log4j.spi.AbstractScopedContextProvider.Instance,java.lang.String,java.lang.Object,boolean)" class="member-name-link">newKeyValueInstance</a><wbr>(<a href="AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a>&nbsp;instance,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#newInstance(org.apache.logging.log4j.spi.AbstractScopedContextProvider.Instance,java.lang.String,java.lang.Object,boolean)" class="member-name-link">newInstance</a><wbr>(<a href="AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a>&nbsp;instance,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;value,
  boolean&nbsp;withThreadContext)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="AbstractScopedContextProvider.MapInstance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.MapInstance</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#newMapInstance(org.apache.logging.log4j.spi.AbstractScopedContextProvider.Instance,java.util.Map,java.lang.Boolean)" class="member-name-link">newMapInstance</a><wbr>(<a href="AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a>&nbsp;instance,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#newInstance(org.apache.logging.log4j.spi.AbstractScopedContextProvider.Instance,java.util.Map,java.lang.Boolean)" class="member-name-link">newInstance</a><wbr>(<a href="AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a>&nbsp;instance,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;&nbsp;map,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;withThreadContext)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../ScopedContext.Instance.html" title="interface in org.apache.logging.log4j">ScopedContext.Instance</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#newScopedContext()" class="member-name-link">newScopedContext</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#newScopedContext(boolean)" class="member-name-link">newScopedContext</a><wbr>(boolean&nbsp;withThreadContext)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Creates a new context containing the current context data from <a href="../ThreadContext.html" title="class in org.apache.logging.log4j"><code>ThreadContext</code></a>.</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../ScopedContext.Instance.html" title="interface in org.apache.logging.log4j">ScopedContext.Instance</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#newScopedContext(boolean)" class="member-name-link">newScopedContext</a><wbr>(boolean&nbsp;withThreadContext)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Creates a ScopedContext Instance that indicates the ThreadContext should be included.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../ScopedContext.Instance.html" title="interface in org.apache.logging.log4j">ScopedContext.Instance</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#newScopedContext(java.lang.String,java.lang.Object)" class="member-name-link">newScopedContext</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../ScopedContext.Instance.html" title="interface in org.apache.logging.log4j">ScopedContext.Instance</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#newScopedContext(java.lang.String,java.lang.Object)" class="member-name-link">newScopedContext</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;value)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Creates a ScopedContext Instance with a key/value pair.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../ScopedContext.Instance.html" title="interface in org.apache.logging.log4j">ScopedContext.Instance</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#newScopedContext(java.util.Map)" class="member-name-link">newScopedContext</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr>?&gt;&nbsp;map)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../ScopedContext.Instance.html" title="interface in org.apache.logging.log4j">ScopedContext.Instance</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#newScopedContext(java.util.Map)" class="member-name-link">newScopedContext</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr>?&gt;&nbsp;map)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Creates a ScopedContext Instance with a Map of keys and values.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>protected abstract void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#removeScopedContext()" class="member-name-link">removeScopedContext</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>protected abstract void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#removeScopedContext()" class="member-name-link">removeScopedContext</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Remove the top ScopeContext.</div>
 </div>
 </div>
@@ -283,9 +272,9 @@ implements <a href="ScopedContextProvider.html" title="interface in org.apache.l
 </section>
 </li>
 <li>
-<section class="detail" id="addScopedContext(org.apache.logging.log4j.spi.AbstractScopedContextProvider.MapInstance)">
+<section class="detail" id="addScopedContext(org.apache.logging.log4j.spi.AbstractScopedContextProvider.Instance)">
 <h3>addScopedContext</h3>
-<div class="member-signature"><span class="modifiers">protected abstract</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">addScopedContext</span><wbr><span class="parameters">(<a href="AbstractScopedContextProvider.MapInstance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.MapInstance</a>&nbsp;context)</span></div>
+<div class="member-signature"><span class="modifiers">protected abstract</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">addScopedContext</span><wbr><span class="parameters">(<a href="AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a>&nbsp;context)</span></div>
 <div class="block">Add the ScopeContext.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -356,20 +345,6 @@ implements <a href="ScopedContextProvider.html" title="interface in org.apache.l
 </section>
 </li>
 <li>
-<section class="detail" id="newScopedContext()">
-<h3>newScopedContext</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../ScopedContext.Instance.html" title="interface in org.apache.logging.log4j">ScopedContext.Instance</a></span>&nbsp;<span class="element-name">newScopedContext</span>()</div>
-<div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="ScopedContextProvider.html#newScopedContext()">ScopedContextProvider</a></code></span></div>
-<div class="block">Creates a new context containing the current context data from <a href="../ThreadContext.html" title="class in org.apache.logging.log4j"><code>ThreadContext</code></a>.</div>
-<dl class="notes">
-<dt>Specified by:</dt>
-<dd><code><a href="ScopedContextProvider.html#newScopedContext()">newScopedContext</a></code>&nbsp;in interface&nbsp;<code><a href="ScopedContextProvider.html" title="interface in org.apache.logging.log4j.spi">ScopedContextProvider</a></code></dd>
-<dt>Returns:</dt>
-<dd>A new instance of a scoped context.</dd>
-</dl>
-</section>
-</li>
-<li>
 <section class="detail" id="newScopedContext(java.lang.String,java.lang.Object)">
 <h3>newScopedContext</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../ScopedContext.Instance.html" title="interface in org.apache.logging.log4j">ScopedContext.Instance</a></span>&nbsp;<span class="element-name">newScopedContext</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
@@ -418,9 +393,9 @@ implements <a href="ScopedContextProvider.html" title="interface in org.apache.l
 </section>
 </li>
 <li>
-<section class="detail" id="newKeyValueInstance(org.apache.logging.log4j.spi.AbstractScopedContextProvider.Instance,java.lang.String,java.lang.Object,boolean)">
-<h3>newKeyValueInstance</h3>
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="AbstractScopedContextProvider.KeyValueInstance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.KeyValueInstance</a></span>&nbsp;<span class="element-name">newKeyValueInstance</span><wbr><span class="parameters">(<a href="AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a>&nbsp;instance,
+<section class="detail" id="newInstance(org.apache.logging.log4j.spi.AbstractScopedContextProvider.Instance,java.lang.String,java.lang.Object,boolean)">
+<h3>newInstance</h3>
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a></span>&nbsp;<span class="element-name">newInstance</span><wbr><span class="parameters">(<a href="AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a>&nbsp;instance,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;value,
  boolean&nbsp;withThreadContext)</span></div>
@@ -434,9 +409,9 @@ implements <a href="ScopedContextProvider.html" title="interface in org.apache.l
 </section>
 </li>
 <li>
-<section class="detail" id="newMapInstance(org.apache.logging.log4j.spi.AbstractScopedContextProvider.Instance,java.util.Map,java.lang.Boolean)">
-<h3>newMapInstance</h3>
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="AbstractScopedContextProvider.MapInstance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.MapInstance</a></span>&nbsp;<span class="element-name">newMapInstance</span><wbr><span class="parameters">(<a href="AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a>&nbsp;instance,
+<section class="detail" id="newInstance(org.apache.logging.log4j.spi.AbstractScopedContextProvider.Instance,java.util.Map,java.lang.Boolean)">
+<h3>newInstance</h3>
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a></span>&nbsp;<span class="element-name">newInstance</span><wbr><span class="parameters">(<a href="AbstractScopedContextProvider.Instance.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.Instance</a>&nbsp;instance,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;&nbsp;map,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;withThreadContext)</span></div>
 </section>
