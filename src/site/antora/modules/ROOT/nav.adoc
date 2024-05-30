@@ -59,7 +59,6 @@
 
 .Components
 * xref:log4j-flume-ng.adoc[]
-* xref:log4j-iostreams.adoc[]
 * xref:log4j-docker.adoc[]
 * xref:log4j-spring-cloud-config-client.adoc[]
 
