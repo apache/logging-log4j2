@@ -56,9 +56,8 @@ RewriteRule "^log4j-slf4j2-impl\.html$" "manual/installation.html#impl-core-brid
 RewriteRule "^manual/api-separation\.html$" "manual/api.html" [R=permanent]
 RewriteRule "^manual/scala-api\.html$" "/log4j/scala/latest/index.html" [R=permanent]
 RewriteRule "^manual/usage\.html$" "manual/api.html" [R=permanent]
-RewriteRule "^release-notes/index\.html$" "release-notes.html" [R=permanent]
 RewriteRule "^runtime-dependencies\.html$" "manual/installation.html" [R=permanent]
-RewriteRule "^thanks\.html$" "/support.html#sponsors" [R=permanent]
+RewriteRule "^thanks\.html$" "/support.html#sponsors" [R=permanent,NE]
 
 # These redirects are special, since:
 #
@@ -79,3 +78,4 @@ RewriteRule "^log4j-spring-cloud-config\.html/index\.html$" "log4j-spring-cloud-
 RewriteRule "^log4j-spring-cloud-config-client\.html/index\.html$" "log4j-spring-cloud-config-client.html" [R=permanent]
 RewriteRule "^log4j-taglib\.html/index\.html$" "log4j-taglib.html" [R=permanent]
 RewriteRule "^log4j-web\.html/index\.html$" "log4j-web.html" [R=permanent]
+RewriteRule "^release-notes\.html/index\.html$" "release-notes.html" [R=permanent]
