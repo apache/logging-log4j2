@@ -462,7 +462,7 @@ For instance, <code>log4j-slf4j2-impl</code> <em>bridges</em> SLF4J calls to Log
 <p>We will need a BOM (Bill of Materials) to manage the versions of the dependencies.
 This way we won&#8217;t need to provide the version for each Log4j module explicitly.</p>
 </div>
-<div id="_tabs_1" class="openblock tabs is-loading">
+<div id="_tabs_1" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
@@ -515,7 +515,7 @@ This way we won&#8217;t need to provide the version for each Log4j module explic
 <p>To log, you need a <a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html"><code>Logger</code></a> instance which you will retrieve from the <a href="../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html"><code>LogManager</code></a>.
 These are all part of the <code>log4j-api</code> module, which you can install as follows:</p>
 </div>
-<div id="_tabs_2" class="openblock tabs is-loading">
+<div id="_tabs_2" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
@@ -771,7 +771,7 @@ Please refer to the <a href="#install-lib">How do I install Log4j Core for my <s
 Second, it is highly recommended to add the <code>log4j-layout-template-json</code> <strong>runtime</strong> dependency to encode log events in JSON.
 This is the most secure way to format log events and should be preferred over the default <code>PatternLayout</code>, at least for production deployments.</p>
 </div>
-<div id="_tabs_3" class="openblock tabs is-loading">
+<div id="_tabs_3" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
@@ -845,7 +845,7 @@ This way the foreign logging API calls will effectively be consumed by Log4j too
 (<a href="installation.html" class="xref page">Installation</a> covers all supported foreign APIs.)
 Let&#8217;s see how you can use the <code>log4j-slf4j2-impl</code> bridge to support SLF4J:</p>
 </div>
-<div id="_tabs_4" class="openblock tabs is-loading">
+<div id="_tabs_4" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
@@ -1018,7 +1018,7 @@ That said, libraries need a logging implementation while running their tests.</p
 <p>Let&#8217;s see how you can install Log4j Core for your tests.
 Start with adding the <code>log4j-core</code> dependency in <strong>test</strong> scope to your library:</p>
 </div>
-<div id="_tabs_5" class="openblock tabs is-loading">
+<div id="_tabs_5" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
@@ -1083,7 +1083,7 @@ This way the foreign logging API calls will effectively be consumed by Log4j too
 (<a href="installation.html" class="xref page">Installation</a> covers all supported foreign APIs.)
 Let&#8217;s see how you can use the <code>log4j-slf4j2-impl</code> bridge to support SLF4J:</p>
 </div>
-<div id="_tabs_6" class="openblock tabs is-loading">
+<div id="_tabs_6" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
