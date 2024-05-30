@@ -1,0 +1,509 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Getting started
+
+This document aims to guide you through the most important aspects of logging with Log4j.
+It is not a comprehensive guide, but it should give you a good starting point.
+
+[#what]
+== What is logging?
+
+Logging is the act of publishing diagnostics information at certain points of a program execution.
+It means you can write messages to a log file or console to help you understand what your application is doing.
+
+The simplest way to log in Java is to use `System.out.println()`, like this:
+
+[source, java]
+----
+private void truncateTable(String tableName) {
+  System.out.println("truncating table"); <1>
+  db.truncate(tableName);
+}
+----
+<1> The information that a table is being truncated is written to the console.
+
+This is already useful, but the reader of this message does not know what table is being truncated. 
+Usually, we would like to include the table name in the message, which quickly leads developers to use `System.out.format()` or similar methods.
+Log4j helps with formatting strings as we will see later, but for now, let's see how to work without it.
+
+The following code shows how this method can be improved to provide more context about its action.
+
+[source, java]
+----
+private void truncateTable(String tableName) {
+    System.out.format("[WARN] truncating table `%s`%n", tableName); <1>
+    db.truncate(tableName);
+}
+----
+<1> `format()` writes the message to the console, replacing `%s` with the value of `tableName`, and `%n` with a new line.
+
+If the developer decides the truncate the table `fruits`, the output of this code will look like this:
+
+[source,text]
+----
+[WARN] Truncating table `fruits`
+----
+
+This provides observability into an application's runtime, and we can follow the execution flow.
+
+However, there are several drawbacks with the above approach and this is where Log4j comes in.
+Log4j will help you to write logs in a more structured way, with more information, and with more flexibility.
+
+[#why]
+== Why should I use Log4j?
+
+Log4j is a versatile, industrial-grade Java logging framework, maintained by many contributors.
+It can help us with common logging tasks and lets us focus on the application logic.
+
+It helps with:
+
+* Enhancing the message with additional information (timestamp, file, class, and method name, line number, host, severity, etc.)
+* Formatting the message according to a given **layout** (CSV, JSON, etc.)
+* Writing the message to various targets using an **appender** (console, file, socket, database, queue, etc.)
+* **Filter**ing messages to be written (e.g. filter by severity, content, etc.)
+
+[#architecture]
+== What is Log4j composed of?
+
+Log4j is essentially composed of a logging API called *Log4j API*, and its reference implementation called *Log4j Core*.
+Log4j also bundles several logging bridges to enable Log4j Core consume from foreign logging APIs.
+Let's briefly explain these concepts:
+
+include::partial$concepts.adoc[tags=inc;api;impl;bridge]
+
+[#prerequisites]
+== What are the installation prerequisites?
+
+We will need a BOM (Bill of Materials) to manage the versions of the dependencies.
+This way we won't need to provide the version for each Log4j module explicitly.
+
+[tabs]
+====
+Maven::
++
+[source,xml,subs="+attributes"]
+----
+<project>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-bom</artifactId>
+        <version>{log4j-core-version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+</project>
+----
+
+Gradle::
++
+[source,groovy,subs="+attributes"]
+----
+dependencies {
+  implementation platform('org.apache.logging.log4j:log4j-bom:{log4j-core-version}')
+}
+----
+====
+
+[#using-api]
+== How do I log using Log4j API?
+
+include::partial$manual/api-intro.adoc[]
+
+[#best-practice]
+=== Best practices
+
+There are several widespread bad practices while using Log4j API.
+Below we will walk through the most common ones and see how to fix them.
+For a complete list, refer to xref:manual/api.adoc#best-practice[the Log4j API best practices page].
+
+[#best-practice-toString]
+==== Don't use `toString()`
+
+include::partial$manual/api-best-practice-dont-use-toString.adoc[]
+
+[#best-practice-exception]
+==== Pass exception as the last extra argument
+
+include::partial$manual/api-best-practice-exception-as-last-argument.adoc[]
+
+[#best-practice-concat]
+==== Don't use string concatenation
+
+include::partial$manual/api-best-practice-dont-use-string-concat.adoc[]
+
+[#install-app]
+== How do I install Log4j Core to run my **application**?
+
+This section explains how to install Log4j Core to run an application.
+
+[IMPORTANT]
+====
+Are you implementing not an **application**, but a **library**?
+Please refer to the xref:#install-lib[] instead.
+====
+
+First, add the `log4j-core` **runtime** dependency to your application.
+Second, it is highly recommended to add the `log4j-layout-template-json` **runtime** dependency to encode log events in JSON.
+This is the most secure way to format log events and should be preferred over the default `PatternLayout`, at least for production deployments.
+
+[tabs]
+====
+Maven::
++
+[source,xml,subs="+attributes"]
+----
+<project>
+
+  <!-- Assuming `log4j-bom` is added -->
+
+  <dependency>
+
+    <!-- Logging implementation (Log4j Core) -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <scope>runtime</scope><!--1-->
+    </dependency>
+
+    <!-- Log4j JSON-encoding support -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-layout-template-json</artifactId>
+      <scope>runtime</scope><!--1-->
+    </dependency>
+
+  </dependency>
+
+</project>
+----
+
+Gradle::
++
+[source,groovy,subs="+attributes"]
+----
+dependencies {
+
+  // Assuming `log4j-bom` is added
+
+  // The logging implementation (i.e., Log4j Core)
+  runtimeOnly 'org.apache.logging.log4j:log4j-core' // <1>
+
+  // Log4j JSON-encoding support
+  runtimeOnly 'org.apache.logging.log4j:log4j-layout-template-json' // <1>
+}
+----
+====
+<1> For applications, the logging implementation need to be runtime dependencies.
+
+If your application has (direct or transitive!) dependencies that use another logging API, you need to xref:#logging-bridge[bridge] that to Log4j.
+This way the foreign logging API calls will effectively be consumed by Log4j too.
+{slf4j-link} is another logging API used pretty common in the wild.
+(xref:manual/installation.adoc[] covers all supported foreign APIs.)
+Let's see how you can use the `log4j-slf4j2-impl` bridge to support SLF4J:
+
+[tabs]
+====
+Maven::
++
+[source,xml,subs="+attributes"]
+----
+<project>
+
+  <!-- Assuming `log4j-bom` is added -->
+
+  <dependency>
+
+    <!-- Assuming `log4j-core` and `log4j-layout-template-json` is added -->
+
+    <!-- SLF4J-to-Log4j bridge --><!--2-->
+    <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j2-impl</artifactId>
+        <scope>runtime</scope><!--1-->
+    </dependency>
+
+  </dependency>
+
+</project>
+----
+
+Gradle::
++
+[source,groovy,subs="+attributes"]
+----
+dependencies {
+
+  // Assuming `log4j-bom`, `log4j-core`, and `log4j-layout-template-json` is added
+
+  // SLF4J-to-Log4j bridge // <2>
+  runtimeOnly 'org.apache.logging.log4j:log4j-slf4j2-impl' // <1>
+
+}
+----
+====
+<1> For applications, bridges need to be runtime dependencies.
+<2> Log4j module bridging SLF4J to Log4j
+
+To complete the installation, Log4j needs to be configured.
+Please continue with xref:#config-app[]
+
+[#config-app]
+== How do I configure Log4j Core to run my application?
+
+This section explains configuring Log4j on how log events should be processed.
+
+xref:manual/configuration.adoc[Log4j supports several configuration inputs and file formats.]
+Let's start with a basic and robust configuration where the logs are encoded in JSON and written to the console.
+Save the following XML-formatted Log4j **configuration file** to `src/**main**/resources/**log4j2.xml**` in your application.
+
+.An example `src/**main**/resources/**log4j2.xml**`
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xmlns="https://logging.apache.org/xml/ns"
+               xsi:schemaLocation="
+                       https://logging.apache.org/xml/ns
+                       https://logging.apache.org/xml/ns/log4j-config-2.xsd">
+
+  <Appenders><!--1-->
+    <Console name="CONSOLE"><!--2-->
+      <JsonTemplateLayout/><!--3-->
+    </Console>
+  </Appenders>
+
+  <Loggers>
+    <Logger name="com.mycompany" level="INFO"/><!--4-->
+    <Root level="WARN"><!--5-->
+      <AppenderRef ref="CONSOLE"/><!--6-->
+    </Root>
+  </Loggers>
+
+</Configuration>
+----
+<1> xref:manual/appenders.adoc[Appenders] are responsible for writing log events to a particular target; console, file, socket, database, queue, etc.
+<2> xref:manual/appenders.adoc#ConsoleAppender[Console Appender] writes logs to the console.
+<3> xref:manual/layouts.adoc[Layouts] are responsible for encoding log events before appenders writing them.
+xref:manual/json-template-layout.adoc[JSON Template Layout] encodes log events in JSON.
+<4> Log events generated by classes in the `com.mycompany` package (incl. its sub-packages) and that are of level `INFO` or higher (i.e., `WARN`, `ERROR`, `FATAL`) will be accepted.
+<5> Unless specified otherwise, log events of level `WARN` and higher will be accepted.
+It serves as the default `<logger>` configuration.
+<6> Unless specified otherwise, accepted log events will be forwarded to the `console` appender defined earlier.
+
+Next, you need to you need to configure Log4j for the tests of your application.
+Please proceed to xref:#config-test[]
+
+[#install-lib]
+== How do I install Log4j Core for my **library**?
+
+This section explains how to install Log4j Core for libraries.
+
+[IMPORTANT]
+====
+Are you implementing not a **library**, but an **application**?
+Please refer to xref:#install-app[] instead.
+====
+
+Unlike applications, libraries should be logging implementation agnostic.
+That is, **libraries should log through a logging API, but leave the decision of the logging implementation to the application**.
+That said, libraries need a logging implementation while running their tests.
+
+Let's see how you can install Log4j Core for your tests.
+Start with adding the `log4j-core` dependency in **test** scope to your library:
+
+[tabs]
+====
+Maven::
++
+[source,xml,subs="+attributes"]
+----
+<project>
+
+  <!-- Assuming `log4j-bom` is added  -->
+
+  <dependency>
+
+    <!-- Logging implementation (Log4j Core) -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <scope>test</scope><!--1-->
+    </dependency>
+
+  </dependency>
+
+</project>
+----
+
+Gradle::
++
+[source,groovy,subs="+attributes"]
+----
+dependencies {
+
+  // Assuming `log4j-bom` is already added
+
+  // The logging implementation (i.e., Log4j Core)
+  testRuntimeOnly 'org.apache.logging.log4j:log4j-core' // <1>
+
+}
+----
+====
+<1> For tests of libraries, the logging implementation is only needed in test scope.
+
+If your library has (direct or transitive!) dependencies that use another logging API, you need to xref:#logging-bridge[bridge] that to Log4j.
+This way the foreign logging API calls will effectively be consumed by Log4j too.
+{slf4j-link} is another logging API used pretty common in the wild.
+(xref:manual/installation.adoc[] covers all supported foreign APIs.)
+Let's see how you can use the `log4j-slf4j2-impl` bridge to support SLF4J:
+
+[tabs]
+====
+Maven::
++
+[source,xml,subs="+attributes"]
+----
+<project>
+
+  <!-- Assuming `log4j-bom` is added -->
+
+  <dependency>
+
+    <!-- Assuming `log4j-core` and `log4j-layout-template-json` is added -->
+
+    <!-- SLF4J-to-Log4j bridge --><!--2-->
+    <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j2-impl</artifactId>
+        <scope>test</scope><!--1-->
+    </dependency>
+
+  </dependency>
+
+</project>
+----
+
+Gradle::
++
+[source,groovy,subs="+attributes"]
+----
+dependencies {
+
+  // Assuming `log4j-bom`, `log4j-core`, and `log4j-layout-template-json` is added
+
+  // SLF4J-to-Log4j bridge // <2>
+  runtimeOnly 'org.apache.logging.log4j:log4j-slf4j2-impl' // <1>
+
+}
+----
+====
+<1> For tests of libraries, logging bridges are only needed in test scope.
+<2> Log4j module bridging SLF4J to Log4j
+
+Next, you need to you need to configure Log4j.
+Please proceed to xref:#config-test[]
+
+[#config-test]
+== How do I configure Log4j Core for tests?
+
+This section explains configuring Log4j on how log events should be processed for tests.
+
+xref:manual/configuration.adoc[Log4j supports several configuration inputs and file formats.]
+Let's start with a basic and developer-friendly configuration where the logs are pretty-printed in a human-readable way and written to the console.
+
+Contrast to xref:#config-app[an application's more conservative Log4j setup], for tests, we will go with a more developer-friendly Log4j configuration where
+
+. the logs are pretty-printed to the console, and
+. logging verbosity is increased.
+
+While it is not recommended to use xref:manual/layouts.adoc#pattern-layout[Pattern Layout] in production for security reasons, it is a good choice for tests to encode log events.
+We will use it to pretty-print the log event to the console with extra fields: timestamp, thread name, log level, class name, etc.
+The rest of the configuration should look familiar from earlier sections.
+
+Save the following XML-formatted Log4j configuration file to `src/**test**/resources/**log4j2-test.xml**`.
+
+.An example `src/**test**/resources/**log4j2-test.xml**`
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xmlns="https://logging.apache.org/xml/ns"
+               xsi:schemaLocation="
+                       https://logging.apache.org/xml/ns
+                       https://logging.apache.org/xml/ns/log4j-config-2.xsd">
+
+  <Appenders>
+    <Console name="CONSOLE">
+      <PatternLayout pattern="%d [%t] %5p %c{1.} - %m%n"/><!--1-->
+    </Console>
+  </Appenders>
+
+  <Loggers>
+    <Logger name="com.mycompany" level="DEBUG"/><!--2-->
+    <Root level="WARN">
+      <AppenderRef ref="CONSOLE"/>
+    </Root>
+  </Loggers>
+
+</Configuration>
+----
+<1> xref:manual/layouts.adoc#pattern-layout[Pattern Layout] is used for encoding the log event in a human-readable way.
+<2> Increased logging verbosity for the `com.mycompany` package.
+
+[#next]
+== What is next?
+
+At this stage, you know
+
+. How to install Log4j API and log using it
+. How to install and configure Log4j Core in your application/library
+
+You can use following pointers to further customize your Log4j setup.
+
+Installation::
+While shared dependency management snippets should get you going, your case might necessitate a more intricate setup.
+Are you dealing with a Spring Boot application?
+Is it running in a Java EE container?
+Do you need to take into account other logging APIs such as JUL, JPL, JCL, etc.?
+See xref:manual/installation.adoc[] for the complete installation guide.
+
+Configuration::
+Log4j can be configured in several ways in various file formats (XML, JSON, Properties, and YAML).
+See the xref:manual/configuration.adoc[] page for details.
+
+Appenders & Layouts::
+Log4j contains several xref:manual/appenders.adoc[appenders] and xref:manual/layouts.adoc[layouts] to compose a configuration that best suit your needs.
+
+Performance::
+Do you want to get the best performance out of your logging system?
+Make sure to check out the xref:manual/performance.adoc[] page.
+
+Architecture::
+Want to learn more about loggers, contexts, and how these are all wired together?
+See the xref:manual/architecture.adoc[] page.
+
+Support::
+Confused?
+Having a problem while setting up Log4j?
+See the {logging-services-url}/support.html[Support] page.

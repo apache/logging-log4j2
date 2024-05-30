@@ -15,13 +15,6 @@
     limitations under the License.
 ////
 
-:jboss-logging-link: https://github.com/jboss-logging/jboss-logging[JBoss Logging]
-:jcl-link: https://commons.apache.org/proper/commons-logging/[JCL (Apache Commons Logging)]
-:jpl-link: https://openjdk.org/jeps/264[JPL (Java Platform Logging)]
-:jul-link: https://docs.oracle.com/en/java/javase/{java-target-version}/core/java-logging-overview.html[JUL (Java Logging)]
-:logback-link: https://logback.qos.ch/[Logback]
-:slf4j-link: https://www.slf4j.org/[SLF4J]
-
 = Log4j API
 
 Log4j is essentially composed of a logging API called *Log4j API*, and its reference implementation called *Log4j Core*.
@@ -29,20 +22,13 @@ Log4j is essentially composed of a logging API called *Log4j API*, and its refer
 .What is a logging API and a logging implementation?
 [%collapsible]
 ====
-Logging APIs::
-A logging API is an interface your code or your dependencies directly logs against.
-It is implementation agnostic.
-Log4j API, {slf4j-link}, {jul-link}, {jcl-link}, {jpl-link} and {jboss-logging-link} are major logging APIs.
-
-Logging implementation::
-A logging implementation is only required at runtime and can be changed without the need to recompile your software.
-Log4j Core, {jul-link}, {logback-link} are the most well-known logging implementations.
+include::partial$concepts.adoc[tags=inc;api;impl]
 ====
 
 [TIP]
 ====
 Are you looking for a crash course on how to use Log4j in your application or library?
-See xref:getting-started.adoc[].
+See xref:manual/getting-started.adoc[].
 You can also check out xref:manual/installation.adoc[] for the complete installation instructions.
 ====
 
