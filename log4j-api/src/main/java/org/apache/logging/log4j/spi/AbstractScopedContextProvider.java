@@ -200,7 +200,7 @@ public abstract class AbstractScopedContextProvider implements ScopedContextProv
                 if (map != null && !map.isEmpty()) {
                     contextMap = ((ScopedContextMap) parent.contextMap).copyAndPutAll(map);
                 } else {
-                    contextMap = new ScopedContextMap(0);
+                    contextMap = ScopedContextMap.emptyMap();
                 }
             }
         }
@@ -217,11 +217,7 @@ public abstract class AbstractScopedContextProvider implements ScopedContextProv
             if (parent == null) {
                 contextMap = ScopedContextMap.getInstance(key, value);
             } else {
-                if (value == null) {
-                    contextMap = ((ScopedContextMap) parent.contextMap).copyAndRemove(key);
-                } else {
-                    contextMap = ((ScopedContextMap) parent.contextMap).copyAndPut(key, value);
-                }
+                contextMap = ((ScopedContextMap) parent.contextMap).copyAndPut(key, value);
             }
         }
 
@@ -229,7 +225,7 @@ public abstract class AbstractScopedContextProvider implements ScopedContextProv
                 final AbstractScopedContextProvider provider, final Instance parent, final boolean withThreadContext) {
             this.provider = provider != null ? provider : parent.provider;
             this.parent = parent;
-            contextMap = parent == null ? new ScopedContextMap(0) : parent.contextMap;
+            contextMap = parent == null ? ScopedContextMap.emptyMap() : parent.contextMap;
             this.withThreadContext = withThreadContext;
         }
 

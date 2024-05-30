@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.spi.internal;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.Optional;
 import org.apache.logging.log4j.spi.AbstractScopedContextProvider;
 import org.apache.logging.log4j.spi.ScopedContextProvider;
@@ -29,8 +27,9 @@ import org.apache.logging.log4j.spi.ScopedContextProvider;
 public class DefaultScopedContextProvider extends AbstractScopedContextProvider {
 
     public static final ScopedContextProvider INSTANCE = new DefaultScopedContextProvider();
+    private static final int ENTRIES = 4;
 
-    private final ThreadLocal<Deque<Instance>> scopedContext = new ThreadLocal<>();
+    private final ThreadLocal<InstanceArray> scopedContext = new ThreadLocal<>();
 
     /**
      * Returns an immutable Map containing all the key/value pairs as Object objects.
@@ -38,8 +37,8 @@ public class DefaultScopedContextProvider extends AbstractScopedContextProvider 
      */
     @Override
     protected Optional<Instance> getContext() {
-        final Deque<Instance> stack = scopedContext.get();
-        return stack != null ? Optional.of(stack.getFirst()) : Optional.empty();
+        final InstanceArray array = scopedContext.get();
+        return array != null ? Optional.of(array.array[array.index]) : Optional.empty();
     }
 
     /**
@@ -48,12 +47,12 @@ public class DefaultScopedContextProvider extends AbstractScopedContextProvider 
      */
     @Override
     protected void addScopedContext(final Instance context) {
-        Deque<Instance> stack = scopedContext.get();
-        if (stack == null) {
-            stack = new ArrayDeque<>();
-            scopedContext.set(stack);
+        InstanceArray array = scopedContext.get();
+        if (array == null) {
+            array = new InstanceArray();
+            scopedContext.set(array);
         }
-        stack.addFirst(context);
+        array.add(context);
     }
 
     /**
@@ -61,14 +60,50 @@ public class DefaultScopedContextProvider extends AbstractScopedContextProvider 
      */
     @Override
     protected void removeScopedContext() {
-        final Deque<Instance> stack = scopedContext.get();
-        if (stack != null) {
-            if (!stack.isEmpty()) {
-                stack.removeFirst();
+        final InstanceArray array = scopedContext.get();
+        if (array != null) {
+            if (!array.isEmpty()) {
+                array.remove();
             }
-            if (stack.isEmpty()) {
+            if (array.isEmpty()) {
                 scopedContext.remove();
             }
+        }
+    }
+
+    private static class InstanceArray {
+        public int index;
+        public Instance[] array;
+
+        public InstanceArray() {
+            this(ENTRIES);
+        }
+
+        public InstanceArray(int capacity) {
+            this.index = -1;
+            array = new Instance[capacity];
+        }
+
+        public boolean isEmpty() {
+            return index < 0;
+        }
+
+        public void add(Instance instance) {
+            int next = ++index;
+            if (next == array.length) {
+                expand();
+            }
+            array[next] = instance;
+        }
+
+        public void remove() {
+            array[index--] = null;
+        }
+
+        private void expand() {
+            Instance[] newArray = new Instance[array.length + ENTRIES];
+            System.arraycopy(array, 0, newArray, 0, array.length);
+            array = newArray;
         }
     }
 }

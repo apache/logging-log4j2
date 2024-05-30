@@ -19,41 +19,17 @@ package org.apache.logging.log4j.internal.map;
 import java.io.Serializable;
 import java.util.AbstractMap;
 import java.util.AbstractSet;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
 /**
  * This class represents an immutable map, which stores its state inside a single Object[]:
- * <ol>
- * <li>[0] contains the number of entries</li>
- * <li>Others contain alternating key-value pairs, for example [1]="1" and [2]="value_for_1"</li>
- * </ol>
- *
- * Keys are calculated using (index * 2 + 1) and values are (index * 2 + 2).
- *
- * Performance:
- * <ul>
- * <li>Implements very low-cost copies: shallow-copy the array.</li>
- * <li>Doesn't matter for mutable operations, since we don't allow them.</li>
- * <li>Iterates very quickly, since it iterates directly across the array. This
- * contrasts with HashMap's requirement to scan each bucket in the table and
- * chase each pointer.</li>
- * <li>Is linear on gets, puts, and removes, since the table must be scanned to
- * find a matching key.</li>
- * </ul>
- *
- * Allocation:
- * <ul>
- * <li>Zero on reads.</li>
- * <li>Copy-and-modify operations allocate exactly two objects: the new array
- * and the new Map instance. This is substantially better than HashMap, which
- * requires a new Node for each entry.</li>
- * </ul>
- *
+ * Multiple maps may share the same object array to avoid copying.
  */
 public class ScopedContextMap extends AbstractMap<String, Object> implements Serializable {
     /**
@@ -61,7 +37,7 @@ public class ScopedContextMap extends AbstractMap<String, Object> implements Ser
      * contains an index in the array, then getKey() and getValue() retrieve from
      * the array. Blocks modifications.
      */
-    private class UnmodifiableEntry implements Entry<String, Object> {
+    private class MapEntry implements Entry<String, Object> {
         /**
          * This field is functionally final, but marking it as such can cause
          * performance problems. Consider marking it final after
@@ -69,18 +45,37 @@ public class ScopedContextMap extends AbstractMap<String, Object> implements Ser
          */
         private int index;
 
-        public UnmodifiableEntry(int index) {
+        private String key;
+        private Object value;
+
+        public MapEntry(int index) {
             this.index = index;
         }
 
         @Override
         public String getKey() {
-            return (String) backingArray[getArrayIndexForKey(index)];
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
         }
 
         @Override
         public Object getValue() {
-            return backingArray[getArrayIndexForValue(index)];
+            return value;
+        }
+
+        @Override
+        public Object setValue(Object value) {
+            Object old = this.value;
+            this.value = value;
+            return old;
+        }
+
+        public void clear() {
+            this.key = null;
+            this.value = null;
         }
 
         /**
@@ -88,14 +83,7 @@ public class ScopedContextMap extends AbstractMap<String, Object> implements Ser
          * exactly matches HashMap.
          */
         public int hashCode() {
-            String key = (String) backingArray[getArrayIndexForKey(index)];
-            Object value = backingArray[getArrayIndexForValue(index)];
             return Objects.hashCode(key) ^ Objects.hashCode(value);
-        }
-
-        @Override
-        public String setValue(Object value) {
-            throw new UnsupportedOperationException("Cannot update Entry instances in UnmodifiableArrayBackedMap");
         }
     }
 
@@ -105,6 +93,8 @@ public class ScopedContextMap extends AbstractMap<String, Object> implements Ser
      */
     private class UnmodifiableEntryIterator implements Iterator<Entry<String, Object>> {
         private int index;
+        private Iterator<Integer> skip = skipList.iterator();
+        private Integer skipItem = skip.next();
 
         @Override
         public boolean hasNext() {
@@ -113,7 +103,11 @@ public class ScopedContextMap extends AbstractMap<String, Object> implements Ser
 
         @Override
         public Entry<String, Object> next() {
-            return new UnmodifiableEntry(index++);
+            while (skipItem != null && index < numEntries && skipItem == index) {
+                index++;
+                skipItem = skip.next();
+            }
+            return index < numEntries ? backingArray[index] : null;
         }
     }
 
@@ -140,36 +134,18 @@ public class ScopedContextMap extends AbstractMap<String, Object> implements Ser
 
         @Override
         public int size() {
-            return numEntries;
-        }
-    }
-
-    private static final long serialVersionUID = 6849423432534211514L;
-
-    public static final ScopedContextMap EMPTY_MAP = new ScopedContextMap(0);
-
-    private static final int NUM_FIXED_ARRAY_ENTRIES = 1;
-
-    private static int getArrayIndexForKey(int entryIndex) {
-        return 2 * entryIndex + NUM_FIXED_ARRAY_ENTRIES;
-    }
-
-    private static int getArrayIndexForValue(int entryIndex) {
-        return 2 * entryIndex + 1 + NUM_FIXED_ARRAY_ENTRIES;
-    }
-
-    static ScopedContextMap getInstance(Object[] backingArray) {
-        if (backingArray == null || backingArray.length == 1) {
-            return EMPTY_MAP;
-        } else {
-            return new ScopedContextMap(backingArray);
+            return numEntries - skipList.size();
         }
     }
 
     public static ScopedContextMap getInstance(String key, Object value) {
-        ScopedContextMap newMap = new ScopedContextMap(1);
+        ScopedContextMap newMap = new ScopedContextMap(1, new ArrayList<>());
         newMap.add(key, value);
         return newMap;
+    }
+
+    public static ScopedContextMap emptyMap() {
+        return new ScopedContextMap(0, new ArrayList<>());
     }
 
     /**
@@ -180,12 +156,11 @@ public class ScopedContextMap extends AbstractMap<String, Object> implements Ser
      */
     public static ScopedContextMap getInstance(Map<String, Object> entriesToAdd) {
         // create a new array that can hold the maximum output size
-        ScopedContextMap newMap = new ScopedContextMap(entriesToAdd.size());
+        ScopedContextMap newMap = new ScopedContextMap(entriesToAdd.size(), new ArrayList<>());
 
         for (Entry<String, Object> entry : entriesToAdd.entrySet()) {
             newMap.add(entry.getKey(), entry.getValue());
         }
-        newMap.updateNumEntriesInArray();
         return newMap;
     }
 
@@ -194,28 +169,33 @@ public class ScopedContextMap extends AbstractMap<String, Object> implements Ser
      * performance problems. Consider marking it final after
      * https://bugs.openjdk.org/browse/JDK-8324186 is solved.
      */
-    private Object[] backingArray;
+    private MapEntry[] backingArray;
+
+    private List<Integer> skipList;
 
     private int numEntries;
 
-    public ScopedContextMap(int capacity) {
-        this.backingArray = new Object[capacity * 2 + 1];
-        this.backingArray[0] = 0;
+    private ScopedContextMap(int capacity, List<Integer> skipList) {
+        this.backingArray = new MapEntry[capacity];
+        for (int i = 0; i < backingArray.length; ++i) {
+            this.backingArray[i] = new MapEntry(i);
+        }
+        this.skipList = new ArrayList<>(skipList);
     }
 
-    private ScopedContextMap(Object[] backingArray) {
-        this.numEntries = (backingArray == null ? 0 : (int) backingArray[0]);
-        this.backingArray = backingArray;
-    }
-
-    ScopedContextMap(ScopedContextMap other) {
-        this.backingArray = other.backingArray;
-        this.numEntries = other.numEntries;
+    private ScopedContextMap(ScopedContextMap other, int entriesToAdd) {
+        this(other.backingArray.length + entriesToAdd, other.skipList);
+        System.arraycopy(other.backingArray, 0, this.backingArray, 0, other.backingArray.length);
+        numEntries = other.numEntries;
     }
 
     private void add(String key, Object value) {
-        backingArray[getArrayIndexForKey(numEntries)] = key;
-        backingArray[getArrayIndexForValue(numEntries)] = value;
+        Integer itemIndex = itemIndex(key);
+        if (itemIndex != null) {
+            skipList.add(itemIndex);
+        }
+        backingArray[numEntries].key = key;
+        backingArray[numEntries].value = value;
         numEntries++;
     }
 
@@ -233,19 +213,27 @@ public class ScopedContextMap extends AbstractMap<String, Object> implements Ser
     }
 
     public boolean containsKey(String key) {
-        int hashCode = key.hashCode();
-        for (int i = 0; i < numEntries; i++) {
-            if (backingArray[getArrayIndexForKey(i)].hashCode() == hashCode
-                    && backingArray[getArrayIndexForKey(i)].equals(key)) {
-                return true;
-            }
-        }
-
-        return false;
+        return itemIndex(key) != null;
     }
 
-    Object[] getBackingArray() {
-        return backingArray;
+    private Integer itemIndex(String key) {
+        int hashCode = key.hashCode();
+        Iterator<Integer> skip = skipList.iterator();
+        Integer skipItem = nextSkipItem(skip);
+        for (int i = 0; i < numEntries; i++) {
+            if (skipItem != null && skipItem == i) {
+                skipItem = nextSkipItem(skip);
+                continue;
+            }
+            if (backingArray[i].key.equals(key)) {
+                return i;
+            }
+        }
+        return null;
+    }
+
+    private Integer nextSkipItem(Iterator<Integer> iter) {
+        return iter.hasNext() ? iter.next() : null;
     }
 
     /**
@@ -254,13 +242,11 @@ public class ScopedContextMap extends AbstractMap<String, Object> implements Ser
      */
     @Override
     public boolean containsValue(Object value) {
+        if (value == null) {
+            return false;
+        }
         for (int i = 0; i < numEntries; i++) {
-            Object valueInMap = backingArray[getArrayIndexForValue(i)];
-            if (value == null) {
-                if (valueInMap == null) {
-                    return true;
-                }
-            } else if (value.equals(valueInMap)) {
+            if (value.equals(backingArray[i].value)) {
                 return true;
             }
         }
@@ -276,14 +262,8 @@ public class ScopedContextMap extends AbstractMap<String, Object> implements Ser
      * @return A new Map.
      */
     public ScopedContextMap copyAndPut(String key, Object value) {
-        ScopedContextMap newMap = new ScopedContextMap(numEntries + 1);
-        // include the numEntries value (array index 0)
-        if (this.numEntries > 0) {
-            System.arraycopy(this.backingArray, 1, newMap.backingArray, 1, numEntries * 2);
-            newMap.numEntries = numEntries;
-        }
-        newMap.addOrOverwriteKey(key, value);
-        newMap.updateNumEntriesInArray();
+        ScopedContextMap newMap = new ScopedContextMap(this, numEntries + 1);
+        newMap.add(key, value);
         return newMap;
     }
 
@@ -295,163 +275,11 @@ public class ScopedContextMap extends AbstractMap<String, Object> implements Ser
      * @return The new Map.
      */
     public ScopedContextMap copyAndPutAll(Map<String, Object> entriesToAdd) {
-        // create a new array that can hold the maximum output size
-        ScopedContextMap newMap = new ScopedContextMap(numEntries + entriesToAdd.size());
-
-        // copy the contents of the current map (if any)
-        if (numEntries > 0) {
-            System.arraycopy(backingArray, 0, newMap.backingArray, 0, numEntries * 2 + 1);
-        }
-
+        ScopedContextMap newMap = new ScopedContextMap(this, numEntries + entriesToAdd.size());
         for (Entry<String, Object> entry : entriesToAdd.entrySet()) {
-            String key = entry.getKey();
-            Object value = entry.getValue();
-            if (!this.isEmpty()) {
-                // The unique elements passed in may overlap the unique elements here - must
-                // check
-                newMap.addOrOverwriteKey(key, value);
-            } else {
-                // There is no chance of overlapping keys, we can simply add
-                newMap.add(key, value);
-            }
+            newMap.add(entry.getKey(), entry.getValue());
         }
-
-        newMap.updateNumEntriesInArray();
         return newMap;
-    }
-
-    /**
-     * Creates a new instance that contains the same entries as this map, minus the
-     * entry with the specified key (if such an entry exists).
-     *
-     * @param key The key to remove.
-     * @return The new Map.
-     */
-    public ScopedContextMap copyAndRemove(String key) {
-        int indexToRemove = -1;
-        for (int oldIndex = 0; oldIndex < numEntries; oldIndex++) {
-            if (backingArray[getArrayIndexForKey(oldIndex)].hashCode() == key.hashCode()
-                    && backingArray[getArrayIndexForKey(oldIndex)].equals(key)) {
-                indexToRemove = oldIndex;
-                break;
-            }
-        }
-
-        if (indexToRemove == -1) {
-            // key not found, no change necessary
-            return this;
-        } else if (numEntries == 1) {
-            // we have 1 item and we're about to remove it
-            return EMPTY_MAP;
-        }
-        ScopedContextMap newMap = new ScopedContextMap(numEntries);
-        if (indexToRemove > 0) {
-            // copy entries before the removed one
-            System.arraycopy(backingArray, 1, newMap.backingArray, 1, indexToRemove * 2);
-        }
-        if (indexToRemove + 1 < numEntries) {
-            // copy entries after the removed one
-            int nextIndexToCopy = indexToRemove + 1;
-            int numRemainingEntries = numEntries - nextIndexToCopy;
-            System.arraycopy(
-                    backingArray,
-                    getArrayIndexForKey(nextIndexToCopy),
-                    newMap.backingArray,
-                    getArrayIndexForKey(indexToRemove),
-                    numRemainingEntries * 2);
-        }
-
-        newMap.numEntries = numEntries - 1;
-        newMap.updateNumEntriesInArray();
-        return newMap;
-    }
-
-    /**
-     * Creates a new instance that contains the same entries as this map, minus all
-     * of the keys passed in the arguments.
-     *
-     * @param keysToRemoveIterable the keys to remove.
-     * @return The new Map.
-     */
-    ScopedContextMap copyAndRemoveAll(Iterable<String> keysToRemoveIterable) {
-        if (isEmpty()) {
-            // shortcut: if this map is empty, the result will continue to be empty
-            return EMPTY_MAP;
-        }
-
-        // now we build a Set of keys to remove
-        Set<String> keysToRemoveSet;
-        if (keysToRemoveIterable instanceof Set) {
-            // we already have a set, let's cast it and reuse it
-            keysToRemoveSet = (Set<String>) keysToRemoveIterable;
-        } else {
-            // iterate through the keys and build a set
-            keysToRemoveSet = new HashSet<>();
-            for (String key : keysToRemoveIterable) {
-                keysToRemoveSet.add(key);
-            }
-        }
-
-        int firstIndexToKeep = -1;
-        int lastIndexToKeep = -1;
-        int destinationIndex = 0;
-        int numEntriesKept = 0;
-        // build the new map
-        ScopedContextMap newMap = new ScopedContextMap(numEntries);
-        for (int indexInCurrentMap = 0; indexInCurrentMap < numEntries; indexInCurrentMap++) {
-            // for each key in this map, check whether it's in the set we built above
-            Object key = backingArray[getArrayIndexForKey(indexInCurrentMap)];
-            if (!keysToRemoveSet.contains(key)) {
-                // this key should be kept
-                if (firstIndexToKeep == -1) {
-                    firstIndexToKeep = indexInCurrentMap;
-                }
-                lastIndexToKeep = indexInCurrentMap;
-            } else if (lastIndexToKeep > 0) {
-                // we hit a remove, copy any keys that are known ready
-                int numEntriesToCopy = lastIndexToKeep - firstIndexToKeep + 1;
-                System.arraycopy(
-                        backingArray,
-                        getArrayIndexForKey(firstIndexToKeep),
-                        newMap.backingArray,
-                        getArrayIndexForKey(destinationIndex),
-                        numEntriesToCopy * 2);
-                firstIndexToKeep = -1;
-                lastIndexToKeep = -1;
-                destinationIndex += numEntriesToCopy;
-                numEntriesKept += numEntriesToCopy;
-            }
-        }
-
-        if (lastIndexToKeep > -1) {
-            // at least one key still requires copying
-            int numEntriesToCopy = lastIndexToKeep - firstIndexToKeep + 1;
-            System.arraycopy(
-                    backingArray,
-                    getArrayIndexForKey(firstIndexToKeep),
-                    newMap.backingArray,
-                    getArrayIndexForKey(destinationIndex),
-                    numEntriesToCopy * 2);
-            numEntriesKept += numEntriesToCopy;
-        }
-
-        if (numEntriesKept == 0) {
-            return EMPTY_MAP;
-        }
-
-        newMap.numEntries = numEntriesKept;
-        newMap.updateNumEntriesInArray();
-
-        return newMap;
-    }
-
-    /**
-     * Copies the locally-tracked numEntries into the first array slot. Requires
-     * autoboxing so call should be minimized - for example, once per bulk update
-     * operation.
-     */
-    private void updateNumEntriesInArray() {
-        backingArray[0] = numEntries;
     }
 
     /**
@@ -459,11 +287,14 @@ public class ScopedContextMap extends AbstractMap<String, Object> implements Ser
      */
     @Override
     public void forEach(java.util.function.BiConsumer<? super String, ? super Object> action) {
+        Iterator<Integer> skip = skipList.iterator();
+        Integer skipItem = nextSkipItem(skip);
         for (int i = 0; i < numEntries; i++) {
-            // BiConsumer should be able to handle values of any type V. In our case the values are of type String.
-            final String key = (String) backingArray[getArrayIndexForKey(i)];
-            final Object value = backingArray[getArrayIndexForValue(i)];
-            action.accept(key, value);
+            if (skipItem != null && skipItem == i) {
+                skipItem = nextSkipItem(skip);
+                continue;
+            }
+            action.accept(backingArray[i].key, backingArray[i].value);
         }
     }
 
@@ -474,6 +305,7 @@ public class ScopedContextMap extends AbstractMap<String, Object> implements Ser
 
     /**
      * Scans the array to find a matching key. Linear-time.
+     * Looks in reverse order because newer values for a key are appended to the end.
      */
     @Override
     public Object get(Object key) {
@@ -481,34 +313,12 @@ public class ScopedContextMap extends AbstractMap<String, Object> implements Ser
             return null;
         }
         int hashCode = key.hashCode();
-        for (int i = 0; i < numEntries; i++) {
-            if (backingArray[getArrayIndexForKey(i)].hashCode() == hashCode
-                    && backingArray[getArrayIndexForKey(i)].equals(key)) {
-                return backingArray[getArrayIndexForValue(i)];
+        for (int i = numEntries - 1; i >= 0; i--) {
+            if (backingArray[i].key.equals(key)) {
+                return backingArray[i].value;
             }
         }
         return null;
-    }
-
-    /**
-     * Find an existing entry (if any) and overwrites the value, if found
-     *
-     * @param key The key to add.
-     * @param value The value.
-     */
-    private void addOrOverwriteKey(String key, Object value) {
-        int keyHashCode = key.hashCode();
-        for (int i = 0; i < numEntries; i++) {
-            if (backingArray[getArrayIndexForKey(i)].hashCode() == keyHashCode
-                    && backingArray[getArrayIndexForKey(i)].equals(key)) {
-                // found a match, overwrite then return
-                backingArray[getArrayIndexForValue(i)] = value;
-                return;
-            }
-        }
-
-        // no match found, add to the end
-        add(key, value);
     }
 
     @Override
@@ -523,10 +333,6 @@ public class ScopedContextMap extends AbstractMap<String, Object> implements Ser
 
     @Override
     public int size() {
-        return numEntries;
-    }
-
-    public Map<String, Object> toMap() {
-        return this;
+        return numEntries - skipList.size();
     }
 }
