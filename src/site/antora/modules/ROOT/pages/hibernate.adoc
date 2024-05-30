@@ -61,7 +61,7 @@ YAML::
 include::example$hibernate/log4j2.yaml[lines=24..44,indent=0]
 ----
 
-Java properties::
+Properties::
 +
 .Snippet from an example {antora-examples-url}/hibernate/log4j2.properties[`log4j2.properties`] configuring Hibernate-specific loggers
 [source,xml]

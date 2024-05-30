@@ -55,7 +55,7 @@ YAML::
 include::example$manual/filters/filters.yaml[lines=17..-1]
 ----
 
-Java properties::
+Properties::
 +
 [source,properties]
 ----
