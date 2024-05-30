@@ -1,0 +1,133 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    Don't use block markers (i.e., `====`) in this page!
+    It is breaking the formatting elsewhere, e.g., `api.adoc`.
+////
+
+// tag::inc[]
+
+:jcl-link: https://commons.apache.org/proper/commons-logging/[JCL (Apache Commons Logging)]
+:jpl-link: https://openjdk.org/jeps/264[JPL (Java Platform Logging)]
+:jul-link: https://docs.oracle.com/en/java/javase/{java-target-version}/core/java-logging-overview.html[JUL (Java Logging)]
+:logback-link: https://logback.qos.ch/[Logback]
+:slf4j-link: https://www.slf4j.org/[SLF4J]
+:jboss-logging-link: https://github.com/jboss-logging/jboss-logging[JBoss Logging]
+
+// end::inc[]
+
+// tag::api[]
+
+[#logging-api]
+Logging API::
+A logging API is an interface your code or your dependencies directly logs against.
+It is required at compile-time.
+It is implementation agnostic to ensure that your application can write logs, but is not tied to a specific logging implementation.
+Log4j API, {slf4j-link}, {jul-link}, {jcl-link}, {jpl-link} and {jboss-logging-link} are major logging APIs.
+
+// end::api[]
+
+// tag::impl[]
+
+[#logging-impl]
+Logging implementation::
+A logging implementation is only required at runtime and can be changed without the need to recompile your software.
+Log4j Core, {jul-link}, {logback-link} are the most well-known logging implementations.
+
+// end::impl[]
+
+// tag::bridge[]
+
+[#logging-bridge]
+Logging bridge::
+Logging implementations accept input from a single logging API of their preference; Log4j Core from Log4j API, Logback from SLF4J, etc.
+A logging bridge is a simple logging implementation of a logging API that forwards all messages to a foreign logging API.
+Logging bridges allow a logging implementation to accept input from other logging APIs that are not their primary logging API.
+For instance, `log4j-slf4j2-impl` _bridges_ SLF4J calls to Log4 API and effectively enables Log4j Core to accept input from SLF4J.
+
+// end::bridge[]
+
+// tag::software-type[]
+
+With this in mind, the type of software you are writing determines whether you should be installing a logging API, implementation, or bridge:
+
+Libraries::
+They only require a logging API and delegate the choice of the implementation to applications.
+If a logging implementation is required by tests of the library, it should be in the appropriate test scope.
+
+Applications::
+They need a logging implementation, but also bridges of each of the major logging APIs to support log statements from the libraries they use.
+For example, your application might be logging against Log4j API and one of its dependencies against SLF4J.
+In this case, you need to install `log4j-core` and `log4j-slf4j2-impl`.
+
+// end::software-type[]
+
+// tag::visual[]
+
+To make things a little bit more tangible, consider the following visualization of a typical Log4j Core installation with bridges for an application:
+
+.Visualization of a typical Log4j Core installation with SLF4J, JUL, and JPL bridges.
+[ditaa]
+....
+/-----------------------------------------------------------------------------------\
+|                                                                                   |
+|       +------------+                       +----------+          +----------+     |
+|       |            |                       |          |          |          |     |
+|       |            v                       |          v          |          v     |
+| +-----+-----+ +---------+ +---------+ +----+----+ +-------+ +----+----+ +-------+ |
+| |           | |{d}c1FF  | |         | |         | |{d}c1FF| |         | |{d}c1FF| |
+| |Application| |Log4j API| |Library 1| |Library 2| | SLF4J | |Library 3| |  JUL  | |
+| |           | |         | |         | |         | |       | |         | |       | |
+| +-----------+ +--+------+ +----+----+ +---------+ +---+---+ +---------+ +---+---+ |
+|                  :   ^         |                      :                     :     |
+|                  |   |         |                      |                     |     |
+| Compile time     |   |         |                      |                     |     |
+\------------------|---|---------|----------------------|---------------------|-----/
+                   |   |         |                      |                     |
+                   |   |         |                /-----/         /-----------/
+                   |   |         |                |               |
+        /----------/   \------+--|----------+-----|---------\     |
+        |                     |  |          |     |         |     |
+/-------|---------------------|--|----------|-----|---------|-----|-----------------\
+|       |                     |  |          |     |         |     |         Runtime |
+|       v                     :  |          :     v         :     v                 |
+| +----------+          +-----+------+ +----+---------+ +---+--------+              |
+| |cGRE      |          |cYEL        | |cYEL          | |cYEL        |              |
+| |Log4j Core|          |JPL to Log4j| |SLF4J to Log4j| |JUL to Log4j|              |
+| |          |          |            | |              | |            |              |
+| +----------+          +------------+ +--------------+ +------------+              |
+| |log4j2.xml|                ^  |                                                  |
+| +----------+                |  |                                                  |
+|                             |  |                                                  |
+|                             |  |                                                  |
+|            /-------------+--|--/                                                  |
+|            |             |  |                                                     |
+| +----------+-------------|--|---------------------------------------------------+ |
+| |JRE                     v  :                                                   | |
+| |                      +----+--+                                                | |
+| |                      |{d}c1FF|                                                | |
+| |                      |  JPL  |                                                | |
+| |                      |       |                                                | |
+| |                      +-------+                                                | |
+| |                                                                               | |
+| +-------------------------------------------------------------------------------+ |
+|                                                                                   |
+\-----------------------------------------------------------------------------------/
+....
+
+// end::visual[]

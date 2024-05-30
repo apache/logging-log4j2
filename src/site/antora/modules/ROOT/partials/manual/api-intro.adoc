@@ -15,8 +15,44 @@
     limitations under the License.
 ////
 
-To write logs, you need a {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Logger.html[`Logger`] instance which you will retrieve from the {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/LogManager.html[`LogManager`].
-You can use the `Logger` instance to write logs by using methods like `info()`, `warn()`, `error()`, etc.
+To log, you need a {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Logger.html[`Logger`] instance which you will retrieve from the {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/LogManager.html[`LogManager`].
+These are all part of the `log4j-api` module, which you can install as follows:
+
+[tabs]
+====
+Maven::
++
+[source,xml]
+----
+<project>
+
+  <!-- Assuming `log4j-bom` is added -->
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+    </dependency>
+  </dependencies>
+
+</project>
+----
+
+Gradle::
++
+[source,groovy]
+----
+dependencies {
+
+  // Assuming `log4j-bom` is added
+
+  implementation 'org.apache.logging.log4j:log4j-api'
+
+}
+----
+====
+
+You can use the `Logger` instance to log by using methods like `info()`, `warn()`, `error()`, etc.
 These methods are named after the _log levels_ they represent, a way to categorize log events by severity.
 The log message can also contain placeholders written as `{}` that will be replaced by the arguments passed to the method.
 

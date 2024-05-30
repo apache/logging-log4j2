@@ -21,14 +21,8 @@
 ** link:{logging-services-url}/security.html[Security]
 ** xref:thanks.adoc[Thanks]
 
-.Resources
-* xref:faq.adoc[F.A.Q.]
-* xref:getting-started.adoc[]
-* xref:manual/migration.adoc[]
-* xref:manual/cloud.adoc[]
-* xref:development.adoc[]
-
 .xref:manual/index.adoc[]
+* xref:manual/getting-started.adoc[]
 * xref:manual/installation.adoc[]
 * xref:manual/architecture.adoc[]
 * xref:manual/api.adoc[API]
@@ -52,6 +46,14 @@
 .References
 * xref:plugin-reference.adoc[Plugin reference]
 * xref:javadoc.adoc[Java API reference]
+
+.Resources
+* xref:faq.adoc[F.A.Q.]
+* xref:manual/migration.adoc[]
+* xref:migrate-from-logback.adoc[]
+* xref:migrate-from-slf4j.adoc[]
+* xref:manual/cloud.adoc[]
+* xref:development.adoc[]
 
 .Components
 * xref:log4j-flume-ng.adoc[]
