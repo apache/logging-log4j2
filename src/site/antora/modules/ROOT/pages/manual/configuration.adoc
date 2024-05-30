@@ -228,7 +228,7 @@ File:
 ----
 ====
 
-Java properties::
+Properties::
 +
 In the Java properties configuration format:
 +
@@ -306,7 +306,7 @@ YAML::
 include::example$manual/configuration/main-elements.yaml[lines=17..-1]
 ----
 
-Java properties::
+Properties::
 +
 [source,properties]
 ----
@@ -494,7 +494,7 @@ YAML::
 include::example$manual/configuration/loggers.yaml[tag=loggers]
 ----
 
-Java properties::
+Properties::
 +
 [source,properties]
 ----
@@ -677,7 +677,7 @@ YAML::
 include::example$manual/configuration/logger-properties.yaml[tag=loggers]
 ----
 
-Java properties::
+Properties::
 +
 [source,properties]
 ----
@@ -755,7 +755,7 @@ YAML::
 include::example$manual/configuration/properties.yaml[lines=17..-1]
 ----
 
-Java properties::
+Properties::
 +
 [source,properties]
 ----
@@ -854,7 +854,7 @@ YAML::
 include::example$manual/configuration/properties-example.yaml[lines=17..-1]
 ----
 
-Java properties::
+Properties::
 +
 [source,properties]
 ----
@@ -911,7 +911,7 @@ YAML::
 include::example$manual/configuration/properties-recursion.yaml[lines=17..-1]
 ----
 
-Java properties::
+Properties::
 +
 [source,properties]
 ----
@@ -973,7 +973,7 @@ YAML::
 include::example$manual/configuration/routing.yaml[tag=appender]
 ----
 
-Java properties::
+Properties::
 +
 [source,properties]
 ----
@@ -1029,7 +1029,7 @@ YAML::
 include::example$manual/configuration/arbiters.yaml[lines=17..-1]
 ----
 
-Java properties::
+Properties::
 +
 [source,properties]
 ----
@@ -1069,7 +1069,7 @@ YAML::
 include::example$manual/configuration/arbiters-select.yaml[tag=select]
 ----
 
-Java properties::
+Properties::
 +
 [source,properties]
 ----

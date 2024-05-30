@@ -119,7 +119,7 @@ YAML::
 include::example$manual/markers/log4j2.yaml[tag=logger]
 ----
 
-Java properties::
+Properties::
 +
 [source, properties]
 ----

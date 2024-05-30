@@ -142,7 +142,7 @@ YAML::
 include::example$manual/configuration/mixed-async.yaml[lines=17..-1]
 ----
 
-Java properties::
+Properties::
 +
 [source,properties]
 ----
@@ -214,7 +214,7 @@ YAML::
 include::example$manual/configuration/custom-wait-strategy.yaml[lines=17..-1]
 ----
 
-Java properties::
+Properties::
 +
 [source,properties]
 ----
