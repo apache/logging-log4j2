@@ -117,7 +117,7 @@ You can set the logging level on the `AppenderRef` element.
 ----
 
 [#troubleshooting]
-== How do I debug my configuration?
+== How do I troubleshoot my setup?
 
 . Make sure you have xref:manual/installation.adoc[the right JAR files] on your classpath.
 
