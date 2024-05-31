@@ -118,7 +118,7 @@
     <hadoop.version>1.2.1</hadoop.version>
     <hamcrest.version>2.2</hamcrest.version>
     <HdrHistogram.version>2.2.1</HdrHistogram.version>
-    <hsqldb.version>2.7.2</hsqldb.version>
+    <hsqldb.version>2.7.3</hsqldb.version>
     <jackson-bom.version>2.17.1</jackson-bom.version>
     <jansi.version>2.4.0</jansi.version>
     <javax-jms.version>2.0.1</javax-jms.version>
