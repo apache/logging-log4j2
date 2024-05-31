@@ -36,7 +36,7 @@ import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**
  * This ContextSelector chooses a LoggerContext based upon the ClassLoader of the caller. This allows Loggers assigned
- * to static variables to be released along with the classes that own then. Other ContextSelectors will generally cause
+ * to static variables to be released along with the classes that own them. Other ContextSelectors will generally cause
  * Loggers associated with classes loaded from different ClassLoaders to be co-mingled. This is a problem if, for
  * example, a web application is undeployed as some of the Loggers being released may be associated with a Class in a
  * parent ClassLoader, which will generally have negative consequences.
