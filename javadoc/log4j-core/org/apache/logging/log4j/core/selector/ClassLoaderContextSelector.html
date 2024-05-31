@@ -89,7 +89,7 @@ loadScripts(document, 'script');</script>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
 implements <a href="ContextSelector.html" title="interface in org.apache.logging.log4j.core.selector">ContextSelector</a>, <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContextShutdownAware.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextShutdownAware</a></span></div>
 <div class="block">This ContextSelector chooses a LoggerContext based upon the ClassLoader of the caller. This allows Loggers assigned
- to static variables to be released along with the classes that own then. Other ContextSelectors will generally cause
+ to static variables to be released along with the classes that own them. Other ContextSelectors will generally cause
  Loggers associated with classes loaded from different ClassLoaders to be co-mingled. This is a problem if, for
  example, a web application is undeployed as some of the Loggers being released may be associated with a Class in a
  parent ClassLoader, which will generally have negative consequences.
