@@ -48,8 +48,7 @@ import org.apache.logging.log4j.util.StackLocatorUtil;
  * This ContextSelector should not be used with a Servlet Filter such as the Log4jServletFilter.
  */
 @Singleton
-public class ClassLoaderContextSelector extends AbstractContextSelector
-        implements ContextSelector, LoggerContextShutdownAware {
+public class ClassLoaderContextSelector extends AbstractContextSelector implements LoggerContextShutdownAware {
 
     protected static final StatusLogger LOGGER = StatusLogger.getLogger();
 
