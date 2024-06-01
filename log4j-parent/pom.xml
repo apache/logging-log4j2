@@ -108,7 +108,7 @@
     <jansi.version>2.4.1</jansi.version>
     <java-allocation-instrumenter.version>3.3.4</java-allocation-instrumenter.version>
     <jconsole.version>1.7.0</jconsole.version>
-    <jctools.version>4.0.3</jctools.version>
+    <jctools.version>4.0.4</jctools.version>
     <je.version>18.3.12</je.version>
     <jeromq.version>0.6.0</jeromq.version>
     <jetty.version>9.4.54.v20240208</jetty.version>
