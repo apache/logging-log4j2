@@ -1,0 +1,20 @@
+{
+  "Configuration": {
+    "Appenders": {
+      "Console": {
+        "name": "CONSOLE",
+        "JsonTemplateLayout": {
+          "eventTemplateUri": "classpath:MyLayout.json"
+        }
+      }
+    },
+    "Loggers": {
+      "Root": {
+        "level": "WARN",
+        "AppenderRef": {
+          "ref": "CONSOLE"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "Configuration": {
+    "Appenders": {
+      "Console": {
+        "name": "CONSOLE",
+        "JsonTemplateLayout": {
+          "eventTemplateUri": "classpath:GelfLayout.json",
+          "eventTemplateAdditionalField": [
+            {
+              "key": "aString",
+              "value": "foo" //<1>
+            },
+            {
+              "key": "marker",
+              "value": "{\"$resolver\": \"marker\", \"field\": \"name\"}",
+              "format": "JSON"
+            },
+            {
+              "key": "aNumber",
+              "value": "1",
+              "format": "JSON"
+            },
+            {
+              "key": "aList",
+              "value": "[1, 2, \"three\"]",
+              "format": "JSON"
+            }
+          ]
+        }
+      }
+    },
+    "Loggers": {
+      "Root": {
+        "level": "WARN",
+        "AppenderRef": {
+          "ref": "CONSOLE"
+        }
+      }
+    }
+  }
+}

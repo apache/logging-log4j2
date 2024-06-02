@@ -422,112 +422,80 @@ include::partial$manual/dependencies-log4j-layout-json.adoc[]
 [#JSONTemplateLayout]
 == JSON Template Layout
 
-`JsonTemplateLayout` is a customizable, efficient, and garbage-free JSON-emitting layout.
+JSON Template Layout is a customizable, efficient, and garbage-free JSON generating layout.
 It encodes ``LogEvent``s according to the structure described by the JSON template provided.
-For instance, given the following JSON template modelling https://github.com/logstash/log4j-jsonevent-layout[the official
-Logstash `JSONEventLayoutV1`]
+For instance, given the following event template stored in `MyLayout.json` in your classpath:
 
 [source,json]
 ----
 {
-  "mdc": {
-    "$resolver": "mdc"
-  },
-  "exception": {
-    "exception_class": {
-      "$resolver": "exception",
-      "field": "className"
-    },
-    "exception_message": {
-      "$resolver": "exception",
-      "field": "message"
-    },
-    "stacktrace": {
-      "$resolver": "exception",
-      "field": "stackTrace",
-      "stackTrace": {
-        "stringified": true
-      }
+  "instant": { // <1>
+    "$resolver": "timestamp",
+    "pattern": {
+      "format": "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+      "timeZone": "UTC"
     }
   },
-  "line_number": {
-    "$resolver": "source",
-    "field": "lineNumber"
-  },
-  "class": {
-    "$resolver": "source",
-    "field": "className"
-  },
-  "@version": 1,
-  "source_host": "${hostName}",
-  "message": {
+  "someConstant": 1, // <2>
+  "message": { // <3>
     "$resolver": "message",
     "stringified": true
-  },
-  "thread_name": {
-    "$resolver": "thread",
-    "field": "name"
-  },
-  "@timestamp": {
-    "$resolver": "timestamp"
-  },
-  "level": {
-    "$resolver": "level",
-    "field": "name"
-  },
-  "file": {
-    "$resolver": "source",
-    "field": "fileName"
-  },
-  "method": {
-    "$resolver": "source",
-    "field": "methodName"
-  },
-  "logger_name": {
-    "$resolver": "logger",
-    "field": "name"
   }
 }
 ----
+<1> Using the `timestamp` event template resolver to populate the `instant` field
+<2> Passing a constant that will be rendered as is
+<3> Using the `message` event template resolver to populate the `message` field
 
-in combination with the below Log4j configuration:
+in combination with the below layout configuration:
 
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/json-template-layout/usage/log4j2.xml[`log4j2.xml`]
 [source,xml]
 ----
-<JsonTemplateLayout eventTemplateUri="classpath:LogstashJsonEventLayoutV1.json"/>
+include::example$manual/json-template-layout/usage/log4j2.xml[lines=26..26,indent=0]
 ----
 
-JSON Template Layout will render JSON documents as follows:
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/json-template-layout/usage/log4j2.json[`log4j2.json`]
+[source,json]
+----
+include::example$manual/json-template-layout/usage/log4j2.json[lines=6..8,indent=0]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/json-template-layout/usage/log4j2.yaml[`log4j2.yaml`]
+[source,xml]
+----
+include::example$manual/json-template-layout/usage/log4j2.yaml[lines=22..23,indent=0]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/json-template-layout/usage/log4j2.properties[`log4j2.properties`]
+[source,xml]
+----
+include::example$manual/json-template-layout/usage/log4j2.properties[lines=19..20,indent=0]
+----
+====
+
+JSON Template Layout generates JSON as follows:
 
 [source,json]
 ----
-{
-  "exception": {
-    "exception_class": "java.lang.RuntimeException",
-    "exception_message": "test",
-    "stacktrace": "java.lang.RuntimeException: test\n\tat org.apache.logging.log4j.JsonTemplateLayoutDemo.main(JsonTemplateLayoutDemo.java:11)\n"
-  },
-  "line_number": 12,
-  "class": "org.apache.logging.log4j.JsonTemplateLayoutDemo",
-  "@version": 1,
-  "source_host": "varlik",
-  "message": "Hello, error!",
-  "thread_name": "main",
-  "@timestamp": "2017-05-25T19:56:23.370+02:00",
-  "level": "ERROR",
-  "file": "JsonTemplateLayoutDemo.java",
-  "method": "main",
-  "logger_name": "org.apache.logging.log4j.JsonTemplateLayoutDemo"
-}
+{"instant":"2017-05-25T19:56:23.370Z","someConstant":1,"message":"Hello, error!"} //<1>
 ----
+<1> JSON pretty-printing is not supported for performance reasons.
 
-.Additional runtime dependencies are required for using JSON Template Layout
-[%collapsible,id=log4j-layout-template-json-deps]
-=====
-include::partial$manual/dependencies-log4j-layout-template-json.adoc[]
-=====
+Good news is JSON Template Layout is perfectly production-ready without any configuration!
+It bundles several predefined event templates modeling popular JSON-based log formats.
 
-See xref:manual/json-template-layout.adoc[JSON Template Layout] page for the complete documentation.
+Read more on xref:manual/json-template-layout.adoc[]...
 
 [id=pattern-layout]
 == [[PatternLayout]] Pattern Layout
