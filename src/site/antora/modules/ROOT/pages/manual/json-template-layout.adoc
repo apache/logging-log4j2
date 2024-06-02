@@ -364,12 +364,12 @@ Suffix to append to strings truncated due to exceeding xref:#plugin-attr-maxStri
 
 Name of the xref:#recycling-strategy[] employed
 
-[#layout-elements]
+[#plugin-elements]
 === Plugin elements
 
 JSON Template Layout plugin configuration accepts the following elements:
 
-[#layout-element-EventTemplateAdditionalField]
+[#plugin-element-EventTemplateAdditionalField]
 ==== [[additional-event-template-fields]] `EventTemplateAdditionalField`
 
 Additional event template fields are convenient shortcuts to add custom fields to a template or override existing ones.
@@ -442,7 +442,7 @@ Templates are configured by means of the following JSON Template Layout plugin a
 
 - xref:#plugin-attr-eventTemplate[] and xref:#plugin-attr-eventTemplateUri[] (for encoding ``LogEvent``s)
 - xref:#plugin-attr-stackTraceElementTemplate[] and xref:#plugin-attr-stackTraceElementTemplateUri[] (for encoding ``StackStraceElement``s)
-- xref:#layout-element-EventTemplateAdditionalField[] (for extending the event template)
+- xref:#plugin-element-EventTemplateAdditionalField[] (for extending the event template)
 
 [#event-templates]
 === Event templates
@@ -1854,7 +1854,7 @@ It is a fairly rich resource for inspiration while implementing new resolvers.
 === Intercepting the template resolver compiler
 
 JSON Template Layout allows interception of the template resolver compilation, which is the process converting a template into a Java function performing the JSON encoding.
-This interception mechanism is internally used to implement xref:#plugin-attr-eventTemplateRootObjectKey[] and xref:#layout-element-EventTemplateAdditionalField[] features.
+This interception mechanism is internally used to implement xref:#plugin-attr-eventTemplateRootObjectKey[] and xref:#plugin-element-EventTemplateAdditionalField[] features.
 In a nutshell, one needs to create a `@Plugin`-annotated class extending from the `EventResolverInterceptor` interface.
 
 To see the interception in action, check out the `EventRootObjectKeyInterceptor` class which is responsible for implementing the `eventTemplateRootObjectKey` feature:
