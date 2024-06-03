@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="2634" link="https://github.com/apache/logging-log4j2/pull/2634"/>
-  <description format="asciidoc">Update `org.jctools:jctools-core` to version `4.0.4`</description>
+  <issue id="2638" link="https://github.com/apache/logging-log4j2/pull/2638"/>
+  <description format="asciidoc">Update `org.jctools:jctools-core` to version `4.0.5`</description>
 </entry>
