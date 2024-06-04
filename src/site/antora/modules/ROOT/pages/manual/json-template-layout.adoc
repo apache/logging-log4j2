@@ -16,7 +16,7 @@
 ////
 = JSON Template Layout
 
-JSON Template Layout is a customizable, efficient, and garbage-free JSON generating layout.
+JSON Template Layout is a customizable, xref:#performance[efficient], and xref:#faq-garbage-free[garbage-free] JSON generating layout.
 It encodes ``LogEvent``s according to the structure described by the JSON template provided.
 In a nutshell, it shines with its
 
@@ -29,6 +29,12 @@ In a nutshell, it shines with its
 * xref:manual/extending.adoc[Extensible plugin support]
 
 * Customizable object xref:#recycling-strategy[recycling strategy]
+
+[TIP]
+====
+JSON Template Layout is intended for production deployments where the generated logs are expected to be delivered to an external log ingestion system such as Elasticsearch or Google Cloud Logging.
+While running tests or developing locally, you can use xref:manual/pattern-layout.adoc[] for human-readable log output.
+====
 
 [#usage]
 == Usage
@@ -164,8 +170,8 @@ Good news is *JSON Template Layout is perfectly production-ready without any con
 The event template defaults to `EcsLayout.json`, bundled in the classpath, modelling https://www.elastic.co/guide/en/ecs/current/ecs-reference.html[the Elastic Common Schema (ECS) specification].
 JSON Template Layout bundles several more xref:#event-templates[predefined event templates] modeling popular JSON-based log formats.
 
-[#layout-config]
-== Layout configuration
+[#config]
+== Configuration
 
 This section explains how to configure JSON Template Layout plugin element in a Log4j configuration file.
 
@@ -1184,7 +1190,7 @@ Resolve all NDC values matching with the `pattern` regex:
 [#event-template-resolver-pattern]
 ===== `pattern`
 
-Resolver delegating to xref:manual/layouts.adoc#pattern-layout[`PatternLayout`]
+Resolver delegating to xref:manual/pattern-layout.adoc[]
 
 .`pattern` event template resolver grammar
 [source]
@@ -1669,30 +1675,14 @@ The effective recycler factory can be configured using the xref:#plugin-attr-rec
 Next to predefined ones, you can introduce custom `RecyclerFactory` implementations too.
 See <<extending-recycler>> for details.
 
-[#extending]
-== Extending
-
-JSON Template Layout relies on xref:manual/plugins.adoc[the Log4j plugin system] to compose the features it provides.
-This enables feature customization a breeze for users.
+:plugin-extension-intro-component-name: JSON Template Layout
+include::partial$manual/plugin-extension-intro.adoc[tag=part1]
 As of this moment, following features are implemented by means of plugins:
 
 * Event template resolvers (e.g., `exception`, `message`, `level` event template resolvers)
 * Event template interceptors (e.g., injection of `eventTemplateAdditionalField`)
 * Recycler factories
-
-Following sections cover these in detail.
-
-[#extending-plugins]
-=== Plugin preliminaries
-
-Log4j plugin system is the de facto extension mechanism embraced by various Log4j components, including JSON Template Layout.
-Plugins make it possible for extensible components to _receive_ feature implementations without any explicit links in between.
-It is analogous to a https://en.wikipedia.org/wiki/Dependency_injection[dependency injection] framework, but curated for Log4j-specific needs.
-
-In a nutshell, you annotate your classes with `@Plugin` and their (`static`) creator methods with `@PluginFactory`.
-Last, you inform the Log4j plugin system to discover these custom classes.
-This is done using running the `org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor` annotation processor while building your project.
-Refer to xref:manual/plugins.adoc[] for details.
+include::partial$manual/plugin-extension-intro.adoc[tag=part2]
 
 [#extending-event-resolvers]
 === Extending event template resolvers
