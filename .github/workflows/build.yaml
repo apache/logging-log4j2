@@ -34,6 +34,9 @@ on:
 
 permissions: read-all
 
+env:
+  DEVELOCITY_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
+
 jobs:
 
   build:
