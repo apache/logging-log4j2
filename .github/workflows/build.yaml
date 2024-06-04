@@ -42,8 +42,7 @@ jobs:
   build:
     if: github.actor != 'dependabot[bot]'
     # Temporary switch to `@fix/macos-java-8` to see how the situation evolves with macOS runners
-    uses: apache/logging-parent/.github/workflows/build-reusable.yaml@fix/macos-java-8
-    # uses: apache/logging-parent/.github/workflows/build-reusable.yaml@rel/11.0.0
+    uses: apache/logging-parent/.github/workflows/build-reusable.yaml@develocity
     with:
       java-version: |
         8
