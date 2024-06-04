@@ -34,15 +34,14 @@ on:
 
 permissions: read-all
 
-env:
-  DEVELOCITY_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
-
 jobs:
 
   build:
     if: github.actor != 'dependabot[bot]'
     # Temporary switch to `@fix/macos-java-8` to see how the situation evolves with macOS runners
     uses: apache/logging-parent/.github/workflows/build-reusable.yaml@develocity
+    secrets:
+      GE_ACCESS_TOKEN: ${{ secrets.GE_ACCESS_TOKEN }}
     with:
       java-version: |
         8
