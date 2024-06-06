@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<develocity>
+    <server>
+        <url>https://ge.apache.org</url>
+    </server>
+    <buildScan>
+        <obfuscation>
+            <ipAddresses>0.0.0.0</ipAddresses>
+        </obfuscation>
+        <publishing>
+            <onlyIf>
+                <![CDATA[authenticated]]>
+            </onlyIf>
+        </publishing>
+        <backgroundBuildScanUpload>#{isFalse(env['GITHUB_ACTIONS'])}</backgroundBuildScanUpload>
+    </buildScan>
+    <buildCache>
+        <local>
+            <enabled>#{isFalse(env['GITHUB_ACTIONS'])}</enabled>
+        </local>
+        <remote>
+            <enabled>false</enabled>
+        </remote>
+    </buildCache>
+</develocity>

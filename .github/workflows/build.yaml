@@ -22,15 +22,7 @@ on:
     branches:
       - "2.x"
       - "release/2*"
-    paths-ignore:
-      - "**.adoc"
-      - "**.md"
-      - "**.txt"
   pull_request:
-    paths-ignore:
-      - "**.adoc"
-      - "**.md"
-      - "**.txt"
 
 permissions: read-all
 
@@ -38,9 +30,10 @@ jobs:
 
   build:
     if: github.actor != 'dependabot[bot]'
-    # Temporary switch to `@fix/macos-java-8` to see how the situation evolves with macOS runners
-    uses: apache/logging-parent/.github/workflows/build-reusable.yaml@fix/macos-java-8
-    # uses: apache/logging-parent/.github/workflows/build-reusable.yaml@rel/11.0.0
+    # Temporary use `develocity` branch
+    uses: apache/logging-parent/.github/workflows/build-reusable.yaml@develocity
+    secrets:
+      GE_ACCESS_TOKEN: ${{ secrets.GE_ACCESS_TOKEN }}
     with:
       java-version: |
         8

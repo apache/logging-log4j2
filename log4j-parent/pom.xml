@@ -85,7 +85,7 @@
     <flapdoodle-reverse.version>1.7.2</flapdoodle-reverse.version>
     <flume.version>1.11.0</flume.version>
     <groovy.version>3.0.21</groovy.version>
-    <guava.version>33.2.0-jre</guava.version>
+    <guava.version>33.2.1-jre</guava.version>
     <h2.version>2.2.224</h2.version>
     <hadoop.version>1.2.1</hadoop.version>
     <hamcrest.version>2.2</hamcrest.version>
@@ -108,7 +108,7 @@
     <jansi.version>2.4.1</jansi.version>
     <java-allocation-instrumenter.version>3.3.4</java-allocation-instrumenter.version>
     <jconsole.version>1.7.0</jconsole.version>
-    <jctools.version>4.0.4</jctools.version>
+    <jctools.version>4.0.5</jctools.version>
     <je.version>18.3.12</je.version>
     <jeromq.version>0.6.0</jeromq.version>
     <jetty.version>9.4.54.v20240208</jetty.version>
