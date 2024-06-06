@@ -378,45 +378,6 @@ public final class StubAppender extends AbstractOutputStreamAppender<StubManager
 }
 ----
 
-[#Layouts]
-== Layouts
-
-Layouts perform the formatting of events into the printable text that is
-written by Appenders to some destination. All Layouts must implement the
-`Layout` interface. Layouts that format the event into a `String` should
-extend `AbstractStringLayout`, which will take care of converting the
-`String` into the required byte array.
-
-Every Layout must declare itself as a plugin using the `@Plugin`
-annotation and a `@Configurable` annotation with an `elementType` of "layout". `printObject` should be set to "true" if the plugin's `toString`
-method will provide a representation of the object and its parameters.
-The name of the plugin must match the value users should use to specify
-it as an element in their Appender configuration. The plugin also must
-provide a static method annotated as a `@PluginFactory` and with each of
-the methods parameters annotated with `@PluginAttribute` or `@PluginElement` as
-appropriate. The plugin can alternatively use the plugin builder notation.
-
-[source,java]
-----
-@Plugin(name = "SampleLayout", category = "Core", elementType = "layout", printObject = true)
-public class SampleLayout extends AbstractStringLayout {
-
-    protected SampleLayout(boolean locationInfo, boolean properties, boolean complete,
-                           Charset charset) {
-        super(charset);
-        // handle the boolean parameters
-    }
-
-    @PluginFactory
-    public static SampleLayout createLayout(@PluginAttribute boolean locationInfo,
-                                            @PluginAttribute boolean properties,
-                                            @PluginAttribute boolean complete,
-                                            @PluginAttribute(defaultStringValue = "UTF-8") Charset charset) {
-        return new SampleLayout(locationInfo, properties, complete, charset);
-    }
-}
-----
-
 [#Plugin_Builders]
 == Plugin Builders
 

@@ -237,7 +237,7 @@ maximum capacity.
 The CassandraAppender writes its output to an https://cassandra.apache.org/[Apache Cassandra]
 database.
 A keyspace and table must be configured ahead of time, and the columns of that table are mapped in a configuration file.
-Each column can specify either a https://logging.apache.org/log4j/2.x/manual/layouts.html#PatternLayout[StringLayout] (e.g., a PatternLayout) along with an optional conversion type, or only a conversion type for `org.apache.logging.log4j.spi.ThreadContextMap` or
+Each column can specify either a xref:manual/pattern-layout.adoc[]https://logging.apache.org/log4j/2.x/manual/layouts.html#PatternLayout[StringLayout] (e.g., a PatternLayout) along with an optional conversion type, or only a conversion type for `org.apache.logging.log4j.spi.ThreadContextMap` or
 `org.apache.logging.log4j.spi.ThreadContextStack` to store the MDC or NDC in a map or list column respectively.
 A conversion type compatible with `java.util.Date` will use the log event timestamp converted to that type (e.g., use `java.util.Date` to fill a
 `timestamp` column type in Cassandra).

@@ -468,7 +468,7 @@ Save the following XML-formatted Log4j configuration file to `src/**test**/resou
 
 </Configuration>
 ----
-<1> xref:manual/layouts.adoc#pattern-layout[Pattern Layout] is used for encoding the log event in a human-readable way.
+<1> xref:manual/pattern-layout.adoc[] is used for encoding the log event in a human-readable way.
 <2> Increased logging verbosity for the `com.mycompany` package.
 
 [#next]

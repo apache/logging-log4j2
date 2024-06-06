@@ -210,9 +210,10 @@ GELF Layout encodes log events in https://go2docs.graylog.org/current/getting_in
 It can compress the output when it exceeds a certain threshold.
 This layout does not implement chunking.
 
-[TIP]
+[WARNING]
 ====
-Unless compression is needed, we advise you to use xref:manual/json-template-layout.adoc[JSON Template Layout] instead, which provides GELF layout support out of the box and offers a far richer set of features.
+*This layout is planned to be removed in the next major release!*
+Unless compression is needed, we advise you to use xref:manual/json-template-layout.adoc[JSON Template Layout] instead, which provides GELF Layout support out of the box and offers more capabilities and performance.
 ====
 
 GELF Layout is configured with the following parameters:
@@ -861,6 +862,12 @@ It defaults to `LOCAL0`.
 
 XML Layout encodes a log event into XML.
 
+[WARNING]
+====
+*This layout is planned to be removed in the next major release!*
+XML Layout users are strongly advised to migrate to another layout!
+====
+
 .Click for an example output
 [%collapsible]
 ====
@@ -950,8 +957,10 @@ runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:{jackson-ve
 
 YAML Layout encodes a log event into YAML.
 
-[IMPORTANT]
+[WARNING]
 ====
+This layout is planned to be removed in the next major release!
+
 YAML is a superset of JSON.
 *We strongly advise existing YAML Layout users to migrate to xref:#JSONTemplateLayout[]* providing more capabilities and efficiency.
 ====
