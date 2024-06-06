@@ -1675,14 +1675,29 @@ The effective recycler factory can be configured using the xref:#plugin-attr-rec
 Next to predefined ones, you can introduce custom `RecyclerFactory` implementations too.
 See <<extending-recycler>> for details.
 
-:plugin-extension-intro-component-name: JSON Template Layout
-include::partial$manual/plugin-extension-intro.adoc[tag=part1]
+[#extending]
+== Extending
+
+JSON Template Layout relies on xref:manual/plugins.adoc[the Log4j plugin system] to compose the features it provides.
+This makes it possible for users to extend the plugin-based feature set as they see fit.
 As of this moment, following features are implemented by means of plugins:
 
 * Event template resolvers (e.g., `exception`, `message`, `level` event template resolvers)
 * Event template interceptors (e.g., injection of `eventTemplateAdditionalField`)
 * Recycler factories
-include::partial$manual/plugin-extension-intro.adoc[tag=part2]
+
+Following sections cover how to extend these in detail.
+
+[NOTE]
+====
+While existing features should address most common use cases, you might find yourself needing to implement a custom one.
+If this is the case, we really appreciate it if you can *share your use case in a {logging-services-url}/support.html[user support channel]*.
+====
+
+[#extending-plugins]
+=== Plugin preliminaries
+
+include::partial$manual/plugin-preliminaries.adoc[]
 
 [#extending-event-resolvers]
 === Extending event template resolvers

@@ -1668,10 +1668,24 @@ Patterns containing
 are not garbage-free.
 ====
 
-:plugin-extension-intro-component-name: Pattern Layout
-include::partial$manual/plugin-extension-intro.adoc[tag=part1]
+[#extending]
+== Extending
+
+Pattern Layout relies on xref:manual/plugins.adoc[the Log4j plugin system] to compose the features it provides.
+This makes it possible for users to extend the plugin-based feature set as they see fit.
 As of this moment, only xref:#extending-converters[extending pattern converters] is supported.
-include::partial$manual/plugin-extension-intro.adoc[tag=part2]
+Following sections cover how to extend these in detail.
+
+[NOTE]
+====
+While existing features should address most common use cases, you might find yourself needing to implement a custom one.
+If this is the case, we really appreciate it if you can *share your use case in a {logging-services-url}/support.html[user support channel]*.
+====
+
+[#extending-plugins]
+=== Plugin preliminaries
+
+include::partial$manual/plugin-preliminaries.adoc[]
 
 [#extending-converters]
 === Pattern converters
