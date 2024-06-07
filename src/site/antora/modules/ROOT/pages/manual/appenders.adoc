@@ -1251,7 +1251,8 @@ table based on a Log4j `MapMessage` instead of values from `LogEvent`.
 </Configuration>
 ----
 
-== JMS Appender
+[#jms-appender]
+== [[JMSAppender]]JMS Appender
 
 The JMS Appender sends the formatted log event to a JMS Destination.
 
@@ -2661,6 +2662,7 @@ When running in Google App Engine, the OnStartup policy causes a rollover if the
 `java.lang.management.ManagementFactory.getRuntimeMXBean().getStartTime()`
 and falls back to Log4J initialization time instead.)
 
+[#sizebased-triggering-policy]
 === SizeBased Triggering Policy
 
 The `SizeBasedTriggeringPolicy` causes a rollover once the file has reached the specified size.
@@ -2672,6 +2674,7 @@ When combined with a time-based triggering policy the file pattern must contain 
 Otherwise, the target file will be overwritten on every rollover as the SizeBased Triggering Policy will not cause the timestamp value in the file name to change.
 When used without a time-based triggering policy the SizeBased Triggering Policy will cause the timestamp value to change.
 
+[#timebased-triggering-policy]
 === TimeBased Triggering Policy
 
 The `TimeBasedTriggeringPolicy` causes a rollover once the date/time pattern no longer applies to the active file.

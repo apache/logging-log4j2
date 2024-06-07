@@ -1,0 +1,55 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+[id=log4j1.compatibility]
+== `log4j1.compatibility`
+
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_COMPATIBILITY
+| Type          | `boolean`
+| Default value | `false`
+|===
+
+If set to `true`, Log4j 2 will scan the classpath to find Log4j 1 configuration files in the following standard locations:
+
+* `log4j-test.properties`,
+* `log4j-test.xml`,
+* `log4j.properties`,
+* `log4j.xml`.
+
+[id=log4j.configuration]
+== `log4j.configuration`
+
+[cols="1h,5"]
+|===
+| Env. variable
+| LOG4J_CONFIGURATION_FILE
+
+| Type
+|
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[Path]
+or
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/URI.html[URI]
+
+| Default value
+| `null`
+|===
+
+If not `null`, Log4j will try to retrieve a **Log4j 1** configuration file from the given location.
+The configuration file name must end in `.properties` (Log4j 1 properties format) or `.xml` (Log4j 1 XML format).
+See also
+xref:manual/migration.adoc#configuration-limitations[limitations of Log4j 1 configuration compatibility layer].
