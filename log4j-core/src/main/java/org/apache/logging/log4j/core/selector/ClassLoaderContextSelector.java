@@ -44,8 +44,10 @@ import org.apache.logging.log4j.util.StackLocatorUtil;
  * parent ClassLoader, which will generally have negative consequences.
  * <p>
  * The main downside to this ContextSelector is that Configuration is more challenging.
+ * </p>
  * <p>
  * This ContextSelector should not be used with a Servlet Filter such as the Log4jServletFilter.
+ * </p>
  */
 @Singleton
 public class ClassLoaderContextSelector extends AbstractContextSelector implements LoggerContextShutdownAware {
