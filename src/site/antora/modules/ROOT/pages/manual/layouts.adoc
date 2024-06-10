@@ -179,7 +179,7 @@ Both `CsvParameterLayout` and `CsvLogEventLayout` are configured with the follow
 |The footer to include when the stream is closed
 |===
 
-There are additional runtime dependencies are required for using CSV layouts:
+Additional runtime dependencies are required for using CSV layouts:
 
 [tabs]
 ====
