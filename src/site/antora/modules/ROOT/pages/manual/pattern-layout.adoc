@@ -1115,17 +1115,6 @@ The call site can look like this:
 logger.info("@\|KeyStyle {}\|@ = @\|ValueStyle {}\|@", entry.getKey(), entry.getValue());
 ----
 
-You can enable xref:manual/lookups.adoc[] using `\{lookups}` and log messages like `${date:YYYY-MM-dd}` using lookups.
-This will replace the date template `YYYY-MM-dd` with an actual date.
-This can be confusing in many cases, and it's often both easier and more obvious to handle the lookup in code.
-This feature is disabled by default and the message string is logged untouched.
-
-[WARNING]
-====
-Users are strongly discouraged from using the lookups option.
-Doing so may allow uncontrolled user input containing lookups to take unintended actions.
-====
-
 [#converter-method]
 ==== Method
 
