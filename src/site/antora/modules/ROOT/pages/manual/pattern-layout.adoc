@@ -17,7 +17,7 @@
 
 = Pattern Layout
 
-Pattern Layout is a customizable, xref:#performance[efficient], xref:#garbage-free[garbage-free], and human-readable string generating layout using a user-provided pattern.
+`PatternLayout` is a customizable, xref:#performance[efficient], xref:#garbage-free[garbage-free], and human-readable string generating layout using a user-provided pattern.
 It is analogous to `String#format()` with specialized directives on injecting certain properties of a `LogEvent`.
 
 [IMPORTANT]
@@ -104,6 +104,8 @@ To suppress the formatting of the `Throwable` completely simply add `%ex\{0}` as
 == Configuration
 
 This section explains how to configure Pattern Layout plugin element in a Log4j configuration file.
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-PatternLayout[📖 Plugin reference for `PatternLayout`]
 
 [#plugin-attrs]
 === Plugin attributes

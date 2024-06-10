@@ -16,7 +16,7 @@
 ////
 = JSON Template Layout
 
-JSON Template Layout is a customizable, xref:#performance[efficient], and xref:#faq-garbage-free[garbage-free] JSON generating layout.
+`JsonTemplateLayout` is a customizable, xref:#performance[efficient], and xref:#faq-garbage-free[garbage-free] JSON generating layout.
 It encodes ``LogEvent``s according to the structure described by the JSON template provided.
 In a nutshell, it shines with its
 
@@ -180,6 +180,8 @@ This section explains how to configure JSON Template Layout plugin element in a 
 Are you trying to implement your own event (or stack trace) template and looking for help on available resolvers?
 Please refer to xref:#template-config[] instead.
 ====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-JsonTemplateLayout[📖 Plugin reference for `JsonTemplateLayout`]
 
 [#plugin-attrs]
 === Plugin attributes

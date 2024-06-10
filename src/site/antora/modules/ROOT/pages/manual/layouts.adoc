@@ -55,15 +55,21 @@ Refer to xref:manual/pattern-layout.adoc[].
 
 Following sections explain all predefined layouts in detail.
 
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Layout[📖 Plugin reference for all `Layout` implementations]
+
 [#csv-layouts]
 === [[CSVLayouts]] CSV Layouts
 
 There are two layouts performing https://en.wikipedia.org/wiki/Comma-separated_values[Comma Separated Value (CSV)] encoding:
 
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/CsvParameterLayout.html[`CsvParameterLayout`]::
-It encodes *only* the parameters of the message of a log event.
+[#csv-layout-parameter]
+==== CSV Parameter Layout
+
+`CsvParameterLayout` encodes *only* the parameters of the message of a log event.
 Generated CSV records will be composed of fields denoting the message parameters.
-+
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-CsvParameterLayout[📖 Plugin reference for `CsvParameterLayout`]
+
 .Click here for examples
 [%collapsible]
 ====
@@ -92,10 +98,12 @@ LOGGER.info(new ObjectArrayMessage("arg3", "arg4", "arg5"));
 ----
 ====
 
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/CsvLogEventLayout.html[`CsvLogEventLayout`]::
-It encodes the complete log event, including the formatted message.
+[#csv-layout-log-event]
+==== CSV Log Event Layout
+
+`CsvLogEventLayout` encodes the complete log event, including the formatted message.
 Generated CSV records will be composed of following fields in the given order:
-+
+
 . Time (in nanoseconds)
 . Time (in milliseconds)
 . Level
@@ -111,7 +119,8 @@ Generated CSV records will be composed of following fields in the given order:
 . Thread context map
 . Thread context stack
 
-+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-CsvLogEventLayout[📖 Plugin reference for `CsvLogEventLayout`]
+
 .Click here for examples
 [%collapsible]
 ====
@@ -129,6 +138,9 @@ LOGGER.debug("one={}, two={}, three={}", 1, 2, 3);
 0,1441617184044,DEBUG,main,"one=1, two=2, three=3",org.apache.logging.log4j.spi.AbstractLogger,,,,org.apache.logging.log4j.core.layout.CsvLogEventLayoutTest.testLayout(CsvLogEventLayoutTest.java:98),{},[]
 ----
 ====
+
+[#csv-layout-config]
+==== Configuration
 
 Both `CsvParameterLayout` and `CsvLogEventLayout` are configured with the following parameters:
 
@@ -206,7 +218,7 @@ runtimeOnly 'org.apache.commons:commons-csv:{commons-csv-version}'
 [#GELFLayout]
 === GELF Layout
 
-GELF Layout encodes log events in https://go2docs.graylog.org/current/getting_in_log_data/gelf.html#GELFPayloadSpecification[the GELF specification] version `1.1`.
+`GelfLayout` encodes log events in https://go2docs.graylog.org/current/getting_in_log_data/gelf.html#GELFPayloadSpecification[the GELF specification] version `1.1`.
 It can compress the output when it exceeds a certain threshold.
 This layout does not implement chunking.
 
@@ -215,6 +227,8 @@ This layout does not implement chunking.
 *This layout is planned to be removed in the next major release!*
 Unless compression is needed, we advise you to use xref:manual/json-template-layout.adoc[JSON Template Layout] instead, which provides GELF Layout support out of the box and offers more capabilities and performance.
 ====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-GelfLayout[📖 Plugin reference for `GelfLayout`]
 
 GELF Layout is configured with the following parameters:
 
@@ -369,7 +383,10 @@ include::example$manual/gelf-layout/log4j2.properties[lines=17..48,indent=0]
 [#HTMLLayout]
 === HTML Layout
 
-HTML Layout generates an HTML page, and adds each log event to a row in a table.
+`HtmlLayout` generates an HTML page, and adds each log event to a row in a table.
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-HtmlLayout[📖 Plugin reference for `HtmlLayout`]
+
 It is configured with the following parameters:
 
 [%header,cols="1m,1m,4"]
@@ -418,13 +435,15 @@ You can use time zone IDs supported by https://docs.oracle.com/javase/8/docs/api
 [[JSONLayout]]
 === JSON Layout
 
-JSON Layout encodes a log event into JSON.
+`JsonLayout` encodes a log event into JSON.
 
 [WARNING]
 ====
 JSON Layout is considered deprecated.
 It is succeeded by xref:#JSONTemplateLayout[] providing more capabilities and efficiency.
 ====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-JsonLayout[📖 Plugin reference for `JsonLayout`]
 
 .Click for an example output
 [%collapsible]
@@ -599,8 +618,11 @@ runtimeOnly 'com.fasterxml.jackson.core:jackson-databind:{jackson-version}'
 [#JSONTemplateLayout]
 === JSON Template Layout
 
-JSON Template Layout is a customizable, efficient, and garbage-free JSON generating layout.
+`JsonTemplateLayout` is a customizable, efficient, and garbage-free JSON generating layout.
 It encodes ``LogEvent``s according to the structure described by the JSON template provided.
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-JsonTemplateLayout[📖 Plugin reference for `JsonTemplateLayout`]
+
 For instance, given the following event template stored in `MyLayout.json` in your classpath:
 
 [source,json]
@@ -677,7 +699,7 @@ Read more on xref:manual/json-template-layout.adoc[]...
 [id=pattern-layout]
 === [[PatternLayout]] Pattern Layout
 
-Pattern Layout is a customizable, efficient, garbage-free, and human-readable string generating layout using a user-provided pattern.
+`PatternLayout` is a customizable, efficient, garbage-free, and human-readable string generating layout using a user-provided pattern.
 It is analogous to `String#format()` with specialized directives on injecting certain properties of a `LogEvent`.
 
 [IMPORTANT]
@@ -685,6 +707,8 @@ It is analogous to `String#format()` with specialized directives on injecting ce
 Pattern Layout is not intended for _structural logging_ purposes.
 For production environments, you are strongly advised to use xref:manual/json-template-layout.adoc[] producing JSON output ready to be delivered to log ingestion systems such as Elasticsearch or Google Cloud Logging.
 ====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-PatternLayout[📖 Plugin reference for `PatternLayout`]
 
 A conversion pattern is composed of literal text and format control expressions.
 For instance, given the `%-5p [%t]: %m%n` pattern, following statements
@@ -708,12 +732,14 @@ Read more on xref:manual/pattern-layout.adoc[]...
 [#RFC5424Layout]
 === RFC 5424 Layout
 
-RFC 5424 Layout encodes log events according to https://datatracker.ietf.org/doc/html/rfc5424#section-6[the Syslog message format described in RFC 5424].
+`Rfc5424` Layout encodes log events according to https://datatracker.ietf.org/doc/html/rfc5424#section-6[the Syslog message format described in RFC 5424].
 
 [NOTE]
 ====
 RFC 5424 obsoletes RFC 3164, implemented by xref:#SyslogLayout[].
 ====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-Rfc5424Layout[📖 Plugin reference for `Rfc5424Layout`]
 
 RFC 5424 Layout is configured with the following parameters:
 
@@ -811,7 +837,7 @@ This attribute only applies to RFC 5424 Syslog records.
 [#SerializedLayout]
 === Serialized Layout
 
-Serialized Layout encodes a log event using https://docs.oracle.com/javase/8/docs/platform/serialization/spec/protocol.html[Java Serialization].
+`SerializedLayout` encodes a log event using https://docs.oracle.com/javase/8/docs/platform/serialization/spec/protocol.html[Java Serialization].
 It accepts no configuration parameters.
 
 [WARNING]
@@ -821,16 +847,20 @@ Java Serialization has inherent security weaknesses.
 *Serialized Layout users are strongly advised to migrate to another layout!*
 ====
 
+ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-SerializedLayout[📖 Plugin reference for `SerializedLayout`]
+
 [#SyslogLayout]
 === Syslog Layout
 
-Syslog Layout encodes log events according to https://datatracker.ietf.org/doc/html/rfc3164#section-4.1[the syslog message format described in RFC 3164].
+`SyslogLayout` encodes log events according to https://datatracker.ietf.org/doc/html/rfc3164#section-4.1[the syslog message format described in RFC 3164].
 This matches the same format used by {logging-services-url}/log4j/1.x[Log4j 1].
 
 [IMPORTANT]
 ====
 RFC 3164, implemented by Syslog Layout, is obsoleted by RFC 5424, implemented by xref:#RFC5424Layout[].
 ====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-SyslogLayout[📖 Plugin reference for `SyslogLayout`]
 
 Syslog Layout is configured with the following parameters:
 
@@ -862,13 +892,15 @@ It defaults to `LOCAL0`.
 [[XMLLayout]]
 === XML Layout
 
-XML Layout encodes a log event into XML.
+`XmlLayout` encodes a log event into XML.
 
 [WARNING]
 ====
 *This layout is planned to be removed in the next major release!*
 XML Layout users are strongly advised to migrate to another layout!
 ====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-XmlLayout[📖 Plugin reference for `XmlLayout`]
 
 .Click for an example output
 [%collapsible]
@@ -957,7 +989,7 @@ runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:{jackson-ve
 [[YamlLayout]]
 === YAML Layout
 
-YAML Layout encodes a log event into YAML.
+`YamlLayout` encodes a log event into YAML.
 
 [WARNING]
 ====
@@ -966,6 +998,8 @@ This layout is planned to be removed in the next major release!
 YAML is a superset of JSON.
 *We strongly advise existing YAML Layout users to migrate to xref:#JSONTemplateLayout[]* providing more capabilities and efficiency.
 ====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-YamlLayout[📖 Plugin reference for `YamlLayout`]
 
 .Click for an example output
 [%collapsible]
