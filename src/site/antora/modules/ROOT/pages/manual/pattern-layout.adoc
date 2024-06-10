@@ -1665,10 +1665,8 @@ Format modifiers to control such things as field width, padding, left, and right
 |
 
 |literal text
-|Garbage-free unless it contains `\$${`.
-That is, adding `${date:YYYY-MM-dd}` is garbage-free, because it will be expanded at configuration time.
-Whereas adding `$${date:YYYY-MM-dd}` is not, since it will be expanded at each log event.
-See xref:manual/configuration.adoc#property-substitution[property substitution] for details.
+a|Garbage-free, but care is needed for xref:manual/lookups.adoc[].
+include::partial$manual/layouts-gcfree-lookup.adoc[]
 |===
 
 [NOTE]

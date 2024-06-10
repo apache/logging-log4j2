@@ -198,6 +198,11 @@ JSON Template Layout plugin configuration accepts the following attributes:
 
 `Charset` used for encoding the produced JSON into bytes
 
+[WARNING]
+====
+While https://datatracker.ietf.org/doc/html/rfc4627#section-3[RFC 4627, the JSON specification, supports multiple Unicode encodings], we strongly advise you to stick to the layout default, and use UTF-8 for https://stackoverflow.com/a/594881/1278899[several practical reasons].
+====
+
 [#plugin-attr-locationInfoEnabled]
 ==== [[locationInfoEnabled]]`locationInfoEnabled`
 
@@ -209,6 +214,7 @@ JSON Template Layout plugin configuration accepts the following attributes:
 |===
 
 Toggles access to the `LogEvent` source; file name, line number, etc.
+See also xref:manual/layouts.adoc#LocationInformation[location information].
 
 [#plugin-attr-stackTraceEnabled]
 ==== `stackTraceEnabled`
@@ -2047,7 +2053,8 @@ To get the most out of it, mind the following checklist:
 === Are lookups supported in templates?
 
 Yes, xref:manual/lookups.adoc[lookups] (e.g., `${java:version}`, `${env:USER}`, `${date:MM-dd-yyyy}`) are supported in string literals of templates.
-Though note that they are not garbage-free.
+
+include::partial$manual/layouts-gcfree-lookup.adoc[]
 
 [#faq-recursive-collection]
 === Are recursive collections supported?

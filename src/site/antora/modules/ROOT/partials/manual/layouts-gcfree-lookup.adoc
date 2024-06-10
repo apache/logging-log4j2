@@ -1,0 +1,21 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+Encoding the output of a lookup is garbage-free, but executing the lookup might not be.
+For instance, even though xref:manual/lookups.adoc#DateLookup[the `date` lookup] allocates a new `String` for each invocation, adding `${date:YYYY-MM-dd}` is garbage-free, because it will be expanded at configuration time, that is, only once.
+Whereas adding `$${date:YYYY-MM-dd}` is not, since it will be expanded for each log event.
+See xref:manual/configuration.adoc#property-substitution[property substitution] for details.
