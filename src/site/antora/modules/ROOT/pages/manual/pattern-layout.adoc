@@ -133,6 +133,11 @@ Pattern Layout plugin configuration accepts the following attributes:
 A composite pattern string of one or more xref:#converters[].
 `pattern` and xref:#plugin-attr-patternSelector[] are mutually exclusive, that is, only one can be specified.
 
+[WARNING]
+====
+If the provided pattern does not contain an exception converter and <<plugin-attr-alwaysWriteExceptions>> is not disabled, an implicit xref:#converter-exception-extended[`%xEX`] is appended to the pattern.
+====
+
 [#plugin-attr-patternSelector]
 ==== `patternSelector`
 
@@ -164,7 +169,7 @@ If configured, the `replace` element must specify the regular expression to matc
 |Default value |`true`
 |===
 
-If `true`, exceptions are always written even if the pattern contains no exception conversions.
+If `true` and the user-provided pattern does not contain an exception converter, an implicit xref:#converter-exception-extended[`%xEX`] pattern is appended.
 This means that if you do not include a way to output exceptions in your pattern, the default exception formatter will be added to the end of the pattern.
 Setting this to `false` disables this behavior and allows you to exclude exceptions from your pattern output.
 
@@ -561,7 +566,7 @@ Replaces occurrences of a string (`test`) with its replacement (`substitution`) 
 .link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/EqualsReplacementConverter.html[`EqualsReplacementConverter`] and link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/EqualsIgnoreCaseReplacementConverter.html[`EqualsReplacementConverter`] specifiers' grammar
 [source,text]
 ----
-equals{pattern}{test}{substitution} +
+equals{pattern}{test}{substitution}
 equalsIgnoreCase{pattern}{test}{substitution}
 ----
 
@@ -1459,6 +1464,7 @@ uuid{RANDOM|TIME}
 
 The time-based UUID is a Type 1 UUID generated using the MAC address of each host
 To ensure uniqueness across multiple JVMs and/or class loaders on the same host, a random number between 0 and 16,384 will be associated with each instance of the UUID generator class, and included in each time-based UUID generated.
+See also xref:manual/systemproperties.adoc#log4j2.uuidSequence[`log4j2.uuidSequence`].
 Because time-based UUIDs contain the MAC address and timestamp, they should be used with care.
 
 [#format-modifiers]

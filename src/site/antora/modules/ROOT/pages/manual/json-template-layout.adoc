@@ -984,7 +984,7 @@ Resolve the argument coming right after `--userId`:
 ===== `map`
 
 Resolves ``MapMessage``s.
-See link:#map-resolver-template[] for details.
+See <<map-resolver-template>> for details.
 
 [#event-template-resolver-marker]
 ===== `marker`
@@ -1025,7 +1025,7 @@ Resolve the names of the marker's parents:
 ===== `mdc`
 
 Resolves the xref:manual/thread-context.adoc[thread context] map, aka. Mapped Diagnostic Context (MDC).
-See link:#map-resolver-template[] for details.
+See <<map-resolver-template>> for details.
 
 [WARNING]
 ====

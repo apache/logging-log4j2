@@ -733,7 +733,9 @@ RFC 5424 Layout is configured with the following parameters:
 
 |enterpriseNumber
 |integer
-|The `enterpriseId` parameter as described in RFC 5424 (defaults to `32473`)
+|
+The `enterpriseId` parameter as described in RFC 5424.
+If missing, `32473` will be used, which is https://www.rfc-editor.org/rfc/rfc5612.html#section-2[reserved for documentation use].
 
 |exceptionPattern
 |String
