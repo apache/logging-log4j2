@@ -1606,7 +1606,7 @@ Format modifiers to control such things as field width, padding, left, and right
 |xref:#converter-message[%m +
 %msg +
 %message]
-|Garbage-free unless message text contains `${`
+|
 
 |xref:#converter-marker[%marker]
 |
@@ -1665,7 +1665,10 @@ Format modifiers to control such things as field width, padding, left, and right
 |
 
 |literal text
-|Garbage-free unless it contains `${`
+|Garbage-free unless it contains `\$${`.
+That is, adding `${date:YYYY-MM-dd}` is garbage-free, because it will be expanded at configuration time.
+Whereas adding `$${date:YYYY-MM-dd}` is not, since it will be expanded at each log event.
+See xref:manual/configuration.adoc#property-substitution[property substitution] for details.
 |===
 
 [NOTE]
