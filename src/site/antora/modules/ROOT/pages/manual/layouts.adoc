@@ -33,8 +33,8 @@ This section introduces you to some common concerns shared by almost all xref:#c
 === Character encoding
 
 All xref:#collection[predefined layouts] produce `String` that eventually get converted into a `byte[]` using the https://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html[`Charset`] configured.
-While doing so, they use `UTF-8` by default.
-If you want all your log events to be formatted in a certain character encoding that is different than what the employed layout defaults to, make sure to configure the layout's character encoding as needed.
+While doing so, unless an explicit encoding configuration is stated, they use `UTF-8` by default.
+If you want all your log events to be formatted in a certain character encoding that is different from what the employed layout defaults to, make sure to configure the layout's character encoding as needed.
 
 [#LocationInformation]
 === Location information
