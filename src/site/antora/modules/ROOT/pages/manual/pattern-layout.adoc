@@ -336,7 +336,23 @@ include::example$manual/pattern-layout/script-pattern-selector/log4j2.properties
 
 The Pattern Layout _conversion pattern_ is composed of literal text and format control expressions called _conversion specifiers_ – refer to xref:#usage[] for details.
 xref:manual/plugins.adoc[Plugins] implementing link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/PatternConverter.html[`PatternConverter`] are admitted to the *pattern converter* registry of Pattern Layout, and used to resolve the conversion specifiers.
-The predefined set of pattern converters are shared below.
+
+The predefined set of pattern converters will be shared in the following sections.
+While doing so, their syntax will be documented in a certain notation.
+Consider the following example for the syntax of xref:#converter-date[] pattern converter:
+
+[source,text]
+----
+%d{dateSpecifier}[{timezone}]
+----
+
+This means that
+
+* `%d` identifies the associated pattern converter
+* `\{dateSpecifier}` indicates that the converter accepts a *required* `dateSpecifier` parameter
+* `[\{timezone}]` indicates that the converter accepts an *optional*  `timezone` parameter
+
+If you want to have `%d\{something}` literal in your pattern without matching for the actual `%d` pattern converter, you can escape the `%` as follows: `%%d\{something}`.
 
 [#converter-class]
 ==== Class
