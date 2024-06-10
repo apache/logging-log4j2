@@ -50,6 +50,8 @@ Check out {logging-services-url}/log4j/kotlin[Log4j Kotlin] and {logging-service
 
 include::partial$manual/api-intro.adoc[leveloffset=+1]
 
+include::partial$manual/log-event.adoc[]
+
 [#best-practice]
 == Best practices
 
