@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <develocity>
+    <projectId>log4j-bom</projectId>
     <server>
         <url>https://ge.apache.org</url>
     </server>
