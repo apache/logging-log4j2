@@ -1,0 +1,68 @@
+{
+  "Configuration": {
+    "Appenders": {
+
+      "Console": {
+        "name": "CONSOLE",
+        "GelfLayout": { //<1>
+          "messagePattern": "%d %5p [%t] %c{1} %X{loginId, requestId} - %m%n",
+          "includeThreadContext": "true",
+          "threadContextIncludes": "loginId,requestId",
+          "KeyValuePair": [
+            {
+              "key": "additionalField1",
+              "value": "constant value"
+            },
+            {
+              "key": "additionalField2",
+              "value": "$${ctx:key}"
+            }
+          ]
+        }
+      },
+
+      "SocketTcp": { //<2>
+        "type": "Socket",
+        "name": "GRAYLOG_TCP",
+        "protocol": "TCP",
+        "host": "graylog.domain.com",
+        "port": 12201,
+        "GelfLayout": {
+          "host": "someserver",
+          "compressionType": "OFF",
+          "includeNullDelimiter": "true"
+        }
+      },
+
+      "SocketUdp": { //<3>
+        "type": "Socket",
+        "name": "GRAYLOG_UDP",
+        "protocol": "UDP",
+        "host": "graylog.domain.com",
+        "port": 12201,
+        "GelfLayout": {
+          "host": "someserver",
+          "compressionType": "ZLIB",
+          "compressionThreshold": 1024
+        }
+      }
+
+    },
+    "Loggers": {
+      "Root": {
+        "level": "WARN",
+        "AppenderRef": [
+          {
+            "ref": "CONSOLE"
+          },
+          {
+            "ref": "GRAYLOG_TCP"
+          },
+          {
+            "ref": "GRAYLOG_UDP"
+          }
+        ]
+      }
+    }
+  }
+}

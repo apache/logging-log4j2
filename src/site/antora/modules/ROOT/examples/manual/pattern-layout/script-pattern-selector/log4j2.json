@@ -1,0 +1,37 @@
+{
+  "Configuration": {
+    "Appenders": {
+      "Console": {
+        "name": "CONSOLE",
+        "PatternLayout": {
+          "ScriptPatternSelector": {
+            "defaultPattern": "[%-5level] %c{1.} %msg%n",
+            "Script": {
+              "name": "BeanShellSelector",
+              "language": "bsh",
+              "scriptText": "if (logEvent.getLoggerName().equals(\"NoLocation\")) { return \"NoLocation\"; } else if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf(\"FLOW\")) { return \"Flow\"; } else { return null; }"
+            },
+            "PatternMatch": [
+              {
+                "key": "NoLocation",
+                "pattern": "[%-5level] %c{1.} %msg%n"
+              },
+              {
+                "key": "Flow",
+                "pattern": "[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "Loggers": {
+      "Root": {
+        "level": "WARN",
+        "AppenderRef": {
+          "ref": "CONSOLE"
+        }
+      }
+    }
+  }
+}

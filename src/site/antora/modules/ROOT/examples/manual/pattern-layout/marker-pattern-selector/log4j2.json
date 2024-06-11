@@ -1,0 +1,28 @@
+{
+  "Configuration": {
+    "Appenders": {
+      "Console": {
+        "name": "CONSOLE",
+        "PatternLayout": {
+          "MarkerPatternSelector": {
+            "defaultPattern": "[%-5level] %c{1.} %msg%n",
+            "PatternMatch": [
+              {
+                "key": "FLOW",
+                "pattern": "[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "Loggers": {
+      "Root": {
+        "level": "WARN",
+        "AppenderRef": {
+          "ref": "CONSOLE"
+        }
+      }
+    }
+  }
+}

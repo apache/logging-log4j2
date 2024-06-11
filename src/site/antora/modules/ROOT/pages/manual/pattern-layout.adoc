@@ -1,0 +1,1739 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Pattern Layout
+
+`PatternLayout` is a customizable, xref:#performance[efficient], xref:#garbage-free[garbage-free], and human-readable string generating layout using a user-provided pattern.
+It is analogous to `String#format()` with specialized directives on injecting certain properties of a `LogEvent`.
+
+[IMPORTANT]
+====
+Pattern Layout is not intended for _structural logging_ purposes.
+For production environments, you are strongly advised to use xref:manual/json-template-layout.adoc[] producing JSON output ready to be delivered to log ingestion systems such as Elasticsearch or Google Cloud Logging.
+====
+
+[#usage]
+== Usage
+
+Pattern Layout is primarily configured using a *conversion pattern* referring to certain properties of a `LogEvent`.
+A conversion pattern is composed of literal text and format control expressions called *conversion specifiers*.
+For instance, given the following layout configuration
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/pattern-layout/usage/log4j2.xml[`log4j2.xml`]
+[source,xml]
+----
+include::example$manual/pattern-layout/usage/log4j2.xml[lines=26..26,indent=0]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/pattern-layout/usage/log4j2.json[`log4j2.json`]
+[source,json]
+----
+include::example$manual/pattern-layout/usage/log4j2.json[lines=6..8,indent=0]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/pattern-layout/usage/log4j2.yaml[`log4j2.yaml`]
+[source,xml]
+----
+include::example$manual/pattern-layout/usage/log4j2.yaml[lines=22..23,indent=0]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/pattern-layout/usage/log4j2.properties[`log4j2.properties`]
+[source,xml]
+----
+include::example$manual/pattern-layout/usage/log4j2.properties[lines=19..20,indent=0]
+----
+====
+
+then the following statements
+
+[source,java]
+----
+LOGGER.debug("Message 1");
+LOGGER.warn("Message 2");
+----
+
+will yield the output
+
+[source,text]
+----
+DEBUG [main]: Message 1
+WARN  [main]: Message 2
+----
+
+Any literal text, including `\t`, `\n`, `\r\`, and `\f` special characters, may be included in the conversion pattern.
+Use `\\` to insert a single backslash into the output.
+
+Each conversion specifier starts with a `%` character, and is followed by optional *format modifiers* and a *conversion character*.
+The conversion character specifies the type of data, e.g., category, priority, date, thread name.
+The format modifiers control such things as field width, padding, and left and right justification.
+Use `%%` to insert a single `%` into the output.
+Use `%n` to insert the line separator of the platform.
+
+There is no explicit separator between text and conversion specifiers.
+The pattern parser knows when it has reached the end of a conversion specifier when it reads a conversion character.
+In the example above the conversion specifier `%-5p` means the priority of the log event should be left justified to a width of five characters.
+
+If the pattern string does not contain a specifier to handle a `Throwable` being logged, parsing of the pattern will act as if the `%xEx` specifier had been added to the end of the string.
+To suppress the formatting of the `Throwable` completely simply add `%ex\{0}` as a specifier in the pattern string.
+
+[#config]
+== Configuration
+
+This section explains how to configure Pattern Layout plugin element in a Log4j configuration file.
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-PatternLayout[📖 Plugin reference for `PatternLayout`]
+
+[#plugin-attrs]
+=== Plugin attributes
+
+Pattern Layout plugin configuration accepts the following attributes:
+
+[#plugin-attr-charset]
+==== `charset`
+
+[cols="2h,6"]
+|===
+|Type |`Charset`
+|Default value |The platform default
+|===
+
+`Charset` used for encoding the produced JSON into bytes
+
+[#plugin-attr-pattern]
+==== `pattern`
+
+[cols="2h,6"]
+|===
+|Type |`String`
+|Default value |`%m%n`
+|===
+
+A composite pattern string of one or more xref:#converters[].
+`pattern` and xref:#plugin-attr-patternSelector[] are mutually exclusive, that is, only one can be specified.
+
+[WARNING]
+====
+If the provided pattern does not contain an exception converter and <<plugin-attr-alwaysWriteExceptions>> is not disabled, an implicit xref:#converter-exception-extended[`%xEX`] is appended to the pattern.
+====
+
+[#plugin-attr-patternSelector]
+==== `patternSelector`
+
+[cols="2h,6"]
+|===
+|Type |xref:#plugin-element-PatternSelector[`PatternSelector`]
+|===
+
+A component that analyzes information in the `LogEvent` and determines which pattern should be used to format the event.
+`patternSelector` and xref:#plugin-attr-pattern[] are mutually exclusive, that is, only one can be specified.
+
+[#plugin-attr-replace]
+==== `replace`
+
+[cols="2h,6"]
+|===
+|Type |xref:#plugin-element-RegexReplacement[`RegexReplacement`]
+|===
+
+Allows portions of the resulting `String` to be replaced.
+If configured, the `replace` element must specify the regular expression to match and the substitution.
+
+[#plugin-attr-alwaysWriteExceptions]
+==== `alwaysWriteExceptions`
+
+[cols="2h,6"]
+|===
+|Type |`boolean`
+|Default value |`true`
+|===
+
+If `true` and the user-provided pattern does not contain an exception converter, an implicit xref:#converter-exception-extended[`%xEX`] pattern is appended.
+This means that if you do not include a way to output exceptions in your pattern, the default exception formatter will be added to the end of the pattern.
+Setting this to `false` disables this behavior and allows you to exclude exceptions from your pattern output.
+
+[#plugin-attr-header]
+==== `header`
+
+[cols="2h,6"]
+|===
+|Type |`String`
+|===
+
+The optional header to include at the top of each log file
+
+[#plugin-attr-footer]
+==== `footer`
+
+[cols="2h,6"]
+|===
+|Type |`String`
+|===
+
+The optional footer to include at the bottom of each log file
+
+[#plugin-attr-disableAnsi]
+==== `disableAnsi`
+
+[cols="2h,6"]
+|===
+|Type |`boolean`
+|Default value |`false`
+|===
+
+If `true`, do not output ANSI escape codes
+
+[#plugin-attr-noConsoleNoAnsi]
+==== `noConsoleNoAnsi`
+
+[cols="2h,6"]
+|===
+|Type |`boolean`
+|Default value |`false`
+|===
+
+If `true` and `System.console()` is null, do not output ANSI escape codes
+
+[#plugin-elements]
+=== Plugin elements
+
+Pattern Layout plugin configuration accepts the following elements:
+
+[#plugin-element-RegexReplacement]
+==== `RegexReplacement`
+
+Allows portions of the resulting `String` to be replaced.
+This performs a function similar to xref:#converter-replace[the `replace` converter] but applies to the whole message while the converter only applies to the `String` its pattern generates.
+
+It supports following attributes:
+
+`regex`:: A https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html[Java-compliant regular expression] to match the resulting string
+
+`replacement`:: The string to replace any matched substrings with
+
+[#plugin-element-PatternSelector]
+==== `PatternSelector`
+
+Pattern Layout can be configured with a link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/PatternSelector.html[`PatternSelector`] to allow it to choose a pattern to use based on attributes of the log event or other factors.
+A `PatternSelector` will normally be configured with a `defaultPattern` attribute, which is used when other criteria don't match, and a set of link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/PatternMatch.html[`PatternMatch`] elements that identify the various patterns that can be selected.
+
+Predefined ``PatternSelector``s are as follows:
+
+[#plugin-element-LevelPatternSelector]
+===== `LevelPatternSelector`
+
+The link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/LevelPatternSelector.html[`LevelPatternSelector`] selects patterns based on the level of the log event.
+Its configuration is similar to xref:#plugin-element-MarkerPatternSelector[], with the difference that the `key` attribute of the link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/PatternMatch.html[`PatternMatch`] element is matched against the log level associated with the log event.
+
+[#plugin-element-MarkerPatternSelector]
+===== `MarkerPatternSelector`
+
+The link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/MarkerPatternSelector.html[`MarkerPatternSelector`] selects patterns based on the xref:manual/markers.adoc[marker] included in the log event.
+If the marker in the log event is equal to or is an ancestor of the name specified on the `key` attribute of the link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/PatternMatch.html[`PatternMatch`] element, then the `pattern` specified on that `PatternMatch` element will be used.
+
+Below is a `MarkerPatternSelector` example switching from the `[%-5level] %c{1.} %msg%n` default pattern to `[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n`, if the marker matches to `FLOW`:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/pattern-layout/marker-pattern-selector/log4j2.xml[`log4j2.xml`]
+[source,xml]
+----
+include::example$manual/pattern-layout/marker-pattern-selector/log4j2.xml[lines=26..30,indent=0]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/pattern-layout/marker-pattern-selector/log4j2.json[`log4j2.json`]
+[source,json]
+----
+include::example$manual/pattern-layout/marker-pattern-selector/log4j2.json[lines=6..16,indent=0]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/pattern-layout/marker-pattern-selector/log4j2.yaml[`log4j2.yaml`]
+[source,xml]
+----
+include::example$manual/pattern-layout/marker-pattern-selector/log4j2.yaml[lines=22..27,indent=0]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/pattern-layout/marker-pattern-selector/log4j2.properties[`log4j2.properties`]
+[source,xml]
+----
+include::example$manual/pattern-layout/marker-pattern-selector/log4j2.properties[lines=19..24,indent=0]
+----
+====
+
+[#plugin-element-ScriptPatternSelector]
+===== `ScriptPatternSelector`
+
+The link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/ScriptPatternSelector.html[`ScriptPatternSelector`] selects patterns by matching the output of a xref:manual/scripts.adoc[script] execution against given link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/PatternMatch.html[`PatternMatch`] elements.
+
+Below is an example using a script determining `NoLocation` or `Flow` keywords from a log event and matching it against two ``PatternMatch``es to configure the effective pattern:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/pattern-layout/script-pattern-selector/log4j2.xml[`log4j2.xml`]
+[source,xml]
+----
+include::example$manual/pattern-layout/script-pattern-selector/log4j2.xml[lines=26..40,indent=0]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/pattern-layout/script-pattern-selector/log4j2.json[`log4j2.json`]
+[source,json]
+----
+include::example$manual/pattern-layout/script-pattern-selector/log4j2.json[lines=6..25,indent=0]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/pattern-layout/script-pattern-selector/log4j2.yaml[`log4j2.yaml`]
+[source,xml]
+----
+include::example$manual/pattern-layout/script-pattern-selector/log4j2.yaml[lines=22..40,indent=0]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/pattern-layout/script-pattern-selector/log4j2.properties[`log4j2.properties`]
+[source,xml]
+----
+include::example$manual/pattern-layout/script-pattern-selector/log4j2.properties[lines=19..38,indent=0]
+----
+====
+
+[#converters]
+=== Pattern converters
+
+The Pattern Layout _conversion pattern_ is composed of literal text and format control expressions called _conversion specifiers_ – refer to xref:#usage[] for details.
+xref:manual/plugins.adoc[Plugins] implementing link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/PatternConverter.html[`PatternConverter`] are admitted to the *pattern converter* registry of Pattern Layout, and used to resolve the conversion specifiers.
+
+The predefined set of pattern converters will be shared in the following sections.
+While doing so, their syntax will be documented in a certain notation.
+Consider the following example for the syntax of xref:#converter-date[] pattern converter:
+
+[source,text]
+----
+%d{dateSpecifier}[{timezone}]
+----
+
+This means that
+
+* `%d` identifies the associated pattern converter
+* `\{dateSpecifier}` indicates that the converter accepts a *required* `dateSpecifier` parameter
+* `[\{timezone}]` indicates that the converter accepts an *optional*  `timezone` parameter
+
+If you want to have `%d\{something}` literal in your pattern without matching for the actual `%d` pattern converter, you can escape the `%` as follows: `%%d\{something}`.
+
+[#converter-class]
+==== Class
+
+Outputs the fully qualified class name of the caller issuing the logging request
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/ClassNamePatternConverter.html[`ClassNamePatternConverter`] specifier grammar
+[source,text]
+----
+C{precision}
+class{precision}
+----
+
+This conversion specifier can be optionally followed by a _precision specifier_ that follows the same rules as xref:#converter-logger[the logger name converter].
+
+[WARNING]
+====
+Capturing the source location information to generate the class name of the caller is an expensive operation, and is not garbage-free.
+xref:#converter-logger[The logger name converter] can generally be used as a zero-cost substitute.
+See xref:manual/layouts.adoc#LocationInformation[this section of the layouts page] for details.
+====
+
+[#converter-date]
+==== Date
+
+Outputs the date of the log event
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/DatePatternConverter.html[`DatePatternConverter`] specifier grammar
+[source,text]
+----
+d{pattern}
+date{pattern}
+----
+
+The date conversion specifier may be followed by a set of braces containing a date and time pattern string per https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html[`SimpleDateFormat`].
+The predefined _named_ formats are:
+
+[%header,cols="2m,3m"]
+|===
+|Pattern
+|Example output
+
+|%d\{DEFAULT}
+|2012-11-02 14:34:02,123
+
+|%d\{DEFAULT_MICROS}
+|2012-11-02 14:34:02,123456
+
+|%d\{DEFAULT_NANOS}
+|2012-11-02 14:34:02,123456789
+
+|%d\{ISO8601}
+|2012-11-02T14:34:02,781
+
+|%d\{ISO8601_BASIC}
+|20121102T143402,781
+
+|%d\{ISO8601_OFFSET_DATE_TIME_HH}
+|2012-11-02'T'14:34:02,781-07
+
+|%d\{ISO8601_OFFSET_DATE_TIME_HHMM}
+|2012-11-02'T'14:34:02,781-0700
+
+|%d\{ISO8601_OFFSET_DATE_TIME_HHCMM}
+|2012-11-02'T'14:34:02,781-07:00
+
+|%d\{ABSOLUTE}
+|14:34:02,781
+
+|%d\{ABSOLUTE_MICROS}
+|14:34:02,123456
+
+|%d\{ABSOLUTE_NANOS}
+|14:34:02,123456789
+
+|%d\{DATE}
+|02 Nov 2012 14:34:02,781
+
+|%d\{COMPACT}
+|20121102143402781
+
+|%d\{UNIX}
+|1351866842
+
+|%d\{UNIX_MILLIS}
+|1351866842781
+|===
+
+You can also use a set of braces containing a time zone id per https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)[`java.util.TimeZone#getTimeZone(String)`].
+If no date format specifier is given then the `DEFAULT` format is used.
+
+You can also define custom date formats, see following examples:
+
+[%header,cols="2m,3m"]
+|===
+|Pattern
+|Example output
+
+|%d{HH:mm:ss,SSS}
+|14:34:02,123
+
+|%d{HH:mm:ss,nnnn} to %d{HH:mm:ss,nnnnnnnnn}
+|14:34:02,1234 to 14:34:02,123456789
+
+|%d{dd MMM yyyy HH:mm:ss,SSS}
+|02 Nov 2012 14:34:02,123
+
+|%d{dd MMM yyyy HH:mm:ss,nnnn} to %d{dd MMM yyyy HH:mm:ss,nnnnnnnnn}
+|02 Nov 2012 14:34:02,1234 to 02 Nov 2012 14:34:02,123456789
+
+|%d{HH:mm:ss}{GMT+0}
+|18:34:02
+|===
+
+`%d\{UNIX}` outputs the UNIX time in seconds.
+`%d\{UNIX_MILLIS}` outputs the UNIX time in milliseconds.
+The `UNIX` time is the difference – in seconds for `UNIX` and in milliseconds for `UNIX_MILLIS` – between the current time and 1970-01-01 00:00:00 (UTC).
+While the time unit is milliseconds, the granularity depends on the platform.
+This is an efficient way to output the event time because only a conversion from `long` to `String` takes place, there is no `Date` formatting involved.
+
+There is also limited support for timestamps more precise than milliseconds when running on Java 9 or later.
+Note that not all https://docs.oracle.com/javase/9/docs/api/java/time/format/DateTimeFormatter.html[`DateTimeFormatter`] formats are supported.
+Only timestamps in the formats mentioned in the table above may use the _nano-of-second_ pattern letter `n` instead of the _fraction-of-second_ pattern letter `S`.
+
+Users may revert to a millisecond-precision clock when running on Java 9 by setting xref:manual/systemproperties.adoc#log4j2.clock[the `log4j2.clock` system property] to `SystemMillisClock`.
+
+[WARNING]
+====
+Only named date formats (`DEFAULT`, `ISO8601`, `UNIX`, `UNIX_MILLIS`, etc.) are garbage-free.
+====
+
+[#converter-encode]
+==== Encode
+
+Encodes and escapes special characters suitable for output in specific markup languages
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/EncodingPatternConverter.html[`EncodingPatternConverter`] specifier grammar
+[source,text]
+----
+enc{pattern}{[HTML|XML|JSON|CRLF]}
+encode{pattern}{[HTML|XML|JSON|CRLF]}
+----
+
+By default, this encodes for HTML if only one option is specified.
+The second option is used to specify which encoding format should be used.
+
+A typical usage would encode the message (i.e., `%enc{%m}`), but the input could come from other locations as well (e.g., from a xref:manual/thread-context.adoc[] entry: `%enc{%mdc\{key}}`).
+
+Using the HTML encoding format, the following characters are replaced:
+
+[%header,cols="2,4"]
+|===
+|Characters
+|Replacement
+
+|`\r` and `\n`
+|Converted into string literals `\r` and `\n`, respectively
+
+|`&<>"'/`
+|Replaced with the corresponding HTML entity
+|===
+
+Using the XML encoding format, this follows the escaping rules specified by https://www.w3.org/TR/xml/[the XML specification]:
+
+[%header,cols="2,4"]
+|===
+|Characters
+|Replacement
+
+|`&<>"'`
+|The corresponding XML entity
+|===
+
+Using the JSON encoding format, this follows the escaping rules specified by https://www.ietf.org/rfc/rfc4627.txt[RFC 4627 section 2.5]:
+
+[%header,cols="2,4"]
+|===
+|Characters
+|Replacement
+
+|`U+0000` - `U+001F`
+|`\u0000` - `\u001F`
+
+|Any other control characters
+|Encoded into its `\uABCD` equivalent escaped code point
+
+|`"`
+|`\"`
+
+|`\`
+|`\\`
+|===
+
+[WARNING]
+====
+If you are using JSON encoder in your conversion pattern, it is a strong indicator that you are trying to implement _structured logging_ using Pattern Layout – please, don't!
+*Use xref:manual/json-template-layout.adoc[] instead.*
+====
+
+Using the CRLF encoding format, the following characters are replaced:
+
+[%header,cols="2,4"]
+|===
+|Characters
+|Replacement
+
+|`\r` and `\n`
+|Converted into literal strings `\r` and `\n`, respectively
+|===
+
+[#converter-end-of-batch]
+==== End-of-batch
+
+Outputs the `EndOfBatch` status of the log event as `true` or `false`
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/EndOfBatchPatternConverter.html[`EndOfBatchPatternConverter`] specifier grammar
+[source,text]
+----
+endOfBatch
+----
+
+[#converter-equals]
+==== Equals
+
+Replaces occurrences of a string (`test`) with its replacement (`substitution`) in the string resulting from the evaluation of the pattern:
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/EqualsReplacementConverter.html[`EqualsReplacementConverter`] and link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/EqualsIgnoreCaseReplacementConverter.html[`EqualsReplacementConverter`] specifiers' grammar
+[source,text]
+----
+equals{pattern}{test}{substitution}
+equalsIgnoreCase{pattern}{test}{substitution}
+----
+
+For example, `%equals{[%marker]}{[]}\{}` will replace `[]` strings produced by events without markers with an empty string.
+
+The pattern can be arbitrarily complex and in particular can contain multiple conversion keywords.
+
+[#converter-exception]
+==== Exception
+
+Outputs the `Throwable` attached to the log event
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html[`ThrowablePatternConverter`] specifier grammar
+[source,text]
+----
+ex|exception|throwable
+  { "none"
+  | "full"
+  | depth
+  | "short"
+  | "short.className"
+  | "short.fileName"
+  | "short.lineNumber"
+  | "short.methodName"
+  | "short.message"
+  | "short.localizedMessage"
+  }
+  {filters(package,package,...)}
+  {suffix(pattern)}
+  {separator(separator)}
+----
+
+By default this will output the full trace as one would normally find with a call to `Throwable#printStackTrace()`.
+
+You can follow the throwable conversion word with an option in the form `%throwable\{option}`.
+
+`%throwable\{short}` outputs the first line of the `Throwable`.
+
+`%throwable{short.className}` outputs the name of the class where the exception occurred.
+
+`%throwable{short.methodName}` outputs the method name where the exception occurred.
+
+`%throwable{short.fileName}` outputs the name of the class where the exception occurred.
+
+`%throwable{short.lineNumber}` outputs the line number where the exception occurred.
+
+`%throwable{short.message}` outputs the message.
+
+`%throwable{short.localizedMessage}` outputs the localized message.
+
+`%throwable\{n}` outputs the first `n` lines of the stack trace.
+
+Specifying `%throwable\{none}` or `%throwable\{0}` suppresses output of the exception.
+
+Use `{filters(packages)}` where _packages_ is a list of package names to suppress matching stack frames from stack traces.
+
+Use `{suffix(pattern)}` to add the output of _pattern_ at the end of each stack frame.
+
+Use a `{separator(...)}` as the end-of-line string, e.g., `separator(\|)`.
+The default value is the `line.separator` system property, which is operating system dependent.
+
+[WARNING]
+====
+Exception converter is not garbage-free.
+====
+
+[#converter-exception-extended]
+==== Exception (Extended)
+
+The same as xref:#converter-exception[the `%throwable` conversion], but also includes class packaging information
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html[`ThrowablePatternConverter`] specifier grammar
+[source,text]
+----
+xEx|xException|xThrowable
+  { "none"
+  | "full"
+  | depth
+  | "short"
+  | "short.className"
+  | "short.fileName"
+  | "short.lineNumber"
+  | "short.methodName"
+  | "short.message"
+  | "short.localizedMessage"
+  }
+  {filters(package,package,...)}
+  {suffix(pattern)}
+  {separator(separator)}
+----
+
+Different from xref:#converter-exception[the `%throwable` conversion], at the end of each stack element of the exception, a string containing the name of the JAR file that contains the class or the directory the class is located in and the `Implementation-Version` as found in that JAR's manifest will be added.
+If the information is uncertain, then the class packaging data will be preceded by a `~` (tilde) character.
+
+[#converter-file]
+==== File
+
+Outputs the file name where the logging request was issued
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/FileLocationPatternConverter.html[`FileLocationPatternConverter`] specifier grammar
+[source,text]
+----
+F
+file
+----
+
+[WARNING]
+====
+Capturing the source location information to generate the file name of the caller is an expensive operation, and is not garbage-free.
+See xref:manual/layouts.adoc#LocationInformation[this section of the layouts page] for details.
+====
+
+[#converter-fqcn]
+==== FQCN
+
+Outputs the fully qualified class name of the logger
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/LoggerFqcnPatternConverter.html[`LoggerFqcnPatternConverter`] specifier grammar
+[source,text]
+----
+fqcn
+----
+
+[#converter-highlight]
+==== Highlight
+
+Adds ANSI colors to the result of the enclosed pattern based on the current event's xref:manual/customloglevels.adoc[logging level].
+Windows users should refer to xref:#jansi[].
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/HighlightConverter.html[`HighlightConverter`] specifier grammar
+[source,text]
+----
+highlight{pattern}{style}
+----
+
+The `style` parameter is a comma-separated list of the following directives:
+
+.Style parameter syntax
+[cols="1m,2"]
+|===
+| Directive | Description
+
+| <level>=<style_expression>
+| Formats all messages matching level `<level>` using the style provided by `<style_expression>`.
+See <<ansi-modifiers>> for the syntax of `<style_expression>`.
+
+| STYLE=default
+| Sets the default style, which is equivalent to the following sequence of directives:
+`FATAL=bold red, ERROR=bold red, WARN=yellow, INFO=green, DEBUG=cyan, TRACE=black`.
+
+| STYLE=logback
+| Applies the style used by
+https://logback.qos.ch/manual/layouts.html#coloring[Logback's `%highlight` converter],
+which is equivalent to the following sequence of directives:
+`FATAL=blink bold red, ERROR=bold red, WARN=red, INFO=blue, DEBUG=normal, TRACE=normal`.
+|===
+
+You can use the default colors with:
+
+[source,text]
+----
+%highlight{%d [%t] %-5level: %msg%n%throwable}
+----
+
+You can override the default colors in the optional `\{style}` option.
+For example:
+
+[source,text]
+----
+%highlight{%d [%t] %-5level: %msg%n%throwable}{FATAL=white, ERROR=red, WARN=blue, INFO=black, DEBUG=green, TRACE=magenta}
+----
+
+You can highlight only a portion of the log event:
+
+[source,text]
+----
+%d [%t] %highlight{%-5level: %msg%n%throwable}
+----
+
+You can style one part of the message and highlight the rest of the log event:
+
+[source,text]
+----
+%style{%d [%t]}{black} %highlight{%-5level: %msg%n%throwable}
+----
+
+You can also use the `STYLE` key to use a predefined group of colors:
+
+[source,text]
+----
+%highlight{%d [%t] %-5level: %msg%n%throwable}{STYLE=logback}
+----
+
+[#converter-level]
+==== Level
+
+Outputs the xref:manual/customloglevels.adoc[level] of the log event
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/LevelPatternConverter.html[`LevelPatternConverter`] specifier grammar
+[source,text]
+----
+p|level{level=label, level=label, ...}
+p|level{length=n}
+p|level{lowerCase=true|false}
+----
+
+You provide a level name map in the form `level=value, level=value`, where the level is the name of the `Level and value is the value that should be displayed instead of the name of the `Level`.
+For example:
+
+[source,text]
+----
+%level{WARN=Warning, DEBUG=Debug, ERROR=Error, TRACE=Trace, INFO=Info}
+----
+
+Alternatively, for the compact-minded:
+
+[source,text]
+----
+%level{WARN=W, DEBUG=D, ERROR=E, TRACE=T, INFO=I}
+----
+
+More succinctly, for the same result as above, you can define the length of the level label:
+
+[source,text]
+----
+%level{length=1}
+----
+
+If the length is greater than a level name length, the layout uses the normal level name.
+
+You can combine the two kinds of options:
+
+[source,text]
+----
+%level{ERROR=Error, length=2}
+----
+
+This gives you the `Error` level name and all other level names of length 2.
+
+Finally, you can output lower-case level names (the default is upper-case):
+
+[source,text]
+----
+%level{lowerCase=true}
+----
+
+[#converter-line]
+==== Line
+
+Outputs the line number from where the log request was issued
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/LineLocationPatternConverter.html[`LineLocationPatternConverter`] specifier grammar
+[source,text]
+----
+L
+line
+----
+
+[WARNING]
+====
+Capturing the source location information to generate the line number of the caller is an expensive operation, and is not garbage-free.
+See xref:manual/layouts.adoc#LocationInformation[this section of the layouts page] for details.
+====
+
+[#converter-location]
+==== Location
+
+Outputs location information of the caller which generates the logging event
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/LocationPatternConverter.html[`LocationPatternConverter`] specifier grammar
+[source,text]
+----
+l
+location
+----
+
+The location information depends on the JVM implementation, but it usually consists of the fully qualified name of the calling method followed by the callers' file name and line number.
+
+[WARNING]
+====
+Capturing the source location information of the caller is an expensive operation, and is not garbage-free.
+See xref:manual/layouts.adoc#LocationInformation[this section of the layouts page] for details.
+====
+
+[#converter-logger]
+==== Logger
+
+Outputs the name of the logger that published the log event
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/LoggerPatternConverter.html[`LoggerPatternConverter`] specifier grammar
+[source,text]
+----
+c{precision}
+logger{precision}
+----
+
+By default, the layout prints the logger name in full.
+
+A logger conversion specifier can be optionally followed by a _precision specifier_, which consists of a decimal integer, or a pattern starting with a decimal integer.
+
+* When the precision specifier is an integer value, it reduces the size of the logger name.
+If the number is positive, the layout prints the corresponding number of the rightmost logger name components.
+If negative, the layout removes the corresponding number of leftmost logger name components.
+* If the precision contains periods then the number before the first period identifies the length to be printed from items that precede tokens in the rest of the pattern.
+If the number after the first period is followed by an asterisk it indicates how many of the rightmost tokens will be printed in full.
+* If the precision contains any non-integer characters, then the layout abbreviates the name based on the pattern.
+If the precision integer is less than one, the layout still prints the right-most token in full.
+
+See the table below for abbreviation examples:
+
+[%header,cols="1m,3m,3m"]
+|===
+|Pattern
+|Logger name
+|Output
+
+|%c\{1}
+|org.apache.commons.Foo
+|Foo
+
+|%c\{2}
+|org.apache.commons.Foo
+|commons.Foo
+
+|%c\{10}
+|org.apache.commons.Foo
+|org.apache.commons.Foo
+
+|%c{-1}
+|org.apache.commons.Foo
+|apache.commons.Foo
+
+|%c{-2}
+|org.apache.commons.Foo
+|commons.Foo
+
+|%c{-10}
+|org.apache.commons.Foo
+|org.apache.commons.Foo
+
+|%c{1.}
+|org.apache.commons.Foo
+|o.a.c.Foo
+
+|%c{1.1.\~.~}
+|org.apache.commons.test.Foo
+|o.a.~.~.Foo
+
+|%c{.}
+|org.apache.commons.test.Foo
+|....Foo
+
+|%c{1.1.1.*}
+|org.apache.commons.test.Foo
+|o.a.c.test.Foo
+
+|%c{1.2.*}
+|org.apache.commons.test.Foo
+|o.a.c.test.Foo
+
+|%c{1.3.*}
+|org.apache.commons.test.Foo
+|o.a.commons.test.Foo
+
+|%c{1.8.*}
+|org.apache.commons.test.Foo
+|org.apache.commons.test.Foo
+|===
+
+[#converter-marker]
+==== Marker
+
+Outputs the marker, if one is present
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/MarkerPatternConverter.html[`MarkerPatternConverter`] and .link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/MarkerSimpleNamePatternConverter.html[`MarkerSimpleNamePatternConverter`] specifiers' grammar
+[source,text]
+----
+marker
+markerSimpleName
+----
+
+`marker` outputs the full name of the marker, including its parents.
+Whereas, `markerSimpleName` outputs the simple name of the marker without its parents.
+
+[#converter-map]
+==== Map
+
+Outputs the entries in a xref:manual/messages.adoc#MapMessage[`MapMessage`], if one is present in the event
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/MapPatternConverter.html[`MapPatternConverter`] specifier grammar
+[source,text]
+----
+K{key}
+map{key}
+MAP{key}
+----
+
+The `K` conversion character can be followed by the key for the map placed between braces, as in `%K\{clientNumber}`, where `clientNumber` is the key.
+The value of the map corresponding to the key will be output.
+If no additional sub-option is specified, then all map entries are output using a `{{key1,val1},{key2,val2}}` format.
+
+[#converter-max-len]
+==== Max. length
+
+Outputs the result of evaluating the given pattern and truncating the result
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/MaxLegthConverter.html[`MaxLengthConverter`] specifier grammar
+[source,text]
+----
+maxLen{pattern}{length}
+maxLength{pattern}{length}
+----
+
+If the length is greater than 20, then the output will contain a trailing ellipsis.
+If the provided length is invalid, a default value of 100 is used.
+
+For instance, `%maxLen{%p: %c\{1} - %m%notEmpty{ =>%ex\{short}}}\{160}` will be limited to 160 characters with a trailing ellipsis.
+`%maxLen{%m}\{20}` will be limited to 20 characters and no trailing ellipsis.
+
+[#converter-message]
+==== Message
+
+Outputs the message associated with the log event
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/MessagePatternConverter.html[`MessagePatternConverter`] specifier grammar
+[source,text]
+----
+m{lookups}{ansi}
+msg{lookups}{ansi}
+message{lookups}{ansi}
+----
+
+Add `\{ansi}` to render messages with ANSI escape codes.
+Windows users should refer to xref:#jansi[].
+
+The default syntax for embedded ANSI codes is:
+
+[source,text]
+----
+@\|code(,code)* text\|@
+----
+
+For example, to render the message `Hello` in green, use:
+
+[source,text]
+----
+@\|green Hello\|@
+----
+
+To render the message `Hello` in bold and red, use:
+
+[source,text]
+----
+@\|bold,red Warning!\|@
+----
+
+You can also define custom style names in the configuration with the syntax:
+
+[source,text]
+----
+%message{ansi}{StyleName=value(,value)*( StyleName=value(,value)*)*}%n
+----
+
+For example:
+
+[source,text]
+----
+%message{ansi}{WarningStyle=red,bold KeyStyle=white ValueStyle=blue}%n
+----
+
+The call site can look like this:
+
+[source,text]
+----
+logger.info("@\|KeyStyle {}\|@ = @\|ValueStyle {}\|@", entry.getKey(), entry.getValue());
+----
+
+[#converter-method]
+==== Method
+
+Outputs the method name where the logging request was issued
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/MethodLocationPatternConverter.html[`MethodLocationPatternConverter`] specifier grammar
+[source,text]
+----
+M
+method
+----
+
+[WARNING]
+====
+Capturing the source location information to generate the method name of the caller is an expensive operation, and is not garbage-free.
+See xref:manual/layouts.adoc#LocationInformation[this section of the layouts page] for details.
+====
+
+[#converter-nano]
+==== Nanoseconds
+
+Outputs the result of `System.nanoTime()` at the time the log event was created
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/NanoTimePatternConverter.html[`NanoTimePatternConverter`] specifier grammar
+[source,text]
+----
+N
+nano
+----
+
+[#converter-not-empty]
+==== Not empty
+
+Outputs the result of evaluating the pattern, if and only if all variables in the pattern are not empty
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/VariablesNotEmptyReplacementConverter.html[`VariablesNotEmptyReplacementConverter`] specifier grammar
+[source,text]
+----
+variablesNotEmpty{pattern}
+varsNotEmpty{pattern}
+notEmpty{pattern}
+----
+
+For example:
+
+[source,text]
+----
+%notEmpty{[%marker]}
+----
+
+[#converter-pid]
+==== Process ID
+
+Outputs the process ID, if supported by the underlying platform
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/ProcessIdPatternConverter.html[`ProcessIdPatternConverter`] specifier grammar
+[source,text]
+----
+pid{defaultValue}
+processId{defaultValue}
+----
+
+An optional `defaultValue` may be specified to be shown, if the platform does not support process IDs.
+
+[#converter-relative]
+==== Relative
+
+Outputs the number of milliseconds elapsed since the JVM was started until the creation of the log event
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/RelativeTimePatternConverter.html[`RelativeTimePatternConverter`] specifier grammar
+[source,text]
+----
+r
+relative
+----
+
+[#converter-repeat]
+==== Repeat
+
+Produces a string containing the requested number of instances of the specified string
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/RepeatPatternConverter.html[`RepeatPatternConverter`] specifier grammar
+[source,text]
+----
+R{string}{count}
+repeat{string}{count}
+----
+
+For example, `%repeat{\*}\{2}` will result in the string `**`.
+
+[#converter-replace]
+==== Replace
+
+Replaces occurrences of a regular expression (`regex`) with its replacement (`substitution`) in the string resulting from the evaluation of the pattern
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/RegexReplacementConverter.html[`RegexReplacementConverter`] specifier grammar
+[source,text]
+----
+replace{pattern}{regex}{substitution}
+----
+
+For example, `%replace{%msg}{\s}{}` will remove all spaces contained in the event message.
+
+The pattern can be arbitrarily complex and in particular, can contain multiple conversion keywords.
+For instance, `%replace{%logger %msg}{\.}{/}` will replace all dots in the logger or the message of the event with a forward slash.
+
+[#converter-rootException]
+==== Root exception
+
+The same as xref:#converter-exception[the `exception` converter], but the stack trace is printed starting with the first exception in the causal chain that was thrown followed by each subsequent wrapping exception
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/RootThrowablePatternConverter.html[`RootThrowablePatternConverter`] specifier grammar
+[source,text]
+----
+rEx|rException|rThrowable
+  {
+    ["none" | "short" | "full" | depth]
+    [,filters(package,package,...)]
+    [,separator(separator)]
+  }
+  {ansi(
+    Key=Value,Value,...
+    Key=Value,Value,...
+    ...)
+  }
+  {suffix(pattern)}
+----
+
+The throwable conversion specifier can be followed by an option in the form `%rEx\{short}`, which will only output the first line of the `Throwable`, or `%rEx\{n}`, where the first `n` lines of the stack trace will be printed.
+
+Specifying `%rEx\{none}` or `%rEx\{0}` will suppress printing of the exception.
+
+Use `filters(packages)`, where `packages` is a list of package names to suppress matching stack frames from stack traces.
+
+Use a `separator` string to separate the lines of a stack trace, e.g., `separator(|)`.
+The default value is the `line.separator` system property, which is platform dependent.
+
+Use `rEx{suffix(pattern)}` to add the output of `pattern` to the output only when there is a `Throwable` to print.
+
+[#converter-seq]
+==== Sequence number
+
+Includes a sequence number that will be incremented in every event
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/SequenceNumberPatternConverter.html[`SequenceNumberPatternConverter`] specifier grammar
+[source,text]
+----
+sn
+sequenceNumber
+----
+
+The counter is a static variable, so will only be unique within applications that share the same converter class object.
+
+[#converter-style]
+==== Style
+
+Use ANSI escape sequences to style the result of the enclosed pattern.
+The syntax of the `style_expression` parameter is described in <<ansi-modifiers>>.
+Windows users should also refer to xref:#jansi[].
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/StyleConverter.html[`StyleConverter`] specifier grammar
+[source,text]
+----
+style{pattern}{style_expression}
+----
+
+For example:
+
+[source,text]
+----
+%style{%d{ISO8601}}{black} %style{[%t]}{blue} %style{%-5level:}{yellow} %style{%msg%n%throwable}{green}
+----
+
+You can also combine styles:
+
+[source,text]
+----
+%d %highlight{%p} %style{%logger}{bold cyan} %C{1.} %msg%n
+----
+
+You can also use `%` with a color like `%black`, `%blue`, `%cyan`, and so on.
+For example:
+
+[source,text]
+----
+%black{%d{ISO8601}} %blue{[%t]} %yellow{%-5level:} %green{%msg%n%throwable}
+----
+
+[#converter-thread-context-stack]
+==== Thread context stack
+
+Outputs the xref:manual/thread-context.adoc[] stack (aka. Nested Diagnostic Context or NDC) associated with the thread that generated the log event
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/NdcPatternConverter.html[`NdcPatternConverter`] specifiers grammar
+[source,text]
+----
+x
+NDC
+----
+
+[#converter-thread-context-map]
+==== Thread context map
+
+Outputs the xref:manual/thread-context.adoc[] map (aka. Mapped Diagnostic Context or MDC) associated with the thread that generated the log event
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/MdcPatternConverter.html[`MdcPatternConverter`] specifiers grammar
+[source,text]
+----
+X{key[,key2...]}
+mdc{key[,key2...]}
+MDC{key[,key2...]}
+----
+
+The *X* conversion character can be followed by one or more keys for the map placed between braces, as in `%X\{clientNumber}`, where `clientNumber` is the key.
+The value in the MDC corresponding to the key will be output.
+
+If a list of keys is provided, such as `%X{name, number}`, then each key that is present in the thread context will be output using the format `{name=val1, number=val2}`.
+The key/value pairs will be printed in the order they appear in the list.
+
+If no sub-options are specified then the entire contents of the MDC key-value pair set is output using a format `{key1=val1, key2=val2}`.
+The key/value pairs will be printed in sorted order.
+
+[#converter-thread-id]
+==== Thread ID
+
+Outputs the ID of the thread that generated the log event
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/ThreadIdPatternConverter.html[`ThreadIdPatternConverter`] specifiers grammar
+[source,text]
+----
+T
+tid
+threadId
+----
+
+[#converter-thread-name]
+==== Thread name
+
+Outputs the name of the thread that generated the log event
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/ThreadNamePatternConverter.html[`ThreadNamePatternConverter`] specifier grammar
+[source,text]
+----
+t
+tn
+thread
+threadName
+----
+
+[#converter-thread-priority]
+==== Thread priority
+
+Outputs the priority of the thread that generated the log event
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/ThreadPriorityPatternConverter.html[`ThreadPriorityPatternConverter`] specifier grammar
+[source,text]
+----
+tp
+threadPriority
+----
+
+[#converter-uuid]
+==== UUID
+
+Includes either a random or a time-based UUID
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/UuidConverter.html[`UuidConverter`] specifier grammar
+[source,text]
+----
+u{RANDOM|TIME}
+uuid{RANDOM|TIME}
+----
+
+The time-based UUID is a Type 1 UUID generated using the MAC address of each host
+To ensure uniqueness across multiple JVMs and/or class loaders on the same host, a random number between 0 and 16,384 will be associated with each instance of the UUID generator class, and included in each time-based UUID generated.
+See also xref:manual/systemproperties.adoc#log4j2.uuidSequence[`log4j2.uuidSequence`].
+Because time-based UUIDs contain the MAC address and timestamp, they should be used with care.
+
+[#format-modifiers]
+=== Format modifiers
+
+By default, the relevant information is output as is.
+However, with the aid of format modifiers it is possible to change the minimum field width, the maximum field width, and justification.
+
+The optional format modifier is placed between the percent sign and the conversion character.
+
+The first optional format modifier is the _left justification flag_ which is just the `-` (minus) character.
+Then comes the optional _minimum field width_ modifier.
+This is a decimal constant that represents the minimum number of characters to output.
+If the data item requires fewer characters, it is padded on either the left or the right until the minimum width is reached.
+The default is to pad on the left (right justify), but you can specify right padding with the left justification flag.
+The padding character is space.
+If the data item is larger than the minimum field width, the field is expanded to accommodate the data.
+The value is never truncated.
+To use zeros as the padding character prepend the _minimum field width_ with a zero.
+
+This behavior can be changed using the _maximum field width_ modifier which is designated by a period followed by a decimal constant.
+If the data item is longer than the maximum field, then the extra characters are removed from the _beginning_ of the data item and not from the end.
+For example, if the maximum field width is eight and the data item is ten characters long, then the first two characters of the data item are dropped.
+This behavior deviates from the `String#format()`, where truncation is done from the end.
+
+Truncation from the end is possible by appending a minus character right after the period.
+In that case, if the maximum field width is eight and the data item is ten characters long, then the last two characters of the data item are dropped.
+
+Below are various format modifier examples for the category conversion specifier.
+
+[%header,cols="1m,1m,1m,1m,5"]
+|===
+|Pattern
+|Left justify
+|Min. width
+|Max. width
+|Comment
+
+|%20c
+|false
+|20
+|none
+|Left pad with spaces if the category name is
+less than 20 characters long.
+
+|%-20c
+|true
+|20
+|none
+|Right pad with spaces if the category name is
+less than 20 characters long.
+
+|%.30c
+|N/A
+|none
+|30
+|Truncate from the beginning if the category name is longer than 30 characters.
+
+|%20.30c
+|false
+|20
+|30
+|Left pad with spaces if the category name is
+shorter than 20 characters. However, if the category name is longer than 30
+characters, then truncate from the beginning.
+
+|%-20.30c
+|true
+|20
+|30
+|Right pad with spaces if the category name is
+shorter than 20 characters. However, if the category name is longer than 30
+characters, then truncate from the beginning.
+
+|%-20.-30c
+|true
+|20
+|30
+|Right pad with spaces if the category name is
+shorter than 20 characters. However, if the category name is longer than 30
+characters, then truncate from the end.
+|===
+
+[#ansi-modifiers]
+=== Style modifiers
+
+Pattern Layout supports styling your text using a variety of ANSI escape sequence, which can be used through the xref:#converter-highlight[`%highlight`] and xref:#converter-style[`%style`] pattern converters.
+
+The generic syntax of a style expression is a space-separated list of:
+
+* constants from the
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/AnsiEscape.html[`AnsiEscape`] class
+* or expressions of the form `#rrggbb` or `BG_#rrggbb`, were `r`, `g` and `b` are hexadecimal digits
+
+In EBNF form the syntax of a style expression is:
+
+[source,bnf]
+----
+<style_expression> ::= <style_expression> ( " " <style_expression> )*
+<style_modifier> ::= "#" <hex> <hex> <hex> <hex> <hex> <hex>
+                   | "bg_#" <hex> <hex> <hex> <hex> <hex> <hex>
+                   | <keyword>
+<hex> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7"
+        | "8" | "9" | "a" | "b" | "c" | "d" | "e" | "f"
+<keyword> ::= "normal" | "bold" | "dim" | "underline"
+            | "blink" | "reverse" | "hidden"
+            | "black" | "bg_black" | "bright_black" | "bg_bright_black"
+            | "red" | "bg_red" | "bright_red" | "bg_bright_red"
+            | "green" | "bg_green" | "bright_green" | "bg_bright_green"
+            | "yellow" | "bg_yellow" | "bright_yellow" | "bg_bright_yellow"
+            | "blue" | "bg_blue" | "bright_blue" | "bg_bright_blue"
+            | "magenta" | "bg_magenta" | "bright_magenta" | "bg_bright_magenta"
+            | "cyan" | "bg_cyan" | "bright_cyan" | "bg_bright_cyan"
+            | "white" | "bg_white" | "bright_white" | "bg_bright_white"
+----
+
+For example, you can use `underline blue bg_bright_yellow` to specify a blue underlined text on a bright yellow background.
+
+The style specifiers have the following effects (see https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_(Select_Graphic_Rendition)_parameters[Select Graphic Rendition] for details):
+
+`normal`:: Reverts all parameters to their default value
+`bold`:: Increases the font weight or the color intensity
+`dim`:: Decreases the fond weight or the color intensity
+`underline`:: Underlines the text on some terminals
+`blink`:: Causes the text to blink
+`reverse`:: Swaps foreground and background colors
+`hidden`:: Hides the text
+
+[#text-colors]
+==== Colors
+
+The color of the text or the background can be specified with the following style modifiers:
+
+.Color table (8 or 16 color terminals)
+[%header,cols="1m,1m,1"]
+|===
+| Text color
+| Background color
+| Visual
+
+3+h| {set:cellbgcolor:white}
+8 color terminals
+
+|
+black
+| bg_black
+| {set:cellbgcolor:black}
+
+| {set:cellbgcolor:white}
+red
+| bg_red
+| {set:cellbgcolor:maroon}
+
+| {set:cellbgcolor:white}
+green
+| bg_green
+| {set:cellbgcolor:green}
+
+| {set:cellbgcolor:white}
+yellow
+| bg_yellow
+| {set:cellbgcolor:olive}
+
+| {set:cellbgcolor:white}
+blue
+| bg_blue
+| {set:cellbgcolor:navy}
+
+| {set:cellbgcolor:white}
+magenta
+| bg_magenta
+| {set:cellbgcolor:purple}
+
+| {set:cellbgcolor:white}
+cyan
+| bg_cyan
+| {set:cellbgcolor:teal}
+
+| {set:cellbgcolor:white}
+white
+| bg_white
+| {set:cellbgcolor:silver}
+
+3+h| {set:cellbgcolor:white}
+16 color terminals
+
+|
+bright_black
+| bg_bright_black
+| {set:cellbgcolor:gray}
+
+| {set:cellbgcolor:white}
+bright_red
+| bg_bright_red
+| {set:cellbgcolor:red}
+
+| {set:cellbgcolor:white}
+bright_green
+| bg_bright_green
+|{set:cellbgcolor:lime}
+
+| {set:cellbgcolor:white}
+bright_yellow
+| bg_bright_yellow
+|{set:cellbgcolor:yellow}
+
+| {set:cellbgcolor:white}
+bright_blue
+| bg_bright_blue
+|{set:cellbgcolor:blue}
+
+| {set:cellbgcolor:white}
+bright_magenta
+| bg_bright_magenta
+|{set:cellbgcolor:fuchsia}
+
+| {set:cellbgcolor:white}
+bright_cyan
+| bg_bright_cyan
+|{set:cellbgcolor:cyan}
+
+| {set:cellbgcolor:white}
+bright_white
+| bg_bright_white
+|{set:cellbgcolor:white}
+|===
+
+If your terminal supports 24-bit colors, you can specify:
+
+* the text color using the `#rrggbb` syntax, e.g. `#dc143c` will color your text crimson,
+* the background color using the `bg_#rrggbb` syntax, e.g. `bg_#87ceeb` will use a sky blue background.
+
+[#jansi]
+==== ANSI styling on Windows
+
+ANSI escape sequences are supported natively on many platforms, but not by default on Windows.
+To enable ANSI support add the http://jansi.fusesource.org/[Jansi] dependency to your application, and set xref:manual/systemproperties.adoc#log4j2.skipJansi[the `log4j2.skipJansi` system property] to `false`.
+This allows Log4j to use Jansi to add ANSI escape codes when writing to the console.
+
+[NOTE]
+====
+Before Log4j 2.10, Jansi was enabled by default.
+The fact that Jansi requires native code means that Jansi can only be loaded by a single class loader.
+For web applications, this means the Jansi jar has to be in the web container's classpath.
+To avoid causing problems for web applications, Log4j no longer automatically tries to load Jansi without explicit configuration from Log4j 2.10 onward.
+====
+
+[#garbage-free]
+=== Garbage-free configuration
+
+Pattern Layout with the following limited set of conversion patterns is garbage-free.
+Format modifiers to control such things as field width, padding, left, and right justification will not generate garbage.
+
+[%header,cols="2m,2"]
+|===
+|Pattern
+|Comment
+
+|xref:#converter-logger[%c\{precision} +
+%logger\{precision}]
+|
+
+|xref:#converter-date[%d +
+%date]
+|Only the predefined date formats (`DEFAULT`, `ISO8601`, `UNIX`, `UNIX_MILLIS`, etc.) are garbage-free
+
+|xref:#converter-encode[%enc\{pattern} +
+%encode\{pattern}]
+|
+
+|xref:#converter-equals[%equals\{pattern}\{test}\{substitution} +
+%equalsIgnoreCase\{pattern}\{test}\{substitution}]
+|
+
+|xref:#converter-highlight[%highlight\{pattern}\{style}]
+|Granted nested pattern is garbage-free
+
+|xref:#converter-map[%K\{key} +
+%map\{key} +
+%MAP\{key}]
+|
+
+|xref:#converter-message[%m +
+%msg +
+%message]
+|
+
+|xref:#converter-marker[%marker]
+|
+
+|xref:#converter-marker[%markerSimpleName]
+|
+
+|xref:#converter-max-len[%maxLen +
+%maxLength]
+|
+
+|%n
+|
+
+|xref:#converter-nano[%N +
+%nano]
+|
+
+|xref:#converter-not-empty[%notEmpty\{pattern} +
+%varsNotEmpty\{pattern} +
+%variablesNotEmpty\{pattern}]
+|
+
+|xref:#converter-level[%p +
+%level]
+|
+
+|xref:#converter-relative[%r +
+%relative]
+|
+
+|xref:#converter-seq[%sn +
+%sequenceNumber]
+|
+
+|xref:#converter-style[%style\{pattern}{ANSI style}]
+|
+
+|xref:#converter-thread-id[%T +
+%tid +
+%threadId]
+|
+
+|xref:#converter-thread-name[%t +
+%tn +
+%thread +
+%threadName]
+|
+
+|xref:#converter-thread-priority[%tp]
+|
+
+|xref:#converter-thread-context-map[%X{key[,key2...\]} +
+%mdc{key[,key2...\]} +
+%MDC{key[,key2...\]}]
+|
+
+|literal text
+a|Garbage-free, but care is needed for xref:manual/lookups.adoc[].
+include::partial$manual/layouts-gcfree-lookup.adoc[]
+|===
+
+Patterns containing regular expressions and xref:manual/layouts.adoc#LocationInformation[location information] are not garbage-free.
+
+[#extending]
+== Extending
+
+Pattern Layout relies on xref:manual/plugins.adoc[the Log4j plugin system] to compose the features it provides.
+This makes it possible for users to extend the plugin-based feature set as they see fit.
+As of this moment, only xref:#extending-converters[extending pattern converters] is supported.
+Following sections cover how to extend these in detail.
+
+[NOTE]
+====
+While existing features should address most common use cases, you might find yourself needing to implement a custom one.
+If this is the case, we really appreciate it if you can *share your use case in a {logging-services-url}/support.html[user support channel]*.
+====
+
+[#extending-plugins]
+=== Plugin preliminaries
+
+include::partial$manual/plugin-preliminaries.adoc[]
+
+[#extending-converters]
+=== Pattern converters
+
+xref:manual/plugins.adoc[Plugins] implementing link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/PatternConverter.html[`PatternConverter`] are admitted to the *pattern converter* registry of Pattern Layout, and used to resolve the conversion specifiers.
+You can leverage this mechanism to introduce your custom pattern converters next to xref:#converters[the predefined ones].
+
+A `PatternConverter` must first declare itself as a xref:manual/plugins.adoc[plugin] using the standard `@Plugin` annotation, and the `@Namespace` annotation with the value `Converter`.
+Furthermore, the converter must also specify the `@ConverterKeys` annotation to define the conversion specifiers, which will preceded by a `%` character when used in a pattern.
+
+[IMPORTANT]
+====
+Unlike most other plugins, **pattern converters do not use a `@PluginFactory`**.
+Instead, each converter is required to provide a static `newInstance(String[])` factory method.
+The `String[]` argument denots the the values that are specified within the curly braces that following the conversion specifier.
+====
+
+Refer to following sources for simple examples:
+
+* {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/pattern/EndOfBatchPatternConverter.java[`EndOfBatchPatternConverter.java`]
+* {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/pattern/UuidPatternConverter.java[`UuidPatternConverter.java`]
+
+[#performance]
+== Performance
+
+Great effort has been put into the efficiency of Pattern Layout.
+To get the most out of it, mind the following checklist:
+
+* Enable xref:manual/garbagefree.adoc[garbage-free logging]
+* Mind xref:#garbage-free[the garbage footprint of features you use]
+* Don't give too much slack to xref:manual/systemproperties.adoc#log4j2.layoutStringBuilderMaxSize[`log4j2.layoutStringBuilderMaxSize`] and try to keep it relatively tight

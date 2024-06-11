@@ -15,24 +15,7 @@
     limitations under the License.
 ////
 
-[tabs]
-====
-Maven::
-+
-[source,xml,subs="+attributes"]
-----
-<dependency>
-  <groupId>com.fasterxml.jackson.dataformat</groupId>
-  <artifactId>jackson-dataformat-yaml</artifactId>
-  <version>{jackson-version}</version>
-  <scope>runtime</scope>
-</dependency>
-----
-
-Gradle::
-+
-[source,groovy,subs="+attributes"]
-----
-runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:{jackson-version}'
-----
-====
+Encoding the output of a lookup is garbage-free, but executing the lookup might not be.
+For instance, even though xref:manual/lookups.adoc#DateLookup[the `date` lookup] allocates a new `String` for each invocation, adding `${date:YYYY-MM-dd}` is garbage-free, because it will be expanded at configuration time, that is, only once.
+Whereas adding `$${date:YYYY-MM-dd}` is not, since it will be expanded for each log event.
+See xref:manual/configuration.adoc#property-substitution[property substitution] for details.

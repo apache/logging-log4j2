@@ -14,309 +14,440 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
+
 = Layouts
 
-An Appender uses a Layout to format a LogEvent into a form that meets the needs of whatever will be consuming the log event.
-In Log4j 1.x and Logback Layouts were expected to transform an event into a String.
-In Log4j 2 Layouts return a byte array.
-This allows the result of the Layout to be useful in many more types of Appenders.
-However, this means you need to configure most Layouts with a
-https://docs.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html[`Charset`]
-to ensure the byte array contains correct values.
+An xref:manual/appenders.adoc[appender] uses a *layout* to encode a link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html[`LogEvent`] into a form that meets the needs of whatever will be consuming the log event.
+This page will try to answer following questions:
 
-The root class for layouts that use a Charset is
-`org.apache.logging.log4j.core.layout.AbstractStringLayout` where the default is UTF-8. Each layout that extends `AbstractStringLayout` can provide its own default.
-See each layout below.
+* xref:#concerns[What are some common concerns shared by all predefined layouts?]
+* xref:#collection[Which layouts does Log4j provide?]
+* xref:#extending[How can you create custom layouts?]
 
-A custom character encoder was added to Log4j 2.4.1 for the ISO-8859-1 and US-ASCII charsets, to bring some of the performance improvements built-in to Java 8 to Log4j for use on Java 7. For applications that log only ISO-8859-1 characters, specifying this charset will improve performance significantly.
-
-[#common-concerns]
+[#concerns]
 == Common concerns
+
+This section introduces you to some common concerns shared by almost all xref:#collection[predefined layouts] that you need to be aware of while using them.
+
+[#charset]
+=== Character encoding
+
+All xref:#collection[predefined layouts] produce `String` that eventually get converted into a `byte[]` using the https://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html[`Charset`] configured.
+While doing so, unless an explicit encoding configuration is stated, they use `UTF-8` by default.
+If you want all your log events to be formatted in a certain character encoding that is different from what the employed layout defaults to, make sure to configure the layout's character encoding as needed.
 
 [#LocationInformation]
 === Location information
 
 include::partial$manual/layouts-location-information.adoc[]
 
-[#CSVLayouts]
-== CSV Layouts
+[#collection]
+== Collection
 
-As of Log4j 2.11.0, CSV support has moved from the existing module
-`log4j-core` to the new module `log4j-csv`.
+Log4j bundles predefined layouts to assist in several common deployment use cases.
+Let's start with shortcuts to most used ones:
 
-This layout creates
-https://en.wikipedia.org/wiki/Comma-separated_values[Comma Separated
-Value (CSV)] records and requires
-https://commons.apache.org/proper/commons-csv/[Apache Commons CSV] 1.4.
+* Are you looking for a production-grade *JSON layout ready to be deployed to a log ingestion system* such as Elasticsearch or Google Cloud?
+Refer to xref:manual/json-template-layout.adoc[].
 
-The CSV layout can be used in two ways: First, using
-`CsvParameterLayout` to log event parameters to create a custom database, usually to a logger and file appender uniquely configured for this purpose.
-Second, using `CsvLogEventLayout` to log events to create a database, as an alternative to using a full DBMS or using a JDBC driver that supports the CSV format.
+* Are you looking for a layout that encodes log events in a *human-readable format suitable for tests and local development*?
+Refer to xref:manual/pattern-layout.adoc[].
 
-The `CsvParameterLayout` converts an event's parameters into a CSV record, ignoring the message.
-To log CSV records, you can use the usual Logger methods `info()`, `debug()`, and so on:
+Following sections explain all predefined layouts in detail.
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Layout[📖 Plugin reference for all `Layout` implementations]
+
+[#csv-layouts]
+=== [[CSVLayouts]] CSV Layouts
+
+There are two layouts performing https://en.wikipedia.org/wiki/Comma-separated_values[Comma Separated Value (CSV)] encoding:
+
+[#csv-layout-parameter]
+==== CSV Parameter Layout
+
+`CsvParameterLayout` encodes *only* the parameters of the message of a log event.
+Generated CSV records will be composed of fields denoting the message parameters.
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-CsvParameterLayout[📖 Plugin reference for `CsvParameterLayout`]
+
+.Click here for examples
+[%collapsible]
+====
+Given the following statement
 
 [source,java]
 ----
-logger.info("Ignored", value1, value2, value3);
+LOGGER.info("Record1 {} {}", "arg1", "arg2");
+LOGGER.error("Record2 {} {} {}", "arg3", "arg4", "arg5", throwable);
 ----
 
-Which will create the CSV record:
+`CsvParameterLayout` will output
 
-....
-value1, value2, value3
-....
+[source,text]
+----
+arg1,arg2
+arg3,arg4,arg5
+----
 
-Alternatively, you can use an `ObjectArrayMessage`, which only carries parameters:
+The same can be achieved using link:../javadoc/log4j-api/org/apache/logging/log4j/message/ObjectArrayMessage.html[`ObjectArrayMessage`] as follows:
 
 [source,java]
 ----
-logger.info(new ObjectArrayMessage(value1, value2, value3));
+LOGGER.info(new ObjectArrayMessage("arg1", "arg2"));
+LOGGER.info(new ObjectArrayMessage("arg3", "arg4", "arg5"));
+----
+====
+
+[#csv-layout-log-event]
+==== CSV Log Event Layout
+
+`CsvLogEventLayout` encodes the complete log event, including the formatted message.
+Generated CSV records will be composed of following fields in the given order:
+
+. Time (in nanoseconds)
+. Time (in milliseconds)
+. Level
+. Thread ID
+. Thread name
+. Thread priority
+. Message (formatted, hence including parameters)
+. Logger FQCN
+. Logger name
+. Marker
+. Throwable
+. Source
+. Thread context map
+. Thread context stack
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-CsvLogEventLayout[📖 Plugin reference for `CsvLogEventLayout`]
+
+.Click here for examples
+[%collapsible]
+====
+Given the following statement
+
+[source,java]
+----
+LOGGER.debug("one={}, two={}, three={}", 1, 2, 3);
 ----
 
-The layouts `CsvParameterLayout` and `CsvLogEventLayout` are configured with the following parameters:
+`CsvLogEventLayout` will output
 
-.CsvParameterLayout and CsvLogEventLayout
-[cols="1m,1,4"]
+[source,text]
+----
+0,1441617184044,DEBUG,main,"one=1, two=2, three=3",org.apache.logging.log4j.spi.AbstractLogger,,,,org.apache.logging.log4j.core.layout.CsvLogEventLayoutTest.testLayout(CsvLogEventLayoutTest.java:98),{},[]
+----
+====
+
+[#csv-layout-config]
+==== Configuration
+
+Both `CsvParameterLayout` and `CsvLogEventLayout` are configured with the following parameters:
+
+[%header,cols="1m,1m,4"]
 |===
-|Parameter Name |Type |Description
+|Parameter
+|Type
+|Description
 
 |format
 |String
-|One of the predefined formats: `Default`, `Excel`,
-`MySQL`, `RFC4180`, `TDF`. See
-https://commons.apache.org/proper/commons-csv/archives/1.4/apidocs/org/apache/commons/csv/CSVFormat.Predefined.html[CSVFormat.Predefined].
+|A predefined format name (`Default`, `Excel`, `MySQL`, `RFC4180`, `TDF`, etc.) accepted by https://commons.apache.org/proper/commons-csv/apidocs/org/apache/commons/csv/CSVFormat.html[`CSVFormat`]
 
 |delimiter
 |Character
-|Sets the delimiter of the format to the specified character.
+|The field delimiter character
 
 |escape
 |Character
-|Sets the escape character of the format to the specified character.
+|The escape character
 
 |quote
 |Character
-|Sets the quoteChar of the format to the specified
-character.
+|The quote character
 
 |quoteMode
 |String
-|Sets the output quote policy of the format to the
-specified value. One of: `ALL`, `MINIMAL`, `NON_NUMERIC`, `NONE`.
+|A quote mode name (`ALL`, `ALL_NONE_NULL`, `MINIMAL`, `NON_NUMERIC`, `NONE`, etc.) accepted by https://commons.apache.org/proper/commons-csv/apidocs/org/apache/commons/csv/QuoteMode.html[`QuoteMode`]
 
 |nullString
 |String
-|Writes null as the given nullString when writing records.
+|The string to denote `null` values
 
 |recordSeparator
 |String
-|Sets the record separator of the format to the specified String.
+|The record separator string
 
 |charset
 |Charset
-|The output Charset.
+|The character encoding
 
 |header
-|Sets the header to include when the stream is opened.
-|Desc.
+|String
+|The header to include when the stream is opened
 
 |footer
-|Sets the footer to include when the stream is closed.
-|Desc.
+|String
+|The footer to include when the stream is closed
 |===
 
-Logging as a CSV event looks like this:
+Additional runtime dependencies are required for using CSV layouts:
 
-[source,java]
+[tabs]
+====
+Maven::
++
+[source,xml,subs="+attributes"]
 ----
-logger.debug("one={}, two={}, three={}", 1, 2, 3);
+<dependency>
+  <groupId>org.apache.commons</groupId>
+  <artifactId>commons-csv</artifactId>
+  <version>{commons-csv-version}</version>
+  <scope>runtime</scope>
+</dependency>
 ----
 
-Produces a CSV record with the following fields:
-
-1. Time Nanos
-2. Time Millis
-3. Level
-4. Thread ID
-5. Thread Name
-6. Thread Priority
-7. Formatted Message
-8. Logger FQCN
-9. Logger Name
-10. Marker
-11. Thrown Proxy
-12. Source
-13. Context Map
-14. Context Stack
-
-....
-0,1441617184044,DEBUG,main,"one=1, two=2, three=3",org.apache.logging.log4j.spi.AbstractLogger,,,,org.apache.logging.log4j.core.layout.CsvLogEventLayoutTest.testLayout(CsvLogEventLayoutTest.java:98),{},[]
-....
-
-.Additional runtime dependencies are required for using CSV layouts
-[%collapsible,id=log4j-csv-deps]
-=====
-include::partial$manual/dependencies-log4j-csv.adoc[]
-=====
+Gradle::
++
+[source,groovy,subs="+attributes"]
+----
+runtimeOnly 'org.apache.commons:commons-csv:{commons-csv-version}'
+----
+====
 
 [#GELFLayout]
-== GELF Layout
+=== GELF Layout
 
-Encodes log events in https://go2docs.graylog.org/current/getting_in_log_data/gelf.html#GELFPayloadSpecification[the GELF specification] version `1.1`.
-Compresses JSON to GZIP or ZLIB (`compressionType`) if log event data is larger than 1024 bytes (`compressionThreshold`).
+`GelfLayout` encodes log events in https://go2docs.graylog.org/current/getting_in_log_data/gelf.html#GELFPayloadSpecification[the GELF specification] version `1.1`.
+It can compress the output when it exceeds a certain threshold.
 This layout does not implement chunking.
 
-[TIP]
+[WARNING]
 ====
-Unless compression is needed, we advise you to use xref:manual/json-template-layout.adoc[JSON Template Layout] instead, which provides GELF layout support out of the box and offers a far richer set of features.
+*This layout is planned to be removed in the next major release!*
+Unless compression is needed, we advise you to use xref:manual/json-template-layout.adoc[JSON Template Layout] instead, which provides GELF Layout support out of the box and offers more capabilities and performance.
 ====
 
-Configure as follows to send to a Graylog 2.x server with UDP:
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-GelfLayout[📖 Plugin reference for `GelfLayout`]
 
-[source,xml]
-----
-<Appenders>
-  <Socket name="Graylog" protocol="udp" host="graylog.domain.com" port="12201">
-    <GelfLayout host="someserver" compressionType="ZLIB" compressionThreshold="1024"/>
-  </Socket>
-</Appenders>
-----
+GELF Layout is configured with the following parameters:
 
-Configure as follows to send to a Graylog 2.x server with TCP:
-
-[source,xml]
-----
-<Appenders>
-  <Socket name="Graylog" protocol="tcp" host="graylog.domain.com" port="12201">
-    <GelfLayout host="someserver" compressionType="OFF" includeNullDelimiter="true"/>
-  </Socket>
-</Appenders>
-----
-
-[options="header"]
+[%header,cols="1m,1m,4"]
 |===
-| Parameter Name         | Type                                     | Description
-| host                   | String                                   | The value of the `host` property (optional, defaults to local host name).
-| compressionType        | `GZIP`, `ZLIB` or `OFF`                  | Compression to use (optional, defaults to `GZIP`).
-| compressionThreshold   | int                                      | Compress if data is larger than this number of bytes (optional, defaults to 1024).
-| includeMapMessage      | boolean                                  | Whether to include fields from MapMessages as additional fields (optional, default to true).
-| includeNullDelimiter   | boolean                                  | Whether to include NULL byte as delimiter after each event (optional, default to false). Useful for Graylog GELF TCP input. Cannot be used with compression.
-| includeStacktrace      | boolean                                  | Whether to include full stacktrace of logged Throwables (optional, default to true). If set to false, only the class name and message of the Throwable will be included.
-| includeThreadContext   | boolean                                  | Whether to include thread context as additional fields (optional, default to true).
-| mapMessageExcludes     | String                                   | A comma separated list of attributes from the MapMessage to exclude when formatting the event. This attribute only applies when includeMapMessage="true" is specified. If mapMessageIncludes are also specified this attribute will be ignored.
-| mapMessageIncludes     | String                                   | A comma separated list of attributes from the MapMessage to include when formatting the event. This attribute only applies when includeMapMessage="true" is specified. If mapMessageExcludes are also specified this attribute will override them. MapMessage fields specified here that have no value will be omitted.
-| mapPrefix              | String                                   | A String to prepend to all elements of the MapMessage when rendered as a field. Defaults to an empty String.
-| messagePattern         | String                                   | The pattern to use to format the String. A messagePattern and patternSelector cannot both be specified. If both are present the message pattern will be ignored and an error will be logged. If not supplied only the text derived from the logging message will be used. See PatternLayout for information on the pattern strings.
-| omitEmptyFields        | boolean                                  | If true fields which are null or are zero-length strings will not be included as a field in the Gelf JSON. This setting will not affect whether those fields appear in the message fields. The default value is false.
-| patternSelector        | PatternSelector                          | The PatternSelector to use to format the String. A messagePattern and patternSelector cannot both be specified. If both are present the message pattern will be ignored and an error will be logged. If not supplied only the text derived from the logging message will be used. See PatternSelectors for information on how to specify a PatternSelector. See PatternLayout for information on the pattern strings.
-| threadContextExcludes  | String                                   | A comma separated list of ThreadContext attributes to exclude when formatting the event. This attribute only applies when includeThreadContext="true" is specified. If threadContextIncludes are also specified this attribute will be ignored.
-| threadContextIncludes  | String                                   | A comma separated list of ThreadContext attributes to include when formatting the event. This attribute only applies when includeThreadContext="true" is specified. If threadContextExcludes are also specified this attribute will override them. ThreadContext fields specified here that have no value will be omitted.
-| ThreadContextPrefix    | String                                   | A String to prepend to all elements of the ThreadContextMap when rendered as a field. Defaults to an empty String.
+|Parameter
+|Type
+|Description
+
+|additionalFields
+|link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/KeyValuePair.html[KeyValuePair[\]]
+|link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/KeyValuePair.html[`KeyValuePair`] elements denoting additional entries.
+Entry values can contain xref:manual/lookups.adoc[] using `${` syntax.
+
+|compressionThreshold
+|int
+|Triggers compression if the output is larger than this number of bytes (optional, defaults to 1024)
+
+|compressionType
+|String
+|The compression to use.
+It is optional, and defaults to `GZIP`.
+Accepted values are `GZIP`, `ZLIB`, or `OFF`.
+
+|host
+|String
+|The value of the `host` property (optional, defaults to the local host name)
+
+|includeMapMessage
+|boolean
+|Whether to include fields from xref:manual/messages.adoc#MapMessage[`MapMessage`]s as additional fields (optional, defaults to `true`)
+
+|includeNullDelimiter
+|boolean
+|Whether to include `NULL` byte as delimiter after each event.
+Optional and defaults to `false`.
+Useful for Graylog GELF TCP input.
+Cannot be used with compression.
+
+|includeStacktrace
+|boolean
+|Whether to include full stacktrace of logged ``Throwable``s.
+Optional and defaults to `true`.
+If set to `false`, only the class name and message of the `Throwable` will be included.
+
+|includeThreadContext
+|boolean
+|Whether to include thread context as additional fields (optional, defaults to `true`)
+
+|mapMessageExcludes
+|String
+|A comma separated list of attributes from the xref:manual/messages.adoc#MapMessage[`MapMessage`] to exclude when formatting the event.
+This attribute only applies when `includeMapMessage` is `true`.
+If `mapMessageIncludes` are also specified, this attribute will be ignored.
+
+|mapMessageIncludes
+|String
+|A comma separated list of attributes from the xref:manual/messages.adoc#MapMessage[`MapMessage`] to include when formatting the event.
+This attribute only applies when `includeMapMessage` is `true`.
+If `mapMessageExcludes` are also specified, this attribute will override them.
+`MapMessage` fields specified here that have no value will be omitted.
+
+|mapPrefix
+|String
+|A string to prepend to all elements of the xref:manual/messages.adoc#MapMessage[`MapMessage`] when rendered as a field (optional, defaults to an empty string)
+
+|[[GELFLayout-messagePattern]] messagePattern
+|String
+|The pattern to use to format the `String`.
+A `messagePattern` and xref:#GELFLayout-patternSelector[`patternSelector`] cannot both be specified.
+If both are present, the message pattern will be ignored and an error will be logged.
+If not supplied, only the text derived from the log message will be used.
+See xref:manual/pattern-layout.adoc[] for information on the pattern strings.
+
+|omitEmptyFields
+|boolean
+|If `true`, fields which are null or are zero-length strings will not be included as a field in the produced JSON.
+This setting will not affect if those fields appear in the message fields.
+The default value is `false`.
+
+|[[GELFLayout-patternSelector]] patternSelector
+|xref:manual/pattern-layout.adoc#plugin-element-PatternSelector[PatternSelector]
+|The `PatternSelector` to use to format the `String`.
+A xref:#GELFLayout-messagePattern[`messagePattern`] and `patternSelector` cannot both be specified.
+If both are present, the message pattern will be ignored and an error will be logged.
+If not supplied, only the text derived from the logging message will be used.
+See xref:manual/pattern-layout.adoc#plugin-element-PatternSelector[`PatternSelector`] for information on how to specify a `PatternSelector`.
+See xref:manual/pattern-layout.adoc[] for information on the pattern strings.
+
+|threadContextExcludes
+|String
+|A comma separated list of xref:manual/thread-context.adoc[] map keys to exclude when formatting the event.
+This attribute only applies when `includeThreadContext` is `true`.
+If `threadContextIncludes` are also specified, this attribute will be ignored.
+
+|threadContextIncludes
+|String
+|A comma separated list of xref:manual/thread-context.adoc[] map keys to include when formatting the event.
+This attribute only applies when `includeThreadContext` is `true`.
+If `threadContextExcludes` are also, specified this attribute will override them.
+Thread context fields specified here that have no value will be omitted.
+
+|threadContextPrefix
+|String
+|A string to prepend to all elements of the xref:manual/thread-context.adoc[] map when rendered as a field (defaults to an empty string)
 |===
 
-To include any custom field in the output, use following syntax:
+GELF Layout is garbage-free if `compressionType` is `OFF` and there are no additional fields containing `${`.
 
+.Example configurations
+[%collapsible]
+====
+[tabs]
+=====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/gelf-layout/log4j2.xml[`log4j2.xml`]
 [source,xml]
 ----
-<GelfLayout includeThreadContext="true" threadContextIncludes="loginId,requestId">
-    <MessagePattern>%d %5p [%t] %c{1} %X{loginId, requestId} - %m%n</MessagePattern>
-    <KeyValuePair key="additionalField1" value="constant value"/>
-    <KeyValuePair key="additionalField2" value="$${ctx:key}"/>
-</GelfLayout>
+include::example$manual/gelf-layout/log4j2.xml[lines=26..41,indent=0]
 ----
 
-Custom fields are included in the order they are declared.
-The values support xref:manual/lookups.adoc[lookups].
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/gelf-layout/log4j2.json[`log4j2.json`]
+[source,json]
+----
+include::example$manual/gelf-layout/log4j2.json[lines=5..48,indent=0]
+----
 
-GELF Layout is garbage-free when used with `compressionType="OFF"` and as long as no additional field contains `${` (variable substitution).
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/gelf-layout/log4j2.yaml[`log4j2.yaml`]
+[source,xml]
+----
+include::example$manual/gelf-layout/log4j2.yaml[lines=21..53,indent=0]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/gelf-layout/log4j2.properties[`log4j2.properties`]
+[source,xml]
+----
+include::example$manual/gelf-layout/log4j2.properties[lines=17..48,indent=0]
+----
+=====
+<1> Configuration with additional key value pairs
+<2> Configuration for appending to a Graylog server using TCP
+<3> Configuration for appending to a Graylog server using UDP
+====
 
 [#HTMLLayout]
-== HTML Layout
+=== HTML Layout
 
-The HtmlLayout generates an HTML page and adds each LogEvent to a row in a table.
+`HtmlLayout` generates an HTML page, and adds each log event to a row in a table.
 
-.HtmlLayout Parameters
-[cols="1m,1,4"]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-HtmlLayout[📖 Plugin reference for `HtmlLayout`]
+
+It is configured with the following parameters:
+
+[%header,cols="1m,1m,4"]
 |===
-|Parameter Name |Type |Description
+|Parameter
+|Type
+|Description
 
 |charset
 |String
-|The character set to use when converting the HTML
-String to a byte array. The value must be a valid
-http://docs.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html[Charset].
-If not specified, this layout uses UTF-8.
+|The character encoding
 
 |contentType
 |String
-|The value to assign to the Content-Type header.
-The default is "text/html".
-
-|locationInfo
-|boolean
-a|[[HtmlLocationInfo]]
-
-If true, the filename and line number will be included in the HTML
-output. The default value is false.
-
-Generating link:#LocationInformation[location information] is an
-expensive operation and may impact performance. Use with caution.
-
-|title
-|String
-|A String that will appear as the HTML title.
-
-|fontName
-|String
-|The `font-family` to use. The default is "arial,sans-serif".
-
-|fontSize
-|String
-|The `font size` to use. The default is "small".
+|The `Content-Type` header value (defaults to `text/html`)
 
 |datePattern
 |String
-|The date format of the logging event. The default is "JVM_ELAPSE_TIME", which outputs the milliseconds since JVM started. For other valid values, refer to the link:#PatternDate[date pattern] of PatternLayout.
+|The date format of the log event.
+The default is `JVM_ELAPSE_TIME`, which outputs the milliseconds since JVM started.
+For other valid values, refer to xref:manual/pattern-layout.adoc#converter-date[the `date` conversion specifier of Pattern Layout].
+
+|fontName
+|String
+|The `font-family` (defaults to `arial,sans-serif`)
+
+|fontSize
+|String
+|The `font size` (defaults to `small`)
+
+|locationInfo
+|boolean
+|If `true`, the xref:#LocationInformation[source location information] be included (defaults to `false`)
 
 |timezone
 |String
-|The timezone id of the logging event. If not specified, this layout uses the https://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html#getDefault()[java.util.TimeZone.getDefault] as the default timezone. Like link:#PatternDate[date pattern] of PatternLayout, you can use the timezone id from
-https://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)[java.util.TimeZone.getTimeZone].
+|The time zone ID of the log event.
+If not specified, this layout uses the https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html#getDefault()[`TimeZone.getDefault()`] as the default.
+You can use time zone IDs supported by https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)[`TimeZone.getTimeZone(String)`].
 
+|title
+|String
+|The HTML page title
 |===
 
-Configure as follows to use `dataPattern` and timezone in `HtmlLayout`:
-
-[source,xml]
-----
-<Appenders>
-  <Console name="console">
-    <HtmlLayout datePattern="ISO8601" timezone="GMT+0"/>
-  </Console>
-</Appenders>
-----
-
 [[JSONLayout]]
-== JSON Layout
+=== JSON Layout
+
+`JsonLayout` encodes a log event into JSON.
 
 [WARNING]
 ====
 JSON Layout is considered deprecated.
-xref:#JSONTemplateLayout[] provides more capabilities and should be used instead.
+It is succeeded by xref:#JSONTemplateLayout[] providing more capabilities and efficiency.
 ====
 
-Appends a series of JSON events as strings serialized as bytes.
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-JsonLayout[📖 Plugin reference for `JsonLayout`]
 
-=== Complete well-formed JSON vs. fragment JSON
-
-If you configure `complete="true"`, the appender outputs a well-formed JSON document.
-By default, with `complete="false"`, you should include the output as an _external file_ in a separate file to form a well-formed JSON document.
-
-If `complete="false"`, the appender does not write the JSON open array character "[" at the start of the document, "]" at the end, nor comma "," between records.
-
-Log event follows this pattern:
-
+.Click for an example output
+[%collapsible]
+====
 [source,json]
 ----
 {
@@ -374,1760 +505,406 @@ Log event follows this pattern:
   }
 }
 ----
+====
 
-=== Pretty vs. compact JSON
+JSON Layout is configured with the following parameters:
 
-The compact attribute determines whether the output will be "pretty" or not.
-The default value is "false", which means the appender uses end-of-line characters and indent lines to format the text.
-If `compact="true"`, then no end-of-line or indentation is used, which will cause the output to take less space.
-Of course, the message content may contain, escaped end-of-lines.
-
-[options="header"]
+[%header,cols="1m,1m,4"]
 |===
-| Parameter Name            | Type      | Description
-| charset                   | String    | The character set to use when converting to a byte array. The value must be a valid `Charset`. If not specified, UTF-8 will be used.
-| compact                   | boolean   | If true, the appender does not use end-of-lines and indentation. Defaults to false.
-| eventEol                  | boolean   | If true, the appender appends an end-of-line after each record. Defaults to false. Use with eventEol=true and compact=true to get one record per line.
-| endOfLine                 | String    | If set, overrides the default end-of-line string. E.g., set it to "\n" and use with eventEol=true and compact=true to have one record per line separated by "\n" instead of "\r\n". Defaults to null (i.e., not set).
-| complete                  | boolean   | If true, the appender includes the JSON header and footer, and comma between records. Defaults to false.
-| properties                | boolean   | If true, the appender includes the thread context map in the generated JSON. Defaults to false.
-| propertiesAsList          | boolean   | If true, the thread context map is included as a list of map entry objects, where each entry has a "key" attribute (whose value is the key) and a "value" attribute (whose value is the value). Defaults to false, in which case the thread context map is included as a simple map of key-value pairs.
-| locationInfo              | boolean   | If true, the appender includes the location information in the generated JSON. Defaults to false. Generating location information is an expensive operation and may impact performance. Use with caution.
-| includeStacktrace         | boolean   | If true, include full stacktrace of any logged Throwable (optional, default to true).
-| includeTimeMillis         | boolean   | If true, the timeMillis attribute is included in the Json payload instead of the instant. timeMillis will contain the number of milliseconds since midnight, January 1, 1970 UTC.
-| stacktraceAsString        | boolean   | Whether to format the stacktrace as a string, and not a nested object (optional, defaults to false).
-| includeNullDelimiter      | boolean   | Whether to include NULL byte as delimiter after each event (optional, default to false).
-| objectMessageAsJsonObject | boolean   | If true, ObjectMessage is serialized as JSON object to the "message" field of the output log. Defaults to false.
-|===
+|Parameter Name
+|Type
+|Description
 
-To include any custom field in the output, use the following syntax:
-
-[source,xml]
-----
-<JsonLayout>
-  <KeyValuePair key="additionalField1" value="constant value"/>
-  <KeyValuePair key="additionalField2" value="$${ctx:key}"/>
-</JsonLayout>
-----
-
-Custom fields are always last, in the order they are declared.
-The values support xref:manual/lookups.adoc[lookups].
-
-.Additional runtime dependencies are required for using `JsonLayout`
-[%collapsible,id=log4j-layout-json-deps]
-=====
-include::partial$manual/dependencies-log4j-layout-json.adoc[]
-=====
-
-[#JSONTemplateLayout]
-== JSON Template Layout
-
-`JsonTemplateLayout` is a customizable, efficient, and garbage-free JSON-emitting layout.
-It encodes ``LogEvent``s according to the structure described by the JSON template provided.
-For instance, given the following JSON template modelling https://github.com/logstash/log4j-jsonevent-layout[the official
-Logstash `JSONEventLayoutV1`]
-
-[source,json]
-----
-{
-  "mdc": {
-    "$resolver": "mdc"
-  },
-  "exception": {
-    "exception_class": {
-      "$resolver": "exception",
-      "field": "className"
-    },
-    "exception_message": {
-      "$resolver": "exception",
-      "field": "message"
-    },
-    "stacktrace": {
-      "$resolver": "exception",
-      "field": "stackTrace",
-      "stackTrace": {
-        "stringified": true
-      }
-    }
-  },
-  "line_number": {
-    "$resolver": "source",
-    "field": "lineNumber"
-  },
-  "class": {
-    "$resolver": "source",
-    "field": "className"
-  },
-  "@version": 1,
-  "source_host": "${hostName}",
-  "message": {
-    "$resolver": "message",
-    "stringified": true
-  },
-  "thread_name": {
-    "$resolver": "thread",
-    "field": "name"
-  },
-  "@timestamp": {
-    "$resolver": "timestamp"
-  },
-  "level": {
-    "$resolver": "level",
-    "field": "name"
-  },
-  "file": {
-    "$resolver": "source",
-    "field": "fileName"
-  },
-  "method": {
-    "$resolver": "source",
-    "field": "methodName"
-  },
-  "logger_name": {
-    "$resolver": "logger",
-    "field": "name"
-  }
-}
-----
-
-in combination with the below Log4j configuration:
-
-[source,xml]
-----
-<JsonTemplateLayout eventTemplateUri="classpath:LogstashJsonEventLayoutV1.json"/>
-----
-
-JSON Template Layout will render JSON documents as follows:
-
-[source,json]
-----
-{
-  "exception": {
-    "exception_class": "java.lang.RuntimeException",
-    "exception_message": "test",
-    "stacktrace": "java.lang.RuntimeException: test\n\tat org.apache.logging.log4j.JsonTemplateLayoutDemo.main(JsonTemplateLayoutDemo.java:11)\n"
-  },
-  "line_number": 12,
-  "class": "org.apache.logging.log4j.JsonTemplateLayoutDemo",
-  "@version": 1,
-  "source_host": "varlik",
-  "message": "Hello, error!",
-  "thread_name": "main",
-  "@timestamp": "2017-05-25T19:56:23.370+02:00",
-  "level": "ERROR",
-  "file": "JsonTemplateLayoutDemo.java",
-  "method": "main",
-  "logger_name": "org.apache.logging.log4j.JsonTemplateLayoutDemo"
-}
-----
-
-.Additional runtime dependencies are required for using JSON Template Layout
-[%collapsible,id=log4j-layout-template-json-deps]
-=====
-include::partial$manual/dependencies-log4j-layout-template-json.adoc[]
-=====
-
-See xref:manual/json-template-layout.adoc[JSON Template Layout] page for the complete documentation.
-
-[id=pattern-layout]
-== [[PatternLayout]] Pattern Layout
-
-A flexible layout is configurable with a pattern string.
-The goal of this class is to format a LogEvent and return the results.
-The format of the result depends on the _conversion pattern_.
-
-The conversion pattern is closely related to the conversion pattern of the `printf()` function in C. A conversion pattern is composed of literal text and format control expressions called _conversion specifiers_.
-
-_Note that any literal text, including *Special Characters*, may be included in the conversion pattern._ Special Characters include *\t*,
-*\n*, *\r*, *\f*.
-Use *\\* to insert a single backslash into the output.
-
-Each conversion specifier starts with a percent sign (%) and is followed by optional _format modifiers_ and a _conversion character_.
-The conversion character specifies the type of data, e.g. category, priority, date, thread name.
-The format modifiers control such things as field width, padding, and left and right justification.
-The following is a simple example.
-
-Let the conversion pattern be *"%-5p [%t]: %m%n"* and assume that the Log4j environment was set to use a PatternLayout.
-Then the statements
-
-....
-Logger logger = LogManager.getLogger("MyLogger");
-logger.debug("Message 1");
-logger.warn("Message 2");
-....
-
-would yield the output
-
-....
-DEBUG [main]: Message 1
-WARN  [main]: Message 2
-....
-
-Note that there is no explicit separator between text and conversion specifiers.
-The pattern parser knows when it has reached the end of a conversion specifier when it reads a conversion character.
-In the example above the conversion specifier `%-5p` means the priority of the logging event should be left justified to a width of five characters.
-
-If the pattern string does not contain a specifier to handle a Throwable being logged, parsing of the pattern will act as if the `%xEx` specifier had been added to the end of the string.
-To suppress the formatting of the Throwable completely simply add `%ex\{0}` as a specifier in the pattern string.
-
-.PatternLayout Parameters
-[cols="1m,1,4"]
-|===
-|Parameter Name |Type |Description
+|additionalFields
+|link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/KeyValuePair.html[KeyValuePair[\]]
+|link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/KeyValuePair.html[`KeyValuePair`] elements denoting additional entries.
+Entry values can contain xref:manual/lookups.adoc[] using `${` syntax.
 
 |charset
 |String
-|The character set to use when converting the syslog
-String to a byte array. The String must be a valid
-http://docs.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html[Charset].
-If not specified, this layout uses the platform default character set.
+|The character encoding (defaults to `UTF-8`)
 
-|pattern
-|String
-|A composite pattern string of one or more conversion
-patterns from the table below. Cannot be specified with a
-PatternSelector.
-
-|patternSelector
-|PatternSelector
-|A component that analyzes information
-in the LogEvent and determines which pattern should be used to format
-the event. The pattern and patternSelector parameters are mutually
-exclusive.
-
-|replace
-|RegexReplacement
-|Allows portions of the resulting String to
-be replaced. If configured, the replace element must specify the regular
-expression to match and the substitution. This performs a function
-similar to the RegexReplacement converter but applies to the whole
-message while the converter only applies to the String its pattern
-generates.
-
-|alwaysWriteExceptions
+|compact
 |boolean
-|If `true` (it is by default) exceptions
-are always written even if the pattern contains no exception
-conversions. This means that if you do not include a way to output
-exceptions in your pattern, the default exception formatter will be
-added to the end of the pattern. Setting this to `false` disables this
-behavior and allows you to exclude exceptions from your pattern output.
+|If `true`, does not use `endOfLine` and indentation.
+This feature is also referred to as _pretty-printing_ too.
+It defaults to `false`.
 
-|header
+|complete
+|boolean
+|
+If `true`, uses `header` and `footer`, and places comma between records – this leads to a well-formed JSON document given `header` and `footer` defaults to `[` and `]`, respectively.
+It defaults to `false`.
+
+|endOfLine
 |String
-|The optional header string to include at the top of
-each log file.
+|If set, overrides the default end-of-line string.
+For instance, set it to `\n` and use with `eventEol=true` and `compact=true` to have one record per line separated by `\n` instead of `\r\n`.
+It is not set by default.
+
+|eventEol
+|boolean
+|If `true`, appends an `endOfLine` after each log event, even if `compact=true`.
+It defaults to `false`.
+Use with `eventEol=true` and `compact=true` to get one record per line.
 
 |footer
 |String
-|The optional footer string to include at the bottom of
-each log file.
+|The footer to include when the stream is closed and `complete=true` (defaults to `]`)
 
-|disableAnsi
-|boolean
-|If `true` (default is false), do not output ANSI
-escape codes.
-
-|noConsoleNoAnsi
-|boolean
-|If `true` (default is false) and
-`System.console()` is null, do not output ANSI escape codes.
-|===
-
-.RegexReplacement Parameters
-|===
-|Parameter Name |Type |Description
-
-|regex
+|header
 |String
-|A Java-compliant regular expression to match the resulting string. See
-https://docs.oracle.com/javase/6/docs/api/java/util/regex/Pattern.html[Pattern].
+|The header to include when the stream is opened and `complete=true` (defaults to `[`)
 
-|replacement
-|String
-|The string to replace any matched sub-strings with.
+|includeNullDelimiter
+|boolean
+|If `true`, a NULL byte will suffix each encoded log event (defaults to `false`)
+
+|includeStacktrace
+|boolean
+|If `true`, include full stacktrace of any logged `Throwable` (defaults to `true`)
+
+|includeTimeMillis
+|boolean
+|If `true`, a `timeMillis` attribute is included in the JSON payload instead of the `instant`.
+`timeMillis` will contain the number of milliseconds since 1970-01-01T00:00:00Z.
+
+|locationInfo
+|boolean
+|If `true`, the appender includes the xref:#LocationInformation[source location information] in the generated JSON (defaults to `false`)
+
+|objectMessageAsJsonObject
+|boolean
+|If `true`, xref:manual/messages.adoc#ObjectMessage[`ObjectMessage`] is serialized as JSON object to the `message` field of the output log (defaults to `false`)
+
+|properties
+|boolean
+|If `true`, the appender includes the xref:manual/thread-context.adoc[] map in the generated JSON (defaults to `false`)
+
+|propertiesAsList
+|boolean
+|If `true`, the xref:manual/thread-context.adoc[] map is included as a list of map entry objects, where each entry is denoted as a JSON object containg `key` and `value` fields.
+It defaults to `false`, in which case the thread context map is included as a simple map of key-value pairs.
+
+|stacktraceAsString
+|boolean
+|If `true`, the stacktrace will be formatted as `String`, and not a nested object (optional, defaults to `false`)
 |===
 
-[#Patterns]
-=== Patterns
-
-The conversions that are provided with Log4j are:
-
-[cols="1m,3a"]
-|===
-|Conversion Pattern |Description
-
-|*c*\{precision} +
-*logger*\{precision}
-|Outputs the name of the logger that published the logging event. The
-logger conversion specifier can be optionally followed by _precision
-specifier_, which consists of a decimal integer, or a pattern starting
-with a decimal integer.
-
-When the precision specifier is an integer value, it reduces the size of
-the logger name. If the number is positive, the layout prints the
-corresponding number of the rightmost logger name components. If negative,
-the layout removes the corresponding number of leftmost logger name
-components. If the precision contains periods then the number before the first period
-identifies the length to be printed from items that precede tokens in the rest of the pattern.
-If the number after the first period is followed by an asterisk it indicates how many of the
-rightmost tokens will be printed in full. See the table below for abbreviation examples.
-
-If the precision contains any non-integer characters, then the layout
-abbreviates the name based on the pattern. If the precision integer is
-less than one, the layout still prints the right-most token in full. By
-default, the layout prints the logger name in full.
-
-!===
-!Conversion Pattern !Logger Name !Result
-
-!%c\{1}
-!org.apache.commons.Foo
-!Foo
-
-!%c\{2}
-!org.apache.commons.Foo
-!commons.Foo
-
-!%c\{10}
-!org.apache.commons.Foo
-!org.apache.commons.Foo
-
-!%c{-1}
-!org.apache.commons.Foo
-!apache.commons.Foo
-
-!%c{-2}
-!org.apache.commons.Foo
-!commons.Foo
-
-!%c{-10}
-!org.apache.commons.Foo
-!org.apache.commons.Foo
-
-!%c{1.}
-!org.apache.commons.Foo
-!o.a.c.Foo
-
-!%c{1.1.\~.~}
-!org.apache.commons.test.Foo
-!o.a.~.~.Foo
-
-!%c{.}
-!org.apache.commons.test.Foo
-!....Foo
-
-!%c{1.1.1.*}
-!org.apache.commons.test.Foo
-!o.a.c.test.Foo
-
-!%c{1.2.*}
-!org.apache.commons.test.Foo
-!o.a.c.test.Foo
-
-!%c{1.3.*}
-!org.apache.commons.test.Foo
-!o.a.commons.test.Foo
-
-!%c{1.8.*}
-!org.apache.commons.test.Foo
-!org.apache.commons.test.Foo
-
-!===
-
-|[[PatternClass]] *C*\{precision} +
-*class*\{precision}
-|Outputs the fully qualified class name of the caller issuing the logging
-request. This conversion specifier can be optionally followed by
-_precision specifier_, that follows the same rules as the logger name
-converter.
-
-Generating the class name of the caller
-(link:#LocationInformation[location information]) is an expensive
-operation and may impact performance. Use with caution.
-
-|[[PatternDate]] *d*\{pattern} +
-*date*\{pattern}
-|Outputs the date of the logging event. The date conversion specifier may
-be followed by a set of braces containing a date and time pattern string per
-https://docs.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html[`SimpleDateFormat`].
-
-The predefined _named_ formats are:
-
-[cols=",",options="header",]
-!===
-!Pattern !Example
-
-!%d\{DEFAULT}
-!2012-11-02 14:34:02,123
-
-!%d\{DEFAULT_MICROS}
-!2012-11-02 14:34:02,123456
-
-!%d\{DEFAULT_NANOS}
-!2012-11-02 14:34:02,123456789
-
-!%d\{ISO8601}
-!2012-11-02T14:34:02,781
-
-!%d\{ISO8601_BASIC}
-!20121102T143402,781
-
-!%d\{ISO8601_OFFSET_DATE_TIME_HH}
-!2012-11-02'T'14:34:02,781-07
-
-!%d\{ISO8601_OFFSET_DATE_TIME_HHMM}
-!2012-11-02'T'14:34:02,781-0700
-
-!%d\{ISO8601_OFFSET_DATE_TIME_HHCMM}
-!2012-11-02'T'14:34:02,781-07:00
-
-!%d\{ABSOLUTE}
-!14:34:02,781
-
-!%d\{ABSOLUTE_MICROS}
-!14:34:02,123456
-
-!%d\{ABSOLUTE_NANOS}
-!14:34:02,123456789
-
-!%d\{DATE}
-!02 Nov 2012 14:34:02,781
-
-!%d\{COMPACT}
-!20121102143402781
-
-!%d\{UNIX}
-!1351866842
-
-!%d\{UNIX_MILLIS}
-!1351866842781
-!===
-
-You can also use a set of braces containing a time zone id per
-https://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)[java.util.TimeZone.getTimeZone].
-If no date format specifier is given then the DEFAULT format is used.
-
-You can define custom date formats:
-
-[cols=",",options="header",]
-!===
-!Pattern !Example
-
-!%d{HH:mm:ss,SSS}
-!14:34:02,123
-
-!%d{HH:mm:ss,nnnn} to %d{HH:mm:ss,nnnnnnnnn}
-!14:34:02,1234 to 14:34:02,123456789
-
-!%d{dd MMM yyyy HH:mm:ss,SSS}
-!02 Nov 2012 14:34:02,123
-
-!%d{dd MMM yyyy HH:mm:ss,nnnn} to %d{dd MMM yyyy HH:mm:ss,nnnnnnnnn}
-!02 Nov 2012 14:34:02,1234 to 02 Nov 2012 14:34:02,123456789
-
-!%d{HH:mm:ss}{GMT+0}
-!18:34:02
-!===
-
-`%d\{UNIX}` outputs the UNIX time in seconds. `%d\{UNIX_MILLIS}` outputs the
-UNIX time in milliseconds. The UNIX time is the difference, in seconds
-for UNIX and milliseconds for UNIX_MILLIS, between the current time
-and midnight, January 1, 1970 UTC. While the time unit is milliseconds,
-the granularity depends on the operating system
-(http://msdn.microsoft.com/en-us/windows/hardware/gg463266.aspx[Windows]).
-This is an efficient way to output the event time because only a
-conversion from long to String takes place, there is no Date formatting
-involved.
-
-Log4j 2.11 adds limited support for timestamps more precise than
-milliseconds when running on Java 9. Note that not all
-https://docs.oracle.com/javase/9/docs/api/java/time/format/DateTimeFormatter.html[DateTimeFormatter]
-formats are supported. Only timestamps in the formats mentioned in the table
-above may use the "nano-of-second" pattern letter `n` instead of
-the "fraction-of-second" pattern letter `S`.
-
-Users may revert to a millisecond-precision clock when running on
-Java 9 by setting system property `log4j2.Clock` to `SystemMillisClock`.
-
-|*enc*\{pattern}{[HTML\|XML\|JSON\|CRLF]} +
-*encode*\{pattern}{[HTML\|XML\|JSON\|CRLF]}
-|Encodes and escapes special characters suitable for output in specific
-markup languages. By default, this encodes for HTML if only one option
-is specified. The second option is used to specify which encoding format
-should be used. This converter is particularly useful for encoding user-provided
-data so that the output data is not written improperly or insecurely.
-
-A typical usage would encode the message `%enc{%m}` but user input could
-come from other locations as well, such as the MDC `%enc{%mdc\{key}}`
-
-Using the HTML encoding format, the following characters are replaced:
-
-!===
-!Character !Replacement
-
-!'\r', '\n'
-!Converted into string literals "\r" and "\n" respectively
-
-!&, <, >, ", ', /
-!Replaced with the corresponding HTML entity
-!===
-
-Using the XML encoding format, this follows the escaping rules specified
-by https://www.w3.org/TR/xml/[the XML specification]:
-
-!===
-!Character !Replacement
-
-!&, <, >, ", '
-!Replaced with the corresponding XML entity
-!===
-
-Using the JSON encoding format, this follows the escaping rules
-specified by https://www.ietf.org/rfc/rfc4627.txt[RFC 4627 section 2.5]:
-
-!===
-!Character !Replacement
-
-!U+0000 - U+001F
-!\u0000 - \u001F
-
-!Any other control characters
-!Encoded into its `\uABCD` equivalent escaped code point
-
-!"
-!\"
-
-!\
-!\\
-!===
-
-For example, the pattern `{"message": "%enc{%m}\{JSON}"}` could be used
-to output a valid JSON document containing the log message as a string
-value.
-
-Using the CRLF encoding format, the following characters are replaced:
-
-!===
-!Character !Replacement
-
-!'\r', '\n'
-!Converted into literal strings "\r" and "\n" respectively
-!===
-
-|*equals*\{pattern}\{test}\{substitution} +
-*equalsIgnoreCase*\{pattern}\{test}\{substitution}
-|Replaces occurrences of 'test', a string, with its replacement
-'substitution' in the string resulting from the evaluation of the pattern.
-For example, "%equals{[%marker]}{[]}\{}" will replace '[]' strings
-produced by events without markers with an empty string.
-
-The pattern can be arbitrarily complex and in particular can contain
-multiple conversion keywords.
-
-|**ex**\|**exception**\|*throwable* +
-{ +
-  [ "none" +
-   \| "full" +
-   \| depth +
-   \| "short" +
-   \| "short.className" +
-   \| "short.fileName" +
-   \| "short.lineNumber" +
-   \| "short.methodName" +
-   \| "short.message" +
-   \| "short.localizedMessage"] +
-} +
-  {filters(package,package,...)} +
-  {suffix(_pattern_)} +
-  {separator(_separator_)}
-|Outputs the Throwable trace bound to the logging event, by default this
-will output the full trace as one would normally find with a call to
-`Throwable.printStackTrace()`.
-
-You can follow the throwable conversion word with an option in the form
-`%throwable\{option}`.
-
-`%throwable\{short}` outputs the first line of the Throwable.
-
-`%throwable{short.className}` outputs the name of the class where the
-exception occurred.
-
-`%throwable{short.methodName}` outputs the method name where the
-exception occurred.
-
-`%throwable{short.fileName}` outputs the name of the class where the
-exception occurred.
-
-`%throwable{short.lineNumber}` outputs the line number where the
-exception occurred.
-
-`%throwable{short.message}` outputs the message.
-
-`%throwable{short.localizedMessage}` outputs the localized message.
-
-`%throwable\{n}` outputs the first n lines of the stack trace.
-
-Specifying `%throwable\{none}` or `%throwable\{0}` suppresses output of
-the exception.
-
-Use `{filters(packages)}` where _packages_ is a list of package names to
-suppress matching stack frames from stack traces.
-
-Use `{suffix(pattern)}` to add the output of _pattern_ at the end of
-each stack frame.
-
-Use a `{separator(...)}` as the end-of-line string. For example:
-`separator(\|)`. The default value is the `line.separator` system
-property, which is operating system dependent.
-
-|[[PatternFile]] *F* +
-*file*
-|Outputs the file name where the logging request was issued.
-
-Generating the file information (link:#LocationInformation[location
-information]) is an expensive operation and may impact performance. Use
-with caution.
-
-|*highlight*\{pattern}\{style}
-|Adds ANSI colors to the result of the enclosed pattern based on the
-current event's logging level. (See Jansi link:#enable-jansi[configuration].)
-
-The default colors for each level are:
-
-!===
-!Level !ANSI color
-
-!FATAL
-!Bright red
-
-!ERROR
-!Bright red
-
-!WARN
-!Yellow
-
-!INFO
-!Green
-
-!DEBUG
-!Cyan
-
-!TRACE
-!Black (looks dark grey)
-!===
-
-The color names are ANSI names defined in the
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/AnsiEscape.html[`AnsiEscape`]
-class.
-
-The color and attribute names are standard, but the exact shade, hue, or value.
-
-.Color table
-!===
-!Intensity Code !0 !1 !2 !3 !4 !5 !6 !7
-
-!Normal !Black !Red !Green !Yellow !Blue !Magenta !Cyan !White
-
-!Bright !Black !Red !Green !Yellow !Blue !Magenta !Cyan !White
-!===
-
-You can use the default colors with:
-
-....
-%highlight{%d [%t] %-5level: %msg%n%throwable}
-....
-
-You can override the default colors in the optional `\{style}` option. For
-example:
-
-....
-%highlight{%d [%t] %-5level: %msg%n%throwable}{FATAL=white, ERROR=red, WARN=blue, INFO=black, DEBUG=green, TRACE=blue}
-....
-
-You can highlight only the portion of the log event:
-
-....
-%d [%t] %highlight{%-5level: %msg%n%throwable}
-....
-
-You can style one part of the message and highlight the rest of the log event:
-
-....
-%style{%d [%t]}{black} %highlight{%-5level: %msg%n%throwable}
-....
-
-You can also use the STYLE key to use a predefined group of colors:
-
-....
-%highlight{%d [%t] %-5level: %msg%n%throwable}{STYLE=Logback}
-....
-
-The STYLE value can be one of:
-
-* Default: see above
-* Logback:
-!===
-!Level !ANSI color
-
-!FATAL !Blinking bright red
-
-!ERROR !Bright red
-
-!WARN !Red
-
-!INFO !Blue
-
-!DEBUG !Normal
-
-!TRACE !Normal
-!===
-
-|[[PatternMap]] *K*\{key} +
-*map*\{key} +
-*MAP*\{key}
-|Outputs the entries in a
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html[MapMessage],
-if one is present in the event. The `K` conversion character can be
-followed by the key for the map placed between braces, as in
-`%K\{clientNumber}` where `clientNumber` is the key. The value of the Map
-corresponding to the key will be output. If no additional sub-option
-is specified, then the entire contents of the Map key-value pair set is
-output using a format {{key1,val1},{key2,val2}}
-
-|[[PatternLocation]] *l* +
-*location*
-|Outputs location information of the caller which generates the logging event.
-
-The location information depends on the JVM implementation but it usually
-consists of the fully qualified name of the calling method followed by
-the callers source the file name and line number between parentheses.
-
-Generating link:#LocationInformation[location information] is an
-expensive operation and may impact performance. Use with caution.
-
-|[[PatternLine]] *L* +
-*line*
-|Outputs the line number from where the logging request was issued.
-
-Generating line number information (link:#LocationInformation[location
-information]) is an expensive operation and may impact performance. Use
-with caution.
-
-|[[PatternMessage]] *m*\{lookups}\{ansi} +
-*msg*\{lookups}\{ansi} +
-*message\{lookups}\{ansi}
-|Outputs the application-supplied message associated with the logging
-event.
-
-Add `\{ansi}` to render messages with ANSI escape codes (requires JAnsi,
-see link:#enable-jansi[configuration].)
-
-The default syntax for embedded ANSI codes is:
-
-....
-@\|code(,code)* text\|@
-....
-
-For example, to render the message `"Hello"` in green, use:
-
-....
-@\|green Hello\|@
-....
-
-To render the message `"Hello"` in bold and red, use:
-
-....
-@\|bold,red Warning!\|@
-....
-
-You can also define custom style names in the configuration with the
-syntax:
-
-....
-%message{ansi}{StyleName=value(,value)*( StyleName=value(,value)*)*}%n
-....
-
-For example:
-
-....
-%message{ansi}{WarningStyle=red,bold KeyStyle=white ValueStyle=blue}%n
-....
-
-The call site can look like this:
-
-....
-logger.info("@\|KeyStyle {}\|@ = @\|ValueStyle {}\|@", entry.getKey(), entry.getValue());
-....
-
-Use `\{lookups}` to log messages like `"${date:YYYY-MM-dd}"` using lookups.
-using any lookups. This will replace the date template `{date:YYYY-MM-dd}`
-with an actual date. This can be confusing in many cases, and it's often both easier and
-more obvious to handle the lookup in code.
-This feature is disabled by default and the message string is logged untouched.
-
-*Note:* Users are *STRONGLY* discouraged from using the lookups option. Doing so may allow uncontrolled user input
-containing lookups to take unintended actions. In almost all cases the software developer can accomplish the same tasks
-lookups perform directly in the application code.
-
-|[[PatternMethod]] *M* +
-*method*
-|Outputs the method name where the logging request was issued.
-
-Generating the method name of the caller
-(link:#LocationInformation[location information]) is an expensive
-operation and may impact performance. Use with caution.
-
-|[[PatternMarker]] *marker*
-|The full name of the marker, including parents, if one is present.
-
-|[[PatternMarkerSimpleName]] *markerSimpleName*
-|The simple name of the marker (not including parents), if one is present.
-
-|[[PatternMaxLength]] *maxLen* +
-*maxLength*
-|Outputs the result of evaluating the pattern and truncating the result.
-If the length is greater than 20, then the output will contain a
-trailing ellipsis. If the provided length is invalid, a default value of
-100 is used.
-
-Example syntax: `%maxLen{%p: %c\{1} - %m%notEmpty{ =>%ex\{short}}}\{160}`
-will be limited to 160 characters with a trailing ellipsis. Another
-example: `%maxLen{%m}\{20}` will be limited to 20 characters and no
-trailing ellipsis.
-
-|[[PatternNewLine]] *n*
-|Outputs the platform-dependent line separator character or characters.
-
-This conversion character offers practically the same performance as
-using non-portable line separator strings such as "\n", or "\r\n". Thus,
-it is the preferred way of specifying a line separator.
-
-|[[NanoTime]] *N* +
-*nano*
-|Outputs the result of `System.nanoTime()` at the time the log event was created.
-
-|[[Process_ID]] *pid*{[defaultValue]} +
-*processId*{[defaultValue]}
-|Outputs the process ID if supported by the
-underlying platform. An optional default value may be specified to be
-shown if the platform does not support process IDs.
-
-|[[VariablesNotEmpty]] *variablesNotEmpty*\{pattern} +
-*varsNotEmpty*\{pattern} +
-*notEmpty*\{pattern}
-|Outputs the result of evaluating the pattern if and only if all
-variables in the pattern are not empty.
-
-For example:
-
-....
-%notEmpty{[%marker]}
-....
-
-|[[PatternLevel]] **p**\|*level*{__level__=_label_, __level__=_label_,
-...} **p**\|*level*{length=_n_}
-**p**\|*level*{lowerCase=__true__\|_false_}
-|Outputs the level of the logging event. You provide a level name map in
-the form "level=value, level=value" where the level is the name of the Level
-and value is the value that should be displayed instead of the name of
-the Level.
-
-For example:
-
-....
-%level{WARN=Warning, DEBUG=Debug, ERROR=Error, TRACE=Trace, INFO=Info}
-....
-
-Alternatively, for the compact-minded:
-
-....
-%level{WARN=W, DEBUG=D, ERROR=E, TRACE=T, INFO=I}
-....
-
-More succinctly, for the same result as above, you can define the length
-of the level label:
-
-....
-%level{length=1}
-....
-
-If the length is greater than a level name length, the layout uses the
-normal level name.
-
-You can combine the two kinds of options:
-
-....
-%level{ERROR=Error, length=2}
-....
-
-This gives you the `Error` level name and all other level names of length
-2.
-
-Finally, you can output lower-case level names (the default is upper-case):
-
-....
-%level{lowerCase=true}
-....
-
-|[[PatternRelative]] *r* +
-*relative*
-|Outputs the number of milliseconds elapsed since the JVM was
-started until the creation of the logging event.
-
-|[[PatternRepeat]] *R*\{string}\{count} +
-*repeat*\{string}\{count}
-|Produces a string containing the requested number of instances of the specified string.
-For example, "%repeat{\*}\{2}" will result in the string "**".
-
-|[[PatternReplace]] *replace*\{pattern}\{regex}\{substitution}
-|Replaces occurrences of 'regex', a regular expression, with its
-replacement 'substitution' in the string resulting from the evaluation of
-the pattern. For example, "%replace{%msg}{\s}\{}" will remove all
-spaces contained in the event message.
-
-The pattern can be arbitrarily complex and in particular, can contain
-multiple conversion keywords. For instance, "%replace{%logger
-%msg}{\.}{/}" will replace all dots in the logger or the message of
-the event with a forward slash.
-
-|[[PatternException]] **rEx**\|**rException**\|*rThrowable* +
-  { +
-    ["none" \| "short" \| "full" \| depth] +
-    [,filters(package,package,...)] +
-    [,separator(_separator_)] +
-  } +
-  {ansi( +
-    Key=Value,Value,... +
-    Key=Value,Value,... +
-    ...) +
-  } +
-  {suffix(_pattern_)} +
-|The same as the %throwable conversion word but the stack trace is
-printed starting with the first exception that was thrown followed by
-each subsequent wrapping exception.
-
-The throwable conversion word can be followed by an option in the form
-`%rEx\{short}` which will only output the first line of the Throwable or
-`%rEx\{n}` where the first n lines of the stack trace will be printed.
-
-Specifying `%rEx\{none}` or `%rEx\{0}` will suppress printing of the
-exception.
-
-Use `filters(packages)` where _packages_ is a list of package names to
-suppress matching stack frames from stack traces.
-
-Use a `separator` string to separate the lines of a stack trace. For
-example: `separator(\|)`. The default value is the `line.separator`
-system property, which is operating system dependent.
-
-Use `rEx{suffix(pattern)` to add the output of _pattern_ to the output
-only when there is a throwable to print.
-
-|[[PatternSequenceNumber]] *sn* +
-*sequenceNumber*
-|Includes a sequence number that will be incremented in
-every event. The counter is a static variable so will only be unique
-within applications that share the same converter Class object.
-
-|[[PatternStyle]] *style*\{pattern}{ANSI style}
-|Uses ANSI escape sequences to style the result of the enclosed pattern.
-The style can consist of a comma-separated list of style names from the
-following table. (See Jansi link:#enable-jansi[configuration].)
-
-!===
-!Style Name !Description
-
-!Normal
-!Normal display
-
-!Bright
-!Bold
-
-!Dim
-!Dimmed or faint characters
-
-!Underline
-!Underlined characters
-
-!Blink
-!Blinking characters
-
-!Reverse
-!Reverse video
-
-!Hidden
-!
-
-!Black or FG_Black
-!Set the foreground color to black
-
-!Red or FG_Red
-!Set the foreground color to red
-
-!Green or FG_Green
-!Set the foreground color to green
-
-!Yellow or FG_Yellow
-!Set the foreground color to yellow
-
-!Blue or FG_Blue
-!Set the foreground color to blue
-
-!Magenta or FG_Magenta
-!Set the foreground color to magenta
-
-!Cyan or FG_Cyan
-!Set the foreground color to cyan
-
-!White or FG_White
-!Set the foreground color to white
-
-!Default or FG_Default
-!Set the foreground color to default (white)
-
-!BG_Black
-!Set the background color to black
-
-!BG_Red
-!Set the background color to red
-
-!BG_Green
-!Set the background color to green
-
-!BG_Yellow
-!Set the background color to yellow
-
-!BG_Blue
-!Set the background color to blue
-
-!BG_Magenta
-!Set the background color to magenta
-
-!BG_Cyan
-!Set the background color to cyan
-
-!BG_White
-!Set the background color to white
-!===
-
-For example:
-
-....
-%style{%d{ISO8601}}{black} %style{[%t]}{blue} %style{%-5level:}{yellow} %style{%msg%n%throwable}{green}
-....
-
-You can also combine styles:
-
-....
-%d %highlight{%p} %style{%logger}{bright,cyan} %C{1.} %msg%n
-....
-
-You can also use `%` with a color like `%black`, `%blue`, `%cyan`, and
-so on. For example:
-
-....
-%black{%d{ISO8601}} %blue{[%t]} %yellow{%-5level:} %green{%msg%n%throwable}
-....
-
-|[[PatternThreadId]] *T* +
-*tid* +
-*threadId*
-|Outputs the ID of the thread that generated the logging event.
-
-|[[PatternThreadName]] *t* +
-*tn* +
-*thread* +
-*threadName*
-|Outputs the name of the thread that generated the logging event.
-
-|[[PatternThreadPriority]] *tp* +
-*threadPriority*
-|Outputs the priority of the thread that generated the logging event.
-
-|[[PatternLoggerFqcn]] *fqcn*
-|Outputs the fully qualified class name of the logger.
-
-|[[EndOfBatch]] *endOfBatch*
-|Outputs the EndOfBatch status of the logging event, as "true" or "false".
-
-|[[PatternNDC]] *x* +
-*NDC*
-|Outputs the Thread Context Stack (also known as the Nested
-Diagnostic Context or NDC) associated with the thread that generated the
-logging event.
-
-|[[PatternMDC]] *X*{key[,key2...]} +
-*mdc*{key[,key2...]} +
-*MDC*{key[,key2...]}
-|Outputs the Thread Context Map (also known as the Mapped Diagnostic
-Context or MDC) associated with the thread that generated the logging
-event. The *X* conversion character can be followed by one or more keys
-for the map placed between braces, as in *%X\{clientNumber}* where
-`clientNumber` is the key. The value in the MDC corresponding to the key
-will be output.
-
-If a list of keys is provided, such as *%X{name, number}*, then each
-key that is present in the ThreadContext will be output using the format
-{name=val1, number=val2}. The key/value pairs will be printed in the
-order they appear in the list.
-
-If no sub-options are specified then the entire contents of the MDC key-value pair
-set is output using a format {key1=val1, key2=val2}.
-The key/value pairs will be printed in sorted order.
-
-See the
-link:../javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html[ThreadContext]
-class for more details.
-
-|[[PatternUUID]] *u*{"RANDOM" \| "TIME"} +
-*uuid*
-|Includes either a random or a time-based UUID. The time-based
-UUID is a Type 1 UUID that can generate up to 10,000 unique IDs per
-millisecond will use the MAC address of each host, and to try to insure
-uniqueness across multiple JVMs and/or ClassLoaders on the same host
-a random number between 0 and 16,384 will be associated with each instance
-of the UUID generator Class and included in each time-based UUID
-generated. Because time-based UUIDs contain the MAC address and
-timestamp they should be used with care as they can cause a security
-vulnerability.
-
-|[[PatternExtendedException]] **xEx**\|**xException**\|*xThrowable* +
-  { +
-    ["none" \| "short" \| "full" \| depth] +
-    [,filters(package,package,...)] +
-    [,separator(_separator_)] +
-  } +
-  {ansi( +
-    Key=Value,Value,... +
-    Key=Value,Value,... +
-    ...) +
-  } +
-  {suffix(_pattern_)} +
-|The same as the %throwable conversion word but also includes class
-packaging information.
-
-At the end of each stack element of the exception, a string containing
-the name of the jar file that contains the class or the directory the
-class is located in and the "Implementation-Version" as found in that
-jar's manifest will be added. If the information is uncertain, then the
-class packaging data will be preceded by a tilde, i.e. the '~'
-character.
-
-The throwable conversion word can be followed by an option in the form
-`%xEx\{short}` which will only output the first line of the Throwable or
-`%xEx\{n}` where the first n lines of the stack trace will be printed.
-Specifying `%xEx\{none}` or `%xEx\{0}` will suppress printing of the
-exception.
-
-Use `filters(packages)` where _packages_ is a list of package names to
-suppress matching stack frames from stack traces.
-
-Use a `separator` string to separate the lines of a stack trace. For
-example: `separator(\|)`. The default value is the `line.separator`
-system property, which is operating system dependent.
-
-The `ansi` option renders stack traces with ANSI escape code using the
-JAnsi library. (See link:#enable-jansi[configuration].) Use `\{ansi}` to
-use the default color mapping. You can specify your mappings with
-`key=value` pairs. The keys are:
-
-* Prefix
-* Name
-* NameMessageSeparator
-* Message
-* At
-* CauseLabel
-* Text
-* More
-* Suppressed
-* StackTraceElement.ClassName
-* StackTraceElement.ClassMethodSeparator
-* StackTraceElement.MethodName
-* StackTraceElement.NativeMethod
-* StackTraceElement.FileName
-* StackTraceElement.LineNumber
-* StackTraceElement.Container
-* StackTraceElement.ContainerSeparator
-* StackTraceElement.UnknownSource
-* ExtraClassInfo.Inexact
-* ExtraClassInfo.Container
-* ExtraClassInfo.ContainerSeparator
-* ExtraClassInfo.Location
-* ExtraClassInfo.Version
-
-The values are names from JAnsi's
-https://fusesource.github.io/jansi/documentation/api/org/fusesource/jansi/AnsiRenderer.Code.html[Code]
-class like `blue`, `bg_red`, and so on (Log4j ignores case.)
-
-The special key `StyleMapName` can be set to one of the following
-predefined maps: `Spock`, `Kirk`.
-
-As with %throwable, the *%xEx{suffix(_pattern_)* conversion will add
-the output of _pattern_ to the output only if there is a throwable to
-print.
-
-|[[PatternPercentLiteral]] *%*
-|The sequence %% outputs a single percent sign.
-|===
-
-By default, the relevant information is output as is.
-However, with the aid of format modifiers it is possible to change the minimum field width, the maximum field width and justification.
-
-The optional format modifier is placed between the percent sign and the conversion character.
-
-The first optional format modifier is the _left justification flag_
-which is just the minus (-) character.
-Then comes the optional _minimum field width_ modifier.
-This is a decimal constant that represents the minimum number of characters to output.
-If the data item requires fewer characters, it is padded on either the left or the right until the minimum width is reached.
-The default is to pad on the left (right justify) but you can specify right padding with the left justification flag.
-The padding character is space.
-If the data item is larger than the minimum field width, the field is expanded to accommodate the data.
-The value is never truncated.
-To use zeros as the padding character prepend the _minimum field width_ with a zero.
-
-This behavior can be changed using the _maximum field width_ modifier which is designated by a period followed by a decimal constant.
-If the data item is longer than the maximum field, then the extra characters are removed from the _beginning_ of the data item and not from the end.
-For example, if the maximum field width is eight and the data item is ten characters long, then the first two characters of the data item are dropped.
-This behavior deviates from the `printf()` function in C where truncation is done from the end.
-
-Truncation from the end is possible by appending a minus character right after the period.
-In that case, if the maximum field width is eight and the data item is ten characters long, then the last two characters of the data item are dropped.
-
-Below are various format modifier examples for the category conversion specifier.
-
-.Pattern Converters
-|===
-|Format modifier |left justify |minimum width |maximum width |comment
-
-|%20c
-|false
-|20
-|none
-|Left pad with spaces if the category name is
-less than 20 characters long.
-
-|%-20c
-|true
-|20
-|none
-|Right pad with spaces if the category name is
-less than 20 characters long.
-
-|%.30c
-|NA
-|none
-|30
-|Truncate from the beginning if the category name is longer than 30 characters.
-
-|%20.30c
-|false
-|20
-|30
-|Left pad with spaces if the category name is
-shorter than 20 characters. However, if the category name is longer than 30
-characters, then truncate from the beginning.
-
-|%-20.30c
-|true
-|20
-|30
-|Right pad with spaces if the category name is
-shorter than 20 characters. However, if the category name is longer than 30
-characters, then truncate from the beginning.
-
-|%-20.-30c
-|true
-|20
-|30
-|Right pad with spaces if the category name is
-shorter than 20 characters. However, if the category name is longer than 30
-characters, then truncate from the end.
-|===
-
-[#enable-jansi]
-=== ANSI Styling on Windows
-
-ANSI escape sequences are supported natively on many platforms but are not by default on Windows.
-To enable ANSI support add the
-http://jansi.fusesource.org/[Jansi] jar to your application and set property `log4j.skipJansi` to `false`.
-This allows Log4j to use Jansi to add ANSI escape codes when writing to the console.
-
-NOTE: Before Log4j 2.10, Jansi was enabled by default.
-The fact that Jansi requires native code means that Jansi can only be loaded by a single class loader.
-For web applications, this means the Jansi jar has to be in the web container's classpath.
-To avoid causing problems for web applications, Log4j will no longer automatically try to load Jansi without explicit configuration from Log4j 2.10 onward.
-
-=== Example Patterns
-
-==== Filtered Throwables
-
-This example shows how to filter out classes from unimportant packages in stack traces.
-
+Additional runtime dependencies are required for using JSON Layout:
+
+[tabs]
+====
+Maven::
++
+[source,xml,subs="+attributes"]
+----
+<dependency>
+  <groupId>com.fasterxml.jackson.core</groupId>
+  <artifactId>jackson-databind</artifactId>
+  <version>{jackson-version}</version>
+  <scope>runtime</scope>
+</dependency>
+----
+
+Gradle::
++
+[source,groovy,subs="+attributes"]
+----
+runtimeOnly 'com.fasterxml.jackson.core:jackson-databind:{jackson-version}'
+----
+====
+
+[#JSONTemplateLayout]
+=== JSON Template Layout
+
+`JsonTemplateLayout` is a customizable, efficient, and garbage-free JSON generating layout.
+It encodes ``LogEvent``s according to the structure described by the JSON template provided.
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-JsonTemplateLayout[📖 Plugin reference for `JsonTemplateLayout`]
+
+For instance, given the following event template stored in `MyLayout.json` in your classpath:
+
+[source,json]
+----
+{
+  "instant": { // <1>
+    "$resolver": "timestamp",
+    "pattern": {
+      "format": "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+      "timeZone": "UTC"
+    }
+  },
+  "someConstant": 1, // <2>
+  "message": { // <3>
+    "$resolver": "message",
+    "stringified": true
+  }
+}
+----
+<1> Using the `timestamp` event template resolver to populate the `instant` field
+<2> Passing a constant that will be rendered as is
+<3> Using the `message` event template resolver to populate the `message` field
+
+in combination with the below layout configuration:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/json-template-layout/usage/log4j2.xml[`log4j2.xml`]
 [source,xml]
 ----
-<Configuration>
-  <properties>
-    <property name="filters">org.junit,org.apache.maven,sun.reflect,java.lang.reflect</property>
-  </properties>
-  <!-- ... -->
-  <PatternLayout pattern="%m%xEx{filters(${filters})}%n"/>
-</Configuration>
+include::example$manual/json-template-layout/usage/log4j2.xml[lines=26..26,indent=0]
 ----
 
-The result printed to the console will appear similar to:
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/json-template-layout/usage/log4j2.json[`log4j2.json`]
+[source,json]
+----
+include::example$manual/json-template-layout/usage/log4j2.json[lines=6..8,indent=0]
+----
 
-....
-Exception java.lang.IllegalArgumentException: IllegalArgument
-at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(ExtendedThrowableTest.java:72) [test-classes/:?]
-... suppressed 26 lines
-at $Proxy0.invoke(Unknown Source)} [?:?]
-... suppressed 3 lines
-Caused by: java.lang.NullPointerException: null pointer
-at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(ExtendedThrowableTest.java:71) ~[test-classes/:?]
-... 30 more
-....
-
-==== ANSI Styled
-
-The log level will be highlighted according to the event's log level.
-All the content that follows the level will be bright green.
-
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/json-template-layout/usage/log4j2.yaml[`log4j2.yaml`]
 [source,xml]
 ----
-<PatternLayout>
-  <pattern>%d %highlight{%p} %style{%C{1.} [%t] %m}{bold,green}%n</pattern>
-</PatternLayout>
+include::example$manual/json-template-layout/usage/log4j2.yaml[lines=22..23,indent=0]
 ----
 
-[#PatternSelectors]
-=== Pattern Selectors
-
-The PatternLayout can be configured with a PatternSelector to allow it to choose a pattern to use based on attributes of the log event or other factors.
-A PatternSelector will normally be configured with a defaultPattern attribute, which is used when other criteria don't match, and a set of PatternMatch elements that identify the various patterns that can be selected.
-
-[#LevelPatternSelector]
-==== LevelPatternSelector
-
-The LevelPatternSelector selects patterns based on the log level of the log event.
-If the Level in the log event is equal to (ignoring case) the name specified on the PatternMatch key attribute, then the pattern specified on that PatternMatch element will be used.
-
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/json-template-layout/usage/log4j2.properties[`log4j2.properties`]
 [source,xml]
 ----
-<PatternLayout>
-  <MarkerPatternSelector defaultPattern="[%-5level] %c{1.} %msg%n">
-    <PatternMatch key="FLOW" pattern="[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"/>
-  </MarkerPatternSelector>
-</PatternLayout>
+include::example$manual/json-template-layout/usage/log4j2.properties[lines=19..20,indent=0]
+----
+====
+
+JSON Template Layout generates JSON as follows:
+
+[source,json]
+----
+{"instant":"2017-05-25T19:56:23.370Z","someConstant":1,"message":"Hello, error!"} //<1>
+----
+<1> JSON pretty-printing is not supported for performance reasons.
+
+Good news is JSON Template Layout is perfectly production-ready without any configuration!
+It bundles several predefined event templates modeling popular JSON-based log formats.
+
+Read more on xref:manual/json-template-layout.adoc[]...
+
+[id=pattern-layout]
+=== [[PatternLayout]] Pattern Layout
+
+`PatternLayout` is a customizable, efficient, garbage-free, and human-readable string generating layout using a user-provided pattern.
+It is analogous to `String#format()` with specialized directives on injecting certain properties of a `LogEvent`.
+
+[IMPORTANT]
+====
+Pattern Layout is not intended for _structural logging_ purposes.
+For production environments, you are strongly advised to use xref:manual/json-template-layout.adoc[] producing JSON output ready to be delivered to log ingestion systems such as Elasticsearch or Google Cloud Logging.
+====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-PatternLayout[📖 Plugin reference for `PatternLayout`]
+
+A conversion pattern is composed of literal text and format control expressions.
+For instance, given the `%-5p [%t]: %m%n` pattern, following statements
+
+[source,java]
+----
+LOGGER.debug("Message 1");
+LOGGER.warn("Message 2");
 ----
 
-[#MarkerPatternSelector]
-==== MarkerPatternSelector
+will yield the output
 
-The MarkerPatternSelector selects patterns based on the Marker included in the log event.
-If the Marker in the log event is equal to or is an ancestor of the name specified on the PatternMatch key attribute, then the pattern specified on that PatternMatch element will be used.
-
-[source,xml]
+[source,text]
 ----
-<PatternLayout>
-  <MarkerPatternSelector defaultPattern="[%-5level] %c{1.} %msg%n">
-    <PatternMatch key="FLOW" pattern="[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"/>
-  </MarkerPatternSelector>
-</PatternLayout>
+DEBUG [main]: Message 1
+WARN  [main]: Message 2
 ----
 
-[#ScriptPatternSelector]
-==== ScriptPatternSelector
+Read more on xref:manual/pattern-layout.adoc[]...
 
-The ScriptPatternSelector executes a script as described in the
-xref:manual/scripts.adoc[Scripts] section of the Configuration chapter.
-The script is passed all the properties configured in the Properties section of the configuration, the StrSubstitutor used by the Configuration in the "substitutor" variables, and the log event in the "logEvent" variable, and is expected to return the value of the PatternMatch key that should be used, or null if the default pattern should be used.
+[#RFC5424Layout]
+=== RFC 5424 Layout
 
-[source,xml]
-----
-<PatternLayout>
-  <ScriptPatternSelector defaultPattern="[%-5level] %c{1.} %C{1.}.%M.%L %msg%n">
-    <Script name="BeanShellSelector" language="bsh"><![CDATA[
-      if (logEvent.getLoggerName().equals("NoLocation")) {
-        return "NoLocation";
-      } else if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf("FLOW")) {
-        return "Flow";
-      } else {
-        return null;
-      }]]>
-    </Script>
-    <PatternMatch key="NoLocation" pattern="[%-5level] %c{1.} %msg%n"/>
-    <PatternMatch key="Flow" pattern="[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"/>
-  </ScriptPatternSelector>
-</PatternLayout>
-----
-
-[#PatternLayout-gcfree]
-=== Garbage-free configuration
-
-PatternLayout with the following limited set of conversion patterns is
-garbage-free. Format modifiers to control such things as field width,
-padding, left and right justification will not generate garbage.
-
-[cols="1m,2"]
-|===
-|Conversion Pattern |Description
-
-|%c\{precision}, %logger\{precision}
-|Logger name
-
-|%d, %date
-a|
-Note: Only the predefined date formats are garbage-free: (millisecond
-separator may be either a comma ',' or a period '.')
-
-[cols="1m,1"]
-!===
-!Pattern !Example
-
-!%d\{DEFAULT}
-!2012-11-02 14:34:02,781
-
-!%d\{ISO8601}
-!2012-11-02T14:34:02,781
-
-!%d\{ISO8601_BASIC}
-!20121102T143402,781
-
-!%d\{ABSOLUTE}
-!14:34:02,781
-
-!%d\{DATE}
-!02 Nov 2012 14:34:02,781
-
-!%d\{COMPACT}
-!20121102143402781
-
-!%d{HH:mm:ss,SSS}
-!14:34:02,781
-
-!%d{dd MMM yyyy HH:mm:ss,SSS}
-!02 Nov 2012 14:34:02,781
-
-!%d{HH:mm:ss}{GMT+0}
-!18:34:02
-
-!%d\{UNIX}
-!1351866842
-
-!%d\{UNIX_MILLIS}
-!1351866842781
-!===
-
-|%enc\{pattern}, %encode\{pattern}
-|Encodes special characters such as
-'\n' and HTML characters to help prevent log forging and some XSS
-attacks that could occur when displaying logs in a web browser -
-garbage-free since 2.8
-
-|%equals\{pattern}\{test}\{substitution},
-%equalsIgnoreCase\{pattern}\{test}\{substitution}
-|Replaces occurrences
-of 'test', a string, with its replacement 'substitution' in the string
-resulting from evaluation of the pattern - garbage-free since 2.8
-
-|%highlight\{pattern}\{style}
-|Adds ANSI colors - garbage-free since 2.7
-(unless nested pattern is not garbage free)
-
-|%K\{key}, %map\{key}, %MAP\{key}
-|Outputs the entries in a
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html[MapMessage],
-if one is present in the event - garbage-free since 2.8.
-
-|%m, %msg, %message
-|Log message (garbage-free unless message text
-contains '${')
-
-|%marker
-|The full name of the marker (including parents) - garbage-free
-since 2.8
-
-|%markerSimpleName
-|The simple name of the marker (not including
-parents)
-
-|%maxLen, %maxLength
-|Truncates another pattern to some max number of
-characters - garbage-free since 2.8
-
-|%n
-|The platform dependent line separator
-
-|%N, %nano
-|System.nanoTime() when the event was logged
-
-|%notEmpty\{pattern}, %varsNotEmpty\{pattern},
-%variablesNotEmpty\{pattern}
-|Outputs the result of evaluating the
-pattern if and only if all variables in the pattern are not empty -
-garbage-free since 2.8
-
-|%p, %level
-|The level of the logging event
-
-|%r, %relative
-|The number of milliseconds elapsed since the JVM was
-started until the creation of the logging event - garbage-free since 2.8
-
-|%sn, %sequenceNumber
-|A sequence number that will be incremented in
-every event - garbage-free since 2.8
-
-|%style\{pattern}{ANSI style}
-|Style the message - garbage-free since
-2.7 (unless nested pattern is not garbage free)
-
-|%T, %tid, %threadId
-|The ID of the thread that generated the logging
-event
-
-|%t, %tn, %thread, %threadName
-|The name of the thread that generated
-the logging event
-
-|%tp
-|The priority of the thread that generated the logging event
-
-|%X{key[,key2...]}, %mdc{key[,key2...]}, %MDC{key[,key2...]}
-|Outputs
-the Thread Context Map (also known as the Mapped Diagnostic Context or
-MDC) associated with the thread that generated the logging event -
-garbage-free since 2.8
-
-|literal text
-|Garbage-free unless literal contains '${' (variable
-substitution)
-|===
-
-Other PatternLayout conversion patterns, and other Layouts may be
-updated to avoid creating temporary objects in future releases. (Patches
-welcome!)
-
-NOTE: Logging exceptions and stack traces will create temporary
-objects with any layout. (However, Layouts will only create these
-temporary objects when an exception actually occurs.) We haven't figured
-out a way to log exceptions and stack traces without creating temporary
-objects. That is unfortunate, but you probably still want to log them
-when they happen.
+`Rfc5424` Layout encodes log events according to https://datatracker.ietf.org/doc/html/rfc5424#section-6[the Syslog message format described in RFC 5424].
 
 [NOTE]
 ====
-patterns containing regular expressions and lookups for property
-substitution will result in temporary objects being created during
-steady-state logging.
-
-Including location information is done by walking the stacktrace of an
-exception, which creates temporary objects, so the following patterns
-are not garbage-free:
-
-* %C, %class - Class Name
-* %F, %file - File Location
-* %l, %location - Location
-* %L, %line - Line Location
-* %M, %method - Method Location
-
-Also, the pattern converters for formatting Throwables are not
-garbage-free:
-
-* %ex, %exception, %throwable - The Throwable trace bound to the
-LoggingEvent
-* %rEx, %rException %rThrowable - Same as %ex but with wrapping
-exceptions
-* %xEx, %xException, %xThrowable - Same as %ex but with class packaging
-information
-* %u, %uuid - Creates a new random or time-based UUID while formatting
+RFC 5424 obsoletes RFC 3164, implemented by xref:#SyslogLayout[].
 ====
 
-[#PatternLayout-performance]
-=== Performance
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-Rfc5424Layout[📖 Plugin reference for `Rfc5424Layout`]
 
-Great effort has been put into the efficiency of Pattern Layout.
-To get the most out of it, mind the following checklist:
+RFC 5424 Layout is configured with the following parameters:
 
-* Enable xref:manual/garbagefree.adoc[garbage-free logging]
-* Mind xref:#PatternLayout-gcfree[the garbage footprint of features you use]
-* Don't give too much slack to xref:manual/systemproperties.adoc#log4j2.layoutStringBuilderMaxSize[`log4j2
-.layoutStringBuilderMaxSize`] and try to keep it relatively tight
-
-[#RFC5424Layout]
-== RFC5424 Layout
-
-As the name implies, the Rfc5424Layout formats LogEvents by http://tools.ietf.org/html/rfc5424[RFC 5424], the enhanced Syslog specification.
-Although the specification is primarily directed at sending messages via Syslog, this format is quite useful for other purposes since items are passed in the message as self-describing key/value pairs.
-
-.Rfc5424Layout Parameters
-[cols="1m,1,4"]
+[%header,cols="1m,1m,4"]
 |===
-|Parameter Name |Type |Description
+|Parameter
+|Type
+|Description
 
 |appName
 |String
-|The value to use as the APP-NAME in the RFC 5424
-syslog record.
+|The `APP-NAME` field as described in RFC 5424
 
 |charset
 |String
-|The character set to use when converting the syslog
-String to a byte array. The String must be valid
-http://docs.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html[Charset].
-If not specified, the default system Charset will be used.
+|The character encoding (defaults to `UTF-8`)
 
 |enterpriseNumber
 |integer
-|The IANA enterprise number as described in
-http://tools.ietf.org/html/rfc5424#section-7.2.2[RFC 5424]
+|
+The `enterpriseId` parameter as described in RFC 5424.
+If missing, `32473` will be used, which is https://www.rfc-editor.org/rfc/rfc5612.html#section-2[reserved for documentation use].
 
 |exceptionPattern
 |String
-|One of the conversion specifiers from
-PatternLayout that defines which ThrowablePatternConverter to use to
-format exceptions. Any of the options that are valid for those
-specifiers may be included. The default is to not include the Throwable
-from the event, if any, in the output.
+|An xref:manual/pattern-layout.adoc#converter-exception[`exception` conversion specifier of Pattern Layout].
+The default is to not include the `Throwable` from the event, if any, in the output.
 
 |facility
 |String
-|The facility is used to try to classify the message.
-The facility option must be set to one of "KERN", "USER", "MAIL",
-"DAEMON", "AUTH", "SYSLOG", "LPR", "NEWS", "UUCP", "CRON", "AUTHPRIV",
-"FTP", "NTP", "AUDIT", "ALERT", "CLOCK", "LOCAL0", "LOCAL1", "LOCAL2",
-"LOCAL3", "LOCAL4", "LOCAL5", "LOCAL6", or "LOCAL7". These values may be
-specified as upper or lowercase characters.
-
-|format
-|String
-|If set to "RFC5424" the data will be formatted by RFC 5424.
-Otherwise, it will be formatted as a BSD
-Syslog record. Note that although BSD Syslog records are required to be
-1024 bytes or shorter the SyslogLayout does not truncate them. The
-RFC5424Layout also does not truncate records since the receiver must
-accept records of up to 2048 bytes and may accept longer records.
+|The name of link:../javadoc/log4j-core/org/apache/logging/log4j/core/net/Facility.html[`Facility`] as described in RFC 5424.
+The matching is case-insensitive.
+It defaults to `LOCAL0`.
 
 |id
 |String
-|The default structured data-id to use when formatting
-according to RFC 5424. If the LogEvent contains a StructuredDataMessage
-the id from the Message will be used instead of this value.
+|The default _Structured Data ID_ to use when formatting according to RFC 5424.
+If the log event contains a xref:manual/messages.adoc#StructuredDataMessage[`StructuredDataMessage`], the ID from that message will be used instead.
 
 |includeMDC
 |boolean
-|Indicates whether data from the ThreadContextMap
-will be included in the RFC 5424 Syslog record. Defaults to true.
+|Indicates whether data from the xref:manual/thread-context.adoc[] map will be included in the RFC 5424 Syslog record (defaults to `true`)
 
 |loggerFields
-|List of KeyValuePairs
-|Allows arbitrary PatternLayout
-patterns to be included as specified ThreadContext fields; no default
-specified. To use, include a <LoggerFields> nested element, containing
-one or more <KeyValuePair> elements. Each <KeyValuePair> must have a key
-attribute, which specifies the key name which will be used to identify
-the field within the MDC Structured Data element, and a value attribute,
-which specifies the PatternLayout pattern to use as the value.
+|link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/KeyValuePair.html[KeyValuePair[\]]
+|Allows arbitrary xref:manual/thread-context.adoc[] map entries.
+To use, include a `LoggerFields` nested element, containing one or more `KeyValuePair` elements.
+Each `KeyValuePair` must have `key` and `value` attributes associating them with a thread context map entry.
+The `value` attribute can be an arbitrary xref:manual/pattern-layout.adoc[] pattern.
 
 |mdcExcludes
 |String
-|A comma-separated list of mdc keys that should be
-excluded from the LogEvent. This is mutually exclusive with the
-mdcIncludes attribute. This attribute only applies to RFC 5424 syslog
-records.
+|A comma-separated list of xref:manual/thread-context.adoc[] map (aka, MDC) keys that should be excluded.
+This is mutually exclusive with `mdcIncludes`.
+This attribute only applies to RFC 5424 Syslog records.
 
 |mdcIncludes
 |String
-|A comma-separated list of mdc keys that should be
-included in the FlumeEvent. Any keys in the MDC not found in the list
-will be excluded. This option is mutually exclusive with the mdcExcludes
-attribute. This attribute only applies to RFC 5424 syslog records.
-
-|mdcRequired
-|String
-|A comma-separated list of mdc keys that must be
-present in the MDC. If a key is not present a LoggingException will be
-thrown. This attribute only applies to RFC 5424 syslog records.
-
-|mdcPrefix
-|String
-|A string that should be prepended to each MDC key to distinguish it from event attributes.
-The default string is "mdc:". This attribute only applies to RFC 5424 syslog records.
+|A comma-separated list of xref:manual/thread-context.adoc[] map (aka, MDC) keys that should be included.
+Any keys in the thread context map not found in the list will be excluded.
+This option is mutually exclusive with `mdcExcludes`.
+This attribute only applies to RFC 5424 Syslog records.
 
 |mdcId
 |String
-|A required MDC ID. This attribute only applies to RFC 5424 syslog records.
+|The ID to use for the xref:manual/thread-context.adoc[] map (aka, MDC) Structured Data Element.
+It defaults to `mdc`.
+This attribute only applies to RFC 5424 Syslog records.
+
+|mdcPrefix
+|String
+|A string to be prepended to each xref:manual/thread-context.adoc[] map (aka, MDC) key to distinguish it from event attributes.
+It defaults to `mdc:`.
+This attribute only applies to RFC 5424 Syslog records.
+
+|mdcRequired
+|String
+|A comma-separated list of xref:manual/thread-context.adoc[] map (aka, MDC) keys that must be present.
+If a key is not present, a link:../javadoc/log4j-core/org/apache/logging/log4j/LoggingException.html[`LoggingException`] will be thrown.
+This attribute only applies to RFC 5424 Syslog records.
 
 |messageId
 |String
-|The default value to be used in the MSGID field of RFC 5424 syslog records.
+|The default value to be used in the `MSGID` field of RFC 5424 Syslog records
 
 |newLine
 |boolean
-|If true, a newline will be appended to the end of the syslog record. The default is false.
+|If `true`, a `\n` character will be appended to the end of the Syslog record (defaults to `false`)
 
 |newLineEscape
 |String
-|String that should be used to replace newlines within the message text.
+|The string that should be used to replace newlines within the message text
 |===
 
 [#SerializedLayout]
-== Serialized Layout
+=== Serialized Layout
 
-The SerializedLayout simply serializes the LogEvent into a byte array using Java Serialization.
-The SerializedLayout accepts no parameters.
+`SerializedLayout` encodes a log event using https://docs.oracle.com/javase/8/docs/platform/serialization/spec/protocol.html[Java Serialization].
+It accepts no configuration parameters.
 
-This layout has been deprecated since version 2.9. Java Serialization has inherent security weaknesses, using this layout is no longer recommended.
+[WARNING]
+====
+This layout has been deprecated since version `2.9`.
+Java Serialization has inherent security weaknesses.
+*Serialized Layout users are strongly advised to migrate to another layout!*
+====
+
+ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-SerializedLayout[📖 Plugin reference for `SerializedLayout`]
 
 [#SyslogLayout]
-== Syslog Layout
+=== Syslog Layout
 
-The SyslogLayout formats the LogEvent as BSD Syslog records matching the the same format used by Log4j 1.2.
+`SyslogLayout` encodes log events according to https://datatracker.ietf.org/doc/html/rfc3164#section-4.1[the syslog message format described in RFC 3164].
+This matches the same format used by {logging-services-url}/log4j/1.x[Log4j 1].
 
-.SyslogLayout Parameters
-[cols="1m,1,4"]
+[IMPORTANT]
+====
+RFC 3164, implemented by Syslog Layout, is obsoleted by RFC 5424, implemented by xref:#RFC5424Layout[].
+====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-SyslogLayout[📖 Plugin reference for `SyslogLayout`]
+
+Syslog Layout is configured with the following parameters:
+
+[%header,cols="1m,1m,4"]
 |===
-|Parameter Name |Type |Description
+|Parameter
+|Type
+|Description
 
 |charset
 |String
-|The character set to use when converting the syslog
-String to a byte array. The String must be a valid
-http://docs.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html[Charset].
-If not specified, this layout uses UTF-8.
+|The character encoding (defaults to `UTF-8`)
 
 |facility
 |String
-|The facility is used to try to classify the message.
-The facility option must be set to one of "KERN", "USER", "MAIL",
-"DAEMON", "AUTH", "SYSLOG", "LPR", "NEWS", "UUCP", "CRON", "AUTHPRIV",
-"FTP", "NTP", "AUDIT", "ALERT", "CLOCK", "LOCAL0", "LOCAL1", "LOCAL2",
-"LOCAL3", "LOCAL4", "LOCAL5", "LOCAL6", or "LOCAL7". These values may be
-specified as upper or lowercase characters.
+|The name of link:../javadoc/log4j-core/org/apache/logging/log4j/core/net/Facility.html[`Facility`] as described in RFC 5424.
+The matching is case-insensitive.
+It defaults to `LOCAL0`.
 
 |newLine
 |boolean
-|If true, a newline will be appended to the end of the
-syslog record. The default is false.
+|If `true`, a `\n` character will be appended to the end of the Syslog record (defaults to `false`)
 
 |newLineEscape
 |String
-|String that should be used to replace newlines
-within the message text.
+|The string that should be used to replace newlines within the message text
 |===
 
 [[XMLLayout]]
-== XML Layout
+=== XML Layout
 
-=== Complete well-formed XML vs. fragment XML
+`XmlLayout` encodes a log event into XML.
 
-If you configure `complete="true"`, the appender outputs a well-formed XML document where the default namespace is the Log4j namespace `https://logging.apache.org/log4j/2.0/events`.
-By default, with `complete="false"`, you should include the output as an _external entity_ in a separate file to form a well-formed XML document, in which case the appender uses `namespacePrefix` with a default of `log4j`.
+[WARNING]
+====
+*This layout is planned to be removed in the next major release!*
+XML Layout users are strongly advised to migrate to another layout!
+====
 
-A well-formed XML document follows this pattern:
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-XmlLayout[📖 Plugin reference for `XmlLayout`]
 
+.Click for an example output
+[%collapsible]
+====
 [source,xml]
 ----
 <Event xmlns="https://logging.apache.org/log4j/2.0/events"
@@ -2176,60 +953,57 @@ A well-formed XML document follows this pattern:
   </Thrown>
 </Event>
 ----
+====
 
-If `complete="false"`, the appender does not write the XML processing instruction and the root element.
+XML Layout configuration is identical to the one of xref:#JSONLayout[], with following exceptions:
 
-=== Marker
+* The `header` and `footer` parameters are discarded
+* If `complete=true`, each log event will be encoded into a well-formed XML document, such that:
+** `<?xml version...` preamble will be added
+** The root `<event` element will be enriched with `namespace="http://logging.apache.org/log4j/2.0/events"` attribute
 
-Markers are represented by a `Marker` element within the `Event` element.
-The `Marker` element appears only when a marker is used in the log message.
-The name of the marker's parent will be provided in the `parent` attribute of the `Marker` element.
+Additional runtime dependencies are required for using XML Layout:
 
-=== Pretty vs. compact XML
-
-By default, the XML layout is not compact (a.k.a. not "pretty") with `compact="false"`, which means the appender uses end-of-line characters and indent lines to format the XML.
-If `compact="true"`, then no end-of-line or indentation is used.
-Message content may contain, of course, end-of-lines.
-
-[options="header"]
-|===
-| Parameter Name         | Type      | Description
-| charset                | String    | The character set to use when converting to a byte array. The value must be a valid `Charset`. If not specified, UTF-8 will be used.
-| compact                | boolean   | If true, the appender does not use end-of-lines and indentation. Defaults to false.
-| complete               | boolean   | If true, the appender includes the XML header and footer. Defaults to false.
-| properties             | boolean   | If true, the appender includes the thread context map in the generated XML. Defaults to false.
-| locationInfo           | boolean   | If true, the appender includes the location information in the generated XML. Defaults to false. Generating location information is an expensive operation and may impact performance. Use with caution.
-| includeStacktrace      | boolean   | If true, include full stacktrace of any logged Throwable (optional, default to true).
-| stacktraceAsString     | boolean   | Whether to format the stacktrace as a string, and not a nested object (optional, defaults to false).
-| includeNullDelimiter   | boolean   | Whether to include NULL byte as delimiter after each event (optional, default to false).
-|===
-
-To include any custom field in the output, use the following syntax:
-
-[source,xml]
+[tabs]
+====
+Maven::
++
+[source,xml,subs="+attributes"]
 ----
-<XmlLayout>
-  <KeyValuePair key="additionalField1" value="constant value"/>
-  <KeyValuePair key="additionalField2" value="$${ctx:key}"/>
-</XmlLayout>
+<dependency>
+  <groupId>com.fasterxml.jackson.dataformat</groupId>
+  <artifactId>jackson-dataformat-xml</artifactId>
+  <version>{jackson-version}</version>
+  <scope>runtime</scope>
+</dependency>
 ----
 
-Custom fields are always last, in the order they are declared.
-The values support xref:manual/lookups.adoc[lookups].
-
-.Additional runtime dependencies are required for using `XmlLayout`
-[%collapsible,id=log4j-layout-xml-deps]
-=====
-include::partial$manual/dependencies-log4j-layout-xml.adoc[]
-=====
+Gradle::
++
+[source,groovy,subs="+attributes"]
+----
+runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:{jackson-version}'
+----
+====
 
 [[YamlLayout]]
-== YAML Layout
+=== YAML Layout
 
-Appends a series of YAML events as strings serialized as bytes.
+`YamlLayout` encodes a log event into YAML.
 
-A YAML log event follows this pattern:
+[WARNING]
+====
+This layout is planned to be removed in the next major release!
 
+YAML is a superset of JSON.
+*We strongly advise existing YAML Layout users to migrate to xref:#JSONTemplateLayout[]* providing more capabilities and efficiency.
+====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-YamlLayout[📖 Plugin reference for `YamlLayout`]
+
+.Click for an example output
+[%collapsible]
+====
 [source,yaml]
 ----
 instant:
@@ -2273,33 +1047,60 @@ source:
   file: "Main.java"
   line: 29
 ----
+====
 
-[options="header"]
-|===
-| Parameter Name       | Type     | Description
-| charset              | String   | The character set to use when converting to a byte array. The value must be a valid `Charset`. If not specified, UTF-8 will be used.
-| properties           | boolean  | If true, the appender includes the thread context map in the generated YAML. Defaults to false.
-| locationInfo         | boolean  | If true, the appender includes the location information in the generated YAML. Defaults to false. Generating location information is an expensive operation and may impact performance. Use with caution.
-| includeStacktrace    | boolean  | If true, include full stacktrace of any logged Throwable (optional, default to true).
-| stacktraceAsString   | boolean  | Whether to format the stacktrace as a string, and not a nested object (optional, defaults to false).
-| includeNullDelimiter | boolean  | Whether to include NULL byte as delimiter after each event (optional, default to false).
-|===
+YAML Layout configuration is identical to the one of xref:#JSONLayout[], with following exceptions:
 
-To include any custom field in the output, use the following syntax:
+* The `header` defaults to an empty string
+* The `footer` defaults to an empty string
 
-[source,xml]
+Additional runtime dependencies are required for using XML Layout:
+
+[tabs]
+====
+Maven::
++
+[source,xml,subs="+attributes"]
 ----
-<YamlLayout>
-  <KeyValuePair key="additionalField1" value="constant value"/>
-  <KeyValuePair key="additionalField2" value="$${ctx:key}"/>
-</YamlLayout>
+<dependency>
+  <groupId>com.fasterxml.jackson.dataformat</groupId>
+  <artifactId>jackson-dataformat-yaml</artifactId>
+  <version>{jackson-version}</version>
+  <scope>runtime</scope>
+</dependency>
 ----
 
-Custom fields are always last, in the order they are declared.
-The values support xref:manual/lookups.adoc[lookups].
+Gradle::
++
+[source,groovy,subs="+attributes"]
+----
+runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:{jackson-version}'
+----
+====
 
-.Additional runtime dependencies are required for using `YamlLayout`
-[%collapsible,id=log4j-layout-yaml-deps]
-=====
-include::partial$manual/dependencies-log4j-layout-yaml.adoc[]
-=====
+[#extending]
+== Extending
+
+Layouts are xref:manual/plugins.adoc[plugins] implementing link:../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html[the `Layout` interface].
+This section will guide you on how to create custom ones.
+
+[NOTE]
+====
+While xref:#collection[the predefined layout collection] should address most common use cases, you might find yourself needing to implement a custom one.
+If this is the case, we really appreciate it if you can *share your use case in a {logging-services-url}/support.html[user support channel]*.
+====
+
+[#extending-plugins]
+=== Plugin preliminaries
+
+include::partial$manual/plugin-preliminaries.adoc[]
+
+[#extending-layouts]
+=== Extending layouts
+
+Layouts are xref:manual/plugins.adoc[plugins] implementing link:../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html[the `Layout` interface].
+If your layout is a `String`-based one, we recommend you to extend your plugin class from link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/AbstractStringLayout.html[`AbstractStringLayout`], which contains convenience for some of the boilerplate code shared by `String`-based layouts.
+You can check out following files for examples:
+
+* {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/layout/SyslogLayout.java[`SyslogLayout.java`] – simple, single-file, extending from `AbstractStringLayout`
+* {project-github-url}/log4j-layout-template-json/src/main/java/org/apache/logging/log4j/layout/template/json/JsonTemplateLayout.java[`JsonTemplateLayout.java`] – advanced, using plugins for composing several of its features, contains _recycler_ concept for xref:manual/garbagefree.adoc[garbage-free] operation, extends from link:../javadoc/log4j-core/org/apache/logging/log4j/core/StringLayout.html[`StringLayout`]
