@@ -14,6 +14,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
+
 [id=filters]
 = Filters
 
@@ -85,8 +86,14 @@ Users migrating from Log4j 1 often replace the `threshold` property of a Log4j 1
 Using the `level` property of appender references will give a better performance.
 ====
 
+[#collection]
+== Collection
+
+Log4j bundles several predefined filters to assist in several common deployment use cases.
+Following sections explain all these in detail.
+
 [#BurstFilter]
-== BurstFilter
+=== BurstFilter
 
 The BurstFilter provides a mechanism to control the rate at which LogEvents are processed by silently discarding events after the maximum limit has been reached.
 
@@ -148,7 +155,7 @@ A configuration containing the BurstFilter might look like:
 ----
 
 [#CompositeFilter]
-== CompositeFilter
+=== CompositeFilter
 
 The CompositeFilter provides a way to specify more than one filter.
 It is added to the configuration as a filter element and contains other filters to be evaluated.
@@ -194,7 +201,7 @@ A configuration containing the CompositeFilter might look like:
 ----
 
 [#DynamicThresholdFilter]
-== DynamicThresholdFilter
+=== DynamicThresholdFilter
 
 The DynamicThresholdFilter allows filtering by log level based on specific attributes.
 For example, if the user's loginId is being captured in the ThreadContext Map then it is possible to enable debug logging for only that user.
@@ -262,7 +269,7 @@ Here is a sample configuration containing the DynamicThresholdFilter:
 ----
 
 [#LevelRangeFilter]
-== LevelRangeFilter
+=== LevelRangeFilter
 
 `LevelRangeFilter` allows filtering against a level range, where levels get compared by their associated integral values; `OFF` has an integral value of 0, `FATAL` 100, `ERROR` 200, and so on.
 
@@ -311,7 +318,7 @@ The filter will return `onMismatch` result (i.e., `DENY`, the default) for log e
 ----
 
 [#MapFilter]
-== MapFilter
+=== MapFilter
 
 The MapFilter allows filtering against data elements that are in a MapMessage.
 
@@ -431,7 +438,7 @@ This third sample configuration will exhibit the same behavior as the preceding 
 ----
 
 [#MarkerFilter]
-== MarkerFilter
+=== MarkerFilter
 
 The MarkerFilter compares the configured Marker value against the Marker that is included in the LogEvent.
 A match occurs when the Marker name matches either the Log Event's Marker or one of its parents.
@@ -481,7 +488,7 @@ A sample configuration that only allows the event to be written by the appender 
 ----
 
 [#MutableThreadContextMapFilter]
-== MutableThreadContextMapFilter
+=== MutableThreadContextMapFilter
 
 The MutableThreadContextMapFilter or MutableContextMapFilter allows filtering against data elements that are in the current context.
 By default, this is the ThreadContext Map.
@@ -555,7 +562,7 @@ The configuration file supplied to the filter should look similar to:
 ----
 
 [#NoMarkerFilter]
-== NoMarkerFilter
+=== NoMarkerFilter
 
 The NoMarkerFilter checks that there is no marker included in the LogEvent.
 A match occurs when there is no marker in the Log Event.
@@ -601,7 +608,7 @@ A sample configuration that only allows the event to be written by the appender 
 ----
 
 [#RegexFilter]
-== RegexFilter
+=== RegexFilter
 
 The RegexFilter allows the formatted or unformatted message to be compared against a regular expression.
 
@@ -771,7 +778,7 @@ xref:manual/appenders.adoc#ScriptCondition[ScriptCondition] for an example of ho
 ----
 
 [#StructuredDataFilter]
-== StructuredDataFilter
+=== StructuredDataFilter
 
 The StructuredDataFilter is a MapFilter that also allows filtering on the event id, type and message.
 
@@ -836,7 +843,7 @@ As in this configuration, the StructuredDataFilter can be used to log particular
 ----
 
 [#ThreadContextMapFilter]
-== ThreadContextMapFilter
+=== ThreadContextMapFilter
 
 The ThreadContextMapFilter or ContextMapFilter allows filtering against data elements that are in the current context.
 By default, this is the ThreadContext Map.
@@ -928,7 +935,7 @@ The ContextMapFilter can also be applied to a logger for filtering:
 ----
 
 [#ThresholdFilter]
-== ThresholdFilter
+=== ThresholdFilter
 
 This filter returns the onMatch result if the level in the LogEvent is the same or more specific than the configured level and the `onMismatch`
 value otherwise.
@@ -980,7 +987,7 @@ A sample configuration that only allows the event to be written by the appender 
 ----
 
 [#TimeFilter]
-== TimeFilter
+=== TimeFilter
 
 The time filter can be used to restrict the filter to only a certain portion of the day.
 
@@ -1037,3 +1044,36 @@ A sample configuration that only allows the event to be written by the appender 
   </Loggers>
 </Configuration>
 ----
+
+[#extending]
+== Extending
+
+Filters are xref:manual/plugins.adoc[plugins] implementing link:../javadoc/log4j-core/org/apache/logging/log4j/core/Filter.html[the `Filter` interface].
+This section will guide you on how to create custom ones.
+
+[NOTE]
+====
+While xref:#collection[the predefined filter collection] should address most common use cases, you might find yourself needing to implement a custom one.
+If this is the case, we really appreciate it if you can *share your use case in a {logging-services-url}/support.html[user support channel]*.
+====
+
+[#extending-plugins]
+=== Plugin preliminaries
+
+include::partial$manual/plugin-preliminaries.adoc[]
+
+[#extending-filters]
+=== Extending filters
+
+Filter are xref:manual/plugins.adoc[plugins] implementing link:../javadoc/log4j-core/org/apache/logging/log4j/core/Filter.html[the `Filter` interface].
+We recommend users to extend from link:../javadoc/log4j-core/org/apache/logging/log4j/core/filter/AbstractFilter.html[`AbstractFilter`], which provides implementation convenience.
+While annotating your filter with `@Plugin`, you need to make sure that
+
+* It has a unique `name` attribute across all available `Filter` plugins
+* The `category` attribute is set to link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Node.html#CATEGORY[`Node.CATEGORY`]
+* The `elementType` attribute is set to link:../javadoc/log4j-core/org/apache/logging/log4j/core/Filter.html#ELEMENT_TYPE[`Filter.ELEMENT_TYPE`]
+
+You can check out following files for examples:
+
+* {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/filter/MarkerFilter.java[`MarkerFilter.java`] – xref:#MarkerFilter[] matching on markers associated with the effective `LogEvent` in the context
+* {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/filter/RegexFilter.java[`RegexFilter.java`] – xref:#RegexFilter[] matching on the message associated with the effective `LogEvent` in the context
