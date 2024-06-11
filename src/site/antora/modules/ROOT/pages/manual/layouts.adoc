@@ -1100,6 +1100,12 @@ include::partial$manual/plugin-preliminaries.adoc[]
 
 Layouts are xref:manual/plugins.adoc[plugins] implementing link:../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html[the `Layout` interface].
 If your layout is a `String`-based one, we recommend you to extend your plugin class from link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/AbstractStringLayout.html[`AbstractStringLayout`], which contains convenience for some of the boilerplate code shared by `String`-based layouts.
+While annotating your layout with `@Plugin`, you need to make sure that
+
+* It has a unique `name` attribute across all available `Layout` plugins
+* The `category` attribute is set to link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Node.html#CATEGORY[`Node.CATEGORY`]
+* The `elementType` attribute is set to link:../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html#ELEMENT_TYPE[`Layout.ELEMENT_TYPE`]
+
 You can check out following files for examples:
 
 * {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/layout/SyslogLayout.java[`SyslogLayout.java`] – simple, single-file, extending from `AbstractStringLayout`
