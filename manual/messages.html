@@ -170,6 +170,9 @@
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
   </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="pattern-layout.html">Pattern Layout</a>
+  </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="2">
@@ -813,7 +816,7 @@ In such a scenario, if you also have custom message types, consider implementing
 <summary class="title">Example custom message class</summary>
 <div class="content">
 <div class="listingblock">
-<div class="title">Snippet from <a href="https://raw.githubusercontent.com/apache/logging-log4j2/2.x/src/site/antora/modules/ROOT/examples/manual/messages/CustomMessageExample.java"><code>CustomMessageExample.java</code></a></div>
+<div class="title">Snippet from <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/messages/CustomMessageExample.java"><code>CustomMessageExample.java</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">record LoginFailureEvent(String userName, InetSocketAddress remoteAddress)
         implements Message, StringBuilderFormattable { <i class="conum" data-value="1"></i><b>(1)</b>
@@ -883,7 +886,7 @@ This method will be called during event construction to pass the associated <cod
 <h4 id="MultiformatMessage"><a class="anchor" href="#MultiformatMessage"></a><code>MultiformatMessage</code></h4>
 <div class="paragraph">
 <p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/MultiformatMessage.html"><code>MultiformatMessage</code></a> extends from <code>Message</code> to support multiple <a href="#format-type">format types</a>.
-For example, see <a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-api/src/main/java/org/apache/logging/log4j/message/MapMessage.java"><code>MapMessage.java</code></a> extending from <code>MultiformatMessage</code> to support multiple formats; XML, JSON, etc.</p>
+For example, see <a href="https://github.com/apache/logging-log4j2/tree/2.x/tree/2.x/log4j-api/src/main/java/org/apache/logging/log4j/message/MapMessage.java"><code>MapMessage.java</code></a> extending from <code>MultiformatMessage</code> to support multiple formats; XML, JSON, etc.</p>
 </div>
 </div>
 <div class="sect3">

@@ -170,6 +170,9 @@
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
   </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="pattern-layout.html">Pattern Layout</a>
+  </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="2">
@@ -669,7 +672,7 @@ maximum capacity.</p></td>
 <p>The CassandraAppender writes its output to an <a href="https://cassandra.apache.org/">Apache Cassandra</a>
 database.
 A keyspace and table must be configured ahead of time, and the columns of that table are mapped in a configuration file.
-Each column can specify either a <a href="https://logging.apache.org/log4j/2.x/manual/layouts.html#PatternLayout">StringLayout</a> (e.g., a PatternLayout) along with an optional conversion type, or only a conversion type for <code>org.apache.logging.log4j.spi.ThreadContextMap</code> or
+Each column can specify either a <a href="pattern-layout.html" class="xref page">Pattern Layout</a><a href="https://logging.apache.org/log4j/2.x/manual/layouts.html#PatternLayout">StringLayout</a> (e.g., a PatternLayout) along with an optional conversion type, or only a conversion type for <code>org.apache.logging.log4j.spi.ThreadContextMap</code> or
 <code>org.apache.logging.log4j.spi.ThreadContextStack</code> to store the MDC or NDC in a map or list column respectively.
 A conversion type compatible with <code>java.util.Date</code> will use the log event timestamp converted to that type (e.g., use <code>java.util.Date</code> to fill a
 <code>timestamp</code> column type in Cassandra).</p>
