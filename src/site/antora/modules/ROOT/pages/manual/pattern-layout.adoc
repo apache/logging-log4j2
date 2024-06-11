@@ -1368,7 +1368,7 @@ In that case, if the maximum field width is eight and the data item is ten chara
 
 Below are various format modifier examples for the category conversion specifier.
 
-[%header,cols="2m,2m,2m,2m,5"]
+[%header,cols="1m,1m,1m,1m,5"]
 |===
 |Pattern
 |Left justify
@@ -1424,8 +1424,7 @@ characters, then truncate from the end.
 [#ansi-modifiers]
 === Style modifiers
 
-The pattern layout supports styling your text using a variety of ANSI escape sequence, which can be used through the
-xref:#converter-highlight[`%highlight`] and xref:#converter-style[`%style`] pattern converters.
+Pattern Layout supports styling your text using a variety of ANSI escape sequence, which can be used through the xref:#converter-highlight[`%highlight`] and xref:#converter-style[`%style`] pattern converters.
 
 The generic syntax of a style expression is a space-separated list of:
 
@@ -1457,30 +1456,15 @@ In EBNF form the syntax of a style expression is:
 
 For example, you can use `underline blue bg_bright_yellow` to specify a blue underlined text on a bright yellow background.
 
-The style specifiers have the following effects (see
-https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_(Select_Graphic_Rendition)_parameters[Select Graphic Rendition]
-for details):
+The style specifiers have the following effects (see https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_(Select_Graphic_Rendition)_parameters[Select Graphic Rendition] for details):
 
-`normal`::
-  reverts all parameters to their default value,
-
-`bold`::
-  increases the font weight or the color intensity,
-
-`dim`::
-  decreases the fond weight or the color intensity,
-
-`underline`::
-  underlines the text on some terminals,
-
-`blink`::
-  cause the text to blink,
-
-`reverse`::
-  swaps foreground and background colors,
-
-`hidden`::
-  hides the text.
+`normal`:: Reverts all parameters to their default value
+`bold`:: Increases the font weight or the color intensity
+`dim`:: Decreases the fond weight or the color intensity
+`underline`:: Underlines the text on some terminals
+`blink`:: Causes the text to blink
+`reverse`:: Swaps foreground and background colors
+`hidden`:: Hides the text
 
 [#text-colors]
 ==== Colors
@@ -1488,9 +1472,11 @@ for details):
 The color of the text or the background can be specified with the following style modifiers:
 
 .Color table (8 or 16 color terminals)
-[cols="1m,1m,1"]
+[%header,cols="1m,1m,1"]
 |===
-| Text color | Background color |
+| Text color
+| Background color
+| Visual
 
 3+h| {set:cellbgcolor:white}
 8 color terminals
@@ -1700,16 +1686,7 @@ a|Garbage-free, but care is needed for xref:manual/lookups.adoc[].
 include::partial$manual/layouts-gcfree-lookup.adoc[]
 |===
 
-[NOTE]
-====
-Patterns containing
-
-* regular expressions
-* lookups
-* xref:manual/layouts.adoc#LocationInformation[location information]
-
-are not garbage-free.
-====
+Patterns containing regular expressions and xref:manual/layouts.adoc#LocationInformation[location information] are not garbage-free.
 
 [#extending]
 == Extending
