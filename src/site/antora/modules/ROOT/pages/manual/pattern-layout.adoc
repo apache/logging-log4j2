@@ -226,7 +226,7 @@ Pattern Layout plugin configuration accepts the following elements:
 ==== `RegexReplacement`
 
 Allows portions of the resulting `String` to be replaced.
-This performs a function similar to xref:#converter-RegexReplacement[the `RegexReplacement` converter] but applies to the whole message while the converter only applies to the `String` its pattern generates.
+This performs a function similar to xref:#converter-replace[the `replace` converter] but applies to the whole message while the converter only applies to the `String` its pattern generates.
 
 It supports following attributes:
 
@@ -720,59 +720,26 @@ Windows users should refer to xref:#jansi[].
 highlight{pattern}{style}
 ----
 
-The default colors for each level are:
+The `style` parameter is a comma-separated list of the following directives:
 
-[%header,cols="1m,1"]
+.Style parameter syntax
+[cols="1m,2"]
 |===
-|Level
-|ANSI color
+| Directive | Description
 
-|FATAL
-|Bright red
+| <level>=<style_expression>
+| Formats all messages matching level `<level>` using the style provided by `<style_expression>`.
+See <<ansi-modifiers>> for the syntax of `<style_expression>`.
 
-|ERROR
-|Bright red
+| STYLE=default
+| Sets the default style, which is equivalent to the following sequence of directives:
+`FATAL=bold red, ERROR=bold red, WARN=yellow, INFO=green, DEBUG=cyan, TRACE=black`.
 
-|WARN
-|Yellow
-
-|INFO
-|Green
-
-|DEBUG
-|Cyan
-
-|TRACE
-|Black (looks dark grey)
-|===
-
-The color names are ANSI names defined in link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/AnsiEscape.html[`AnsiEscape`].
-
-The color and attribute names are standard, but the exact shade, hue, or value.
-
-.Color table
-|===
-|Intensity |0 |1 |2 |3 |4 |5 |6 |7
-
-|Normal
-|{set:cellbgcolor:black}Black
-|{set:cellbgcolor:maroon}Red
-|{set:cellbgcolor:green}Green
-|{set:cellbgcolor:olive}Yellow
-|{set:cellbgcolor:navy}Blue
-|{set:cellbgcolor:purple}Magenta
-|{set:cellbgcolor:teal}Cyan
-|{set:cellbgcolor:silver}White
-
-|{set:cellbgcolor:white}Bright
-|{set:cellbgcolor:gray}Black
-|{set:cellbgcolor:red}Red
-|{set:cellbgcolor:lime}Green
-|{set:cellbgcolor:yellow}Yellow
-|{set:cellbgcolor:blue}Blue
-|{set:cellbgcolor:fuchsia}Magenta
-|{set:cellbgcolor:cyan}Cyan
-|{set:cellbgcolor:white}White
+| STYLE=logback
+| Applies the style used by
+https://logback.qos.ch/manual/layouts.html#coloring[Logback's `%highlight` converter],
+which is equivalent to the following sequence of directives:
+`FATAL=blink bold red, ERROR=bold red, WARN=red, INFO=blue, DEBUG=normal, TRACE=normal`.
 |===
 
 You can use the default colors with:
@@ -787,10 +754,10 @@ For example:
 
 [source,text]
 ----
-%highlight{%d [%t] %-5level: %msg%n%throwable}{FATAL=white, ERROR=red, WARN=blue, INFO=black, DEBUG=green, TRACE=blue}
+%highlight{%d [%t] %-5level: %msg%n%throwable}{FATAL=white, ERROR=red, WARN=blue, INFO=black, DEBUG=green, TRACE=magenta}
 ----
 
-You can highlight only the portion of the log event:
+You can highlight only a portion of the log event:
 
 [source,text]
 ----
@@ -808,30 +775,8 @@ You can also use the `STYLE` key to use a predefined group of colors:
 
 [source,text]
 ----
-%highlight{%d [%t] %-5level: %msg%n%throwable}{STYLE=Logback}
+%highlight{%d [%t] %-5level: %msg%n%throwable}{STYLE=logback}
 ----
-
-The `STYLE` value can be one of:
-
-`Default`:: See above
-`Logback`::
-+
-[%header,cols="1m,1"]
-|===
-|Level |ANSI color
-
-|FATAL |Blinking bright red
-
-|ERROR |Bright red
-
-|WARN |Red
-
-|INFO |Blue
-
-|DEBUG |Normal
-
-|TRACE |Normal
-|===
 
 [#converter-level]
 ==== Level
@@ -1274,93 +1219,14 @@ The counter is a static variable, so will only be unique within applications tha
 ==== Style
 
 Use ANSI escape sequences to style the result of the enclosed pattern.
-Windows users should refer to xref:#jansi[].
+The syntax of the `style_expression` parameter is described in <<ansi-modifiers>>.
+Windows users should also refer to xref:#jansi[].
 
 .link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/StyleConverter.html[`StyleConverter`] specifier grammar
 [source,text]
 ----
-style{pattern}{ANSI style}
+style{pattern}{style_expression}
 ----
-
-The style can consist of a comma-separated list of style names from the following table:
-
-[%header,cols="2m,3"]
-|===
-|Style Name
-|Description
-
-|Normal
-|Normal display
-
-|Bright
-|Bold
-
-|Dim
-|Dimmed or faint characters
-
-|Underline
-|Underlined characters
-
-|Blink
-|Blinking characters
-
-|Reverse
-|Reverse video
-
-|Hidden
-|
-
-|Black or FG_Black
-|Set the foreground color to black
-
-|Red or FG_Red
-|Set the foreground color to red
-
-|Green or FG_Green
-|Set the foreground color to green
-
-|Yellow or FG_Yellow
-|Set the foreground color to yellow
-
-|Blue or FG_Blue
-|Set the foreground color to blue
-
-|Magenta or FG_Magenta
-|Set the foreground color to magenta
-
-|Cyan or FG_Cyan
-|Set the foreground color to cyan
-
-|White or FG_White
-|Set the foreground color to white
-
-|Default or FG_Default
-|Set the foreground color to default (white)
-
-|BG_Black
-|Set the background color to black
-
-|BG_Red
-|Set the background color to red
-
-|BG_Green
-|Set the background color to green
-
-|BG_Yellow
-|Set the background color to yellow
-
-|BG_Blue
-|Set the background color to blue
-
-|BG_Magenta
-|Set the background color to magenta
-
-|BG_Cyan
-|Set the background color to cyan
-
-|BG_White
-|Set the background color to white
-|===
 
 For example:
 
@@ -1373,7 +1239,7 @@ You can also combine styles:
 
 [source,text]
 ----
-%d %highlight{%p} %style{%logger}{bright,cyan} %C{1.} %msg%n
+%d %highlight{%p} %style{%logger}{bold cyan} %C{1.} %msg%n
 ----
 
 You can also use `%` with a color like `%black`, `%blue`, `%cyan`, and so on.
@@ -1555,11 +1421,174 @@ shorter than 20 characters. However, if the category name is longer than 30
 characters, then truncate from the end.
 |===
 
+[#ansi-modifiers]
+=== Style modifiers
+
+The pattern layout supports styling your text using a variety of ANSI escape sequence, which can be used through the
+xref:#converter-highlight[`%highlight`] and xref:#converter-style[`%style`] pattern converters.
+
+The generic syntax of a style expression is a space-separated list of:
+
+* constants from the
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/AnsiEscape.html[`AnsiEscape`] class
+* or expressions of the form `#rrggbb` or `BG_#rrggbb`, were `r`, `g` and `b` are hexadecimal digits
+
+In EBNF form the syntax of a style expression is:
+
+[source,bnf]
+----
+<style_expression> ::= <style_expression> ( " " <style_expression> )*
+<style_modifier> ::= "#" <hex> <hex> <hex> <hex> <hex> <hex>
+                   | "bg_#" <hex> <hex> <hex> <hex> <hex> <hex>
+                   | <keyword>
+<hex> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7"
+        | "8" | "9" | "a" | "b" | "c" | "d" | "e" | "f"
+<keyword> ::= "normal" | "bold" | "dim" | "underline"
+            | "blink" | "reverse" | "hidden"
+            | "black" | "bg_black" | "bright_black" | "bg_bright_black"
+            | "red" | "bg_red" | "bright_red" | "bg_bright_red"
+            | "green" | "bg_green" | "bright_green" | "bg_bright_green"
+            | "yellow" | "bg_yellow" | "bright_yellow" | "bg_bright_yellow"
+            | "blue" | "bg_blue" | "bright_blue" | "bg_bright_blue"
+            | "magenta" | "bg_magenta" | "bright_magenta" | "bg_bright_magenta"
+            | "cyan" | "bg_cyan" | "bright_cyan" | "bg_bright_cyan"
+            | "white" | "bg_white" | "bright_white" | "bg_bright_white"
+----
+
+For example, you can use `underline blue bg_bright_yellow` to specify a blue underlined text on a bright yellow background.
+
+The style specifiers have the following effects (see
+https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_(Select_Graphic_Rendition)_parameters[Select Graphic Rendition]
+for details):
+
+`normal`::
+  reverts all parameters to their default value,
+
+`bold`::
+  increases the font weight or the color intensity,
+
+`dim`::
+  decreases the fond weight or the color intensity,
+
+`underline`::
+  underlines the text on some terminals,
+
+`blink`::
+  cause the text to blink,
+
+`reverse`::
+  swaps foreground and background colors,
+
+`hidden`::
+  hides the text.
+
+[#text-colors]
+==== Colors
+
+The color of the text or the background can be specified with the following style modifiers:
+
+.Color table (8 or 16 color terminals)
+[cols="1m,1m,1"]
+|===
+| Text color | Background color |
+
+3+h| {set:cellbgcolor:white}
+8 color terminals
+
+|
+black
+| bg_black
+| {set:cellbgcolor:black}
+
+| {set:cellbgcolor:white}
+red
+| bg_red
+| {set:cellbgcolor:maroon}
+
+| {set:cellbgcolor:white}
+green
+| bg_green
+| {set:cellbgcolor:green}
+
+| {set:cellbgcolor:white}
+yellow
+| bg_yellow
+| {set:cellbgcolor:olive}
+
+| {set:cellbgcolor:white}
+blue
+| bg_blue
+| {set:cellbgcolor:navy}
+
+| {set:cellbgcolor:white}
+magenta
+| bg_magenta
+| {set:cellbgcolor:purple}
+
+| {set:cellbgcolor:white}
+cyan
+| bg_cyan
+| {set:cellbgcolor:teal}
+
+| {set:cellbgcolor:white}
+white
+| bg_white
+| {set:cellbgcolor:silver}
+
+3+h| {set:cellbgcolor:white}
+16 color terminals
+
+|
+bright_black
+| bg_bright_black
+| {set:cellbgcolor:gray}
+
+| {set:cellbgcolor:white}
+bright_red
+| bg_bright_red
+| {set:cellbgcolor:red}
+
+| {set:cellbgcolor:white}
+bright_green
+| bg_bright_green
+|{set:cellbgcolor:lime}
+
+| {set:cellbgcolor:white}
+bright_yellow
+| bg_bright_yellow
+|{set:cellbgcolor:yellow}
+
+| {set:cellbgcolor:white}
+bright_blue
+| bg_bright_blue
+|{set:cellbgcolor:blue}
+
+| {set:cellbgcolor:white}
+bright_magenta
+| bg_bright_magenta
+|{set:cellbgcolor:fuchsia}
+
+| {set:cellbgcolor:white}
+bright_cyan
+| bg_bright_cyan
+|{set:cellbgcolor:cyan}
+
+| {set:cellbgcolor:white}
+bright_white
+| bg_bright_white
+|{set:cellbgcolor:white}
+|===
+
+If your terminal supports 24-bit colors, you can specify:
+
+* the text color using the `#rrggbb` syntax, e.g. `#dc143c` will color your text crimson,
+* the background color using the `bg_#rrggbb` syntax, e.g. `bg_#87ceeb` will use a sky blue background.
+
 [#jansi]
-=== ANSI styling on Windows
+==== ANSI styling on Windows
 
 ANSI escape sequences are supported natively on many platforms, but not by default on Windows.
-To enable ANSI support add the http://jansi.fusesource.org/[Jansi] dependency to your application, and set xref:manual/systemproperties.adoc#log4j.skipJansi[the `log4j.skipJansi` system property] to `false`.
+To enable ANSI support add the http://jansi.fusesource.org/[Jansi] dependency to your application, and set xref:manual/systemproperties.adoc#log4j2.skipJansi[the `log4j2.skipJansi` system property] to `false`.
 This allows Log4j to use Jansi to add ANSI escape codes when writing to the console.
 
 [NOTE]
