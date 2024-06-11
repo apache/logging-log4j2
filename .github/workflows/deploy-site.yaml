@@ -29,17 +29,15 @@ on:
 
 permissions: read-all
 
-env:
-  DEVELOCITY_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
-
 jobs:
 
   deploy-site-stg:
     if: github.repository == 'apache/logging-log4j2' && github.ref_name == '2.x'
-    uses: apache/logging-parent/.github/workflows/deploy-site-reusable.yaml@rel/11.1.0
+    uses: apache/logging-parent/.github/workflows/deploy-site-reusable.yaml@develocity
     # Secrets for committing the generated site
     secrets:
       GPG_SECRET_KEY: ${{ secrets.LOGGING_GPG_SECRET_KEY }}
+      GE_ACCESS_TOKEN: ${{ secrets.GE_ACCESS_TOKEN }}
     # Write permissions for committing the generated site
     permissions:
       contents: write
@@ -54,10 +52,11 @@ jobs:
 
   deploy-site-pro:
     if: github.repository == 'apache/logging-log4j2' && github.ref_name == '2.x-site-pro'
-    uses: apache/logging-parent/.github/workflows/deploy-site-reusable.yaml@rel/11.1.0
+    uses: apache/logging-parent/.github/workflows/deploy-site-reusable.yaml@develocity
     # Secrets for committing the generated site
     secrets:
       GPG_SECRET_KEY: ${{ secrets.LOGGING_GPG_SECRET_KEY }}
+      GE_ACCESS_TOKEN: ${{ secrets.GE_ACCESS_TOKEN }}
     # Write permissions for committing the generated site
     permissions:
       contents: write
@@ -84,10 +83,11 @@ jobs:
 
   deploy-site-rel:
     needs: export-version
-    uses: apache/logging-parent/.github/workflows/deploy-site-reusable.yaml@rel/11.1.0
+    uses: apache/logging-parent/.github/workflows/deploy-site-reusable.yaml@develocity
     # Secrets for committing the generated site
     secrets:
       GPG_SECRET_KEY: ${{ secrets.LOGGING_GPG_SECRET_KEY }}
+      GE_ACCESS_TOKEN: ${{ secrets.GE_ACCESS_TOKEN }}
     # Write permissions for committing the generated site
     permissions:
       contents: write
