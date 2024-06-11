@@ -79,7 +79,7 @@ To understand which configuration knobs exhibit what kind of allocation behaviou
 
 // Maintain the alphabetical ordering while making changes, please!
 * xref:manual/json-template-layout.adoc#faq-garbage-free[`JsonTemplateLayout`]
-* xref:manual/layouts.adoc#PatternLayout-gcfree[`PatternLayout`]
+* xref:manual/pattern-layout.adoc#garbage-free[`PatternLayout`]
 
 .Implementation notes
 [%collapsible]

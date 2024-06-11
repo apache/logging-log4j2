@@ -884,22 +884,22 @@ a pooled connection elsewhere. For example:
 [cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
-|autoCommitOnReturn |boolean | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
-|cacheState |boolean | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
-|connectionInitSqls |Strings | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
-|defaultAutoCommit |Boolean | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
-|defaultCatalog |String | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
-|defaultQueryTimeoutSeconds |Integer | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
-|defaultReadOnly |Boolean | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
-|defaultTransactionIsolation |int | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
-|disconnectionSqlCodes |Strings | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
-|fastFailValidation |boolean | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
-|maxConnLifetimeMillis |long | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
-|maxOpenPreparedStatements |int | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
-|poolStatements |boolean | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
-|rollbackOnReturn |boolean | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
-|validationQuery |String | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
-|validationQueryTimeoutSeconds |int | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|autoCommitOnReturn |boolean | See https://commons.apache.org/proper/commons-dbcp/configuration.html[Apache Commons DBCP configuration].
+|cacheState |boolean | See https://commons.apache.org/proper/commons-dbcp/configuration.html[Apache Commons DBCP configuration].
+|connectionInitSqls |Strings | See https://commons.apache.org/proper/commons-dbcp/configuration.html[Apache Commons DBCP configuration].
+|defaultAutoCommit |Boolean | See https://commons.apache.org/proper/commons-dbcp/configuration.html[Apache Commons DBCP configuration].
+|defaultCatalog |String | See https://commons.apache.org/proper/commons-dbcp/configuration.html[Apache Commons DBCP configuration].
+|defaultQueryTimeoutSeconds |Integer | See https://commons.apache.org/proper/commons-dbcp/configuration.html[Apache Commons DBCP configuration].
+|defaultReadOnly |Boolean | See https://commons.apache.org/proper/commons-dbcp/configuration.html[Apache Commons DBCP configuration].
+|defaultTransactionIsolation |int | See https://commons.apache.org/proper/commons-dbcp/configuration.html[Apache Commons DBCP configuration].
+|disconnectionSqlCodes |Strings | See https://commons.apache.org/proper/commons-dbcp/configuration.html[Apache Commons DBCP configuration].
+|fastFailValidation |boolean | See https://commons.apache.org/proper/commons-dbcp/configuration.html[Apache Commons DBCP configuration].
+|maxConnLifetimeMillis |long | See https://commons.apache.org/proper/commons-dbcp/configuration.html[Apache Commons DBCP configuration].
+|maxOpenPreparedStatements |int | See https://commons.apache.org/proper/commons-dbcp/configuration.html[Apache Commons DBCP configuration].
+|poolStatements |boolean | See https://commons.apache.org/proper/commons-dbcp/configuration.html[Apache Commons DBCP configuration].
+|rollbackOnReturn |boolean | See https://commons.apache.org/proper/commons-dbcp/configuration.html[Apache Commons DBCP configuration].
+|validationQuery |String | See https://commons.apache.org/proper/commons-dbcp/configuration.html[Apache Commons DBCP configuration].
+|validationQueryTimeoutSeconds |int | See https://commons.apache.org/proper/commons-dbcp/configuration.html[Apache Commons DBCP configuration].
 |=======================================================================
 
 When configuring the JDBCAppender, use the nested `<Column>` elements to specify which columns in the table should be written to and how to write to them.
@@ -1078,8 +1078,7 @@ public class ConnectionFactory {
 }
 ----
 
-This appender is
-link:../../2.x/manual/messages.html#MapMessage[`MapMessage`]-aware.
+This appender is {log4j2-url}/manual/messages.html#MapMessage[`MapMessage`]-aware.
 
 The following configuration uses no layout to indicate that the appender should match the keys of a `MapMessage` to the names of
 `ColumnMapping`s when setting the values of the Appender's SQL INSERT
@@ -1535,7 +1534,9 @@ Each log event is sent as a Kafka record.
 
 |syncSend
 |boolean
-|The default is `true`, causing sends to block until the record has been acknowledged by the Kafka server. When set to `false`, sends a return immediately, allowing for lower latency and significantly higher throughput. _New since 2.8. Be aware that this is a new addition, and it has not been extensively tested. Any failure sending to Kafka will be reported as an error to StatusLogger and the log event will be dropped (the ignoreExceptions parameter will not be effective). Log events may arrive out of order on the Kafka server._
+|The default is `true`, causing sends to block until the record has been acknowledged by the Kafka server. When set to `false`, sends a return immediately, allowing for lower latency and significantly higher throughput. _New since 2.8. Be aware that this is a new addition, and it has not been extensively tested.
+Any failure sending to Kafka will be reported as an error to {log4j2-url}/manual/status-logger.html[status logger] and the log event will be dropped (the ignoreExceptions parameter will not be effective).
+Log events may arrive out of order on the Kafka server._
 
 |properties
 |Property[]
@@ -1859,7 +1860,7 @@ http://mongodb.github.io/mongo-java-driver/5.0/apidocs/mongodb-driver-core/com/m
 in the format `mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database.collection][?options]]`.
 
 |capped |boolean |Enable support for
-https://docs.mongodb.com/manual/core/capped-collections/[capped
+https://www.mongodb.com/docs/manual/core/capped-collections/[capped
 collections]
 
 |collectionSize |long |Specify the size in bytes of the capped collection
@@ -1868,8 +1869,7 @@ be increased to the nearest integer multiple of 256. See the capped
 collection documentation linked above for more information.
 |=======================================================================
 
-This appender is
-link:../../manual/messages.html#MapMessage[`MapMessage`]-aware.
+This appender is {log4j2-url}/manual/messages.html#MapMessage[MapMessage]-aware.
 
 Here are a few sample configurations for the NoSQLAppender and MongoDB4 provider:
 
@@ -2426,10 +2426,9 @@ If the pattern contains an integer it will be incremented on each rollover.
 If the pattern contains both a date/time and integer in the pattern the integer will be incremented until the result of the date/time pattern changes.
 If the file pattern ends with ".gz", ".zip", ".bz2", ".deflate", ".pack200", or ".xz" the resulting archive will be compressed using the compression scheme that matches the suffix.
 The formats bzip2, Deflate, Pack200 and XZ require
-http://commons.apache.org/proper/commons-compress/[Apache Commons
-Compress].
-In addition, XZ requires http://tukaani.org/xz/java.html[XZ
-for Java].
+https://commons.apache.org/proper/commons-compress/index.html[Apache Commons Compress].
+In addition, XZ requires
+https://www.tukaani.org/xz/java.html[XZ for Java].
 The pattern may also contain lookup references that can be resolved at runtime such as shown in the example below.
 
 The default rollover strategy supports three variations for incrementing the counter.
@@ -2945,7 +2944,7 @@ the paths in the `pathList`.
 under the base path up to the specified max depth, sorted most recently
 modified files first. The script is free to modify and return this list.
 
-|statusLogger |StatusLogger |The StatusLogger that can be used to log
+|statusLogger |StatusLogger |The {log4j2-url}/manual/status-logger.html[status logger] that can be used to log
 internal events during script execution.
 
 |configuration |Configuration |The Configuration that owns this

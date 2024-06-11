@@ -252,29 +252,19 @@ for more details.
 Log4j Core's logging pipeline is quite complex (see xref:manual/architecture.adoc[Architecture]), but most users only require these elements:
 
 Loggers::
-+
-Loggers are the entry point of the logging pipeline, which is directly used in the code.
+xref:manual/api.adoc#loggers[Loggers] are the entry point of the logging pipeline, which is directly used in the code.
 Their configuration must specify which level of messages they log and to which appenders they send the messages.
-+
-See <<configuring-loggers>> for details.
+We will cover them while <<configuring-loggers, configuring loggers>>.
 
 [id=configuring-appenders]
 [[Appenders]] Appenders::
-+
-Appenders are the exit point of the logging pipeline.
+xref:manual/appenders.adoc[] are the exit point of the logging pipeline.
 They decide which resource (console, file, database, or similar) the log event is sent to.
 In the examples of this chapter, we will only use the xref:manual/appenders.adoc#consoleappender[console appender] and the xref:manual/appenders.adoc#fileappender[file appender].
-+
-See xref:manual/appenders.adoc[Appender configuration] for details.
 
 Layouts::
-+
-Layouts tell appenders how to format the log event: text, JSON, XML, or similar.
-In the examples of this chapter, we will only use the xref:manual/layouts.adoc#pattern-layout[textual pattern layout]
-and
-xref:manual/json-template-layout.adoc[JSON template layout].
-+
-See xref:manual/layouts.adoc[Layout configuration] for details.
+xref:manual/layouts.adoc[] tell appenders how to format the log event: text, JSON, XML, or similar.
+In the examples of this chapter, we will only use xref:manual/pattern-layout.adoc[] and xref:manual/json-template-layout.adoc[].
 
 A moderately complex configuration might look like this:
 

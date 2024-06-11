@@ -39,8 +39,8 @@ start_page: index.adoc
 asciidoc:
   attributes:
     # Commons
-    antora-examples-url: "https://raw.githubusercontent.com/apache/logging-log4j2/2.x/src/site/antora/modules/ROOT/examples"
-    project-github-url: "${scm.url}"
+    antora-examples-url: "${scm.url}/tree/${scm.tag}/src/site/antora/modules/ROOT/examples"
+    project-github-url: "${scm.url}/tree/${scm.tag}"
     project-name: "Log4j"
     project-id: "log4j"
     java-target-version: "${maven.compiler.target}"

@@ -437,7 +437,7 @@ Contrast to xref:#config-app[an application's more conservative Log4j setup], fo
 . the logs are pretty-printed to the console, and
 . logging verbosity is increased.
 
-While it is not recommended to use xref:manual/layouts.adoc#pattern-layout[Pattern Layout] in production for security reasons, it is a good choice for tests to encode log events.
+While it is not recommended to use xref:manual/pattern-layout.adoc[] in production for security reasons, it is a good choice for tests to encode log events.
 We will use it to pretty-print the log event to the console with extra fields: timestamp, thread name, log level, class name, etc.
 The rest of the configuration should look familiar from earlier sections.
 
@@ -468,7 +468,7 @@ Save the following XML-formatted Log4j configuration file to `src/**test**/resou
 
 </Configuration>
 ----
-<1> xref:manual/layouts.adoc#pattern-layout[Pattern Layout] is used for encoding the log event in a human-readable way.
+<1> xref:manual/pattern-layout.adoc[] is used for encoding the log event in a human-readable way.
 <2> Increased logging verbosity for the `com.mycompany` package.
 
 [#next]

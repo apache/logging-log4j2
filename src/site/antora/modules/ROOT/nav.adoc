@@ -33,6 +33,7 @@
 ** xref:manual/appenders.adoc[]
 ** xref:manual/layouts.adoc[]
 *** xref:manual/json-template-layout.adoc[]
+*** xref:manual/pattern-layout.adoc[]
 ** xref:manual/lookups.adoc[]
 ** xref:manual/filters.adoc[]
 ** xref:manual/scripts.adoc[]

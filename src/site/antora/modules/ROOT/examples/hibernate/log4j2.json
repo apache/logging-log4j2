@@ -36,10 +36,10 @@
 
       ],
       "Root": {
-        "level": "WARN"
-      },
-      "AppenderRef": {
-        "ref": "CONSOLE"
+        "level": "WARN",
+        "AppenderRef": {
+          "ref": "CONSOLE"
+        }
       }
     }
   }
