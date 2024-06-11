@@ -40,10 +40,12 @@ import org.apache.logging.log4j.util.StackLocatorUtil;
  * Loggers associated with classes loaded from different ClassLoaders to be co-mingled. This is a problem if, for
  * example, a web application is undeployed as some of the Loggers being released may be associated with a Class in a
  * parent ClassLoader, which will generally have negative consequences.
- *
+ * <p>
  * The main downside to this ContextSelector is that Configuration is more challenging.
- *
+ * </p>
+ * <p>
  * This ContextSelector should not be used with a Servlet Filter such as the Log4jServletFilter.
+ * </p>
  */
 public class ClassLoaderContextSelector implements ContextSelector, LoggerContextShutdownAware {
 

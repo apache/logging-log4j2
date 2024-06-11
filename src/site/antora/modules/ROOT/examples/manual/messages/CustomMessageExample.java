@@ -22,22 +22,20 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 
-public class StringBuilderFormattableExample {
+public class CustomMessageExample {
+
     private static final Logger LOGGER = LogManager.getLogger();
 
     public static void main(String[] args) {
         InetSocketAddress socketAddress = InetSocketAddress.createUnresolved("192.0.2.17", 1234);
         LoginFailureEvent event = new LoginFailureEvent("root", socketAddress);
-        failedLogin(event);
-    }
-
-    private static void failedLogin(LoginFailureEvent event) {
         LOGGER.info(event);
     }
 
     // tag::loginFailure[]
     record LoginFailureEvent(String userName, InetSocketAddress remoteAddress)
             implements Message, StringBuilderFormattable { // <1>
+
         @Override
         public void formatTo(StringBuilder buffer) { // <2>
             buffer.append("Connection closed by authenticating user ")
@@ -55,8 +53,8 @@ public class StringBuilderFormattableExample {
             formatTo(buffer);
             return buffer.toString();
         }
-        // Other methods
         // end::loginFailure[]
+
         @Override
         public String getFormat() {
             return "";
@@ -72,6 +70,7 @@ public class StringBuilderFormattableExample {
             return null;
         }
         // tag::loginFailure[]
+
     }
     // end::loginFailure[]
 }

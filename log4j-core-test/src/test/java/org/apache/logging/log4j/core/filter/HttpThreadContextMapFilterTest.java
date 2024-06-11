@@ -95,7 +95,9 @@ public class HttpThreadContextMapFilterTest implements MutableThreadContextMapFi
 
     @AfterAll
     public static void stopServer() throws Exception {
-        server.stop();
+        if (server != null) {
+            server.stop();
+        }
     }
 
     @AfterEach
@@ -105,8 +107,10 @@ public class HttpThreadContextMapFilterTest implements MutableThreadContextMapFi
         } catch (IOException ioe) {
             // Ignore this.
         }
-        loggerContext.stop();
-        loggerContext = null;
+        if (loggerContext != null) {
+            loggerContext.stop();
+            loggerContext = null;
+        }
     }
 
     @RetryingTest(maxAttempts = 5, suspendForMs = 10)
