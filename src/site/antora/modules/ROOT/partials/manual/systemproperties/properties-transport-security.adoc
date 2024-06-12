@@ -213,7 +213,7 @@ The name of the environment variable that contains the password for the private 
 |===
 
 The type of private key store.
-See https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyStore[KeyStore types].
+See https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/security/StandardNames.html#KeyStore[`KeyStore`].
 
 [id=log4j.transportSecurity.keyStore.keyManagerFactory.algorithm]
 == `log4j.transportSecurity.keyStore.keyManagerFactory.algorithm`

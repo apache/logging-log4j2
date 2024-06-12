@@ -47,7 +47,7 @@ or predefined constant
 |===
 
 Determines the
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[AsyncQueueFullPolicy]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[`AsyncQueueFullPolicy`]
 to use when the underlying async component cannot keep up with the logging rate and the queue is filling up.
 
 Its value should be the fully qualified class name of an `AsyncQueueFullPolicy` implementation or one of these predefined constants:

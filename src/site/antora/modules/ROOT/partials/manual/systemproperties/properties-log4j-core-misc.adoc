@@ -37,7 +37,7 @@ SystemMillisClock:: same as `SystemClock`, but truncates the result to a millise
 
 CachedClock:: uses a separate thread to update the timestamp value.
 See
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/CachedClock.html[JavaDoc]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/CachedClock.html[`CachedClock`]
 for details.
 
 CoarseCachedClock:: alternative implementation of `CachedClock` with a slightly lower precision.
