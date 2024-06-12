@@ -43,6 +43,7 @@
 * xref:manual/performance.adoc[]
 ** xref:manual/async.adoc[]
 ** xref:manual/garbagefree.adoc[]
+* xref:manual/migration.adoc[]
 
 .References
 * xref:plugin-reference.adoc[Plugin reference]
@@ -50,7 +51,6 @@
 
 .Resources
 * xref:faq.adoc[F.A.Q.]
-* xref:manual/migration.adoc[]
 * xref:migrate-from-logback.adoc[]
 * xref:migrate-from-slf4j.adoc[]
 * xref:hibernate.adoc[]

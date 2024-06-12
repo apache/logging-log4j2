@@ -145,10 +145,13 @@ XML::
 +
 Since XML was the original configuration format developed, the mapping from configuration nodes and XML elements is trivial:
 +
+[id=configuration-with-xml]
+====
 * Each configuration node is represented by an XML element.
 * Each configuration attribute is represented by an XML attribute.
 * The **plugin type** of a node is equal to the name of the XML tag.
 * Each configuration nested element is represented by a nested XML element.
+====
 +
 [NOTE]
 ====

@@ -16,5 +16,247 @@ Licensed to the Apache Software Foundation (ASF) under one or more
 ////
 
 = Migrating from Log4j 2
+:sonatype-url: https://central.sonatype.com/artifact/org.apache.logging.log4j
 
-TODO
+[NOTE]
+====
+If you are migrating from Log4j 1, check the
+{log4j2-url}/manual/migration.html[Migrating from Log4j 1]
+guide in the Log4j 2 manual.
+====
+
+Since Log4j 3 uses Log4j 2 API as logging API, no code changes should be necessary for most users.
+
+In order to migrate to Log4j 3, you only need to:
+
+* <<runtime-dependencies,update your dependencies>>,
+* if you use
+xref:manual/systemproperties.adoc[configuration properties]
+to fine tune the Log4j 3 backend,
+<<properties-configuration-file,check your configuration properties>>,
+* if you used the Java properties configuration format, <<properties-configuration-file,migrate your configuration file>>,
+
+[#runtime-dependencies]
+== Runtime dependencies
+
+Log4j 2 Core contains many features that depend on optional runtime dependencies.
+In order to comply with the Java Platform Module System and help users managing those dependencies, some features were moved to separate Maven modules.
+This change has the following advantages:
+
+* you don't need to consult the documentation to find out, which third-party libraries are necessary to use a specific feature: adding the appropriate Log4j 3 artifact is enough.
+* Log4j 3 does not have optional dependencies, so third-party libraries used by Log4j will be upgraded **automatically** by your dependency management tool, when you upgrade Log4j.
+
+The following `log4j-core` features were moved to their own modules or were removed:
+
+.New Log4j 3 modules
+[cols="1,1"]
+|===
+| Log4j 2 feature | Log4j 3 module
+
+| xref:manual/appenders.adoc#BlockingQueueFactory[Asynchronous appender: JCTools-based queue]
+| {sonatype-url}/log4j-jctools[`log4j-jctools`]
+
+| xref:manual/async.adoc[Asynchronous logger]
+| {sonatype-url}/log4j-async-logger[`log4j-async-logger`]
+
+| {log4j2-url}/manual/appenders.html#CassandraAppender[Cassandra appender]
+| _removed without replacement_
+footnote:removal[If you are using these components, and you can help us to maintain them, please contact us on our link:/support.html[support channels].]
+
+| {log4j2-url}/manual/appenders.html#NoSQLAppenderApacheCouchDB[CouchDB appender]
+| _removed without replacement_ footnote:removal[]
+
+| xref:manual/configuration.adoc#configuration-with-properties[Configuration file: Java properties format]
+| {sonatype-url}/log4j-config-properties[`log4j-config-properties`]
+
+| xref:manual/configuration.adoc#configuration-with-yaml[Configuration file: YAML format]
+| {sonatype-url}/log4j-config-yaml[`log4j-config-yaml`]
+
+| xref:manual/layouts.adoc#CSVLayouts[CSV layouts]
+| {sonatype-url}/log4j-csv[`log4j-csv`]
+
+| {log4j2-url}/manual/layouts.html#GELFLayout[GELF layout]
+| _removed without replacement_ footnote:removal[]
+
+| xref:manual/appenders.adoc#JDBCAppender[JDBC appender]
+| {sonatype-url}/log4j-jdbc[`log4j-jdbc`]
+
+| xref:manual/appenders.adoc#JDBCPoolingDriver[JDBC appender: DBCP 2 connection source]
+| {sonatype-url}/log4j-jdbc-dbcp2[`log4j-jdbc-dbcp2`]
+
+| xref:manual/appenders.adoc#JDBCDataSource[JDBC appender: JNDI connection source]
+| {sonatype-url}/log4j-jndi[`log4j-jndi`]
+
+| {log4j2-url}/manual/appenders.html#JeroMQAppender[JeroMQ appender]
+| external
+https://github.com/fbacchella/loghublog4j2#zmqappender[`loghublog4j2` maintained by Fabrice Bacchella]
+
+| {log4j2-url}/manual/appenders.html#JMSAppender[JMS appender: Java EE version]
+| _removed without replacement_ footnote:removal[]
+
+| xref:manual/lookups.adoc#JndiLookup[JNDI lookup]
+| {sonatype-url}/log4j-jndi[`log4j-jndi`]
+
+| {log4j2-url}/manual/appenders.html#JPAAppender[JPA appender]
+| _removed without replacement_ footnote:removal[]
+
+| {log4j2-url}/log4j-taglib.html[JSP Tag library]
+| _removed without replacement_ footnote:removal[]
+
+| {log4j2-url}/manual/appenders.html#KafkaAppender[Kafka appender]
+| _removed without replacement_ footnote:removal[]
+
+| xref:manual/lookups.adoc#KubernetesLookup[Kubernetes lookup]
+| external
+https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md[`kubernetes-log4j` maintained by Fabric8]
+
+| xref:manual/scripts.adoc[Scripting support]
+| {sonatype-url}/log4j-script[`log4j-script`]
+
+| {log4j2-url}/manual/webapp.html[Servlet application support: Java EE version]
+| _removed without replacement_ footnote:removal[]
+
+| {log4j2-url}/manual/appenders.html#SMTPAppender[SMTP appender: Java EE version]
+| _removed without replacement_ footnote:removal[]
+
+| {log4j2-url}/manual/lookups.html#_spring_boot_lookup[Spring Boot lookup]
+| integrated into
+https://central.sonatype.com/artifact/org.springframework.boot/spring-boot[`spring-boot`]
+version 3.0.0 or later
+
+|===
+
+[#system-properties]
+== Migrate configuration properties
+
+In order to support per-logger context configuration properties, the configuration properties sub-system of Log4j has been rewritten and the naming convention of properties have changed.
+To help you with the migration process a backward compatibility system has been implemented, which translates Log4j 2 property names to their Log4j 3 equivalents.
+
+If you use configuration properties to finely tune Log4j Core, make sure that:
+
+* either you use the naming convention from the
+xref:manual/systemproperties.adoc[Log4j 3 configuration properties]
+page (recommended),
+* or you use the naming convention from the
+{log4j2-url}/manual/systemproperties.html[Log4j 2 configuration properties]
+page.
+
+Most Log4j 3 configuration properties sources are **case-sensitive** and fuzzy matching is not applied to those sources.
+
+[#properties-configuration-file]
+== Java properties configuration file format
+
+The Java properties configuration file format in Log4j 3 has been rewritten to use
+https://github.com/FasterXML/jackson-dataformats-text/blob/2.18/properties/README.md[`jackson-dataformat-properties`]
+to convert Java properties into the native JSON configuration file format.
+See
+https://github.com/FasterXML/jackson-dataformats-text/blob/2.18/properties/README.md[Jackson documentation]
+for more details on the conversion.
+
+The only significant changes between the Log4j 2 and Log4j 3 properties format are:
+
+. As an alternative to using the `type` configuration attribute to specify the **plugin type** of a Log4j component, you can append the plugin type to the prefix of the parent component.
+For example, instead of:
++
+[source,properties]
+----
+appender.0.type = Console
+appender.0.name = CONSOLE
+appender.1.type = File
+appender.1.name = MAIN
+appender.1.fileName = logs/main.log
+appender.2.type = File
+appender.2.name = DEBUG_LOG
+appender.2.fileName = logs/debug.log
+----
++
+you can write:
++
+[source,properties]
+----
+Appenders.Console.name = CONSOLE
+Appenders.File[1].name = MAIN
+Appenders.File[1].fileName = logs/main.log
+Appenders.File[2].name = DEBUG_LOG
+Appenders.File[2].fileName = logs/debug.log
+----
+
+. The
+{log4j2-url}/manual/configuration.html#java-properties-features[Java properties format specific quirks]
+are no longer recognized, which means that:
+
+* The following direct children of `Configuration` need to use the same prefix as the other formats:
++
+--
+** You need to replace the `appender` prefix with `Appenders`,
+** You need to replace the `logger` prefix with `Loggers`,
+** You need to replace the `script` prefix with `Scripts`.
+--
+
+* Properties that start with `property`, which are used for
+xref:manual/configuration.adoc#property-substitution[property substitution],
+need to be rewritten from:
++
+[source,properties]
+----
+property.<key> = <value>
+----
++
+to
++
+[source,properties]
+----
+Properties.Property[<n>].key = <key>
+Properties.Property[<n>].value = <value>
+----
++
+where `<n>` is an increasing positive integer.
+
+* Properties that start with `customLevel`, which are used to define custom levels, need to be rewritten from:
++
+[source,properties]
+----
+customLevel.<name> = <intLevel>
+----
++
+to
++
+[source,properties]
+----
+CustomLevels.CustomLevel[<n>].name = <name>
+CustomLevels.CustomLevel[<n>].intLevel = <intLevel>
+----
++
+where `<n>` is an increasing positive integer.
+
+* You need to replace the `rootLogger` prefix with `Loggers.Root`.
+
+* The shorthand notation:
++
+[source,properties]
+----
+rootLogger = INFO, APPENDER1, APPENDER2
+----
++
+must be rewritten into:
++
+[source,properties]
+----
+Loggers.Root.level = INFO
+Loggers.Root.AppenderRef[1] = APPENDER1
+Loggers.Root.AppenderRef[2] = APPENDER2
+----
+
+* All the prefixes of the form:
++
+[source]
+----
+logger.<name>.appenderRef.<id>
+----
+where `<name>` and `<id>` are arbitrary, must be rewritten to
++
+[source]
+----
+Loggers.Logger[<n>].AppenderRef[<m>]
+----
+where `<n>` and `<m>` are increasing positive integers.

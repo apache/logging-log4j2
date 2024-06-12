@@ -22,7 +22,7 @@ import org.apache.logging.log4j.util.EnglishEnums;
  *  The facility codes used by the Syslog system.
  *
  * <table>
- *     <caption>Facilities</caption>
+ *     <caption>Facility and corresponding numerical codes</caption>
  *     <tr>
  *         <th>Numerical Code</th>
  *         <th>Facility</th>
