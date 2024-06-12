@@ -321,198 +321,728 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p><a href="http://logging.apache.org/log4j/1.2/">Log4j 1.x</a> has <a href="https://blogs.apache.org/foundation/entry/apache_logging_services_project_announces">reached End of Life</a> in 2015 and is no longer supported.</p>
+<p><a href="https://logging.apache.org/log4j/1.x/index.html">Log4j 1</a>
+has reached <strong>End of Life</strong> in 2015 (see
+<a href="https://blogs.apache.org/foundation/entry/apache_logging_services_project_announces">announcement</a>)
+and is no longer supported.</p>
 </div>
 <div class="paragraph">
-<p>This page explains how to migrate applications or libraries currently using the Log4j 1.x API to use Log4j v2 as their main logging framework.</p>
+<p>Since Log4j 2 has been rewritten from scratch, it introduces many breaking changes to its predecessor.
+Most notably:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>It uses a new package namespace (<code>org.apache.logging.log4j</code>), whereas Log4j 1 used the <code>org.apache.log4j</code> namespace,</p>
+</li>
+<li>
+<p>It features a
+<a href="api.html" class="xref page">logging API</a>
+which is independent of its reference implementation,</p>
+</li>
+<li>
+<p>It uses a new more flexible
+<a href="configuration.html" class="xref page">configuration file format</a>,
+which is <strong>incompatible</strong> with the format used by Log4j 1.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="Log4j12Bridge"><a class="anchor" href="#Log4j12Bridge"></a>Option 1: use the Log4j 1.x bridge (log4j-1.2-api)</h2>
+<h2 id="prepare-to-migrate"><a class="anchor" href="#prepare-to-migrate"></a>Prepare to migrate</h2>
+<div class="sectionbody">
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">Are you a library developer?</div>
+<div class="paragraph">
+<p>If you are developing a library, which functionality is not related to logging, you only need to rewrite the library to use Log4j 2 API.
+Skip directly to <a href="#api-migration">Log4j 1 API migration</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In order to migrate your application to Log4j 2 you need to assess first how your application <strong>and</strong> its dependencies use Log4j 1.
+While Log4j 1 didn&#8217;t have a formal split between a logging API and a logging backend, for the purpose of this guide, we&#8217;ll introduce the following split:</p>
+</div>
+<div id="log4j-1-api-methods" class="dlist">
+<dl>
+<dt class="hdlist1">Log4j 1 API</dt>
+<dd>
+<div class="paragraph">
+<p>It is the part of the Log4j 1 library that produces log events, and it is the most commonly used.
+The methods that are considered part of the Log4j 1 API are listed below:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Log4j 1 API methods</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Class name</th>
+<th class="tableblock halign-left valign-top">Methods</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/MDC.html">org.apache.log4j.MDC</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">All methods</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/NDC.html">org.apache.log4j.NDC</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">All methods</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/Priority.html">org.apache.log4j.Priority</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">All methods</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/Level.html">org.apache.log4j.Level</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">All methods</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/Category.html">org.apache.log4j.Category</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">All methods, except: methods for the
+<a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/spi/AppenderAttachable.html">AppenderAttachable</a> interface, <code>callsAppenders</code> and <code>setLevel</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/Logger.html">org.apache.log4j.Logger</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Same as <code>Category</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/LogManager.html">org.apache.log4j.LogManager</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">All methods</p></td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt class="hdlist1">Log4j 1 Backend</dt>
+<dd>
+<div class="paragraph">
+<p>This is the part of the logging library that consumes log events, formats them and writes to their destination.
+It also allows to configure Log4j 1 programmatically.
+It is usually <strong>not used</strong> in code, since the recommended way to configure Log4j 1 is through a configuration file.</p>
+</div>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>While it is fairly simple to check which classes and methods in the <code>org.apache.log4j</code> package are used by your own application, the task is much more complex, when it comes to your application dependencies.</p>
+</div>
+<div class="paragraph">
+<p>All the libraries that use <strong>Log4j 1 API</strong> in their code must have a compile dependency on either
+<a href="https://central.sonatype.com/artifact/log4j/log4j">log4j:log4j</a>
+or its clone
+<a href="https://central.sonatype.com/artifact/ch.qos.reload4j/reload4j">ch.qos.reload4j:reload4j</a>.
+There are however misconfigured libraries that declare those dependencies, even if they don&#8217;t directly use Log4j 1 <strong>at all</strong>.</p>
+</div>
+<div class="paragraph">
+<p>To distinguish between libraries that use Log4j 1 and those that don&#8217;t, you can look for the presence of other logging APIs. If a library <strong>directly</strong> depends on:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://central.sonatype.com/artifact/commons-logging/commons-logging"><code>commons-logging:commons-logging</code></a>,</p>
+</li>
+<li>
+<p><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-api"><code>org.apache.logging.log4j:log4j-api</code></a>,</p>
+</li>
+<li>
+<p><a href="https://central.sonatype.com/artifact/org.slf4j/slf4j-api"><code>org.slf4j:slf4j-api</code></a>,</p>
+</li>
+<li>
+<p><a href="https://central.sonatype.com/artifact/org.jboss.logging/jboss-logging"><code>jboss-logging</code></a>,</p>
+</li>
+<li>
+<p>other logging APIs,</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>it is fair to assume that it uses those libraries <strong>instead</strong> of <strong>Log4j 1 API</strong>, even if it has a direct dependency on <code>log4j:log4j</code> or <code>ch.qos.reload4j:reload4j</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The following sections explain how to migrate from Log4j 1 to Log4j 2, depending on the way Log4j 1 is used in your application:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>if your application or one of its dependencies is coded against Log4j 1 API, see <a href="#api-migration">Log4j 1 API migration</a>,</p>
+</li>
+<li>
+<p>if your application uses Log4j 1 only as logging backend, see <a href="#backend-migration">Log4j 1 Backend migration</a>.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="api-migration"><a class="anchor" href="#api-migration"></a>Log4j 1 API migration</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You may be able to convert an application to Log4j 2 <em>without any code changes</em> by replacing the Log4j 1.x jar file with Log4j 2&#8217;s <code>log4j-1.2-api.jar</code>.</p>
+<p>To migrate an application that uses Log4j 1 API as logging API, the recommended approach is to modify your code.
+See <a href="#api-code-migration">Migrate code from Log4j 1 API to Log4j 2 API</a> for details.</p>
 </div>
 <div class="paragraph">
-<p>The Log4j 1.x bridge is useful when:</p>
+<p>In the case one of your libraries uses Log4j 1 API or you can not modify your logging code at the moment, a Log4j 1 to Log4j 2 bridge is available.
+See <a href="#api-use-bridge">Use Log4j 1 to Log4j 2 API bridge</a> for details.</p>
+</div>
+<div class="sect2">
+<h3 id="api-code-migration"><a class="anchor" href="#api-code-migration"></a>Migrate code from Log4j 1 API to Log4j 2 API</h3>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You can migrate your code from Log4j 1 to Log4j 2 automatically, by using the
+<a href="https://docs.openrewrite.org/recipes/java/logging/log4j/log4j1tolog4j2">Log4j1ToLog4j2</a> OpenRewrite recipe.
+See
+<a href="https://docs.openrewrite.org/recipes/java/logging/log4j/log4j1tolog4j2">OpenRewrite site</a> for more details.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Except the change in the package name from <code>org.apache.log4j</code> to <code>org.apache.logging.log4j</code>, most of the class and method names in Log4j 2 API are inherited from Log4j 1 API.</p>
+</div>
+<div class="paragraph">
+<p>In order to migrate you code, you need to:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>the application itself is (maybe partly) still using the Log4j 1.x API, or if</p>
+<p>modify the imports and types used by your application, according to the following table:</p>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Migration of types from Log4j 1 to Log4j 2</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Migrate Log4j 1 type</th>
+<th class="tableblock halign-left valign-top">to Log4j type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/MDC.html">org.apache.log4j.MDC</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="../javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html">org.apache.logging.log4j.ThreadContext</a></code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/NDC.html">org.apache.log4j.NDC</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="../javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html">org.apache.logging.log4j.ThreadContext</a></code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/Priority.html">org.apache.log4j.Priority</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html">org.apache.logging.log4j.Level</a></code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/Level.html">org.apache.log4j.Level</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html">org.apache.logging.log4j.Level</a></code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/Category.html">org.apache.log4j.Category</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html">org.apache.logging.log4j.Logger</a></code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/Logger.html">org.apache.log4j.Logger</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html">org.apache.logging.log4j.Logger</a></code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/LogManager.html">org.apache.log4j.LogManager</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html">org.apache.logging.log4j.LogManager</a></code></p></td>
+</tr>
+</tbody>
+</table>
 </li>
 <li>
-<p>the application depends on a library which depends on the Log 1.x API, or</p>
+<p>Some Log4j 1 methods were renamed or moved to a different class.
+Therefore, you need to replace the following methods with their Log4j 2 API equivalents:</p>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. Migration of methods from Log4j 1 to Log4j 2</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Migrate Log4j 1 method</th>
+<th class="tableblock halign-left valign-top">to Log4j method</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/Logger.html#getLogger(java.lang.String)">Logger.getLogger()</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#getLogger()">LogManager.getLogger()</a></code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/Logger.html#getRootLogger()">Logger.getRootLogger()</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#getRootLogger()">LogManager.getRootLogger()</a></code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/Category.html#getEffectiveLevel()">Category.getEffectiveLevel()</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#getLevel()">Logger.getLevel()</a></code></p></td>
+</tr>
+</tbody>
+</table>
 </li>
 <li>
-<p>the application needs to support logging configurations in the old Log4j 1.x format.</p>
+<p>Finally, some methods need specific conversion rules to be applied:</p>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. Special Log4j 1 method migration rules</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Method</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/Logger.html#getLogger(java.lang.String,%20org.apache.log4j.spi.LoggerFactory)"><code>Logger.getLogger(String, LoggerFactory)</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Remove the <code>LoggerFactory</code> parameter and use one of Log4j 2&#8217;s other extension mechanisms.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/LogManager.html#shutdown()"><code>LogManager.shutdown()</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Since Log4j 2.6, an equivalent
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#shutdown()"><code>o.a.l.l.LogManager.shutdown()</code></a>
+method can be used.</p>
+<p class="tableblock">The utility of this method call depends upon the logging backend used with Log4j API.</p>
+<p class="tableblock">The Log4j Core backend automatically adds a JVM shutdown hook on start up to perform any cleanups, so the <code>LogManager.shutdown()</code> call can be safely removed.
+Starting in Log4j 2.1, you can also specify a custom
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/ShutdownCallbackRegistry.html">ShutdownCallbackRegistry</a>.</p>
+<p class="tableblock">See
+<a href="systemproperties.html#log4j2.shutdownCallbackRegistry" class="xref page">log4j2.shutdownCallbackRegistry</a>
+for more details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Non Log4j 1 API methods</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Methods outside of those listed in <a href="#log4j-1-api-methods">[log4j-1-api-methods]</a>, such as <code>Logger.setLevel()</code> need to be replaced with a method
+call specific to the logging backend used by the application.</p>
+<p class="tableblock">Some third-party integrators, such as Spring Boot, provide utility methods that let you abstract the logging backend, e.g. the
+<a href="https://docs.spring.io/spring-boot/api/java/org/springframework/boot/logging/LoggingSystem.html#setLogLevel(java.lang.String,org.springframework.boot.logging.LogLevel)"><code>LoggingSystem.setLogLevel()</code></a>
+Spring Boot method.</p></td>
+</tr>
+</tbody>
+</table>
 </li>
 </ul>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
 <div class="paragraph">
-<p>To use this option, applications need to use the following three jar files: the Log4j 2 API jar (<code>log4j-api.jar</code>), the Log4j 2 implementation jar (<code>log4j-core.jar</code>) and the Log4j 1.x bridge jar (<code>log4j-1.2-api.jar</code>).</p>
+<p>To prevent a performance penalty from string concatenation in disabled log statements, Log4j 1 required the use of <code>is*Enabled()</code> guards:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">if (LOGGER.isInfoEnabled()) {
+    LOGGER.info("Hello " + username + "!");
+}</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="../_images/whichjar-log4j-1.2-api.png" alt="Using log4j 2 via the log4j 1.x API"></span></p>
+<p>Since Log4j 2 API introduces
+<a href="api.html#best-practice-concat" class="xref page">parameterized logging</a>
+these guards are no longer necessary and the same statement can be rewritten as:</p>
 </div>
-<div class="paragraph">
-<p>For most applications this is sufficient.
-This is a low-effort way to migrate, and may also allow for migration to proceed gradually over time.</p>
-</div>
-<div class="sect2">
-<h3 id="enabling-the-log4j-1-x-bridge"><a class="anchor" href="#enabling-the-log4j-1-x-bridge"></a>Enabling the Log4j 1.x bridge</h3>
-<div class="paragraph">
-<p>Enable the Log4j 1.x bridge via one of the following steps:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Set the system property "log4j1.compatibility" to a value of "true".
-Log4j 2 will then add log4j.properties, log4j-test.properties, log4j.xml and log4j-test.xml to the <a href="configuration.html#AutomaticConfiguration" class="xref page">configuration files</a> it searches for on the class path.</p>
-</li>
-<li>
-<p>Set the Log4j 1 system property "log4j.configuration" to the location of the log4j 1 configuration file.
-The files must have a file extension of either ".properties" or ".xml".</p>
-</li>
-</ol>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.info("Hello {}!", username);</code></pre>
 </div>
 </div>
-<div class="sect2">
-<h3 id="APICompatibility"><a class="anchor" href="#APICompatibility"></a>API Compatibility</h3>
-<div class="paragraph">
-<p>Log4j 2 provides support for the Log4j 1 logging methods by providing alternate implementations of the classes containing those methods.
-These classes may be found in the log4j-1.2-api jar distributed with the project.
-All calls to perform logging will result in the data passed to the logging methods to be forwarded to the Log4j2 API where they can be processed by implementations of the Log4j 2 API.</p>
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
-<h3 id="ConfigurationCompatibility"><a class="anchor" href="#ConfigurationCompatibility"></a>Configuration Compatibility</h3>
+<h3 id="api-use-bridge"><a class="anchor" href="#api-use-bridge"></a><a id="APICompatibility"></a>Use Log4j 1 to Log4j 2 API bridge</h3>
 <div class="paragraph">
-<p>Log4j 2 provides support for Log4j 1 configuration files.
-Configuration of the Appenders, Layouts and Filters that were provided in the Log4j 1 distribution will be redirected to their Log4j 2 counterparts - with the exception of the implemented Rewrite Policies.
-This means that although the behavior of these components will be similar, they may not be exactly the same.
-For example, the XML generated by the XMLLayout may not exactly match the XML generated by the Log4j1XMLLayout.</p>
-</div>
-<div class="paragraph">
-<p>In addition, Log4j 2 supports custom Log4j 1 Appenders, Filters, and Layouts with some constraints.
-Since the original Log4j 1 components may not be present in Log4j 2, custom components that extend them will fail.</p>
-</div>
-<div class="sect3">
-<h4 id="_supported_components"><a class="anchor" href="#_supported_components"></a>Supported Components</h4>
-<div class="paragraph">
-<p>Supported Appenders include: AsyncAppender, ConsoleAppender, DailyRollingFileAppender, FileAppender, NullAppender, RewriteAppender (limited), RollingFileAppender, SyslogAppender.</p>
+<p>If you can not modify your application&#8217;s code or one of your dependencies is using
+<a href="#log4j-1-api-methods">Log4j 1 API</a>
+as logging API, you can delay the migration process by
+<a href="#log4j-1-2-api-installation">installing the Log4j 1 to Log4j 2 bridge</a>.</p>
 </div>
 <div class="paragraph">
-<p>Supported Filters include: DenyAllFilter, LevelMatchFilter, LevelRangeFilter, StringMatchFilter.</p>
-</div>
-<div class="paragraph">
-<p>Supported Layouts include: HtmlLayout, PatternLayout, SimpleLayout, TTCCLayout , XmlLayout.</p>
-</div>
-<div class="paragraph">
-<p>Supported Rewrite Policies include: MapRewritePolicy, PropertyRewritePolicy.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_unsupported_or_unimplemented_components"><a class="anchor" href="#_unsupported_or_unimplemented_components"></a>Unsupported or Unimplemented Components</h4>
-<div class="paragraph">
-<p>If your configuration contains any of the below components, consider <a href="#Log4j2ConfigurationFormat">migrating your configuration</a> to the Log4j 2 format.</p>
-</div>
-<div class="sect4">
-<h5 id="_appenders"><a class="anchor" href="#_appenders"></a>Appenders</h5>
-<div class="ulist">
-<ul>
-<li>
-<p>JDBCAppender (cannot be mapped to Log4j 2&#8217;s JdbcAppender)</p>
-</li>
-<li>
-<p>JMSAppender</p>
-</li>
-<li>
-<p>SMTPAppender</p>
-</li>
-<li>
-<p>SocketAppender (Requires the use of the SerializedLayout which is a security risk)</p>
-</li>
-<li>
-<p>SocketHubAppender (Requires the use of the SerializedLayout which is a security risk)</p>
-</li>
-<li>
-<p>TelnetAppender (Security risk)</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_rewrite_policies"><a class="anchor" href="#_rewrite_policies"></a>Rewrite Policies</h5>
-<div class="ulist">
-<ul>
-<li>
-<p>ReflectionRewritePolicy</p>
-</li>
-<li>
-<p>Custom rewrite policies since LoggingEvent is currently a no-op.</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_renderers"><a class="anchor" href="#_renderers"></a>Renderers</h5>
-<div class="paragraph">
-<p>Log4j 2 currently ignores renderers.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="Log4j12BridgeLimitations"><a class="anchor" href="#Log4j12BridgeLimitations"></a>Limitations of the Log4j 1.x bridge</h3>
-<div class="paragraph">
-<p>Applications can migrate by just using the bridge without further code changes, if they meet the following requirements:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>They must not access methods and classes internal to the Log4j 1.x implementation such as <code>Appender</code>s, <code>LoggerRepository</code> or <code>Category</code>'s <code>callAppenders</code> method.</p>
-</li>
-<li>
-<p>They must not programmatically configure Log4j.</p>
-</li>
-<li>
-<p>They must not configure by calling the Log4j 1.x classes <code>DOMConfigurator</code> or <code>PropertyConfigurator</code>.</p>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_when_to_stop_using_the_log4j_1_x_bridge"><a class="anchor" href="#_when_to_stop_using_the_log4j_1_x_bridge"></a>When to stop using the Log4j 1.x bridge</h3>
-<div class="paragraph">
-<p>Once you have migrated all of your own application and library code under your control, you may not need the bridge anymore.
-Note that when you use a library/framework that can be configured to use several logging frameworks, then you typically don&#8217;t need the log4j-1.2-api bridge either, as you may be able to directly configure it to use Log4j v2 instead v1.
-Some libraries/frameworks even auto-detect the presence of certain logging framework implementations on their classpath, and automagically switch their internal logging delegation accordingly;
-try simple removing the Log4j v1 dependency instead of replacing it with this bridge, and test if logging from all of your dependencies still work.</p>
-</div>
-<div class="paragraph">
-<p>If you own or can contribute open source to the library you depend on, consider replacing its use of the Log4j v1 API with the v2 API.</p>
-</div>
-<div class="paragraph">
-<p>While the Log4j 1.x bridge supports logging configurations that use the Log4j 1.x properties or XML format, migrating to the new 2.x format is not difficult.
-The Log4j 2 website contains extensive documentation on the 2.x configuration format.
-Examples for migrating logging configurations from the v1 format to the v2 format are below.</p>
+<p>Since forwarding Log4j 1 API calls to Log4j 2 API calls is the basic functionality of the bridge, no further configuration is required from your part.</p>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="Log4j2API"><a class="anchor" href="#Log4j2API"></a>Option 2: convert your application to the Log4j 2 API (log4j-api)</h2>
+<h2 id="backend-migration"><a class="anchor" href="#backend-migration"></a>Log4j 1 Backend migration</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The other migration option involves changing your application code to use the Log4j 2 API.
-For the most part, converting from the Log4j 1.x API to Log4j 2 should be fairly simple.
-Many of the log statements will require no modification.
-However, where necessary the following changes must be made.</p>
+<p>If your application uses Log4j 1 <strong>only</strong> as logging backend bound to another logging API, such as Apache Commons Logging (JCL) or SLF4J, you only need to:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Configure all logging bridges to log to Log4j 2 API instead.
+This can be done by replacing the following dependencies on your application&#8217;s runtime classpath:</p>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 5. Dependency migration from Log4j 1 to Log4j 2</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Replace Log4j 1 dependency</th>
+<th class="tableblock halign-left valign-top">with Log4j 2 dependency</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/log4j/log4j"><code>log4j:log4j</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-core"><code>org.apache.logging.log4j:log4j-core</code></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/ch.qos.reload4j/reload4j"><code>ch.qos.reload4j:reload4j</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-core"><code>org.apache.logging.log4j:log4j-core</code></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/commons-logging/commons-logging"><code>commons-logging:commons-logging</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">either upgrade to version 1.3.0 (or later)</p>
+<p class="tableblock">or replace with
+<a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-slf4j2-impl"><code>org.apache.logging.log4j:log4j-jcl</code></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.slf4j/slf4j-log4j12"><code>org.slf4j:slf4j-log4j12</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-slf4j2-impl"><code>org.apache.logging.log4j:log4j-slf4j2-impl</code></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.slf4j/slf4j-reload4j"><code>org.slf4j:slf4j-reload4j</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-slf4j2-impl"><code>org.apache.logging.log4j:log4j-slf4j2-impl</code></a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>See <a href="installation.html" class="xref page">Installation</a> for more details.</p>
+</div>
+</li>
+<li>
+<p>Convert your configuration files from the Log4j 1 to the Log4j 2 configuration format.
+See <a href="#configuration-file-migration">Log4j 1 Configuration file migration</a> below for more details.</p>
+</li>
+</ol>
+</div>
+<div class="sect2">
+<h3 id="migrate-custom-components"><a class="anchor" href="#migrate-custom-components"></a>Migrate Log4j 1 custom components</h3>
+<div class="paragraph">
+<p>Since Log4j 1 offered a limited amount of appenders and layouts, over the years users implemented many <strong>custom</strong> components that offered additional features.
+If you are currently using a custom Log4j 1 component you should proceed as follows:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Log4j 2 provides many improvements to Log4j 1 components and many new components.
+Check if the feature offered by your custom component is not already available in Log4j 2.
+If you can not find the feature, ask on our <a href="/support.html">support channels</a>.</p>
+</li>
+<li>
+<p>Since Log4j 2.17.2, the Log4j 1 to Log4j 2 bridge has a limited support for using native Log4j 1 appenders and layouts.
+Native Log4j 1 components can only be configured using Log4j 1 configuration files (see <a href="#ConfigurationCompatibility">Use Log4j 1 to Log4j 2 bridge</a>)
+and require the <a href="#log4j-1-2-api-installation">installation of the Log4j 1 to Log4j 2 bridge</a>.</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Mixing Log4j 1 and Log4j 2 components will most certainly reduce the performance of the logging system.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>If your Log4j 1 native component is not supported by the Log4j 1 to Log4j 2 bridge, we suggest to rewrite it directly as Log4j 2 component.
+See <a href="extending.html" class="xref page">Extending Log4j</a> for more details.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configuration-file-migration"><a class="anchor" href="#configuration-file-migration"></a>Log4j 1 Configuration file migration</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="Log4j2ConfigurationFormat"><a class="anchor" href="#Log4j2ConfigurationFormat"></a>Convert configuration file from Log4j 1 to Log4j 2</h3>
+<div class="paragraph">
+<p>Although the Log4j 2 configuration syntax is different from that of Log4j 1, most, if not all, of the same functionality is available.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The <code>log4j-1.2-api</code> bridge contains a small utility that converts <code>log4j.properties</code> files into <code>log4j2.xml</code> file.
+In order to use it you need to:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Download the <code>log4j-api</code>, <code>log4j-core</code> and <code>log4j-1.2-api</code> artifacts.
+To retrieve them all at once, see the <a href="../download.html" class="xref page">Download</a> page.</p>
+</li>
+<li>
+<p>Set the <code>CLASSPATH</code> environment variable to contain the artifacts mentioned above.</p>
+</li>
+<li>
+<p>Run</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">java org.apache.log4j.config.Log4j1ConfigurationConverter \
+  --in log4j.properties --out log4j2.xml</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="configuration-interpolation"><a class="anchor" href="#configuration-interpolation"></a>Interpolation</h4>
+<div class="paragraph">
+<p>Log4j 1 only supports interpolation using system properties and properties from the <code>log4j.properties</code> file using the <code>${foo}</code> syntax.
+Log4j 2 extended this mechanism, by introducing pluggable <a href="lookups.html" class="xref page">Lookups</a>.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="../_images/whichjar-log4j-api.png" alt="Using log4j 2 via the log4j 2.x API"></span></p>
+<p>In order to convert a Log4j 1 configuration file that uses interpolation to a Log4j 2 configuration file, replace all occurrences of <code>${foo}</code> with <code>${sys:foo}</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="configuration-appenders"><a class="anchor" href="#configuration-appenders"></a>Appenders</h4>
+<div class="paragraph">
+<p>Log4j 2 contains an equivalent for most Log4j 1 appenders:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 6. Log4j 2 equivalents of Log4j 1 appenders</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Log4j 1 appender</th>
+<th class="tableblock halign-left valign-top">Log4j 2 equivalent</th>
+<th class="tableblock halign-left valign-top">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/AsyncAppender.html">org.apache.log4j.AsyncAppender</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="appenders.html#AsyncAppender" class="xref page">Async</a></code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/ConsoleAppender.html">org.apache.log4j.ConsoleAppender</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="appenders.html#ConsoleAppender" class="xref page">Console</a></code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/DailyRollingFileAppender.html">org.apache.log4j.DailyRollingFileAppender</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="appenders.html#RollingFileAppender" class="xref page">RollingFile</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">See <a href="#rolling-file-conversion">additional steps below</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/FileAppender.html">org.apache.log4j.FileAppender</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="appenders.html#FileAppender" class="xref page">File</a></code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/RollingFileAppender.html">org.apache.log4j.RollingFileAppender</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="appenders.html#RollingFileAppender" class="xref page">RollingFile</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">See <a href="#rolling-file-conversion">additional steps below</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/jdbc/JDBCAppender.html">org.apache.log4j.jdbc.JDBCAppender</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="appenders.html#JDBCAppender" class="xref page">JDBC</a></code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/net/JMSAppender.html">org.apache.log4j.net.JMSAppender</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="appenders.html#jms-appender" class="xref page">JMS</a></code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/net/SocketAppender.html">org.apache.log4j.net.SocketAppender</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="appenders.html#SocketAppender" class="xref page">Socket</a></code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/net/SMTPAppender.html">org.apache.log4j.net.SMTPAppender</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="appenders.html#SMTPAppender" class="xref page">SMTP</a></code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/net/SyslogAppender.html">org.apache.log4j.net.SyslogAppender</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="appenders.html#SyslogAppender" class="xref page">Syslog</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Does not support custom layouts.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/rewrite/RewriteAppender.html">org.apache.log4j.rewrite.RewriteAppender</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="appenders.html#RewriteAppender" class="xref page">Rewrite</a></code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div id="rolling-file-conversion" class="paragraph">
+<p>The rolling file appender in Log4j 2 is based on the
+<a href="/log4j/extras/apidocs/org/apache/log4j/rolling/RollingFileAppender.html">org.apache.log4j.rolling.RollingFileAppender</a>
+from
+<a href="/log4j/extras/index.html">Apache&#8482; Extras for Apache Log4j&#174;</a>
+and additional care must be taken to convert the Log4j 1 rolling appenders to their Log4j 2 equivalent:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Log4j 2 by default uses a different strategy to determine the index of the archived log files.
+Log4j 1 always rolls the current log file (e.g. <code>app.log</code>) to a log file with index <code>1</code> (e.g. <code>app.log.1</code>).
+Log4j 2 on the other hand uses the first available index (e.g. <code>app.log.42</code> if files <code>app.log.1</code> thru <code>app.log.41</code> already exist).</p>
+<div class="paragraph">
+<p>To use the same algorithm to determine the index of the logged file in Log4j 1 and Log4j 2, you need to configure the <code>fileIndex</code> attribute of the
+<a href="appenders.html#DefaultRolloverStrategy" class="xref page">default rollover strategy</a> to <code>min</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;DefaultRolloverStrategy fileIndex="min"/&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>The two rolling file appenders available in Log4j 1, use an implicit file pattern and triggering policy for the archived log files.
+If the current log file is called <code>app.log</code>, you need to configure the Log4j 2 rolling file appender with the following <code>filePattern</code> and triggering policy configuration options:</p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 7. Rolling file appender conversion</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Log4j 1 appender</th>
+<th class="tableblock halign-left valign-top">Log4j 2 <code>filePattern</code></th>
+<th class="tableblock halign-left valign-top">Log4j 2 triggering policy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.log4j.DailyRollingFileAppender</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>app.%d{YYYY-MM-dd}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="appenders.html" class="xref page">TimeBasedTriggeringPolicy</a></code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.log4j.RollingFileAppender</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>app.%i</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="appenders.html" class="xref page">SizeBasedTriggeringPolicy</a></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="configuration-layouts"><a class="anchor" href="#configuration-layouts"></a>Layouts</h4>
+<div class="paragraph">
+<p>Log4j 1 layouts can be converted to Log4j 2 layouts using the following conversion rules:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/EnhancedPatternLayout.html">org.apache.log4j.EnhancedPatternLayout</a></dt>
+<dd>
+<p>can be converted to a
+<a href="layouts.html#PatternLayout" class="xref page"><code>PatternLayout</code></a>
+that uses the same pattern,</p>
+</dd>
+<dt class="hdlist1"><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/HTMLLayout.html">org.apache.log4j.HTMLLayout</a></dt>
+<dd>
+<p>can be converted to an
+<a href="layouts.html#HTMLLayout" class="xref page"><code>HtmlLayout</code></a>.</p>
+</dd>
+<dt class="hdlist1"><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/PatternLayout.html">org.apache.log4j.PatternLayout</a></dt>
+<dd>
+<p>can be converted to a
+<a href="layouts.html#PatternLayout" class="xref page"><code>PatternLayout</code></a>
+that uses the same pattern,</p>
+</dd>
+<dt class="hdlist1"><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/SimpleLayout.html">org.apache.log4j.SimpleLayout</a></dt>
+<dd>
+<p>can be converted to a
+<a href="layouts.html#PatternLayout" class="xref page"><code>PatternLayout</code></a>
+that uses the <code>%p - %m%n</code> pattern,</p>
+</dd>
+<dt class="hdlist1"><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/TTCCLayout.html">org.apache.log4j.TTCCLayout</a></dt>
+<dd>
+<p>can be converted to a
+<a href="layouts.html#PatternLayout" class="xref page"><code>PatternLayout</code></a>
+that uses the <code>%r [%t] %p %c %notEmpty{%x }- %m%n</code> pattern,</p>
+</dd>
+<dt class="hdlist1"><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/xml/XMLLayout.html">org.apache.log4j.xml.XMLLayout</a></dt>
+<dd>
+<p>does not have an exact equivalent in Log4j 2 Core.
+If backward compatibility is required, you can <a href="#log4j-1-2-api-installation">install the Log4j 1 to Log4j 2 bridge</a> and use the
+<a href="../plugin-reference.html#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-layout-Log4j1XmlLayout" class="xref page"><code>Log4j1XmlLayout</code></a>
+plugin.</p>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The formatting of the <code>%p</code> (when used with custom levels), <code>%x</code> and <code>%X</code> pattern converters slightly changed between Log4j 1 and Log4j 2.
+If an exact backward compatibility is required, you need to <a href="#log4j-1-2-api-installation">install the Log4j 1 to Log4j 2 bridge</a> and use the following extended patterns:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -521,358 +1051,350 @@ However, where necessary the following changes must be made.</p>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Log4j 1.x</th>
-<th class="tableblock halign-left valign-top">Log4j 2.x</th>
+<th class="tableblock halign-left valign-top">Log4j 1 pattern</th>
+<th class="tableblock halign-left valign-top">Log4j 1 to Log4j 2 bridge pattern</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Package name: <code>org.apache.log4j</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.logging.log4j</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><code>%p</code></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><code>%v1Level</code></code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Calls to <code>org.apache.log4j.Logger.getLogger()</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.logging.log4j.LogManager.getLogger()</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><code>%x</code></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><code>%ndc</code></code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Calls to <code>org.apache.log4j.Logger.getRootLogger()</code> or <code>org.apache.log4j.LogManager.getRootLogger()</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.logging.log4j.LogManager.getRootLogger()</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Calls to <code>org.apache.log4j.Logger.getLogger</code> that accept a <code>LoggerFactory</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Remove the <code>org.apache.log4j.spi.LoggerFactory</code> and use one of Log4j 2&#8217;s other extension mechanisms</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Calls to <code>org.apache.log4j.Logger.getEffectiveLevel()</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.logging.log4j.Logger.getLevel()</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Calls to <code>org.apache.log4j.LogManager.shutdown()</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Not needed in version 2 because the Log4j Core now automatically adds a JVM shutdown hook on start up to perform any Core clean ups.
-Starting in Log4j 2.1, you can specify a custom <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/ShutdownCallbackRegistry.html"><code>ShutdownCallbackRegistry</code></a> to override the default JVM shutdown hook strategy.
-Starting in Log4j 2.6, you can use <code>org.apache.logging.log4j.LogManager.shutdown()</code>  to initiate shutdown manually.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Calls to <code>org.apache.log4j.Logger.setLevel()</code> or similar methods</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Not supported at API level.
-Equivalent functionality is provided in the Log4j 2 implementation classes, see <code>org.apache.logging.log4j.core.config.Configurator.setLevel()</code>, but this may leave the application susceptible to changes in Log4j 2 internals.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String concatenation like <code>logger.info("hi " + userName)</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Parameterized messages like <code>logger.info("hi {}", userName)</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/MDC.html"><code>org.apache.log4j.MDC</code></a> and <a href="http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/NDC.html"><code>org.apache.log4j.NDC</code></a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="thread-context.html" class="xref page">Thread Context</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><code>%X</code></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><code>%properties</code></code></p></td>
 </tr>
 </tbody>
 </table>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="ConfigurationCompatibility"><a class="anchor" href="#ConfigurationCompatibility"></a>Use Log4j 1 to Log4j 2 bridge</h3>
+<div class="paragraph">
+<p>If you can not convert your configuration files from Log4j 1 to Log4j 2, the Log4j 1 to Log4j 2 bridge can convert your configuration files at runtime.
+In order to use this feature you need to <a href="#log4j-1-2-api-installation">Install the Log4j 1 to Log4j 2 bridge</a> and set one of the following configuration properties:</p>
+</div>
+<div class="sect3">
+<h4 id="log4j1.compatibility"><a class="anchor" href="#log4j1.compatibility"></a><code>log4j1.compatibility</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_COMPATIBILITY</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>If set to <code>true</code>, Log4j 2 will scan the classpath to find Log4j 1 configuration files in the following standard locations:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>log4j-test.properties</code>,</p>
+</li>
+<li>
+<p><code>log4j-test.xml</code>,</p>
+</li>
+<li>
+<p><code>log4j.properties</code>,</p>
+</li>
+<li>
+<p><code>log4j.xml</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="log4j.configuration"><a class="anchor" href="#log4j.configuration"></a><code>log4j.configuration</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_CONFIGURATION_FILE</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a>
+or
+<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html">URI</a></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>null</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>If not <code>null</code>, Log4j 2 will try to retrieve a <strong>Log4j 1</strong> configuration file from the given location.
+The configuration file name must end in <code>.properties</code> (Log4j 1 properties format) or <code>.xml</code> (Log4j 1 XML format).
+See also
+<a href="#configuration-limitations">limitations of Log4j 1 configuration compatibility layer</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="limitations-of-the-log4j-1-x-bridge"><a class="anchor" href="#limitations-of-the-log4j-1-x-bridge"></a><a id="Log4j1.2BridgeLimitations"></a>Limitations of runtime configuration conversion</h4>
+<div class="paragraph">
+<p>The support for Log4j 1 configuration files uses Log4j 2 Core plugin system and can be extended by implementing a plugin of type
+<code>org.apache.log4j.builders.Builder</code>.</p>
+</div>
+<div class="paragraph">
+<p>The Log4j 1 to Log4j 2 bridge supports out-of-the-box the following
+<a href="https://logging.apache.org/log4j/1.x/index.html">Log4j 1</a>
+and
+<a href="/log4j/extras/index/html">Apache Extras for Log4j 1</a>
+components:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Appenders</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-appender-AsyncAppenderBuilder" class="xref page"><code>org.apache.log4j.AsyncAppender</code></a>,</p>
+</li>
+<li>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-appender-ConsoleAppenderBuilder" class="xref page"><code>org.apache.log4j.ConsoleAppender</code></a>,</p>
+</li>
+<li>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-appender-DailyRollingFileAppenderBuilder" class="xref page"><code>org.apache.log4j.DailyRollingFileAppender</code></a>,</p>
+</li>
+<li>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-appender-FileAppenderBuilder" class="xref page"><code>org.apache.log4j.FileAppender</code></a>,</p>
+</li>
+<li>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-appender-RollingFileAppenderBuilder" class="xref page"><code>org.apache.log4j.RollingFileAppender</code></a>,</p>
+</li>
+<li>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-appender-SocketAppenderBuilder" class="xref page"><code>org.apache.log4j.net.SocketAppender</code></a>,</p>
+</li>
+<li>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-appender-SyslogAppenderBuilder" class="xref page"><code>org.apache.log4j.net.SyslogAppender</code></a>,</p>
+</li>
+<li>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-appender-RewriteAppenderBuilder" class="xref page"><code>org.apache.log4j.rewrite.RewriteAppender</code></a>,</p>
+</li>
+<li>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-appender-EnhancedRollingFileAppenderBuilder" class="xref page"><code>org.apache.log4j.rolling.RollingFileAppender</code></a>,</p>
+</li>
+<li>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-appender-NullAppenderBuilder" class="xref page"><code>org.apache.log4j.varia.NullAppender</code></a>.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Filters</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-filter-DenyAllFilterBuilder" class="xref page"><code>org.apache.log4j.varia.DenyAllFilter</code></a>,</p>
+</li>
+<li>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-filter-LevelMatchFilterBuilder" class="xref page"><code>org.apache.log4j.varia.LevelMatchFilter</code></a>,</p>
+</li>
+<li>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-filter-LevelRangeFilterBuilder" class="xref page"><code>org.apache.log4j.varia.LevelRangeFilter</code></a>,</p>
+</li>
+<li>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-filter-StringMatchFilterBuilder" class="xref page"><code>org.apache.log4j.varia.StringMatchFilter</code></a>.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Layouts</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-layout-HtmlLayoutBuilder" class="xref page"><code>org.apache.log4j.HTMLLayout</code></a>,</p>
+</li>
+<li>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-layout-PatternLayoutBuilder" class="xref page"><code>org.apache.log4j.PatternLayout</code></a> and <code>org.apache.log4j.EnhancedPatternLayout</code>,</p>
+</li>
+<li>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-layout-SimpleLayoutBuilder" class="xref page"><code>org.apache.log4j.SimpleLayout</code></a>,</p>
+</li>
+<li>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-layout-TTCCLayoutBuilder" class="xref page"><code>org.apache.log4j.TTCCLayout</code></a>,</p>
+</li>
+<li>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-layout-XmlLayoutBuilder" class="xref page"><code>org.apache.log4j.xml.XMLLayout</code></a>.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Triggering policies</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-rolling-CompositeTriggeringPolicyBuilder" class="xref page"><code>org.apache.log4j.rolling.CompositeTriggeringPolicy</code></a>,</p>
+</li>
+<li>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-rolling-SizeBasedTriggeringPolicyBuilder" class="xref page"><code>org.apache.log4j.rolling.SizeBasedTriggeringPolicy</code></a>,</p>
+</li>
+<li>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-rolling-TimeBasedRollingPolicyBuilder" class="xref page"><code>org.apache.log4j.rolling.TimeBasedRollingPolicy</code></a>.</p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>See
+<a href="../plugin-reference.html#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-Builder" class="xref page">the plugin reference</a> for a complete list.</p>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="Log4j2ConfigurationFormat"><a class="anchor" href="#Log4j2ConfigurationFormat"></a>Migrating logging configurations to the Log4j 2 format</h2>
+<h2 id="option-1-use-the-log4j-1-x-bridge-log4j-1-2-api"><a class="anchor" href="#option-1-use-the-log4j-1-x-bridge-log4j-1-2-api"></a><a id="Log4j1.2Bridge"></a>Log4j 1 to Log4j 2 bridge</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Although the Log4j 2 configuration syntax is different from that of Log4j 1.x, most, if not all, of the same functionality is available.</p>
+<p>In order to help users with the migration process, a Log4j 1 to Log4j 2 bridge is available.
+The bridge can fulfill three separate functions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>it forwards all <a href="#log4j-1-api-methods">Log4j 1 API</a> method calls to the corresponding Log4j 2 API calls,</p>
+</li>
+<li>
+<p>since version 2.17.2 is supports the usage of some components written for Log4j 1 inside Log4j 2 Core,</p>
+</li>
+<li>
+<p>it provides a limited support for programmatic configuration of Log4j 2 Core, using Log4j 1 method calls,</p>
+</li>
+<li>
+<p>it provides a limited support for Log4j 1 configuration file formats.</p>
+</li>
+</ul>
 </div>
 <div class="sect2">
-<h3 id="_interpolation"><a class="anchor" href="#_interpolation"></a>Interpolation</h3>
+<h3 id="log4j-1-2-api-installation"><a class="anchor" href="#log4j-1-2-api-installation"></a>Installation</h3>
 <div class="paragraph">
-<p>Note that system property interpolation via the <code>${foo}</code> syntax has been extended to allow property lookups from many different sources.
-See the <a href="lookups.html" class="xref page">Lookups</a> documentation for more details.
-For example, using a lookup for the system property named <code>catalina.base</code>, in Log4j 1.x, the syntax would be <code>${catalina.base}</code>.
-In Log4j 2, the syntax would be <code>${sys:catalina.base}</code>.</p>
+<p>Since the Log4j 1 to Log4j 2 Bridge <strong>replaces</strong> Log4j 1 classes, it is incompatible with the following artifacts:</p>
 </div>
-</div>
-<div class="sect2">
-<h3 id="_layouts"><a class="anchor" href="#_layouts"></a>Layouts</h3>
-<div class="paragraph">
-<p>Log4j 1.x has a XMLLayout which is different from the XmlLayout in Log4j 2.
-The log4j-1.2-api module contains a <code>Log4j1XmlLayout</code> that produces output in the Log4j 1.x format.</p>
-</div>
-<div class="paragraph">
-<p>The Log4j 1.x <code>SimpleLayout</code> can be emulated with PatternLayout "%level - %m%n".</p>
-</div>
-<div class="paragraph">
-<p>The Log4j 1.x <code>TTCCLayout</code> can be emulated with PatternLayout "%r [%t] %p %c %notEmpty{%ndc }- %m%n".</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://central.sonatype.com/artifact/log4j/log4j"><code>log4j:log4j</code></a></p>
+</li>
+<li>
+<p><a href="https://central.sonatype.com/artifact/ch.qos.reload4j/reload4j"><code>ch.qos.reload4j:reload4j</code></a>,</p>
+</li>
+<li>
+<p><a href="https://central.sonatype.com/artifact/org.slf4j/log4j-over-slf4j"><code>org.slf4j:log4j-over-slf4j</code></a></p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>Both <code>PatternLayout</code> and <code>EnhancedPatternLayout</code> in Log4j 1.x can be replaced with <code>PatternLayout</code> in Log4j 2.
-The log4j-1.2-api module contains two pattern conversions "%ndc" and "%properties" which can be used to emulate "%x" and "%X" in Log4j 1.x PatternLayout ("%x" and %X" in Log4j 2 have a slightly different format).</p>
+<p>Before installing the bridge, you need to make sure that none of the artifacts above are present in your runtime classpath.</p>
 </div>
 <div class="paragraph">
-<p>Below are some example configurations for Log4j 1.x and their counterparts in Log4j 2.</p>
+<p>To install the bridge, add the following dependency to your application:</p>
 </div>
+<div id="_tabs_1" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_1_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
 </div>
-<div class="sect2">
-<h3 id="_sample_1_migrating_a_simple_console_appender_configuration"><a class="anchor" href="#_sample_1_migrating_a_simple_console_appender_configuration"></a>Sample 1 - Migrating a simple Console Appender configuration</h3>
-<div class="paragraph">
-<p>Log4j 1.x XML configuration</p>
-</div>
+<div id="_tabs_1_maven--panel" class="tabpanel" aria-labelledby="_tabs_1_maven">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd"&gt;
-&lt;log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'&gt;
-  &lt;appender name="STDOUT" class="org.apache.log4j.ConsoleAppender"&gt;
-    &lt;layout class="org.apache.log4j.PatternLayout"&gt;
-      &lt;param name="ConversionPattern" value="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/&gt;
-    &lt;/layout&gt;
-  &lt;/appender&gt;
-  &lt;category name="org.apache.log4j.xml"&gt;
-    &lt;priority value="info" /&gt;
-  &lt;/category&gt;
-  &lt;Root&gt;
-    &lt;priority value ="debug" /&gt;
-    &lt;appender-ref ref="STDOUT" /&gt;
-  &lt;/Root&gt;
-&lt;/log4j:configuration&gt;</code></pre>
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+  &lt;artifactId&gt;log4j-1.2-api&lt;/artifactId&gt;
+  &lt;version&gt;2.23.1&lt;/version&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Log4j 2 XML configuration</p>
 </div>
+<div id="_tabs_1_gradle--panel" class="tabpanel" aria-labelledby="_tabs_1_gradle">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Configuration&gt;
-  &lt;Appenders&gt;
-    &lt;Console name="STDOUT" target="SYSTEM_OUT"&gt;
-      &lt;PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/&gt;
-    &lt;/Console&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Logger name="org.apache.log4j.xml" level="info"/&gt;
-    &lt;Root level="debug"&gt;
-      &lt;AppenderRef ref="STDOUT"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-1.2-api:2.23.1'</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_sample_2_migrating_a_simple_file_appender_xmllayout_and_simplelayout_configuration"><a class="anchor" href="#_sample_2_migrating_a_simple_file_appender_xmllayout_and_simplelayout_configuration"></a>Sample 2 - Migrating a simple File Appender, XMLLayout and SimpleLayout configuration</h3>
-<div class="paragraph">
-<p>Log4j 1.x XML configuration</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd"&gt;
-&lt;log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"&gt;
-  &lt;appender name="A1" class="org.apache.log4j.FileAppender"&gt;
-    &lt;param name="File"   value="A1.log" /&gt;
-    &lt;param name="Append" value="false" /&gt;
-    &lt;layout class="org.apache.log4j.xml.XMLLayout" /&gt;
-  &lt;/appender&gt;
-  &lt;appender name="STDOUT" class="org.apache.log4j.ConsoleAppender"&gt;
-    &lt;layout class="org.apache.log4j.SimpleLayout" /&gt;
-  &lt;/appender&gt;
-  &lt;category name="org.apache.log4j.xml"&gt;
-    &lt;priority value="debug" /&gt;
-    &lt;appender-ref ref="A1" /&gt;
-  &lt;/category&gt;
-  &lt;root&gt;
-    &lt;priority value ="debug" /&gt;
-    &lt;appender-ref ref="STDOUT" /&gt;
-  &lt;/Root&gt;
-&lt;/log4j:configuration&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Log4j 2 XML configuration</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Configuration&gt;
-  &lt;Appenders&gt;
-    &lt;File name="A1" fileName="A1.log" append="false"&gt;
-      &lt;Log4j1XmlLayout /&gt;
-    &lt;/File&gt;
-    &lt;Console name="STDOUT" target="SYSTEM_OUT"&gt;
-      &lt;PatternLayout pattern="%level - %m%n"/&gt;
-    &lt;/Console&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Logger name="org.apache.log4j.xml" level="debug"&gt;
-      &lt;AppenderRef ref="A1"/&gt;
-    &lt;/Logger&gt;
-    &lt;Root level="debug"&gt;
-      &lt;AppenderRef ref="STDOUT"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_sample_3_migrating_a_socketappender_configuration"><a class="anchor" href="#_sample_3_migrating_a_socketappender_configuration"></a>Sample 3 - Migrating a SocketAppender configuration</h3>
+<h3 id="when-to-stop-using-the-log4j-1-x-bridge"><a class="anchor" href="#when-to-stop-using-the-log4j-1-x-bridge"></a>When to stop using the Log4j 1 to Log4j 2 bridge</h3>
 <div class="paragraph">
-<p>Log4j 1.x XML configuration.
-This example from Log4j 1.x is misleading.
-The SocketAppender does not actually use a Layout.
-Configuring one will have no effect.</p>
+<p>The Log4j 1 to Log4j 2 bridge is not conceived as a long term solution.
+Once:</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd"&gt;
-&lt;log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"&gt;
-  &lt;appender name="A1" class="org.apache.log4j.net.SocketAppender"&gt;
-    &lt;param name="RemoteHost" value="localhost"/&gt;
-    &lt;param name="Port" value="5000"/&gt;
-    &lt;param name="LocationInfo" value="true"/&gt;
-    &lt;layout class="org.apache.log4j.PatternLayout"&gt;
-      &lt;param name="ConversionPattern" value="%t %-5p %c{2} - %m%n"/&gt;
-    &lt;/layout&gt;
-  &lt;/appender&gt;
-  &lt;appender name="STDOUT" class="org.apache.log4j.ConsoleAppender"&gt;
-    &lt;layout class="org.apache.log4j.PatternLayout"&gt;
-      &lt;param name="ConversionPattern" value="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/&gt;
-    &lt;/layout&gt;
-  &lt;/appender&gt;
-  &lt;category name="org.apache.log4j.xml"&gt;
-    &lt;priority value="debug"/&gt;
-    &lt;appender-ref ref="A1"/&gt;
-  &lt;/category&gt;
-  &lt;root&gt;
-    &lt;priority value="debug"/&gt;
-    &lt;appender-ref ref="STDOUT"/&gt;
-  &lt;/Root&gt;
-&lt;/log4j:configuration&gt;</code></pre>
-</div>
+<div class="ulist">
+<ul>
+<li>
+<p>you have migrated your logging code to use Log4j 2 API (see <a href="#api-code-migration">Migrate code from Log4j 1 API to Log4j 2 API</a>),</p>
+</li>
+<li>
+<p>you have migrated your configuration files to use the Log4j 2 configuration format (see <a href="#configuration-file-migration">Log4j 1 Configuration file migration</a>),</p>
+</li>
+<li>
+<p>upgraded all the dependencies that use Log4j 1 directly to newer versions that use a proper logging API (JCL, Log4j 2 API, JBoss logging, SLF4J),</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>Log4j 2 XML configuration</p>
+<p>the bridge is no longer necessary and should be removed.</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Configuration&gt;
-  &lt;Appenders&gt;
-    &lt;Socket name="A1" host="localHost" port="5000"&gt;
-      &lt;PatternLayout pattern="%t %-5p %c{2} - %m%n"/&gt;
-    &lt;/Socket&gt;
-    &lt;Console name="STDOUT" target="SYSTEM_OUT"&gt;
-      &lt;PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/&gt;
-    &lt;/Console&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Logger name="org.apache.log4j.xml" level="debug"&gt;
-      &lt;AppenderRef ref="A1"/&gt;
-    &lt;/Logger&gt;
-    &lt;Root level="debug"&gt;
-      &lt;AppenderRef ref="STDOUT"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_sample_4_migrating_an_asyncappender_and_ttcclayout_configuration"><a class="anchor" href="#_sample_4_migrating_an_asyncappender_and_ttcclayout_configuration"></a>Sample 4 - Migrating an AsyncAppender and TTCCLayout configuration</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
 <div class="paragraph">
-<p>Log4j 1.x XML configuration using the AsyncAppender.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd"&gt;
-&lt;log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" configDebug="true"&gt;
-  &lt;appender name="ASYNC" class="org.apache.log4j.AsyncAppender"&gt;
-    &lt;appender-ref ref="TEMP"/&gt;
-  &lt;/appender&gt;
-  &lt;appender name="TEMP" class="org.apache.log4j.FileAppender"&gt;
-    &lt;param name="File" value="temp"/&gt;
-    &lt;layout class="org.apache.log4j.TTCCLayout"&gt;
-      &lt;param name="ThreadPrinting" value="true"/&gt;
-      &lt;param name="CategoryPrefixing" value="true"/&gt;
-      &lt;param name="ContextPrinting" value="true"/&gt;
-    &lt;/layout&gt;
-  &lt;/appender&gt;
-  &lt;root&gt;
-    &lt;priority value="debug"/&gt;
-    &lt;appender-ref ref="ASYNC"/&gt;
-  &lt;/Root&gt;
-&lt;/log4j:configuration&gt;</code></pre>
-</div>
+<p>The separation of logging APIs from logging implementations started in 2002, with the release of
+<a href="https://commons.apache.org/proper/commons-logging/">Apache Commons Logging</a> (formerly known as Jakarta Commons Logging).</p>
 </div>
 <div class="paragraph">
-<p>Log4j 2 XML configuration.</p>
+<p>We are unaware of any <strong>maintained</strong> library that is currently using Log4j 1.
+However, if this is your case, please contact the library maintainer and ask them to migrate to one of the available logging APIs.</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Configuration status="debug"&gt;
-  &lt;Appenders&gt;
-    &lt;File name="TEMP" fileName="temp"&gt;
-      &lt;PatternLayout pattern="%r [%t] %p %c %notEmpty{%ndc }- %m%n"/&gt;
-    &lt;/File&gt;
-    &lt;Async name="ASYNC"&gt;
-      &lt;AppenderRef ref="TEMP"/&gt;
-    &lt;/Async&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="debug"&gt;
-      &lt;AppenderRef ref="ASYNC"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_sample_5_migrating_a_configuration_using_asyncappender_with_console_and_file"><a class="anchor" href="#_sample_5_migrating_a_configuration_using_asyncappender_with_console_and_file"></a>Sample 5 - Migrating a configuration using AsyncAppender with Console and File</h3>
-<div class="paragraph">
-<p>Log4j 1.x XML configuration using the AsyncAppender.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd"&gt;
-&lt;log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" configDebug="true"&gt;
-  &lt;appender name="ASYNC" class="org.apache.log4j.AsyncAppender"&gt;
-    &lt;appender-ref ref="TEMP"/&gt;
-    &lt;appender-ref ref="CONSOLE"/&gt;
-  &lt;/appender&gt;
-  &lt;appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender"&gt;
-    &lt;layout class="org.apache.log4j.PatternLayout"&gt;
-      &lt;param name="ConversionPattern" value="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/&gt;
-    &lt;/layout&gt;
-  &lt;/appender&gt;
-  &lt;appender name="TEMP" class="org.apache.log4j.FileAppender"&gt;
-    &lt;param name="File" value="temp"/&gt;
-    &lt;layout class="org.apache.log4j.PatternLayout"&gt;
-      &lt;param name="ConversionPattern" value="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/&gt;
-    &lt;/layout&gt;
-  &lt;/appender&gt;
-  &lt;root&gt;
-    &lt;priority value="debug"/&gt;
-    &lt;appender-ref ref="ASYNC"/&gt;
-  &lt;/Root&gt;
-&lt;/log4j:configuration&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Log4j 2 XML configuration.
-Note that the Async Appender should be configured after the appenders it references.
-This will allow it to shut down properly.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Configuration status="debug"&gt;
-  &lt;Appenders&gt;
-    &lt;Console name="CONSOLE" target="SYSTEM_OUT"&gt;
-      &lt;PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/&gt;
-    &lt;/Console&gt;
-    &lt;File name="TEMP" fileName="temp"&gt;
-      &lt;PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/&gt;
-    &lt;/File&gt;
-    &lt;Async name="ASYNC"&gt;
-      &lt;AppenderRef ref="TEMP"/&gt;
-      &lt;AppenderRef ref="CONSOLE"/&gt;
-    &lt;/Async&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="debug"&gt;
-      &lt;AppenderRef ref="ASYNC"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
