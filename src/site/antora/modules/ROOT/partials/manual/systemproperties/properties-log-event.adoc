@@ -20,17 +20,17 @@
 [cols="1h,5"]
 |===
 | Env. variable
-| LOG4J_LOG_EVENT_CONTEXT_DATA_TYPE
+ `LOG4J_LOG_EVENT_CONTEXT_DATA_TYPE`
 
 | Type
-| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html[Class<? extends StringMap>]
+| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html[`Class<? extends StringMap>`]
 
 | Default value
-| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/util/SortedArrayStringMap.html[SortedArrayStringMap]
+| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/util/SortedArrayStringMap.html[`SortedArrayStringMap`]
 |===
 
 Fully qualified class name of a
-{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html[StringMap]
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html[`StringMap`]
 implementation to use to store context data in log events.
 The implementation must have:
 
@@ -43,21 +43,21 @@ The implementation must have:
 [cols="1h,5"]
 |===
 | Env. variable
-| LOG4J_LOG_EVENT_CONTEXT_DATA_INJECTOR
+ `LOG4J_LOG_EVENT_CONTEXT_DATA_INJECTOR`
 
 | Type
-| link:../javadoc/log4j-core/org/apache/logging/log4j/core/ContextDataInjector.html[Class<? extends ContextDataInjector>]
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/ContextDataInjector.html[`Class<? extends ContextDataInjector>`]
 
 | Default value
 | depends on the `ThreadContextMap` implementation
 |===
 
 Fully qualified class name of a
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/ContextDataInjector.html[ContextDataInjector]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/ContextDataInjector.html[`ContextDataInjector`]
 implementation.
 
 The default implementation uses all implementations of
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/ContextDataProvider.html[ContextDataProvider]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/ContextDataProvider.html[`ContextDataProvider`]
 registered with `ServiceLoader`.
 
 [id=log4j.logEvent.factory]
@@ -66,15 +66,15 @@ registered with `ServiceLoader`.
 [cols="1h,5"]
 |===
 | Env. variable
-| LOG4J_LOG_EVENT_FACTORY
+ `LOG4J_LOG_EVENT_FACTORY`
 
 | Type
-| link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/LogEventFactory.html[Class<? extends LogEventFactory>]
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/LogEventFactory.html[`Class<? extends LogEventFactory>`]
 
 | Default value
 | link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/ReusableLogEventFactory.html[`ReusableLogEventFactory`]
 |===
 
 Specifies the
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/LogEventFactory.html[LogEventFactory]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/LogEventFactory.html[`LogEventFactory`]
 implementation to use to create log events.

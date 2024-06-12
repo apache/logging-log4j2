@@ -20,19 +20,19 @@
 An xref:manual/appenders.adoc[appender] uses a *layout* to encode a link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html[`LogEvent`] into a form that meets the needs of whatever will be consuming the log event.
 This page will try to answer following questions:
 
-* xref:#concerns[What are some common concerns shared by all predefined layouts?]
-* xref:#collection[Which layouts does Log4j provide?]
-* xref:#extending[How can you create custom layouts?]
+* <<concerns,What are some common concerns shared by all predefined layouts?>>
+* <<collection,Which layouts does Log4j provide?>>
+* <<extending,How can you create custom layouts?>>
 
 [#concerns]
 == Common concerns
 
-This section introduces you to some common concerns shared by almost all xref:#collection[predefined layouts] that you need to be aware of while using them.
+This section introduces you to some common concerns shared by almost all <<collection,predefined layouts>> that you need to be aware of while using them.
 
 [#charset]
 === Character encoding
 
-All xref:#collection[predefined layouts] produce `String` that eventually get converted into a `byte[]` using the https://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html[`Charset`] configured.
+All <<collection[predefined layouts] produce `String` that eventually get converted into a `byte>>` using the https://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html[`Charset`] configured.
 While doing so, unless an explicit encoding configuration is stated, they use `UTF-8` by default.
 If you want all your log events to be formatted in a certain character encoding that is different from what the employed layout defaults to, make sure to configure the layout's character encoding as needed.
 
@@ -254,7 +254,7 @@ For other valid values, refer to xref:manual/pattern-layout.adoc#converter-date[
 
 |locationInfo
 |boolean
-|If `true`, the xref:#LocationInformation[source location information] be included (defaults to `false`)
+|If `true`, the <<LocationInformation,source location information>> be included (defaults to `false`)
 
 |timezone
 |String
@@ -388,7 +388,7 @@ Read more on xref:manual/pattern-layout.adoc[]...
 
 [NOTE]
 ====
-RFC 5424 obsoletes RFC 3164, implemented by xref:#SyslogLayout[].
+RFC 5424 obsoletes RFC 3164, implemented by <<SyslogLayout>>.
 ====
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-Rfc5424Layout[📖 Plugin reference for `Rfc5424Layout`]
@@ -494,7 +494,7 @@ This matches the same format used by {logging-services-url}/log4j/1.x[Log4j 1].
 
 [IMPORTANT]
 ====
-RFC 3164, implemented by Syslog Layout, is obsoleted by RFC 5424, implemented by xref:#RFC5424Layout[].
+RFC 3164, implemented by Syslog Layout, is obsoleted by RFC 5424, implemented by <<RFC5424Layout>>.
 ====
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-SyslogLayout[📖 Plugin reference for `SyslogLayout`]
@@ -534,7 +534,7 @@ This section will guide you on how to create custom ones.
 
 [NOTE]
 ====
-While xref:#collection[the predefined layout collection] should address most common use cases, you might find yourself needing to implement a custom one.
+While <<collection,the predefined layout collection>> should address most common use cases, you might find yourself needing to implement a custom one.
 If this is the case, we really appreciate it if you can *share your use case in a {logging-services-url}/support.html[user support channel]*.
 ====
 

@@ -35,26 +35,26 @@ This must be done either through the command line (i.e., using the `-Djava.util.
 == Compatibility
 
 The use of a
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Filter.html[java.util.logging.Filter]
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Filter.html[`java.util.logging.Filter`]
 is supported on a
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Logger.html[per-Logger]
+per-link:https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Logger.html[`Logger`]
 basis.
-However, it is recommended to use the standard xref:manual/filters.adoc[Filters] feature in Log4j instead.
+However, it is recommended to use the standard xref:manual/filters.adoc[filters] feature in Log4j instead.
 
 The use of
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Handler.html[java.util.logging.Handler]
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Handler.html[`java.util.logging.Handler`]
 classes is
 _NOT_ supported.
 Custom Handlers should instead use an appropriate
 xref:manual/appenders.adoc[Appender]
 or code their own
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/Appender.html[Appender]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/Appender.html[`Appender`]
 plugin.
 
 Java logging levels are translated into Log4j logging levels dynamically.
 The following table lists the conversions between a Java logging level and its equivalent Log4j level.
 Custom levels should be implemented as an implementation of `LevelConverter`, and the Log4j property
-xref:manual/systemproperties.adoc#log4j.jul.levelConverter[log4j.jul.levelConverter]
+xref:manual/systemproperties.adoc#log4j.jul.levelConverter[`log4j.jul.levelConverter`]
 must be set to your custom class name.
 Using the default `LevelConverter` implementation, custom logging levels are mapped to whatever the current level of the `Logger` being logged to is using.
 
@@ -62,35 +62,36 @@ Using the default `LevelConverter` implementation, custom logging levels are map
 === Default Level Conversions
 
 .JUL to Log4j level conversion
+[%header]
 |===
 | Java Level | Log4j Level
 
-| http://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#OFF[OFF]
-| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html#OFF[OFF]
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#OFF[`OFF`]
+| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html#OFF[`OFF`]
 
-| http://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#SEVERE[SEVERE]
-| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html#ERROR[ERROR]
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#SEVERE[`SEVERE`]
+| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html#ERROR[`ERROR`]
 
-| http://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#WARNING[WARNING]
-| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html#WARN[WARN]
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#WARNING[`WARNING`]
+| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html#WARN[`WARN`]
 
-| http://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#OFF[OFF]
-| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html#INFO[INFO]
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#OFF[`OFF`]
+| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html#INFO[`INFO`]
 
-| http://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#CONFIG[CONFIG]
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#CONFIG[`CONFIG`]
 | custom `CONFIG` level
 
-| http://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#FINE[FINE]
-| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html#DEBUG[DEBUG]
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#FINE[`FINE`]
+| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html#DEBUG[`DEBUG`]
 
-| http://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#FINER[FINER]
-| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html#TRACE[TRACE]
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#FINER[`FINER`]
+| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html#TRACE[`TRACE`]
 
-| http://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#FINEST[FINEST]
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#FINEST[`FINEST`]
 | custom `FINEST` level
 
-| http://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#ALL[ALL]
-| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html#ALL[ALL]
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#ALL[`ALL`]
+| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html#ALL[`ALL`]
 |===
 
 == Log4j JDK Logging Bridge Handler

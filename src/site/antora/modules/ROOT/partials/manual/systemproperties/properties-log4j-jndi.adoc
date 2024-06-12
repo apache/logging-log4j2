@@ -19,14 +19,14 @@
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_JNDI_ENABLE_CONTEXT_SELECTOR
+| Env. variable  `LOG4J_JNDI_ENABLE_CONTEXT_SELECTOR`
 | Type          | `boolean`
 | Default value | `false`
 |===
 
 When `true` the `JndiContextSelector` is enabled for the `java:` protocol.
 See
-link:../../jakarta/log4j-jakarta-web.html#jndi[Web application]
+{logging-services-url}/log4j/jakarta/log4j-jakarta-web.html#jndi[Web application]
 for more details.
 
 [id=log4j.jndi.enableJdbc]
@@ -34,19 +34,19 @@ for more details.
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_JNDI_ENABLE_JDBC
+| Env. variable  `LOG4J_JNDI_ENABLE_JDBC`
 | Type          | `boolean`
 | Default value | `false`
 |===
 
-When `true`, a Log4j JDBC Appender can use JNDI to retrieve a https://docs.oracle.com/javase/8/docs/api/javax/sql/DataSource.html[DataSource] using the `java:` protocol.
+When `true`, a Log4j JDBC Appender can use JNDI to retrieve a https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/sql/DataSource.html[`DataSource`] using the `java:` protocol.
 
 [id=log4j.jndi.enableJms]
 == `log4j.jndi.enableJms`
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_JNDI_ENABLE_JMS
+| Env. variable  `LOG4J_JNDI_ENABLE_JMS`
 | Type          | `boolean`
 | Default value | `false`
 |===
@@ -58,7 +58,7 @@ When `true`, a Log4j JMS Appender can use JNDI to retrieve the necessary compone
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_JNDI_ENABLE_LOOKUP
+| Env. variable  `LOG4J_JNDI_ENABLE_LOOKUP`
 | Type          | `boolean`
 | Default value | `false`
 |===

@@ -16,15 +16,15 @@
 ////
 = JSON Template Layout
 
-`JsonTemplateLayout` is a customizable, xref:#performance[efficient], and xref:#faq-garbage-free[garbage-free] JSON generating layout.
+`JsonTemplateLayout` is a customizable, <<performance,efficient>>, and xref:#faq-garbage-free,garbage-free>> JSON generating layout.
 It encodes ``LogEvent``s according to the structure described by the JSON template provided.
 In a nutshell, it shines with its
 
-* Customizable JSON structure (see `eventTemplate[Uri]` and `stackTraceElementTemplate[Uri]` xref:#layout-config[layout configuration] parameters)
+* Customizable JSON structure (see `eventTemplate[Uri]` and `stackTraceElementTemplate[Uri]` <<plugin-attrs,layout configuration parameters>>)
 
-* Customizable timestamp formatting (see xref:#event-template-resolver-timestamp[] event template resolver)
+* Customizable timestamp formatting (see <<event-template-resolver-timestamp>> event template resolver)
 
-* Feature rich exception formatting (see xref:#event-template-resolver-exception[] and xref:#event-template-resolver-exceptionRootCause[] event template resolvers)
+* Feature rich exception formatting (see <<event-template-resolver-exception>> and <<event-template-resolver-exceptionRootCause>> event template resolvers)
 
 * xref:manual/extending.adoc[Extensible plugin support]
 
@@ -91,7 +91,7 @@ Event templates themselves are also JSON documents, where objects containing `$r
   "stringified": true // <2>
 }
 ----
-<1> Indicating that this object should be replaced with the output from the xref:#event-template-resolver-message[`message` *event template resolver*]
+<1> Indicating that this object should be replaced with the output from the <<event-template-resolver-message,`message` *event template resolver*>>
 <2> Passing a configuration to the `message` event template resolver
 
 are interpreted by the JSON Template Layout compiler, and replaced with the referenced event or stack trace *template resolver* rendering that particular item.
@@ -115,9 +115,9 @@ For instance, given the following event template stored in `MyLayout.json` in yo
   }
 }
 ----
-<1> Using xref:#event-template-resolver-timestamp[the `timestamp` event template resolver] to populate the `instant` field
+<1> Using <<event-template-resolver-timestamp,the `timestamp` event template resolver>> to populate the `instant` field
 <2> Passing a constant that will be rendered as is
-<3> Using xref:#event-template-resolver-message[the `message` event template resolver] to populate the `message` field
+<3> Using <<event-template-resolver-message,the `message` event template resolver>> to populate the `message` field
 
 in combination with the below layout configuration:
 
@@ -166,7 +166,7 @@ JSON Template Layout generates JSON as follows:
 
 Good news is *JSON Template Layout is perfectly production-ready without any configuration!*
 The event template defaults to `EcsLayout.json`, bundled in the classpath, modelling https://www.elastic.co/guide/en/ecs/current/ecs-reference.html[the Elastic Common Schema (ECS) specification].
-JSON Template Layout bundles several more xref:#event-templates[predefined event templates] modeling popular JSON-based log formats.
+JSON Template Layout bundles several more <<event-templates,predefined event templates>> modeling popular JSON-based log formats.
 
 [#config]
 == Configuration
@@ -176,7 +176,7 @@ This section explains how to configure JSON Template Layout plugin element in a 
 [TIP]
 ====
 Are you trying to implement your own event (or stack trace) template and looking for help on available resolvers?
-Please refer to xref:#template-config[] instead.
+Please refer to <<template-config>> instead.
 ====
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-JsonTemplateLayout[📖 Plugin reference for `JsonTemplateLayout`]
@@ -238,8 +238,8 @@ Toggles access to the stack traces
 |Configuration property |`log4j.layout.jsonTemplate.eventTemplate`
 |===
 
-Inline xref:#event-templates[event template] JSON for rendering ``LogEvent``s.
-If present, this configuration overrides xref:#plugin-attr-eventTemplateUri[].
+Inline <<event-templates,event template>> JSON for rendering ``LogEvent``s.
+If present, this configuration overrides <<plugin-attr-eventTemplateUri>>.
 
 [#plugin-attr-eventTemplateUri]
 ==== `eventTemplateUri`
@@ -251,8 +251,8 @@ If present, this configuration overrides xref:#plugin-attr-eventTemplateUri[].
 |Configuration property |`log4j.layout.jsonTemplate.eventTemplateUri`
 |===
 
-URI pointing to the xref:#event-templates[event template] JSON for rendering ``LogEvent``s.
-This configuration is overriden by xref:#plugin-attr-eventTemplate[], if present.
+URI pointing to the <<event-templates,event template>> JSON for rendering ``LogEvent``s.
+This configuration is overriden by <<plugin-attr-eventTemplate>>, if present.
 
 [#plugin-attr-eventTemplateRootObjectKey]
 ==== `eventTemplateRootObjectKey`
@@ -276,8 +276,8 @@ If present, the event template is put into a JSON object composed of a single me
 |Configuration property |`log4j.layout.jsonTemplate.stackTraceElementTemplate`
 |===
 
-Inline xref:#stack-trace-element-templates[stack trace element template] JSON for rendering ``StackTraceElement``s
-If present, this configuration overrides xref:#plugin-attr-stackTraceElementTemplateUri[].
+Inline <<stack-trace-element-templates,stack trace element template>> JSON for rendering ``StackTraceElement``s
+If present, this configuration overrides <<plugin-attr-stackTraceElementTemplateUri>>.
 
 [#plugin-attr-stackTraceElementTemplateUri]
 ==== `stackTraceElementTemplateUri`
@@ -289,8 +289,8 @@ If present, this configuration overrides xref:#plugin-attr-stackTraceElementTemp
 |Configuration property |`log4j.layout.jsonTemplate.stackTraceElementTemplateUri`
 |===
 
-URI pointing to the xref:#stack-trace-element-templates[stack trace element template] JSON for rendering ``StackTraceElement``s.
-This configuration is overriden by xref:#plugin-attr-stackTraceElementTemplate[], if present.
+URI pointing to the <<stack-trace-element-templates,stack trace element template>> JSON for rendering ``StackTraceElement``s.
+This configuration is overriden by <<plugin-attr-stackTraceElementTemplate>>, if present.
 
 [#plugin-attr-eventDelimiter]
 ==== `eventDelimiter`
@@ -303,7 +303,7 @@ This configuration is overriden by xref:#plugin-attr-stackTraceElementTemplate[]
 |===
 
 Delimiter used for separating rendered ``LogEvent``s.
-if xref:#plugin-attr-nullEventDelimiterEnabled[] is `true`, this value will be suffixed with `\0` (null) character.
+if <<plugin-attr-nullEventDelimiterEnabled>> is `true`, this value will be suffixed with `\0` (null) character.
 
 [#plugin-attr-nullEventDelimiterEnabled]
 ==== `nullEventDelimiterEnabled`
@@ -315,7 +315,7 @@ if xref:#plugin-attr-nullEventDelimiterEnabled[] is `true`, this value will be s
 |Configuration property |`log4j.layout.jsonTemplate.nullEventDelimiterEnabled`
 |===
 
-If `true`, xref:#plugin-attr-eventDelimiter[] will be suffixed with `\0` (null) character.
+If `true`, <<plugin-attr-eventDelimiter>> will be suffixed with `\0` (null) character.
 
 [#plugin-attr-maxStringLength]
 ==== `maxStringLength`
@@ -328,7 +328,7 @@ If `true`, xref:#plugin-attr-eventDelimiter[] will be suffixed with `\0` (null) 
 |===
 
 Causes _truncation_ of string values longer than the specified limit.
-When a string value is truncated, its length will be shortened to the `maxStringLength` provided and xref:#plugin-attr-truncatedStringSuffix[] will be appended to indicate the truncation.
+When a string value is truncated, its length will be shortened to the `maxStringLength` provided and <<plugin-attr-truncatedStringSuffix>> will be appended to indicate the truncation.
 
 [WARNING]
 ====
@@ -362,7 +362,7 @@ That is,
 |Configuration property |`log4j.layout.jsonTemplate.truncatedStringSuffix`
 |===
 
-Suffix to append to strings truncated due to exceeding xref:#plugin-attr-maxStringLength[]
+Suffix to append to strings truncated due to exceeding <<plugin-attr-maxStringLength>>
 
 [#plugin-elements]
 === Plugin elements
@@ -433,25 +433,25 @@ Templates are JSON documents, where objects containing `$resolver` members, such
   "stringified": true // <2>
 }
 ----
-<1> Indicating that this object should be replaced with the output from the xref:#event-template-resolver-message[`message` *event template resolver*]
+<1> Indicating that this object should be replaced with the output from the <<event-template-resolver-message,`message` *event template resolver*>>
 <2> Passing a configuration to the `message` event template resolver
 
 are interpreted by the JSON Template Layout compiler, and replaced with the referenced event or stack trace *template resolver* rendering that particular item.
 
 Templates are configured by means of the following JSON Template Layout plugin attributes:
 
-- xref:#plugin-attr-eventTemplate[] and xref:#plugin-attr-eventTemplateUri[] (for encoding ``LogEvent``s)
-- xref:#plugin-attr-stackTraceElementTemplate[] and xref:#plugin-attr-stackTraceElementTemplateUri[] (for encoding ``StackStraceElement``s)
-- xref:#plugin-element-EventTemplateAdditionalField[] (for extending the event template)
+- <<plugin-attr-eventTemplate>> and <<plugin-attr-eventTemplateUri>> (for encoding ``LogEvent``s)
+- <<plugin-attr-stackTraceElementTemplate>> and <<plugin-attr-stackTraceElementTemplateUri>> (for encoding ``StackStraceElement``s)
+- <<plugin-element-EventTemplateAdditionalField>> (for extending the event template)
 
 [#event-templates]
 === Event templates
 
-xref:#plugin-attr-eventTemplate[] and xref:#plugin-attr-eventTemplateUri[] describe the JSON structure JSON Template Layout uses to encode ``LogEvent``s.
+<<plugin-attr-eventTemplate>> and <<plugin-attr-eventTemplateUri>> describe the JSON structure JSON Template Layout uses to encode ``LogEvent``s.
 JSON Template Layout contains the following predefined event templates:
 
 {project-github-url}/tree/2.x/log4j-layout-template-json/src/main/resources/EcsLayout.json[`EcsLayout.json`]::
-The **default event template** modelling the https://www.elastic.co/guide/en/ecs/current/ecs-reference.html[the Elastic Common Schema (ECS) specification]
+The **default event template** modelling https://www.elastic.co/guide/en/ecs/current/ecs-reference.html[the Elastic Common Schema (ECS) specification]
 
 {project-github-url}/tree/2.x/log4j-layout-template-json/src/main/resources/LogstashJsonEventLayoutV1.json[`LogstashJsonEventLayoutV1.json`]::
 Models https://github.com/logstash/log4j-jsonevent-layout[Logstash `json_event` pattern for Log4j]
@@ -461,7 +461,7 @@ Models https://docs.graylog.org/en/3.1/pages/gelf.html#gelf-payload-specificatio
 +
 [TIP]
 ====
-If used, it is advised to override the obligatory `host` field with a user provided constant via xref:#additional-event-template-fields[additional event template fields] to avoid `hostName` property lookup at runtime, which incurs an extra cost.
+If used, it is advised to override the obligatory `host` field with a user provided constant via <<additional-event-template-fields,additional event template fields>> to avoid `hostName` property lookup at runtime, which incurs an extra cost.
 ====
 
 {project-github-url}/tree/2.x/log4j-layout-template-json/src/main/resources/GcpLayout.json[`GcpLayout.json`]::
@@ -487,7 +487,7 @@ An event template resolver is denoted with a special object containing a `$resol
 }
 ----
 
-Here `version` field will be rendered as is, while `level` field will be populated by xref:#event-template-resolver-level[the `level` resolver].
+Here `version` field will be rendered as is, while `level` field will be populated by <<event-template-resolver-level,the `level` resolver>>.
 That is, this template will generate JSON similar to the following:
 
 .Example JSON generated from the demonstrated event template
@@ -724,20 +724,20 @@ That is, matchers are executed against each label in isolation.
 `elementTemplate` is an object describing the template to be used while resolving the `StackTraceElement` array.
 If `stringified` is set to `true`, `elementTemplate` will be discarded.
 By default, `elementTemplate` is set to `null` and rather populated from the layout configuration.
-That is, the stack trace element template can also be provided using xref:#plugin-attr-stackTraceElementTemplate[] and xref:#plugin-attr-stackTraceElementTemplateUri[] layout configuration attributes.
+That is, the stack trace element template can also be provided using <<plugin-attr-stackTraceElementTemplate>> and <<plugin-attr-stackTraceElementTemplateUri>> layout configuration attributes.
 The template to be employed is determined in the following order:
 
 . `elementTemplate` provided in the resolver configuration
 
-. xref:#plugin-attr-stackTraceElementTemplate[] layout configuration attribute
+. <<plugin-attr-stackTraceElementTemplate>> layout configuration attribute
 (The default is populated from the `log4j.layout.jsonTemplate.stackTraceElementTemplate` system property.)
 
-. xref:#plugin-attr-stackTraceElementTemplateUri[] layout configuration attribute
+. <<plugin-attr-stackTraceElementTemplateUri>> layout configuration attribute
 (The default is populated from the `log4j.layout.jsonTemplate.stackTraceElementTemplateUri` system property.)
 
-See xref:#stack-trace-element-templates[] for the list of available resolvers in a stack trace element template.
+See <<stack-trace-element-templates>> for the list of available resolvers in a stack trace element template.
 
-Note that this resolver is toggled by the xref:#plugin-attr-stackTraceEnabled[] layout configuration attribute.
+Note that this resolver is toggled by the <<plugin-attr-stackTraceEnabled>> layout configuration attribute.
 
 [WARNING]
 ====
@@ -830,14 +830,14 @@ Resolve the stack trace into an object described by the provided stack trace ele
 }
 ----
 
-See xref:#stack-trace-element-templates[] for further details on resolvers available for `StackTraceElement` templates.
+See <<stack-trace-element-templates>> for further details on resolvers available for `StackTraceElement` templates.
 ====
 
 [#event-template-resolver-exceptionRootCause]
 ===== `exceptionRootCause`
 
 Resolves the fields of the innermost `Throwable` returned by `LogEvent#getThrown()`.
-Its syntax and garbage-footprint are identical to the xref:#event-template-resolver-exception[] resolver.
+Its syntax and garbage-footprint are identical to the <<event-template-resolver-exception>> resolver.
 
 [#event-template-resolver-level]
 ===== `level`
@@ -1223,12 +1223,12 @@ config = "field" -> (
            "lineNumber" )
 ----
 
-Note that this resolver is toggled by the xref:#plugin-attr-locationInfoEnabled[] layout configuration attribute.
+Note that this resolver is toggled by the <<plugin-attr-locationInfoEnabled>> layout configuration attribute.
 
 [WARNING]
 ====
 Capturing the source location information is an expensive operation, and is not garbage-free.
-xref:#event-template-resolver-logger[The `logger` resolver] can generally be used as a zero-cost substitute for `className`.
+<<event-template-resolver-logger,The `logger` resolver>> can generally be used as a zero-cost substitute for `className`.
 See xref:manual/layouts.adoc#LocationInformation[this section of the layouts page] for details.
 ====
 
@@ -1427,7 +1427,7 @@ a|
 link:../javadoc/log4j-api/org/apache/logging/log4j/util/ReadOnlyStringMap.html[`ReadOnlyStringMap`] is Log4j's `Map<String, Object>` equivalent with garbage-free accessors, and is heavily employed throughout the code base.
 It is the data structure backing both {log4j2-url}/manual/thread-context.html[thread context] map (aka., Mapped Diagnostic Context (MDC)) and link:../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html[`MapMessage`] implementations.
 Hence template resolvers for both of these are provided by a single backend: `ReadOnlyStringMapResolver`.
-Put another way, both xref:#event-template-resolver-mdc[] and xref:#event-template-resolver-map[] resolvers support identical configuration, behaviour, and garbage footprint, which are detailed below.
+Put another way, both <<event-template-resolver-mdc>> and <<event-template-resolver-map>> resolvers support identical configuration, behaviour, and garbage footprint, which are detailed below.
 
 .Map resolver grammar
 [source]
@@ -1558,19 +1558,19 @@ After converting the corresponding field values to string, merge all fields to p
 [#stack-trace-element-templates]
 === Stack trace element templates
 
-xref:#event-template-resolver-exception[] and xref:#event-template-resolver-exceptionRootCause[] event template resolvers can encode an exception stack trace (i.e., `StackTraceElement[]` returned by `Throwable#getStackTrace()`) into a JSON array.
+<<event-template-resolver-exception>> and <<event-template-resolver-exceptionRootCause>> event template resolvers can encode an exception stack trace (i.e., `StackTraceElement` returned by `Throwable#getStackTrace()`) into a JSON array.
 While doing so, they employ the underlying JSON templating infrastructure again.
 The stack trace template used by these event template resolvers to encode ``StackTraceElement``s can be configured in following ways:
 
 . `elementTemplate` provided in the resolver configuration
 
-. xref:#plugin-attr-stackTraceElementTemplate[] layout configuration attribute
+. <<plugin-attr-stackTraceElementTemplate>> layout configuration attribute
 (The default is populated from the `log4j.layout.jsonTemplate.stackTraceElementTemplate` system property.)
 
-. xref:#plugin-attr-stackTraceElementTemplateUri[] layout configuration attribute
+. <<plugin-attr-stackTraceElementTemplateUri>> layout configuration attribute
 (The default is populated from the `log4j.layout.jsonTemplate.stackTraceElementTemplateUri` system property.)
 
-By default, xref:#plugin-attr-stackTraceElementTemplateUri[] is set to `classpath:StackTraceElementLayout.json`, which references to a classpath resource bundled with JSON Template Layout:
+By default, <<plugin-attr-stackTraceElementTemplateUri>> is set to `classpath:StackTraceElementLayout.json`, which references to a classpath resource bundled with JSON Template Layout:
 
 .`StackTraceElementLayout.json` bundled as a classpath resource
 [source,json]
@@ -1598,7 +1598,7 @@ By default, xref:#plugin-attr-stackTraceElementTemplateUri[] is set to `classpat
 [#stack-trace-element-template-resolvers]
 ==== Stack trace element template resolvers
 
-Similar to xref:#event-template-resolvers[] consuming a `LogEvent` and rendering a certain property of it at the point of the JSON where they are declared, stack trace element template resolvers consume a `StackTraceElement`.
+Similar to <<event-template-resolvers>> consuming a `LogEvent` and rendering a certain property of it at the point of the JSON where they are declared, stack trace element template resolvers consume a `StackTraceElement`.
 
 The complete list of available event template resolvers are provided below in detail.
 
@@ -1645,7 +1645,7 @@ include::partial$manual/plugin-preliminaries.adoc[]
 [#extending-event-resolvers]
 === Extending event template resolvers
 
-All available xref:#event-template-resolvers[event template resolvers] are simple plugins employed by JSON Template Layout.
+All available <<event-template-resolvers,event template resolvers>> are simple plugins employed by JSON Template Layout.
 To add new ones, one just needs to create their own `EventResolver` and instruct its injection via a `@Plugin`-annotated `EventResolverFactory` class.
 
 For demonstration purposes, below we will create a `randomNumber` event template resolver.
@@ -1803,7 +1803,7 @@ It is a fairly rich resource for inspiration while implementing new resolvers.
 === Intercepting the template resolver compiler
 
 JSON Template Layout allows interception of the template resolver compilation, which is the process converting a template into a Java function performing the JSON encoding.
-This interception mechanism is internally used to implement xref:#plugin-attr-eventTemplateRootObjectKey[] and xref:#plugin-element-EventTemplateAdditionalField[] features.
+This interception mechanism is internally used to implement <<plugin-attr-eventTemplateRootObjectKey>> and <<plugin-element-EventTemplateAdditionalField>> features.
 In a nutshell, one needs to create a `@Plugin`-annotated class extending from the `EventResolverInterceptor` interface.
 
 To see the interception in action, check out the `EventRootObjectKeyInterceptor` class which is responsible for implementing the `eventTemplateRootObjectKey` feature:
@@ -1919,9 +1919,9 @@ JSON Template Layout is a heavily optimized piece of software to encode a log ev
 To get the most out of it, mind the following checklist:
 
 * Enable xref:manual/garbagefree.adoc[garbage-free logging]
-* Mind xref:#faq-garbage-free[the garbage footprint of features you use]
+* Mind <<faq-garbage-free,the garbage footprint of features you use>>
 * Choose a xref:manual/garbagefree.adoc#recyclers[recycling strategy] that suits best to your deployment environment
-* Don't give too much slack to xref:#maxStringLength[`maxStringLength`] and try to keep it relatively tight
+* Don't give too much slack to <<plugin-attr-maxStringLength>> and try to keep it relatively tight
 
 [#faq]
 == F.A.Q.
@@ -1962,4 +1962,4 @@ Take into account the following caveats:
 
 * xref:manual/lookups.adoc[Lookups] (that is, `${...}` variables) are not garbage-free.
 
-Don't forget to check out xref:#event-template-resolvers[the notes on garbage footprint of resolvers] you employ in templates.
+Don't forget to check out <<event-template-resolvers,the notes on garbage footprint of resolvers>> you employ in templates.

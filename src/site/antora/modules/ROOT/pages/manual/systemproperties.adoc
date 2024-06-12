@@ -127,7 +127,7 @@ include::partial$manual/systemproperties/properties-async.adoc[leveloffset=+2]
 === Logger context
 
 The
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ContextSelector.html[ContextSelector]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ContextSelector.html[`ContextSelector`]
 component specifies the strategy used by Log4j to create new logger contexts.
 The choice of `ContextSelector` determines in particular:
 
@@ -153,7 +153,7 @@ include::partial$manual/systemproperties/properties-configuration-factory.adoc[l
 === Log messages
 
 The way Log4j builds
-{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/message/Message.html[Message]s can be customized using these properties:
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/message/Message.html[`Message`]s can be customized using these properties:
 
 include::partial$manual/systemproperties/properties-message.adoc[leveloffset=+2]
 
@@ -161,7 +161,7 @@ include::partial$manual/systemproperties/properties-message.adoc[leveloffset=+2]
 === Log events
 
 The way Log4j builds
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html[LogEvent]s can be customized using these properties:
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html[`LogEvent`]s can be customized using these properties:
 
 include::partial$manual/systemproperties/properties-log-event.adoc[leveloffset=+2]
 
@@ -237,7 +237,7 @@ include::partial$manual/systemproperties/properties-log4j-script.adoc[leveloffse
 == Property sources
 
 The Log4j configuration properties sub-system is based on the
-{log4j2-url}/javadoc/log4j-kit/org/apache/logging/log4j/kit/env/PropertyEnvironment.html[PropertyEnvironment]
+{log4j2-url}/javadoc/log4j-kit/org/apache/logging/log4j/kit/env/PropertyEnvironment.html[`PropertyEnvironment`]
 interface, which provides a type-safe access to configuration properties.
 
 Two kinds of property environments are used by Log4j 3:
@@ -250,7 +250,7 @@ If a property is not defined in a logger context specific environment, the corre
 === Global environment
 
 The global environment delegates property resolution to the Log4j 2 API
-{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/util/PropertiesUtil.html[PropertiesUtil]
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/util/PropertiesUtil.html[`PropertiesUtil`]
 service (see
 link:../../2.x/manual/systemproperties.adoc#property-sources[Log4j 2 API documentation]).
 
@@ -292,7 +292,7 @@ This property source should be used to change the default values of an applicati
 
 Additional property source classes can be added through:
 
-* the standard Java SE https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/util/ServiceLoader.html[ServiceLoader] mechanism,
+* the standard Java SE https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/util/ServiceLoader.html[`ServiceLoader`] mechanism,
 * programmatically using `addPropertySource()` and `removePropertySource()` static methods of `PropertiesUtil` class.
 
 [#logger-context-property-environment]

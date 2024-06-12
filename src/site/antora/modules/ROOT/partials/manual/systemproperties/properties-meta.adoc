@@ -19,7 +19,7 @@
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_IS_WEBAPP
+| Env. variable  `LOG4J_IS_WEBAPP`
 | Type          | `boolean`
 | Default value | `true` if the https://jakarta.ee/specifications/servlet/6.0/apidocs/jakarta.servlet/jakarta/servlet/servlet[Servlet] class on classpath,
 
@@ -37,7 +37,7 @@ This mode is incompatible with <<log4j.enableThreadlocals>>.
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_ENABLE_THREADLOCALS
+| Env. variable  `LOG4J_ENABLE_THREADLOCALS`
 | Type          | `boolean`
 | Default value | `false` if Web-app mode is enabled,
 

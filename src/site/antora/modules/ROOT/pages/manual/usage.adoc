@@ -23,7 +23,7 @@ there are a few factors to consider when choosing to declare a logger as static 
 is better to declare Loggers as static.
 
 1. Instantiation of a new Logger is a fairly expensive operation when using the default ContextSelector,
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ClassLoaderContextSelector.html[ClassLoaderContextSelector].
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ClassLoaderContextSelector.html[`ClassLoaderContextSelector`].
 When the Logger is created the `ClassLoaderContextSelector` will locate the ClassLoader for the Class the Logger
 is associated with and add the Logger to the LoggerContext associated with that ClassLoader.
 2. Once a Logger is created it will not be deleted until the `LoggerContext` it is associated with

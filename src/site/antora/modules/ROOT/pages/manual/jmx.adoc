@@ -33,7 +33,7 @@ JMX support is disabled by default.
 NOTE: JMX support was enabled by default in Log4j versions before `2.24.0`.
 
 To enable JMX support, set the
-xref:manual/systemproperties.adoc#log4j2.disableJmx[log4j2.disableJmx]
+xref:manual/systemproperties.adoc#log4j2.disableJmx[`log4j2.disableJmx`]
 system property when starting the Java VM:
 
 `log4j2.disableJmx=false`
@@ -42,8 +42,7 @@ system property when starting the Java VM:
 == Local Monitoring and Management
 
 To perform local monitoring you need to set the
-xref:manual/systemproperties.adoc#log4j2.disableJmx[log4j2
-.disableJmx]
+xref:manual/systemproperties.adoc#log4j2.disableJmx[`log4j2.disableJmx`]
 system property to `false`.
 The JConsole tool that is included in the Java JDK can be
 used to monitor your application. Start JConsole by typing

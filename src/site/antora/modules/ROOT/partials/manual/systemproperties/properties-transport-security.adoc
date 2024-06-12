@@ -21,12 +21,12 @@
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_CONFIGURATION_ALLOWED_PROTOCOLS
-| Type          | Comma-separated list of https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/URL.html[URL] protocols
+| Env. variable  `LOG4J_CONFIGURATION_ALLOWED_PROTOCOLS`
+| Type          | Comma-separated list of https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/URL.html[`URL`] protocols
 | Default value | `file, https, jar`
 |===
 
-A comma separated list of https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/URL.html[URL] protocols that may be used to load any kind of configuration source.
+A comma separated list of https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/URL.html[`URL`] protocols that may be used to load any kind of configuration source.
 
 To completely prevent accessing the configuration via the Java `URL` class specify a value of `_none`.
 
@@ -38,10 +38,10 @@ NOTE:: Since Log4j does not use `URL` to access `file:` resources, this protocol
 [cols="1h,5"]
 |===
 | Env. variable
-| LOG4J_TRANSPORT_SECURITY_TRUST_STORE_LOCATION
+ `LOG4J_TRANSPORT_SECURITY_TRUST_STORE_LOCATION`
 
 | Type
-| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[Path] or https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/URI.html[URI]
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[`Path`] or https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/URI.html[`URI`]
 
 | Default value
 | see link:{jsse-default-keystores}[Default Java trust store]
@@ -55,7 +55,7 @@ The location of the trust store.
 [cols="1h,5"]
 |===
 | Env. variable
-| LOG4J_TRANSPORT_SECURITY_TRUST_STORE_PASSWORD
+ `LOG4J_TRANSPORT_SECURITY_TRUST_STORE_PASSWORD`
 
 | Type          | `String`
 
@@ -70,10 +70,10 @@ The password for the trust store.
 [cols="1h,5"]
 |===
 | Env. variable
-| LOG4J_TRANSPORT_SECURITY_TRUST_STORE_PASSWORD_FILE
+ `LOG4J_TRANSPORT_SECURITY_TRUST_STORE_PASSWORD_FILE`
 
 | Type
-| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[Path]
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[`Path`]
 
 | Default value | `null`
 |===
@@ -86,7 +86,7 @@ The name of a file that contains the password for the trust store.
 [cols="1h,5"]
 |===
 | Env. variable
-| LOG4J_TRANSPORT_SECURITY_TRUST_STORE_PASSWORD_ENV_VAR
+ `LOG4J_TRANSPORT_SECURITY_TRUST_STORE_PASSWORD_ENV_VAR`
 
 | Type
 | `String`
@@ -103,13 +103,13 @@ The name of the environment variable that contains password for the trust store.
 [cols="1h,5"]
 |===
 | Env. variable
-| LOG4J_TRANSPORT_SECURITY_TRUST_STORE_TYPE
+ `LOG4J_TRANSPORT_SECURITY_TRUST_STORE_TYPE`
 
 | Type
-| https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyStore[KeyStore type]
+| https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyStore[`KeyStore` type]
 
 | Default value
-| `https://docs.oracle.com/javase/{java-target-version}/docs/api/java/security/KeyStore.html#getDefaultType--[Default Java `KeyStore` type]`
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/security/KeyStore.html#getDefaultType--[Default Java `KeyStore` type]
 |===
 
 The type of trust store.
@@ -120,23 +120,23 @@ The type of trust store.
 [cols="1h,5"]
 |===
 | Env. variable
-| LOG4J_TRANSPORT_SECURITY_TRUST_STORE_KEY_MANAGER_FACTORY_ALGORITHM
+ `LOG4J_TRANSPORT_SECURITY_TRUST_STORE_KEY_MANAGER_FACTORY_ALGORITHM`
 
 | Type
-| https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory[KeyManagerFactory type]
+| https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory[`KeyManagerFactory` type]
 
 | Default value
-| `https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/net/ssl/KeyManagerFactory.html#getDefaultAlgorithm--[Default Java `KeyManagerFactory` algorithm]`
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/net/ssl/KeyManagerFactory.html#getDefaultAlgorithm--[Default Java `KeyManagerFactory` algorithm]
 |===
 
-Name of the https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/net/ssl/KeyManagerFactory.html[KeyManagerFactory] implementation to use for the trust store.
+Name of the https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/net/ssl/KeyManagerFactory.html[`KeyManagerFactory`] implementation to use for the trust store.
 
 [id=log4j.transportSecurity.verifyHostName]
 == `log4j.transportSecurity.verifyHostName`
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_TRANSPORT_SECURITY_VERIFY_HOST_NAME
+| Env. variable  `LOG4J_TRANSPORT_SECURITY_VERIFY_HOST_NAME`
 | Type          | `boolean`
 | Default value | `false`
 |===
@@ -149,11 +149,11 @@ If `true` enables verification of the name of the TLS server.
 [cols="1h,5"]
 |===
 | Env. variable
-| LOG4J_TRANSPORT_SECURITY_KEY_STORE_LOCATION
+ `LOG4J_TRANSPORT_SECURITY_KEY_STORE_LOCATION`
 
 | Type
-| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[Path] or
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/URI.html[URI]
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[`Path`] or
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/URI.html[`URI`]
 
 | Default value
 | see link:{jsse-default-keystores}[Default Java key store]
@@ -166,7 +166,7 @@ The location of the private key store.
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_TRANSPORT_SECURITY_KEY_STORE_PASSWORD
+| Env. variable  `LOG4J_TRANSPORT_SECURITY_KEY_STORE_PASSWORD`
 | Type          | `String`
 | Default value | `null`
 |===
@@ -178,8 +178,8 @@ The password for the private key store.
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_TRANSPORT_SECURITY_KEY_STORE_PASSWORD_FILE
-| Type          | https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[Path]
+| Env. variable  `LOG4J_TRANSPORT_SECURITY_KEY_STORE_PASSWORD_FILE`
+| Type          | https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[`Path`]
 | Default value | `null`
 |===
 
@@ -190,7 +190,7 @@ The name of a file that contains the password for the private key store.
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_TRANSPORT_SECURITY_KEY_STORE_PASSWORD_ENV_VAR
+| Env. variable  `LOG4J_TRANSPORT_SECURITY_KEY_STORE_PASSWORD_ENV_VAR`
 | Type          | `String`
 | Default value | `null`
 |===
@@ -203,10 +203,10 @@ The name of the environment variable that contains the password for the private 
 [cols="1h,5"]
 |===
 | Env. variable
-| LOG4J_TRANSPORT_SECURITY_KEY_STORE_TYPE
+ `LOG4J_TRANSPORT_SECURITY_KEY_STORE_TYPE`
 
 | Type
-| https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyStore[KeyStore type]
+| https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/security/StandardNames.html#KeyStore[`KeyStore` type]
 
 | Default value
 | https://docs.oracle.com/javase/{java-target-version}/docs/api/java/security/KeyStore.html#getDefaultType--[Default Java `KeyStore` type]
@@ -221,14 +221,14 @@ See https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardName
 [cols="1h,5"]
 |===
 | Env. variable
-| LOG4J_TRANSPORT_SECURITY_KEY_STORE_KEY_MANAGER_FACTORY_ALGORITHM
+ `LOG4J_TRANSPORT_SECURITY_KEY_STORE_KEY_MANAGER_FACTORY_ALGORITHM`
 
 | Type
-| https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory[KeyManagerFactory type]
+| https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory[`KeyManagerFactory` type]
 
 | Default value
 | https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/net/ssl/KeyManagerFactory.html#getDefaultAlgorithm--[Default Java `KeyManagerFactory` algorithm]
 |===
 
-Name of the https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/net/ssl/KeyManagerFactory.html[KeyManagerFactory] implementation to use for the private key store.
-See https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory[KeyManagerFactory types].
+Name of the https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/net/ssl/KeyManagerFactory.html[`KeyManagerFactory`] implementation to use for the private key store.
+See https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory[`KeyManagerFactory` types].

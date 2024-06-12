@@ -17,7 +17,7 @@
 
 = Pattern Layout
 
-`PatternLayout` is a customizable, xref:#performance[efficient], xref:#garbage-free[garbage-free], and human-readable string generating layout using a user-provided pattern.
+`PatternLayout` is a customizable, <<performance[efficient], xref:#garbage-free,garbage-free>>, and human-readable string generating layout using a user-provided pattern.
 It is analogous to `String#format()` with specialized directives on injecting certain properties of a `LogEvent`.
 
 [IMPORTANT]
@@ -132,12 +132,12 @@ Pattern Layout plugin configuration accepts the following attributes:
 |Default value |`%m%n`
 |===
 
-A composite pattern string of one or more xref:#converters[].
-`pattern` and xref:#plugin-attr-patternSelector[] are mutually exclusive, that is, only one can be specified.
+A composite pattern string of one or more <<converters>>.
+`pattern` and <<plugin-attr-patternSelector>> are mutually exclusive, that is, only one can be specified.
 
 [WARNING]
 ====
-If the provided pattern does not contain an exception converter and <<plugin-attr-alwaysWriteExceptions>> is not disabled, an implicit xref:#converter-exception-extended[`%xEX`] is appended to the pattern.
+If the provided pattern does not contain an exception converter and <<plugin-attr-alwaysWriteExceptions>> is not disabled, an implicit <<converter-exception-extended,`%xEX`>> is appended to the pattern.
 ====
 
 [#plugin-attr-patternSelector]
@@ -145,18 +145,18 @@ If the provided pattern does not contain an exception converter and <<plugin-att
 
 [cols="2h,6"]
 |===
-|Type |xref:#plugin-element-PatternSelector[`PatternSelector`]
+|Type |<<plugin-element-PatternSelector,`PatternSelector`>>
 |===
 
 A component that analyzes information in the `LogEvent` and determines which pattern should be used to format the event.
-`patternSelector` and xref:#plugin-attr-pattern[] are mutually exclusive, that is, only one can be specified.
+`patternSelector` and <<plugin-attr-pattern>> are mutually exclusive, that is, only one can be specified.
 
 [#plugin-attr-replace]
 ==== `replace`
 
 [cols="2h,6"]
 |===
-|Type |xref:#plugin-element-RegexReplacement[`RegexReplacement`]
+|Type |<<plugin-element-RegexReplacement,`RegexReplacement`>>
 |===
 
 Allows portions of the resulting `String` to be replaced.
@@ -171,7 +171,7 @@ If configured, the `replace` element must specify the regular expression to matc
 |Default value |`true`
 |===
 
-If `true` and the user-provided pattern does not contain an exception converter, an implicit xref:#converter-exception-extended[`%xEX`] pattern is appended.
+If `true` and the user-provided pattern does not contain an exception converter, an implicit <<converter-exception-extended,`%xEX`>> pattern is appended.
 This means that if you do not include a way to output exceptions in your pattern, the default exception formatter will be added to the end of the pattern.
 Setting this to `false` disables this behavior and allows you to exclude exceptions from your pattern output.
 
@@ -226,7 +226,7 @@ Pattern Layout plugin configuration accepts the following elements:
 ==== `RegexReplacement`
 
 Allows portions of the resulting `String` to be replaced.
-This performs a function similar to xref:#converter-replace[the `replace` converter] but applies to the whole message while the converter only applies to the `String` its pattern generates.
+This performs a function similar to <<converter-replace,the `replace` converter>> but applies to the whole message while the converter only applies to the `String` its pattern generates.
 
 It supports following attributes:
 
@@ -246,7 +246,7 @@ Predefined ``PatternSelector``s are as follows:
 ===== `LevelPatternSelector`
 
 The link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/LevelPatternSelector.html[`LevelPatternSelector`] selects patterns based on the level of the log event.
-Its configuration is similar to xref:#plugin-element-MarkerPatternSelector[], with the difference that the `key` attribute of the link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/PatternMatch.html[`PatternMatch`] element is matched against the log level associated with the log event.
+Its configuration is similar to <<plugin-element-MarkerPatternSelector>>, with the difference that the `key` attribute of the link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/PatternMatch.html[`PatternMatch`] element is matched against the log level associated with the log event.
 
 [#plugin-element-MarkerPatternSelector]
 ===== `MarkerPatternSelector`
@@ -336,12 +336,12 @@ include::example$manual/pattern-layout/script-pattern-selector/log4j2.properties
 [#converters]
 === Pattern converters
 
-The Pattern Layout _conversion pattern_ is composed of literal text and format control expressions called _conversion specifiers_ – refer to xref:#usage[] for details.
+The Pattern Layout _conversion pattern_ is composed of literal text and format control expressions called _conversion specifiers_ – refer to <<usage>> for details.
 xref:manual/plugins.adoc[Plugins] implementing link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/PatternConverter.html[`PatternConverter`] are admitted to the *pattern converter* registry of Pattern Layout, and used to resolve the conversion specifiers.
 
 The predefined set of pattern converters will be shared in the following sections.
 While doing so, their syntax will be documented in a certain notation.
-Consider the following example for the syntax of xref:#converter-date[] pattern converter:
+Consider the following example for the syntax of <<converter-date>> pattern converter:
 
 [source,text]
 ----
@@ -368,12 +368,12 @@ C{precision}
 class{precision}
 ----
 
-This conversion specifier can be optionally followed by a _precision specifier_ that follows the same rules as xref:#converter-logger[the logger name converter].
+This conversion specifier can be optionally followed by a _precision specifier_ that follows the same rules as <<converter-logger,the logger name converter>>.
 
 [WARNING]
 ====
 Capturing the source location information to generate the class name of the caller is an expensive operation, and is not garbage-free.
-xref:#converter-logger[The logger name converter] can generally be used as a zero-cost substitute.
+<<converter-logger,The logger name converter>> can generally be used as a zero-cost substitute.
 See xref:manual/layouts.adoc#LocationInformation[this section of the layouts page] for details.
 ====
 
@@ -654,7 +654,7 @@ Exception converter is not garbage-free.
 [#converter-exception-extended]
 ==== Exception (Extended)
 
-The same as xref:#converter-exception[the `%throwable` conversion], but also includes class packaging information
+The same as <<converter-exception,the `%throwable` conversion>>, but also includes class packaging information
 
 .link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html[`ThrowablePatternConverter`] specifier grammar
 [source,text]
@@ -676,7 +676,7 @@ xEx|xException|xThrowable
   {separator(separator)}
 ----
 
-Different from xref:#converter-exception[the `%throwable` conversion], at the end of each stack element of the exception, a string containing the name of the JAR file that contains the class or the directory the class is located in and the `Implementation-Version` as found in that JAR's manifest will be added.
+Different from <<converter-exception,the `%throwable` conversion>>, at the end of each stack element of the exception, a string containing the name of the JAR file that contains the class or the directory the class is located in and the `Implementation-Version` as found in that JAR's manifest will be added.
 If the information is uncertain, then the class packaging data will be preceded by a `~` (tilde) character.
 
 [#converter-file]
@@ -712,7 +712,7 @@ fqcn
 ==== Highlight
 
 Adds ANSI colors to the result of the enclosed pattern based on the current event's {log4j2-url}/manual/customloglevels.html[logging level].
-Windows users should refer to xref:#jansi[].
+Windows users should refer to <<jansi>>.
 
 .link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/HighlightConverter.html[`HighlightConverter`] specifier grammar
 [source,text]
@@ -1018,7 +1018,7 @@ message{lookups}{ansi}
 ----
 
 Add `\{ansi}` to render messages with ANSI escape codes.
-Windows users should refer to xref:#jansi[].
+Windows users should refer to <<jansi>>.
 
 The default syntax for embedded ANSI codes is:
 
@@ -1171,7 +1171,7 @@ For instance, `%replace{%logger %msg}{\.}{/}` will replace all dots in the logge
 [#converter-rootException]
 ==== Root exception
 
-The same as xref:#converter-exception[the `exception` converter], but the stack trace is printed starting with the first exception in the causal chain that was thrown followed by each subsequent wrapping exception
+The same as <<converter-exception,the `exception` converter>>, but the stack trace is printed starting with the first exception in the causal chain that was thrown followed by each subsequent wrapping exception
 
 .link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/RootThrowablePatternConverter.html[`RootThrowablePatternConverter`] specifier grammar
 [source,text]
@@ -1220,7 +1220,7 @@ The counter is a static variable, so will only be unique within applications tha
 
 Use ANSI escape sequences to style the result of the enclosed pattern.
 The syntax of the `style_expression` parameter is described in <<ansi-modifiers>>.
-Windows users should also refer to xref:#jansi[].
+Windows users should also refer to <<jansi>>.
 
 .link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/StyleConverter.html[`StyleConverter`] specifier grammar
 [source,text]
@@ -1424,7 +1424,7 @@ characters, then truncate from the end.
 [#ansi-modifiers]
 === Style modifiers
 
-Pattern Layout supports styling your text using a variety of ANSI escape sequence, which can be used through the xref:#converter-highlight[`%highlight`] and xref:#converter-style[`%style`] pattern converters.
+Pattern Layout supports styling your text using a variety of ANSI escape sequence, which can be used through the <<converter-highlight,`%highlight`>> and <<converter-style,`%style`>> pattern converters.
 
 The generic syntax of a style expression is a space-separated list of:
 
@@ -1612,7 +1612,7 @@ Format modifiers to control such things as field width, padding, left, and right
 %equalsIgnoreCase\{pattern}\{test}\{substitution}]
 |
 
-|xref:#converter-highlight[%highlight\{pattern}\{style}]
+|<<converter-highlight,%highlight\{pattern}\{style}>>
 |Granted nested pattern is garbage-free
 
 |xref:#converter-map[%K\{key} +
@@ -1625,10 +1625,10 @@ Format modifiers to control such things as field width, padding, left, and right
 %message]
 |
 
-|xref:#converter-marker[%marker]
+|<<converter-marker,%marker>>
 |
 
-|xref:#converter-marker[%markerSimpleName]
+|<<converter-marker,%markerSimpleName>>
 |
 
 |xref:#converter-max-len[%maxLen +
@@ -1659,7 +1659,7 @@ Format modifiers to control such things as field width, padding, left, and right
 %sequenceNumber]
 |
 
-|xref:#converter-style[%style\{pattern}{ANSI style}]
+|<<converter-style,%style\{pattern}{ANSI style}>>
 |
 
 |xref:#converter-thread-id[%T +
@@ -1673,10 +1673,10 @@ Format modifiers to control such things as field width, padding, left, and right
 %threadName]
 |
 
-|xref:#converter-thread-priority[%tp]
+|<<converter-thread-priority,%tp>>
 |
 
-|xref:#converter-thread-context-map[%X{key[,key2...\]} +
+|<<converter-thread-context-map[%X{key,,key2...\>>} +
 %mdc{key[,key2...\]} +
 %MDC{key[,key2...\]}]
 |
@@ -1693,7 +1693,7 @@ Patterns containing regular expressions and xref:manual/layouts.adoc#LocationInf
 
 Pattern Layout relies on xref:manual/plugins.adoc[the Log4j plugin system] to compose the features it provides.
 This makes it possible for users to extend the plugin-based feature set as they see fit.
-As of this moment, only xref:#extending-converters[extending pattern converters] is supported.
+As of this moment, only <<extending-converters,extending pattern converters>> is supported.
 Following sections cover how to extend these in detail.
 
 [NOTE]
@@ -1711,7 +1711,7 @@ include::partial$manual/plugin-preliminaries.adoc[]
 === Pattern converters
 
 xref:manual/plugins.adoc[Plugins] implementing link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/PatternConverter.html[`PatternConverter`] are admitted to the *pattern converter* registry of Pattern Layout, and used to resolve the conversion specifiers.
-You can leverage this mechanism to introduce your custom pattern converters next to xref:#converters[the predefined ones].
+You can leverage this mechanism to introduce your custom pattern converters next to <<converters,the predefined ones>>.
 
 A `PatternConverter` must first declare itself as a xref:manual/plugins.adoc[plugin] using the standard `@Plugin` annotation, and the `@Namespace` annotation with the value `Converter`.
 Furthermore, the converter must also specify the `@ConverterKeys` annotation to define the conversion specifiers, which will preceded by a `%` character when used in a pattern.
@@ -1735,5 +1735,5 @@ Great effort has been put into the efficiency of Pattern Layout.
 To get the most out of it, mind the following checklist:
 
 * Enable xref:manual/garbagefree.adoc[garbage-free logging]
-* Mind xref:#garbage-free[the garbage footprint of features you use]
+* Mind <<garbage-free,the garbage footprint of features you use>>
 * Don't give too much slack to xref:manual/systemproperties.adoc#log4j2.layoutStringBuilderMaxSize[`log4j2.layoutStringBuilderMaxSize`] and try to keep it relatively tight

@@ -37,8 +37,7 @@ Some appenders wrap other appenders so that they can modify the `LogEvent`, hand
 Appenders always have a name so that they can be referenced from Loggers.
 
 In the tables below, the "Type" column corresponds to the Java type expected.
-For non-JDK classes, these should usually be in
-link:../javadoc/log4j-core/index.html[Log4j Core] unless otherwise noted.
+For non-JDK classes, these should usually be in link:../javadoc/log4j-core/index.html[Log4j Core] unless otherwise noted.
 
 [#common-properties]
 == Common properties
@@ -57,12 +56,12 @@ These configuration attributes are shared by multiple appenders:
 If set to `true`, Log4j will flush all Java buffers at the end of each event:
 
 * for appenders based on Java's
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/io/OutputStream.html[OutputStream]
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/io/OutputStream.html[`OutputStream`]
 a call to the `OutputStream.flush()` method is performed.
 * if
-xref:manual/systemproperties.adoc#log4j.gc.enableDirectEncoders[log4j.gc.enableDirectEncoders]
+xref:manual/systemproperties.adoc#log4j.gc.enableDirectEncoders[`log4j.gc.enableDirectEncoders`]
 is set to `true`, many Log4j appenders use a
-https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html[ByteBuffer]
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/ByteBuffer.html[`ByteBuffer`]
 to format log events before sending them to the underlying resource.
 Setting `immediateFlush` to `true` flushes these buffers at each event.
 
@@ -80,7 +79,7 @@ Note that exceptions while writing to those Appenders will be hidden from the ap
 The AsyncAppender should be configured after the appenders it references to allow it to shut down properly.
 
 By default, AsyncAppender uses
-https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ArrayBlockingQueue.html[`java.util.concurrent.ArrayBlockingQueue`]
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/concurrent/ArrayBlockingQueue.html[`ArrayBlockingQueue`]
 which does not require any external libraries.
 Note that multi-threaded applications should exercise care when using this appender as such: the blocking queue is susceptible to lock contention and our
 xref:manual/performance.adoc#async[tests showed] performance may become worse when more threads are logging concurrently.
@@ -141,16 +140,17 @@ CompositeFilter.
 encountered while appending events to be internally logged and then
 ignored. When set to `false` exceptions will be propagated to the
 caller, instead. You must set this to `false` when wrapping this
-Appender in a link:#FailoverAppender[FailoverAppender].
+Appender in a <FailoverAppender>>.
 
 |includeLocation |boolean |Extracting location is an expensive operation
 (it can make logging 5 - 20 times slower). To improve performance,
 location is not included by default when adding a log event to the
 queue. You can change this by setting includeLocation="true".
 
-|BlockingQueueFactory |BlockingQueueFactory |This element overrides what
-type of `BlockingQueue` to use. See link:#BlockingQueueFactory[below
-documentation] for more details.
+|BlockingQueueFactory
+|BlockingQueueFactory
+|This element overrides what type of `BlockingQueue` to use.
+See <<BlockingQueueFactory,below documentation>> for more details.
 |=======================================================================
 
 There are also a few system properties that can be used to maintain application throughput even when the underlying appender cannot keep up with the logging rate and the queue is filling up.
@@ -271,7 +271,7 @@ been tested with Oracle JVM on Linux and Windows so far._
 encountered while appending events to be internally logged and then
 ignored. When set to `false` exceptions will be propagated to the
 caller, instead. You must set this to `false` when wrapping this
-Appender in a link:#FailoverAppender[FailoverAppender].
+Appender in a <<FailoverAppender>>.
 
 |target |String |Either "SYSTEM_OUT" or "SYSTEM_ERR". The default is
 "SYSTEM_OUT".
@@ -431,7 +431,7 @@ a lock. The default value is false.
 encountered while appending events to be internally logged and then
 ignored. When set to `false` exceptions will be propagated to the
 caller, instead. You must set this to `false` when wrapping this
-Appender in a link:#FailoverAppender[FailoverAppender].
+Appender in a <<FailoverAppender>>.
 
 |filePermissions |String a|
 File attribute permissions in POSIX format to apply whenever the file is
@@ -598,7 +598,7 @@ wait before timing out the request.
 encountered while appending events to be internally logged and then
 ignored. When set to `false` exceptions will be propagated to the
 caller, instead. You must set this to `false` when wrapping this
-Appender in a link:#FailoverAppender[FailoverAppender].
+Appender in a <<FailoverAppender>>.
 
 |type |enumeration |One of "Avro", "Embedded", or "Persistent" to
 indicate which variation of the Appender is desired.
@@ -726,7 +726,7 @@ As of Log4j 2.11.0, JDBC support has moved from the existing module
 `log4j-core` to the new module `log4j-jdbc`.
 
 The JDBC Appender configured with a `DataSource` requires JNDI support so as of release 2.17.1 this appender will not function unless `log4j2.enableJndiJdbc=true` is configured as a system property or environment variable.
-See the xref:manual/systemproperties.adoc#log4j.jndi.enableJdbc[log4j.jndi.enableJdbc] system property.
+See the xref:manual/systemproperties.adoc#log4j.jndi.enableJdbc[`log4j.jndi.enableJdbc`] system property.
 
 The JDBCAppender writes log events to a relational database table using standard JDBC.
 It can be configured to obtain JDBC connections using a JNDI `DataSource` or a custom factory method.
@@ -750,7 +750,7 @@ Optionally, you can also use properties.
 encountered while appending events to be internally logged and then
 ignored. When set to `false` exceptions will be propagated to the
 caller, instead. You must set this to `false` when wrapping this
-Appender in a link:#FailoverAppender[FailoverAppender].
+Appender in a <<FailoverAppender>>.
 
 |filter |Filter |A Filter to determine if the event should be handled by
 this Appender. More than one Filter may be used by using a
@@ -807,10 +807,10 @@ When configuring the JDBCAppender, you must specify a `ConnectionSource`
 implementation from which the Appender gets JDBC connections.
 You must use exactly one of the following nested elements:
 
-* link:#JDBCDataSource[`<DataSource>`]: Uses JNDI.
-* link:#JDBCConnectionFactory[`<ConnectionFactory>`]: Points to a class-method pair to provide JDBC connections.
-* link:#JDBCDriverManager[`<DriverManager>`]: A quick and dirty way to get off the ground, no connection pooling.
-* link:#JDBCPoolingDriver[`<PoolingDriver>`]: Uses Apache Commons DBCP to provide connection pooling.
+* <<JDBCDataSource,`<DataSource>`>>: Uses JNDI.
+* <<JDBCConnectionFactory,`<ConnectionFactory>`>>: Points to a class-method pair to provide JDBC connections.
+* <<JDBCDriverManager,`<DriverManager>`>>: A quick and dirty way to get off the ground, no connection pooling.
+* <<JDBCPoolingDriver,`<PoolingDriver>`>>: Uses Apache Commons DBCP to provide connection pooling.
 
 [#JDBCDataSource]
 .DataSource Parameters
@@ -1138,7 +1138,7 @@ However, configurations written for 2.0 that use the `<JMSQueue/>` or `<JMSTopic
 | factoryName
 | String
 | _Required_
-| The fully qualified class name that should be used to define the Initial Context Factory as defined in https://download.oracle.com/javase/7/docs/api/javax/naming/Context.html#INITIAL_CONTEXT_FACTORY[INITIAL_CONTEXT_FACTORY]. If a `factoryName` is specified without a `providerURL`, a warning message will be logged as this is likely to cause problems.
+| The fully qualified class name that should be used to define the Initial Context Factory as defined in https://download.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Context.html#INITIAL_CONTEXT_FACTORY[`INITIAL_CONTEXT_FACTORY`]. If a `factoryName` is specified without a `providerURL`, a warning message will be logged as this is likely to cause problems.
 
 | filter
 | Filter
@@ -1163,7 +1163,7 @@ However, configurations written for 2.0 that use the `<JMSQueue/>` or `<JMSTopic
 | providerURL
 | String
 | _Required_
-| The URL of the provider to use as defined by https://download.oracle.com/javase/7/docs/api/javax/naming/Context.html#PROVIDER_URL[PROVIDER_URL]. From Log4j 2.17, only the `java:` protocol is supported.
+| The URL of the provider to use as defined by https://download.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Context.html#PROVIDER_URL[`PROVIDER_URL`]. From Log4j 2.17, only the `java:` protocol is supported.
 
 | destinationBindingName
 | String
@@ -1173,12 +1173,12 @@ However, configurations written for 2.0 that use the `<JMSQueue/>` or `<JMSTopic
 | securityPrincipalName
 | String
 | null
-| The name of the identity of the Principal as specified by https://download.oracle.com/javase/7/docs/api/javax/naming/Context.html#SECURITY_PRINCIPAL[SECURITY_PRINCIPAL]. If a securityPrincipalName is specified without `securityCredentials`, a warning message will be logged as this is likely to cause problems.
+| The name of the identity of the Principal as specified by https://download.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Context.html#SECURITY_PRINCIPAL[`SECURITY_PRINCIPAL`]. If a securityPrincipalName is specified without `securityCredentials`, a warning message will be logged as this is likely to cause problems.
 
 | securityCredentials
 | String
 | null
-| The security credentials for the principal as specified by https://download.oracle.com/javase/7/docs/api/javax/naming/Context.html#SECURITY_CREDENTIALS[SECURITY_CREDENTIALS].
+| The security credentials for the principal as specified by https://download.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Context.html#SECURITY_CREDENTIALS[`SECURITY_CREDENTIALS`].
 
 | ignoreExceptions
 | boolean
@@ -1198,7 +1198,7 @@ However, configurations written for 2.0 that use the `<JMSQueue/>` or `<JMSTopic
 | urlPkgPrefixes
 | String
 | null
-| A colon-separated list of package prefixes for the class name of the factory class that will create a URL context factory as defined by https://download.oracle.com/javase/7/docs/api/javax/naming/Context.html#URL_PKG_PREFIXES[URL_PKG_PREFIXES].
+| A colon-separated list of package prefixes for the class name of the factory class that will create a URL context factory as defined by https://download.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Context.html#URL_PKG_PREFIXES[`URL_PKG_PREFIXES`].
 
 | userName
 | String
@@ -1436,7 +1436,7 @@ Additional headers can be specified with embedded Property elements.
 It will also wait for a response from the server, and throw an error if no 2xx response is received.
 
 Implemented with
-https://docs.oracle.com/javase/7/docs/api/java/net/HttpURLConnection.html[HttpURLConnection].
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/HttpURLConnection.html[`HttpURLConnection`].
 
 .HttpAppender Parameters
 [cols="20%,20%,60%",options="header",]
@@ -1452,7 +1452,7 @@ CompositeFilter.
 
 |Ssl |SslConfiguration |Contains the configuration for the KeyStore and
 TrustStore for https. Optional, uses Java runtime defaults if not
-specified. See link:#SSL[SSL]
+specified. See <<SSL>>.
 
 |verifyHostname |boolean |Whether to verify server hostname against
 certificate. Only valid for https. Optional, defaults to true
@@ -1474,7 +1474,7 @@ xref:manual/lookups.adoc[lookups].
 encountered while appending events to be internally logged and then
 ignored. When set to `false` exceptions will be propagated to the
 caller, instead. You must set this to `false` when wrapping this
-Appender in a link:#FailoverAppender[FailoverAppender].
+Appender in a <<FailoverAppender>>.
 |=======================================================================
 
 Here is a sample HttpAppender configuration snippet:
@@ -1530,7 +1530,7 @@ Each log event is sent as a Kafka record.
 
 |ignoreExceptions
 |boolean
-|The default is `true`, causing exceptions encountered while appending events to be internally logged and then ignored. When set to `false` exceptions will be propagated to the caller, instead. You must set this to `false` when wrapping this Appender in a link:#FailoverAppender[FailoverAppender].
+|The default is `true`, causing exceptions encountered while appending events to be internally logged and then ignored. When set to `false` exceptions will be propagated to the caller, instead. You must set this to `false` when wrapping this Appender in a <<FailoverAppender>>.
 
 |syncSend
 |boolean
@@ -1623,7 +1623,7 @@ CompositeFilter.
 
 |immediateFlush |boolean a|
 When set to true, each write will be followed by a call to
-http://docs.oracle.com/javase/7/docs/api/java/nio/MappedByteBuffer.html#force()[MappedByteBuffer.force()].
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/MappedByteBuffer.html#force()[`MappedByteBuffer#force()`].
 This will guarantee the data is written to the storage device.
 
 The default for this parameter is `false`. This means that the data is
@@ -1654,7 +1654,7 @@ is supplied the default pattern layout of "%m%n" will be used.
 encountered while appending events to be internally logged and then
 ignored. When set to `false` exceptions will be propagated to the
 caller, instead. You must set this to `false` when wrapping this
-Appender in a link:#FailoverAppender[FailoverAppender].
+Appender in a <<FailoverAppender>>.
 |=======================================================================
 
 Here is a sample MemoryMappedFile configuration:
@@ -1694,7 +1694,7 @@ Provider implementations currently exist for MongoDB, and writing a custom provi
 encountered while appending events to be internally logged and then
 ignored. When set to `false` exceptions will be propagated to the
 caller, instead. You must set this to `false` when wrapping this
-Appender in a link:#FailoverAppender[FailoverAppender].
+Appender in a <<FailoverAppender>>.
 
 |filter |Filter |A Filter to determine if the event should be handled by
 this Appender. More than one Filter may be used by using a
@@ -1848,7 +1848,7 @@ If you are note sure, which implementation to choose, `log4j-mongodb` is the rec
 ==== NoSQL provider for MongoDB (current)
 
 This section details specializations of the
-link:#NoSQLAppender[NoSQLAppender] provider for MongoDB using the current MongoDB driver (version 5).
+<<NoSQLAppender>> provider for MongoDB using the current MongoDB driver (version 5).
 The NoSQLAppender Appender writes log events to a NoSQL database using an internal lightweight provider interface.
 
 .MongoDB Provider Parameters
@@ -1945,7 +1945,7 @@ The OutputStreamAppender uses an OutputStreamManager to handle the actual I/O, a
 == RandomAccessFileAppender
 
 The RandomAccessFileAppender is similar to the standard
-link:#FileAppender[FileAppender] except it is always buffered (this cannot be switched off) and internally it uses a
+<<FileAppender>> except it is always buffered (this cannot be switched off) and internally it uses a
 `ByteBuffer + RandomAccessFile` instead of a `BufferedOutputStream`.
 We saw a 20-200% performance improvement compared to FileAppender with "bufferedIO=true" in our
 measurements.
@@ -1997,7 +1997,7 @@ is supplied the default pattern layout of "%m%n" will be used.
 encountered while appending events to be internally logged and then
 ignored. When set to `false` exceptions will be propagated to the
 caller, instead. You must set this to `false` when wrapping this
-Appender in a link:#FailoverAppender[FailoverAppender].
+Appender in a <<FailoverAppender>>.
 |=======================================================================
 
 Here is a sample RandomAccessFile configuration:
@@ -2050,7 +2050,7 @@ the LogEvent.
 encountered while appending events to be internally logged and then
 ignored. When set to `false` exceptions will be propagated to the
 caller, instead. You must set this to `false` when wrapping this
-Appender in a link:#FailoverAppender[FailoverAppender].
+Appender in a <<FailoverAppender>>.
 |=======================================================================
 
 [#RewritePolicy]
@@ -2187,19 +2187,16 @@ While `RolloverFileAppenders` from different Configurations cannot be shared, th
 For example, two web applications in a servlet container can have their configuration and safely write to the same file if Log4j is in a
 `ClassLoader` that is common to both of them.
 
-A RollingFileAppender requires a
-link:#TriggeringPolicies[TriggeringPolicy] and a
-link:#RolloverStrategies[RolloverStrategy].
+A RollingFileAppender requires a <<TriggeringPolicy>> and a <<RolloverStrategies>>.
 The triggering policy determines if a rollover should be performed while the `RolloverStrategy`
 defines how the rollover should be done.
 If no `RolloverStrategy` is configured, `RollingFileAppender` will use the
-link:#DefaultRolloverStrategy[DefaultRolloverStrategy].
-Since log4j-2.5, a link:#CustomDeleteOnRollover[custom delete action] can be configured in the DefaultRolloverStrategy to run at rollover.
+<<DefaultRolloverStrategy>>.
+Since log4j-2.5, a <<CustomDeleteOnRollover,custom delete action>> can be configured in the DefaultRolloverStrategy to run at rollover.
 Since 2.8 if no file name is configured then
-link:#DirectWriteRolloverStrategy[DirectWriteRolloverStrategy] will be used instead of DefaultRolloverStrategy.
+<<DirectWriteRolloverStrategy>> will be used instead of DefaultRolloverStrategy.
 Since log4j-2.9, a
-link:#CustomPosixViewAttributeOnRollover[custom POSIX file attribute
-view action] can be configured in the DefaultRolloverStrategy to run at rollover, if not defined, the inherited POSIX file attribute view from the RollingFileAppender will be applied.
+<<CustomPosixViewAttributeOnRollover,custom POSIX file attribute view action>> can be configured in the DefaultRolloverStrategy to run at rollover, if not defined, the inherited POSIX file attribute view from the RollingFileAppender will be applied.
 
 File locking is not supported by the RollingFileAppender.
 
@@ -2278,7 +2275,7 @@ and the location of the archive file.
 encountered while appending events to be internally logged and then
 ignored. When set to `false` exceptions will be propagated to the
 caller, instead. You must set this to `false` when wrapping this
-Appender in a link:#FailoverAppender[FailoverAppender].
+Appender in a <<FailoverAppender>>.
 
 |filePermissions |String a|
 File attribute permissions in POSIX format to apply whenever the file is
@@ -2345,7 +2342,7 @@ The `filePattern` attribute of the Appender should contain a timestamp otherwise
 |Parameter Name |Type |Description
 |schedule |String |The cron expression. The expression is the same as
 what is allowed in the Quartz scheduler. See
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/CronExpression.html[CronExpression]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/CronExpression.html[`CronExpression`]
 for a full description of the expression.
 
 |evaluateOnStartup |boolean |On startup the cron expression will be
@@ -2704,7 +2701,7 @@ at INFO level. Use this to do a dry run to test if the configuration
 works as expected. The default is false.
 
 |pathSorter |PathSorter |A plugin implementing the
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathSorter.html[PathSorter]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathSorter.html[`PathSorter`]
 interface to sort the files before selecting the files to delete. The
 default is to sort the most recently modified files first.
 
@@ -2722,17 +2719,17 @@ NOT by using the `IfAll`, `IfAny` and `IfNot` composite conditions.
 
 Users can create custom conditions or use the built-in conditions:
 
-* link:#DeleteIfFileName[IfFileName] - accepts files whose path
+* <<DeleteIfFileName,`IfFileName`>> - accepts files whose path
 (relative to the base path) matches a
 https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html[regular
 expression] or a
 https://docs.oracle.com/javase/7/docs/api/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)[glob].
-* link:#DeleteIfLastModified[IfLastModified] - accepts files that are as
+* <<DeleteIfLastModified,`IfLastModified`>> - accepts files that are as
 old as or older than the specified
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/Duration.html#parse(CharSequence)[duration].
-* link:#DeleteIfAccumulatedFileCount[IfAccumulatedFileCount] - accepts
+* <<DeleteIfAccumulatedFileCount,`IfAccumulatedFileCount`>> - accepts
 paths after some count threshold is exceeded during the file tree walk.
-* link:#DeleteIfAccumulatedFileSize[IfAccumulatedFileSize] - accepts
+* <<DeleteIfAccumulatedFileSize,`IfAccumulatedFileSize`>> - accepts
 paths after the accumulated file size threshold is exceeded during the
 file tree walk.
 * IfAll - accepts a path if all nested conditions accept it (logical
@@ -2746,13 +2743,12 @@ AND). Nested conditions may be evaluated in any order.
 _Required if no PathConditions are specified._ A ScriptCondition element
 specifying a script.
 
-The ScriptCondition should contain a link:#ScriptCondition[Script,
-ScriptRef or ScriptFile] element that specifies the logic to be
+The ScriptCondition should contain a <<ScriptCondition,`Script`, `ScriptRef`, or `ScriptFile`>> element that specifies the logic to be
 executed. (See also the xref:manual/filters.adoc#Script[ScriptFilter]
 documentation for more examples of configuring ScriptFiles and
 ScriptRefs.)
 
-The script is passed several link:#ScriptParameters[parameters],
+The script is passed several <<ScriptParameters,parameters>>,
 including a list of paths found under the base path (up to `maxDepth`)
 and must return a list with the paths to delete.
 
@@ -2774,11 +2770,11 @@ syntax].
 |regex |String |_Required if glob not specified._ Matches the relative
 path (relative to the base path) using a regular expression as defined
 by the
-https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html[Pattern]
+https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html[`Pattern`]
 class.
 
 |nestedConditions |PathCondition[] |An optional set of nested
-link:#DeletePathCondition[PathConditions]. If any nested conditions
+<<DeletePathCondition,`PathCondition`>>s. If any nested conditions
 exist they all need to accept the file before it is deleted. Nested
 conditions are only evaluated if the outer condition accepts a file (if
 the path name matches).
@@ -2792,12 +2788,12 @@ the path name matches).
 |=======================================================================
 |Parameter Name |Type |Description
 |age |String |_Required._ Specifies a
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/Duration.html#parse(CharSequence)[duration].
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/Duration.html#parse(CharSequence)[`duration`].
 The condition accepts files that are as old or older than the specified
 duration.
 
 |nestedConditions |PathCondition[] |An optional set of nested
-link:#DeletePathCondition[PathConditions]. If any nested conditions
+<<DeletePathCondition,`PathCondition`>>s. If any nested conditions
 exist they all need to accept the file before it is deleted. Nested
 conditions are only evaluated if the outer condition accepts a file (if
 the file is old enough).
@@ -2814,7 +2810,7 @@ the file is old enough).
 deleted.
 
 |nestedConditions |PathCondition[] |An optional set of nested
-link:#DeletePathCondition[PathConditions]. If any nested conditions
+<<DeletePathCondition,`PathCondition`>>s. If any nested conditions
 exist they all need to accept the file before it is deleted. Nested
 conditions are only evaluated if the outer condition accepts a file (if
 the threshold count has been exceeded).
@@ -2832,7 +2828,7 @@ which files will be deleted. The size can be specified in bytes, with
 the suffix KB, MB, GB, or TB, for example `20MB`.
 
 |nestedConditions |PathCondition[] |An optional set of nested
-link:#DeletePathCondition[PathConditions]. If any nested conditions
+<<DeletePathCondition,`PathCondition`>>s. If any nested conditions
 exist they all need to accept the file before it is deleted. Nested
 conditions are only evaluated if the outer condition accepts a file (if
 the threshold accumulated file size has been exceeded).
@@ -3043,15 +3039,14 @@ default is 1, meaning only the files in the specified base directory.
 |followLinks |boolean |Whether to follow symbolic links. Default is
 false.
 
-|pathConditions |PathCondition[] |see
-link:#DeletePathCondition[DeletePathCondition]
+|pathConditions |PathCondition[] |see <<DeletePathCondition>>
 
 |filePermissions |String a|
 File attribute permissions in POSIX format to apply when action is
 executed.
 
 The underlying files system shall support
-https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[POSIX]
+https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[`POSIX`]
 file attribute view.
 
 Examples: rw------- or rw-rw-rw- etc...
@@ -3067,14 +3062,14 @@ http://www.gnu.org/software/libc/manual/html_node/Options-for-Files.html[_POSIX_
 is in effect for path.
 
 The underlying files system shall support file
-https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html[owner]
+https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html[`owner`]
 attribute view.
 
 |fileGroup |String a|
 File group to define when action is executed.
 
 The underlying files system shall support
-https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[POSIX]
+https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[`POSIX`]
 file attribute view.
 
 |=======================================================================
@@ -3115,7 +3110,7 @@ Below is a sample configuration that uses a RollingFileAppender and defines diff
 == RollingRandomAccessFileAppender
 
 The RollingRandomAccessFileAppender is similar to the standard
-link:#RollingFileAppender[RollingFileAppender] except it is always buffered (this cannot be switched off) and internally it uses a
+<<RollingFileAppender>> except it is always buffered (this cannot be switched off) and internally it uses a
 `ByteBuffer + RandomAccessFile` instead of a `BufferedOutputStream`.
 We saw a 20-200% performance improvement compared to RollingFileAppender with "bufferedIO=true" in our measurements.
 The
@@ -3125,13 +3120,13 @@ While RollingRandomAccessFileAppender from different Configurations cannot be sh
 For example, two web applications in a servlet container can have their configuration and safely write to the same file if Log4j is in a ClassLoader that is common to both of them.
 
 A RollingRandomAccessFileAppender requires a
-link:#TriggeringPolicies[TriggeringPolicy] and a
-link:#RolloverStrategies[RolloverStrategy].
+<<TriggeringPolicies,triggering policy>> and a
+<<RolloverStrategies,rollover strategy>>.
 The triggering policy determines if a rollover should be performed while the `RolloverStrategy`
 defines how the rollover should be done.
 If no RolloverStrategy is configured, RollingRandomAccessFileAppender will use the
-link:#DefaultRolloverStrategy[DefaultRolloverStrategy].
-Since log4j-2.5, a link:#CustomDeleteOnRollover[custom delete action] can be configured in the DefaultRolloverStrategy to run at rollover.
+<<DefaultRolloverStrategy>>.
+Since log4j-2.5, a <<CustomDeleteOnRollover,custom delete action>> can be configured in the DefaultRolloverStrategy to run at rollover.
 
 File locking is not supported by the RollingRandomAccessFileAppender.
 
@@ -3189,14 +3184,14 @@ and the location of the archive file.
 encountered while appending events to be internally logged and then
 ignored. When set to `false` exceptions will be propagated to the
 caller, instead. You must set this to `false` when wrapping this
-Appender in a link:#FailoverAppender[FailoverAppender].
+Appender in a <<FailoverAppender>>.
 
 |filePermissions |String a|
 File attribute permissions in POSIX format to apply whenever the file is
 created.
 
 The underlying files system shall support
-https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[POSIX]
+https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[`POSIX`]
 file attribute view.
 
 Examples: `rw-------` or `rw-rw-rw-` etc...
@@ -3212,25 +3207,25 @@ http://www.gnu.org/software/libc/manual/html_node/Options-for-Files.html[_POSIX_
 is in effect for path.
 
 The underlying file system shall support file
-https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html[owner]
+https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html[`owner`]
 attribute view.
 
 |fileGroup |String a|
 File group to define whenever the file is created.
 
 The underlying files system shall support
-https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[POSIX]
+https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[`POSIX`]
 file attribute view.
 
 |=======================================================================
 
 === Triggering Policies
 
-See xref:#TriggeringPolicies[RollingFileAppender Triggering Policies].
+See <<TriggeringPolicies,RollingFileAppender Triggering Policies>>.
 
 === Rollover Strategies
 
-See link:#RolloverStrategies[RollingFileAppender Rollover Strategies].
+See <<RolloverStrategies,`RollingFileAppender` rollover strategies>>.
 
 Below is a sample configuration that uses a RollingRandomAccessFileAppender with both the time and size-based triggering policies will create up to 7 archives on the same day (1-7) that are stored in a directory based on the current year and month, and will compress each archive using gzip:
 
@@ -3357,7 +3352,7 @@ This is the same map passed to the Routes Script.
 encountered while appending events to be internally logged and then
 ignored. When set to `false` exceptions will be propagated to the
 caller, instead. You must set this to `false` when wrapping this
-Appender in a link:#FailoverAppender[FailoverAppender].
+Appender in a <<FailoverAppender>>.
 |=======================================================================
 
 In this example, the script causes the "ServiceWindows" route to be the default route on Windows and "ServiceOther" on all other operating systems.
@@ -3604,11 +3599,11 @@ As with other Appenders, the formatting can be controlled by specifying a Layout
 
 |ignoreExceptions
 |boolean
-|The default is `true`, causing exceptions encountered while appending events to be internally logged and then ignored. When set to `false` exceptions will be propagated to the caller, instead. You must set this to `false` when wrapping this Appender in a link:#FailoverAppender[FailoverAppender].
+|The default is `true`, causing exceptions encountered while appending events to be internally logged and then ignored. When set to `false` exceptions will be propagated to the caller, instead. You must set this to `false` when wrapping this Appender in a <<FailoverAppender>>.
 
 |SSL
 |SslConfiguration
-|Contains the configuration for the KeyStore and TrustStore. See link:#SSL[SSL].
+|Contains the configuration for the KeyStore and TrustStore. See <<SSL>>.
 |===
 
 [source,xml]
@@ -3669,7 +3664,7 @@ The appender name is recorded under the name of the
 
 The `SocketAppender` is an OutputStreamAppender that writes its output to a remote destination specified by a host and port.
 The data can be sent over either TCP or UDP and can be sent in any format.
-You can optionally secure communication with link:#SSL[SSL].
+You can optionally secure communication with <<SSL>>.
 Note that the TCP and SSL variants write to the socket as a stream and do not expect a response from the target destination.
 Due to limitations in the TCP protocol that means that when the target server closes its connection some log events may continue to appear to succeed until a closed connection exception is raised, causing those events to be lost.
 If guaranteed delivery is required a protocol that requires acknowledgments must be used.
@@ -3691,7 +3686,7 @@ address when a connection is lost.
 |protocol |String |"TCP" (default), "SSL" or "UDP".
 
 |SSL |SslConfiguration |Contains the configuration for the KeyStore and
-TrustStore. See link:#SSL[SSL].
+TrustStore. See <<SSL>>.
 
 |filter |Filter |A Filter to determine if the event should be handled by
 this Appender. More than one Filter may be used by using a
@@ -3729,7 +3724,7 @@ default is 0 (infinite timeout, like `Socket.connect()` methods).
 encountered while appending events to be internally logged and then
 ignored. When set to `false` exceptions will be propagated to the
 caller, instead. You must set this to `false` when wrapping this
-Appender in a link:#FailoverAppender[FailoverAppender].
+Appender in a <<FailoverAppender>>.
 |=======================================================================
 
 This is an unsecured TCP configuration:
@@ -3751,7 +3746,7 @@ This is an unsecured TCP configuration:
 </Configuration>
 ----
 
-This is a secured link:#SSL[SSL] configuration:
+This is a secured <<SSL>> configuration:
 
 [source,xml]
 ----
@@ -3821,12 +3816,12 @@ combined with either `password` or `passwordEnvironmentVariable`.
 |type |String |Optional KeyStore type, e.g. `JKS`, `PKCS12`, `PKCS11`,
 `BKS`, `Windows-MY/Windows-ROOT`, `KeychainStore`, etc. The default is
 JKS. See also
-http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyStore[Standard
+https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/security/StandardNames.html#KeyStore[Standard
 types].
 
 |keyManagerFactoryAlgorithm |String |Optional KeyManagerFactory
 algorithm. The default is `SunX509`. See also
-http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory[Standard
+https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory[Standard
 algorithms].
 |=======================================================================
 
@@ -3857,12 +3852,12 @@ combined with either `password` or `passwordEnvironmentVariable`.
 |type |String |Optional KeyStore type, e.g. `JKS`, `PKCS12`, `PKCS11`,
 `BKS`, `Windows-MY/Windows-ROOT`, `KeychainStore`, etc. The default is
 JKS. See also
-http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyStore[Standard
+https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/security/StandardNames.html#KeyStore[Standard
 types].
 
 |trustManagerFactoryAlgorithm |String |Optional TrustManagerFactory
 algorithm. The default is `SunX509`. See also
-http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#TrustManagerFactory[Standard
+https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/security/StandardNames.html#TrustManagerFactory[Standard
 algorithms].
 |=======================================================================
 
@@ -3933,7 +3928,7 @@ the id from the Message will be used instead of this value.
 encountered while appending events to be internally logged and then
 ignored. When set to `false` exceptions will be propagated to the
 caller, instead. You must set this to `false` when wrapping this
-Appender in a link:#FailoverAppender[FailoverAppender].
+Appender in a <<FailoverAppender>>.
 
 |immediateFail |boolean |When set to true, log events will not wait to
 try to reconnect and will fail immediately if the socket is not
@@ -3988,7 +3983,7 @@ This parameter must be specified.
 |protocol |String |"TCP" or "UDP". This parameter is required.
 
 |SSL |SslConfiguration |Contains the configuration for the KeyStore and
-TrustStore. See link:#SSL[SSL].
+TrustStore. See <<SSL>>.
 
 |reconnectionDelayMillis |integer |If set to a value greater than 0,
 after an error, the SocketManager will attempt to reconnect to the server
@@ -4021,7 +4016,7 @@ A sample syslogAppender configuration that is configured with two `SyslogAppende
 </Configuration>
 ----
 
-For link:#SSL[SSL] this appender writes its output to a remote destination specified by a host and port over SSL in a format that conforms with either the BSD Syslog format or the RFC 5424 format.
+For <<SSL>> this appender writes its output to a remote destination specified by a host and port over SSL in a format that conforms with either the BSD Syslog format or the RFC 5424 format.
 
 [source,xml]
 ----

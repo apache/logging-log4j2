@@ -19,7 +19,7 @@
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_ASYNC_FORMAT_MESSAGES_IN_BACKGROUND
+| Env. variable  `LOG4J_ASYNC_FORMAT_MESSAGES_IN_BACKGROUND`
 | Type          | `boolean`
 | Default value | `false`
 |===
@@ -27,7 +27,7 @@
 If `false`, Log4j will make sure the message is formatted in the caller thread, otherwise the formatting will occur on the asynchronous thread.
 
 **Remark**: messages annotated with
-{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/message/AsynchronouslyFormattable.html[AsynchronouslyFormattable]
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/message/AsynchronouslyFormattable.html[`AsynchronouslyFormattable`]
 will be formatted on the async thread regardless of this setting.
 
 [id=log4j.async.queueFullPolicy.type]
@@ -36,10 +36,10 @@ will be formatted on the async thread regardless of this setting.
 [cols="1h,5"]
 |===
 | Env. variable
-| LOG4J_ASYNC_QUEUE_FULL_POLICY_TYPE
+ `LOG4J_ASYNC_QUEUE_FULL_POLICY_TYPE`
 
 | Type
-| link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[Class<? extends AsyncQueueFullPolicy>]
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[`Class<? extends AsyncQueueFullPolicy>`]
 or predefined constant
 
 | Default value
@@ -62,8 +62,8 @@ Discard:: when the queue is full, it drops the events whose level is equal or le
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_ASYNC_QUEUE_FULL_POLICY_DISCARD_THRESHOLD
-| Type          | {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level[Level]
+| Env. variable  `LOG4J_ASYNC_QUEUE_FULL_POLICY_DISCARD_THRESHOLD`
+| Type          | {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level[`Level`]
 | Default value | `INFO`
 |===
 

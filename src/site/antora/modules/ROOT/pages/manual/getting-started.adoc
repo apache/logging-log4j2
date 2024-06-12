@@ -160,7 +160,7 @@ This section explains how to install Log4j Core to run an application.
 [IMPORTANT]
 ====
 Are you implementing not an **application**, but a **library**?
-Please refer to the xref:#install-lib[] instead.
+Please refer to the <<install-lib>> instead.
 ====
 
 First, add the `log4j-core` **runtime** dependency to your application.
@@ -216,7 +216,7 @@ dependencies {
 ====
 <1> For applications, the logging implementation need to be runtime dependencies.
 
-If your application has (direct or transitive!) dependencies that use another logging API, you need to xref:#logging-bridge[bridge] that to Log4j.
+If your application has (direct or transitive!) dependencies that use another logging API, you need to <<logging-bridge,bridge>> that to Log4j.
 This way the foreign logging API calls will effectively be consumed by Log4j too.
 {slf4j-link} is another logging API used pretty common in the wild.
 (xref:manual/installation.adoc[] covers all supported foreign APIs.)
@@ -266,7 +266,7 @@ dependencies {
 <2> Log4j module bridging SLF4J to Log4j
 
 To complete the installation, Log4j needs to be configured.
-Please continue with xref:#config-app[]
+Please continue with <<config-app>>
 
 [#config-app]
 == How do I configure Log4j Core to run my application?
@@ -312,7 +312,7 @@ It serves as the default `<logger>` configuration.
 <6> Unless specified otherwise, accepted log events will be forwarded to the `console` appender defined earlier.
 
 Next, you need to you need to configure Log4j for the tests of your application.
-Please proceed to xref:#config-test[]
+Please proceed to <<config-test>>
 
 [#install-lib]
 == How do I install Log4j Core for my **library**?
@@ -322,7 +322,7 @@ This section explains how to install Log4j Core for libraries.
 [IMPORTANT]
 ====
 Are you implementing not a **library**, but an **application**?
-Please refer to xref:#install-app[] instead.
+Please refer to <<install-app>> instead.
 ====
 
 Unlike applications, libraries should be logging implementation agnostic.
@@ -372,7 +372,7 @@ dependencies {
 ====
 <1> For tests of libraries, the logging implementation is only needed in test scope.
 
-If your library has (direct or transitive!) dependencies that use another logging API, you need to xref:#logging-bridge[bridge] that to Log4j.
+If your library has (direct or transitive!) dependencies that use another logging API, you need to <<logging-bridge,bridge>> that to Log4j.
 This way the foreign logging API calls will effectively be consumed by Log4j too.
 {slf4j-link} is another logging API used pretty common in the wild.
 (xref:manual/installation.adoc[] covers all supported foreign APIs.)
@@ -422,7 +422,7 @@ dependencies {
 <2> Log4j module bridging SLF4J to Log4j
 
 Next, you need to you need to configure Log4j.
-Please proceed to xref:#config-test[]
+Please proceed to <<config-test>>
 
 [#config-test]
 == How do I configure Log4j Core for tests?
@@ -432,7 +432,7 @@ This section explains configuring Log4j on how log events should be processed fo
 xref:manual/configuration.adoc[Log4j supports several configuration inputs and file formats.]
 Let's start with a basic and developer-friendly configuration where the logs are pretty-printed in a human-readable way and written to the console.
 
-Contrast to xref:#config-app[an application's more conservative Log4j setup], for tests, we will go with a more developer-friendly Log4j configuration where
+Contrast to <<config-app,an application's more conservative Log4j setup>>, for tests, we will go with a more developer-friendly Log4j configuration where
 
 . the logs are pretty-printed to the console, and
 . logging verbosity is increased.

@@ -19,11 +19,11 @@
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_SCRIPT_ENABLE_LANGUAGES
-| Type          | Comma-separated list of https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/script/ScriptEngine.html[ScriptEngine] names
+| Env. variable  `LOG4J_SCRIPT_ENABLE_LANGUAGES`
+| Type          | Comma-separated list of https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/script/ScriptEngine.html[`ScriptEngine`] names
 | Default value | _empty_
 |===
 
 The list of script languages that are allowed to execute.
 
-The names specified must correspond to those returned by https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/script/ScriptEngineFactory.html#getNames--[ScriptEngineFactory.getNames()].
+The names specified must correspond to those returned by https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/script/ScriptEngineFactory.html#getNames--[`ScriptEngineFactory.getNames()`].

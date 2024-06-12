@@ -52,12 +52,12 @@ Upon initialization of a new logger context, Log4j assigns it a context name and
 . Files named `log4j2<contextName>.<extension>`
 . Files named `log4j2.<extension>`,
 . If no configuration file is found, Log4j uses the
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/DefaultConfiguration.html[DefaultConfiguration]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/DefaultConfiguration.html[`DefaultConfiguration`]
 and the
 {log4j2-url}/manual/status-logger.html[status logger]
 prints a warning.
 The default configuration prints all messages less specific than
-xref:manual/systemproperties.adoc#log4j.configuration.level[log4j.configuration.level]
+xref:manual/systemproperties.adoc#log4j.configuration.level[`log4j.configuration.level`]
 to the console.
 
 [CAUTION]
@@ -105,11 +105,11 @@ link:../../jakarta/log4j-jakarta-web.html#config[Log4j Jakarta
 [NOTE]
 ====
 It is also possible to override the location of the configuration file using the
-xref:manual/systemproperties.adoc#log4j.configuration.location[log4j.configuration.location]
+xref:manual/systemproperties.adoc#log4j.configuration.location[`log4j.configuration.location`]
 configuration property.
 In this case, Log4j will guess the configuration file format from the provided configuration file extension or use the default configuration factory if the extension is unknown.
 
-See xref:manual/systemproperties.adoc#log4j.configuration.location[log4j.configuration.location] for details.
+See xref:manual/systemproperties.adoc#log4j.configuration.location[`log4j.configuration.location`] for details.
 ====
 
 [id=configuration-syntax]
@@ -119,10 +119,10 @@ The Log4j runtime is composed of xref:manual/plugins.adoc[plugins], which are li
 Appenders, layouts, filters, configuration loaders, and similar components are all accessed as plugins.
 
 All configuration files are represented internally as a tree of
-``link:../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Node.html[Node]``s,
+link:../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Node.html[`Node`]s,
 which is translated into a tree of Log4j plugins.
 The tree's root creates a
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html[Configuration]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html[`Configuration`]
 object.
 
 A node is a relatively simple structure representing a single Log4j plugin (see xref:plugin-reference.adoc[] for a complete list), such as an appender, layout, or logger configuration.
@@ -409,19 +409,19 @@ To modify these options during a reconfiguration, you also need to change the re
 [cols="1h,5"]
 |===
 | Type
-| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html[LEVEL]
+| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html[`LEVEL`]
 
 | Status
 | **DEPRECATED**
 
 | Default value
-| {log4j2-url}/manual/systemproperties.html#log4j.statusLoggerLevel[log4j2.statusLoggerLevel]
+| {log4j2-url}/manual/systemproperties.html#log4j.statusLoggerLevel[`log4j2.statusLoggerLevel`]
 |===
 
 Overrides the logging level of the status logger.
 
 WARNING: Since 2.24.0 this attribute is deprecated and should be replaced with the
-link:../../2.x/manual/systemproperties.html#log4j.sta.statusLoggerLevel[log4j2.statusLoggerLevel]
+{log4j2-url}/manual/systemproperties.html#log4j.sta.statusLoggerLevel[`log4j2.statusLoggerLevel`]
 configuration property.
 
 [id=configuration-elements-filters]
@@ -454,7 +454,7 @@ There **must** be at least a `Root` or `AsyncRoot` element in every configuratio
 Other logger configurations are optional.
 
 Every
-{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Logger.html[Logger]
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Logger.html[`Logger`]
 in your application is assigned to one of these logger configurations (see
 xref:manual/architecture.adoc#loggerconfig[architecture]), which determines the events that will be logged and those that won't.
 
@@ -577,11 +577,11 @@ xref:manual/architecture.adoc#logger-hierarchy[parent logger]).
 [cols="1h,5"]
 |===
 | Type
-| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html[Level]
+| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html[`Level`]
 
 | Default value
 a|
-* xref:manual/systemproperties.adoc#log4j.configuration.level[log4j.configuration.level],
+* xref:manual/systemproperties.adoc#log4j.configuration.level[`log4j.configuration.level`],
 for `Root` and `AsyncRoot`,
 * inherited from the
 xref:manual/architecture.adoc#logger-hierarchy[parent logger],
@@ -609,14 +609,13 @@ a|
 ** `false` for `AsyncRoot` and `AsyncLogger`.
 
 See
-xref:manual/systemproperties.adoc#log4j.loggerContext.selector[log4j.loggerContext.selector]
+xref:manual/systemproperties.adoc#log4j.loggerContext.selector[`log4j.loggerContext.selector`]
 for more details.
 |===
 
 Specifies whether Log4j is allowed to compute location information.
 If set to `false`, Log4j will not attempt to infer the location of the logging call unless said location was provided explicitly using one of the available
-https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/LogBuilder.html[LogBuilder
-.withLocation()]
+https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/LogBuilder.html[`LogBuilder#withLocation()`]
 methods.
 
 See xref:manual/layouts.adoc#LocationInformation[Location information] for more details.
@@ -631,8 +630,7 @@ See <<configuring-appenderrefs>> below for more details.
 [id=logger-elements-properties]
 ==== Additional context properties
 
-Loggers can emit additional context data that will be integrated with other context data sources such as
-{log4j2-url}/manual/thread-context.html[ThreadContext].
+Loggers can emit additional context data that will be integrated with other context data sources such as {log4j2-url}/manual/thread-context.html[thread context].
 
 [CAUTION]
 ====
@@ -705,7 +703,7 @@ Specifies the name of the appender to use.
 [cols="1h,5"]
 |===
 | Type
-| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html[Level]
+| {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html[`Level`]
 |===
 
 Specifies the level threshold that a log event must have to be logged.
@@ -1076,13 +1074,13 @@ include::example$manual/configuration/arbiters-select.properties[tag=select]
 === Composite Configuration
 
 Log4j allows multiple configuration files to be used at the same time by specifying them as a list of comma-separated file paths or URLs in the
-xref:manual/systemproperties.adoc#log4j.configuration.location[log4j.configuration.location]
+xref:manual/systemproperties.adoc#log4j.configuration.location[`log4j.configuration.location`]
 configuration property.
 
 These configuration files are merged into a single configuration file using
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy.html[MergeStrategy]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy.html[`MergeStrategy`]
 service that can be customized using the
-xref:manual/systemproperties.adoc#log4j.configuration.mergeStrategy[log4j.configuration.mergeStrategy]
+xref:manual/systemproperties.adoc#log4j.configuration.mergeStrategy[`log4j.configuration.mergeStrategy`]
 configuration property.
 
 The default merge strategy will merge the files using the following rules:

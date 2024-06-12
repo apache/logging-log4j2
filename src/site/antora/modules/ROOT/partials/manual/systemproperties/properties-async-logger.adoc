@@ -20,13 +20,13 @@
 [cols="1h,5"]
 |===
 | Env. variable
-| LOG4J_ASYNC_LOGGER_CONFIG_EXCEPTION_HANDLER
+ `LOG4J_ASYNC_LOGGER_CONFIG_EXCEPTION_HANDLER`
 
 | Type
 | link:../javadoc/log4j-async-logger/org/apache/logging/log4j/async/logger/AsyncLoggerConfigExceptionHandler.html[`Class< ? extends AsyncLoggerConfigExceptionHandler>`]
 
 | Default value
-| link:../javadoc/log4j-async-logger/org/apache/logging/log4j/async/logger/internal/AsyncLoggerConfigDefaultExceptionHandler.html[AsyncLoggerConfigDefaultExceptionHandler]
+| link:../javadoc/log4j-async-logger/org/apache/logging/log4j/async/logger/internal/AsyncLoggerConfigDefaultExceptionHandler.html[`AsyncLoggerConfigDefaultExceptionHandler`]
 |===
 
 Fully qualified name of a class that implements the
@@ -49,13 +49,13 @@ See xref:manual/async.adoc#MixedSync-Async[Mixing synchronous and asynchronous L
 [cols="1h,5"]
 |===
 | Env. variable
-| LOG4J_ASYNC_LOGGER_EXCEPTION_HANDLER
+ `LOG4J_ASYNC_LOGGER_EXCEPTION_HANDLER`
 
 | Type
 | link:../javadoc/log4j-async-logger/org/apache/logging/log4j/async/logger/AsyncLoggerExceptionHandler.html[`Class< ? extends AsyncLoggerExceptionHandler>`]
 
 | Default value
-| link:../javadoc/log4j-async-logger/org/apache/logging/log4j/async/logger/internal/AsyncLoggerDefaultExceptionHandler.html[AsyncLoggerDefaultExceptionHandler]
+| link:../javadoc/log4j-async-logger/org/apache/logging/log4j/async/logger/internal/AsyncLoggerDefaultExceptionHandler.html[`AsyncLoggerDefaultExceptionHandler`]
 |===
 
 Fully qualified name of a class that implements the
@@ -77,7 +77,7 @@ See xref:manual/async.adoc#AllAsync[Making all loggers asynchronous] for more de
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL
+| Env. variable  `LOG4J_ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL`
 | Type          | `boolean`
 | Default value | `true`
 |===
@@ -92,7 +92,7 @@ Setting this value to `false` may lead to very high CPU utilization when the asy
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_ASYNC_LOGGER_RING_BUFFER_SIZE
+| Env. variable  `LOG4J_ASYNC_LOGGER_RING_BUFFER_SIZE`
 | Type          | `int`
 | Default value | `256 &times; 1024`
 
@@ -104,19 +104,19 @@ Make this value large enough to deal with bursts of activity.
 The minimum size is 128.
 The RingBuffer will be pre-allocated at first use and will never grow or shrink during the life of the system.
 
-When the application is logging faster than the underlying appender can keep up with for a long enough time to fill up the queue, the behaviour is determined by the link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[AsyncQueueFullPolicy].
+When the application is logging faster than the underlying appender can keep up with for a long enough time to fill up the queue, the behaviour is determined by the link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[`AsyncQueueFullPolicy`].
 
 [id=log4j.async.logger.waitStrategy.type]
 == `log4j.async.logger.waitStrategy.type`
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_ASYNC_LOGGER_WAIT_STRATEGY_TYPE
+| Env. variable  `LOG4J_ASYNC_LOGGER_WAIT_STRATEGY_TYPE`
 | Type          | predefined constant
 | Default value | `Timeout`
 |===
 
-Specifies the https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/WaitStrategy.html[WaitStrategy] used by the LMAX Disruptor.
+Specifies the https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/WaitStrategy.html[`WaitStrategy`] used by the LMAX Disruptor.
 
 The value needs to be one of the predefined constants:
 
@@ -138,7 +138,7 @@ Yield:: is a strategy that will use `100%` CPU, but will give up the CPU if othe
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_ASYNC_LOGGER_WAIT_STRATEGY_RETRIES
+| Env. variable  `LOG4J_ASYNC_LOGGER_WAIT_STRATEGY_RETRIES`
 | Type          | `int`
 | Default value | `200`
 |===
@@ -150,7 +150,7 @@ Total number of spin cycles and `Thread.yield()` cycles of `Sleep` (see <<log4j.
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_ASYNC_LOGGER_WAIT_STRATEGY_SLEEP_TIME_NS
+| Env. variable  `LOG4J_ASYNC_LOGGER_WAIT_STRATEGY_SLEEP_TIME_NS`
 | Type          | `long`
 | Default value | `100`
 |===
@@ -162,12 +162,9 @@ Sleep time in nanoseconds of `Sleep` wait strategy (see <<log4j.async.logger.wai
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_ASYNC_LOGGER_WAIT_STRATEGY_TIMEOUT
+| Env. variable  `LOG4J_ASYNC_LOGGER_WAIT_STRATEGY_TIMEOUT`
 | Type          | `int`
 | Default value | `10`
 |===
 
 Timeout in milliseconds of `Timeout` wait strategy (see <<log4j.async.logger.waitStrategy.type>>).
-
-
-
