@@ -1,0 +1,20 @@
+{
+  "Configuration": {
+    "Appenders": {
+      "Console": {
+        "name": "CONSOLE",
+        "PatternLayout": {
+          "pattern": "%-5p [%t]: %m%n"
+        }
+      }
+    },
+    "Loggers": {
+      "Root": {
+        "level": "WARN",
+        "AppenderRef": {
+          "ref": "CONSOLE"
+        }
+      }
+    }
+  }
+}

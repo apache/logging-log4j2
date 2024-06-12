@@ -26,8 +26,8 @@ Both parties contain different features with different memory allocation charact
 To achieve an end-to-end garbage-free logging system, they need to work hand in hand.
 Hence, we will discuss both:
 
-. xref:#Config[]
-. xref:#api[]
+. <<Config>>
+. <<api>>
 
 [NOTE]
 ====
@@ -41,12 +41,12 @@ If you use another setup (e.g., a different logging API or implementation) this 
 If you want to have a garbage-free Log4j setup, but don't want to spend time with the associated details, you can quickly get started with the following instructions:
 
 . Set the following system properties to `true`:
-** xref:#log4j2.enableThreadlocals[`log4j2.enableThreadlocals`]
-** xref:#log4j2.garbagefreeThreadContextMap[`log4j2.garbagefreeThreadContextMap`]
+** <<log4j2.enableThreadlocals,`log4j2.enableThreadlocals`>>
+** <<log4j2.garbagefreeThreadContextMap,`log4j2.garbagefreeThreadContextMap`>>
 . Use garbage-free
-** xref:#Layouts[]
-** xref:#Appenders[]
-** xref:#Filters[]
+** <<Layouts>>
+** <<Appenders>>
+** <<Filters>>
 
 This should be sufficient for a majority of use cases.
 If not for yours, keep on reading.
@@ -56,8 +56,8 @@ If not for yours, keep on reading.
 
 In order to have a garbage-free Log4j Core, you need to
 
-* xref:#core-properties[configure it using properties],
-* and employ garbage-free xref:#Layouts[layouts], xref:Appenders[appenders], and xref:#Filters[filters].
+* <<core-properties,configure it using properties>>,
+* and employ garbage-free <<Layouts[layouts], xref:Appenders[appenders], and xref:#Filters,filters>>.
 
 [#core-properties]
 === Properties
@@ -80,7 +80,7 @@ To understand which configuration knobs exhibit what kind of allocation behaviou
 // Maintain the alphabetical ordering while making changes, please!
 * xref:manual/layouts.adoc#GELFLayout[`GelfLayout`]
 * xref:manual/json-template-layout.adoc#faq-garbage-free[`JsonTemplateLayout`]
-* xref:manual/layouts.adoc#PatternLayout-gcfree[`PatternLayout`]
+* xref:manual/pattern-layout.adoc#garbage-free[`PatternLayout`]
 
 .Implementation notes
 [%collapsible]
@@ -120,7 +120,7 @@ Garbage-free xref:manual/appenders.adoc[appenders] need to provide their xref:ma
 
 An effort has been made to minimize impact on custom appenders that extend `AbstractOutputStreamAppender`, but it is impossible to guarantee that changing the superclass will not impact any and all subclasses.
 Custom appenders that extend `AbstractOutputStreamAppender` should verify that they still function correctly.
-In case there is a problem, xref:#log4j2.enableDirectEncoders[the `log4j2.enableDirectEncoders` system property] can be set to `false` to revert to the pre-Log4j 2.6 behaviour.
+In case there is a problem, <<log4j2.enableDirectEncoders,the `log4j2.enableDirectEncoders` system property>> can be set to `false` to revert to the pre-Log4j 2.6 behaviour.
 =====
 ====
 
@@ -200,7 +200,7 @@ LOGGER.debug("Prevent primitive autoboxing {} {}", box(10L), box(2.6d));
 ----
 
 This utility contains a `ThreadLocal` pool of reused ``StringBuilder``s.
-The pool size is configured by xref:#log4j2.unboxRingbufferSize[the `log4j2.unboxRingbufferSize` system property].
+The pool size is configured by <<log4j2.unboxRingbufferSize,the `log4j2.unboxRingbufferSize` system property>>.
 The `Unbox.box(primitive)` methods write directly into a `StringBuilder`, and the resulting text will be copied into the final log message text without creating temporary objects.
 
 [#api-limitations]
@@ -208,10 +208,10 @@ The `Unbox.box(primitive)` methods write directly into a `StringBuilder`, and th
 
 Not all Log4j API feature set is garbage-free, specifically:
 
-* The `ThreadContext` map (aka. MDC) is not garbage-free by default, but can be configured to be garbage-free by setting xref:#log4j2.garbagefreeThreadContextMap[the `log4j2.garbagefreeThreadContextMap` system property] to `true`.
+* The `ThreadContext` map (aka. MDC) is not garbage-free by default, but can be configured to be garbage-free by setting <<log4j2.garbagefreeThreadContextMap,the `log4j2.garbagefreeThreadContextMap` system property>> to `true`.
 * The `ThreadContext` stack (aka. NDC) is not garbage-free.
 * xref:manual/scoped-context.adoc[] is not garbage-free.
-* Logging very large messages (i.e., more than xref:#log4j2.maxReusableMsgSize[`log4j2.maxReusableMsgSize`] characters, which defaults to 518), when all loggers are xref:manual/async.adoc[asynchronous loggers], will cause the internal `StringBuilder` in the
+* Logging very large messages (i.e., more than <<log4j2.maxReusableMsgSize[`log4j2.maxReusableMsgSize`] characters, which defaults to 518), when all loggers are xref:manual/async.adoc,asynchronous loggers>>, will cause the internal `StringBuilder` in the
 `RingBuffer` to be trimmed back to their configured maximum size.
 * Logging messages containing `$\{variable}` substitutions creates temporary objects.
 * Logging a lambda as a parameter:

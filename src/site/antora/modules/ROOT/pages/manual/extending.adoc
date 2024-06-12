@@ -68,7 +68,7 @@ classpath.
 == ContextSelector
 
 ContextSelectors are called by the
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/Log4jContextFactory.html[Log4j LoggerContext factory]. They perform the actual work of locating or
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/Log4jContextFactory.html[Log4j `LoggerContext` factory]. They perform the actual work of locating or
 creating a LoggerContext, which is the anchor for Loggers and their
 configuration. ContextSelectors are free to implement any mechanism they
 desire to manage LoggerContexts. The default Log4jContextFactory checks
@@ -377,91 +377,6 @@ public final class StubAppender extends AbstractOutputStreamAppender<StubManager
     }
 }
 ----
-
-[#Layouts]
-== Layouts
-
-Layouts perform the formatting of events into the printable text that is
-written by Appenders to some destination. All Layouts must implement the
-`Layout` interface. Layouts that format the event into a `String` should
-extend `AbstractStringLayout`, which will take care of converting the
-`String` into the required byte array.
-
-Every Layout must declare itself as a plugin using the `@Plugin`
-annotation and a `@Configurable` annotation with an `elementType` of "layout". `printObject` should be set to "true" if the plugin's `toString`
-method will provide a representation of the object and its parameters.
-The name of the plugin must match the value users should use to specify
-it as an element in their Appender configuration. The plugin also must
-provide a static method annotated as a `@PluginFactory` and with each of
-the methods parameters annotated with `@PluginAttribute` or `@PluginElement` as
-appropriate. The plugin can alternatively use the plugin builder notation.
-
-[source,java]
-----
-@Plugin(name = "SampleLayout", category = "Core", elementType = "layout", printObject = true)
-public class SampleLayout extends AbstractStringLayout {
-
-    protected SampleLayout(boolean locationInfo, boolean properties, boolean complete,
-                           Charset charset) {
-        super(charset);
-        // handle the boolean parameters
-    }
-
-    @PluginFactory
-    public static SampleLayout createLayout(@PluginAttribute boolean locationInfo,
-                                            @PluginAttribute boolean properties,
-                                            @PluginAttribute boolean complete,
-                                            @PluginAttribute(defaultStringValue = "UTF-8") Charset charset) {
-        return new SampleLayout(locationInfo, properties, complete, charset);
-    }
-}
-----
-
-[#PatternConverters]
-== PatternConverters
-
-PatternConverters are used by the PatternLayout to format the log event
-into a printable `String`. Each Converter is responsible for a single kind
-of manipulation, however Converters are free to format the event in
-complex ways. For example, there are several converters that manipulate
-Throwables and format them in various ways.
-
-A PatternConverter must first declare itself as a Plugin using the
-standard `@Plugin` annotation and the `@Namespace` annotation with the value "Converter". Furthermore, the Converter must also specify the
-`@ConverterKeys` annotation to define the tokens that can be specified in
-the pattern (preceded by a '%' character) to identify the Converter.
-
-Unlike most other Plugins, Converters do not use a `@PluginFactory`.
-Instead, each Converter is required to provide a static `newInstance`
-method that accepts an array of `String` as the only parameter. The
-`String[]` is the values that are specified within the curly braces
-that can follow the converter key.
-
-The following shows the skeleton of a Converter plugin.
-
-[source,java]
-----
-@Plugin("query")
-@ConverterKeys({"q", "query"})
-public final class QueryConverter extends LogEventPatternConverter {
-
-    public QueryConverter(String[] options) {
-    }
-
-    public static QueryConverter newInstance(final String[] options) {
-      return new QueryConverter(options);
-    }
-    
-    @Override
-    public void format(LogEvent event, StringBuilder toAppendTo) {
-        // get the data from 'event', to the work and append the result to 'toAppendTo'.
-    }    
-}
-----
-
-A pattern to use this converter could be specified as `... %q ...` or `... %q\{argument} ...`.
-The "argument" will be passed as first (and only) value to the `options` parameter of the 
-`newInstance(...)` method.
 
 [#Plugin_Builders]
 == Plugin Builders

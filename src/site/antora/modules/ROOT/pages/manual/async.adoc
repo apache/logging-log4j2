@@ -68,10 +68,10 @@ This is the simplest to configure and gives the best performance: to make all lo
 xref:manual/systemproperties.adoc#log4j2.contextSelector[log4j2.contextSelector]
 property to one of the asynchronous logger context selectors:
 
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/BasicAsyncLoggerContextSelector.html[org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector]::
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/BasicAsyncLoggerContextSelector.html[`org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector`]::
 This will create a single logger context and disruptor for all the classes in the JVM,
 
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerContextSelector.html[org.apache.logging.log4j.core.async.AsyncLoggerContextSelector]::
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerContextSelector.html[`org.apache.logging.log4j.core.async.AsyncLoggerContextSelector`]::
 This will create a different logger context and disruptor for each classloader in the JVM.
 
 [IMPORTANT]
@@ -186,8 +186,7 @@ The system properties mentioned in the section above allow only to choose from a
 In order to use a custom wait strategy you need to:
 
 . Use the <<MixedSync-Async,mixed sync/async configuration method>> above,
-. Implement the interface
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncWaitStrategyFactory.html[AsyncWaitStrategyFactory]; the implementation must have a public no-arg constructor,
+. Implement the interface link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncWaitStrategyFactory.html[`AsyncWaitStrategyFactory`]; the implementation must have a public no-arg constructor,
 . Add an xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-AsyncWaitStrategyFactoryConfig[AsyncWaitStrategyFactory Log4j plugin]
 to your configuration.
 
@@ -242,8 +241,7 @@ Full asynchronous::
 +
 If all the loggers are asynchronous you need to:
 +
-* implement an
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/RingBufferLogEvent.html[ExceptionHandler<? super RingBufferLogEvent>]
+* implement an link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/RingBufferLogEvent.html[`ExceptionHandler<? super RingBufferLogEvent>`]
 * set its fully qualified class name as value of the
 xref:manual/systemproperties.adoc#log4j2.asyncLoggerExceptionHandler[log4j2.asyncLoggerExceptionHandler]
 configuration property.
@@ -253,7 +251,7 @@ Mixed synchronous/asynchronous::
 If you use a mix of synchronous and asynchronous loggers you need to:
 +
 * implement a
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerConfigDisruptor.Log4jEventWrapper.html[ExceptionHandler<? super AsyncLoggerConfigDisruptor.Log4jEventWrapper>]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerConfigDisruptor.Log4jEventWrapper.html[`ExceptionHandler<? super AsyncLoggerConfigDisruptor.Log4jEventWrapper>`]
 * set its fully qualified class name as value of the
 xref:manual/systemproperties.adoc#log4j2.asyncLoggerConfigExceptionHandler[log4j2.asyncLoggerConfigExceptionHandler]
 configuration property.

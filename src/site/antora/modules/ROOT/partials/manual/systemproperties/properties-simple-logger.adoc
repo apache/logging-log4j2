@@ -19,8 +19,8 @@
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_SIMPLELOG_LEVEL
-| Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[Level]
+| Env. variable | `LOG4J_SIMPLELOG_LEVEL`
+| Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[`Level`]
 | Default value | `ERROR`
 |===
 
@@ -32,7 +32,7 @@ Default level for new logger instances.
 [cols="1h,5"]
 |===
 | Env. variable | LOG4J_SIMPLELOG_&lt;LOGGER_NAME&gt;_LEVEL
-| Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[Level]
+| Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[`Level`]
 | Default value | value of <<log4j2.simplelogLevel>>
 |===
 
@@ -43,7 +43,7 @@ Log level for a logger instance named `<loggerName>`.
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_SIMPLELOG_SHOW_CONTEXT_MAP
+| Env. variable | `LOG4J_SIMPLELOG_SHOW_CONTEXT_MAP`
 | Type          | `boolean`
 | Default value | `false`
 |===
@@ -55,7 +55,7 @@ If `true`, the full thread context map is included in each log message.
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_SIMPLELOG_SHOWLOGNAME
+| Env. variable | `LOG4J_SIMPLELOG_SHOWLOGNAME`
 | Type          | `boolean`
 | Default value | `false`
 |===
@@ -67,7 +67,7 @@ If `true`, the logger name is included in each log message.
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_SIMPLELOG_SHOW_SHORT_LOGNAME
+| Env. variable | `LOG4J_SIMPLELOG_SHOW_SHORT_LOGNAME`
 | Type          | `boolean`
 | Default value | `true`
 |===
@@ -79,7 +79,7 @@ If `true`, only the last component of a logger name is included in each log mess
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_SIMPLELOG_SHOWDATETIME
+| Env. variable | `LOG4J_SIMPLELOG_SHOWDATETIME`
 | Type          | `boolean`
 | Default value | `false`
 |===
@@ -91,8 +91,8 @@ If `true`, a timestamp is included in each log message.
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_SIMPLELOG_DATE_TIME_FORMAT
-| Type          | https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html[SimpleDateFormat] pattern
+| Env. variable | `LOG4J_SIMPLELOG_DATE_TIME_FORMAT`
+| Type          | https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html[`SimpleDateFormat`] pattern
 | Default value | `yyyy/MM/dd HH:mm:ss:SSS zzz`
 |===
 
@@ -104,8 +104,8 @@ Ignored if <<log4j2.simplelogShowdatetime>> is `false`.
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_SIMPLELOG_LOG_FILE
-| Type          | https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[Path] or predefined constant
+| Env. variable | `LOG4J_SIMPLELOG_LOG_FILE`
+| Type          | https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[`Path`] or predefined constant
 | Default value | `System.err`
 |===
 

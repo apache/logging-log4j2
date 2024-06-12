@@ -23,8 +23,8 @@ The act of logging is an interplay between the logging API (i.e., Log4j API) whe
 Both parties can have dramatic impact on performance.
 Hence, we will discuss the performance optimization of both individually:
 
-. xref:#api[Using Log4j API efficiently]
-. xref:#core[Tuning Log4j Core for performance]
+. <<api,Using Log4j API efficiently>>
+. <<core,Tuning Log4j Core for performance>>
 
 [#api]
 == Using Log4j API efficiently
@@ -134,7 +134,7 @@ xref:manual/json-template-layout.adoc#performance[JSON Template Layout]::
 It encodes log events into JSON according to the structure described by the template provided.
 Its output can safely be ingested into several log storage solutions: Elasticsearch, Google Cloud Logging, Graylog, Logstash, etc.
 
-xref:manual/layouts.adoc#PatternLayout-performance[Pattern Layout]::
+xref:manual/pattern-layout.adoc#performance[Pattern Layout]::
 It encodes log events into human-readable text according to the pattern provided.
 
 [#async]

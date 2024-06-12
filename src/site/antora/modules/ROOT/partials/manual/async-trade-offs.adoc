@@ -29,8 +29,7 @@ It can prevent or dampen latency spikes by shortening the wait time until the ne
 If the queue size is large enough to handle the burst, asynchronous logging will prevent your application from falling behind during a sudden increase of activity.
 
 Lower logging latency::
-link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html[Logger]
-method calls return faster, since most of the work is done on the I/O thread.
+link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html[`Logger`] method calls return faster, since most of the work is done on the I/O thread.
 
 [#async-drawbacks]
 == Drawbacks

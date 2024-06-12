@@ -35,7 +35,7 @@ You can also check out xref:manual/installation.adoc[] for the complete installa
 Log4j API provides
 
 * A logging API that libraries and applications can code to
-* xref:#simple-logger[A minimal logging implementation (aka. Simple logger)]
+* <<simple-logger,A minimal logging implementation (aka. Simple logger)>>
 * Adapter components to create a logging implementation
 
 This page tries to cover the most prominent Log4j API features.
@@ -49,6 +49,8 @@ Check out {logging-services-url}/log4j/kotlin[Log4j Kotlin] and {logging-service
 == Introduction
 
 include::partial$manual/api-intro.adoc[leveloffset=+1]
+
+include::partial$manual/log-event.adoc[]
 
 [#best-practice]
 == Best practices

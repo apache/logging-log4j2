@@ -19,7 +19,7 @@
 
 == Using Log4j in Web Applications
 
-You must take particular care when using Log4j or any other logging framework within a Java EE web application. It's important for logging resources to be properly cleaned up (database connections closed, files closed, etc.) when the container shuts down or the web application is undeployed. Because of the nature of class loaders within web applications, Log4j resources cannot be cleaned up through normal means. Log4j must be "started" when the web application deploys and "shut down" when the web application undeploys. How this works varies depending on whether your application is a xref:#Servlet-3-0[Servlet 3.0 or newer] or xref:#Servlet-2-5[Servlet 2.5] web application.
+You must take particular care when using Log4j or any other logging framework within a Java EE web application. It's important for logging resources to be properly cleaned up (database connections closed, files closed, etc.) when the container shuts down or the web application is undeployed. Because of the nature of class loaders within web applications, Log4j resources cannot be cleaned up through normal means. Log4j must be "started" when the web application deploys and "shut down" when the web application undeploys. How this works varies depending on whether your application is a <<Servlet-3-0,Servlet 3.0 or newer>> or <<Servlet-2-5,Servlet 2.5>> web application.
 
 Due to the namespace change from `javax` to `jakarta`, you need to use `log4j-jakarta-web` instead of `log4j-web` for Servlet 5.0 or newer.
 
@@ -76,9 +76,9 @@ For some users, automatically starting Log4j is problematic or undesirable. You 
 </context-param>
 ----
 
-Once you disable auto-initialization, you must initialize Log4j as you would a link:#Servlet-2-5[Servlet 2.5 web application]. You must do so in a way that this initialization happens before any other application code (such as Spring Framework startup code) executes.
+Once you disable auto-initialization, you must initialize Log4j as you would a <<Servlet-2-5,Servlet 2.5 web application>>. You must do so in a way that this initialization happens before any other application code (such as Spring Framework startup code) executes.
 
-You can customize the behavior of the listener and filter using the `log4jContextName`, `log4jConfiguration`, and/or `isLog4jContextSelectorNamed` context parameters. Read more about this in the xref:#ContextParams[Context Parameters] section below. You _must not_ manually configure the `Log4jServletContextListener` or `Log4jServletFilter` in your deployment descriptor (`web.xml`) or in another initializer or listener in a Servlet 3.0 or newer application _unless you disable auto-initialization_ with `isLog4jAutoInitializationDisabled`. Doing so will result in startup errors and unspecified erroneous behavior.
+You can customize the behavior of the listener and filter using the `log4jContextName`, `log4jConfiguration`, and/or `isLog4jContextSelectorNamed` context parameters. Read more about this in the <<ContextParams,Context Parameters>> section below. You _must not_ manually configure the `Log4jServletContextListener` or `Log4jServletFilter` in your deployment descriptor (`web.xml`) or in another initializer or listener in a Servlet 3.0 or newer application _unless you disable auto-initialization_ with `isLog4jAutoInitializationDisabled`. Doing so will result in startup errors and unspecified erroneous behavior.
 
 [#Servlet-2-5]
 === Servlet 2.5 Web Applications

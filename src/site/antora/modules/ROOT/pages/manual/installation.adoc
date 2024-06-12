@@ -34,11 +34,11 @@ We strongly advise you to skim through this page to get a grip on fundamental lo
 ====
 
 Are you a library developer?::
-You just need to log against xref:#logging-api[a logging API].
+You just need to log against <<logging-api,a logging API>>.
 See <<api>>.
 
 Are you an application developer?::
-Your code and libraries it depends on are most probably already logging against a logging API, you just need to install xref:#logging-impl[a logging implementation].
+Your code and libraries it depends on are most probably already logging against a logging API, you just need to install <<logging-impl,a logging implementation>>.
 See <<impl-core>>.
 
 Are you a Spring Boot application developer?::
@@ -221,7 +221,7 @@ It primarily accepts input from Log4j API.
 [TIP]
 ====
 Do you have a Spring Boot application?
-You can directly skip to xref:#impl-core-spring-boot[].
+You can directly skip to <<impl-core-spring-boot>>.
 ====
 
 To install Log4j Core as your logging implementation, you need to add the following dependency to your application:
@@ -258,16 +258,16 @@ runtimeOnly 'org.apache.logging.log4j:log4j-core'
 [#impl-core-bridges]
 ==== Installing bridges
 
-If either your application or one of its dependencies logs against a logging API that is different from Log4j API, you need to xref:#logging-bridge[bridge] that API to Log4j API.
+If either your application or one of its dependencies logs against a logging API that is different from Log4j API, you need to <<logging-bridge,bridge>> that API to Log4j API.
 
 [TIP]
 ====
 **Do you need bridges?
 And if so, which ones?**
 
-* If you have any direct or transitive dependency on `org.slf4j:slf4j-api`, you need xref:#impl-core-bridge-slf4j[the SLF4J-to-Log4j bridge].
-* If you have any direct or transitive dependency on `commons-logging:commons-logging`, you need xref:#impl-core-bridge-jcl[the JCL-to-Log4j bridge].
-* If it is a standalone application (i.e., not running in a Java EE container), you will probably need xref:#impl-core-bridge-jul[JUL-to-Log4j] and xref:#impl-core-bridge-jpl[JPL-to-Log4j] bridges.
+* If you have any direct or transitive dependency on `org.slf4j:slf4j-api`, you need <<impl-core-bridge-slf4j,the SLF4J-to-Log4j bridge>>.
+* If you have any direct or transitive dependency on `commons-logging:commons-logging`, you need <<impl-core-bridge-jcl,the JCL-to-Log4j bridge>>.
+* If it is a standalone application (i.e., not running in a Java EE container), you will probably need <<impl-core-bridge-jul,JUL-to-Log4j>> and <<impl-core-bridge-jpl,JPL-to-Log4j>> bridges.
 ====
 
 The following sections explain the installation of Log4j-provided bridges.
@@ -446,7 +446,7 @@ dependencies {
 
 ====
 
-The `spring-boot-starter-log4j2` artifact will automatically install Log4j Core, xref:#impl-core-bridge-jul[JUL-to-Log4j bridge], and configure them.
+The `spring-boot-starter-log4j2` artifact will automatically install Log4j Core, <<impl-core-bridge-jul,JUL-to-Log4j bridge>>, and configure them.
 You don't need to add any other dependency or configure JUL anymore.
 See https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.logging[Spring Boot Logging documentation] for further information.
 
@@ -542,8 +542,7 @@ rootLogger.appenderRef.0.ref = CONSOLE
 ----
 
 ====
-<1> While xref:manual/layouts.adoc#pattern-layout[Pattern Layout] is a good first choice and preferable for tests, we recommend
-using a structured format such as xref:manual/json-template-layout.adoc[] for production deployments.
+<1> While xref:manual/pattern-layout.adoc[] is a good first choice and preferable for tests, we recommend using a structured format such as xref:manual/json-template-layout.adoc[] for production deployments.
 
 To use these formats, the following additional dependencies are required:
 
