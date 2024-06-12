@@ -425,7 +425,7 @@ See <a href="#property-sources">Property sources</a> for a complete list of supp
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_IS_WEBAPP</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_IS_WEBAPP</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -458,7 +458,7 @@ See <a href="#property-sources">Property sources</a> for a complete list of supp
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ENABLE_THREADLOCALS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ENABLE_THREADLOCALS</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -509,7 +509,7 @@ Therefore, its configuration influences all other services.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_IGNORE_TCL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_IGNORE_TCL</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -545,11 +545,11 @@ In the particular case, when multiple implementations are present, you can selec
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_PROVIDER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_PROVIDER</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/Provider.html">Class&lt;? extends Provider&gt;</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/Provider.html"><code>Class&lt;? extends Provider&gt;</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -563,12 +563,12 @@ In the particular case, when multiple implementations are present, you can selec
 </table>
 <div class="paragraph">
 <p>Fully qualified class name of the Log4j API
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/Provider.html">Provider</a>
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/Provider.html"><code>Provider</code></a>
 to use.</p>
 </div>
 <div class="paragraph">
 <p>By default, Log4j uses
-<a href="https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html">ServiceLoader</a>
+<a href="https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html"><code>ServiceLoader</code></a>
 to select the provider to use.
 In case multiple providers are found on the classpath the provider with the highest priority is selected and a <code>WARN</code> message is logger by <a href="status-logger.html" class="xref page">Status Logger</a>.</p>
 </div>
@@ -583,11 +583,11 @@ In case multiple providers are found on the classpath the provider with the high
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_LOGGER_CONTEXT_FACTORY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_LOGGER_CONTEXT_FACTORY</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextFactory.html">Class&lt;? extends LoggerContextFactory&gt;</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextFactory.html"><code>Class&lt;? extends LoggerContextFactory&gt;</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -609,11 +609,11 @@ Since version <code>2.24.0</code> this property is deprecated, use <a href="#log
 </div>
 <div class="paragraph">
 <p>Fully qualified class name of the
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextFactory.html">LoggerContextFactory</a>
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextFactory.html"><code>LoggerContextFactory</code></a>
 to use to create <code>Logger</code>s.</p>
 </div>
 <div class="paragraph">
-<p>By default, Log4j uses <a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/Provider.html#getLoggerContextFactory()">Provider.getLoggerContextFactory()</a> to get a logger context factory.
+<p>By default, Log4j uses <a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/Provider.html#getLoggerContextFactory()"><code>Provider.getLoggerContextFactory()</code></a> to get a logger context factory.
 If <a href="#log4j2.provider"><code>log4j2.provider</code></a> is set, this property is ignored.</p>
 </div>
 </div>
@@ -641,7 +641,7 @@ If <a href="#log4j2.provider"><code>log4j2.provider</code></a> is set, this prop
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_FORMAT_MSG_ASYNC</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_FORMAT_MSG_ASYNC</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -658,7 +658,7 @@ If <a href="#log4j2.provider"><code>log4j2.provider</code></a> is set, this prop
 </div>
 <div class="paragraph">
 <p><strong>Remark</strong>: messages annotated with
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/AsynchronouslyFormattable.html">AsynchronouslyFormattable</a>
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/AsynchronouslyFormattable.html"><code>AsynchronouslyFormattable</code></a>
 will be formatted on the async thread regardless of this setting.</p>
 </div>
 </div>
@@ -672,11 +672,11 @@ will be formatted on the async thread regardless of this setting.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_QUEUE_FULL_POLICY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_QUEUE_FULL_POLICY</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html">Class&lt;? extends AsyncQueueFullPolicy&gt;</a>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html"><code>Class&lt;? extends AsyncQueueFullPolicy&gt;</code></a>
 or predefined constant</p></td>
 </tr>
 <tr>
@@ -687,7 +687,7 @@ or predefined constant</p></td>
 </table>
 <div class="paragraph">
 <p>Determines the
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html">AsyncQueueFullPolicy</a>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html"><code>AsyncQueueFullPolicy</code></a>
 to use when the underlying async component cannot keep up with the logging rate and the queue is filling up.</p>
 </div>
 <div class="paragraph">
@@ -717,11 +717,11 @@ to use when the underlying async component cannot keep up with the logging rate 
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_DISCARD_THRESHOLD</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_DISCARD_THRESHOLD</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html">Level</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html"><code>Level</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -751,7 +751,7 @@ See also <a href="#log4j2.asyncQueueFullPolicy"><code>log4j2.asyncQueueFullPolic
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_EXCEPTION_HANDLER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_EXCEPTION_HANDLER</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -759,7 +759,7 @@ See also <a href="#log4j2.asyncQueueFullPolicy"><code>log4j2.asyncQueueFullPolic
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerDefaultExceptionHandler.html">AsyncLoggerDefaultExceptionHandler</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerDefaultExceptionHandler.html"><code>AsyncLoggerDefaultExceptionHandler</code></a></p></td>
 </tr>
 </tbody>
 </table>
@@ -781,7 +781,7 @@ The class needs to have a public zero-argument constructor.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_RING_BUFFER_SIZE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_RING_BUFFER_SIZE</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -801,7 +801,7 @@ The minimum size is 128.
 The RingBuffer will be pre-allocated at first use and will never grow or shrink during the life of the system.</p>
 </div>
 <div class="paragraph">
-<p>When the application is logging faster than the underlying appender can keep up with for a long enough time to fill up the queue, the behaviour is determined by the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html">AsyncQueueFullPolicy</a>.</p>
+<p>When the application is logging faster than the underlying appender can keep up with for a long enough time to fill up the queue, the behaviour is determined by the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html"><code>AsyncQueueFullPolicy</code></a>.</p>
 </div>
 </div>
 <div class="sect3">
@@ -814,7 +814,7 @@ The RingBuffer will be pre-allocated at first use and will never grow or shrink 
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_WAIT_STRATEGY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_WAIT_STRATEGY</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -872,7 +872,7 @@ This wait strategy is <a href="garbagefree.html" class="xref page">garbage free<
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_TIMEOUT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_TIMEOUT</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -898,7 +898,7 @@ This wait strategy is <a href="garbagefree.html" class="xref page">garbage free<
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_SLEEP_TIME_NS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_SLEEP_TIME_NS</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -924,7 +924,7 @@ This wait strategy is <a href="garbagefree.html" class="xref page">garbage free<
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_RETRIES</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_RETRIES</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -950,7 +950,7 @@ This wait strategy is <a href="garbagefree.html" class="xref page">garbage free<
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -979,11 +979,11 @@ Setting this value to <code>false</code> may lead to very high CPU utilization w
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_HREAD_NAME_STRATEGY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_HREAD_NAME_STRATEGY</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/ThreadNameCachingStrategy.html">ThreadNameCachingStrategy</a> (enumeration)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/ThreadNameCachingStrategy.html"><code>ThreadNameCachingStrategy</code></a> (enumeration)</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -994,7 +994,7 @@ Setting this value to <code>false</code> may lead to very high CPU utilization w
 </table>
 <div class="paragraph">
 <p>Specifies the
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/ThreadNameCachingStrategy.html">ThreadNameCachingStrategy</a>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/ThreadNameCachingStrategy.html"><code>ThreadNameCachingStrategy</code></a>
 to use to cache the result of <a href="https://docs.oracle" class="bare">https://docs.oracle</a>
 .com/javase/8/docs/api/java/lang/Thread.html#getName--[Thread.getName()].</p>
 </div>
@@ -1042,7 +1042,7 @@ Since JRE 8u102 the <code>Thread.getName()</code> method does <strong>not</stron
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_CONFIG_EXCEPTION_HANDLER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_CONFIG_EXCEPTION_HANDLER</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1050,7 +1050,7 @@ Since JRE 8u102 the <code>Thread.getName()</code> method does <strong>not</stron
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerConfigDefaultExceptionHandler.html">AsyncLoggerConfigDefaultExceptionHandler</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerConfigDefaultExceptionHandler.html"><code>AsyncLoggerConfigDefaultExceptionHandler</code></a></p></td>
 </tr>
 </tbody>
 </table>
@@ -1072,7 +1072,7 @@ The class needs to have a public zero-argument constructor.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_CONFIG_RING_BUFFER_SIZE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_CONFIG_RING_BUFFER_SIZE</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1092,7 +1092,7 @@ The minimum size is 128.
 The RingBuffer will be pre-allocated at first use and will never grow or shrink during the life of the system.</p>
 </div>
 <div class="paragraph">
-<p>When the application is logging faster than the underlying appender can keep up with for a long enough time to fill up the queue, the behaviour is determined by the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html">AsyncQueueFullPolicy</a>.</p>
+<p>When the application is logging faster than the underlying appender can keep up with for a long enough time to fill up the queue, the behaviour is determined by the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html"><code>AsyncQueueFullPolicy</code></a>.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1105,7 +1105,7 @@ The RingBuffer will be pre-allocated at first use and will never grow or shrink 
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_CONFIG_WAIT_STRATEGY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_CONFIG_WAIT_STRATEGY</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1162,7 +1162,7 @@ This strategy has very low impact on the application thread, in exchange for som
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_CONFIG_TIMEOUT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_CONFIG_TIMEOUT</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1188,7 +1188,7 @@ This strategy has very low impact on the application thread, in exchange for som
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_CONFIG_SLEEP_TIME_NS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_CONFIG_SLEEP_TIME_NS</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1214,7 +1214,7 @@ This strategy has very low impact on the application thread, in exchange for som
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_CONFIG_RETRIES</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_CONFIG_RETRIES</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1240,7 +1240,7 @@ This strategy has very low impact on the application thread, in exchange for som
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1264,7 +1264,7 @@ Setting this value to <code>false</code> may lead to very high CPU utilization w
 <h3 id="properties-properties-context-selector"><a class="anchor" href="#properties-properties-context-selector"></a>Context selector</h3>
 <div class="paragraph">
 <p>The
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ContextSelector.html">ContextSelector</a>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ContextSelector.html"><code>ContextSelector</code></a>
 component specifies the strategy used by Log4j to create new logger contexts.
 The choice of <code>ContextSelector</code> determines in particular:</p>
 </div>
@@ -1290,21 +1290,21 @@ See <a href="async.html" class="xref page">Async Logging</a> as an example of th
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_CONTEXT_SELECTOR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_CONTEXT_SELECTOR</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ContextSelector.html">Class&lt;? extends ContextSelector&gt;</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ContextSelector.html"><code>Class&lt;? extends ContextSelector&gt;</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ClassLoaderContextSelector.html">ClassLoaderContextSelector</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ClassLoaderContextSelector.html"><code>ClassLoaderContextSelector</code></a></p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
 <p>Specifies the fully qualified class name of the
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ContextSelector.html">ContextSelector</a>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ContextSelector.html"><code>ContextSelector</code></a>
 implementation to use.</p>
 </div>
 <div class="paragraph">
@@ -1312,15 +1312,15 @@ implementation to use.</p>
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/selector/BasicContextSelector.html">org.apache.logging.log4j.core.selector.BasicContextSelector</a></dt>
+<dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/selector/BasicContextSelector.html"><code>org.apache.logging.log4j.core.selector.BasicContextSelector</code></a></dt>
 <dd>
 <p>Creates a single logger context and synchronous loggers</p>
 </dd>
-<dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/BasicAsyncLoggerContextSelector.html">org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector</a></dt>
+<dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/BasicAsyncLoggerContextSelector.html"><code>org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector</code></a></dt>
 <dd>
 <p>Creates a single logger context and <a href="async.html" class="xref page">asynchronous loggers</a></p>
 </dd>
-<dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ClassLoaderContextSelector.html">org.apache.logging.log4j.core.selector.ClassLoaderContextSelector</a></dt>
+<dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ClassLoaderContextSelector.html"><code>org.apache.logging.log4j.core.selector.ClassLoaderContextSelector</code></a></dt>
 <dd>
 <p>Creates a separate logger context per classloader and synchronous loggers</p>
 </dd>
@@ -1333,11 +1333,11 @@ Creates a separate logger context per classloader and <a href="async.html" class
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/osgi/BundleContextSelector.html">org.apache.logging.log4j.core.osgi.BundleContextSelector</a></dt>
+<dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/osgi/BundleContextSelector.html"><code>org.apache.logging.log4j.core.osgi.BundleContextSelector</code></a></dt>
 <dd>
 <p>Creates a separate logger context per OSGi bundle and synchronous loggers</p>
 </dd>
-<dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/selector/JndiContextSelector.html">org.apache.logging.log4j.core.selector.JndiContextSelector</a></dt>
+<dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/selector/JndiContextSelector.html"><code>org.apache.logging.log4j.core.selector.JndiContextSelector</code></a></dt>
 <dd>
 <p>Creates loggers contexts based on a JNDI lookup and synchronous loggers See <a href="webapp.html#use-jndi-context-selector" class="xref page">Web application</a> for details.</p>
 </dd>
@@ -1376,11 +1376,11 @@ See <a href="#properties-transport-security">Transport security</a> for details.
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_CONFIGURATION_FACTORY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_CONFIGURATION_FACTORY</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html">Class&lt;? extends ConfigurationFactory&gt;</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html"><code>Class&lt;? extends ConfigurationFactory&gt;</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -1390,7 +1390,7 @@ See <a href="#properties-transport-security">Transport security</a> for details.
 </table>
 <div class="paragraph">
 <p>Specifies the fully qualified class name of the <strong>preferred</strong>
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html">ConfigurationFactory</a>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html"><code>ConfigurationFactory</code></a>
 to use.</p>
 </div>
 <div class="paragraph">
@@ -1407,11 +1407,11 @@ to use.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_CONFIGURATION_FILE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_CONFIGURATION_FILE</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Comma-separated list of <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a>s or <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html">URI</a>s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Comma-separated list of <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a>s or <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html"><code>URI</code></a>s</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -1452,11 +1452,11 @@ to use.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_LEVEL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_LEVEL</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html">Level</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html"><code>Level</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -1488,22 +1488,20 @@ to use.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_MERGE_STRATEGY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_MERGE_STRATEGY</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy.html">Class&lt;? extends MergeStrategy&gt;</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy.html"><code>Class&lt;? extends MergeStrategy&gt;</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/DefaultMergeStrategy.html">DefaultMergeStrategy</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/DefaultMergeStrategy.html"><code>DefaultMergeStrategy</code></a></p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Specifies the fully qualified class name of the
-<code><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy.html">MergeStrategy</a></code>
-implementation used to merge multiple configuration files into one.</p>
+<p>Specifies the fully qualified class name of the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy.html"><code>MergeStrategy</code></a> implementation used to merge multiple configuration files into one.</p>
 </div>
 </div>
 </div>
@@ -1519,7 +1517,7 @@ implementation used to merge multiple configuration files into one.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ENABLE_DIRECT_ENCODERS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ENABLE_DIRECT_ENCODERS</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1532,7 +1530,7 @@ implementation used to merge multiple configuration files into one.</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>If <code>true</code>, garbage-aware layouts will directly encode log events into <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html">ByteBuffer</a>s provided by appenders.</p>
+<p>If <code>true</code>, garbage-aware layouts will directly encode log events into <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html"><code>ByteBuffer</code></a>s provided by appenders.</p>
 </div>
 <div class="paragraph">
 <p>This prevents allocating temporary <code>String</code> and <code>char[]</code> instances.</p>
@@ -1548,7 +1546,7 @@ implementation used to merge multiple configuration files into one.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ENCODER_BYTE_BUFFER_SIZE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ENCODER_BYTE_BUFFER_SIZE</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1562,9 +1560,9 @@ implementation used to merge multiple configuration files into one.</p>
 </table>
 <div class="paragraph">
 <p>The size in bytes of the
-<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html">ByteBuffer</a>s
+<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html"><code>ByteBuffer</code></a>s
 stored in <code>ThreadLocal</code> fields by layouts and
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder.html">StringBuilderEncoder</a>s.</p>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder.html"><code>StringBuilderEncoder</code></a>s.</p>
 </div>
 <div class="paragraph">
 <p>This setting is only used if <a href="#log4j2.enableDirectEncoders"><code>log4j2.enableDirectEncoders</code></a> is set to <code>true</code>.</p>
@@ -1580,7 +1578,7 @@ stored in <code>ThreadLocal</code> fields by layouts and
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ENCODER_CHAR_BUFFER_SIZE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ENCODER_CHAR_BUFFER_SIZE</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1594,9 +1592,9 @@ stored in <code>ThreadLocal</code> fields by layouts and
 </table>
 <div class="paragraph">
 <p>The size in <code>char</code>s of the
-<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html">ByteBuffer</a>s
+<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html"><code>ByteBuffer</code></a>s
 stored in <code>ThreadLocal</code> fields
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder.html">StringBuilderEncoder</a>s.</p>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder.html"><code>StringBuilderEncoder</code></a>s.</p>
 </div>
 <div class="paragraph">
 <p>This setting is only used if <a href="#log4j2.enableDirectEncoders"><code>log4j2.enableDirectEncoders</code></a> is set to <code>true</code>.</p>
@@ -1612,7 +1610,7 @@ stored in <code>ThreadLocal</code> fields
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_INITIAL_REUSABLE_MSG_SIZE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_INITIAL_REUSABLE_MSG_SIZE</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1626,7 +1624,7 @@ stored in <code>ThreadLocal</code> fields
 </table>
 <div class="paragraph">
 <p>In GC-free mode, this property determines the initial size of the reusable <code>StringBuilder</code>s used by
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage.html">ReusableMessages</a>
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage.html"><code>ReusableMessages</code></a>
 for formatting purposes.</p>
 </div>
 </div>
@@ -1640,7 +1638,7 @@ for formatting purposes.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_MAX_REUSABLE_MSG_SIZE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_MAX_REUSABLE_MSG_SIZE</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1654,7 +1652,7 @@ for formatting purposes.</p>
 </table>
 <div class="paragraph">
 <p>In GC-free mode, this property determines the maximum size of the reusable <code>StringBuilder</code>s used by
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage.html">ReusableMessages</a>
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage.html"><code>ReusableMessages</code></a>
 for formatting purposes.</p>
 </div>
 <div class="paragraph">
@@ -1672,7 +1670,7 @@ for formatting purposes.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_LAYOUT_STRING_BUILDER_MAX_SIZE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_LAYOUT_STRING_BUILDER_MAX_SIZE</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1699,7 +1697,7 @@ for formatting purposes.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_UNBOX_RINGBUFFER_SIZE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_UNBOX_RINGBUFFER_SIZE</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1713,7 +1711,7 @@ for formatting purposes.</p>
 </table>
 <div class="paragraph">
 <p>The
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/util/Unbox.html">Unbox</a>
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/util/Unbox.html"><code>Unbox</code></a>
 utility class can be used by users to format primitive values without incurring in the boxing allocation cost.</p>
 </div>
 <div class="paragraph">
@@ -1736,7 +1734,7 @@ utility class can be used by users to format primitive values without incurring 
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_SKIP_JANSI</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_SKIP_JANSI</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1778,7 +1776,7 @@ utility class can be used by users to format primitive values without incurring 
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_DISABLE_JMX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_DISABLE_JMX</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1805,7 +1803,7 @@ will be instrumented with <code>MBean</code>s and can be remotely monitored and 
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_JMX_NOTIFY_ASYNC</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_JMX_NOTIFY_ASYNC</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1841,7 +1839,7 @@ will be instrumented with <code>MBean</code>s and can be remotely monitored and 
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ENABLE_JNDI_CONTEXT_SELECTOR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ENABLE_JNDI_CONTEXT_SELECTOR</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1868,7 +1866,7 @@ See <a href="webapp.html#use-jndi-context-selector" class="xref page">Web applic
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ENABLE_JNDI_JDBC</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ENABLE_JNDI_JDBC</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1881,7 +1879,7 @@ See <a href="webapp.html#use-jndi-context-selector" class="xref page">Web applic
 </tbody>
 </table>
 <div class="paragraph">
-<p>When <code>true</code>, a Log4j JDBC Appender can use JNDI to retrieve a <a href="https://docs.oracle.com/javase/8/docs/api/javax/sql/DataSource.html">DataSource</a> using the <code>java:</code> protocol.</p>
+<p>When <code>true</code>, a Log4j JDBC Appender can use JNDI to retrieve a <a href="https://docs.oracle.com/javase/8/docs/api/javax/sql/DataSource.html"><code>DataSource</code></a> using the <code>java:</code> protocol.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1894,7 +1892,7 @@ See <a href="webapp.html#use-jndi-context-selector" class="xref page">Web applic
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ENABLE_JNDI_JMS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ENABLE_JNDI_JMS</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1920,7 +1918,7 @@ See <a href="webapp.html#use-jndi-context-selector" class="xref page">Web applic
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ENABLE_JNDI_LOOKUP</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ENABLE_JNDI_LOOKUP</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1972,7 +1970,7 @@ See <a href="webapp.html#use-jndi-context-selector" class="xref page">Web applic
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_DISABLE_THREAD_CONTEXT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_DISABLE_THREAD_CONTEXT</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1998,7 +1996,7 @@ See <a href="webapp.html#use-jndi-context-selector" class="xref page">Web applic
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_DISABLE_THREAD_CONTEXT_STACK</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_DISABLE_THREAD_CONTEXT_STACK</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -2024,7 +2022,7 @@ See <a href="webapp.html#use-jndi-context-selector" class="xref page">Web applic
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_DISABLE_THREAD_CONTEXT_MAP</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_DISABLE_THREAD_CONTEXT_MAP</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -2050,11 +2048,11 @@ See <a href="webapp.html#use-jndi-context-selector" class="xref page">Web applic
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_THREAD_CONTEXT_MAP</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_THREAD_CONTEXT_MAP</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html">Class&lt;? extends ThreadContextMap&gt;</a>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html"><code>Class&lt;? extends ThreadContextMap&gt;</code></a>
 or predefined constant</p></td>
 </tr>
 <tr>
@@ -2066,7 +2064,7 @@ or predefined constant</p></td>
 </table>
 <div class="paragraph">
 <p>Fully specified class name of a custom
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html">ThreadContextMap</a>
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html"><code>ThreadContextMap</code></a>
 implementation class or one of the predefined constants:</p>
 </div>
 <div class="dlist">
@@ -2100,7 +2098,7 @@ implementation class or one of the predefined constants:</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_IS_THREAD_CONTEXT_MAP_INHERITABLE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_IS_THREAD_CONTEXT_MAP_INHERITABLE</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -2130,7 +2128,7 @@ implementation class or one of the predefined constants:</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_GARBAGEFREE_THREAD_CONTEXT_MAP</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_GARBAGEFREE_THREAD_CONTEXT_MAP</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -2161,11 +2159,11 @@ implementation class or one of the predefined constants:</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_CONFIGURATION_ALLOWED_PROTOCOLS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_CONFIGURATION_ALLOWED_PROTOCOLS</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Comma-separated list of <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html">URL</a> protocols</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Comma-separated list of <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html"><code>URL</code></a> protocols</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -2174,7 +2172,7 @@ implementation class or one of the predefined constants:</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>A comma separated list of <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html">URL</a> protocols that may be used to load any kind of configuration source.</p>
+<p>A comma separated list of <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html"><code>URL</code></a> protocols that may be used to load any kind of configuration source.</p>
 </div>
 <div class="paragraph">
 <p>To completely prevent accessing the configuration via the Java <code>URL</code> class specify a value of <code>_none</code>.</p>
@@ -2198,21 +2196,21 @@ implementation class or one of the predefined constants:</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_CONFIGURATION_AUTHORIZATION_PROVIDER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_CONFIGURATION_AUTHORIZATION_PROVIDER</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/AuthorizationProvider.html">Class&lt;? extends AuthorizationProvider&gt;</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/AuthorizationProvider.html"><code>Class&lt;? extends AuthorizationProvider&gt;</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/BasicAuthorizationProvider.html">BasicAuthorizationProvider</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/BasicAuthorizationProvider.html"><code>BasicAuthorizationProvider</code></a></p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
 <p>The fully qualified class name of the
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/AuthorizationProvider.html">AuthorizationProvider</a>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/AuthorizationProvider.html"><code>AuthorizationProvider</code></a>
 implementation to use with <code>http</code> and <code>https</code> URL protocols.</p>
 </div>
 </div>
@@ -2226,11 +2224,11 @@ implementation to use with <code>http</code> and <code>https</code> URL protocol
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_CONFIGURATION_AUTHORIZATION_ENCODING</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_CONFIGURATION_AUTHORIZATION_ENCODING</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html">Charset</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html"><code>Charset</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -2252,7 +2250,7 @@ implementation to use with <code>http</code> and <code>https</code> URL protocol
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_CONFIGURATION_PASSWORD</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_CONFIGURATION_PASSWORD</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -2281,11 +2279,11 @@ implementation to use with <code>http</code> and <code>https</code> URL protocol
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_CONFIGURATION_PASSWORD_DECRYPTOR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_CONFIGURATION_PASSWORD_DECRYPTOR</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/PasswordDecryptor.html">Class&lt;? extends PasswordDecryptor&gt;</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/PasswordDecryptor.html"><code>Class&lt;? extends PasswordDecryptor&gt;</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -2295,7 +2293,7 @@ implementation to use with <code>http</code> and <code>https</code> URL protocol
 </table>
 <div class="paragraph">
 <p>Fully qualified class name of an implementation of
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/PasswordDecryptor.html">PasswordDecryptor</a>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/PasswordDecryptor.html"><code>PasswordDecryptor</code></a>
 to use for the value of the <a href="#log4j2.configurationPassword"><code>log4j2.configurationPassword</code></a> property.</p>
 </div>
 <div class="paragraph">
@@ -2312,7 +2310,7 @@ to use for the value of the <a href="#log4j2.configurationPassword"><code>log4j2
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_CONFIGURATION_USERNAME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_CONFIGURATION_USERNAME</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -2338,11 +2336,11 @@ to use for the value of the <a href="#log4j2.configurationPassword"><code>log4j2
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_TRUST_STORE_LOCATION</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_TRUST_STORE_LOCATION</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a> or <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html">URI</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a> or <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html"><code>URI</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -2364,7 +2362,7 @@ to use for the value of the <a href="#log4j2.configurationPassword"><code>log4j2
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_TRUST_STORE_PASSWORD</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_TRUST_STORE_PASSWORD</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -2390,11 +2388,11 @@ to use for the value of the <a href="#log4j2.configurationPassword"><code>log4j2
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_TRUST_STORE_PASSWORD_FILE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_TRUST_STORE_PASSWORD_FILE</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html"><code>Path</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -2416,7 +2414,7 @@ to use for the value of the <a href="#log4j2.configurationPassword"><code>log4j2
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_TRUST_STORE_PASSWORD_ENVIRONMENT_VARIABLE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_TRUST_STORE_PASSWORD_ENVIRONMENT_VARIABLE</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -2442,15 +2440,15 @@ to use for the value of the <a href="#log4j2.configurationPassword"><code>log4j2
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_TRUST_STORE_TYPE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_TRUST_STORE_TYPE</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyStore">KeyStore type</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyStore"><code>KeyStore</code> type</a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/security/KeyStore.html#getDefaultType--">Default Java `KeyStore</code> type</a>`</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/security/KeyStore.html#getDefaultType--">Default Java <code>KeyStore</code> type</a></p></td>
 </tr>
 </tbody>
 </table>
@@ -2468,20 +2466,20 @@ to use for the value of the <a href="#log4j2.configurationPassword"><code>log4j2
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_TRUST_STORE_KEY_MANAGER_FACTORY_ALGORITHM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_TRUST_STORE_KEY_MANAGER_FACTORY_ALGORITHM</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory">KeyManagerFactory type</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory"><code>KeyManagerFactory</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://docs.oracle.com/javase/8/docs/api/javax/net/ssl/KeyManagerFactory.html#getDefaultAlgorithm--">Default Java `KeyManagerFactory</code> algorithm</a>`</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/javax/net/ssl/KeyManagerFactory.html#getDefaultAlgorithm--">Default Java <code>KeyManagerFactory</code> algorithm</a></p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Name of the <a href="https://docs.oracle.com/javase/8/docs/api/javax/net/ssl/KeyManagerFactory.html">KeyManagerFactory</a> implementation to use for the trust store.</p>
+<p>Name of the <a href="https://docs.oracle.com/javase/8/docs/api/javax/net/ssl/KeyManagerFactory.html"><code>KeyManagerFactory</code></a> implementation to use for the trust store.</p>
 </div>
 </div>
 <div class="sect3">
@@ -2494,7 +2492,7 @@ to use for the value of the <a href="#log4j2.configurationPassword"><code>log4j2
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_SSL_VERIFY_HOST_NAME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_SSL_VERIFY_HOST_NAME</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -2520,12 +2518,12 @@ to use for the value of the <a href="#log4j2.configurationPassword"><code>log4j2
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_KEY_STORE_LOCATION</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_KEY_STORE_LOCATION</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a> or
-<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html">URI</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html"><code>Path</code></a> or
+<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html"><code>URI</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -2547,7 +2545,7 @@ to use for the value of the <a href="#log4j2.configurationPassword"><code>log4j2
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_KEY_STORE_PASSWORD</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_KEY_STORE_PASSWORD</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -2573,11 +2571,11 @@ to use for the value of the <a href="#log4j2.configurationPassword"><code>log4j2
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_KEY_STORE_PASSWORD_FILE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_KEY_STORE_PASSWORD_FILE</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html"><code>Path</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -2599,7 +2597,7 @@ to use for the value of the <a href="#log4j2.configurationPassword"><code>log4j2
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_KEY_STORE_PASSWORD_ENVIRONMENT_VARIABLE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_KEY_STORE_PASSWORD_ENVIRONMENT_VARIABLE</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -2625,11 +2623,11 @@ to use for the value of the <a href="#log4j2.configurationPassword"><code>log4j2
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_KEY_STORE_TYPE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_KEY_STORE_TYPE</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyStore">KeyStore type</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyStore"><code>KeyStore</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -2639,7 +2637,7 @@ to use for the value of the <a href="#log4j2.configurationPassword"><code>log4j2
 </table>
 <div class="paragraph">
 <p>The type of private key store.
-See <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyStore">KeyStore types</a>.</p>
+See <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyStore"><code>KeyStore</code></a>.</p>
 </div>
 </div>
 <div class="sect3">
@@ -2652,11 +2650,11 @@ See <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/Sta
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_KEY_STORE_KEY_MANAGER_FACTORY_ALGORITHM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_KEY_STORE_KEY_MANAGER_FACTORY_ALGORITHM</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory">KeyManagerFactory type</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory"><code>KeyManagerFactory</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -2665,8 +2663,8 @@ See <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/Sta
 </tbody>
 </table>
 <div class="paragraph">
-<p>Name of the <a href="https://docs.oracle.com/javase/8/docs/api/javax/net/ssl/KeyManagerFactory.html">KeyManagerFactory</a> implementation to use for the private key store.
-See <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory">KeyManagerFactory types</a>.</p>
+<p>Name of the <a href="https://docs.oracle.com/javase/8/docs/api/javax/net/ssl/KeyManagerFactory.html"><code>KeyManagerFactory</code></a> implementation to use for the private key store.
+See <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory"><code>KeyManagerFactory</code></a>.</p>
 </div>
 </div>
 </div>
@@ -2682,11 +2680,11 @@ See <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/Sta
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_CLOCK</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_CLOCK</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/Clock.html">Class&lt;? extends Clock&gt;</a> or predefined constant</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/Clock.html"><code>Class&lt;? extends Clock&gt;</code></a> or predefined constant</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -2696,7 +2694,7 @@ See <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/Sta
 </table>
 <div class="paragraph">
 <p>Specifies the
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/Clock.html">Clock</a>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/Clock.html"><code>Clock</code></a>
 implementation used to timestamp log events.</p>
 </div>
 <div class="paragraph">
@@ -2707,7 +2705,7 @@ implementation used to timestamp log events.</p>
 <dt class="hdlist1">SystemClock</dt>
 <dd>
 <p>uses the best available system clock as time source.
-See <a href="https://docs.oracle.com/javase/8/docs/api/java/time/Clock.html#systemDefaultZone--">Clock#systemDefaultZone</a> for details.</p>
+See <a href="https://docs.oracle.com/javase/8/docs/api/java/time/Clock.html#systemDefaultZone--"><code>Clock#systemDefaultZone()</code></a> for details.</p>
 </dd>
 <dt class="hdlist1">SystemMillisClock</dt>
 <dd>
@@ -2717,14 +2715,14 @@ See <a href="https://docs.oracle.com/javase/8/docs/api/java/time/Clock.html#syst
 <dd>
 <p>uses a separate thread to update the timestamp value.
 See
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/CachedClock.html">JavaDoc</a>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/CachedClock.html"><code>CachedClock</code></a>
 for details.</p>
 </dd>
 <dt class="hdlist1">CoarseCachedClock</dt>
 <dd>
 <p>alternative implementation of <code>CachedClock</code> with a slightly lower precision.
 See
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/CoarseCachedClock.html">JavaDoc</a>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/CoarseCachedClock.html"><code>CoarseCachedClock</code></a>
 for details.</p>
 </dd>
 </dl>
@@ -2740,21 +2738,21 @@ for details.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_CONTEXT_DATA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_CONTEXT_DATA</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html">Class&lt;? extends StringMap&gt;</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html"><code>Class&lt;? extends StringMap&gt;</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/util/SortedArrayStringMap.html">SortedArrayStringMap</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/util/SortedArrayStringMap.html"><code>SortedArrayStringMap</code></a></p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
 <p>Fully qualified class name of a
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html">StringMap</a>
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html"><code>StringMap</code></a>
 implementation to use to store context data in log events.
 The implementation must have:</p>
 </div>
@@ -2779,11 +2777,11 @@ The implementation must have:</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_CONTEXT_DATA_INJECTOR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_CONTEXT_DATA_INJECTOR</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/ContextDataInjector.html">Class&lt;? extends ContextDataInjector&gt;</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/ContextDataInjector.html"><code>Class&lt;? extends ContextDataInjector&gt;</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -2793,12 +2791,12 @@ The implementation must have:</p>
 </table>
 <div class="paragraph">
 <p>Fully qualified class name of a
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/ContextDataInjector.html">ContextDataInjector</a>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/ContextDataInjector.html"><code>ContextDataInjector</code></a>
 implementation.</p>
 </div>
 <div class="paragraph">
 <p>The default implementation uses all implementations of
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/ContextDataProvider.html">ContextDataProvider</a>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/ContextDataProvider.html"><code>ContextDataProvider</code></a>
 registered with <code>ServiceLoader</code>.</p>
 </div>
 </div>
@@ -2812,23 +2810,23 @@ registered with <code>ServiceLoader</code>.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_LOG_EVENT_FACTORY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_LOG_EVENT_FACTORY</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/impl/LogEventFactory.html">Class&lt;? extends LogEventFactory&gt;</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/impl/LogEventFactory.html"><code>Class&lt;? extends LogEventFactory&gt;</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/impl/DefaultLogEventFactory.html">DefaultLogEventFactory</a></p>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/impl/DefaultLogEventFactory.html"><code>DefaultLogEventFactory</code></a></p>
 <p class="tableblock">(GC-free mode:
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/impl/ReusableLogEventFactory.html">ReusableLogEventFactory</a>)</code></p></td>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/impl/ReusableLogEventFactory.html"><code>ReusableLogEventFactory</code></a>)</p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
 <p>Specifies the
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/impl/LogEventFactory.html">LogEventFactory</a>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/impl/LogEventFactory.html"><code>LogEventFactory</code></a>
 implementation to use to create log events.</p>
 </div>
 </div>
@@ -2842,11 +2840,11 @@ implementation to use to create log events.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_RELIABILITY_STRATEGY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_RELIABILITY_STRATEGY</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/ReliabilityStrategy.html">Class&lt;? extends ReliabilityStrategy&gt;</a>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/ReliabilityStrategy.html"><code>Class&lt;? extends ReliabilityStrategy&gt;</code></a>
 or predefined constant</p></td>
 </tr>
 <tr>
@@ -2857,7 +2855,7 @@ or predefined constant</p></td>
 </table>
 <div class="paragraph">
 <p>Specifies the
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/ReliabilityStrategy.html">ReliabilityStrategy</a>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/ReliabilityStrategy.html"><code>ReliabilityStrategy</code></a>
 to adopt in order to prevent loss of log events during a reconfiguration.</p>
 </div>
 <div class="paragraph">
@@ -2891,7 +2889,7 @@ See <a href="#log4j2.waitMillisBeforeStopOldConfig"><code>log4j2.waitMillisBefor
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_WAIT_MILLIS_BEFORE_STOP_OLD_CONFIG</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_WAIT_MILLIS_BEFORE_STOP_OLD_CONFIG</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -2918,7 +2916,7 @@ See <a href="#log4j2.reliabilityStrategy"><code>log4j2.reliabilityStrategy</code
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_SHUTDOWN_HOOK_ENABLED</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_SHUTDOWN_HOOK_ENABLED</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -2945,26 +2943,26 @@ See <a href="#log4j2.reliabilityStrategy"><code>log4j2.reliabilityStrategy</code
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_SHUTDOWN_CALLBACK_REGISTRY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_SHUTDOWN_CALLBACK_REGISTRY</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/ShutdownCallbackRegistry.html">Class&lt;? extends ShutdownCallbackRegistry&gt;</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/ShutdownCallbackRegistry.html"><code>Class&lt;? extends ShutdownCallbackRegistry&gt;</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/DefaultShutdownCallbackRegistry.html">DefaultShutdownCallbackRegistry</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/DefaultShutdownCallbackRegistry.html"><code>DefaultShutdownCallbackRegistry</code></a></p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
 <p>The fully qualified class name of a
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/ShutdownCallbackRegistry.html">ShutdownCallbackRegistry</a>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/ShutdownCallbackRegistry.html"><code>ShutdownCallbackRegistry</code></a>
 implementation.
 Integrators can use this to customize the shutdown order of the JVM.</p>
 </div>
 <div class="paragraph">
-<p>The default implementation executes all shutdown actions in a separate <code>Thread</code> registered through <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Runtime.html#addShutdownHook-java.lang.Thread-">Runtime#addShutdownHook()</a>.</p>
+<p>The default implementation executes all shutdown actions in a separate <code>Thread</code> registered through <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Runtime.html#addShutdownHook-java.lang.Thread-"><code>Runtime#addShutdownHook()</code></a>.</p>
 </div>
 </div>
 <div class="sect3">
@@ -2977,7 +2975,7 @@ Integrators can use this to customize the shutdown order of the JVM.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_UUID_SEQUENCE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_UUID_SEQUENCE</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -3006,23 +3004,23 @@ Integrators can use this to customize the shutdown order of the JVM.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_MESSAGE_FACTORY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_MESSAGE_FACTORY</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory.html">Class&lt;? extends MessageFactory&gt;</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory.html"><code>Class&lt;? extends MessageFactory&gt;</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ParameterizedMessageFactory.html">ParameterizeMessageFactory</a></p>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ParameterizedMessageFactory.html"><code>ParameterizeMessageFactory</code></a></p>
 <p class="tableblock">(GC-free mode:
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessageFactory.html">ReusableMessageFactory</a>)</p></td>
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessageFactory.html"><code>ReusableMessageFactory</code></a>)</p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
 <p>Fully qualified class name of a
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory.html">MessageFactory</a>
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory.html"><code>MessageFactory</code></a>
 implementation that will be used by loggers if no explicit factory was specified.</p>
 </div>
 </div>
@@ -3036,21 +3034,21 @@ implementation that will be used by loggers if no explicit factory was specified
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_FLOW_MESSAGE_FACTORY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_FLOW_MESSAGE_FACTORY</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/FlowMessageFactory.html">Class&lt;? extends FlowMessageFactory&gt;</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/FlowMessageFactory.html"><code>Class&lt;? extends FlowMessageFactory&gt;</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/DefaultFlowMessageFactory.html">DefaultFlowMessageFactory</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/DefaultFlowMessageFactory.html"><code>DefaultFlowMessageFactory</code></a></p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
 <p>Fully qualified class name of a
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/FlowMessageFactory.html">FlowMessageFactory</a>
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/FlowMessageFactory.html"><code>FlowMessageFactory</code></a>
 implementation to be used by all loggers.</p>
 </div>
 </div>
@@ -3064,7 +3062,7 @@ implementation to be used by all loggers.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_LOGGER_CONTEXT_STACKTRACE_ON_START</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_LOGGER_CONTEXT_STACKTRACE_ON_START</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -3093,11 +3091,11 @@ implementation to be used by all loggers.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_SCRIPT_ENABLE_LANGUAGES</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_SCRIPT_ENABLE_LANGUAGES</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Comma-separated list of <a href="https://docs.oracle.com/javase/8/docs/api/javax/script/ScriptEngine.html">ScriptEngine</a> names</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Comma-separated list of <a href="https://docs.oracle.com/javase/8/docs/api/javax/script/ScriptEngine.html"><code>ScriptEngine</code></a> names</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -3109,7 +3107,7 @@ implementation to be used by all loggers.</p>
 <p>The list of script languages that are allowed to execute.</p>
 </div>
 <div class="paragraph">
-<p>The names specified must correspond to those returned by <a href="https://docs.oracle.com/javase/8/docs/api/javax/script/ScriptEngineFactory.html#getNames--">ScriptEngineFactory.getNames()</a>.</p>
+<p>The names specified must correspond to those returned by <a href="https://docs.oracle.com/javase/8/docs/api/javax/script/ScriptEngineFactory.html#getNames--"><code>ScriptEngineFactory.getNames()</code></a>.</p>
 </div>
 </div>
 </div>
@@ -3133,7 +3131,7 @@ implementation to be used by all loggers.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_JUL_LEVEL_CONVERTER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_JUL_LEVEL_CONVERTER</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -3214,7 +3212,7 @@ implementation to be used by all loggers.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_JUL_LOGGER_ADAPTER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_JUL_LOGGER_ADAPTER</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -3237,7 +3235,7 @@ implementation to be used by all loggers.</p>
 <dt class="hdlist1">org.apache.logging.log4j.jul.CoreLoggerAdapter</dt>
 <dd>
 <p>The default if <code>log4j-core</code> is found in the class path.
-It allows users to modify the Log4j Core configuration through the JUL <a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/Logger.html">Logger</a> interface.</p>
+It allows users to modify the Log4j Core configuration through the JUL <a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/Logger.html"><code>Logger</code></a> interface.</p>
 </dd>
 <dt class="hdlist1">org.apache.logging.log4j.jul.ApiLoggerAdapter</dt>
 <dd>
@@ -3263,7 +3261,7 @@ It disables the level mutators in the JUL <code>Logger</code> interface.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_DISABLE_CLOUD_CONFIG_LOGGING_SYSTEM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_DISABLE_CLOUD_CONFIG_LOGGING_SYSTEM</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -3287,7 +3285,7 @@ It disables the level mutators in the JUL <code>Logger</code> interface.</p>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The Log4j configuration properties sub-system merges the content of multiple property sources that implement the Java interface
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/util/PropertySource.html">PropertySource</a>.</p>
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/util/PropertySource.html"><code>PropertySource</code></a>.</p>
 </div>
 <div class="paragraph">
 <p>Additional property source classes can be added through:</p>

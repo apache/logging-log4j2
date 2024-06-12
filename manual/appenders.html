@@ -345,8 +345,7 @@ Some appenders wrap other appenders so that they can modify the <code>LogEvent</
 </div>
 <div class="paragraph">
 <p>In the tables below, the "Type" column corresponds to the Java type expected.
-For non-JDK classes, these should usually be in
-<a href="../javadoc/log4j-core/index.html">Log4j Core</a> unless otherwise noted.</p>
+For non-JDK classes, these should usually be in <a href="../javadoc/log4j-core/index.html">Log4j Core</a> unless otherwise noted.</p>
 </div>
 </div>
 </div>
@@ -381,12 +380,12 @@ For non-JDK classes, these should usually be in
 <ul>
 <li>
 <p>for appenders based on Java&#8217;s
-<a href="https://docs.oracle.com/javase/8/docs/api/java/io/OutputStream.html">OutputStream</a>
+<a href="https://docs.oracle.com/javase/8/docs/api/java/io/OutputStream.html"><code>OutputStream</code></a>
 a call to the <code>OutputStream.flush()</code> method is performed.</p>
 </li>
 <li>
-<p>if <a href="systemproperties.html#log4j2.enableDirectEncoders" class="xref page">log4j2.enableDirectEncoders</a> is set to <code>true</code>, many Log4j appenders use a
-<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html">ByteBuffer</a>
+<p>if <a href="systemproperties.html#log4j2.enableDirectEncoders" class="xref page"><code>log4j2.enableDirectEncoders</code></a> is set to <code>true</code>, many Log4j appenders use a
+<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html"><code>ByteBuffer</code></a>
 to format log events before sending them to the underlying resource.
 Setting <code>immediateFlush</code> to <code>true</code> flushes these buffers at each event.</p>
 </li>
@@ -543,7 +542,7 @@ CompositeFilter.</p></td>
 encountered while appending events to be internally logged and then
 ignored. When set to <code>false</code> exceptions will be propagated to the
 caller, instead. You must set this to <code>false</code> when wrapping this
-Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
+Appender in a &lt;FailoverAppender&gt;&gt;.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">includeLocation</p></td>
@@ -556,9 +555,8 @@ queue. You can change this by setting includeLocation="true".</p></td>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">BlockingQueueFactory</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">BlockingQueueFactory</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This element overrides what
-type of <code>BlockingQueue</code> to use. See <a href="#BlockingQueueFactory">below
-documentation</a> for more details.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This element overrides what type of <code>BlockingQueue</code> to use.
+See <a href="#BlockingQueueFactory">below documentation</a> for more details.</p></td>
 </tr>
 </tbody>
 </table>
@@ -2619,7 +2617,7 @@ Additional headers can be specified with embedded Property elements.</p>
 </div>
 <div class="paragraph">
 <p>Implemented with
-<a href="https://docs.oracle.com/javase/7/docs/api/java/net/HttpURLConnection.html">HttpURLConnection</a>.</p>
+<a href="https://docs.oracle.com/javase/7/docs/api/java/net/HttpURLConnection.html"><code>HttpURLConnection</code></a>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 17. HttpAppender Parameters</caption>
@@ -2658,7 +2656,7 @@ CompositeFilter.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">SslConfiguration</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Contains the configuration for the KeyStore and
 TrustStore for https. Optional, uses Java runtime defaults if not
-specified. See <a href="#SSL">SSL</a></p></td>
+specified. See <a href="#SSL">SSL</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">verifyHostname</p></td>
@@ -3563,7 +3561,7 @@ The OutputStreamAppender uses an OutputStreamManager to handle the actual I/O, a
 <div class="sectionbody">
 <div class="paragraph">
 <p>The RandomAccessFileAppender is similar to the standard
-<a href="#FileAppender">FileAppender</a> except it is always buffered (this cannot be switched off) and internally it uses a
+<a href="#FileAppender">[FileAppender]</a> except it is always buffered (this cannot be switched off) and internally it uses a
 <code>ByteBuffer + RandomAccessFile</code> instead of a <code>BufferedOutputStream</code>.
 We saw a 20-200% performance improvement compared to FileAppender with "bufferedIO=true" in our
 measurements.
@@ -3941,9 +3939,7 @@ For example, two web applications in a servlet container can have their configur
 <code>ClassLoader</code> that is common to both of them.</p>
 </div>
 <div class="paragraph">
-<p>A RollingFileAppender requires a
-<a href="#TriggeringPolicies">TriggeringPolicy</a> and a
-<a href="#RolloverStrategies">RolloverStrategy</a>.
+<p>A RollingFileAppender requires a <a href="#TriggeringPolicy">[TriggeringPolicy]</a> and a <a href="#RolloverStrategies">RolloverStrategies</a>.
 The triggering policy determines if a rollover should be performed while the <code>RolloverStrategy</code>
 defines how the rollover should be done.
 If no <code>RolloverStrategy</code> is configured, <code>RollingFileAppender</code> will use the
@@ -3952,8 +3948,7 @@ Since log4j-2.5, a <a href="#CustomDeleteOnRollover">custom delete action</a> ca
 Since 2.8 if no file name is configured then
 <a href="#DirectWriteRolloverStrategy">DirectWriteRolloverStrategy</a> will be used instead of DefaultRolloverStrategy.
 Since log4j-2.9, a
-<a href="#CustomPosixViewAttributeOnRollover">custom POSIX file attribute
-view action</a> can be configured in the DefaultRolloverStrategy to run at rollover, if not defined, the inherited POSIX file attribute view from the RollingFileAppender will be applied.</p>
+<a href="#CustomPosixViewAttributeOnRollover">custom POSIX file attribute view action</a> can be configured in the DefaultRolloverStrategy to run at rollover, if not defined, the inherited POSIX file attribute view from the RollingFileAppender will be applied.</p>
 </div>
 <div class="paragraph">
 <p>File locking is not supported by the RollingFileAppender.</p>
@@ -4190,7 +4185,7 @@ The <code>filePattern</code> attribute of the Appender should contain a timestam
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The cron expression. The expression is the same as
 what is allowed in the Quartz scheduler. See
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/CronExpression.html">CronExpression</a>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/CronExpression.html"><code>CronExpression</code></a>
 for a full description of the expression.</p></td>
 </tr>
 <tr>
@@ -4753,7 +4748,7 @@ works as expected. The default is false.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pathSorter</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">PathSorter</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">A plugin implementing the
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathSorter.html">PathSorter</a>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathSorter.html"><code>PathSorter</code></a>
 interface to sort the files before selecting the files to delete. The
 default is to sort the most recently modified files first.</p></td>
 </tr>
@@ -4780,23 +4775,23 @@ NOT by using the <code>IfAll</code>, <code>IfAny</code> and <code>IfNot</code> c
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#DeleteIfFileName">IfFileName</a> - accepts files whose path
+<p><a href="#DeleteIfFileName"><code>IfFileName</code></a> - accepts files whose path
 (relative to the base path) matches a
 <a href="https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html">regular
 expression</a> or a
 <a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)">glob</a>.</p>
 </li>
 <li>
-<p><a href="#DeleteIfLastModified">IfLastModified</a> - accepts files that are as
+<p><a href="#DeleteIfLastModified"><code>IfLastModified</code></a> - accepts files that are as
 old as or older than the specified
 <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/Duration.html#parse(CharSequence)">duration</a>.</p>
 </li>
 <li>
-<p><a href="#DeleteIfAccumulatedFileCount">IfAccumulatedFileCount</a> - accepts
+<p><a href="#DeleteIfAccumulatedFileCount"><code>IfAccumulatedFileCount</code></a> - accepts
 paths after some count threshold is exceeded during the file tree walk.</p>
 </li>
 <li>
-<p><a href="#DeleteIfAccumulatedFileSize">IfAccumulatedFileSize</a> - accepts
+<p><a href="#DeleteIfAccumulatedFileSize"><code>IfAccumulatedFileSize</code></a> - accepts
 paths after the accumulated file size threshold is exceeded during the
 file tree walk.</p>
 </li>
@@ -4823,8 +4818,7 @@ AND). Nested conditions may be evaluated in any order.</p>
 specifying a script.</p>
 </div>
 <div class="paragraph">
-<p>The ScriptCondition should contain a <a href="#ScriptCondition">Script,
-ScriptRef or ScriptFile</a> element that specifies the logic to be
+<p>The ScriptCondition should contain a <a href="#ScriptCondition"><code>Script</code>, <code>ScriptRef</code>, or <code>ScriptFile</code></a> element that specifies the logic to be
 executed. (See also the <a href="filters.html#Script" class="xref page">ScriptFilter</a>
 documentation for more examples of configuring ScriptFiles and
 ScriptRefs.)</p>
@@ -4873,14 +4867,14 @@ syntax</a>.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>Required if glob not specified.</em> Matches the relative
 path (relative to the base path) using a regular expression as defined
 by the
-<a href="https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html">Pattern</a>
+<a href="https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html"><code>Pattern</code></a>
 class.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">nestedConditions</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">PathCondition[]</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">An optional set of nested
-<a href="#DeletePathCondition">PathConditions</a>. If any nested conditions
+<a href="#DeletePathCondition"><code>PathCondition</code></a>s. If any nested conditions
 exist they all need to accept the file before it is deleted. Nested
 conditions are only evaluated if the outer condition accepts a file (if
 the path name matches).</p></td>
@@ -4911,7 +4905,7 @@ the path name matches).</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">age</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>Required.</em> Specifies a
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/Duration.html#parse(CharSequence)">duration</a>.
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/Duration.html#parse(CharSequence)"><code>duration</code></a>.
 The condition accepts files that are as old or older than the specified
 duration.</p></td>
 </tr>
@@ -4919,7 +4913,7 @@ duration.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">nestedConditions</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">PathCondition[]</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">An optional set of nested
-<a href="#DeletePathCondition">PathConditions</a>. If any nested conditions
+<a href="#DeletePathCondition"><code>PathCondition</code></a>s. If any nested conditions
 exist they all need to accept the file before it is deleted. Nested
 conditions are only evaluated if the outer condition accepts a file (if
 the file is old enough).</p></td>
@@ -4956,7 +4950,7 @@ deleted.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">nestedConditions</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">PathCondition[]</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">An optional set of nested
-<a href="#DeletePathCondition">PathConditions</a>. If any nested conditions
+<a href="#DeletePathCondition"><code>PathCondition</code></a>s. If any nested conditions
 exist they all need to accept the file before it is deleted. Nested
 conditions are only evaluated if the outer condition accepts a file (if
 the threshold count has been exceeded).</p></td>
@@ -4994,7 +4988,7 @@ the suffix KB, MB, GB, or TB, for example <code>20MB</code>.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">nestedConditions</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">PathCondition[]</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">An optional set of nested
-<a href="#DeletePathCondition">PathConditions</a>. If any nested conditions
+<a href="#DeletePathCondition"><code>PathCondition</code></a>s. If any nested conditions
 exist they all need to accept the file before it is deleted. Nested
 conditions are only evaluated if the outer condition accepts a file (if
 the threshold accumulated file size has been exceeded).</p></td>
@@ -5285,8 +5279,7 @@ false.</p></td>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pathConditions</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">PathCondition[]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">see
-<a href="#DeletePathCondition">DeletePathCondition</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">see <a href="#DeletePathCondition">[DeletePathCondition]</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">filePermissions</p></td>
@@ -5297,7 +5290,7 @@ executed.</p>
 </div>
 <div class="paragraph">
 <p>The underlying files system shall support
-<a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html">POSIX</a>
+<a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html"><code>POSIX</code></a>
 file attribute view.</p>
 </div>
 <div class="paragraph">
@@ -5320,7 +5313,7 @@ is in effect for path.</p>
 </div>
 <div class="paragraph">
 <p>The underlying files system shall support file
-<a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html">owner</a>
+<a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html"><code>owner</code></a>
 attribute view.</p>
 </div></div></td>
 </tr>
@@ -5332,7 +5325,7 @@ attribute view.</p>
 </div>
 <div class="paragraph">
 <p>The underlying files system shall support
-<a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html">POSIX</a>
+<a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html"><code>POSIX</code></a>
 file attribute view.</p>
 </div></div></td>
 </tr>
@@ -5378,7 +5371,7 @@ file attribute view.</p>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The RollingRandomAccessFileAppender is similar to the standard
-<a href="#RollingFileAppender">RollingFileAppender</a> except it is always buffered (this cannot be switched off) and internally it uses a
+<a href="#RollingFileAppender">[RollingFileAppender]</a> except it is always buffered (this cannot be switched off) and internally it uses a
 <code>ByteBuffer + RandomAccessFile</code> instead of a <code>BufferedOutputStream</code>.
 We saw a 20-200% performance improvement compared to RollingFileAppender with "bufferedIO=true" in our measurements.
 The
@@ -5389,8 +5382,8 @@ For example, two web applications in a servlet container can have their configur
 </div>
 <div class="paragraph">
 <p>A RollingRandomAccessFileAppender requires a
-<a href="#TriggeringPolicies">TriggeringPolicy</a> and a
-<a href="#RolloverStrategies">RolloverStrategy</a>.
+<a href="#TriggeringPolicies">triggering policy</a> and a
+<a href="#RolloverStrategies">rollover strategy</a>.
 The triggering policy determines if a rollover should be performed while the <code>RolloverStrategy</code>
 defines how the rollover should be done.
 If no RolloverStrategy is configured, RollingRandomAccessFileAppender will use the
@@ -5511,7 +5504,7 @@ created.</p>
 </div>
 <div class="paragraph">
 <p>The underlying files system shall support
-<a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html">POSIX</a>
+<a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html"><code>POSIX</code></a>
 file attribute view.</p>
 </div>
 <div class="paragraph">
@@ -5534,7 +5527,7 @@ is in effect for path.</p>
 </div>
 <div class="paragraph">
 <p>The underlying file system shall support file
-<a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html">owner</a>
+<a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html"><code>owner</code></a>
 attribute view.</p>
 </div></div></td>
 </tr>
@@ -5546,7 +5539,7 @@ attribute view.</p>
 </div>
 <div class="paragraph">
 <p>The underlying files system shall support
-<a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html">POSIX</a>
+<a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html"><code>POSIX</code></a>
 file attribute view.</p>
 </div></div></td>
 </tr>
@@ -5561,7 +5554,7 @@ file attribute view.</p>
 <div class="sect2">
 <h3 id="_rollover_strategies"><a class="anchor" href="#_rollover_strategies"></a>Rollover Strategies</h3>
 <div class="paragraph">
-<p>See <a href="#RolloverStrategies">RollingFileAppender Rollover Strategies</a>.</p>
+<p>See <a href="#RolloverStrategies"><code>RollingFileAppender</code> rollover strategies</a>.</p>
 </div>
 <div class="paragraph">
 <p>Below is a sample configuration that uses a RollingRandomAccessFileAppender with both the time and size-based triggering policies will create up to 7 archives on the same day (1-7) that are stored in a directory based on the current year and month, and will compress each archive using gzip:</p>

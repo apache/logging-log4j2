@@ -434,7 +434,7 @@ If not for yours, keep on reading.</p>
 <p><a href="#core-properties">configure it using properties</a>,</p>
 </li>
 <li>
-<p>and employ garbage-free <a href="#Layouts">layouts</a>, <a href="#Appenders">appenders</a>, and <a href="#Filters">filters</a>.</p>
+<p>and employ garbage-free <a href="#Layouts[layouts]">xref:Appenders[appenders], and xref:#Filters,filters</a>.</p>
 </li>
 </ul>
 </div>
@@ -454,7 +454,7 @@ If not for yours, keep on reading.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_IS_WEBAPP</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_IS_WEBAPP</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -487,7 +487,7 @@ If not for yours, keep on reading.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ENABLE_THREADLOCALS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ENABLE_THREADLOCALS</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -521,7 +521,7 @@ Hence, to avoid causing memory leaks, <code>log4j2.enableThreadlocals</code> by 
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ENABLE_DIRECT_ENCODERS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ENABLE_DIRECT_ENCODERS</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -534,7 +534,7 @@ Hence, to avoid causing memory leaks, <code>log4j2.enableThreadlocals</code> by 
 </tbody>
 </table>
 <div class="paragraph">
-<p>If <code>true</code>, garbage-aware layouts will directly encode log events into <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html">ByteBuffer</a>s provided by appenders.</p>
+<p>If <code>true</code>, garbage-aware layouts will directly encode log events into <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html"><code>ByteBuffer</code></a>s provided by appenders.</p>
 </div>
 <div class="paragraph">
 <p>This prevents allocating temporary <code>String</code> and <code>char[]</code> instances.</p>
@@ -550,7 +550,7 @@ Hence, to avoid causing memory leaks, <code>log4j2.enableThreadlocals</code> by 
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ENCODER_BYTE_BUFFER_SIZE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ENCODER_BYTE_BUFFER_SIZE</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -564,9 +564,9 @@ Hence, to avoid causing memory leaks, <code>log4j2.enableThreadlocals</code> by 
 </table>
 <div class="paragraph">
 <p>The size in bytes of the
-<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html">ByteBuffer</a>s
+<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html"><code>ByteBuffer</code></a>s
 stored in <code>ThreadLocal</code> fields by layouts and
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder.html">StringBuilderEncoder</a>s.</p>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder.html"><code>StringBuilderEncoder</code></a>s.</p>
 </div>
 <div class="paragraph">
 <p>This setting is only used if <a href="#log4j2.enableDirectEncoders"><code>log4j2.enableDirectEncoders</code></a> is set to <code>true</code>.</p>
@@ -582,7 +582,7 @@ stored in <code>ThreadLocal</code> fields by layouts and
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ENCODER_CHAR_BUFFER_SIZE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ENCODER_CHAR_BUFFER_SIZE</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -596,9 +596,9 @@ stored in <code>ThreadLocal</code> fields by layouts and
 </table>
 <div class="paragraph">
 <p>The size in <code>char</code>s of the
-<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html">ByteBuffer</a>s
+<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html"><code>ByteBuffer</code></a>s
 stored in <code>ThreadLocal</code> fields
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder.html">StringBuilderEncoder</a>s.</p>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder.html"><code>StringBuilderEncoder</code></a>s.</p>
 </div>
 <div class="paragraph">
 <p>This setting is only used if <a href="#log4j2.enableDirectEncoders"><code>log4j2.enableDirectEncoders</code></a> is set to <code>true</code>.</p>
@@ -614,7 +614,7 @@ stored in <code>ThreadLocal</code> fields
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_INITIAL_REUSABLE_MSG_SIZE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_INITIAL_REUSABLE_MSG_SIZE</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -628,7 +628,7 @@ stored in <code>ThreadLocal</code> fields
 </table>
 <div class="paragraph">
 <p>In GC-free mode, this property determines the initial size of the reusable <code>StringBuilder</code>s used by
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage.html">ReusableMessages</a>
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage.html"><code>ReusableMessages</code></a>
 for formatting purposes.</p>
 </div>
 </div>
@@ -642,7 +642,7 @@ for formatting purposes.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_MAX_REUSABLE_MSG_SIZE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_MAX_REUSABLE_MSG_SIZE</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -656,7 +656,7 @@ for formatting purposes.</p>
 </table>
 <div class="paragraph">
 <p>In GC-free mode, this property determines the maximum size of the reusable <code>StringBuilder</code>s used by
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage.html">ReusableMessages</a>
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage.html"><code>ReusableMessages</code></a>
 for formatting purposes.</p>
 </div>
 <div class="paragraph">
@@ -674,7 +674,7 @@ for formatting purposes.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_LAYOUT_STRING_BUILDER_MAX_SIZE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_LAYOUT_STRING_BUILDER_MAX_SIZE</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -701,7 +701,7 @@ for formatting purposes.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_UNBOX_RINGBUFFER_SIZE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_UNBOX_RINGBUFFER_SIZE</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -715,7 +715,7 @@ for formatting purposes.</p>
 </table>
 <div class="paragraph">
 <p>The
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/util/Unbox.html">Unbox</a>
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/util/Unbox.html"><code>Unbox</code></a>
 utility class can be used by users to format primitive values without incurring in the boxing allocation cost.</p>
 </div>
 <div class="paragraph">
@@ -732,11 +732,11 @@ utility class can be used by users to format primitive values without incurring 
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_THREAD_CONTEXT_MAP</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_THREAD_CONTEXT_MAP</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html">Class&lt;? extends ThreadContextMap&gt;</a>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html"><code>Class&lt;? extends ThreadContextMap&gt;</code></a>
 or predefined constant</p></td>
 </tr>
 <tr>
@@ -748,7 +748,7 @@ or predefined constant</p></td>
 </table>
 <div class="paragraph">
 <p>Fully specified class name of a custom
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html">ThreadContextMap</a>
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html"><code>ThreadContextMap</code></a>
 implementation class or one of the predefined constants:</p>
 </div>
 <div class="dlist">
@@ -782,7 +782,7 @@ implementation class or one of the predefined constants:</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_GARBAGEFREE_THREAD_CONTEXT_MAP</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_GARBAGEFREE_THREAD_CONTEXT_MAP</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -1031,7 +1031,7 @@ The <code>Unbox.box(primitive)</code> methods write directly into a <code>String
 <p><a href="scoped-context.html" class="xref page">Scoped Context</a> is not garbage-free.</p>
 </li>
 <li>
-<p>Logging very large messages (i.e., more than <a href="#log4j2.maxReusableMsgSize"><code>log4j2.maxReusableMsgSize</code></a> characters, which defaults to 518), when all loggers are <a href="async.html" class="xref page">asynchronous loggers</a>, will cause the internal <code>StringBuilder</code> in the
+<p>Logging very large messages (i.e., more than <a href="#log4j2.maxReusableMsgSize[<code>log4j2.maxReusableMsgSize</code>] characters">which defaults to 518), when all loggers are xref:manual/async.adoc,asynchronous loggers</a>, will cause the internal <code>StringBuilder</code> in the
 <code>RingBuffer</code> to be trimmed back to their configured maximum size.</p>
 </li>
 <li>

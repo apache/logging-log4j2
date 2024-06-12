@@ -708,12 +708,12 @@ script.1.path = scripts/filter.groovy</code></pre>
 <div class="sectionbody">
 <div class="paragraph">
 <p>JSR 223 scripting engines are supposed to identify that they support the
-<a href="https://docs.oracle.com/javase/8/docs/api/javax/script/Compilable.html">Compilable</a>
+<a href="https://docs.oracle.com/javase/8/docs/api/javax/script/Compilable.html"><code>Compilable</code></a>
 interface if they support compiling their scripts.</p>
 </div>
 <div class="paragraph">
 <p>Beanshell does extend the <code>Compilable</code> interface, but an attempt to compile a script ends up in an
-<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Error.html">Error</a>
+<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Error.html"><code>Error</code></a>
 being thrown.
 Log4j catches the throwable, but issues a warning in <a href="status-logger.html" class="xref page">Status Logger</a>.</p>
 </div>

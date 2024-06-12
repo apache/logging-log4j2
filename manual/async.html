@@ -384,8 +384,7 @@ If the queue size is large enough to handle the burst, asynchronous logging will
 </dd>
 <dt class="hdlist1">Lower logging latency</dt>
 <dd>
-<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html">Logger</a>
-method calls return faster, since most of the work is done on the I/O thread.</p>
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html"><code>Logger</code></a> method calls return faster, since most of the work is done on the I/O thread.</p>
 </dd>
 </dl>
 </div>
@@ -525,11 +524,11 @@ property to one of the asynchronous logger context selectors:</p>
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/BasicAsyncLoggerContextSelector.html">org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector</a></dt>
+<dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/BasicAsyncLoggerContextSelector.html"><code>org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector</code></a></dt>
 <dd>
 <p>This will create a single logger context and disruptor for all the classes in the JVM,</p>
 </dd>
-<dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerContextSelector.html">org.apache.logging.log4j.core.async.AsyncLoggerContextSelector</a></dt>
+<dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerContextSelector.html"><code>org.apache.logging.log4j.core.async.AsyncLoggerContextSelector</code></a></dt>
 <dd>
 <p>This will create a different logger context and disruptor for each classloader in the JVM.</p>
 </dd>
@@ -572,7 +571,7 @@ property to one of the asynchronous logger context selectors:</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_EXCEPTION_HANDLER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_EXCEPTION_HANDLER</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -580,7 +579,7 @@ property to one of the asynchronous logger context selectors:</p>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerDefaultExceptionHandler.html">AsyncLoggerDefaultExceptionHandler</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerDefaultExceptionHandler.html"><code>AsyncLoggerDefaultExceptionHandler</code></a></p></td>
 </tr>
 </tbody>
 </table>
@@ -602,7 +601,7 @@ The class needs to have a public zero-argument constructor.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_RING_BUFFER_SIZE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_RING_BUFFER_SIZE</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -622,7 +621,7 @@ The minimum size is 128.
 The RingBuffer will be pre-allocated at first use and will never grow or shrink during the life of the system.</p>
 </div>
 <div class="paragraph">
-<p>When the application is logging faster than the underlying appender can keep up with for a long enough time to fill up the queue, the behaviour is determined by the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html">AsyncQueueFullPolicy</a>.</p>
+<p>When the application is logging faster than the underlying appender can keep up with for a long enough time to fill up the queue, the behaviour is determined by the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html"><code>AsyncQueueFullPolicy</code></a>.</p>
 </div>
 </div>
 <div class="sect3">
@@ -635,7 +634,7 @@ The RingBuffer will be pre-allocated at first use and will never grow or shrink 
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_WAIT_STRATEGY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_WAIT_STRATEGY</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -693,7 +692,7 @@ This wait strategy is <a href="garbagefree.html" class="xref page">garbage free<
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_TIMEOUT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_TIMEOUT</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -719,7 +718,7 @@ This wait strategy is <a href="garbagefree.html" class="xref page">garbage free<
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_SLEEP_TIME_NS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_SLEEP_TIME_NS</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -745,7 +744,7 @@ This wait strategy is <a href="garbagefree.html" class="xref page">garbage free<
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_RETRIES</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_RETRIES</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -771,7 +770,7 @@ This wait strategy is <a href="garbagefree.html" class="xref page">garbage free<
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -800,11 +799,11 @@ Setting this value to <code>false</code> may lead to very high CPU utilization w
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_HREAD_NAME_STRATEGY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_HREAD_NAME_STRATEGY</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/ThreadNameCachingStrategy.html">ThreadNameCachingStrategy</a> (enumeration)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/ThreadNameCachingStrategy.html"><code>ThreadNameCachingStrategy</code></a> (enumeration)</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -815,7 +814,7 @@ Setting this value to <code>false</code> may lead to very high CPU utilization w
 </table>
 <div class="paragraph">
 <p>Specifies the
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/ThreadNameCachingStrategy.html">ThreadNameCachingStrategy</a>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/ThreadNameCachingStrategy.html"><code>ThreadNameCachingStrategy</code></a>
 to use to cache the result of <a href="https://docs.oracle" class="bare">https://docs.oracle</a>
 .com/javase/8/docs/api/java/lang/Thread.html#getName--[Thread.getName()].</p>
 </div>
@@ -1081,7 +1080,7 @@ These log statements will cause a smaller latency for the caller.</td>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_CONFIG_EXCEPTION_HANDLER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_CONFIG_EXCEPTION_HANDLER</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1089,7 +1088,7 @@ These log statements will cause a smaller latency for the caller.</td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerConfigDefaultExceptionHandler.html">AsyncLoggerConfigDefaultExceptionHandler</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerConfigDefaultExceptionHandler.html"><code>AsyncLoggerConfigDefaultExceptionHandler</code></a></p></td>
 </tr>
 </tbody>
 </table>
@@ -1111,7 +1110,7 @@ The class needs to have a public zero-argument constructor.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_CONFIG_RING_BUFFER_SIZE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_CONFIG_RING_BUFFER_SIZE</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1131,7 +1130,7 @@ The minimum size is 128.
 The RingBuffer will be pre-allocated at first use and will never grow or shrink during the life of the system.</p>
 </div>
 <div class="paragraph">
-<p>When the application is logging faster than the underlying appender can keep up with for a long enough time to fill up the queue, the behaviour is determined by the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html">AsyncQueueFullPolicy</a>.</p>
+<p>When the application is logging faster than the underlying appender can keep up with for a long enough time to fill up the queue, the behaviour is determined by the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html"><code>AsyncQueueFullPolicy</code></a>.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1144,7 +1143,7 @@ The RingBuffer will be pre-allocated at first use and will never grow or shrink 
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_CONFIG_WAIT_STRATEGY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_CONFIG_WAIT_STRATEGY</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1201,7 +1200,7 @@ This strategy has very low impact on the application thread, in exchange for som
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_CONFIG_TIMEOUT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_CONFIG_TIMEOUT</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1227,7 +1226,7 @@ This strategy has very low impact on the application thread, in exchange for som
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_CONFIG_SLEEP_TIME_NS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_CONFIG_SLEEP_TIME_NS</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1253,7 +1252,7 @@ This strategy has very low impact on the application thread, in exchange for som
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_CONFIG_RETRIES</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_CONFIG_RETRIES</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1279,7 +1278,7 @@ This strategy has very low impact on the application thread, in exchange for som
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_LOGGER_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1331,7 +1330,7 @@ Setting this value to <code>false</code> may lead to very high CPU utilization w
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_FORMAT_MSG_ASYNC</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_FORMAT_MSG_ASYNC</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1348,7 +1347,7 @@ Setting this value to <code>false</code> may lead to very high CPU utilization w
 </div>
 <div class="paragraph">
 <p><strong>Remark</strong>: messages annotated with
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/AsynchronouslyFormattable.html">AsynchronouslyFormattable</a>
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/AsynchronouslyFormattable.html"><code>AsynchronouslyFormattable</code></a>
 will be formatted on the async thread regardless of this setting.</p>
 </div>
 </div>
@@ -1362,11 +1361,11 @@ will be formatted on the async thread regardless of this setting.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ASYNC_QUEUE_FULL_POLICY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_QUEUE_FULL_POLICY</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html">Class&lt;? extends AsyncQueueFullPolicy&gt;</a>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html"><code>Class&lt;? extends AsyncQueueFullPolicy&gt;</code></a>
 or predefined constant</p></td>
 </tr>
 <tr>
@@ -1377,7 +1376,7 @@ or predefined constant</p></td>
 </table>
 <div class="paragraph">
 <p>Determines the
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html">AsyncQueueFullPolicy</a>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html"><code>AsyncQueueFullPolicy</code></a>
 to use when the underlying async component cannot keep up with the logging rate and the queue is filling up.</p>
 </div>
 <div class="paragraph">
@@ -1407,11 +1406,11 @@ to use when the underlying async component cannot keep up with the logging rate 
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_DISCARD_THRESHOLD</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_DISCARD_THRESHOLD</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html">Level</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html"><code>Level</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -1443,8 +1442,7 @@ See also <a href="#log4j2.asyncQueueFullPolicy"><code>log4j2.asyncQueueFullPolic
 <p>Use the <a href="#MixedSync-Async">mixed sync/async configuration method</a> above,</p>
 </li>
 <li>
-<p>Implement the interface
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncWaitStrategyFactory.html">AsyncWaitStrategyFactory</a>; the implementation must have a public no-arg constructor,</p>
+<p>Implement the interface <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncWaitStrategyFactory.html"><code>AsyncWaitStrategyFactory</code></a>; the implementation must have a public no-arg constructor,</p>
 </li>
 <li>
 <p>Add an <a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-AsyncWaitStrategyFactoryConfig" class="xref page">AsyncWaitStrategyFactory Log4j plugin</a>
@@ -1549,8 +1547,7 @@ In order to enable it for a certain logger, set its <a href="configuration.html#
 <div class="ulist">
 <ul>
 <li>
-<p>implement an
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/RingBufferLogEvent.html">ExceptionHandler&lt;? super RingBufferLogEvent&gt;</a></p>
+<p>implement an <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/RingBufferLogEvent.html"><code>ExceptionHandler&lt;? super RingBufferLogEvent&gt;</code></a></p>
 </li>
 <li>
 <p>set its fully qualified class name as value of the
@@ -1569,7 +1566,7 @@ configuration property.</p>
 <ul>
 <li>
 <p>implement a
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerConfigDisruptor.Log4jEventWrapper.html">ExceptionHandler&lt;? super AsyncLoggerConfigDisruptor.Log4jEventWrapper&gt;</a></p>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerConfigDisruptor.Log4jEventWrapper.html"><code>ExceptionHandler&lt;? super AsyncLoggerConfigDisruptor.Log4jEventWrapper&gt;</code></a></p>
 </li>
 <li>
 <p>set its fully qualified class name as value of the

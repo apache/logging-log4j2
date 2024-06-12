@@ -323,14 +323,14 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p><code>JsonTemplateLayout</code> is a customizable, <a href="#performance">efficient</a>, and <a href="#faq-garbage-free">garbage-free</a> JSON generating layout.
+<p><code>JsonTemplateLayout</code> is a customizable, <a href="#performance">efficient</a>, and xref:#faq-garbage-free,garbage-free&gt;&gt; JSON generating layout.
 It encodes <code>LogEvent</code>s according to the structure described by the JSON template provided.
 In a nutshell, it shines with its</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Customizable JSON structure (see <code>eventTemplate[Uri]</code> and <code>stackTraceElementTemplate[Uri]</code> <a href="#layout-config">layout configuration</a> parameters)</p>
+<p>Customizable JSON structure (see <code>eventTemplate[Uri]</code> and <code>stackTraceElementTemplate[Uri]</code> <a href="#plugin-attrs">layout configuration parameters</a>)</p>
 </li>
 <li>
 <p>Customizable timestamp formatting (see <a href="#event-template-resolver-timestamp"><code>timestamp</code></a> event template resolver)</p>
@@ -1228,7 +1228,7 @@ JSON Template Layout contains the following predefined event templates:</p>
 <dl>
 <dt class="hdlist1"><a href="https://github.com/apache/logging-log4j2/tree/2.x/tree/2.x/log4j-layout-template-json/src/main/resources/EcsLayout.json"><code>EcsLayout.json</code></a></dt>
 <dd>
-<p>The <strong>default event template</strong> modelling the <a href="https://www.elastic.co/guide/en/ecs/current/ecs-reference.html">the Elastic Common Schema (ECS) specification</a></p>
+<p>The <strong>default event template</strong> modelling <a href="https://www.elastic.co/guide/en/ecs/current/ecs-reference.html">the Elastic Common Schema (ECS) specification</a></p>
 </dd>
 <dt class="hdlist1"><a href="https://github.com/apache/logging-log4j2/tree/2.x/tree/2.x/log4j-layout-template-json/src/main/resources/LogstashJsonEventLayoutV1.json"><code>LogstashJsonEventLayoutV1.json</code></a></dt>
 <dd>
@@ -2580,7 +2580,7 @@ These two are analogous to <code>Pattern.compile(pattern).matcher(key).matches()
 <div class="sect2">
 <h3 id="stack-trace-element-templates"><a class="anchor" href="#stack-trace-element-templates"></a>Stack trace element templates</h3>
 <div class="paragraph">
-<p><a href="#event-template-resolver-exception"><code>exception</code></a> and <a href="#event-template-resolver-exceptionRootCause"><code>exceptionRootCause</code></a> event template resolvers can encode an exception stack trace (i.e., <code>StackTraceElement[]</code> returned by <code>Throwable#getStackTrace()</code>) into a JSON array.
+<p><a href="#event-template-resolver-exception"><code>exception</code></a> and <a href="#event-template-resolver-exceptionRootCause"><code>exceptionRootCause</code></a> event template resolvers can encode an exception stack trace (i.e., <code>StackTraceElement</code> returned by <code>Throwable#getStackTrace()</code>) into a JSON array.
 While doing so, they employ the underlying JSON templating infrastructure again.
 The stack trace template used by these event template resolvers to encode <code>StackTraceElement</code>s can be configured in following ways:</p>
 </div>
@@ -3167,7 +3167,7 @@ To get the most out of it, mind the following checklist:</p>
 <p>Choose a <a href="#recycling-strategy">recycling strategy</a> that suits best to your deployment environment</p>
 </li>
 <li>
-<p>Don&#8217;t give too much slack to <a href="#maxStringLength"><code>maxStringLength</code></a> and try to keep it relatively tight</p>
+<p>Don&#8217;t give too much slack to <a href="#plugin-attr-maxStringLength"><code>maxStringLength</code></a> and try to keep it relatively tight</p>
 </li>
 </ul>
 </div>
@@ -3214,7 +3214,7 @@ Take into account the following caveats:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>The configured <a href="#recycling-strategy">recycling strategy</a> might not be garbage-free.</p>
+<p>The configured <a href="#recycling-strategy">Recycling strategy</a> might not be garbage-free.</p>
 </li>
 <li>
 <p>Since <code>Throwable#getStackTrace()</code> clones the original <code>StackTraceElement[]</code>, access to (and hence rendering of) stack traces are not garbage-free.</p>

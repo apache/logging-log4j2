@@ -549,7 +549,7 @@ However, where necessary the following changes must be made.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Calls to <code>org.apache.log4j.LogManager.shutdown()</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Not needed in version 2 because the Log4j Core now automatically adds a JVM shutdown hook on start up to perform any Core clean ups.
-Starting in Log4j 2.1, you can specify a custom <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/ShutdownCallbackRegistry.html">ShutdownCallbackRegistry</a> to override the default JVM shutdown hook strategy.
+Starting in Log4j 2.1, you can specify a custom <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/ShutdownCallbackRegistry.html"><code>ShutdownCallbackRegistry</code></a> to override the default JVM shutdown hook strategy.
 Starting in Log4j 2.6, you can use <code>org.apache.logging.log4j.LogManager.shutdown()</code>  to initiate shutdown manually.</p></td>
 </tr>
 <tr>

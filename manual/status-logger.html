@@ -467,7 +467,7 @@ If you are running an application containing multiple Log4j configurations (e.g.
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_DEBUG</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_DEBUG</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -493,7 +493,7 @@ If you are running an application containing multiple Log4j configurations (e.g.
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_STATUS_ENTRIES</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_STATUS_ENTRIES</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -520,11 +520,11 @@ Once the limit is reached newer entries will overwrite the oldest ones.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_STATUS_LOGGER_LEVEL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_STATUS_LOGGER_LEVEL</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html">Level</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html"><code>Level</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -547,20 +547,20 @@ Can be overridden by <a href="#log4j2.debug"><code>log4j2.debug</code></a>.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_STATUS_LOGGER_DATE_FORMAT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_STATUS_LOGGER_DATE_FORMAT</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter">DateTimeFormatter</a> pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter"><code>DateTimeFormatter</code></a> pattern</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html#ISO_INSTANT">DateTimeFormatter.ISO_INSTANT</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html#ISO_INSTANT"><code>DateTimeFormatter.ISO_INSTANT</code></a></p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Sets the <a href="https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html">DateTimeFormatter</a> pattern used by status logger to format dates.</p>
+<p>Sets the <a href="https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html"><code>DateTimeFormatter</code></a> pattern used by status logger to format dates.</p>
 </div>
 </div>
 <div class="sect3">
@@ -573,21 +573,21 @@ Can be overridden by <a href="#log4j2.debug"><code>log4j2.debug</code></a>.</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_STATUS_LOGGER_DATE_FORMAT_ZONE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_STATUS_LOGGER_DATE_FORMAT_ZONE</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/time/ZoneId.html">ZoneId</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/time/ZoneId.html"><code>ZoneId</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/time/ZoneId.html#systemDefault()">ZoneId.systemDefault()</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/time/ZoneId.html#systemDefault()"><code>ZoneId.systemDefault()</code></a></p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
 <p>Sets the timezone id used by status logger.
-See <a href="https://docs.oracle.com/javase/8/docs/api/java/time/ZoneId.html">ZoneId</a> for the accepted formats.</p>
+See <a href="https://docs.oracle.com/javase/8/docs/api/java/time/ZoneId.html"><code>ZoneId</code></a> for the accepted formats.</p>
 </div>
 </div>
 </div>
