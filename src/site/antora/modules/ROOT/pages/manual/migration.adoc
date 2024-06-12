@@ -360,7 +360,7 @@ Log4j 2 contains an equivalent for most Log4j 1 appenders:
 
 | {log4j1-url}/apidocs/org/apache/log4j/DailyRollingFileAppender.html[org.apache.log4j.DailyRollingFileAppender]
 | xref:manual/appenders.adoc#RollingFileAppender[RollingFile]
-| See <<rolling-file-conversion>>
+| See <<rolling-file-conversion,additional steps below>>.
 
 | {log4j1-url}/apidocs/org/apache/log4j/FileAppender.html[org.apache.log4j.FileAppender]
 | xref:manual/appenders.adoc#FileAppender[File]
@@ -368,7 +368,7 @@ Log4j 2 contains an equivalent for most Log4j 1 appenders:
 
 | {log4j1-url}/apidocs/org/apache/log4j/RollingFileAppender.html[org.apache.log4j.RollingFileAppender]
 | xref:manual/appenders.adoc#RollingFileAppender[RollingFile]
-| See <<rolling-file-conversion>>
+| See <<rolling-file-conversion,additional steps below>>.
 
 | {log4j1-url}/apidocs/org/apache/log4j/jdbc/JDBCAppender.html[org.apache.log4j.jdbc.JDBCAppender]
 | xref:manual/appenders.adoc#JDBCAppender[JDBC]
