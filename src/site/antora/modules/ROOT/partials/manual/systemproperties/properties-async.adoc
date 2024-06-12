@@ -19,7 +19,7 @@
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_FORMAT_MSG_ASYNC
+| Env. variable | `LOG4J_FORMAT_MSG_ASYNC`
 | Type          | `boolean`
 | Default value | `false`
 |===
@@ -27,7 +27,7 @@
 If `false`, Log4j will make sure the message is formatted in the caller thread, otherwise the formatting will occur on the asynchronous thread.
 
 **Remark**: messages annotated with
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/AsynchronouslyFormattable.html[AsynchronouslyFormattable]
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/AsynchronouslyFormattable.html[`AsynchronouslyFormattable`]
 will be formatted on the async thread regardless of this setting.
 
 [id=log4j2.asyncQueueFullPolicy]
@@ -36,10 +36,10 @@ will be formatted on the async thread regardless of this setting.
 [cols="1h,5"]
 |===
 | Env. variable
-| LOG4J_ASYNC_QUEUE_FULL_POLICY
+| `LOG4J_ASYNC_QUEUE_FULL_POLICY`
 
 | Type
-| link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[Class<? extends AsyncQueueFullPolicy>]
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[`Class<? extends AsyncQueueFullPolicy>`]
 or predefined constant
 
 | Default value
@@ -47,7 +47,7 @@ or predefined constant
 |===
 
 Determines the
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[AsyncQueueFullPolicy]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[`AsyncQueueFullPolicy`]
 to use when the underlying async component cannot keep up with the logging rate and the queue is filling up.
 
 Its value should be the fully qualified class name of an `AsyncQueueFullPolicy` implementation or one of these predefined constants:
@@ -62,8 +62,8 @@ Discard:: when the queue is full, it drops the events whose level is equal or le
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_DISCARD_THRESHOLD
-| Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[Level]
+| Env. variable | `LOG4J_DISCARD_THRESHOLD`
+| Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[`Level`]
 | Default value | `INFO`
 |===
 

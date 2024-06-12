@@ -19,7 +19,7 @@
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_JUL_LEVEL_CONVERTER
+| Env. variable | `LOG4J_JUL_LEVEL_CONVERTER`
 | Type          | `Class<? extends LevelConverter>`
 | Default value | `org.apache.logging.log4j.jul.DefaultLevelConverter`
 |===
@@ -67,7 +67,7 @@ Fully qualified name of an alternative `org.apache.logging.log4j.jul.LevelConver
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_JUL_LOGGER_ADAPTER
+| Env. variable | `LOG4J_JUL_LOGGER_ADAPTER`
 | Type          | `Class<? extends AbstractLoggerAdapter>`
 | Default value | _depends on classpath_
 |===
@@ -78,7 +78,7 @@ This property allows users to choose between two implementation of the logging b
 
 org.apache.logging.log4j.jul.CoreLoggerAdapter::
 The default if `log4j-core` is found in the class path.
-It allows users to modify the Log4j Core configuration through the JUL https://docs.oracle.com/javase/8/docs/api/java/util/logging/Logger.html[Logger] interface.
+It allows users to modify the Log4j Core configuration through the JUL https://docs.oracle.com/javase/8/docs/api/java/util/logging/Logger.html[`Logger`] interface.
 
 org.apache.logging.log4j.jul.ApiLoggerAdapter::
 The default if `log4j-core` cannot be found in the class path.

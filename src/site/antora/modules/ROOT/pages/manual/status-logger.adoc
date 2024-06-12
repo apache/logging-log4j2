@@ -29,8 +29,8 @@ You can use the status logger for several purposes:
 
 [#usage-troubleshoot]
 Troubleshooting::
-When Log4j is not behaving in the way you expect it to, you can increase the verbosity of status logger messages emitted using xref:#log4j2.debug[the `log4j2.debug` system property] for troubleshooting.
-See xref:#config[] for details.
+When Log4j is not behaving in the way you expect it to, you can increase the verbosity of status logger messages emitted using <<log4j2.debug,the `log4j2.debug` system property>> for troubleshooting.
+See <<config>> for details.
 
 [#usage-report]
 Reporting internal status::
@@ -53,18 +53,18 @@ private class CustomLog4jComponent {
 [#usage-listen]
 Listening internal status::
 You can configure where the status logger messages are delivered to.
-See xref:#listeners[].
+See <<listeners>>.
 
 [#config]
 == Configuration
 
 `StatusLogger` can be configured in following ways:
 
-. Passing system properties to the Java process (e.g., xref:#log4j2.statusLoggerLevel[`-Dlog4j2.statusLoggerLevel=INFO`]}
+. Passing system properties to the Java process (e.g., <<log4j2.statusLoggerLevel,`-Dlog4j2.statusLoggerLevel=INFO`>>}
 +
 [WARNING]
 ====
-Due to several complexities involved, **you are strongly advised to xref:#properties[configure the status logger only using system properties]!**
+Due to several complexities involved, **you are strongly advised to <<properties,configure the status logger only using system properties>>!**
 ====
 . Providing properties in a `{status-logger-properties-file-name}` file in the classpath
 . Using Log4j configuration (i.e., `<Configuration status="WARN" dest="out">` in a `log4j2.xml` in the classpath)

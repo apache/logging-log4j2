@@ -19,7 +19,7 @@
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_DISABLE_JMX
+| Env. variable | `LOG4J_DISABLE_JMX`
 | Type          | `boolean`
 | Default value | `true`
 |===
@@ -32,7 +32,7 @@ will be instrumented with ``MBean``s and can be remotely monitored and managed.
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_JMX_NOTIFY_ASYNC
+| Env. variable | `LOG4J_JMX_NOTIFY_ASYNC`
 | Type          | `int`
 | Default value | `true`
 

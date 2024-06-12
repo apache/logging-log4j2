@@ -144,7 +144,7 @@ META-INF/services/org.apache.logging.log4j.core.util.ContextDataProvider
 [#custom-ThreadContextMap]
 === Custom thread context map
 
-Custom thread context map implementations can be provided by setting xref:#log4j2.threadContextMap[the `log4j2.threadContextMap` system property] to the fully-qualified class name of the custom implementation class extending from
+Custom thread context map implementations can be provided by setting <<log4j2.threadContextMap,the `log4j2.threadContextMap` system property>> to the fully-qualified class name of the custom implementation class extending from
 link:../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html[`ThreadContextMap`].
 
 While providing a custom thread context map implementation, you are advised to also extend from

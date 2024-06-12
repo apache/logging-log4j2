@@ -127,7 +127,7 @@ public class PurchaseOrder {
 
 Similar to defining log levels programmatically, a custom level must be defined first, before it can be used in a configuration file.
 To facilitate this, the `CustomLevel` configuration element is used to define a custom level.
-Internally it calls the same `Level.forName()` method discussed in xref:#DefiningLevelsInCode[].
+Internally it calls the same `Level.forName()` method discussed in <<DefiningLevelsInCode>>.
 
 The following example shows a configuration that defines the `VERBOSE` custom log level and uses it to filter log events sent to the console.
 

@@ -38,9 +38,7 @@ This feature allows for easy integration with existing log management and monito
 
 == Example Configuration
 
-To configure Log4j to output logs in Syslog (RFC5424) format, one needs to use the
-`xref:manual/layouts.adoc#RFC5424Layout[Rfc5424Layout]`
-layout.
+To configure Log4j to output logs in Syslog (RFC5424) format, one needs to use the xref:manual/layouts.adoc#RFC5424Layout[`Rfc5424Layout`] layout.
 Developers can use the following configuration to log events to a local Syslog server:
 
 [source, xml]

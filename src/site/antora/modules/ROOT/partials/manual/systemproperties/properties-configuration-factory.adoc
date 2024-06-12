@@ -19,13 +19,13 @@
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_CONFIGURATION_FACTORY
-| Type          | link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html[Class<? extends ConfigurationFactory>]
+| Env. variable | `LOG4J_CONFIGURATION_FACTORY`
+| Type          | link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html[`Class<? extends ConfigurationFactory>`]
 | Default value | `null`
 |===
 
 Specifies the fully qualified class name of the **preferred**
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html[ConfigurationFactory]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html[`ConfigurationFactory`]
 to use.
 
 Log4j will attempt to use the provided configuration factory before any other factory implementation.
@@ -35,8 +35,8 @@ Log4j will attempt to use the provided configuration factory before any other fa
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_CONFIGURATION_FILE
-| Type          | Comma-separated list of https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[Path]s or https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/URI.html[URI]s
+| Env. variable | `LOG4J_CONFIGURATION_FILE`
+| Type          | Comma-separated list of https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[Path]s or https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/URI.html[`URI`]s
 | Default value | xref:manual/configuration.adoc#AutomaticConfiguration[automatically detected]
 |===
 
@@ -56,8 +56,8 @@ See also xref:manual/configuration.adoc#AutomaticConfiguration[Automatic Configu
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_LEVEL
-| Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[Level]
+| Env. variable | `LOG4J_LEVEL`
+| Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[`Level`]
 | Default value | `ERROR`
 |===
 
@@ -73,15 +73,13 @@ Specifies the level of the root logger if:
 [cols="1h,5"]
 |===
 | Env. variable
-| LOG4J_MERGE_STRATEGY
+| `LOG4J_MERGE_STRATEGY`
 
 | Type
-| link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy.html[Class<? extends MergeStrategy>]
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy.html[`Class<? extends MergeStrategy>`]
 
 | Default value
-| `link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/DefaultMergeStrategy.html[DefaultMergeStrategy]`
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/DefaultMergeStrategy.html[`DefaultMergeStrategy`]
 |===
 
-Specifies the fully qualified class name of the
-`link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy.html[MergeStrategy]`
-implementation used to merge multiple configuration files into one.
+Specifies the fully qualified class name of the link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy.html[`MergeStrategy`] implementation used to merge multiple configuration files into one.

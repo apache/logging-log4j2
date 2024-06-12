@@ -303,7 +303,7 @@ acquire the JVM arguments.
 Use the prefix `jvmrunargs` to access JVM arguments.
 
 See the Javadocs for
-https://docs.oracle.com/javase/8/docs/api/java/lang/management/RuntimeMXBean.html#getInputArguments--[java.lang.management.RuntimeMXBean.getInputArguments()].
+https://docs.oracle.com/javase/8/docs/api/java/lang/management/RuntimeMXBean.html#getInputArguments--[`java.lang.management.RuntimeMXBean.getInputArguments()`].
 
 *Java's JMX module is not available on Android or on Google App Engine.*
 
@@ -435,7 +435,7 @@ The MapLookup serves several purposes.
 1.  Provide the base for Properties declared in the configuration file.
 2.  Retrieve values from MapMessages in LogEvents.
 3.  Retrieve values set with
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/MapLookup.html#setMainArguments%28java.lang.String%5B%5D%29[MapLookup.setMainArguments(String[])]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/MapLookup.html#setMainArguments%28java.lang.String%5B%5D%29[`MapLookup.setMainArguments(String[])`]
 
 The first item simply means that the MapLookup is used to substitute
 properties that are defined in the configuration file. These variables
@@ -575,7 +575,7 @@ values it will also return the name portion of the id (not including the
 enterprise number) and the type field. The main difference between the
 example below and the example for MapMessage is that the "type" is an
 attribute of the
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html[StructuredDataMessage]
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html[`StructuredDataMessage`]
 while "type" would have to be an item in the Map in a MapMessage.
 
 [source,xml]

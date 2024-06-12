@@ -118,7 +118,7 @@ include::partial$manual/systemproperties/properties-async-logger-config.adoc[lev
 === Context selector
 
 The
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ContextSelector.html[ContextSelector]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ContextSelector.html[`ContextSelector`]
 component specifies the strategy used by Log4j to create new logger contexts.
 The choice of `ContextSelector` determines in particular:
 
@@ -221,7 +221,7 @@ include::partial$manual/systemproperties/properties-log4j-spring-boot.adoc[level
 == Property sources
 
 The Log4j configuration properties sub-system merges the content of multiple property sources that implement the Java interface
-link:../javadoc/log4j-api/org/apache/logging/log4j/util/PropertySource.html[PropertySource].
+link:../javadoc/log4j-api/org/apache/logging/log4j/util/PropertySource.html[`PropertySource`].
 
 Additional property source classes can be added through:
 

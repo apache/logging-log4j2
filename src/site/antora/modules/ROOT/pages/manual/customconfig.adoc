@@ -92,7 +92,7 @@ specified, ConfigurationFactories whose supported type does not include
 
 One way to programmatically configure Log4j 2 is to create a custom
 `ConfigurationFactory` that uses the
-link:#ConfigurationBuilder[`ConfigurationBuilder`] to create a
+<<ConfigurationBuilder,`ConfigurationBuilder`>> to create a
 Configuration. The below example overrides the `getConfiguration()`
 method to return a `Configuration` created by the `ConfigurationBuilder`.
 This will cause the `Configuration` to automatically be hooked into Log4j

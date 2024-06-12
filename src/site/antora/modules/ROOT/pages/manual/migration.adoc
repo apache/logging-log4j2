@@ -79,7 +79,7 @@ Supported Rewrite Policies include: MapRewritePolicy, PropertyRewritePolicy.
 
 ==== Unsupported or Unimplemented Components
 
-If your configuration contains any of the below components, consider xref:#Log4j2ConfigurationFormat[migrating your configuration] to the Log4j 2 format.
+If your configuration contains any of the below components, consider <<Log4j2ConfigurationFormat,migrating your configuration>> to the Log4j 2 format.
 
 ===== Appenders
 
@@ -151,7 +151,7 @@ image:whichjar-log4j-api.png[Using log4j 2 via the log4j 2.x API]
 
 | Calls to `org.apache.log4j.LogManager.shutdown()`
 | Not needed in version 2 because the Log4j Core now automatically adds a JVM shutdown hook on start up to perform any Core clean ups.
-Starting in Log4j 2.1, you can specify a custom link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/ShutdownCallbackRegistry.html[ShutdownCallbackRegistry] to override the default JVM shutdown hook strategy.
+Starting in Log4j 2.1, you can specify a custom link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/ShutdownCallbackRegistry.html[`ShutdownCallbackRegistry`] to override the default JVM shutdown hook strategy.
 Starting in Log4j 2.6, you can use `org.apache.logging.log4j.LogManager.shutdown()`  to initiate shutdown manually.
 
 | Calls to `org.apache.log4j.Logger.setLevel()` or similar methods

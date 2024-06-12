@@ -23,8 +23,8 @@ The act of logging is an interplay between the logging API (i.e., Log4j API) whe
 Both parties can have dramatic impact on performance.
 Hence, we will discuss the performance optimization of both individually:
 
-. xref:#api[Using Log4j API efficiently]
-. xref:#core[Tuning Log4j Core for performance]
+. <<api,Using Log4j API efficiently>>
+. <<core,Tuning Log4j Core for performance>>
 
 [#api]
 == Using Log4j API efficiently

@@ -19,7 +19,7 @@
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_DISABLE_CLOUD_CONFIG_LOGGING_SYSTEM
+| Env. variable | `LOG4J_DISABLE_CLOUD_CONFIG_LOGGING_SYSTEM`
 | Type          | `boolean`
 | Default value | `false`
 |===
