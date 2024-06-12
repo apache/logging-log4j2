@@ -125,6 +125,9 @@
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
   </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="pattern-layout.html">Pattern Layout</a>
+  </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="2">
@@ -509,7 +512,7 @@ You can override the default behaviour in your asynchronous logger or asynchrono
 <td class="content">
 <div class="paragraph">
 <p>Even if a layout is configured not to <strong>request</strong> location information, it might use it if the information is already available.
-This is always the case of information location computed at build time using the <a href="/log4j/transform/latest/#log4j-transform-maven-plugin">Log4j Transform Maven Plugin</a>.</p>
+This is always the case if the location information is captured at build time using the <a href="/log4j/transform/latest/#log4j-transform-maven-plugin">Log4j Transform Maven Plugin</a>.</p>
 </div>
 </td>
 </tr>
@@ -529,7 +532,7 @@ Following layouts are known to be well-optimized for performance-sensitive workl
 <p>It encodes log events into JSON according to the structure described by the template provided.
 Its output can safely be ingested into several log storage solutions: Elasticsearch, Google Cloud Logging, Graylog, Logstash, etc.</p>
 </dd>
-<dt class="hdlist1"><a href="layouts.html#PatternLayout-performance" class="xref page">Pattern Layout</a></dt>
+<dt class="hdlist1"><a href="pattern-layout.html#performance" class="xref page">Pattern Layout</a></dt>
 <dd>
 <p>It encodes log events into human-readable text according to the pattern provided.</p>
 </dd>

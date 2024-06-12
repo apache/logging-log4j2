@@ -125,6 +125,9 @@
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
   </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="pattern-layout.html">Pattern Layout</a>
+  </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="2">
@@ -732,104 +735,6 @@ public final class StubAppender extends AbstractOutputStreamAppender&lt;StubMana
     }
 }</code></pre>
 </div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="Layouts"><a class="anchor" href="#Layouts"></a>Layouts</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Layouts perform the formatting of events into the printable text that is
-written by Appenders to some destination. All Layouts must implement the
-<code>Layout</code> interface. Layouts that format the event into a <code>String</code> should
-extend <code>AbstractStringLayout</code>, which will take care of converting the
-<code>String</code> into the required byte array.</p>
-</div>
-<div class="paragraph">
-<p>Every Layout must declare itself as a plugin using the <code>@Plugin</code>
-annotation and a <code>@Configurable</code> annotation with an <code>elementType</code> of "layout". <code>printObject</code> should be set to "true" if the plugin&#8217;s <code>toString</code>
-method will provide a representation of the object and its parameters.
-The name of the plugin must match the value users should use to specify
-it as an element in their Appender configuration. The plugin also must
-provide a static method annotated as a <code>@PluginFactory</code> and with each of
-the methods parameters annotated with <code>@PluginAttribute</code> or <code>@PluginElement</code> as
-appropriate. The plugin can alternatively use the plugin builder notation.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Configurable(elementType = Layout.ELEMENT_TYPE, printObject = true)
-@Plugin
-public class SampleLayout extends AbstractStringLayout {
-
-    protected SampleLayout(boolean locationInfo, boolean properties, boolean complete,
-                           Charset charset) {
-        super(charset);
-        // handle the boolean parameters
-    }
-
-    @PluginFactory
-    public static SampleLayout createLayout(@PluginAttribute boolean locationInfo,
-                                            @PluginAttribute boolean properties,
-                                            @PluginAttribute boolean complete,
-                                            @PluginAttribute(defaultStringValue = "UTF-8") Charset charset) {
-        return new SampleLayout(locationInfo, properties, complete, charset);
-    }
-}</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="PatternConverters"><a class="anchor" href="#PatternConverters"></a>PatternConverters</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>PatternConverters are used by the PatternLayout to format the log event
-into a printable <code>String</code>. Each Converter is responsible for a single kind
-of manipulation, however Converters are free to format the event in
-complex ways. For example, there are several converters that manipulate
-Throwables and format them in various ways.</p>
-</div>
-<div class="paragraph">
-<p>A PatternConverter must first declare itself as a Plugin using the
-standard <code>@Plugin</code> annotation and the <code>@Namespace</code> annotation with the value "Converter". Furthermore, the Converter must also specify the
-<code>@ConverterKeys</code> annotation to define the tokens that can be specified in
-the pattern (preceded by a '%' character) to identify the Converter.</p>
-</div>
-<div class="paragraph">
-<p>Unlike most other Plugins, Converters do not use a <code>@PluginFactory</code>.
-Instead, each Converter is required to provide a static <code>newInstance</code>
-method that accepts an array of <code>String</code> as the only parameter. The
-<code>String[]</code> is the values that are specified within the curly braces
-that can follow the converter key.</p>
-</div>
-<div class="paragraph">
-<p>The following shows the skeleton of a Converter plugin.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Namespace("Converter")
-@Plugin("query")
-@ConverterKeys({"q", "query"})
-public final class QueryConverter extends LogEventPatternConverter {
-
-    public QueryConverter(String[] options) {
-    }
-
-    public static QueryConverter newInstance(final String[] options) {
-      return new QueryConverter(options);
-    }
-
-    @Override
-    public void format(LogEvent event, StringBuilder toAppendTo) {
-        // get the data from 'event', to the work and append the result to 'toAppendTo'.
-    }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>A pattern to use this converter could be specified as <code>&#8230;&#8203; %q &#8230;&#8203;</code> or <code>&#8230;&#8203; %q{argument} &#8230;&#8203;</code>.
-The "argument" will be passed as first (and only) value to the <code>options</code> parameter of the
-<code>newInstance(&#8230;&#8203;)</code> method.</p>
 </div>
 </div>
 </div>
