@@ -20,13 +20,13 @@ import org.apache.log4j.Logger;
 
 public class Migration1Example {
 
-    private static final Logger logger = Logger.getLogger(Migration1Example.class);
+    private static final Logger LOGGER = Logger.getLogger(Migration1Example.class);
 
     public static void main(String[] args) {
         String username = args.length > 0 ? args[0] : "unknown";
         // tag::guards[]
-        if (logger.isInfoEnabled()) {
-            logger.info("Hello " + username + "!");
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Hello " + username + "!");
         }
         // end::guards[]
     }

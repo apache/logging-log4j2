@@ -21,12 +21,12 @@ import org.apache.logging.log4j.Logger;
 
 public class Migration2Example {
 
-    private static final Logger logger = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static void main(String[] args) {
         String username = args.length > 0 ? args[0] : "unknown";
         // tag::guards[]
-        logger.info("Hello {}!", username);
+        LOGGER.info("Hello {}!", username);
         // end::guards[]
     }
 }
