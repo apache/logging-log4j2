@@ -35,7 +35,7 @@ Markers offer more fine-grained control over log filtering beyond log levels or 
 
 To create a `Marker`, create a field in your class using the `MarkerManager.getMarker()` method:
 
-[source, java, indent=0]
+[source,java,indent=0]
 ----
 include::example$manual/markers/MarkerExample.java[tag=create-marker]
 ----
@@ -43,14 +43,14 @@ include::example$manual/markers/MarkerExample.java[tag=create-marker]
 Since a `Marker` is reusable across multiple log statements, storing it in a `static final` field makes it a constant.
 Once created, use it as the first argument in the log statement:
 
-[source, java, indent=0]
+[source,java,indent=0]
 ----
 include::example$manual/markers/MarkerExample.java[tag=use-marker]
 ----
 
 If you use the <<example-configuration,configuration example below>>, one can see the following log statement on your console:
 
-[source, text]
+[source,text]
 ----
 include::example$manual/markers/marker-filtering.log[tag=use-marker]
 ----
@@ -61,14 +61,14 @@ include::example$manual/markers/marker-filtering.log[tag=use-marker]
 A marker can have zero or more parent markers, allowing for a hierarchy of markers.
 To create such a hierarchy, you must use the `addParents()` method on the `Marker` object after you make the child marker.
 
-[source, java, indent=0]
+[source,java,indent=0]
 ----
 include::example$manual/markers/MarkerExample.java[tag=create-marker-parent]
 ----
 
 Child markers do not differ from simple markers; one must pass them on as the first argument of a logging call.
 
-[source, java, indent=0]
+[source,java,indent=0]
 ----
 include::example$manual/markers/MarkerExample.java[tag=use-marker-parent]
 ----
@@ -76,59 +76,10 @@ include::example$manual/markers/MarkerExample.java[tag=use-marker-parent]
 Messages marked with children's markers behave as if they were both marked with the children's marker and all its parents.
 If you use the <<example-configuration,configuration example below>>, you'll see the following log statement on your console:
 
-[source, text]
+[source,text]
 ----
 include::example$manual/markers/marker-filtering.log[tag=use-marker-parent]
 ----
-
-[#configuring-log4j]
-== Configuring filtering
-
-Developers can use markers to filter the log statements delivered to log files.
-Marker processing is supported at least by
-{logback-url}/manual/filters.html#TurboFilter[Logback]
-and the Log4j Core logging backends.
-We will discuss only the configuration of the latter.
-
-To filter messages by marker, you need to add
-xref:manual/filters.adoc#MarkerFilter[`MarkerFilter`]
-to your configuration file.
-For example, one can use the snippet below to redirect all SQL-related logs to the `SQL_LOG` appender:
-
-[[example-configuration]]
-[tabs]
-====
-XML::
-+
-[source, xml]
-----
-include::example$manual/markers/log4j2.xml[tag=logger]
-----
-
-JSON::
-+
-[source, json]
-----
-include::example$manual/markers/log4j2.json[tag=logger]
-----
-
-YAML::
-+
-[source, yaml]
-----
-include::example$manual/markers/log4j2.yaml[tag=logger]
-----
-
-Properties::
-+
-[source, properties]
-----
-include::example$manual/markers/log4j2.properties[tag=logger]
-----
-====
-
-<1> Match all messages from `example` package from all levels
-<2> Only allow messages marker with `SQL` or one of its children to be sent to the `SQL_LOG` appender.
 
 [#pitfalls]
 == Pitfalls
@@ -144,6 +95,77 @@ It is also worth noting that markers without parents are more efficient to evalu
 than markers with multiple parents. It is generally a good idea to avoid
 complex hierarchies of markers where possible.
 
+[#configuring-log4j]
+== Configuring filtering
+
+Developers can use markers to filter the log statements delivered to log files.
+Marker processing is supported at least by
+https://logback.qos.ch/manual/filters.html[Logback]
+and the Log4j Core logging backends.
+We will provide a sample configuration for both these backends.
+
+[#log4j-core]
+=== Log4j Core
+
+To filter messages by marker, you need to add
+xref:manual/filters.adoc#MarkerFilter[`MarkerFilter`]
+to your configuration file.
+For example, you can use the configuration below to redirect all SQL-related logs to the `SQL_LOG` appender,
+regardless of the level of the events:
+
+[[example-configuration]]
+[tabs]
+====
+XML::
++
+[source,xml,indent=0]
+----
+include::example$manual/markers/log4j2.xml[lines=1;18..-1]
+----
+
+JSON::
++
+[source,json,indent=0]
+----
+include::example$manual/markers/log4j2.json[]
+----
+
+YAML::
++
+[source,yaml,indent=0]
+----
+include::example$manual/markers/log4j2.yaml[lines=17..-1]
+----
+
+Properties::
++
+[source,properties]
+----
+include::example$manual/markers/log4j2.properties[lines=17..-1]
+----
+====
+
+<1> Accepts all events marked with `SQL` regardless of their level,
+<2> Only allow events marked with `SQL` or one of its children to be sent to the `SQL_LOG` appender.
+
+[#logback]
+=== Logback
+
+Logback differentiates two kinds of filters: ``TurboFilter``s, which are applied before a log event is created, and
+``Filter``s, which are applied only when a log event reaches an appender.
+See https://logback.qos.ch/manual/filters.html[Logback filters] for more information.
+
+You can use a combination of `MarkerFilter`, `EvaluatorFilter` and `OnMarkerEvaluator` to redirect all messages marked with `SQL` to a specific appender, regardless of their level.
+In order to do that, you can use a configuration as below:
+
+[source,xml]
+----
+include::example$manual/markers/logback.xml[lines=1;18..-1]
+----
+
+<1> Accepts all events marked with `SQL` regardless of their level,
+<2> Only allow events marked with `SQL` or one of its children to be sent to the `SQL_LOG` appender.git
+
 [#complete-example]
 == Complete example
 
@@ -152,6 +174,9 @@ To try the examples on this page:
 * add
 {antora-examples-url}/manual/markers/MarkerExample.java[MarkerExample.java]
 to the `src/main/java/example` folder of your project,
-* add
+* if your project uses Log4j Core add
 {antora-examples-url}/manual/markers/log4j2.xml[log4j2.xml]
+to the `src/main/resources` folder of your project.
+* if your project uses Logback add
+{antora-examples-url}/manual/markers/logback.xml[logback.xml]
 to the `src/main/resources` folder of your project.

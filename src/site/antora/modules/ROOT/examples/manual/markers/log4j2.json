@@ -8,24 +8,21 @@
         }
       }
     },
+    "MarkerFilter": { // <1>
+      "marker": "SQL",
+      "onMatch": "ACCEPT",
+      "onMismatch": "NEUTRAL"
+    },
     "Loggers": {
       "Root": {
-        "level": "INFO"
-      },
-      // tag::logger[]
-      "Logger": {
-        "name": "example",
-        "level": "ALL", // <1>
+        "level": "INFO",
         "AppenderRef": {
           "ref": "SQL_LOG",
           "MarkerFilter": { // <2>
-            "marker": "SQL",
-            "onMatch": "ACCEPT",
-            "onMismatch": "DENY"
+            "marker": "SQL"
           }
         }
       }
-      // end::logger[]
     }
   }
 }
