@@ -725,12 +725,16 @@ These log statements will cause a smaller latency for the caller.</td>
 </colgroup>
 <tbody>
 <tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable  <code>LOG4J_ASYNC_FORMAT_MESSAGES_IN_BACKGROUND</code></p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Type</p></td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_FORMAT_MESSAGES_IN_BACKGROUND</code></p></td>
 </tr>
 <tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -752,14 +756,17 @@ will be formatted on the async thread regardless of this setting.</p>
 </colgroup>
 <tbody>
 <tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable
- <code>LOG4J_ASYNC_QUEUE_FULL_POLICY_TYPE</code></p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Type</p></td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_QUEUE_FULL_POLICY_TYPE</code></p></td>
 </tr>
 <tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html"><code>Class&lt;? extends AsyncQueueFullPolicy&gt;</code></a>
-or predefined constant</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html"><code>Class&lt;? extends AsyncQueueFullPolicy&gt;</code></a>
+or predefined constant</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Default</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -794,12 +801,16 @@ to use when the underlying async component cannot keep up with the logging rate 
 </colgroup>
 <tbody>
 <tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable  <code>LOG4J_ASYNC_QUEUE_FULL_POLICY_DISCARD_THRESHOLD</code></p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Type</p></td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_QUEUE_FULL_POLICY_DISCARD_THRESHOLD</code></p></td>
 </tr>
 <tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level"><code>Level</code></a></p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level"><code>Level</code></a></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFO</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -822,13 +833,16 @@ See also <a href="#log4j.async.queueFullPolicy.type"><code>log4j.async.queueFull
 </colgroup>
 <tbody>
 <tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable
- <code>LOG4J_ASYNC_LOGGER_CONFIG_EXCEPTION_HANDLER</code></p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Type</p></td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_CONFIG_EXCEPTION_HANDLER</code></p></td>
 </tr>
 <tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-async-logger/org/apache/logging/log4j/async/logger/AsyncLoggerConfigExceptionHandler.html"><code>Class&lt; ? extends AsyncLoggerConfigExceptionHandler&gt;</code></a></p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-async-logger/org/apache/logging/log4j/async/logger/AsyncLoggerConfigExceptionHandler.html"><code>Class&lt; ? extends AsyncLoggerConfigExceptionHandler&gt;</code></a></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-async-logger/org/apache/logging/log4j/async/logger/internal/AsyncLoggerConfigDefaultExceptionHandler.html"><code>AsyncLoggerConfigDefaultExceptionHandler</code></a></p></td>
 </tr>
 </tbody>
 </table>
@@ -870,13 +884,16 @@ The class needs to have a public zero-argument constructor.</p>
 </colgroup>
 <tbody>
 <tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable
- <code>LOG4J_ASYNC_LOGGER_EXCEPTION_HANDLER</code></p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Type</p></td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_EXCEPTION_HANDLER</code></p></td>
 </tr>
 <tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-async-logger/org/apache/logging/log4j/async/logger/AsyncLoggerExceptionHandler.html"><code>Class&lt; ? extends AsyncLoggerExceptionHandler&gt;</code></a></p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-async-logger/org/apache/logging/log4j/async/logger/AsyncLoggerExceptionHandler.html"><code>Class&lt; ? extends AsyncLoggerExceptionHandler&gt;</code></a></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-async-logger/org/apache/logging/log4j/async/logger/internal/AsyncLoggerDefaultExceptionHandler.html"><code>AsyncLoggerDefaultExceptionHandler</code></a></p></td>
 </tr>
 </tbody>
 </table>
@@ -918,12 +935,16 @@ The class needs to have a public zero-argument constructor.</p>
 </colgroup>
 <tbody>
 <tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable  <code>LOG4J_ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL</code></p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Type</p></td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL</code></p></td>
 </tr>
 <tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -945,12 +966,17 @@ Setting this value to <code>false</code> may lead to very high CPU utilization w
 </colgroup>
 <tbody>
 <tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable  <code>LOG4J_ASYNC_LOGGER_RING_BUFFER_SIZE</code></p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Type</p></td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_RING_BUFFER_SIZE</code></p></td>
 </tr>
 <tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>256 &times; 1024</code></p>
+<p class="tableblock">(GC-free mode: <code>4 &times; 1024</code>)</p></td>
 </tr>
 </tbody>
 </table>
@@ -975,12 +1001,16 @@ The RingBuffer will be pre-allocated at first use and will never grow or shrink 
 </colgroup>
 <tbody>
 <tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable  <code>LOG4J_ASYNC_LOGGER_WAIT_STRATEGY_TYPE</code></p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Type</p></td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_WAIT_STRATEGY_TYPE</code></p></td>
 </tr>
 <tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">predefined constant</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">predefined constant</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Timeout</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -1027,12 +1057,16 @@ This strategy has very low impact on the application thread, in exchange for som
 </colgroup>
 <tbody>
 <tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable  <code>LOG4J_ASYNC_LOGGER_WAIT_STRATEGY_RETRIES</code></p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Type</p></td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_WAIT_STRATEGY_RETRIES</code></p></td>
 </tr>
 <tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>200</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -1051,12 +1085,16 @@ This strategy has very low impact on the application thread, in exchange for som
 </colgroup>
 <tbody>
 <tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable  <code>LOG4J_ASYNC_LOGGER_WAIT_STRATEGY_SLEEP_TIME_NS</code></p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Type</p></td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_WAIT_STRATEGY_SLEEP_TIME_NS</code></p></td>
 </tr>
 <tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock"><code>long</code></p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>long</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>100</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -1075,12 +1113,16 @@ This strategy has very low impact on the application thread, in exchange for som
 </colgroup>
 <tbody>
 <tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable  <code>LOG4J_ASYNC_LOGGER_WAIT_STRATEGY_TIMEOUT</code></p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Type</p></td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ASYNC_LOGGER_WAIT_STRATEGY_TIMEOUT</code></p></td>
 </tr>
 <tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10</code></p></td>
 </tr>
 </tbody>
 </table>
