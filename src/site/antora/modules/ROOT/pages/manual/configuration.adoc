@@ -47,7 +47,7 @@ include::partial$configuration-file-format-deps.adoc[]
 The format of the configuration file changed between Log4j{nbsp}1 and Log4j{nbsp}2.
 Files in the Log4j{nbsp}1 format are ignored by default.
 
-To enable partial support for old configuration formats, see xref:manual/migration.adoc#enabling-the-log4j-1-x-bridge[Enabling the Log4j{nbsp}1 bridge].
+To enable partial support for old configuration formats, see xref:manual/migration.adoc#ConfigurationCompatibility[configuration compatibility].
 ====
 
 [id=automatic-configuration]
@@ -395,16 +395,15 @@ If set to `0`, polling is disabled.
 
 [CAUTION]
 ====
-Log4j Core is designed with reliability in mind, unlike other logging backends.
+Log4j Core is designed with reliability in mind, which implies that the reconfiguration process can not lose any log event.
+In order to achieve this Log4j does **not** stop any appender until the new `Configuration` is active and **reuses** resources that are present in both the old and the new `Configuration`.
 
-During a reconfiguration process, no messages are lost.
+In order to guarantee reliability, Log4j _may_ ignore the changes to some appender options, if they would cause log event loss.
+For example, changing the `append` option of a file appender, without changing the `fileName` option is not possible, since
+it would require closing the underlying file and reopening it with different options.
+Between the two operations log events might be lost.
 
-Unless the new configuration file removes an appender, the old ones work without interruption.
 
-Some changed appender options will be **ignored** during reconfiguration. 
-For example, appenders that need to close resources, like the append mode used to open a file, will ignore such options.
-
-To modify these options during a reconfiguration, you also need to change the resource used by the appender (e.g., the file name used by a file appender).
 ====
 
 [id=configuration-attribute-status]
