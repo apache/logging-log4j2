@@ -287,7 +287,7 @@ is better to declare Loggers as static.</p>
 <ol class="arabic">
 <li>
 <p>Instantiation of a new Logger is a fairly expensive operation when using the default ContextSelector,
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ClassLoaderContextSelector.html">ClassLoaderContextSelector</a>.
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ClassLoaderContextSelector.html"><code>ClassLoaderContextSelector</code></a>.
 When the Logger is created the <code>ClassLoaderContextSelector</code> will locate the ClassLoader for the Class the Logger
 is associated with and add the Logger to the LoggerContext associated with that ClassLoader.</p>
 </li>

@@ -322,7 +322,7 @@ resolve the variable for each event. Note that the pattern
 <p>The DateLookup is somewhat unusual from the other lookups as it doesn&#8217;t
 use the key to locate an item. Instead, the key can be used to specify a
 date format string that is valid for
-<a href="http://docs.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>.
+<a href="http://docs.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html"><code>SimpleDateFormat</code></a>.
 The current date, or the date associated with the current log event will
 be formatted as specified.</p>
 </div>
@@ -653,7 +653,7 @@ convenient preformatted strings using the <code>java:</code> prefix.</p>
 <div class="paragraph">
 <p>As of Log4j 2.15.1 JNDI operations require that <code>log4j2.enableJndi=true</code> be set as a system property or the
 corresponding environment variable for this lookup to function. See the
-<a href="systemproperties.html#log4j.jndi.enableLookup" class="xref page">log4j.jndi.enableLookup</a>
+<a href="systemproperties.html#log4j.jndi.enableLookup" class="xref page"><code>log4j.jndi.enableLookup</code></a>
 system property.</p>
 </div>
 <div class="paragraph">
@@ -696,7 +696,7 @@ acquire the JVM arguments.</p>
 </div>
 <div class="paragraph">
 <p>See the Javadocs for
-<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/management/RuntimeMXBean.html#getInputArguments--">java.lang.management.RuntimeMXBean.getInputArguments()</a>.</p>
+<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/management/RuntimeMXBean.html#getInputArguments--"><code>java.lang.management.RuntimeMXBean.getInputArguments()</code></a>.</p>
 </div>
 <div class="paragraph">
 <p><strong>Java&#8217;s JMX module is not available on Android or on Google App Engine.</strong></p>
@@ -876,7 +876,7 @@ key must be followed by a backslash as an escape character as in <code>${main:\-
 </li>
 <li>
 <p>Retrieve values set with
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/MapLookup.html#setMainArguments%28java.lang.String%5B%5D%29">MapLookup.setMainArguments(String[</a>)]</p>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/MapLookup.html#setMainArguments%28java.lang.String%5B%5D%29"><code>MapLookup.setMainArguments(String[</a>)</code>]</p>
 </li>
 </ol>
 </div>
@@ -1000,7 +1000,7 @@ values it will also return the name portion of the id (not including the
 enterprise number) and the type field. The main difference between the
 example below and the example for MapMessage is that the "type" is an
 attribute of the
-<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html">StructuredDataMessage</a>
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html"><code>StructuredDataMessage</code></a>
 while "type" would have to be an item in the Map in a MapMessage.</p>
 </div>
 <div class="listingblock">

@@ -309,28 +309,28 @@ However, this does allow any other Log4j Provider besides the Core provider to b
 <div class="sectionbody">
 <div class="paragraph">
 <p>The use of a
-<a href="https://docs.oracle.com/javase/17/docs/api/java/util/logging/Filter.html">java.util.logging.Filter</a>
+<a href="https://docs.oracle.com/javase/17/docs/api/java/util/logging/Filter.html"><code>java.util.logging.Filter</code></a>
 is supported on a
-<a href="https://docs.oracle.com/javase/17/docs/api/java/util/logging/Logger.html">per-Logger</a>
+per-<a href="https://docs.oracle.com/javase/17/docs/api/java/util/logging/Logger.html"><code>Logger</code></a>
 basis.
-However, it is recommended to use the standard <a href="manual/filters.html" class="xref page">Filters</a> feature in Log4j instead.</p>
+However, it is recommended to use the standard <a href="manual/filters.html" class="xref page">filters</a> feature in Log4j instead.</p>
 </div>
 <div class="paragraph">
 <p>The use of
-<a href="https://docs.oracle.com/javase/17/docs/api/java/util/logging/Handler.html">java.util.logging.Handler</a>
+<a href="https://docs.oracle.com/javase/17/docs/api/java/util/logging/Handler.html"><code>java.util.logging.Handler</code></a>
 classes is
 <em>NOT</em> supported.
 Custom Handlers should instead use an appropriate
 <a href="manual/appenders.html" class="xref page">Appender</a>
 or code their own
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Appender.html">Appender</a>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Appender.html"><code>Appender</code></a>
 plugin.</p>
 </div>
 <div class="paragraph">
 <p>Java logging levels are translated into Log4j logging levels dynamically.
 The following table lists the conversions between a Java logging level and its equivalent Log4j level.
 Custom levels should be implemented as an implementation of <code>LevelConverter</code>, and the Log4j property
-<a href="manual/systemproperties.html#log4j.jul.levelConverter" class="xref page">log4j.jul.levelConverter</a>
+<a href="manual/systemproperties.html#log4j.jul.levelConverter" class="xref page"><code>log4j.jul.levelConverter</code></a>
 must be set to your custom class name.
 Using the default <code>LevelConverter</code> implementation, custom logging levels are mapped to whatever the current level of the <code>Logger</code> being logged to is using.</p>
 </div>
@@ -350,40 +350,40 @@ Using the default <code>LevelConverter</code> implementation, custom logging lev
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://docs.oracle.com/javase/17/docs/api/java/util/logging/Level.html#OFF">OFF</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html#OFF">OFF</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/util/logging/Level.html#OFF"><code>OFF</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html#OFF"><code>OFF</code></a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://docs.oracle.com/javase/17/docs/api/java/util/logging/Level.html#SEVERE">SEVERE</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html#ERROR">ERROR</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/util/logging/Level.html#SEVERE"><code>SEVERE</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html#ERROR"><code>ERROR</code></a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://docs.oracle.com/javase/17/docs/api/java/util/logging/Level.html#WARNING">WARNING</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html#WARN">WARN</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/util/logging/Level.html#WARNING"><code>WARNING</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html#WARN"><code>WARN</code></a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://docs.oracle.com/javase/17/docs/api/java/util/logging/Level.html#OFF">OFF</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html#INFO">INFO</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/util/logging/Level.html#OFF"><code>OFF</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html#INFO"><code>INFO</code></a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://docs.oracle.com/javase/17/docs/api/java/util/logging/Level.html#CONFIG">CONFIG</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/util/logging/Level.html#CONFIG"><code>CONFIG</code></a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">custom <code>CONFIG</code> level</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://docs.oracle.com/javase/17/docs/api/java/util/logging/Level.html#FINE">FINE</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html#DEBUG">DEBUG</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/util/logging/Level.html#FINE"><code>FINE</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html#DEBUG"><code>DEBUG</code></a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://docs.oracle.com/javase/17/docs/api/java/util/logging/Level.html#FINER">FINER</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html#TRACE">TRACE</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/util/logging/Level.html#FINER"><code>FINER</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html#TRACE"><code>TRACE</code></a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://docs.oracle.com/javase/17/docs/api/java/util/logging/Level.html#FINEST">FINEST</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/util/logging/Level.html#FINEST"><code>FINEST</code></a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">custom <code>FINEST</code> level</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://docs.oracle.com/javase/17/docs/api/java/util/logging/Level.html#ALL">ALL</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html#ALL">ALL</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/util/logging/Level.html#ALL"><code>ALL</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html#ALL"><code>ALL</code></a></p></td>
 </tr>
 </tbody>
 </table>

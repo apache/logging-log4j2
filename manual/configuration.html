@@ -476,12 +476,12 @@ Log4j includes XML, JSON, YAML, and Java properties formats factories.</p>
 </li>
 <li>
 <p>If no configuration file is found, Log4j uses the
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/DefaultConfiguration.html">DefaultConfiguration</a>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/DefaultConfiguration.html"><code>DefaultConfiguration</code></a>
 and the
 <a href="https://logging.apache.org/log4j/2.x/manual/status-logger.html">status logger</a>
 prints a warning.
 The default configuration prints all messages less specific than
-<a href="systemproperties.html#log4j.configuration.level" class="xref page">log4j.configuration.level</a>
+<a href="systemproperties.html#log4j.configuration.level" class="xref page"><code>log4j.configuration.level</code></a>
 to the console.</p>
 </li>
 </ol>
@@ -584,12 +584,12 @@ See
 <td class="content">
 <div class="paragraph">
 <p>It is also possible to override the location of the configuration file using the
-<a href="systemproperties.html#log4j.configuration.location" class="xref page">log4j.configuration.location</a>
+<a href="systemproperties.html#log4j.configuration.location" class="xref page"><code>log4j.configuration.location</code></a>
 configuration property.
 In this case, Log4j will guess the configuration file format from the provided configuration file extension or use the default configuration factory if the extension is unknown.</p>
 </div>
 <div class="paragraph">
-<p>See <a href="systemproperties.html#log4j.configuration.location" class="xref page">log4j.configuration.location</a> for details.</p>
+<p>See <a href="systemproperties.html#log4j.configuration.location" class="xref page"><code>log4j.configuration.location</code></a> for details.</p>
 </div>
 </td>
 </tr>
@@ -604,10 +604,10 @@ Appenders, layouts, filters, configuration loaders, and similar components are a
 </div>
 <div class="paragraph">
 <p>All configuration files are represented internally as a tree of
-<code><a href="../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Node.html">Node</a></code>s,
+<a href="../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Node.html"><code>Node</code></a>s,
 which is translated into a tree of Log4j plugins.
 The tree&#8217;s root creates a
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html">Configuration</a>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html"><code>Configuration</code></a>
 object.</p>
 </div>
 <div class="paragraph">
@@ -1257,7 +1257,7 @@ For example, appenders that need to close resources, like the append mode used t
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html">LEVEL</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html"><code>LEVEL</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Status</p></th>
@@ -1265,7 +1265,7 @@ For example, appenders that need to close resources, like the append mode used t
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/manual/systemproperties.html#log4j.statusLoggerLevel">log4j2.statusLoggerLevel</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/manual/systemproperties.html#log4j.statusLoggerLevel"><code>log4j2.statusLoggerLevel</code></a></p></td>
 </tr>
 </tbody>
 </table>
@@ -1280,7 +1280,7 @@ For example, appenders that need to close resources, like the append mode used t
 </td>
 <td class="content">
 Since 2.24.0 this attribute is deprecated and should be replaced with the
-<a href="../../2.x/manual/systemproperties.html#log4j.sta.statusLoggerLevel">log4j2.statusLoggerLevel</a>
+<a href="https://logging.apache.org/log4j/2.x/manual/systemproperties.html#log4j.sta.statusLoggerLevel"><code>log4j2.statusLoggerLevel</code></a>
 configuration property.
 </td>
 </tr>
@@ -1337,7 +1337,7 @@ Other logger configurations are optional.</p>
 </div>
 <div class="paragraph">
 <p>Every
-<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Logger.html">Logger</a>
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Logger.html"><code>Logger</code></a>
 in your application is assigned to one of these logger configurations (see
 <a href="architecture.html#loggerconfig" class="xref page">architecture</a>), which determines the events that will be logged and those that won&#8217;t.</p>
 </div>
@@ -1592,14 +1592,14 @@ The table below summarizes the effects of each logger configuration:</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html">Level</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html"><code>Level</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
 <li>
-<p><a href="systemproperties.html#log4j.configuration.level" class="xref page">log4j.configuration.level</a>,
+<p><a href="systemproperties.html#log4j.configuration.level" class="xref page"><code>log4j.configuration.level</code></a>,
 for <code>Root</code> and <code>AsyncRoot</code>,</p>
 </li>
 <li>
@@ -1656,7 +1656,7 @@ Log events that are more specific than this setting will be filtered out.</p>
 </div>
 <div class="paragraph">
 <p>See
-<a href="systemproperties.html#log4j.loggerContext.selector" class="xref page">log4j.loggerContext.selector</a>
+<a href="systemproperties.html#log4j.loggerContext.selector" class="xref page"><code>log4j.loggerContext.selector</code></a>
 for more details.</p>
 </div></div></td>
 </tr>
@@ -1665,8 +1665,7 @@ for more details.</p>
 <div class="paragraph">
 <p>Specifies whether Log4j is allowed to compute location information.
 If set to <code>false</code>, Log4j will not attempt to infer the location of the logging call unless said location was provided explicitly using one of the available
-<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/LogBuilder.html">LogBuilder
-.withLocation()</a>
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/LogBuilder.html"><code>LogBuilder#withLocation()</code></a>
 methods.</p>
 </div>
 <div class="paragraph">
@@ -1685,8 +1684,7 @@ methods.</p>
 <div class="sect3">
 <h4 id="logger-elements-properties"><a class="anchor" href="#logger-elements-properties"></a>Additional context properties</h4>
 <div class="paragraph">
-<p>Loggers can emit additional context data that will be integrated with other context data sources such as
-<a href="https://logging.apache.org/log4j/2.x/manual/thread-context.html">ThreadContext</a>.</p>
+<p>Loggers can emit additional context data that will be integrated with other context data sources such as <a href="https://logging.apache.org/log4j/2.x/manual/thread-context.html">thread context</a>.</p>
 </div>
 <div class="admonitionblock caution">
 <table>
@@ -1858,7 +1856,7 @@ Loggers.Logger[2].Property.value = Networking</code></pre>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html">Level</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html"><code>Level</code></a></p></td>
 </tr>
 </tbody>
 </table>
@@ -2769,14 +2767,14 @@ Appenders.File.Select.DefaultArbiter.layout.type = JsonTemplateLayout <i class="
 <h3 id="CompositeConfiguration"><a class="anchor" href="#CompositeConfiguration"></a>Composite Configuration</h3>
 <div class="paragraph">
 <p>Log4j allows multiple configuration files to be used at the same time by specifying them as a list of comma-separated file paths or URLs in the
-<a href="systemproperties.html#log4j.configuration.location" class="xref page">log4j.configuration.location</a>
+<a href="systemproperties.html#log4j.configuration.location" class="xref page"><code>log4j.configuration.location</code></a>
 configuration property.</p>
 </div>
 <div class="paragraph">
 <p>These configuration files are merged into a single configuration file using
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy.html">MergeStrategy</a>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy.html"><code>MergeStrategy</code></a>
 service that can be customized using the
-<a href="systemproperties.html#log4j.configuration.mergeStrategy" class="xref page">log4j.configuration.mergeStrategy</a>
+<a href="systemproperties.html#log4j.configuration.mergeStrategy" class="xref page"><code>log4j.configuration.mergeStrategy</code></a>
 configuration property.</p>
 </div>
 <div class="paragraph">
