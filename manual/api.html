@@ -274,22 +274,22 @@
     <span class="nav-text">Related projects</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="/log4j/jakarta">Log4j Jakarta EE</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/jakarta">Log4j Jakarta EE</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="/log4j/jmx-gui">Log4j JMX GUI</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/jmx-gui">Log4j JMX GUI</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="/log4j/kotlin">Log4j Kotlin</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/kotlin">Log4j Kotlin</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="/log4j/scala">Log4j Scala</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/scala">Log4j Scala</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="/log4j/tools">Log4j Tools</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/tools">Log4j Tools</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="/log4j/transform">Log4j Transformation Tools</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/transform">Log4j Transformation Tools</a>
   </li>
 </ul>
   </li>
@@ -952,7 +952,7 @@ Some common ones are accessible through convenient factory methods, which we wil
 <h3 id="formatter-logger"><a class="anchor" href="#formatter-logger"></a>Formatter logger</h3>
 <div class="paragraph">
 <p>The <code>Logger</code> instance returned by default replaces the occurrences of <code>{}</code> placeholders with the <code>toString()</code> output of the associated parameter.
-If you need more control over how the parameters are formatted, you can also use the <a href="http://docs.oracle.com/javase/6/docs/api/java/util/Formatter.html#syntax"><code>java.util.Formatter</code></a> format strings by obtaining your <code>Logger</code> using <a href="../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#getFormatterLogger(java.lang.Class)"><code>LogManager#getFormatterLogger()</code></a>:</p>
+If you need more control over how the parameters are formatted, you can also use the <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html#syntax"><code>java.util.Formatter</code></a> format strings by obtaining your <code>Logger</code> using <a href="../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#getFormatterLogger(java.lang.Class)"><code>LogManager#getFormatterLogger()</code></a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1011,7 +1011,7 @@ You might reconsider your formatter logger usages for latency sensitive applicat
 <div class="sect2">
 <h3 id="event-logger"><a class="anchor" href="#event-logger"></a>Event logger</h3>
 <div class="paragraph">
-<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html"><code>EventLogger</code></a> provides a simple way to log structured events conforming with the <code>STRCUTURED-DATA</code> format defined in <a href="https://tools.ietf.org/html/rfc5424">RFC 5424 (The Syslog Protocol)</a>.</p>
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/EventLogger.html"><code>EventLogger</code></a> provides a simple way to log structured events conforming with the <code>STRCUTURED-DATA</code> format defined in <a href="https://tools.ietf.org/html/rfc5424">RFC 5424 (The Syslog Protocol)</a>.</p>
 </div>
 <div class="paragraph">
 <p><a href="eventlogging.html" class="xref page">Read more on event loggers&#8230;&#8203;</a></p>

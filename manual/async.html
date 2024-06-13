@@ -274,22 +274,22 @@
     <span class="nav-text">Related projects</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="/log4j/jakarta">Log4j Jakarta EE</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/jakarta">Log4j Jakarta EE</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="/log4j/jmx-gui">Log4j JMX GUI</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/jmx-gui">Log4j JMX GUI</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="/log4j/kotlin">Log4j Kotlin</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/kotlin">Log4j Kotlin</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="/log4j/scala">Log4j Scala</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/scala">Log4j Scala</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="/log4j/tools">Log4j Tools</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/tools">Log4j Tools</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="/log4j/transform">Log4j Transformation Tools</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/transform">Log4j Transformation Tools</a>
   </li>
 </ul>
   </li>
@@ -519,7 +519,7 @@ You can:</p>
 <h3 id="AllAsync"><a class="anchor" href="#AllAsync"></a>Making all loggers asynchronous</h3>
 <div class="paragraph">
 <p>This is the simplest to configure and gives the best performance: to make all logger asynchronous, <strong>all</strong> you need to set the
-<a href="systemproperties.html#log4j2.contextSelector" class="xref page">log4j2.contextSelector</a>
+<a href="systemproperties.html#log4j2.contextSelector" class="xref page"><code>log4j2.contextSelector</code></a>
 property to one of the asynchronous logger context selectors:</p>
 </div>
 <div class="dlist">
@@ -575,7 +575,7 @@ property to one of the asynchronous logger context selectors:</p>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html">Class&lt;? extends ExceptionHandler&lt;? super RingBufferLogEvent&gt;&gt;</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html"><code>Class&lt;? extends ExceptionHandler&lt;? super RingBufferLogEvent&gt;&gt;</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -584,7 +584,7 @@ property to one of the asynchronous logger context selectors:</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Fully qualified name of a class that implements the <a href="https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html">ExceptionHandler</a> interface, which will be notified when an exception occurs while logging messages.
+<p>Fully qualified name of a class that implements the <a href="https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html"><code>ExceptionHandler</code></a> interface, which will be notified when an exception occurs while logging messages.
 The class needs to have a public zero-argument constructor.</p>
 </div>
 <div class="paragraph">
@@ -647,7 +647,7 @@ The RingBuffer will be pre-allocated at first use and will never grow or shrink 
 </tbody>
 </table>
 <div class="paragraph">
-<p>Specifies the <a href="https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/WaitStrategy.html">WaitStrategy</a> used by the LMAX Disruptor.</p>
+<p>Specifies the <a href="https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/WaitStrategy.html"><code>WaitStrategy</code></a> used by the LMAX Disruptor.</p>
 </div>
 <div class="paragraph">
 <p>The value needs to be one of the predefined constants:</p>
@@ -816,7 +816,7 @@ Setting this value to <code>false</code> may lead to very high CPU utilization w
 <p>Specifies the
 <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/ThreadNameCachingStrategy.html"><code>ThreadNameCachingStrategy</code></a>
 to use to cache the result of <a href="https://docs.oracle" class="bare">https://docs.oracle</a>
-.com/javase/8/docs/api/java/lang/Thread.html#getName--[Thread.getName()].</p>
+.com/javase/8/docs/api/java/lang/Thread.html#getName--[<code>Thread#getName()</code>].</p>
 </div>
 <div class="paragraph">
 <p>This setting allows to cache the result of <code>Thread.getName()</code> calls and has two values:</p>
@@ -870,7 +870,7 @@ Since JRE 8u102 the <code>Thread.getName()</code> method does <strong>not</stron
 <td class="content">
 <div class="paragraph">
 <p>You can place the selected value of the
-<a href="systemproperties.html#log4j2.contextSelector" class="xref page">log4j2.contextSelector</a> and other configuration properties in a <code>log4j2.component.properties</code> file at the root of your application&#8217;s classpath.</p>
+<a href="systemproperties.html#log4j2.contextSelector" class="xref page"><code>log4j2.contextSelector</code></a> and other configuration properties in a <code>log4j2.component.properties</code> file at the root of your application&#8217;s classpath.</p>
 </div>
 <div class="paragraph">
 <p>See <a href="systemproperties.html#property-sources" class="xref page">Property Sources</a> for more details.</p>
@@ -889,7 +889,7 @@ This gives you more flexibility at the cost of a slight loss in performance (com
 </div>
 <div class="paragraph">
 <p>In order to use this configuration, you need to keep the
-<a href="systemproperties.html#log4j2.contextSelector" class="xref page">log4j2.contextSelector</a> at its default value and use one of the
+<a href="systemproperties.html#log4j2.contextSelector" class="xref page"><code>log4j2.contextSelector</code></a> at its default value and use one of the
 <code>AsyncRoot</code> and <code>AsyncLogger</code> configuration elements to designate the loggers that you want to be asynchronous.</p>
 </div>
 <div class="paragraph">
@@ -1084,7 +1084,7 @@ These log statements will cause a smaller latency for the caller.</td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html">Class&lt;? extends ExceptionHandler&lt;? super Log4jEventWrapper&gt;&gt;</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html"><code>Class&lt;? extends ExceptionHandler&lt;? super Log4jEventWrapper&gt;&gt;</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -1093,7 +1093,7 @@ These log statements will cause a smaller latency for the caller.</td>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Fully qualified name of a class that implements the <a href="https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html">ExceptionHandler</a> interface, which will be notified when an exception occurs while logging messages.
+<p>Fully qualified name of a class that implements the <a href="https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html"><code>ExceptionHandler</code></a> interface, which will be notified when an exception occurs while logging messages.
 The class needs to have a public zero-argument constructor.</p>
 </div>
 <div class="paragraph">
@@ -1156,7 +1156,7 @@ The RingBuffer will be pre-allocated at first use and will never grow or shrink 
 </tbody>
 </table>
 <div class="paragraph">
-<p>Specifies the <a href="https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/WaitStrategy.html">WaitStrategy</a> used by the LMAX Disruptor.</p>
+<p>Specifies the <a href="https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/WaitStrategy.html"><code>WaitStrategy</code></a> used by the LMAX Disruptor.</p>
 </div>
 <div class="paragraph">
 <p>The value needs to be one of the predefined constants:</p>
@@ -1532,7 +1532,7 @@ In order to enable it for a certain logger, set its <a href="configuration.html#
 <div class="sectionbody">
 <div class="paragraph">
 <p>In order to handle exceptions that occur on the asynchronous thread, you can configure a custom
-<a href="https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html">ExceptionHandler&lt;T&gt;</a>.</p>
+<a href="https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html"><code>ExceptionHandler&lt;T&gt;</code></a>.</p>
 </div>
 <div class="paragraph">
 <p>The exact type of handler depends on the configuration mode:</p>
@@ -1551,7 +1551,7 @@ In order to enable it for a certain logger, set its <a href="configuration.html#
 </li>
 <li>
 <p>set its fully qualified class name as value of the
-<a href="systemproperties.html#log4j2.asyncLoggerExceptionHandler" class="xref page">log4j2.asyncLoggerExceptionHandler</a>
+<a href="systemproperties.html#log4j2.asyncLoggerExceptionHandler" class="xref page"><code>log4j2.asyncLoggerExceptionHandler</code></a>
 configuration property.</p>
 </li>
 </ul>
@@ -1570,7 +1570,7 @@ configuration property.</p>
 </li>
 <li>
 <p>set its fully qualified class name as value of the
-<a href="systemproperties.html#log4j2.asyncLoggerConfigExceptionHandler" class="xref page">log4j2.asyncLoggerConfigExceptionHandler</a>
+<a href="systemproperties.html#log4j2.asyncLoggerConfigExceptionHandler" class="xref page"><code>log4j2.asyncLoggerConfigExceptionHandler</code></a>
 configuration property.</p>
 </li>
 </ul>

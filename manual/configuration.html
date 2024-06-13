@@ -274,22 +274,22 @@
     <span class="nav-text">Related projects</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="/log4j/jakarta">Log4j Jakarta EE</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/jakarta">Log4j Jakarta EE</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="/log4j/jmx-gui">Log4j JMX GUI</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/jmx-gui">Log4j JMX GUI</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="/log4j/kotlin">Log4j Kotlin</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/kotlin">Log4j Kotlin</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="/log4j/scala">Log4j Scala</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/scala">Log4j Scala</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="/log4j/tools">Log4j Tools</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/tools">Log4j Tools</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="/log4j/transform">Log4j Transformation Tools</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/transform">Log4j Transformation Tools</a>
   </li>
 </ul>
   </li>
@@ -523,7 +523,7 @@ Files in the Log4j&#160;1 format are ignored by default.</p>
 <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/DefaultConfiguration.html"><code>DefaultConfiguration</code></a>
 and the <a href="status-logger.html" class="xref page">status logger</a> prints a warning.
 The default configuration prints all messages less specific than
-<a href="systemproperties.html#log4j2.level" class="xref page">log4j2.level</a>
+<a href="systemproperties.html#log4j2.level" class="xref page"><code>log4j2.level</code></a>
 to the console.</p>
 </li>
 </ol>
@@ -625,12 +625,12 @@ See <a href="webapp.html#configuration" class="xref page">Log4j
 <td class="content">
 <div class="paragraph">
 <p>It is also possible to override the location of the configuration file using the
-<a href="systemproperties.html#log4j2.configurationFile" class="xref page">log4j2.configurationFile</a>
+<a href="systemproperties.html#log4j2.configurationFile" class="xref page"><code>log4j2.configurationFile</code></a>
 configuration property.
 In this case, Log4j will guess the configuration file format from the provided configuration file extension or use the default configuration factory if the extension is unknown.</p>
 </div>
 <div class="paragraph">
-<p>See <a href="systemproperties.html#log4j2.configurationFile" class="xref page">log4j2.configurationFile</a> for details.</p>
+<p>See <a href="systemproperties.html#log4j2.configurationFile" class="xref page"><code>log4j2.configurationFile</code></a> for details.</p>
 </div>
 </td>
 </tr>
@@ -1656,7 +1656,7 @@ The table below summarizes the effects of each logger configuration:</p>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
 <li>
-<p><a href="systemproperties.html#log4j2.level" class="xref page">log4j2.level</a>,
+<p><a href="systemproperties.html#log4j2.level" class="xref page"><code>log4j2.level</code></a>,
 for <code>Root</code> and <code>AsyncRoot</code>,</p>
 </li>
 <li>
@@ -1713,7 +1713,7 @@ Log events that are more specific than this setting will be filtered out.</p>
 </div>
 <div class="paragraph">
 <p>See
-<a href="systemproperties.html#log4j2.contextSelector" class="xref page">log4j2.contextSelector</a>
+<a href="systemproperties.html#log4j2.contextSelector" class="xref page"><code>log4j2.contextSelector</code></a>
 for more details.</p>
 </div></div></td>
 </tr>
@@ -1722,8 +1722,7 @@ for more details.</p>
 <div class="paragraph">
 <p>Specifies whether Log4j is allowed to compute location information.
 If set to <code>false</code>, Log4j will not attempt to infer the location of the logging call unless said location was provided explicitly using one of the available
-<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/LogBuilder.html">LogBuilder
-.withLocation()</a>
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/LogBuilder.html"><code>LogBuilder#withLocation()</code></a>
 methods.</p>
 </div>
 <div class="paragraph">
@@ -2832,14 +2831,14 @@ appender.0.select.1.layout.type = JsonTemplateLayout</code></pre>
 <h3 id="CompositeConfiguration"><a class="anchor" href="#CompositeConfiguration"></a>Composite Configuration</h3>
 <div class="paragraph">
 <p>Log4j allows multiple configuration files to be used at the same time by specifying them as a list of comma-separated file paths or URLs in the
-<a href="systemproperties.html#log4j2.configurationFile" class="xref page">log4j2.configurationFile</a>
+<a href="systemproperties.html#log4j2.configurationFile" class="xref page"><code>log4j2.configurationFile</code></a>
 configuration property.</p>
 </div>
 <div class="paragraph">
 <p>These configuration files are merged into a single configuration file using
 <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy.html"><code>MergeStrategy</code></a>
 service that can be customized using the
-<a href="systemproperties.html#log4j2.mergeStrategy" class="xref page">log4j2.mergeStrategy</a>
+<a href="systemproperties.html#log4j2.mergeStrategy" class="xref page"><code>log4j2.mergeStrategy</code></a>
 configuration property.</p>
 </div>
 <div class="paragraph">

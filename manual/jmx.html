@@ -274,22 +274,22 @@
     <span class="nav-text">Related projects</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="/log4j/jakarta">Log4j Jakarta EE</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/jakarta">Log4j Jakarta EE</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="/log4j/jmx-gui">Log4j JMX GUI</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/jmx-gui">Log4j JMX GUI</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="/log4j/kotlin">Log4j Kotlin</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/kotlin">Log4j Kotlin</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="/log4j/scala">Log4j Scala</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/scala">Log4j Scala</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="/log4j/tools">Log4j Tools</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/tools">Log4j Tools</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="/log4j/transform">Log4j Transformation Tools</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/transform">Log4j Transformation Tools</a>
   </li>
 </ul>
   </li>
@@ -355,7 +355,7 @@ JMX support was enabled by default in Log4j 2 versions before 2.24.0.
 </div>
 <div class="paragraph">
 <p>To enable JMX support, set the
-<a href="systemproperties.html#log4j2.disableJmx" class="xref page">log4j2.disableJmx</a>
+<a href="systemproperties.html#log4j2.disableJmx" class="xref page"><code>log4j2.disableJmx</code></a>
 system property when starting the Java VM:</p>
 </div>
 <div class="paragraph">
@@ -368,14 +368,13 @@ system property when starting the Java VM:</p>
 <div class="sectionbody">
 <div class="paragraph">
 <p>To perform local monitoring you need to set the
-<a href="systemproperties.html#log4j2.disableJmx" class="xref page">log4j2
-.disableJmx</a>
+<a href="systemproperties.html#log4j2.disableJmx" class="xref page"><code>log4j2.disableJmx</code></a>
 system property to <code>false</code>.
 The JConsole tool that is included in the Java JDK can be
 used to monitor your application. Start JConsole by typing
 <code>$JAVA_HOME/bin/jconsole</code> in a command shell. For more details,
 see Oracle&#8217;s documentation at
-<a href="https://docs.oracle.com/javase/7/docs/technotes/guides/management/jconsole.html">how
+<a href="https://docs.oracle.com/javase/8/docs/technotes/guides/management/jconsole.html">how
 to use JConsole</a>.</p>
 </div>
 </div>
@@ -402,7 +401,7 @@ want to enable JMX RMI connections.</p>
 </div>
 <div class="paragraph">
 <p>For more details, see Oracle&#8217;s documentation at
-<a href="https://docs.oracle.com/javase/7/docs/technotes/guides/management/agent.html#gdenl">Remote
+<a href="https://docs.oracle.com/javase/8/docs/technotes/guides/management/agent.html#gdenl">Remote
 Monitoring and Management</a>.</p>
 </div>
 </div>
@@ -412,7 +411,7 @@ Monitoring and Management</a>.</p>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Be aware that RMI by default triggers a full GC every hour. See the
-<a href="https://docs.oracle.com/javase/7/docs/technotes/guides/rmi/sunrmiproperties.html">Oracle
+<a href="https://docs.oracle.com/javase/8/docs/technotes/guides/rmi/sunrmiproperties.html">Oracle
 documentation</a> for the <code>sun.rmi.dgc.server.gcInterval</code> and
 <code>sun.rmi.dgc.client.gcInterval</code> properties. The default value of both
 properties is 3600000 milliseconds (one hour). Before Java 6, it was one
