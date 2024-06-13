@@ -26,8 +26,8 @@
 * xref:manual/installation.adoc[]
 * xref:manual/architecture.adoc[]
 * xref:manual/api.adoc[API]
-* Configuration
-** xref:manual/configuration.adoc[Configuration file]
+* xref:manual/config-intro.adoc[]
+** xref:manual/configuration.adoc[]
 ** xref:manual/systemproperties.adoc[]
 ** xref:manual/customconfig.adoc[]
 ** xref:manual/appenders.adoc[]
