@@ -18,13 +18,13 @@
 = Scripts
 
 Log4j provides support for
-https://docs.oracle.com/javase/6/docs/technotes/guides/scripting/[JSR
+https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/scripting/[JSR
 223] scripting languages to be used in some of its components.
 
 [WARNING]
 ====
 In order to enable a scripting language, its name must be included in the
-xref:manual/systemproperties.adoc#log4j2.scriptEnableLanguages[log4j2.scriptEnableLanguages]
+xref:manual/systemproperties.adoc#log4j2.scriptEnableLanguages[`log4j2.scriptEnableLanguages`]
 configuration property.
 ====
 
@@ -109,11 +109,11 @@ include::example$manual/configuration/scripts.properties[lines=17..-1]
 == A special note on Beanshell
 
 JSR 223 scripting engines are supposed to identify that they support the
-https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/script/Compilable.html[Compilable]
+https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/script/Compilable.html[`Compilable`]
 interface if they support compiling their scripts.
 
 Beanshell does extend the `Compilable` interface, but an attempt to compile a script ends up in an
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/lang/Error.html[Error]
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/lang/Error.html[`Error`]
 being thrown.
 Log4j catches the throwable, but issues a warning in xref:manual/status-logger.adoc[].
 

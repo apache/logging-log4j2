@@ -76,9 +76,9 @@
 * xref:log4j-spring-cloud-config-client.adoc[]
 
 .Related projects
-* link:/log4j/jakarta[Log4j Jakarta EE]
-* link:/log4j/jmx-gui[Log4j JMX GUI]
-* link:/log4j/kotlin[Log4j Kotlin]
-* link:/log4j/scala[Log4j Scala]
-* link:/log4j/tools[Log4j Tools]
-* link:/log4j/transform[Log4j Transformation Tools]
+* {logging-services-url}/log4j/jakarta[Log4j Jakarta EE]
+* {logging-services-url}/log4j/jmx-gui[Log4j JMX GUI]
+* {logging-services-url}/log4j/kotlin[Log4j Kotlin]
+* {logging-services-url}/log4j/scala[Log4j Scala]
+* {logging-services-url}/log4j/tools[Log4j Tools]
+* {logging-services-url}/log4j/transform[Log4j Transformation Tools]

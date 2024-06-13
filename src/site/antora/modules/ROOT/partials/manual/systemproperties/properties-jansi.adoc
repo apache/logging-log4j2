@@ -19,7 +19,7 @@
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_SKIP_JANSI
+| Env. variable | `LOG4J_SKIP_JANSI`
 | Type          | `boolean`
 | Default value | `true`
 |===

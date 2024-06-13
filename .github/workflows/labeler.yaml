@@ -28,7 +28,7 @@ env:
     }}
   comment_user_type: >-
     ${{
-      github.event_type == 'issue_comment' &&
+      github.event_name == 'issue_comment' &&
       (
         contains(fromJSON('["COLLABORATOR","MEMBER","OWNER"]'), github.event.comment.author_association) && 'maintainer' || 'user'
       ) || null
@@ -47,15 +47,17 @@ jobs:
 
      - name: Print user type
        env:
+         EVENT_NAME: ${{ github.event_name }}
          ISSUE_USER_TYPE: ${{ env.issue_user_type }}
          COMMENT_USER_TYPE: ${{ env.comment_user_type }}
        run: |
-         echo "Issue created by: " $ISSUE_USER_TYPE
+         echo "Event name:" $EVENT_NAME
+         echo "Issue created by:" $ISSUE_USER_TYPE
          echo "Comment created by:" $COMMENT_USER_TYPE
 
      # The `waiting-for-maintainer` label needs to match with the one in `close-stale.yaml`!
      - name: Add `waiting-for-maintainer` label
-       if: github.event_type == 'issues' && env.issue_user_type == 'user' || env.comment_user_type == 'user'
+       if: github.event_name == 'issues' && env.issue_user_type == 'user' || env.comment_user_type == 'user'
        env:
          ISSUE: ${{ github.event.issue.html_url }}
          GH_TOKEN: ${{ github.token }}

@@ -163,7 +163,7 @@ For plugin builders, the names of the fields will be used by default if no name 
 === Plugin factory attribute type converters
 
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/convert/TypeConverter.html[`TypeConverter`]s are a certain group of plugins for converting ``String``s read from configuration file elements into the types used in plugin factory attributes.
-Other plugins can already be injected via xref:#PluginElement[the `@PluginElement` annotation]; now, any type supported by ``TypeConverter``s can be used in a `@PluginAttribute`-annotated factory attribute.
+Other plugins can already be injected via <<PluginElement,the `@PluginElement` annotation>>; now, any type supported by ``TypeConverter``s can be used in a `@PluginAttribute`-annotated factory attribute.
 
 Conversion of enum types are supported on demand and do not require custom ``TypeConverter``s.
 A large number of built-in Java classes (`int`, `long`, `BigDecimal`, etc.) are already supported; see link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/convert/TypeConverters.html[`TypeConverters`] for a more exhaustive listing.

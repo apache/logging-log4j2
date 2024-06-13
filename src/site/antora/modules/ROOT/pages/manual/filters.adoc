@@ -1053,7 +1053,7 @@ This section will guide you on how to create custom ones.
 
 [NOTE]
 ====
-While xref:#collection[the predefined filter collection] should address most common use cases, you might find yourself needing to implement a custom one.
+While <<collection,the predefined filter collection>> should address most common use cases, you might find yourself needing to implement a custom one.
 If this is the case, we really appreciate it if you can *share your use case in a {logging-services-url}/support.html[user support channel]*.
 ====
 
@@ -1075,5 +1075,5 @@ While annotating your filter with `@Plugin`, you need to make sure that
 
 You can check out following files for examples:
 
-* {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/filter/MarkerFilter.java[`MarkerFilter.java`] – xref:#MarkerFilter[] matching on markers associated with the effective `LogEvent` in the context
-* {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/filter/RegexFilter.java[`RegexFilter.java`] – xref:#RegexFilter[] matching on the message associated with the effective `LogEvent` in the context
+* {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/filter/MarkerFilter.java[`MarkerFilter.java`] – <<MarkerFilter>> matching on markers associated with the effective `LogEvent` in the context
+* {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/filter/RegexFilter.java[`RegexFilter.java`] – <<RegexFilter>> matching on the message associated with the effective `LogEvent` in the context

@@ -19,12 +19,12 @@
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_ASYNC_LOGGER_EXCEPTION_HANDLER
-| Type          | https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html[Class<? extends ExceptionHandler<? super RingBufferLogEvent>>]
-| Default value | link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerDefaultExceptionHandler.html[AsyncLoggerDefaultExceptionHandler]
+| Env. variable | `LOG4J_ASYNC_LOGGER_EXCEPTION_HANDLER`
+| Type          | https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html[`Class<? extends ExceptionHandler<? super RingBufferLogEvent>>`]
+| Default value | link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerDefaultExceptionHandler.html[`AsyncLoggerDefaultExceptionHandler`]
 |===
 
-Fully qualified name of a class that implements the https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html[ExceptionHandler] interface, which will be notified when an exception occurs while logging messages.
+Fully qualified name of a class that implements the https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html[`ExceptionHandler`] interface, which will be notified when an exception occurs while logging messages.
 The class needs to have a public zero-argument constructor.
 
 The default exception handler will print a message and stack trace to the standard error output stream.
@@ -34,7 +34,7 @@ The default exception handler will print a message and stack trace to the standa
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_ASYNC_LOGGER_RING_BUFFER_SIZE
+| Env. variable | `LOG4J_ASYNC_LOGGER_RING_BUFFER_SIZE`
 | Type          | `int`
 | Default value | `256 &times; 1024`
 
@@ -46,19 +46,19 @@ Make this value large enough to deal with bursts of activity.
 The minimum size is 128.
 The RingBuffer will be pre-allocated at first use and will never grow or shrink during the life of the system.
 
-When the application is logging faster than the underlying appender can keep up with for a long enough time to fill up the queue, the behaviour is determined by the link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[AsyncQueueFullPolicy].
+When the application is logging faster than the underlying appender can keep up with for a long enough time to fill up the queue, the behaviour is determined by the link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[`AsyncQueueFullPolicy`].
 
 [id=log4j2.asyncLoggerWaitStrategy]
 == `log4j2.asyncLoggerWaitStrategy`
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_ASYNC_LOGGER_WAIT_STRATEGY
+| Env. variable | `LOG4J_ASYNC_LOGGER_WAIT_STRATEGY`
 | Type          | predefined constant
 | Default value | `Timeout`
 |===
 
-Specifies the https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/WaitStrategy.html[WaitStrategy] used by the LMAX Disruptor.
+Specifies the https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/WaitStrategy.html[`WaitStrategy`] used by the LMAX Disruptor.
 
 The value needs to be one of the predefined constants:
 
@@ -84,7 +84,7 @@ This wait strategy is xref:manual/garbagefree.adoc[garbage free].
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_ASYNC_LOGGER_TIMEOUT
+| Env. variable | `LOG4J_ASYNC_LOGGER_TIMEOUT`
 | Type          | `int`
 | Default value | `10`
 |===
@@ -96,7 +96,7 @@ Timeout in milliseconds of `Timeout` wait strategy (see <<log4j2.asyncLoggerWait
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_ASYNC_LOGGER_SLEEP_TIME_NS
+| Env. variable | `LOG4J_ASYNC_LOGGER_SLEEP_TIME_NS`
 | Type          | `long`
 | Default value | `100`
 |===
@@ -108,7 +108,7 @@ Sleep time in nanoseconds of `Sleep` wait strategy (see <<log4j2.asyncLoggerWait
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_ASYNC_LOGGER_RETRIES
+| Env. variable | `LOG4J_ASYNC_LOGGER_RETRIES`
 | Type          | `int`
 | Default value | `200`
 |===
@@ -120,7 +120,7 @@ Total number of spin cycles and `Thread.yield()` cycles of `Sleep` (see <<log4j2
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL
+| Env. variable | `LOG4J_ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL`
 | Type          | `boolean`
 | Default value | `true`
 |===
@@ -136,10 +136,10 @@ Setting this value to `false` may lead to very high CPU utilization when the asy
 [cols="1h,5"]
 |===
 | Env. variable
-| LOG4J_ASYNC_LOGGER_HREAD_NAME_STRATEGY
+| `LOG4J_ASYNC_LOGGER_HREAD_NAME_STRATEGY`
 
 | Type
-| link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/ThreadNameCachingStrategy.html[ThreadNameCachingStrategy] (enumeration)
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/ThreadNameCachingStrategy.html[`ThreadNameCachingStrategy`] (enumeration)
 
 | Default value
 | `UNCACHED` for JRE 8u102 or later,
@@ -148,9 +148,9 @@ Setting this value to `false` may lead to very high CPU utilization when the asy
 |===
 
 Specifies the
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/ThreadNameCachingStrategy.html[ThreadNameCachingStrategy]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/ThreadNameCachingStrategy.html[`ThreadNameCachingStrategy`]
 to use to cache the result of https://docs.oracle
-.com/javase/{java-target-version}/docs/api/java/lang/Thread.html#getName--[Thread.getName()].
+.com/javase/{java-target-version}/docs/api/java/lang/Thread.html#getName--[`Thread#getName()`].
 
 This setting allows to cache the result of `Thread.getName()` calls and has two values:
 

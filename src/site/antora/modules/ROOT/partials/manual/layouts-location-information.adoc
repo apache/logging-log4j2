@@ -57,5 +57,5 @@ You can override the default behaviour in your asynchronous logger or asynchrono
 [NOTE]
 ====
 Even if a layout is configured not to **request** location information, it might use it if the information is already available.
-This is always the case if the location information is captured at build time using the link:/log4j/transform/latest/#log4j-transform-maven-plugin[Log4j Transform Maven Plugin].
+This is always the case if the location information is captured at build time using the {logging-services-url}/log4j/transform/latest/#log4j-transform-maven-plugin[Log4j Transform Maven Plugin].
 ====

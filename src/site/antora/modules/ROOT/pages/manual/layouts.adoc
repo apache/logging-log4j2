@@ -20,19 +20,19 @@
 An xref:manual/appenders.adoc[appender] uses a *layout* to encode a link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html[`LogEvent`] into a form that meets the needs of whatever will be consuming the log event.
 This page will try to answer following questions:
 
-* xref:#concerns[What are some common concerns shared by all predefined layouts?]
-* xref:#collection[Which layouts does Log4j provide?]
-* xref:#extending[How can you create custom layouts?]
+* <<concerns,What are some common concerns shared by all predefined layouts?>>
+* <<collection,Which layouts does Log4j provide?>>
+* <<extending,How can you create custom layouts?>>
 
 [#concerns]
 == Common concerns
 
-This section introduces you to some common concerns shared by almost all xref:#collection[predefined layouts] that you need to be aware of while using them.
+This section introduces you to some common concerns shared by almost all <<collection,predefined layouts>> that you need to be aware of while using them.
 
 [#charset]
 === Character encoding
 
-All xref:#collection[predefined layouts] produce `String` that eventually get converted into a `byte[]` using the https://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html[`Charset`] configured.
+All <<collection[predefined layouts] produce `String` that eventually get converted into a `byte>>` using the https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/charset/Charset.html[`Charset`] configured.
 While doing so, unless an explicit encoding configuration is stated, they use `UTF-8` by default.
 If you want all your log events to be formatted in a certain character encoding that is different from what the employed layout defaults to, make sure to configure the layout's character encoding as needed.
 
@@ -298,7 +298,7 @@ If `mapMessageExcludes` are also specified, this attribute will override them.
 |[[GELFLayout-messagePattern]] messagePattern
 |String
 |The pattern to use to format the `String`.
-A `messagePattern` and xref:#GELFLayout-patternSelector[`patternSelector`] cannot both be specified.
+A `messagePattern` and <<GELFLayout-patternSelector,`patternSelector`>> cannot both be specified.
 If both are present, the message pattern will be ignored and an error will be logged.
 If not supplied, only the text derived from the log message will be used.
 See xref:manual/pattern-layout.adoc[] for information on the pattern strings.
@@ -312,7 +312,7 @@ The default value is `false`.
 |[[GELFLayout-patternSelector]] patternSelector
 |xref:manual/pattern-layout.adoc#plugin-element-PatternSelector[PatternSelector]
 |The `PatternSelector` to use to format the `String`.
-A xref:#GELFLayout-messagePattern[`messagePattern`] and `patternSelector` cannot both be specified.
+A <<GELFLayout-messagePattern,`messagePattern`>> and `patternSelector` cannot both be specified.
 If both are present, the message pattern will be ignored and an error will be logged.
 If not supplied, only the text derived from the logging message will be used.
 See xref:manual/pattern-layout.adoc#plugin-element-PatternSelector[`PatternSelector`] for information on how to specify a `PatternSelector`.
@@ -419,13 +419,13 @@ For other valid values, refer to xref:manual/pattern-layout.adoc#converter-date[
 
 |locationInfo
 |boolean
-|If `true`, the xref:#LocationInformation[source location information] be included (defaults to `false`)
+|If `true`, the <<LocationInformation,source location information>> be included (defaults to `false`)
 
 |timezone
 |String
 |The time zone ID of the log event.
-If not specified, this layout uses the https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html#getDefault()[`TimeZone.getDefault()`] as the default.
-You can use time zone IDs supported by https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)[`TimeZone.getTimeZone(String)`].
+If not specified, this layout uses the https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/TimeZone.html#getDefault()[`TimeZone.getDefault()`] as the default.
+You can use time zone IDs supported by https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)[`TimeZone.getTimeZone(String)`].
 
 |title
 |String
@@ -440,7 +440,7 @@ You can use time zone IDs supported by https://docs.oracle.com/javase/8/docs/api
 [WARNING]
 ====
 JSON Layout is considered deprecated.
-It is succeeded by xref:#JSONTemplateLayout[] providing more capabilities and efficiency.
+It is succeeded by <<JSONTemplateLayout>> providing more capabilities and efficiency.
 ====
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-JsonLayout[📖 Plugin reference for `JsonLayout`]
@@ -571,7 +571,7 @@ Use with `eventEol=true` and `compact=true` to get one record per line.
 
 |locationInfo
 |boolean
-|If `true`, the appender includes the xref:#LocationInformation[source location information] in the generated JSON (defaults to `false`)
+|If `true`, the appender includes the <<LocationInformation,source location information>> in the generated JSON (defaults to `false`)
 
 |objectMessageAsJsonObject
 |boolean
@@ -736,7 +736,7 @@ Read more on xref:manual/pattern-layout.adoc[]...
 
 [NOTE]
 ====
-RFC 5424 obsoletes RFC 3164, implemented by xref:#SyslogLayout[].
+RFC 5424 obsoletes RFC 3164, implemented by <<SyslogLayout>>.
 ====
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-Rfc5424Layout[📖 Plugin reference for `Rfc5424Layout`]
@@ -837,7 +837,7 @@ This attribute only applies to RFC 5424 Syslog records.
 [#SerializedLayout]
 === Serialized Layout
 
-`SerializedLayout` encodes a log event using https://docs.oracle.com/javase/8/docs/platform/serialization/spec/protocol.html[Java Serialization].
+`SerializedLayout` encodes a log event using https://docs.oracle.com/javase/{java-target-version}/docs/platform/serialization/spec/protocol.html[Java Serialization].
 It accepts no configuration parameters.
 
 [WARNING]
@@ -857,7 +857,7 @@ This matches the same format used by {logging-services-url}/log4j/1.x[Log4j 1].
 
 [IMPORTANT]
 ====
-RFC 3164, implemented by Syslog Layout, is obsoleted by RFC 5424, implemented by xref:#RFC5424Layout[].
+RFC 3164, implemented by Syslog Layout, is obsoleted by RFC 5424, implemented by <<RFC5424Layout>>.
 ====
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-SyslogLayout[📖 Plugin reference for `SyslogLayout`]
@@ -955,7 +955,7 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 ----
 ====
 
-XML Layout configuration is identical to the one of xref:#JSONLayout[], with following exceptions:
+XML Layout configuration is identical to the one of <<JSONLayout>>, with following exceptions:
 
 * The `header` and `footer` parameters are discarded
 * If `complete=true`, each log event will be encoded into a well-formed XML document, such that:
@@ -996,7 +996,7 @@ runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:{jackson-ve
 This layout is planned to be removed in the next major release!
 
 YAML is a superset of JSON.
-*We strongly advise existing YAML Layout users to migrate to xref:#JSONTemplateLayout[]* providing more capabilities and efficiency.
+*We strongly advise existing YAML Layout users to migrate to <<JSONTemplateLayout>>* providing more capabilities and efficiency.
 ====
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-YamlLayout[📖 Plugin reference for `YamlLayout`]
@@ -1049,7 +1049,7 @@ source:
 ----
 ====
 
-YAML Layout configuration is identical to the one of xref:#JSONLayout[], with following exceptions:
+YAML Layout configuration is identical to the one of <<JSONLayout>>, with following exceptions:
 
 * The `header` defaults to an empty string
 * The `footer` defaults to an empty string
@@ -1086,7 +1086,7 @@ This section will guide you on how to create custom ones.
 
 [NOTE]
 ====
-While xref:#collection[the predefined layout collection] should address most common use cases, you might find yourself needing to implement a custom one.
+While <<collection,the predefined layout collection>> should address most common use cases, you might find yourself needing to implement a custom one.
 If this is the case, we really appreciate it if you can *share your use case in a {logging-services-url}/support.html[user support channel]*.
 ====
 

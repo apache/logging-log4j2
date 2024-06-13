@@ -19,7 +19,7 @@
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_DISABLE_THREAD_CONTEXT
+| Env. variable | `LOG4J_DISABLE_THREAD_CONTEXT`
 | Type          | `boolean`
 | Default value | `false`
 |===
@@ -31,7 +31,7 @@ If `true`, the `ThreadContext` stack and map are disabled.
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_DISABLE_THREAD_CONTEXT_STACK
+| Env. variable | `LOG4J_DISABLE_THREAD_CONTEXT_STACK`
 | Type          | `boolean`
 | Default value | `false`
 |===
@@ -43,7 +43,7 @@ If `true`, the `ThreadContext` stack is disabled.
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_DISABLE_THREAD_CONTEXT_MAP
+| Env. variable | `LOG4J_DISABLE_THREAD_CONTEXT_MAP`
 | Type          | `boolean`
 | Default value | `false`
 |===
@@ -58,10 +58,10 @@ If `true`, the `ThreadContext` map is disabled.
 [cols="1h,5"]
 |===
 | Env. variable
-| LOG4J_THREAD_CONTEXT_MAP
+| `LOG4J_THREAD_CONTEXT_MAP`
 
 | Type
-| link:../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html[Class<? extends ThreadContextMap>]
+| link:../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html[`Class<? extends ThreadContextMap>`]
 or predefined constant
 
 | Default value
@@ -71,7 +71,7 @@ or predefined constant
 |===
 
 Fully specified class name of a custom
-link:../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html[ThreadContextMap]
+link:../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html[`ThreadContextMap`]
 implementation class or one of the predefined constants:
 
 NoOp:: to disable the thread context,
@@ -86,7 +86,7 @@ GarbageFree:: a garbage-free implementation.
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_IS_THREAD_CONTEXT_MAP_INHERITABLE
+| Env. variable | `LOG4J_IS_THREAD_CONTEXT_MAP_INHERITABLE`
 | Type          | `boolean`
 | Default value | `false`
 |===
@@ -94,7 +94,7 @@ GarbageFree:: a garbage-free implementation.
 If `true` uses an `InheritableThreadLocal` to copy the thread context map to newly created threads.
 
 Note that, as explained in
-http://docs.oracle.com/javase/6/docs/api/java/util/concurrent/Executors.html#privilegedThreadFactory()[Java's `Executors#privilegedThreadFactory()`], when you are dealing with _privileged threads_, thread context might not get propagated completely.
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/concurrent/Executors.html#privilegedThreadFactory()[Java's `Executors#privilegedThreadFactory()`], when you are dealing with _privileged threads_, thread context might not get propagated completely.
 
 // tag::gcfree[]
 
@@ -103,7 +103,7 @@ http://docs.oracle.com/javase/6/docs/api/java/util/concurrent/Executors.html#pri
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_GARBAGEFREE_THREAD_CONTEXT_MAP
+| Env. variable | `LOG4J_GARBAGEFREE_THREAD_CONTEXT_MAP`
 | Default value | `false`
 |===
 

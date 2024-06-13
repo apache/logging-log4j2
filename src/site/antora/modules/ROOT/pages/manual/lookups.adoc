@@ -58,7 +58,7 @@ resolve the variable for each event. Note that the pattern
 The DateLookup is somewhat unusual from the other lookups as it doesn't
 use the key to locate an item. Instead, the key can be used to specify a
 date format string that is valid for
-http://docs.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html[SimpleDateFormat].
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/text/SimpleDateFormat.html[`SimpleDateFormat`].
 The current date, or the date associated with the current log event will
 be formatted as specified.
 
@@ -276,7 +276,7 @@ For example:
 
 As of Log4j 2.15.1 JNDI operations require that `log4j2.enableJndi=true` be set as a system property or the
 corresponding environment variable for this lookup to function. See the
-xref:manual/systemproperties.adoc#log4j2.enableJndiLookup[log4j2.enableJndiLookup] system property.
+xref:manual/systemproperties.adoc#log4j2.enableJndiLookup[`log4j2.enableJndiLookup`] system property.
 
 The JndiLookup allows variables to be retrieved via JNDI. By default the
 key will be prefixed with java:comp/env/, however if the key contains a
@@ -310,7 +310,7 @@ acquire the JVM arguments.
 Use the prefix `jvmrunargs` to access JVM arguments.
 
 See the Javadocs for
-https://docs.oracle.com/javase/8/docs/api/java/lang/management/RuntimeMXBean.html#getInputArguments--[java.lang.management.RuntimeMXBean.getInputArguments()].
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/lang/management/RuntimeMXBean.html#getInputArguments--[`java.lang.management.RuntimeMXBean.getInputArguments()`].
 
 *Java's JMX module is not available on Android or on Google App Engine.*
 
@@ -443,7 +443,7 @@ The MapLookup serves several purposes.
 1.  Provide the base for Properties declared in the configuration file.
 2.  Retrieve values from MapMessages in LogEvents.
 3.  Retrieve values set with
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/MapLookup.html#setMainArguments%28java.lang.String%5B%5D%29[MapLookup.setMainArguments(String[])]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/MapLookup.html#setMainArguments%28java.lang.String%5B%5D%29[`MapLookup.setMainArguments(String[])`]
 
 The first item simply means that the MapLookup is used to substitute
 properties that are defined in the configuration file. These variables
@@ -585,7 +585,7 @@ values it will also return the name portion of the id (not including the
 enterprise number) and the type field. The main difference between the
 example below and the example for MapMessage is that the "type" is an
 attribute of the
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html[StructuredDataMessage]
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html[`StructuredDataMessage`]
 while "type" would have to be an item in the Map in a MapMessage.
 
 [source,xml]
@@ -717,7 +717,7 @@ This section will guide you on how to create custom ones.
 
 [NOTE]
 ====
-While xref:#collection[the predefined lookup collection] should address most common use cases, you might find yourself needing to implement a custom one.
+While <<collection,the predefined lookup collection>> should address most common use cases, you might find yourself needing to implement a custom one.
 If this is the case, we really appreciate it if you can *share your use case in a {logging-services-url}/support.html[user support channel]*.
 ====
 
@@ -737,5 +737,5 @@ While annotating your lookup with `@Plugin`, you need to make sure that
 
 You can check out following files for examples:
 
-* {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/lookup/DateLookup.java[`LowerLookup.java`] – xref:#LowerLookup[] lower-cases its input
-* {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/lookup/EventLookup.java[`EventLookup.java`] – xref:#EventLookup[] extracts specified fields from the effective `LogEvent` in the context
+* {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/lookup/DateLookup.java[`LowerLookup.java`] – <<LowerLookup>> lower-cases its input
+* {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/lookup/EventLookup.java[`EventLookup.java`] – <<EventLookup>> extracts specified fields from the effective `LogEvent` in the context

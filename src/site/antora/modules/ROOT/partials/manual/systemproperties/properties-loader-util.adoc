@@ -19,7 +19,7 @@
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_IGNORE_TCL
+| Env. variable | `LOG4J_IGNORE_TCL`
 | Type          | `boolean`
 | Default value | `false`
 |===
