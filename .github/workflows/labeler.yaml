@@ -24,13 +24,13 @@ on:
 env:
   issue_user_type: >-
     ${{
-      contains(fromJSON('["COLLABORATOR","MEMBER","OWNER"]'), github.event.issue.author_association) && 'maintainer' || 'user'
+      contains(fromJSON('["COLLABORATOR","CONTRIBUTOR","MEMBER","OWNER"]'), github.event.issue.author_association) && 'maintainer' || 'user'
     }}
   comment_user_type: >-
     ${{
       github.event_name == 'issue_comment' &&
       (
-        contains(fromJSON('["COLLABORATOR","MEMBER","OWNER"]'), github.event.comment.author_association) && 'maintainer' || 'user'
+        contains(fromJSON('["COLLABORATOR","CONTRIBUTOR","MEMBER","OWNER"]'), github.event.comment.author_association) && 'maintainer' || 'user'
       ) || null
     }}
 
