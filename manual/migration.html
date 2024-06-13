@@ -165,6 +165,9 @@
   </li>
 </ul>
   </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="migration.html">Migrating from Log4j 2</a>
+  </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="0">
@@ -185,9 +188,6 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../faq.html">F.A.Q.</a>
-  </li>
-  <li class="nav-item is-current-page" data-depth="1">
-    <a class="nav-link" href="migration.html">Migrating from Log4j 2</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../migrate-from-logback.html">Migrating from Logback</a>
@@ -264,7 +264,7 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">Home</a></li>
-    <li>Resources</li>
+    <li><a href="index.html">Manual</a></li>
     <li><a href="migration.html">Migrating from Log4j 2</a></li>
   </ul>
 </nav>
@@ -276,8 +276,372 @@
 </aside>
 <article class="doc">
 <h1 class="page">Migrating from Log4j 2</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
 <div class="paragraph">
-<p>TODO</p>
+<p>If you are migrating from Log4j 1, check the
+<a href="https://logging.apache.org/log4j/2.x/manual/migration.html">Migrating from Log4j 1</a>
+guide in the Log4j 2 manual.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Since Log4j 3 uses Log4j 2 API as logging API, no code changes should be necessary for most users.</p>
+</div>
+<div class="paragraph">
+<p>In order to migrate to Log4j 3, you only need to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#runtime-dependencies">update your dependencies</a>,</p>
+</li>
+<li>
+<p>if you use
+<a href="systemproperties.html" class="xref page">configuration properties</a>
+to fine tune the Log4j 3 backend,
+<a href="#properties-configuration-file">check your configuration properties</a>,</p>
+</li>
+<li>
+<p>if you used the Java properties configuration format, <a href="#properties-configuration-file">migrate your configuration file</a>,</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="runtime-dependencies"><a class="anchor" href="#runtime-dependencies"></a>Runtime dependencies</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Log4j 2 Core contains many features that depend on optional runtime dependencies.
+In order to comply with the Java Platform Module System and help users managing those dependencies, some features were moved to separate Maven modules.
+This change has the following advantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>you don&#8217;t need to consult the documentation to find out, which third-party libraries are necessary to use a specific feature: adding the appropriate Log4j 3 artifact is enough.</p>
+</li>
+<li>
+<p>Log4j 3 does not have optional dependencies, so third-party libraries used by Log4j will be upgraded <strong>automatically</strong> by your dependency management tool, when you upgrade Log4j.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The following <code>log4j-core</code> features were moved to their own modules or were removed:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. New Log4j 3 modules</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Log4j 2 feature</th>
+<th class="tableblock halign-left valign-top">Log4j 3 module</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appenders.html#BlockingQueueFactory" class="xref page">Asynchronous appender: JCTools-based queue</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-jctools"><code>log4j-jctools</code></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="async.html" class="xref page">Asynchronous logger</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-async-logger"><code>log4j-async-logger</code></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/manual/appenders.html#CassandraAppender">Cassandra appender</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>removed without replacement</em>
+<sup class="footnote" id="_footnote_removal">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/manual/appenders.html#NoSQLAppenderApacheCouchDB">CouchDB appender</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>removed without replacement</em> <sup class="footnoteref">[<a class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="configuration.html#configuration-with-properties" class="xref page">Configuration file: Java properties format</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-config-properties"><code>log4j-config-properties</code></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="configuration.html#configuration-with-yaml" class="xref page">Configuration file: YAML format</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-config-yaml"><code>log4j-config-yaml</code></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="layouts.html#CSVLayouts" class="xref page">CSV layouts</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-csv"><code>log4j-csv</code></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/manual/layouts.html#GELFLayout">GELF layout</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>removed without replacement</em> <sup class="footnoteref">[<a class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appenders.html#JDBCAppender" class="xref page">JDBC appender</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-jdbc"><code>log4j-jdbc</code></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appenders.html#JDBCPoolingDriver" class="xref page">JDBC appender: DBCP 2 connection source</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-jdbc-dbcp2"><code>log4j-jdbc-dbcp2</code></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appenders.html#JDBCDataSource" class="xref page">JDBC appender: JNDI connection source</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-jndi"><code>log4j-jndi</code></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/manual/appenders.html#JeroMQAppender">JeroMQ appender</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">external
+<a href="https://github.com/fbacchella/loghublog4j2#zmqappender"><code>loghublog4j2</code> maintained by Fabrice Bacchella</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/manual/appenders.html#JMSAppender">JMS appender: Java EE version</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>removed without replacement</em> <sup class="footnoteref">[<a class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="lookups.html#JndiLookup" class="xref page">JNDI lookup</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-jndi"><code>log4j-jndi</code></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/manual/appenders.html#JPAAppender">JPA appender</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>removed without replacement</em> <sup class="footnoteref">[<a class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/log4j-taglib.html">JSP Tag library</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>removed without replacement</em> <sup class="footnoteref">[<a class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/manual/appenders.html#KafkaAppender">Kafka appender</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>removed without replacement</em> <sup class="footnoteref">[<a class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="lookups.html#KubernetesLookup" class="xref page">Kubernetes lookup</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">external
+<a href="https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md"><code>kubernetes-log4j</code> maintained by Fabric8</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="scripts.html" class="xref page">Scripting support</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-script"><code>log4j-script</code></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/manual/webapp.html">Servlet application support: Java EE version</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>removed without replacement</em> <sup class="footnoteref">[<a class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/manual/appenders.html#SMTPAppender">SMTP appender: Java EE version</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>removed without replacement</em> <sup class="footnoteref">[<a class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/manual/lookups.html#_spring_boot_lookup">Spring Boot lookup</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">integrated into
+<a href="https://central.sonatype.com/artifact/org.springframework.boot/spring-boot"><code>spring-boot</code></a>
+version 3.0.0 or later</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="system-properties"><a class="anchor" href="#system-properties"></a>Migrate configuration properties</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order to support per-logger context configuration properties, the configuration properties sub-system of Log4j has been rewritten and the naming convention of properties have changed.
+To help you with the migration process a backward compatibility system has been implemented, which translates Log4j 2 property names to their Log4j 3 equivalents.</p>
+</div>
+<div class="paragraph">
+<p>If you use configuration properties to finely tune Log4j Core, make sure that:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>either you use the naming convention from the
+<a href="systemproperties.html" class="xref page">Log4j 3 configuration properties</a>
+page (recommended),</p>
+</li>
+<li>
+<p>or you use the naming convention from the
+<a href="https://logging.apache.org/log4j/2.x/manual/systemproperties.html">Log4j 2 configuration properties</a>
+page.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Most Log4j 3 configuration properties sources are <strong>case-sensitive</strong> and fuzzy matching is not applied to those sources.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="properties-configuration-file"><a class="anchor" href="#properties-configuration-file"></a>Java properties configuration file format</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Java properties configuration file format in Log4j 3 has been rewritten to use
+<a href="https://github.com/FasterXML/jackson-dataformats-text/blob/2.18/properties/README.md"><code>jackson-dataformat-properties</code></a>
+to convert Java properties into the native JSON configuration file format.
+See
+<a href="https://github.com/FasterXML/jackson-dataformats-text/blob/2.18/properties/README.md">Jackson documentation</a>
+for more details on the conversion.</p>
+</div>
+<div class="paragraph">
+<p>The only significant changes between the Log4j 2 and Log4j 3 properties format are:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>As an alternative to using the <code>type</code> configuration attribute to specify the <strong>plugin type</strong> of a Log4j component, you can append the plugin type to the prefix of the parent component.
+For example, instead of:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = Console
+appender.0.name = CONSOLE
+appender.1.type = File
+appender.1.name = MAIN
+appender.1.fileName = logs/main.log
+appender.2.type = File
+appender.2.name = DEBUG_LOG
+appender.2.fileName = logs/debug.log</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>you can write:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">Appenders.Console.name = CONSOLE
+Appenders.File[1].name = MAIN
+Appenders.File[1].fileName = logs/main.log
+Appenders.File[2].name = DEBUG_LOG
+Appenders.File[2].fileName = logs/debug.log</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>The
+<a href="https://logging.apache.org/log4j/2.x/manual/configuration.html#java-properties-features">Java properties format specific quirks</a>
+are no longer recognized, which means that:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The following direct children of <code>Configuration</code> need to use the same prefix as the other formats:</p>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>You need to replace the <code>appender</code> prefix with <code>Appenders</code>,</p>
+</li>
+<li>
+<p>You need to replace the <code>logger</code> prefix with <code>Loggers</code>,</p>
+</li>
+<li>
+<p>You need to replace the <code>script</code> prefix with <code>Scripts</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Properties that start with <code>property</code>, which are used for
+<a href="configuration.html#property-substitution" class="xref page">property substitution</a>,
+need to be rewritten from:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">property.&lt;key&gt; = &lt;value&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>to</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">Properties.Property[&lt;n&gt;].key = &lt;key&gt;
+Properties.Property[&lt;n&gt;].value = &lt;value&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>where <code>&lt;n&gt;</code> is an increasing positive integer.</p>
+</div>
+</li>
+<li>
+<p>Properties that start with <code>customLevel</code>, which are used to define custom levels, need to be rewritten from:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">customLevel.&lt;name&gt; = &lt;intLevel&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>to</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">CustomLevels.CustomLevel[&lt;n&gt;].name = &lt;name&gt;
+CustomLevels.CustomLevel[&lt;n&gt;].intLevel = &lt;intLevel&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>where <code>&lt;n&gt;</code> is an increasing positive integer.</p>
+</div>
+</li>
+<li>
+<p>You need to replace the <code>rootLogger</code> prefix with <code>Loggers.Root</code>.</p>
+</li>
+<li>
+<p>The shorthand notation:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">rootLogger = INFO, APPENDER1, APPENDER2</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>must be rewritten into:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">Loggers.Root.level = INFO
+Loggers.Root.AppenderRef[1] = APPENDER1
+Loggers.Root.AppenderRef[2] = APPENDER2</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>All the prefixes of the form:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">logger.&lt;name&gt;.appenderRef.&lt;id&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>where <code>&lt;name&gt;</code> and <code>&lt;id&gt;</code> are arbitrary, must be rewritten to</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">Loggers.Logger[&lt;n&gt;].AppenderRef[&lt;m&gt;]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>where <code>&lt;n&gt;</code> and <code>&lt;m&gt;</code> are increasing positive integers.</p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnotedef_1">
+<a href="#_footnoteref_1">1</a>. If you are using these components, and you can help us to maintain them, please contact us on our <a href="/support.html">support channels</a>.
+</div>
 </div>
 </article>
   </div>

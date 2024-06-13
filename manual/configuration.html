@@ -165,6 +165,9 @@
   </li>
 </ul>
   </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="migration.html">Migrating from Log4j 2</a>
+  </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="0">
@@ -185,9 +188,6 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../faq.html">F.A.Q.</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="migration.html">Migrating from Log4j 2</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../migrate-from-logback.html">Migrating from Logback</a>
@@ -656,6 +656,8 @@ They are <strong>matched by type</strong> against the list of nested components 
 <div class="paragraph">
 <p>Since XML was the original configuration format developed, the mapping from configuration nodes and XML elements is trivial:</p>
 </div>
+<div id="configuration-with-xml" class="exampleblock">
+<div class="content">
 <div class="ulist">
 <ul>
 <li>
@@ -669,6 +671,11 @@ They are <strong>matched by type</strong> against the list of nested components 
 </li>
 <li>
 <p>Each configuration nested element is represented by a nested XML element.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -687,9 +694,6 @@ offer a better alternative and allow users to use a more concise syntax.</p>
 </td>
 </tr>
 </table>
-</div>
-</li>
-</ul>
 </div>
 </div>
 <div id="_tabs_4_json--panel" class="tabpanel" aria-labelledby="_tabs_4_json">
