@@ -14,26 +14,8 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-[id=configuration]
-= Configuration
-
-Logging is a standard method for monitoring the health of an application and diagnosing problems that may arise within it. 
-Even moderately sized applications can contain thousands of logging statements. 
-
-To decide which of these statements will be logged and where, users need to configure Log4j Core in one of two ways:
-
-* through a <<configuration-file>>.
-Since version 2.0, the configuration file format has been considered part of the public API and has remained stable across significant version upgrades.
-
-* through xref:manual/customconfig.adoc[Programmatic Configuration], which provides a larger spectrum of possible customizations but might require code changes during version upgrades.
-
-[NOTE]
-====
-To prevent a chicken-and-egg problem, users can only supply some configuration options (e.g., the configuration file location) through xref:manual/systemproperties.adoc[configuration properties].
-====
-
 [#configuration-file]
-== Configuration file
+= Configuration file
 
 Users can configure Log4j Core using different file formats.
 The `log4j-core` artifact includes XML, JSON, YAML, and Java properties formats factories. 
@@ -51,7 +33,7 @@ To enable partial support for old configuration formats, see xref:manual/migrati
 ====
 
 [id=automatic-configuration]
-=== [[AutomaticConfiguration]] Configuration file location
+== [[AutomaticConfiguration]] Configuration file location
 
 Upon initialization of a new logger context, Log4j assigns it a context name and scans the following **classpath** locations for a configuration file:
 
@@ -118,7 +100,7 @@ See xref:manual/systemproperties.adoc#log4j2.configurationFile[`log4j2.configura
 ====
 
 [id=configuration-syntax]
-=== [[ConfigurationSyntax]] Syntax
+== [[ConfigurationSyntax]] Syntax
 
 The Log4j runtime is composed of xref:manual/plugins.adoc[plugins], which are like beans in the Spring Framework and Java EE.
 Appenders, layouts, filters, configuration loaders, and similar components are all accessed as plugins.
@@ -252,7 +234,7 @@ Nested components use the assigned ID for sorting purposes only.
 See also <<format-specific-notes>> for exceptions to the rules above.
 
 [id=main-configuration-elements]
-=== Main configuration elements
+== Main configuration elements
 
 Log4j Core's logging pipeline is quite complex (see xref:manual/architecture.adoc[Architecture]), but most users only require these elements:
 
@@ -345,7 +327,7 @@ Using the above configuration, the list of appenders that will be used for each 
 |===
 
 [id=additional-configuration-elements]
-=== Additional configuration elements
+== Additional configuration elements
 
 A Log4j Core configuration file can also contain these configuration elements:
 
@@ -374,14 +356,14 @@ Scripts are a container for JSR 223 scripts that users can use in other Log4j co
 For details, see xref:manual/scripts.adoc[Scripts configuration].
 
 [id=global-configuration-attributes]
-=== Global configuration attributes
+== Global configuration attributes
 
 The main `Configuration` element has a set of attributes that can be used to tune how the configuration file is used.
 The principal attributes are listed below.
 See xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Configuration[Plugin reference] for a complete list.
 
 [id=configuration-attribute-monitorInterval]
-==== [[AutomaticReconfiguration]] `monitorInterval`
+=== [[AutomaticReconfiguration]] `monitorInterval`
 
 [cols="1h,5"]
 |===
@@ -407,7 +389,7 @@ Between the two operations log events might be lost.
 ====
 
 [id=configuration-attribute-status]
-==== `status`
+=== `status`
 
 [cols="1h,5"]
 |===
@@ -425,12 +407,12 @@ Since version `2.24.0`, this attribute is deprecated and should be replaced with
 ====
 
 [id=configuration-elements-filters]
-==== Filters
+=== Filters
 
 See xref:manual/filters.adoc#filters[Filters] for additional filtering capabilities that can be applied to the global configuration object.
 
 [id=configuring-loggers]
-=== [[Loggers]] Loggers
+== [[Loggers]] Loggers
 
 Log4j 2 contains multiple types of logger configurations that can be added to the `Loggers` element of the configuration:
 
@@ -543,7 +525,7 @@ h| Appenders used
 In the following part of this section, we explain in detail all the available options for logger configurations:
 
 [id=logger-attributes-name]
-==== `name`
+=== `name`
 
 [cols="1h,5"]
 |===
@@ -559,7 +541,7 @@ Specifies the name of the logger configuration.
 Since loggers are usually named using fully qualified class names, this value usually contains the fully qualified name of a class or a package.
 
 [id=logger-attributes-additivity]
-==== [[Additivity]] `additivity`
+=== [[Additivity]] `additivity`
 
 [cols="1h,5"]
 |===
@@ -572,7 +554,7 @@ If `true` (default), all the messages this logger receives will also be transmit
 xref:manual/architecture.adoc#logger-hierarchy[parent logger]).
 
 [id=logger-attributes-level]
-==== `level`
+=== `level`
 
 [cols="1h,5"]
 |===
@@ -594,7 +576,7 @@ Log events that are more specific than this setting will be filtered out.
 See also xref:manual/filters.adoc#filters[Filters] if you require additional filtering.
 
 [id=logger-attributes-includeLocation]
-==== `includeLocation`
+=== `includeLocation`
 
 [cols="1h,5"]
 |===
@@ -621,14 +603,14 @@ methods.
 See xref:manual/layouts.adoc#LocationInformation[Location information] for more details.
 
 [id=logger-elements-appenderrefs]
-==== Appender references
+=== Appender references
 
 Loggers use appender references to list the appenders to deliver log events.
 
 See <<configuring-appenderrefs>> below for more details.
 
 [id=logger-elements-properties]
-==== Additional context properties
+=== Additional context properties
 
 Loggers can emit additional context data that will be integrated with other context data sources such as xref:manual/thread-context.adoc[ThreadContext].
 
@@ -674,12 +656,12 @@ include::example$manual/configuration/logger-properties.properties[tag=loggers]
 ====
 
 [id=logger-elements-filters]
-==== Filters
+=== Filters
 
 See xref:manual/filters.adoc#filters[Filters] for additional filtering capabilities that can be applied to a logger configuration.
 
 [id=configuring-appenderrefs]
-=== Appender references
+== Appender references
 
 Many Log4j components, such as loggers, use appender references to designate which appenders will be used to deliver their events.
 
@@ -688,7 +670,7 @@ Unlike in Log4j 1, where appender references were simple pointers, in Log4j 2, t
 Appender references can have the following configuration attributes and elements:
 
 [id=appenderref-attributes-name]
-==== `ref`
+=== `ref`
 
 [cols="1h,5"]
 |===
@@ -698,7 +680,7 @@ Appender references can have the following configuration attributes and elements
 Specifies the name of the appender to use.
 
 [id=appenderref-attributes-level]
-==== `level`
+=== `level`
 
 [cols="1h,5"]
 |===
@@ -709,12 +691,12 @@ Specifies the level threshold that a log event must have to be logged.
 Log events that are more specific than this setting will be filtered out.
 
 [id=appenderrefs-elements-filters]
-==== Filters
+=== Filters
 
 See xref:manual/filters.adoc#filters[Filters] for additional filtering capabilities that can be applied to a logger configuration.
 
 [id=property-substitution]
-=== [[PropertySubstitution]]Property substitution
+== [[PropertySubstitution]]Property substitution
 
 Log4j provides a simple and extensible mechanism to reuse values in the configuration file using `$\{name}` expressions, such as those used in Bash, Ant or Maven.
 
@@ -917,7 +899,7 @@ Therefore, the value of the `logging.file` property will be:
 =====
 
 [id=lazy-property-substitution]
-==== Lazy property substitution
+=== Lazy property substitution
 
 For most attributes, property substitution is performed only once at **configuration time**, but there are two categories of exceptions to this rule:
 
@@ -974,7 +956,7 @@ Therefore, the dollar `$` sign needs to be escaped.
 <2> All the attributes inside the `File` element have a **deferred** evaluation, therefore they need only one `$` sign.
 
 [id=arbiters]
-=== [[Arbiters]] Arbiters
+== [[Arbiters]] Arbiters
 
 While property substitution allows using the same configuration file in multiple deployment environments, sometimes changing the values of configuration attributes is not enough.
 
@@ -1069,7 +1051,7 @@ include::example$manual/configuration/arbiters-select.properties[tag=select]
 <2> Otherwise, a JSON template layout will be used.
 
 [#CompositeConfiguration]
-=== Composite Configuration
+== Composite Configuration
 
 Log4j allows multiple configuration files to be used at the same time by specifying them as a list of comma-separated file paths or URLs in the
 xref:manual/systemproperties.adoc#log4j2.configurationFile[`log4j2.configurationFile`]
@@ -1105,18 +1087,18 @@ Appender references on a logger are aggregated, and those in later configuration
 The strategy merges filters on loggers using the rule above.
 
 [id=format-specific-notes]
-=== Format specific notes
+== Format specific notes
 
 [id=xml-features]
-==== XML format
+=== XML format
 
 [id=xml-global-configuration-attributes]
-===== Global configuration attributes
+==== Global configuration attributes
 
 The XML format supports the following additional attributes on the `Configuration` element.
 
 [id=configuration-attribute-schema]
-====== `schema`
+===== `schema`
 
 [cols="1h,5"]
 |===
@@ -1127,7 +1109,7 @@ The XML format supports the following additional attributes on the `Configuratio
 Specifies the path to a classpath resource containing an XML schema.
 
 [id=configuration-attribute-strict]
-====== `strict`
+===== `strict`
 
 [cols="1h,5"]
 |===
@@ -1141,7 +1123,7 @@ If set to `true,` all configuration files will be checked against the XML schema
 This setting also enables "XML strict mode" and allows one to specify an element's **plugin type** through a `type` attribute instead of the tag name.
 
 [id=xinclude]
-===== [[XInlcude]] XInclude
+==== [[XInlcude]] XInclude
 
 XML configuration files can include other files with
 https://www.w3.org/TR/xinclude/[XInclude].
@@ -1170,7 +1152,7 @@ include::example$manual/configuration/xinclude-loggers.xml[lines=1;18..-1]
 ----
 
 [id=java-properties-features]
-==== Java properties format
+=== Java properties format
 
 [TIP]
 ====
