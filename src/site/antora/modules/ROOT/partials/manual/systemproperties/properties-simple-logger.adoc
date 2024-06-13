@@ -31,7 +31,7 @@ Default level for new logger instances.
 
 [cols="1h,5"]
 |===
-| Env. variable | LOG4J_SIMPLELOG_&lt;LOGGER_NAME&gt;_LEVEL
+| Env. variable | `LOG4J_SIMPLELOG_&lt;loggerName&gt;_LEVEL`
 | Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[`Level`]
 | Default value | value of <<log4j2.simplelogLevel>>
 |===
@@ -92,7 +92,7 @@ If `true`, a timestamp is included in each log message.
 [cols="1h,5"]
 |===
 | Env. variable | `LOG4J_SIMPLELOG_DATE_TIME_FORMAT`
-| Type          | https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html[`SimpleDateFormat`] pattern
+| Type          | https://docs.oracle.com/javase/{java-target-version}/docs/api/java/text/SimpleDateFormat.html[`SimpleDateFormat`] pattern
 | Default value | `yyyy/MM/dd HH:mm:ss:SSS zzz`
 |===
 

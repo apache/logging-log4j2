@@ -168,14 +168,14 @@ xref:manual/api.adoc[Log4j API] contains several features to facilitate garbage-
 === Parameterized message arguments
 
 The `Logger` interface contains methods for parameterized messages up to 10 arguments.
-Logging more than 10 parameters creates https://docs.oracle.com/javase/8/docs/technotes/guides/language/varargs.html[vararg arrays].
+Logging more than 10 parameters creates https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/language/varargs.html[vararg arrays].
 
 [#api-encode-custom-object]
 === Encoding custom objects
 
 When a message parameter contains an unknown type by the layout, it will encode by calling `toString()` on these objects.
 Most objects don't have garbage-free `toString()` methods.
-Objects themselves can implement their own garbage-free encoders by either extending from https://docs.oracle.com/javase/8/docs/api/java/lang/CharSequence.html[Java's `CharSequence`] or link:../javadoc/log4j-api/org/apache/logging/log4j/util/StringBuilderFormattable.html[Log4j's `StringBuilderFormattable`].
+Objects themselves can implement their own garbage-free encoders by either extending from https://docs.oracle.com/javase/{java-target-version}/docs/api/java/lang/CharSequence.html[Java's `CharSequence`] or link:../javadoc/log4j-api/org/apache/logging/log4j/util/StringBuilderFormattable.html[Log4j's `StringBuilderFormattable`].
 
 [#codeImpact]
 === Avoiding autoboxing

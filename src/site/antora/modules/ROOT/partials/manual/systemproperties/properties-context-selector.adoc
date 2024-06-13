@@ -44,8 +44,7 @@ Creates a single logger context and xref:manual/async.adoc[asynchronous loggers]
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ClassLoaderContextSelector.html[`org.apache.logging.log4j.core.selector.ClassLoaderContextSelector`]::
 Creates a separate logger context per classloader and synchronous loggers
 
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerContextSelector.html[org.apache.logging.log4j
-.core.async.AsyncLoggerContextSelector]::
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerContextSelector.html[`org.apache.logging.log4j.core.async.AsyncLoggerContextSelector`]::
 Creates a separate logger context per classloader and xref:manual/async.adoc[asynchronous loggers]
 
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/osgi/BundleContextSelector.html[`org.apache.logging.log4j.core.osgi.BundleContextSelector`]::

@@ -63,7 +63,7 @@ Upon initialization of a new logger context, Log4j assigns it a context name and
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/DefaultConfiguration.html[`DefaultConfiguration`]
 and the xref:manual/status-logger.adoc[status logger] prints a warning.
 The default configuration prints all messages less specific than
-xref:manual/systemproperties.adoc#log4j2.level[log4j2.level]
+xref:manual/systemproperties.adoc#log4j2.level[`log4j2.level`]
 to the console.
 
 [CAUTION]
@@ -110,11 +110,11 @@ See xref:manual/webapp.adoc#configuration[Log4j
 [NOTE]
 ====
 It is also possible to override the location of the configuration file using the
-xref:manual/systemproperties.adoc#log4j2.configurationFile[log4j2.configurationFile]
+xref:manual/systemproperties.adoc#log4j2.configurationFile[`log4j2.configurationFile`]
 configuration property.
 In this case, Log4j will guess the configuration file format from the provided configuration file extension or use the default configuration factory if the extension is unknown.
 
-See xref:manual/systemproperties.adoc#log4j2.configurationFile[log4j2.configurationFile] for details.
+See xref:manual/systemproperties.adoc#log4j2.configurationFile[`log4j2.configurationFile`] for details.
 ====
 
 [id=configuration-syntax]
@@ -582,7 +582,7 @@ xref:manual/architecture.adoc#logger-hierarchy[parent logger]).
 
 | Default value
 a|
-* xref:manual/systemproperties.adoc#log4j2.level[log4j2.level],
+* xref:manual/systemproperties.adoc#log4j2.level[`log4j2.level`],
 for `Root` and `AsyncRoot`,
 * inherited from the
 xref:manual/architecture.adoc#logger-hierarchy[parent logger],
@@ -610,14 +610,13 @@ a|
 ** `false` for `AsyncRoot` and `AsyncLogger`.
 
 See
-xref:manual/systemproperties.adoc#log4j2.contextSelector[log4j2.contextSelector]
+xref:manual/systemproperties.adoc#log4j2.contextSelector[`log4j2.contextSelector`]
 for more details.
 |===
 
 Specifies whether Log4j is allowed to compute location information.
 If set to `false`, Log4j will not attempt to infer the location of the logging call unless said location was provided explicitly using one of the available
-https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/LogBuilder.html[LogBuilder
-.withLocation()]
+https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/LogBuilder.html[`LogBuilder#withLocation()`]
 methods.
 
 See xref:manual/layouts.adoc#LocationInformation[Location information] for more details.
@@ -1074,13 +1073,13 @@ include::example$manual/configuration/arbiters-select.properties[tag=select]
 === Composite Configuration
 
 Log4j allows multiple configuration files to be used at the same time by specifying them as a list of comma-separated file paths or URLs in the
-xref:manual/systemproperties.adoc#log4j2.configurationFile[log4j2.configurationFile]
+xref:manual/systemproperties.adoc#log4j2.configurationFile[`log4j2.configurationFile`]
 configuration property.
 
 These configuration files are merged into a single configuration file using
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy.html[`MergeStrategy`]
 service that can be customized using the
-xref:manual/systemproperties.adoc#log4j2.mergeStrategy[log4j2.mergeStrategy]
+xref:manual/systemproperties.adoc#log4j2.mergeStrategy[`log4j2.mergeStrategy`]
 configuration property.
 
 The default merge strategy will merge the files using the following rules:

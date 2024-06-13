@@ -20,11 +20,11 @@
 [cols="1h,5"]
 |===
 | Env. variable | `LOG4J_ASYNC_LOGGER_EXCEPTION_HANDLER`
-| Type          | https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html[Class<? extends ExceptionHandler<? super RingBufferLogEvent>>]
+| Type          | https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html[`Class<? extends ExceptionHandler<? super RingBufferLogEvent>>`]
 | Default value | link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerDefaultExceptionHandler.html[`AsyncLoggerDefaultExceptionHandler`]
 |===
 
-Fully qualified name of a class that implements the https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html[ExceptionHandler] interface, which will be notified when an exception occurs while logging messages.
+Fully qualified name of a class that implements the https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html[`ExceptionHandler`] interface, which will be notified when an exception occurs while logging messages.
 The class needs to have a public zero-argument constructor.
 
 The default exception handler will print a message and stack trace to the standard error output stream.
@@ -58,7 +58,7 @@ When the application is logging faster than the underlying appender can keep up 
 | Default value | `Timeout`
 |===
 
-Specifies the https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/WaitStrategy.html[WaitStrategy] used by the LMAX Disruptor.
+Specifies the https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/WaitStrategy.html[`WaitStrategy`] used by the LMAX Disruptor.
 
 The value needs to be one of the predefined constants:
 
@@ -150,7 +150,7 @@ Setting this value to `false` may lead to very high CPU utilization when the asy
 Specifies the
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/ThreadNameCachingStrategy.html[`ThreadNameCachingStrategy`]
 to use to cache the result of https://docs.oracle
-.com/javase/{java-target-version}/docs/api/java/lang/Thread.html#getName--[Thread.getName()].
+.com/javase/{java-target-version}/docs/api/java/lang/Thread.html#getName--[`Thread#getName()`].
 
 This setting allows to cache the result of `Thread.getName()` calls and has two values:
 

@@ -33,7 +33,7 @@ JMX support is disabled by default.
 NOTE: JMX support was enabled by default in Log4j 2 versions before 2.24.0.
 
 To enable JMX support, set the
-xref:manual/systemproperties.adoc#log4j2.disableJmx[log4j2.disableJmx]
+xref:manual/systemproperties.adoc#log4j2.disableJmx[`log4j2.disableJmx`]
 system property when starting the Java VM:
 
 `log4j2.disableJmx=false`
@@ -42,14 +42,13 @@ system property when starting the Java VM:
 == Local Monitoring and Management
 
 To perform local monitoring you need to set the
-xref:manual/systemproperties.adoc#log4j2.disableJmx[log4j2
-.disableJmx]
+xref:manual/systemproperties.adoc#log4j2.disableJmx[`log4j2.disableJmx`]
 system property to `false`.
 The JConsole tool that is included in the Java JDK can be
 used to monitor your application. Start JConsole by typing
 `$JAVA_HOME/bin/jconsole` in a command shell. For more details,
 see Oracle's documentation at
-https://docs.oracle.com/javase/7/docs/technotes/guides/management/jconsole.html[how
+https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/management/jconsole.html[how
 to use JConsole].
 
 [#Remote]
@@ -68,14 +67,14 @@ In the property above, `portNum` is the port number through which you
 want to enable JMX RMI connections.
 
 For more details, see Oracle's documentation at
-https://docs.oracle.com/javase/7/docs/technotes/guides/management/agent.html#gdenl[Remote
+https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/management/agent.html#gdenl[Remote
 Monitoring and Management].
 
 [#RMI_GC]
 == RMI impact on Garbage Collection
 
 Be aware that RMI by default triggers a full GC every hour. See the
-https://docs.oracle.com/javase/7/docs/technotes/guides/rmi/sunrmiproperties.html[Oracle
+https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/rmi/sunrmiproperties.html[Oracle
 documentation] for the `sun.rmi.dgc.server.gcInterval` and
 `sun.rmi.dgc.client.gcInterval` properties. The default value of both
 properties is 3600000 milliseconds (one hour). Before Java 6, it was one

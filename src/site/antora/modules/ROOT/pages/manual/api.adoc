@@ -159,7 +159,7 @@ Some common ones are accessible through convenient factory methods, which we wil
 === Formatter logger
 
 The `Logger` instance returned by default replaces the occurrences of `{}` placeholders with the `toString()` output of the associated parameter.
-If you need more control over how the parameters are formatted, you can also use the http://docs.oracle.com/javase/6/docs/api/java/util/Formatter.html#syntax[`java.util.Formatter`] format strings by obtaining your `Logger` using link:../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#getFormatterLogger(java.lang.Class)[`LogManager#getFormatterLogger()`]:
+If you need more control over how the parameters are formatted, you can also use the https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/Formatter.html#syntax[`java.util.Formatter`] format strings by obtaining your `Logger` using link:../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#getFormatterLogger(java.lang.Class)[`LogManager#getFormatterLogger()`]:
 
 [source,java]
 ----
@@ -205,7 +205,7 @@ xref:manual/resource-logger.adoc[Read more on resource loggers...]
 [#event-logger]
 === Event logger
 
-link:../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html[`EventLogger`] provides a simple way to log structured events conforming with the `STRCUTURED-DATA` format defined in https://tools.ietf.org/html/rfc5424[RFC 5424 (The Syslog Protocol)].
+link:../javadoc/log4j-api/org/apache/logging/log4j/EventLogger.html[`EventLogger`] provides a simple way to log structured events conforming with the `STRCUTURED-DATA` format defined in https://tools.ietf.org/html/rfc5424[RFC 5424 (The Syslog Protocol)].
 
 xref:manual/eventlogging.adoc[Read more on event loggers...]
 
@@ -324,7 +324,7 @@ xref:manual/scoped-context.adoc[Read more on Scoped Context...]
 [#thread-context]
 === Thread Context
 
-Just like https://docs.oracle.com/javase/8/docs/api/java/lang/ThreadLocal.html[Java's `ThreadLocal`], _Thread Context_ facilitates associating information with the executing thread and making this information accessible to the rest of the logging system.
+Just like https://docs.oracle.com/javase/{java-target-version}/docs/api/java/lang/ThreadLocal.html[Java's `ThreadLocal`], _Thread Context_ facilitates associating information with the executing thread and making this information accessible to the rest of the logging system.
 Thread Context offers both
 
 * map-structured – referred to as _Thread Context Map_ or _Mapped Diagnostic Context (MDC)_

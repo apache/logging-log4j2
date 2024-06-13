@@ -65,7 +65,7 @@ Under the hood these methods use different Log4j plugins, but also share a
 === Making all loggers asynchronous
 
 This is the simplest to configure and gives the best performance: to make all logger asynchronous, **all** you need to set the
-xref:manual/systemproperties.adoc#log4j2.contextSelector[log4j2.contextSelector]
+xref:manual/systemproperties.adoc#log4j2.contextSelector[`log4j2.contextSelector`]
 property to one of the asynchronous logger context selectors:
 
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/BasicAsyncLoggerContextSelector.html[`org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector`]::
@@ -102,7 +102,7 @@ See xref:manual/systemproperties.adoc#properties-async-logger[asynchronous logge
 [TIP]
 ====
 You can place the selected value of the
-xref:manual/systemproperties.adoc#log4j2.contextSelector[log4j2.contextSelector] and other configuration properties in a `log4j2.component.properties` file at the root of your application's classpath.
+xref:manual/systemproperties.adoc#log4j2.contextSelector[`log4j2.contextSelector`] and other configuration properties in a `log4j2.component.properties` file at the root of your application's classpath.
 
 See xref:manual/systemproperties.adoc#property-sources[Property Sources] for more details.
 ====
@@ -114,7 +114,7 @@ Synchronous and asynchronous loggers can be combined in a single configuration.
 This gives you more flexibility at the cost of a slight loss in performance (compared to making all loggers asynchronous).
 
 In order to use this configuration, you need to keep the
-xref:manual/systemproperties.adoc#log4j2.contextSelector[log4j2.contextSelector] at its default value and use one of the
+xref:manual/systemproperties.adoc#log4j2.contextSelector[`log4j2.contextSelector`] at its default value and use one of the
 `AsyncRoot` and `AsyncLogger` configuration elements to designate the loggers that you want to be asynchronous.
 
 A configuration that mixes asynchronous loggers might look like:
@@ -233,7 +233,7 @@ In order to enable it for a certain logger, set its xref:manual/configuration.ad
 == Exception handler
 
 In order to handle exceptions that occur on the asynchronous thread, you can configure a custom
-https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html[ExceptionHandler<T>].
+https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html[`ExceptionHandler<T>`].
 
 The exact type of handler depends on the configuration mode:
 
@@ -243,7 +243,7 @@ If all the loggers are asynchronous you need to:
 +
 * implement an link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/RingBufferLogEvent.html[`ExceptionHandler<? super RingBufferLogEvent>`]
 * set its fully qualified class name as value of the
-xref:manual/systemproperties.adoc#log4j2.asyncLoggerExceptionHandler[log4j2.asyncLoggerExceptionHandler]
+xref:manual/systemproperties.adoc#log4j2.asyncLoggerExceptionHandler[`log4j2.asyncLoggerExceptionHandler`]
 configuration property.
 
 Mixed synchronous/asynchronous::
@@ -253,5 +253,5 @@ If you use a mix of synchronous and asynchronous loggers you need to:
 * implement a
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerConfigDisruptor.Log4jEventWrapper.html[`ExceptionHandler<? super AsyncLoggerConfigDisruptor.Log4jEventWrapper>`]
 * set its fully qualified class name as value of the
-xref:manual/systemproperties.adoc#log4j2.asyncLoggerConfigExceptionHandler[log4j2.asyncLoggerConfigExceptionHandler]
+xref:manual/systemproperties.adoc#log4j2.asyncLoggerConfigExceptionHandler[`log4j2.asyncLoggerConfigExceptionHandler`]
 configuration property.

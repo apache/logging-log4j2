@@ -37,7 +37,7 @@ See xref:manual/webapp.adoc#use-jndi-context-selector[Web application] for more 
 | Default value | `false`
 |===
 
-When `true`, a Log4j JDBC Appender can use JNDI to retrieve a https://docs.oracle.com/javase/8/docs/api/javax/sql/DataSource.html[`DataSource`] using the `java:` protocol.
+When `true`, a Log4j JDBC Appender can use JNDI to retrieve a https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/sql/DataSource.html[`DataSource`] using the `java:` protocol.
 
 [id=log4j2.enableJndiJms]
 == `log4j2.enableJndiJms`

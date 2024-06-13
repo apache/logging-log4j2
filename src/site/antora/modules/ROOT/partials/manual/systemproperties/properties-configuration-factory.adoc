@@ -36,7 +36,7 @@ Log4j will attempt to use the provided configuration factory before any other fa
 [cols="1h,5"]
 |===
 | Env. variable | `LOG4J_CONFIGURATION_FILE`
-| Type          | Comma-separated list of https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[Path]s or https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/URI.html[`URI`]s
+| Type          | Comma-separated list of https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[`Path`]s or https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/URI.html[`URI`]s
 | Default value | xref:manual/configuration.adoc#AutomaticConfiguration[automatically detected]
 |===
 

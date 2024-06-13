@@ -230,7 +230,7 @@ This performs a function similar to <<converter-replace,the `replace` converter>
 
 It supports following attributes:
 
-`regex`:: A https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html[Java-compliant regular expression] to match the resulting string
+`regex`:: A https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/regex/Pattern.html[Java-compliant regular expression] to match the resulting string
 
 `replacement`:: The string to replace any matched substrings with
 
@@ -389,7 +389,7 @@ d{pattern}
 date{pattern}
 ----
 
-The date conversion specifier may be followed by a set of braces containing a date and time pattern string per https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html[`SimpleDateFormat`].
+The date conversion specifier may be followed by a set of braces containing a date and time pattern string per https://docs.oracle.com/javase/{java-target-version}/docs/api/java/text/SimpleDateFormat.html[`SimpleDateFormat`].
 The predefined _named_ formats are:
 
 [%header,cols="2m,3m"]
@@ -443,7 +443,7 @@ The predefined _named_ formats are:
 |1351866842781
 |===
 
-You can also use a set of braces containing a time zone id per https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)[`java.util.TimeZone#getTimeZone(String)`].
+You can also use a set of braces containing a time zone id per https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)[`java.util.TimeZone#getTimeZone(String)`].
 If no date format specifier is given then the `DEFAULT` format is used.
 
 You can also define custom date formats, see following examples:

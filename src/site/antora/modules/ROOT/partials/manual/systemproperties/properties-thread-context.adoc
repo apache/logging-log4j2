@@ -94,7 +94,7 @@ GarbageFree:: a garbage-free implementation.
 If `true` uses an `InheritableThreadLocal` to copy the thread context map to newly created threads.
 
 Note that, as explained in
-http://docs.oracle.com/javase/6/docs/api/java/util/concurrent/Executors.html#privilegedThreadFactory()[Java's `Executors#privilegedThreadFactory()`], when you are dealing with _privileged threads_, thread context might not get propagated completely.
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/concurrent/Executors.html#privilegedThreadFactory()[Java's `Executors#privilegedThreadFactory()`], when you are dealing with _privileged threads_, thread context might not get propagated completely.
 
 // tag::gcfree[]
 

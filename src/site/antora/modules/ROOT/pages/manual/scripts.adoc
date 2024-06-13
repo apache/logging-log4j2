@@ -18,13 +18,13 @@
 = Scripts
 
 Log4j provides support for
-https://docs.oracle.com/javase/6/docs/technotes/guides/scripting/[JSR
+https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/scripting/[JSR
 223] scripting languages to be used in some of its components.
 
 [WARNING]
 ====
 In order to enable a scripting language, its name must be included in the
-xref:manual/systemproperties.adoc#log4j2.scriptEnableLanguages[log4j2.scriptEnableLanguages]
+xref:manual/systemproperties.adoc#log4j2.scriptEnableLanguages[`log4j2.scriptEnableLanguages`]
 configuration property.
 ====
 

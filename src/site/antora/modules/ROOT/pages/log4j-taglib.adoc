@@ -38,7 +38,7 @@ You may need to do something similar on other containers if they skip scanning L
 
 == Usage
 
-In accordance with the link:javadoc/log4j-api/org/apache/logging/log4j/Logger.html[Logger] API, this tag library has tags to support the following logging calls: "catching", "entry", "exit", "log", "trace", "debug", "info", "warn", "error", and "fatal".
+In accordance with the link:javadoc/log4j-api/org/apache/logging/log4j/Logger.html[`Logger`] API, this tag library has tags to support the following logging calls: "catching", "entry", "exit", "log", "trace", "debug", "info", "warn", "error", and "fatal".
 The "trace" tag was not supported in Jakarta Commons Log Taglib.
 The "setLogger", "catching", "entry", and "trace" tags are new to this library.
 This tag library also supports the conditional tag "ifEnabled" (new) and troubleshooting tag "dump" (existed in Jakarta Commons Log Taglib).

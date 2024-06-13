@@ -17,7 +17,7 @@
 
 = Thread Context
 
-Just like https://docs.oracle.com/javase/8/docs/api/java/lang/ThreadLocal.html[Java's `ThreadLocal`], _Thread Context_ facilitates associating information with the executing thread and making this information accessible to the rest of the logging system.
+Just like https://docs.oracle.com/javase/{java-target-version}/docs/api/java/lang/ThreadLocal.html[Java's `ThreadLocal`], _Thread Context_ facilitates associating information with the executing thread and making this information accessible to the rest of the logging system.
 Thread Context is one of many xref:manual/api.adoc#fish-tagging[_fish tagging_ capabilities provided by Log4j API].
 
 [#usage]

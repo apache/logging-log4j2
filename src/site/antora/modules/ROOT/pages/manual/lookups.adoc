@@ -52,7 +52,7 @@ resolve the variable for each event. Note that the pattern
 The DateLookup is somewhat unusual from the other lookups as it doesn't
 use the key to locate an item. Instead, the key can be used to specify a
 date format string that is valid for
-http://docs.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html[SimpleDateFormat].
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/text/SimpleDateFormat.html[`SimpleDateFormat`].
 The current date, or the date associated with the current log event will
 be formatted as specified.
 
@@ -269,7 +269,7 @@ For example:
 
 As of Log4j 2.15.1 JNDI operations require that `log4j2.enableJndi=true` be set as a system property or the
 corresponding environment variable for this lookup to function. See the
-xref:manual/systemproperties.adoc#log4j2.enableJndiLookup[log4j2.enableJndiLookup] system property.
+xref:manual/systemproperties.adoc#log4j2.enableJndiLookup[`log4j2.enableJndiLookup`] system property.
 
 The JndiLookup allows variables to be retrieved via JNDI. By default the
 key will be prefixed with java:comp/env/, however if the key contains a
@@ -303,7 +303,7 @@ acquire the JVM arguments.
 Use the prefix `jvmrunargs` to access JVM arguments.
 
 See the Javadocs for
-https://docs.oracle.com/javase/8/docs/api/java/lang/management/RuntimeMXBean.html#getInputArguments--[`java.lang.management.RuntimeMXBean.getInputArguments()`].
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/lang/management/RuntimeMXBean.html#getInputArguments--[`java.lang.management.RuntimeMXBean.getInputArguments()`].
 
 *Java's JMX module is not available on Android or on Google App Engine.*
 
