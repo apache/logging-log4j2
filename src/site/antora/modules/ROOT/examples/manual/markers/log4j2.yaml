@@ -20,17 +20,14 @@ Configuration:
       name: "SQL_LOG"
       PatternLayout:
         pattern: "%d{HH:mm:ss.SSS} (%marker) %m%n"
+  MarkerFilter: # <1>
+    marker: "SQL"
+    onMatch: "ACCEPT"
+    onMismatch: "NEUTRAL"
   Loggers:
     Root:
       level: "INFO"
-    # tag::logger[]
-    Logger:
-      name: "example"
-      level: "ALL" # <1>
       AppenderRef:
         ref: "SQL_LOG"
         MarkerFilter: # <2>
           marker: "SQL"
-          onMatch: "ACCEPT"
-          onMismatch: DENY
-    # end::logger[]
