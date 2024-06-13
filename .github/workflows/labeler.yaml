@@ -47,13 +47,17 @@ jobs:
 
      - name: Print user type
        env:
+         ISSUE_AUTHOR: ${{ github.event.issue.author_association }}
+         COMMENT_AUTHOR: ${{ github.event.comment.author_association }}
          EVENT_NAME: ${{ github.event_name }}
          ISSUE_USER_TYPE: ${{ env.issue_user_type }}
          COMMENT_USER_TYPE: ${{ env.comment_user_type }}
        run: |
          echo "Event name:" $EVENT_NAME
          echo "Issue created by:" $ISSUE_USER_TYPE
+         echo "Issue author association:" $ISSUE_AUTHOR
          echo "Comment created by:" $COMMENT_USER_TYPE
+         echo "Comment author association:" $COMMENT_AUTHOR
 
      # The `waiting-for-maintainer` label needs to match with the one in `close-stale.yaml`!
      - name: Add `waiting-for-maintainer` label
