@@ -493,7 +493,7 @@ The <code>log4j-core</code> artifact includes XML, JSON, YAML, and Java properti
 Files in the Log4j&#160;1 format are ignored by default.</p>
 </div>
 <div class="paragraph">
-<p>To enable partial support for old configuration formats, see <a href="migration.html#enabling-the-log4j-1-x-bridge" class="xref page">Enabling the Log4j&#160;1 bridge</a>.</p>
+<p>To enable partial support for old configuration formats, see <a href="migration.html#ConfigurationCompatibility" class="xref page">configuration compatibility</a>.</p>
 </div>
 </td>
 </tr>
@@ -1280,20 +1280,14 @@ If set to <code>0</code>, polling is disabled.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Log4j Core is designed with reliability in mind, unlike other logging backends.</p>
+<p>Log4j Core is designed with reliability in mind, which implies that the reconfiguration process can not lose any log event.
+In order to achieve this Log4j does <strong>not</strong> stop any appender until the new <code>Configuration</code> is active and <strong>reuses</strong> resources that are present in both the old and the new <code>Configuration</code>.</p>
 </div>
 <div class="paragraph">
-<p>During a reconfiguration process, no messages are lost.</p>
-</div>
-<div class="paragraph">
-<p>Unless the new configuration file removes an appender, the old ones work without interruption.</p>
-</div>
-<div class="paragraph">
-<p>Some changed appender options will be <strong>ignored</strong> during reconfiguration.
-For example, appenders that need to close resources, like the append mode used to open a file, will ignore such options.</p>
-</div>
-<div class="paragraph">
-<p>To modify these options during a reconfiguration, you also need to change the resource used by the appender (e.g., the file name used by a file appender).</p>
+<p>In order to guarantee reliability, Log4j <em>may</em> ignore the changes to some appender options, if they would cause log event loss.
+For example, changing the <code>append</code> option of a file appender, without changing the <code>fileName</code> option is not possible, since
+it would require closing the underlying file and reopening it with different options.
+Between the two operations log events might be lost.</p>
 </div>
 </td>
 </tr>
