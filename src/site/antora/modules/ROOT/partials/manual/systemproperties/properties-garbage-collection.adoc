@@ -19,7 +19,7 @@
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_GC_ENABLE_DIRECT_ENCODERS`
+| Env. variable | `LOG4J_GC_ENABLE_DIRECT_ENCODERS`
 | Type          | `boolean`
 | Default value | `true`
 |===
@@ -33,7 +33,7 @@ This prevents allocating temporary `String` and `char[]` instances.
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_GC_ENCODER_BYTE_BUFFER_SIZE`
+| Env. variable | `LOG4J_GC_ENCODER_BYTE_BUFFER_SIZE`
 | Type          | `int`
 | Default value | `8192`
 |===
@@ -50,7 +50,7 @@ This setting is only used if <<log4j.gc.enableDirectEncoders>> is set to `true`.
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_GC_ENCODER_CHAR_BUFFER_SIZE`
+| Env. variable | `LOG4J_GC_ENCODER_CHAR_BUFFER_SIZE`
 | Type          | `int`
 | Default value | `4096`
 |===
@@ -68,7 +68,7 @@ This setting is only used if <<log4j.gc.enableDirectEncoders>> is set to `true`.
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_GC_INITIAL_REUSABLE_MSG_SIZE`
+| Env. variable | `LOG4J_GC_INITIAL_REUSABLE_MSG_SIZE`
 | Type          | `int`
 | Default value | `128`
 |===
@@ -82,7 +82,7 @@ for formatting purposes.
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_GC_MAX_REUSABLE_MSG_SIZE`
+| Env. variable | `LOG4J_GC_MAX_REUSABLE_MSG_SIZE`
 | Type          | `int`
 | Default value | `518`
 |===
@@ -100,7 +100,7 @@ The default value allows is equal to `2 &times; (2 &times; log4j.initialReusable
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_GC_LAYOUT_STRING_BUILDER_MAX_SIZE`
+| Env. variable | `LOG4J_GC_LAYOUT_STRING_BUILDER_MAX_SIZE`
 | Type          | `int`
 | Default value | `2048`
 |===
@@ -115,7 +115,7 @@ link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html[`LogEvent
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_UNBOX_RINGBUFFER_SIZE`
+| Env. variable | `LOG4J_UNBOX_RINGBUFFER_SIZE`
 | Type          | `int`
 | Default value | `32`
 |===
@@ -133,7 +133,7 @@ This property specifies the maximum number of primitive arguments to a log messa
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_RECYCLER_CAPACITY`
+| Env. variable | `LOG4J_RECYCLER_CAPACITY`
 | Type          | `int`
 | Default value | `2C+1` (`C` denoting the number of available processors)
 |===
@@ -149,7 +149,7 @@ If an invalid capacity is provided (i.e., if the capacity is zero or negative), 
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_RECYCLER_FACTORY`
+| Env. variable | `LOG4J_RECYCLER_FACTORY`
 | Type          | `String`
 | Default value | `null`
 |===

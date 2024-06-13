@@ -21,7 +21,7 @@
 [cols="1h,5"]
 |===
 | Env. variable
- `LOG4J_AUTH_PROVIDER`
+| `LOG4J_AUTH_PROVIDER`
 
 | Type
 | link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/AuthorizationProvider.html[`Class<? extends AuthorizationProvider>`]
@@ -39,7 +39,7 @@ implementation to use with `http` and `https` URL protocols.
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_AUTH_BASIC_PASSWORD`
+| Env. variable | `LOG4J_AUTH_BASIC_PASSWORD`
 | Type          | `String`
 | Default value | `null`
 |===
@@ -54,7 +54,7 @@ If used in conjunction with <<log4j.auth.basic.passwordDecryptor>> the contents 
 [cols="1h,5"]
 |===
 | Env. variable
- `LOG4J_AUTH_BASIC_PASSWORD_DECRYPTOR`
+| `LOG4J_AUTH_BASIC_PASSWORD_DECRYPTOR`
 
 | Type
 | link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/PasswordDecryptor.html[`Class<? extends PasswordDecryptor>`]
@@ -74,7 +74,7 @@ If `null`, the literal value of the password is used.
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_AUTH_BASIC_USERNAME`
+| Env. variable | `LOG4J_AUTH_BASIC_USERNAME`
 | Type          | `String`
 | Default value | `null`
 |===

@@ -19,7 +19,7 @@
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_JNDI_ENABLE_CONTEXT_SELECTOR`
+| Env. variable | `LOG4J_JNDI_ENABLE_CONTEXT_SELECTOR`
 | Type          | `boolean`
 | Default value | `false`
 |===
@@ -34,7 +34,7 @@ for more details.
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_JNDI_ENABLE_JDBC`
+| Env. variable | `LOG4J_JNDI_ENABLE_JDBC`
 | Type          | `boolean`
 | Default value | `false`
 |===
@@ -46,7 +46,7 @@ When `true`, a Log4j JDBC Appender can use JNDI to retrieve a https://docs.oracl
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_JNDI_ENABLE_JMS`
+| Env. variable | `LOG4J_JNDI_ENABLE_JMS`
 | Type          | `boolean`
 | Default value | `false`
 |===
@@ -58,7 +58,7 @@ When `true`, a Log4j JMS Appender can use JNDI to retrieve the necessary compone
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_JNDI_ENABLE_LOOKUP`
+| Env. variable | `LOG4J_JNDI_ENABLE_LOOKUP`
 | Type          | `boolean`
 | Default value | `false`
 |===

@@ -30,7 +30,9 @@ content:
 
 runtime:
   log:
-    failure_level: error
+    # The JavaDoc of `org.apache.logging.log4j.core.net.Facility` does not compile
+    # Switch to `error` after `log4j-docgen` 0.10.0 is released.
+    failure_level: fatal
 
 asciidoc:
   attributes:

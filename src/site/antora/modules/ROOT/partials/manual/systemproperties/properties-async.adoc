@@ -19,7 +19,7 @@
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_ASYNC_FORMAT_MESSAGES_IN_BACKGROUND`
+| Env. variable | `LOG4J_ASYNC_FORMAT_MESSAGES_IN_BACKGROUND`
 | Type          | `boolean`
 | Default value | `false`
 |===
@@ -36,7 +36,7 @@ will be formatted on the async thread regardless of this setting.
 [cols="1h,5"]
 |===
 | Env. variable
- `LOG4J_ASYNC_QUEUE_FULL_POLICY_TYPE`
+| `LOG4J_ASYNC_QUEUE_FULL_POLICY_TYPE`
 
 | Type
 | link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[`Class<? extends AsyncQueueFullPolicy>`]
@@ -62,7 +62,7 @@ Discard:: when the queue is full, it drops the events whose level is equal or le
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_ASYNC_QUEUE_FULL_POLICY_DISCARD_THRESHOLD`
+| Env. variable | `LOG4J_ASYNC_QUEUE_FULL_POLICY_DISCARD_THRESHOLD`
 | Type          | {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level[`Level`]
 | Default value | `INFO`
 |===

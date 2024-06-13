@@ -792,11 +792,11 @@ will be used as is in the `INSERT` query without any escaping.
 Otherwise, the layout or pattern specified will be converted into the
 configured type and stored in that column.
 
-|immediateFail |boolean |false |When set to true, log events will not
+|immediateFail |boolean | When set to true, log events will not
 wait to try to reconnect and will fail immediately if the JDBC resources
 are not available. New in 2.11.2.
 
-|reconnectIntervalMillis |long |5000 |If set to a value greater than 0,
+|reconnectIntervalMillis |long |If set to a value greater than 0,
 after an error, the JDBCDatabaseManager will attempt to reconnect to the database
 after waiting the specified number of milliseconds. If the reconnect
 fails then an exception will be thrown (which can be caught by the

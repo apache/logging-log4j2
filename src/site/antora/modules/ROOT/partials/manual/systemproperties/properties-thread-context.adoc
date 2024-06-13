@@ -19,7 +19,7 @@
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_THREAD_CONTEXT_ENABLE`
+| Env. variable | `LOG4J_THREAD_CONTEXT_ENABLE`
 | Type          | `boolean`
 | Default value | `true`
 |===
@@ -31,7 +31,7 @@ If `false`, the `ThreadContext` stack and map are disabled.
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_THREAD_CONTEXT_ENABLE_STACK`
+| Env. variable | `LOG4J_THREAD_CONTEXT_ENABLE_STACK`
 | Type          | `boolean`
 | Default value | `true`
 |===
@@ -43,7 +43,7 @@ If `false`, the `ThreadContext` stack is disabled.
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_THREAD_CONTEXT_MAP_ENABLE`
+| Env. variable | `LOG4J_THREAD_CONTEXT_MAP_ENABLE`
 | Type          | `boolean`
 | Default value | `true`
 |===
@@ -58,7 +58,7 @@ If `false`, the `ThreadContext` map is disabled.
 [cols="1h,5"]
 |===
 | Env. variable
- `LOG4J_THREAD_CONTEXT_MAP_TYPE`
+| `LOG4J_THREAD_CONTEXT_MAP_TYPE`
 
 | Type
 | {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html[`Class<? extends ThreadContextMap>`]
@@ -84,7 +84,7 @@ GarbageFree:: a garbage-free implementation.
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_THREAD_CONTEXT_MAP_GARBAGE_FREE`
+| Env. variable | `LOG4J_THREAD_CONTEXT_MAP_GARBAGE_FREE`
 | Default value | `false`
 |===
 

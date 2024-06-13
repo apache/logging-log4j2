@@ -19,7 +19,7 @@
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_SCRIPT_ENABLE_LANGUAGES`
+| Env. variable | `LOG4J_SCRIPT_ENABLE_LANGUAGES`
 | Type          | Comma-separated list of https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/script/ScriptEngine.html[`ScriptEngine`] names
 | Default value | _empty_
 |===

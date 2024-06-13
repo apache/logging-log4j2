@@ -19,7 +19,7 @@
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_CONSOLE_JANSI_ENABLED`
+| Env. variable | `LOG4J_CONSOLE_JANSI_ENABLED`
 | Type          | `boolean`
 | Default value | `false`
 |===

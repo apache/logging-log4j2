@@ -20,7 +20,7 @@
 [cols="1h,5"]
 |===
 | Env. variable
- `LOG4J_LOG_EVENT_CONTEXT_DATA_TYPE`
+| `LOG4J_LOG_EVENT_CONTEXT_DATA_TYPE`
 
 | Type
 | {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html[`Class<? extends StringMap>`]
@@ -43,7 +43,7 @@ The implementation must have:
 [cols="1h,5"]
 |===
 | Env. variable
- `LOG4J_LOG_EVENT_CONTEXT_DATA_INJECTOR`
+| `LOG4J_LOG_EVENT_CONTEXT_DATA_INJECTOR`
 
 | Type
 | link:../javadoc/log4j-core/org/apache/logging/log4j/core/ContextDataInjector.html[`Class<? extends ContextDataInjector>`]
@@ -66,7 +66,7 @@ registered with `ServiceLoader`.
 [cols="1h,5"]
 |===
 | Env. variable
- `LOG4J_LOG_EVENT_FACTORY`
+| `LOG4J_LOG_EVENT_FACTORY`
 
 | Type
 | link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/LogEventFactory.html[`Class<? extends LogEventFactory>`]

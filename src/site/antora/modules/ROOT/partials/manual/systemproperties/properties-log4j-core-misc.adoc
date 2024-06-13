@@ -19,7 +19,7 @@
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_CONFIGURATION_CLOCK`
+| Env. variable | `LOG4J_CONFIGURATION_CLOCK`
 | Type          | link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/Clock.html[`Class<? extends Clock>`] or predefined constant
 | Default value | ``SystemClock``
 |===
@@ -50,7 +50,7 @@ for details.
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_CONFIGURATION_USE_PRECISE_CLOCK`
+| Env. variable | `LOG4J_CONFIGURATION_USE_PRECISE_CLOCK`
 | Type          | `boolean`
 | Default value | `false`
 |===
@@ -65,7 +65,7 @@ See also <<log4j.configuration.clock>>.
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_LOADER_IGNORE_TCCL`
+| Env. variable | `LOG4J_LOADER_IGNORE_TCCL`
 | Type          | `boolean`
 | Default value | `false`
 |===
@@ -80,7 +80,7 @@ Otherwise, an attempt is made to load classes with the current thread's context 
 [cols="1h,5"]
 |===
 | Env. variable
- `LOG4J_CONFIGURATION_RELIABILITY_STRATEGY`
+| `LOG4J_CONFIGURATION_RELIABILITY_STRATEGY`
 
 | Type
 | link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ReliabilityStrategy.html[`Class<? extends ReliabilityStrategy>`]
@@ -111,7 +111,7 @@ Uses read/write locks to prevent appenders from stopping while some threads are 
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_CONFIGURATION_WAIT_MILLIS_BEFORE_STOP_OLD_CONFIG`
+| Env. variable | `LOG4J_CONFIGURATION_WAIT_MILLIS_BEFORE_STOP_OLD_CONFIG`
 | Type          | `long`
 | Default value | `5000`
 |===
@@ -124,7 +124,7 @@ See <<log4j.configuration.reliabilityStrategy>>.
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_UUID_SEQUENCE`
+| Env. variable | `LOG4J_UUID_SEQUENCE`
 | Type          | `long`
 | Default value | `0`
 |===

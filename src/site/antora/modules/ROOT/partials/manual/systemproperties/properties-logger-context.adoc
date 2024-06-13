@@ -20,7 +20,7 @@
 [cols="1h,5"]
 |===
 | Env. variable
- `LOG4J_LOGGER_CONTEXT_SELECTOR`
+| `LOG4J_LOGGER_CONTEXT_SELECTOR`
 
 | Type
 | link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ContextSelector.html[`Class<? extends ContextSelector>`]
@@ -68,7 +68,7 @@ for details.
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_LOGGER_CONTEXT_SHUTDOWN_HOOK_ENABLED`
+| Env. variable | `LOG4J_LOGGER_CONTEXT_SHUTDOWN_HOOK_ENABLED`
 | Type          | `boolean`
 | Default value | `true`
 
@@ -83,7 +83,7 @@ If `true` a shutdown hook will be installed to stop the logger context when the 
 [cols="1h,5"]
 |===
 | Env. variable
- `LOG4J_LOGGER_CONTEXT_SHUTDOWN_CALLBACK_REGISTRY`
+| `LOG4J_LOGGER_CONTEXT_SHUTDOWN_CALLBACK_REGISTRY`
 
 | Type
 | link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/ShutdownCallbackRegistry.html[`Class<? extends ShutdownCallbackRegistry>`]
@@ -104,7 +104,7 @@ The default implementation executes all shutdown actions in a separate `Thread` 
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_LOGGER_CONTEXT_STACKTRACE_ON_START`
+| Env. variable | `LOG4J_LOGGER_CONTEXT_STACKTRACE_ON_START`
 | Type          | `boolean`
 | Default value | `false`
 |===

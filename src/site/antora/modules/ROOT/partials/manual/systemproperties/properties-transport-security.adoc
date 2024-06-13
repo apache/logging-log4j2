@@ -21,7 +21,7 @@
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_CONFIGURATION_ALLOWED_PROTOCOLS`
+| Env. variable | `LOG4J_CONFIGURATION_ALLOWED_PROTOCOLS`
 | Type          | Comma-separated list of https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/URL.html[`URL`] protocols
 | Default value | `file, https, jar`
 |===
@@ -38,7 +38,7 @@ NOTE:: Since Log4j does not use `URL` to access `file:` resources, this protocol
 [cols="1h,5"]
 |===
 | Env. variable
- `LOG4J_TRANSPORT_SECURITY_TRUST_STORE_LOCATION`
+| `LOG4J_TRANSPORT_SECURITY_TRUST_STORE_LOCATION`
 
 | Type
 | https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[`Path`] or https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/URI.html[`URI`]
@@ -55,7 +55,7 @@ The location of the trust store.
 [cols="1h,5"]
 |===
 | Env. variable
- `LOG4J_TRANSPORT_SECURITY_TRUST_STORE_PASSWORD`
+| `LOG4J_TRANSPORT_SECURITY_TRUST_STORE_PASSWORD`
 
 | Type          | `String`
 
@@ -70,7 +70,7 @@ The password for the trust store.
 [cols="1h,5"]
 |===
 | Env. variable
- `LOG4J_TRANSPORT_SECURITY_TRUST_STORE_PASSWORD_FILE`
+| `LOG4J_TRANSPORT_SECURITY_TRUST_STORE_PASSWORD_FILE`
 
 | Type
 | https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[`Path`]
@@ -86,7 +86,7 @@ The name of a file that contains the password for the trust store.
 [cols="1h,5"]
 |===
 | Env. variable
- `LOG4J_TRANSPORT_SECURITY_TRUST_STORE_PASSWORD_ENV_VAR`
+| `LOG4J_TRANSPORT_SECURITY_TRUST_STORE_PASSWORD_ENV_VAR`
 
 | Type
 | `String`
@@ -103,7 +103,7 @@ The name of the environment variable that contains password for the trust store.
 [cols="1h,5"]
 |===
 | Env. variable
- `LOG4J_TRANSPORT_SECURITY_TRUST_STORE_TYPE`
+| `LOG4J_TRANSPORT_SECURITY_TRUST_STORE_TYPE`
 
 | Type
 | https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyStore[`KeyStore` type]
@@ -120,7 +120,7 @@ The type of trust store.
 [cols="1h,5"]
 |===
 | Env. variable
- `LOG4J_TRANSPORT_SECURITY_TRUST_STORE_KEY_MANAGER_FACTORY_ALGORITHM`
+| `LOG4J_TRANSPORT_SECURITY_TRUST_STORE_KEY_MANAGER_FACTORY_ALGORITHM`
 
 | Type
 | https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory[`KeyManagerFactory` type]
@@ -136,7 +136,7 @@ Name of the https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_TRANSPORT_SECURITY_VERIFY_HOST_NAME`
+| Env. variable | `LOG4J_TRANSPORT_SECURITY_VERIFY_HOST_NAME`
 | Type          | `boolean`
 | Default value | `false`
 |===
@@ -149,7 +149,7 @@ If `true` enables verification of the name of the TLS server.
 [cols="1h,5"]
 |===
 | Env. variable
- `LOG4J_TRANSPORT_SECURITY_KEY_STORE_LOCATION`
+| `LOG4J_TRANSPORT_SECURITY_KEY_STORE_LOCATION`
 
 | Type
 | https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[`Path`] or
@@ -166,7 +166,7 @@ The location of the private key store.
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_TRANSPORT_SECURITY_KEY_STORE_PASSWORD`
+| Env. variable | `LOG4J_TRANSPORT_SECURITY_KEY_STORE_PASSWORD`
 | Type          | `String`
 | Default value | `null`
 |===
@@ -178,7 +178,7 @@ The password for the private key store.
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_TRANSPORT_SECURITY_KEY_STORE_PASSWORD_FILE`
+| Env. variable | `LOG4J_TRANSPORT_SECURITY_KEY_STORE_PASSWORD_FILE`
 | Type          | https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[`Path`]
 | Default value | `null`
 |===
@@ -190,7 +190,7 @@ The name of a file that contains the password for the private key store.
 
 [cols="1h,5"]
 |===
-| Env. variable  `LOG4J_TRANSPORT_SECURITY_KEY_STORE_PASSWORD_ENV_VAR`
+| Env. variable | `LOG4J_TRANSPORT_SECURITY_KEY_STORE_PASSWORD_ENV_VAR`
 | Type          | `String`
 | Default value | `null`
 |===
@@ -203,7 +203,7 @@ The name of the environment variable that contains the password for the private 
 [cols="1h,5"]
 |===
 | Env. variable
- `LOG4J_TRANSPORT_SECURITY_KEY_STORE_TYPE`
+| `LOG4J_TRANSPORT_SECURITY_KEY_STORE_TYPE`
 
 | Type
 | https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/security/StandardNames.html#KeyStore[`KeyStore` type]
@@ -221,7 +221,7 @@ See https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardName
 [cols="1h,5"]
 |===
 | Env. variable
- `LOG4J_TRANSPORT_SECURITY_KEY_STORE_KEY_MANAGER_FACTORY_ALGORITHM`
+| `LOG4J_TRANSPORT_SECURITY_KEY_STORE_KEY_MANAGER_FACTORY_ALGORITHM`
 
 | Type
 | https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory[`KeyManagerFactory` type]
