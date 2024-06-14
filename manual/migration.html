@@ -383,7 +383,11 @@ This change has the following advantages:</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/manual/layouts.html#GELFLayout">GELF layout</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>removed without replacement</em> <sup class="footnoteref">[<a class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">replaced by
+<a href="json-template-layout.html" class="xref page"><code>JsonTemplateLayout</code></a>
+and the included
+<a href="json-template-layout.html#event-templates" class="xref page"><code>GelfLayout.json</code></a>
+template</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appenders.html#JDBCAppender" class="xref page">JDBC appender</a></p></td>
@@ -399,8 +403,9 @@ This change has the following advantages:</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/manual/appenders.html#JeroMQAppender">JeroMQ appender</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">external
-<a href="https://github.com/fbacchella/loghublog4j2#zmqappender"><code>loghublog4j2</code> maintained by Fabrice Bacchella</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">replaced by external
+<a href="https://github.com/fbacchella/loghublog4j2#zmqappender"><code>loghublog4j2</code></a>
+module</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/manual/appenders.html#JMSAppender">JMS appender: Java EE version</a></p></td>
@@ -424,8 +429,9 @@ This change has the following advantages:</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="lookups.html#KubernetesLookup" class="xref page">Kubernetes lookup</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">external
-<a href="https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md"><code>kubernetes-log4j</code> maintained by Fabric8</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">replaced by external
+<a href="https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md"><code>kubernetes-log4j</code></a>
+module</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="scripts.html" class="xref page">Scripting support</a></p></td>
@@ -442,8 +448,7 @@ This change has the following advantages:</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/manual/lookups.html#_spring_boot_lookup">Spring Boot lookup</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">integrated into
-<a href="https://central.sonatype.com/artifact/org.springframework.boot/spring-boot"><code>spring-boot</code></a>
-version 3.0.0 or later</p></td>
+<a href="https://docs.spring.io/spring-boot/reference/features/logging.html#features.logging.log4j2-extensions">Spring Boot 3</a></p></td>
 </tr>
 </tbody>
 </table>
@@ -457,24 +462,24 @@ version 3.0.0 or later</p></td>
 To help you with the migration process a backward compatibility system has been implemented, which translates Log4j 2 property names to their Log4j 3 equivalents.</p>
 </div>
 <div class="paragraph">
-<p>If you use configuration properties to finely tune Log4j Core, make sure that:</p>
+<p>If you use configuration properties to finely tune Log4j Core:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>either you use the naming convention from the
-<a href="systemproperties.html" class="xref page">Log4j 3 configuration properties</a>
-page (recommended),</p>
+<p>you are advised to migrate to the new
+<a href="systemproperties.html" class="xref page">Log4j 3 naming convention</a>
+for configuration properties,</p>
 </li>
 <li>
-<p>or you use the naming convention from the
-<a href="https://logging.apache.org/log4j/2.x/manual/systemproperties.html">Log4j 2 configuration properties</a>
-page.</p>
+<p>in the meantime you can continue to use the
+<a href="https://logging.apache.org/log4j/2.x/manual/systemproperties.html">Log4j 2 naming convention</a>
+introduced in Log4j 2.10,</p>
+</li>
+<li>
+<p>other naming conventions, including variations in the case of property names are not supported.</p>
 </li>
 </ul>
-</div>
-<div class="paragraph">
-<p>Most Log4j 3 configuration properties sources are <strong>case-sensitive</strong> and fuzzy matching is not applied to those sources.</p>
 </div>
 </div>
 </div>
