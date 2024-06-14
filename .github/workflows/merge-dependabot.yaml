@@ -38,6 +38,7 @@ jobs:
       java-version: |
         8
         17
+      predictive-test-selection-enabled: true
 
   merge-dependabot:
     needs: build
