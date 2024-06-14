@@ -46,6 +46,7 @@ Did you know that Log4j provides specialized APIs for Kotlin and Scala?
 Check out {logging-services-url}/log4j/kotlin[Log4j Kotlin] and {logging-services-url}/log4j/scala[Log4j Scala] projects for details.
 ====
 
+[#intro]
 == Introduction
 
 include::partial$manual/api-intro.adoc[leveloffset=+1]
@@ -205,7 +206,13 @@ xref:manual/resource-logger.adoc[Read more on resource loggers...]
 [#event-logger]
 === Event logger
 
-link:../javadoc/log4j-api/org/apache/logging/log4j/EventLogger.html[`EventLogger`] provides a simple way to log structured events conforming with the `STRCUTURED-DATA` format defined in https://tools.ietf.org/html/rfc5424[RFC 5424 (The Syslog Protocol)].
+link:../javadoc/log4j-api/org/apache/logging/log4j/EventLogger.html[`EventLogger`] is a convenience to log xref:manual/messages.adoc#StructuredDataMessage[`StructuredDataMessage`]s, which format their content in a way compliant with https://datatracker.ietf.org/doc/html/rfc5424#section-6[the Syslog message format described in RFC 5424].
+
+[WARNING]
+====
+*Event Logger is deprecated for removal!*
+We advise users to switch to plain `Logger` instead.
+====
 
 xref:manual/eventlogging.adoc[Read more on event loggers...]
 

@@ -20,8 +20,11 @@ import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
- *  Logs "Events" that are represented as {@link StructuredDataMessage}.
+ * Convenience to log {@link StructuredDataMessage}s.
+ *
+ * @deprecated {@link Logger} accepts {@link StructuredDataMessage}s, users should use to that instead.
  */
+@Deprecated
 public final class EventLogger {
 
     /**
