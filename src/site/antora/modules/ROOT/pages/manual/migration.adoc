@@ -76,7 +76,11 @@ footnote:removal[If you are using these components, and you can help us to maint
 | {sonatype-url}/log4j-csv[`log4j-csv`]
 
 | {log4j2-url}/manual/layouts.html#GELFLayout[GELF layout]
-| _removed without replacement_ footnote:removal[]
+| replaced by
+xref:manual/json-template-layout.adoc[`JsonTemplateLayout`]
+and the included
+xref:manual/json-template-layout.adoc#event-templates[`GelfLayout.json`]
+template
 
 | xref:manual/appenders.adoc#JDBCAppender[JDBC appender]
 | {sonatype-url}/log4j-jdbc[`log4j-jdbc`]
@@ -88,8 +92,9 @@ footnote:removal[If you are using these components, and you can help us to maint
 | {sonatype-url}/log4j-jndi[`log4j-jndi`]
 
 | {log4j2-url}/manual/appenders.html#JeroMQAppender[JeroMQ appender]
-| external
-https://github.com/fbacchella/loghublog4j2#zmqappender[`loghublog4j2` maintained by Fabrice Bacchella]
+| replaced by external
+https://github.com/fbacchella/loghublog4j2#zmqappender[`loghublog4j2`]
+module
 
 | {log4j2-url}/manual/appenders.html#JMSAppender[JMS appender: Java EE version]
 | _removed without replacement_ footnote:removal[]
@@ -107,8 +112,9 @@ https://github.com/fbacchella/loghublog4j2#zmqappender[`loghublog4j2` maintained
 | _removed without replacement_ footnote:removal[]
 
 | xref:manual/lookups.adoc#KubernetesLookup[Kubernetes lookup]
-| external
-https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md[`kubernetes-log4j` maintained by Fabric8]
+| replaced by external
+https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md[`kubernetes-log4j`]
+module
 
 | xref:manual/scripts.adoc[Scripting support]
 | {sonatype-url}/log4j-script[`log4j-script`]
@@ -121,8 +127,7 @@ https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md[
 
 | {log4j2-url}/manual/lookups.html#_spring_boot_lookup[Spring Boot lookup]
 | integrated into
-https://central.sonatype.com/artifact/org.springframework.boot/spring-boot[`spring-boot`]
-version 3.0.0 or later
+https://docs.spring.io/spring-boot/reference/features/logging.html#features.logging.log4j2-extensions[Spring Boot 3]
 
 |===
 
@@ -132,16 +137,15 @@ version 3.0.0 or later
 In order to support per-logger context configuration properties, the configuration properties sub-system of Log4j has been rewritten and the naming convention of properties have changed.
 To help you with the migration process a backward compatibility system has been implemented, which translates Log4j 2 property names to their Log4j 3 equivalents.
 
-If you use configuration properties to finely tune Log4j Core, make sure that:
+If you use configuration properties to finely tune Log4j Core:
 
-* either you use the naming convention from the
-xref:manual/systemproperties.adoc[Log4j 3 configuration properties]
-page (recommended),
-* or you use the naming convention from the
-{log4j2-url}/manual/systemproperties.html[Log4j 2 configuration properties]
-page.
-
-Most Log4j 3 configuration properties sources are **case-sensitive** and fuzzy matching is not applied to those sources.
+* you are advised to migrate to the new
+xref:manual/systemproperties.adoc[Log4j 3 naming convention]
+for configuration properties,
+* in the meantime you can continue to use the
+{log4j2-url}/manual/systemproperties.html[Log4j 2 naming convention]
+introduced in Log4j 2.10,
+* other naming conventions, including variations in the case of property names are not supported.
 
 [#properties-configuration-file]
 == Java properties configuration file format
