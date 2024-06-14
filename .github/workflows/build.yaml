@@ -36,7 +36,6 @@ jobs:
       GE_ACCESS_TOKEN: ${{ secrets.GE_ACCESS_TOKEN }}
     with:
       site-enabled: true
-      predictive-test-selection-enabled: true
 
   deploy-snapshot:
     needs: build
