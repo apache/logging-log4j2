@@ -33,7 +33,7 @@ jobs:
     # Temporary use `develocity` branch
     uses: apache/logging-parent/.github/workflows/build-reusable.yaml@develocity
     secrets:
-      GE_ACCESS_TOKEN: ${{ ! startsWith(github.refname, 'release/3') && secrets.GE_ACCESS_TOKEN }}
+      GE_ACCESS_TOKEN: ${{ ! startsWith(github.refname, 'release/') && secrets.GE_ACCESS_TOKEN }}
     with:
       site-enabled: true
 
@@ -48,7 +48,7 @@ jobs:
 
   deploy-release:
     needs: build
-    if: github.repository == 'apache/logging-log4j2' && startsWith(github.ref_name, 'release/3')
+    if: github.repository == 'apache/logging-log4j2' && startsWith(github.ref_name, 'release/')
     uses: apache/logging-parent/.github/workflows/deploy-release-reusable.yaml@rel/11.1.0
     # Secrets for deployments
     secrets:

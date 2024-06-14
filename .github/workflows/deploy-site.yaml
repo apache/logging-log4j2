@@ -71,7 +71,7 @@ jobs:
       target-branch: ${{ github.ref_name }}-out
 
   export-version:
-    if: github.repository == 'apache/logging-log4j2' && startsWith(github.ref_name, 'release/3')
+    if: github.repository == 'apache/logging-log4j2' && startsWith(github.ref_name, 'release/')
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.export-version.outputs.version }}
