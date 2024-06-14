@@ -30,9 +30,12 @@ jobs:
 
   build:
     if: github.repository == 'apache/logging-log4j2' && github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]'
+    # Temporary use `develocity` branch
     uses: apache/logging-parent/.github/workflows/build-reusable.yaml@develocity
     secrets:
       GE_ACCESS_TOKEN: ${{ secrets.GE_ACCESS_TOKEN }}
+    with:
+      predictive-test-selection-enabled: true
 
   merge-dependabot:
     needs: build
