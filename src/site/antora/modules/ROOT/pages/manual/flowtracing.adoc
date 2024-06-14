@@ -116,6 +116,15 @@ public void someMethod() {
 ----
 <1> The `throwing()` method logs exceptions that are thrown and not caught.
 
+[#aop]
+=== Aspect-oriented programming
+
+Logging has been a notorious example for demonstrating https://en.wikipedia.org/wiki/Aspect-oriented_programming[aspect-oriented programming] (AOP).
+For instance, using AOP, you can inject logging statements to methods that match a particular footprint, e.g., all public methods in `com.mycompany` package.
+With a couple of lines of AOP instructions, you can log input and output of all matching functions.
+Flow tracing methods fits like a glove to this AOP use case.
+You can see a demonstration of this in https://github.com/apache/logging-log4j-samples/tree/main/log4j-samples-aspectj[the `log4j-samples-aspectj` project] demonstrating how you can implement this use case using Log4j API flow methods and Spring Boot AspectJ support.
+
 [#impl]
 == Implementation
 
