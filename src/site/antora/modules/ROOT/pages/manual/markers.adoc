@@ -85,8 +85,7 @@ include::example$manual/markers/marker-filtering.log[tag=use-marker-parent]
 == Pitfalls
 
 It is important to note that marker names must be unique, as Log4j registers them permanently by name.
-Developers should avoid generic marker names, as they may conflict with
-those provided by third parties. Except, of course, if the user is aware of the implications.
+Developers are advised to avoid generic marker names, as they may conflict with those provided by third parties.
 
 While it is possible to add or remove parent markers dynamically through the `setParents()` method,
 it is generally advisable to set the parents when the marker is created for efficiency and performance reasons.
