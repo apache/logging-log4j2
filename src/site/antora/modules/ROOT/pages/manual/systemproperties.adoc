@@ -179,7 +179,7 @@ The behavior of the `ThreadContext` class can be fine-tuned using the following 
 ====
 These configuration properties are only used by the Log4j Core and xref:manual/simple-logger.adoc[] implementations of Log4j API.
 
-The `log4j-to-slf4j` logging bridge delegates `ThreadContext` calls to the SLF4J https://slf4j.org/api/org/slf4j/MDC.html[MDC] class.
+The `log4j-to-slf4j` logging bridge delegates `ThreadContext` calls to {slf4j-url}/api/org/slf4j/MDC.html[the SLF4J `MDC` class].
 
 The `log4j-to-jul` logging bridge ignores all `ThreadContext` method calls.
 ====

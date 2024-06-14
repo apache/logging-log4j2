@@ -45,8 +45,10 @@ asciidoc:
     project-id: "log4j"
     java-target-version: "${maven.compiler.target}"
     java-compiler-version: "${minimalJavaBuildVersion}"
+    logback-url: "https://logback.qos.ch"
     logging-services-url: "https://logging.apache.org"
     lmax-disruptor-url: "https://lmax-exchange.github.io/disruptor"
+    slf4j-url: "https://www.slf4j.org"
     # Dependency versions
     commons-csv-version: "${site-commons-csv.version}"
     commons-logging-version: "${site-commons-logging.version}"
