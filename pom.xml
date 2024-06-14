@@ -319,6 +319,9 @@
          Hence, *DO NOT MANUALLY EDIT THIS VALUE*! -->
     <project.build.outputTimestamp>2024-03-06T09:31:11Z</project.build.outputTimestamp>
 
+    <!-- Enables Predictive Test Selection for the project -->
+    <predictive.test.selection.enabled>true</predictive.test.selection.enabled>
+
     <!-- ========================
          Site-specific properties
          ======================== -->
@@ -597,6 +600,11 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <forkCount>1C</forkCount>
+          <properties>
+            <predictiveSelection>
+              <enabled>${predictive.test.selection.enabled}</enabled>
+            </predictiveSelection>
+          </properties>
           <reuseForks>false</reuseForks>
           <runOrder>alphabetical</runOrder>
           <systemPropertyVariables>
