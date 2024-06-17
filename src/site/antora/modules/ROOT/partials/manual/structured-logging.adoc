@@ -15,10 +15,7 @@
     limitations under the License.
 ////
 
-.What is *structured logging*?
-[%collapsible]
-====
 In almost any modern production deployment, logs are no more written to files read by engineers while troubleshooting, but forwarded to log ingestion systems (Elasticsearch, Google Cloud Logging, etc.) for several observability use cases ranging from logging to metrics.
 This necessitates the applications to _structure_ their logs in a machine-readable way ready to be delivered to an external system.
 This act of encoding logs following a certain structure is called *structured logging*.
-====
+

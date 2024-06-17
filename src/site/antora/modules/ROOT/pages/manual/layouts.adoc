@@ -32,10 +32,10 @@ This section introduces you to some common concerns shared by almost all <<colle
 [#structured-logging]
 === Structured logging
 
-Log4j strives to provide top of the class support for *structured logging*.
-To create an end-to-end experience, it provides several xref:manual/messages.adoc#collection-structured[structured message types] along with layouts supporting structured logging.
-
 include::partial$manual/structured-logging.adoc[]
+
+Log4j strives to provide top of the class support for structured logging.
+To create an end-to-end experience, it provides several xref:manual/messages.adoc#collection-structured[structured message types] along with layouts supporting structured logging.
 
 We recommend xref:manual/json-template-layout.adoc[] for structured logging purposes.
 

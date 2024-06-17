@@ -207,7 +207,11 @@ Log4j strives to provide top of the class support for *structured logging*.
 It complements xref:manual/layouts.adoc#structured-logging[structured layouts] with message types allowing users to create structured messages effectively resulting in an end-to-end structured logging experience.
 This section will introduce the predefined structured message types.
 
+.What is *structured logging*?
+[%collapsible]
+====
 include::partial$manual/structured-logging.adoc[]
+====
 
 [#MapMessage]
 ==== `MapMessage`
