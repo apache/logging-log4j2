@@ -3,5 +3,5 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="changed">
-  <description format="asciidoc">Deprecate `log4j2.defaultStatusLevel` property in Log4j Core in favor of `log4j2.statusLoggerLevel`.</description>
+  <description format="asciidoc">Deprecate `log4j2.defaultStatusLevel` property in Log4j Core in favor of `log4j2.statusLoggerLevel`</description>
 </entry>

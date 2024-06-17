@@ -3,5 +3,5 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="deprecated">
-  <description format="asciidoc">Deprecate `org.apache.logging.log4j.core.appender.rolling.action.Duration` class for removal</description>
+  <description format="asciidoc">Deprecate `org.apache.logging.log4j.EventLogger` for removal</description>
 </entry>
