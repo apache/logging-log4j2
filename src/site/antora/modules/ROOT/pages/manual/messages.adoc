@@ -292,7 +292,7 @@ The link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html[`Mes
 Layouts leverage this mechanism to encode a message in a particular format.
 For instance, when xref:manual/json-template-layout.adoc[] figures out that `getFormat()` of a `Message` returns `JSON`, it injects the `Message#getFormattedMessage()` output as is without quoting it.
 This way a message implementation can communicate its support for a particular encoding.
-If you want to support multiple formats, extend from <<MultiformatMessage>> instead.
+If you want to support multiple formats, extend from <<MultiformatMessage>>, and optionally from <<MultiFormatStringBuilderFormattable>>, instead.
 
 [#marker-interfaces]
 === Marker interfaces
@@ -311,12 +311,16 @@ This method will be called during event construction to pass the associated `Log
 link:../javadoc/log4j-api/org/apache/logging/log4j/message/MultiformatMessage.html[`MultiformatMessage`] extends from `Message` to support multiple <<format-type,format types>>.
 For example, see {project-github-url}/tree/2.x/log4j-api/src/main/java/org/apache/logging/log4j/message/MapMessage.java[`MapMessage.java`] extending from `MultiformatMessage` to support multiple formats; XML, JSON, etc.
 
+[#MultiFormatStringBuilderFormattable]
+==== `MultiFormatStringBuilderFormattable`
+
+link:../javadoc/log4j-api/org/apache/logging/log4j/util/MultiFormatStringBuilderFormattable.html[`MultiFormatStringBuilderFormattable`] extends <<StringBuilderFormattable>> to support multiple <<format-type,format types>>.
+
 [#StringBuilderFormattable]
 ==== `StringBuilderFormattable`
 
 Many xref:manual/layouts.adoc[layouts] recycle ``StringBuilder``s to encode log events xref:manual/garbagefree.adoc[without generating garbage], and this effectively results in significant xref:manual/performance.adoc[performance] benefits.
 link:../javadoc/log4j-api/org/apache/logging/log4j/util/StringBuilderFormattable.html[`StringBuilderFormattable`] is the primary interface facilitating the formatting of objects to a `StringBuilder`.
-*You are strongly advised to implement this interface in your custom `Message` types.*
 
 [#TimestampMessage]
 ==== `TimestampMessage`
