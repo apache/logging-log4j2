@@ -18,6 +18,7 @@
 = Event Logger
 
 link:../javadoc/log4j-api/org/apache/logging/log4j/EventLogger.html[`EventLogger`] is a convenience to log xref:manual/messages.adoc#StructuredDataMessage[`StructuredDataMessage`]s, which format their content in a way compliant with https://datatracker.ietf.org/doc/html/rfc5424#section-6[the Syslog message format described in RFC 5424].
+Historically, `EventLogger` was added to help users migrate from SLF4J `EventLogger`, which was removed in https://www.slf4j.org/news.html#1.7.26[SLF4J version `1.7.26`].
 
 [WARNING]
 ====
