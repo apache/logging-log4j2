@@ -17,236 +17,36 @@
 
 = Event Logger
 
-The `EventLogger` class provides a mechanism for logging significant events 
-in an application using structured data. This approach is beneficial for 
-tracking user actions, monitoring system behavior, and debugging issues.
+link:../javadoc/log4j-api/org/apache/logging/log4j/EventLogger.html[`EventLogger`] is a convenience to log xref:manual/messages.adoc#StructuredDataMessage[`StructuredDataMessage`]s, which format their content in a way compliant with https://datatracker.ietf.org/doc/html/rfc5424#section-6[the Syslog message format described in RFC 5424].
+Historically, `EventLogger` was added to help users migrate from SLF4J `EventLogger`, which was removed in https://www.slf4j.org/news.html#1.7.26[SLF4J version `1.7.26`].
 
-Theoretically, every `Logger` can be used to perform this kind of action;
-however, the `EventLogger` class provides a shortcut to log events with structured data
-since it allows for a static method to log events.
+[WARNING]
+====
+*Event Logger is deprecated for removal!*
+We advise users to switch to plain `Logger` instead.
+Refer to xref:manual/api.adoc[] on how to use `Logger`.
+====
 
-== Advantages of Structured Logging
+Compared to using link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html[a plain `Logger`], `EventLogger`
 
-Structured logging means events Log4j records events with detailed and structured information.
-That way, logs are easier to read and process. They provide better context and
-are also more consistent than plain text logs.
+* attaches an `EVENT` xref:manual/markers.adoc[marker], and
+* sets the xref:manual/customloglevels.adoc[level] to `OFF`, unless one is explicitly provided.
 
-== Integration with Syslog
+That is, following `EventLogger` usages:
 
-Log4j complies with Syslogs RFC5424 standard. 
-This feature allows for easy integration with existing log management and monitoring systems.
-
-== Example Configuration
-
-To configure Log4j to output logs in Syslog (RFC5424) format, one needs to use the xref:manual/layouts.adoc#RFC5424Layout[`Rfc5424Layout`] layout.
-Developers can use the following configuration to log events to a local Syslog server:
-
-[source, xml]
+[source,java]
 ----
-<Appenders>
-    <Syslog name="Syslog" host="localhost" port="514"> <!--1-->
-        <Rfc5424Layout/> <!--2-->
-    </Syslog>
-</Appenders>
-
-<Loggers>
-    <Logger name="MyApp" level="info" additivity="false">
-        <AppenderRef ref="Syslog"/>
-    </Logger>
-</Loggers>
-----
-<1> The `Syslog` appender sends logs to a local Syslog server.
-<2> The `StructuredDataLayout` layout formats logs in RFC5424 format.
-
-Of course, sending logs to a Syslog server is unnecessary. 
-Developers can use the `StructuredDataLayout` layout with any other appender, such as `FileAppender` or `ConsoleAppender`.
-
-As an example, the output could look like this:
-
-[source, text]
-----
-<165>1 2024-05-16T12:34:56.789Z myapp MyApp - ID47 [transfer@12345 toAccount="123456" fromAccount="654321" amount="1000"] User 654321 has transferred 1000 to account 123456
+EventLogger.logEvent(new StructuredDataMessage(...));
+EventLogger.logEvent(new StructuredDataMessage(...), Level.INFO);
 ----
 
-== Using the `EventLogger`
+are equivalent to the following plain `Logger` usages:
 
-The `EventLogger` class provides a simple way to log structured events.
-It uses the `StructuredDataMessage` class to create structured log messages.
-
-Assume a simple application that performs funds transfers between accounts.
-This application should send a certain amount of funds from one account to another and log the event.
-
-The account class is defined as follows, with a unique ID and a balance:
-
-[source, java]
+[source,java]
 ----
-class Account {
-    private String id;
-    private long balance;
-    // Getters and setters omitted for brevity
-}
+private static final Marker EVENT_MARKER = MarkerManager.getMarker("EVENT");
+private static final Logger LOGGER = LogManager.getLogger();
+
+LOGGER.log(Level.OFF, EVENT_MARKER, new StructuredDataMessage(...));
+LOGGER.info(EVENT_MARKER, new StructuredDataMessage(...));
 ----
-
-The `transfer()` method transfers funds between two accounts and logs the event.
-It needs to take two accounts and the amount to transfer as parameters.
-
-Apart from the key-value pairs provided in the map of the `StructuredDataMessage,`
-the `StructuredDataMessage` also takes a unique ID, a free-form message, and a type as parameters.
-
-The free-form message is a human-readable description of the event. 
-This message is good for operators who need to understand the event quickly, 
-but not so much for automated processing.
-
-[source, java]
-----
-public static String transferFunds(Account toAccount, Account fromAccount, long amount) {
-    toAccount.deposit(amount);
-    fromAccount.withdraw(amount);
-
-    // Create a unique ID for the transaction
-    String confirm = UUID.randomUUID().toString();
-
-    String freeFormMessage = "User " + fromAccount.getId() + " has transferred " + amount + " to account " + toAccount.getId(); <1>
-
-    // Create the StructuredDataMessage
-    StructuredDataMessage msg = new StructuredDataMessage(confirm, freeFormMessage, "transfer"); <2>
-    msg.put("toAccount", toAccount.getId()); <3>
-    msg.put("fromAccount", fromAccount.getId());
-    msg.put("amount", amount);
-
-    // Log the event
-    EventLogger.logEvent(msg); <4>
-
-    return confirm;
-}
-----
-<1> The free-form message is a human-readable description of the event.
-<2> The `StructuredDataMessage` constructor takes an ID, the free-form message, and a type.
-<3> Developers can add key-value pairs to the message.
-<4> The `EventLogger` logs the event.
-
-That way, the `transferFunds()` method logs the event with structured data
-by using the `EventLogger`.
-
-== Web Application Example
-
-In a web application, developers can use a servlet filter to populate the 
-`ThreadContext` map with data related to the request.
-
-The following example demonstrates how a `Filter` could investigate the request
-and populate the `ThreadContext` map with data such as the user's IP address,
-the user's login ID, the server's hostname, the product name, the locale, and the timezone.
-
-[source, java]
-----
-import org.apache.logging.log4j.ThreadContext;
-import org.apache.commons.lang.time.DateUtils;
-
-import javax.servlet.*;
-import javax.servlet.http.*;
-import java.io.IOException;
-import java.util.TimeZone;
-
-public class RequestFilter implements Filter {
-    private FilterConfig filterConfig;
-    private static String TZ_NAME = "timezoneOffset";
-
-    // Other methods ommitted for brevity
-
-    /**
-     * Sample filter that populates the MDC on every request.
-     */
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
-            throws IOException, ServletException {
-        HttpServletRequest request = (HttpServletRequest)servletRequest;
-        
-        ThreadContext.put("ipAddress", request.getRemoteAddr()); <1>
-
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            // Assuming, an authentication filter has already populated the loginId in the session
-            String loginId = (String)session.getAttribute("loginId");
-            if (loginId != null) {
-                ThreadContext.put("loginId", loginId);
-            }
-        }
-
-        ThreadContext.put("hostname", servletRequest.getServerName());
-        ThreadContext.put("productName", filterConfig.getInitParameter("ProductName"));
-        ThreadContext.put("locale", servletRequest.getLocale().getDisplayName());
-        ThreadContext.put("timezone", TimeZone.getDefault().getDisplayName());
-
-        filterChain.doFilter(servletRequest, servletResponse);
-        ThreadContext.clear();
-    }
-}
-----
-<1> The `doFilter()` method populates the `ThreadContext` map with data related to the request.
-
-The `Filter` needs to be registered in your `web.xml` file:
-
-[source, xml]
-----
-<filter>
-    <filter-name>RequestFilter</filter-name>
-    <filter-class>com.example.RequestFilter</filter-class>
-    <init-param>
-        <param-name>ProductName</param-name>
-        <param-value>YourProductName</param-value>
-    </init-param>
-</filter>
-<filter-mapping>
-    <filter-name>RequestFilter</filter-name>
-    <url-pattern>/*</url-pattern> <1>
-</filter-mapping>
-----
-<1> The `RequestFilter` is mapped to all requests.
-
-Eventually, a `Servlet` or any other related class, such as a Spring Controller, can be used to log events with structured data. 
-The following example uses a `Servlet` to call the `EventLogger` and log a user action.
-
-[source, java]
-----
-import javax.servlet.*;
-import javax.servlet.http.*;
-import java.io.IOException;
-
-public class UserActionServlet extends HttpServlet {
-    
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String userId = request.getParameter("userId");
-        String action = request.getParameter("action");
-        String details = request.getParameter("details");
-
-        // Perform and log the user action
-        String message = "User " + userId + " performed action: " + action;
-        StructuredDataMessage msg = new StructuredDataMessage(UUID.randomUUID().toString(), message, "userAction"); <1>
-        msg.put("userId", userId);
-        msg.put("action", action);
-        msg.put("details", details);
-
-        // Log the event
-        EventLogger.logEvent(msg); 
-
-        // Respond to the client
-        response.getWriter().write("Action logged successfully");
-    }
-}
-----
-<1> `userAction` is the name of the current transaction
-
-That way, not only the data provided to the `EventLogger` is used, but also all the 
-data populated in the `ThreadContext` map is included in the log message.
-
-== Benefits of Structured Logging
-
-1. **Improved Readability and Context:** 
-   Structured logs include detailed information, making them easier to understand and analyze.
-2. **Better for Automated Processing:**
-   Structured logs are easily parsed by existing log management tools.
-3. **Consistency:**
-   Structured logging enforces a consistent format, helping to identify patterns in logs.
-4. **Performance Optimization:** 
-   Structured messages are - as all messages - only constructed when necessary, keeping overhead low.
-
