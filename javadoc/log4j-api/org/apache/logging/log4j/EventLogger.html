@@ -77,9 +77,13 @@ loadScripts(document, 'script');</script>
 </div>
 <section class="class-description" id="class-description">
 <hr>
-<div class="type-signature"><span class="modifiers">public final class </span><span class="element-name type-name-label">EventLogger</span>
+<div class="type-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public final class </span><span class="element-name type-name-label">EventLogger</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
-<div class="block">Logs "Events" that are represented as <a href="message/StructuredDataMessage.html" title="class in org.apache.logging.log4j.message"><code>StructuredDataMessage</code></a>.</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment"><a href="Logger.html" title="interface in org.apache.logging.log4j"><code>Logger</code></a> accepts <a href="message/StructuredDataMessage.html" title="class in org.apache.logging.log4j.message"><code>StructuredDataMessage</code></a>s, users should use to that instead.</div>
+</div>
+<div class="block">Convenience to log <a href="message/StructuredDataMessage.html" title="class in org.apache.logging.log4j.message"><code>StructuredDataMessage</code></a>s.</div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -95,6 +99,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>static final <a href="Marker.html" title="interface in org.apache.logging.log4j">Marker</a></code></div>
 <div class="col-second even-row-color"><code><a href="#EVENT_MARKER" class="member-name-link">EVENT_MARKER</a></code></div>
 <div class="col-last even-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Defines the Event Marker.</div>
 </div>
 </div>
@@ -105,21 +110,23 @@ loadScripts(document, 'script');</script>
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button><button id="method-summary-table-tab6" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab6', 3)" class="table-tab">Deprecated Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel">
 <div class="summary-table three-column-summary" aria-labelledby="method-summary-table-tab0">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#logEvent(org.apache.logging.log4j.message.StructuredDataMessage)" class="member-name-link">logEvent</a><wbr>(<a href="message/StructuredDataMessage.html" title="class in org.apache.logging.log4j.message">StructuredDataMessage</a>&nbsp;msg)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#logEvent(org.apache.logging.log4j.message.StructuredDataMessage)" class="member-name-link">logEvent</a><wbr>(<a href="message/StructuredDataMessage.html" title="class in org.apache.logging.log4j.message">StructuredDataMessage</a>&nbsp;msg)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Logs events with a level of ALL.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#logEvent(org.apache.logging.log4j.message.StructuredDataMessage,org.apache.logging.log4j.Level)" class="member-name-link">logEvent</a><wbr>(<a href="message/StructuredDataMessage.html" title="class in org.apache.logging.log4j.message">StructuredDataMessage</a>&nbsp;msg,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#logEvent(org.apache.logging.log4j.message.StructuredDataMessage,org.apache.logging.log4j.Level)" class="member-name-link">logEvent</a><wbr>(<a href="message/StructuredDataMessage.html" title="class in org.apache.logging.log4j.message">StructuredDataMessage</a>&nbsp;msg,
  <a href="Level.html" title="class in org.apache.logging.log4j">Level</a>&nbsp;level)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Logs events and specify the logging level.</div>
 </div>
 </div>
@@ -143,6 +150,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="EVENT_MARKER">
 <h3>EVENT_MARKER</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="Marker.html" title="interface in org.apache.logging.log4j">Marker</a></span>&nbsp;<span class="element-name">EVENT_MARKER</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Defines the Event Marker.</div>
 </section>
 </li>
@@ -158,6 +166,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="logEvent(org.apache.logging.log4j.message.StructuredDataMessage)">
 <h3>logEvent</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">logEvent</span><wbr><span class="parameters">(<a href="message/StructuredDataMessage.html" title="class in org.apache.logging.log4j.message">StructuredDataMessage</a>&nbsp;msg)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Logs events with a level of ALL.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -170,6 +179,7 @@ loadScripts(document, 'script');</script>
 <h3>logEvent</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">logEvent</span><wbr><span class="parameters">(<a href="message/StructuredDataMessage.html" title="class in org.apache.logging.log4j.message">StructuredDataMessage</a>&nbsp;msg,
  <a href="Level.html" title="class in org.apache.logging.log4j">Level</a>&nbsp;level)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Logs events and specify the logging level.</div>
 <dl class="notes">
 <dt>Parameters:</dt>

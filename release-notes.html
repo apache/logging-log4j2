@@ -378,10 +378,23 @@
 <p>Prioritize user-defined values of <code>log4j2.enableThreadLocals</code>, <code>log4j2.garbagefreeThreadContextMap</code> and <code>log4j2.shutdownHookEnabled</code> over the value of <code>log4j.isWebapp</code>.</p>
 </li>
 <li>
-<p>Deprecate <code>org.apache.logging.log4j.core.appender.rolling.action.Duration</code> class for removal.</p>
+<p>Deprecate <code>log4j2.defaultStatusLevel</code> property in Log4j Core in favor of <code>log4j2.statusLoggerLevel</code></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-x-x-deprecated"><a class="anchor" href="#release-notes-2-x-x-deprecated"></a>Deprecated</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Deprecate <code>org.apache.logging.log4j.EventLogger</code> for removal</p>
 </li>
 <li>
-<p>Deprecate <code>log4j2.defaultStatusLevel</code> property in Log4j Core in favor of <code>log4j2.statusLoggerLevel</code>.</p>
+<p>Deprecate <code>org.apache.logging.log4j.core.appender.rolling.action.Duration</code> class for removal</p>
+</li>
+<li>
+<p>Deprecate the <code>log4j-mongodb4</code> module in favor of <code>log4j-mongodb</code></p>
 </li>
 </ul>
 </div>
@@ -417,9 +430,6 @@
 <ul>
 <li>
 <p>Add module log4j-mongodb to track the current MongoDB driver (currently version 5).</p>
-</li>
-<li>
-<p>Deprecate the log4j-mongodb4 module in favor of log4j-mongodb.</p>
 </li>
 <li>
 <p>Remove module log4j-mongodb3, use log4j-mongodb instead, log4j-mongodb4 is deprecated for removal.</p>

@@ -576,10 +576,26 @@ For instance, imagine a scenario that uses a domain event to signal authenticati
 <h2 id="collection"><a class="anchor" href="#collection"></a>Collection</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This section explains predefined Log4j <code>Message</code> implementations addressing certain use cases.</p>
+<p>This section explains predefined Log4j <code>Message</code> implementations addressing certain use cases.
+We will group this collection into following titles:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#collection-string">Types intended for plain <code>String</code>-based messages</a></p>
+</li>
+<li>
+<p><a href="#collection-structured">Types intended for structured logging</a></p>
+</li>
+</ul>
 </div>
 <div class="sect2">
-<h3 id="FormattedMessage"><a class="anchor" href="#FormattedMessage"></a><code>FormattedMessage</code></h3>
+<h3 id="collection-string"><a class="anchor" href="#collection-string"></a>String-based types</h3>
+<div class="paragraph">
+<p>This section explains message types intended for human-readable <code>String</code>-typed output.</p>
+</div>
+<div class="sect3">
+<h4 id="FormattedMessage"><a class="anchor" href="#FormattedMessage"></a><code>FormattedMessage</code></h4>
 <div class="paragraph">
 <p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/FormattedMessage.html"><code>FormattedMessage</code></a> is intended as a generic entry point to actual message implementations that use pattern-based formatting.
 It works as follows:</p>
@@ -612,8 +628,8 @@ It works as follows:</p>
 </table>
 </div>
 </div>
-<div class="sect2">
-<h3 id="LocalizedMessage"><a class="anchor" href="#LocalizedMessage"></a>LocalizedMessage</h3>
+<div class="sect3">
+<h4 id="LocalizedMessage"><a class="anchor" href="#LocalizedMessage"></a>LocalizedMessage</h4>
 <div class="paragraph">
 <p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/LocalizedMessage.html"><code>LocalizedMessage</code></a> incorporates a <code>ResourceBundle</code>, and allows the message pattern parameter to be the key to the message pattern in the bundle.
 If no bundle is specified, <code>LocalizedMessage</code> will attempt to locate a bundle with the name of the <code>Logger</code> used to log the event.
@@ -635,8 +651,173 @@ We advise you to perform log message localization at the representation layer of
 </table>
 </div>
 </div>
+<div class="sect3">
+<h4 id="MessageFormatMessage"><a class="anchor" href="#MessageFormatMessage"></a><code>MessageFormatMessage</code></h4>
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/MessageFormatMessage.html"><code>MessageFormatMessage</code></a> formats its input using <a href="https://docs.oracle.com/javase/8/docs/api/java/text/MessageFormat.html">Java&#8217;s <code>MessageFormat</code></a>.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>While <code>MessageFormatMessage</code> offers more flexibility compared to <a href="#ParameterizedMessage"><code>ParameterizedMessage</code></a>,
+the latter is engineered for performance, e.g., it is <a href="garbagefree.html" class="xref page">garbage-free</a>.
+You are recommended to use <code>ParameterizedMessage</code> for performance-sensitive setups.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="ObjectMessage"><a class="anchor" href="#ObjectMessage"></a><code>ObjectMessage</code></h4>
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ObjectMessage.html"><code>ObjectMessage</code></a> is a wrapper <code>Message</code> implementation to log custom domain model instances.
+It formats an input <code>Object</code> by calling its <code>toString()</code> method.
+If the object is found to be extending from <a href="#StringBuilderFormattable"><code>StringBuilderFormattable</code></a>, it uses <code>formatTo(StringBuilder)</code> instead.</p>
+</div>
+<div class="paragraph">
+<p><code>ObjectMessage</code> can be thought as a convenience for <a href="#ParameterizedMessage"><code>ParameterizedMessage</code></a> such that the following message instances are analogous:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>new ObjectMessage(obj)</code></p>
+</li>
+<li>
+<p><code>new ParameterizedMessage("{}", obj)</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>That is,</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>They will both be formatted in the same way</p>
+</li>
+<li>
+<p><code>Message#getParameters()</code> will return an <code>Object[]</code> containing only <code>obj</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Hence, <code>ObjectMessage</code> is intended more as a marker interface to indicate the single value it encapsulates.</p>
+</div>
+<div id="ReusableObjectMessage" class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableObjectMessage.html"><code>ReusableObjectMessage</code></a> provides functionally equivalent to <a href="#ObjectMessage"><code>ObjectMessage</code></a>, plus methods to replace its content to enable <a href="garbagefree.html" class="xref page">Garbage-free logging</a>.
+When garbage-free logging is enabled, <a href="api.html#loggers" class="xref page">loggers</a> will use this instead of <a href="#ObjectMessage"><code>ObjectMessage</code></a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="ParameterizedMessage"><a class="anchor" href="#ParameterizedMessage"></a><code>ParameterizedMessage</code></h4>
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ParameterizedMessage.html"><code>ParameterizedMessage</code></a> accepts a formatting pattern containing <code>{}</code> placeholders and a list of arguments.
+It formats the message such that each <code>{}</code> placeholder in the pattern is replaced with the corresponding argument.</p>
+</div>
+<div id="ReusableParameterizedMessage" class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableParameterizedMessage.html"><code>ReusableParameterizedMessage</code></a> provides functionally equivalent to <a href="#ParameterizedMessage"><code>ParameterizedMessage</code></a>, plus methods to replace its content to enable <a href="garbagefree.html" class="xref page">Garbage-free logging</a>.
+When garbage-free logging is enabled, <a href="api.html#loggers" class="xref page">loggers</a> will use this instead of <a href="#ParameterizedMessage"><code>ParameterizedMessage</code></a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="SimpleMessage"><a class="anchor" href="#SimpleMessage"></a><code>SimpleMessage</code></h4>
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/SimpleMessage.html"><code>SimpleMessage</code></a> encapsulates a <code>String</code> or <code>CharSequence</code> that requires no formatting.</p>
+</div>
+<div id="ReusableSimpleMessage" class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableSimpleMessage.html"><code>ReusableSimpleMessage</code></a> provides functionally equivalent to <a href="#SimpleMessage"><code>SimpleMessage</code></a>, plus methods to replace its content to enable <a href="garbagefree.html" class="xref page">Garbage-free logging</a>.
+When garbage-free logging is enabled, <a href="api.html#loggers" class="xref page">loggers</a> will use this instead of <a href="#SimpleMessage"><code>SimpleMessage</code></a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="StringFormattedMessage"><a class="anchor" href="#StringFormattedMessage"></a><code>StringFormattedMessage</code></h4>
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/StringFormattedMessage.html"><code>StringFormattedMessage</code></a> accepts a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html#syntax">format string</a> and a list of arguments.
+It formats the message using <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html#format(java.lang.String,%20java.lang.Object&#8230;&#8203;)"><code>java.lang.String#format()</code></a>.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>While <code>StringFormattedMessage</code> offers more flexibility compared to <a href="#ParameterizedMessage"><code>ParameterizedMessage</code></a>,
+the latter is engineered for performance, e.g., it is <a href="garbagefree.html" class="xref page">garbage-free</a>.
+You are recommended to use <code>ParameterizedMessage</code> for performance-sensitive setups.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="ThreadDumpMessage"><a class="anchor" href="#ThreadDumpMessage"></a><code>ThreadDumpMessage</code></h4>
+<div class="paragraph">
+<p>If a <a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ThreadDumpMessage.html"><code>ThreadDumpMessage</code></a> is logged, Log4j generates stack traces for all threads.
+These stack traces will include any held locks.</p>
+</div>
+</div>
+</div>
 <div class="sect2">
-<h3 id="MapMessage"><a class="anchor" href="#MapMessage"></a><code>MapMessage</code></h3>
+<h3 id="collection-structured"><a class="anchor" href="#collection-structured"></a>Structured types</h3>
+<div class="paragraph">
+<p>Log4j strives to provide top of the class support for <strong>structured logging</strong>.
+It complements <a href="layouts.html#structured-logging" class="xref page">structured layouts</a> with message types allowing users to create structured messages effectively resulting in an end-to-end structured logging experience.
+This section will introduce the predefined structured message types.</p>
+</div>
+<details>
+<summary class="title">What is <strong>structured logging</strong>?</summary>
+<div class="content">
+<div class="paragraph">
+<p>In almost any modern production deployment, logs are no more written to files read by engineers while troubleshooting, but forwarded to log ingestion systems (Elasticsearch, Google Cloud Logging, etc.) for several observability use cases ranging from logging to metrics.
+This necessitates the applications to <em>structure</em> their logs in a machine-readable way ready to be delivered to an external system.
+This act of encoding logs following a certain structure is called <strong>structured logging</strong>.</p>
+</div>
+</div>
+</details>
+<div class="sect3">
+<h4 id="MapMessage"><a class="anchor" href="#MapMessage"></a><code>MapMessage</code></h4>
 <div class="paragraph">
 <p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html"><code>MapMessage</code></a> is a <code>Message</code> implementation that models a Java <code>Map</code> with <code>String</code>-typed keys and values.
 <strong>It is an ideal generic message type for passing structured data.</strong></p>
@@ -691,105 +872,31 @@ It supports following formats:</p>
 </li>
 </ul>
 </div>
-</div>
-<div class="sect2">
-<h3 id="MessageFormatMessage"><a class="anchor" href="#MessageFormatMessage"></a><code>MessageFormatMessage</code></h3>
+<div class="sect4">
+<h5 id="MapMessage-JsonTemplateLayout"><a class="anchor" href="#MapMessage-JsonTemplateLayout"></a>JSON Template Layout</h5>
 <div class="paragraph">
-<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/MessageFormatMessage.html"><code>MessageFormatMessage</code></a> formats its input using <a href="https://docs.oracle.com/javase/8/docs/api/java/text/MessageFormat.html">Java&#8217;s <code>MessageFormat</code></a>.</p>
-</div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>While <code>MessageFormatMessage</code> offers more flexibility compared to <a href="#ParameterizedMessage"><code>ParameterizedMessage</code></a>,
-the latter is engineered for performance, e.g., it is <a href="garbagefree.html" class="xref page">garbage-free</a>.
-You are recommended to use <code>ParameterizedMessage</code> for performance-sensitive setups.</p>
-</div>
-</td>
-</tr>
-</table>
+<p><a href="json-template-layout.html" class="xref page">JSON Template Layout</a> has a specialized handling for <code>MapMessage</code>s to properly encode them as JSON objects.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="ObjectMessage"><a class="anchor" href="#ObjectMessage"></a><code>ObjectMessage</code></h3>
-<div class="paragraph">
-<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ObjectMessage.html"><code>ObjectMessage</code></a> is a wrapper <code>Message</code> implementation to log custom domain model instances.
-It formats an input <code>Object</code> by calling its <code>toString()</code> method.
-If the object is found to be extending from <a href="#StringBuilderFormattable"><code>StringBuilderFormattable</code></a>, it uses <code>formatTo(StringBuilder)</code> instead.</p>
 </div>
-</div>
-<div class="sect2">
-<h3 id="ParameterizedMessage"><a class="anchor" href="#ParameterizedMessage"></a><code>ParameterizedMessage</code></h3>
-<div class="paragraph">
-<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ParameterizedMessage.html"><code>ParameterizedMessage</code></a> accepts a formatting pattern containing <code>{}</code> placeholders and a list of arguments.
-It formats the message such that each <code>{}</code> placeholder in the pattern is replaced with the corresponding argument.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="ReusableObjectMessage"><a class="anchor" href="#ReusableObjectMessage"></a><code>ReusableObjectMessage</code></h3>
-<div class="paragraph">
-<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableObjectMessage.html"><code>ReusableObjectMessage</code></a> provides functionally equivalent to <a href="#ObjectMessage[]">plus methods to replace its content to enable xref:manual/garbagefree.adoc</a>.
-When garbage-free logging is enabled, <a href="api.html#loggers" class="xref page">loggers</a> will use this instead of <a href="#ObjectMessage"><code>ObjectMessage</code></a>.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="ReusableParameterizedMessage"><a class="anchor" href="#ReusableParameterizedMessage"></a><code>ReusableParameterizedMessage</code></h3>
-<div class="paragraph">
-<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableParameterizedMessage.html"><code>ReusableParameterizedMessage</code></a> provides functionally equivalent to <a href="#ParameterizedMessage[]">plus methods to replace its content to enable xref:manual/garbagefree.adoc</a>.
-When garbage-free logging is enabled, <a href="api.html#loggers" class="xref page">loggers</a> will use this instead of <a href="#ParameterizedMessage"><code>ParameterizedMessage</code></a>.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="ReusableSimpleMessage"><a class="anchor" href="#ReusableSimpleMessage"></a><code>ReusableSimpleMessage</code></h3>
-<div class="paragraph">
-<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableSimpleMessage.html"><code>ReusableSimpleMessage</code></a> provides functionally equivalent to <a href="#SimpleMessage[]">plus methods to replace its content to enable xref:manual/garbagefree.adoc</a>.
-When garbage-free logging is enabled, <a href="api.html#loggers" class="xref page">loggers</a> will use this instead of <a href="#SimpleMessage"><code>SimpleMessage</code></a>.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="SimpleMessage"><a class="anchor" href="#SimpleMessage"></a><code>SimpleMessage</code></h3>
-<div class="paragraph">
-<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/SimpleMessage.html"><code>SimpleMessage</code></a> encapsulates a <code>String</code> or <code>CharSequence</code> that requires no formatting.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="StringFormattedMessage"><a class="anchor" href="#StringFormattedMessage"></a><code>StringFormattedMessage</code></h3>
-<div class="paragraph">
-<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/StringFormattedMessage.html"><code>StringFormattedMessage</code></a> accepts a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html#syntax">format string</a> and a list of arguments.
-It formats the message using <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html#format(java.lang.String,%20java.lang.Object&#8230;&#8203;)"><code>java.lang.String#format()</code></a>.</p>
-</div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>While <code>StringFormattedMessage</code> offers more flexibility compared to <a href="#ParameterizedMessage"><code>ParameterizedMessage</code></a>,
-the latter is engineered for performance, e.g., it is <a href="garbagefree.html" class="xref page">garbage-free</a>.
-You are recommended to use <code>ParameterizedMessage</code> for performance-sensitive setups.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="StructuredDataMessage"><a class="anchor" href="#StructuredDataMessage"></a><code>StructuredDataMessage</code></h3>
+<div class="sect3">
+<h4 id="StructuredDataMessage"><a class="anchor" href="#StructuredDataMessage"></a><code>StructuredDataMessage</code></h4>
 <div class="paragraph">
 <p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html"><code>StructuredDataMessage</code></a> formats its content in a way compliant with <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6">the Syslog message format described in RFC 5424</a>.</p>
 </div>
-</div>
-<div class="sect2">
-<h3 id="ThreadDumpMessage"><a class="anchor" href="#ThreadDumpMessage"></a><code>ThreadDumpMessage</code></h3>
+<div class="sect4">
+<h5 id="StructuredDataMessage-Rfc5424Layout"><a class="anchor" href="#StructuredDataMessage-Rfc5424Layout"></a>RFC 5424 Layout</h5>
 <div class="paragraph">
-<p>If a <a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ThreadDumpMessage.html"><code>ThreadDumpMessage</code></a> is logged, Log4j generates stack traces for all threads.
-These stack traces will include any held locks.</p>
+<p><code>StructuredDataMessage</code> is mostly intended to be used in combination with <a href="layouts.html#RFC5424Layout" class="xref page">RFC 5424 Layout</a>, which has specialized handling for <code>StructuredDataMessage</code>s.
+By combining two, users can have complete control on how their message is encoded in a way compliant with RFC 5424, while RFC 5424 Layout will make sure the rest of the information attached to the log event is properly injected.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="StructuredDataMessage-JsonTemplateLayout"><a class="anchor" href="#StructuredDataMessage-JsonTemplateLayout"></a>JSON Template Layout</h5>
+<div class="paragraph">
+<p>Since <code>StructuredDataMessage</code> extends from <a href="#MapMessage"><code>MapMessage</code></a>, which <a href="json-template-layout.html" class="xref page">JSON Template Layout</a> has a specialized handling for, <code>StructuredDataMessage</code>s will be properly encoded by JSON Template Layout too.</p>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -810,7 +917,7 @@ In such a scenario, if you also have custom message types, consider implementing
 <h2 id="extending"><a class="anchor" href="#extending"></a>Extending</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>If <a href="#collection[predefined message types] fall short of addressing your needs">you can extend from the link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html,<code>Message</code></a> interface to either create your own message types or make your domain models take control of the message formatting.</p>
+<p>If <a href="#collection">predefined message types</a> fall short of addressing your needs, you can extend from the <a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html"><code>Message</code></a> interface to either create your own message types or make your domain models take control of the message formatting.</p>
 </div>
 <details>
 <summary class="title">Example custom message class</summary>
@@ -867,7 +974,7 @@ In such a scenario, if you also have custom message types, consider implementing
 Layouts leverage this mechanism to encode a message in a particular format.
 For instance, when <a href="json-template-layout.html" class="xref page">JSON Template Layout</a> figures out that <code>getFormat()</code> of a <code>Message</code> returns <code>JSON</code>, it injects the <code>Message#getFormattedMessage()</code> output as is without quoting it.
 This way a message implementation can communicate its support for a particular encoding.
-If you want to support multiple formats, extend from <a href="#MultiformatMessage"><code>MultiformatMessage</code></a> instead.</p>
+If you want to support multiple formats, extend from <a href="#MultiformatMessage"><code>MultiformatMessage</code></a>, and optionally from <a href="#MultiFormatStringBuilderFormattable"><code>MultiFormatStringBuilderFormattable</code></a>, instead.</p>
 </div>
 </div>
 <div class="sect2">
@@ -890,11 +997,16 @@ For example, see <a href="https://github.com/apache/logging-log4j2/tree/2.x/tree
 </div>
 </div>
 <div class="sect3">
+<h4 id="MultiFormatStringBuilderFormattable"><a class="anchor" href="#MultiFormatStringBuilderFormattable"></a><code>MultiFormatStringBuilderFormattable</code></h4>
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/util/MultiFormatStringBuilderFormattable.html"><code>MultiFormatStringBuilderFormattable</code></a> extends <a href="#StringBuilderFormattable"><code>StringBuilderFormattable</code></a> to support multiple <a href="#format-type">format types</a>.</p>
+</div>
+</div>
+<div class="sect3">
 <h4 id="StringBuilderFormattable"><a class="anchor" href="#StringBuilderFormattable"></a><code>StringBuilderFormattable</code></h4>
 <div class="paragraph">
 <p>Many <a href="layouts.html" class="xref page">layouts</a> recycle <code>StringBuilder</code>s to encode log events <a href="garbagefree.html" class="xref page">without generating garbage</a>, and this effectively results in significant <a href="performance.html" class="xref page">performance</a> benefits.
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/util/StringBuilderFormattable.html"><code>StringBuilderFormattable</code></a> is the primary interface facilitating the formatting of objects to a <code>StringBuilder</code>.
-<strong>You are strongly advised to implement this interface in your custom <code>Message</code> types.</strong></p>
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/util/StringBuilderFormattable.html"><code>StringBuilderFormattable</code></a> is the primary interface facilitating the formatting of objects to a <code>StringBuilder</code>.</p>
 </div>
 </div>
 <div class="sect3">

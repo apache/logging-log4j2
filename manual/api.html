@@ -401,7 +401,7 @@ Check out <a href="https://logging.apache.org/log4j/kotlin">Log4j Kotlin</a> and
 </div>
 </div>
 <div class="sect1">
-<h2 id="_introduction"><a class="anchor" href="#_introduction"></a>Introduction</h2>
+<h2 id="intro"><a class="anchor" href="#intro"></a>Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>To log, you need a <a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html"><code>Logger</code></a> instance which you will retrieve from the <a href="../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html"><code>LogManager</code></a>.
@@ -1011,7 +1011,22 @@ You might reconsider your formatter logger usages for latency sensitive applicat
 <div class="sect2">
 <h3 id="event-logger"><a class="anchor" href="#event-logger"></a>Event logger</h3>
 <div class="paragraph">
-<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/EventLogger.html"><code>EventLogger</code></a> provides a simple way to log structured events conforming with the <code>STRCUTURED-DATA</code> format defined in <a href="https://tools.ietf.org/html/rfc5424">RFC 5424 (The Syslog Protocol)</a>.</p>
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/EventLogger.html"><code>EventLogger</code></a> is a convenience to log <a href="messages.html#StructuredDataMessage" class="xref page"><code>StructuredDataMessage</code></a>s, which format their content in a way compliant with <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6">the Syslog message format described in RFC 5424</a>.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Event Logger is deprecated for removal!</strong>
+We advise users to switch to plain <code>Logger</code> instead.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p><a href="eventlogging.html" class="xref page">Read more on event loggers&#8230;&#8203;</a></p>

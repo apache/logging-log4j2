@@ -347,9 +347,24 @@ This page will try to answer following questions:</p>
 <p>This section introduces you to some common concerns shared by almost all <a href="#collection">predefined layouts</a> that you need to be aware of while using them.</p>
 </div>
 <div class="sect2">
+<h3 id="structured-logging"><a class="anchor" href="#structured-logging"></a>Structured logging</h3>
+<div class="paragraph">
+<p>In almost any modern production deployment, logs are no more written to files read by engineers while troubleshooting, but forwarded to log ingestion systems (Elasticsearch, Google Cloud Logging, etc.) for several observability use cases ranging from logging to metrics.
+This necessitates the applications to <em>structure</em> their logs in a machine-readable way ready to be delivered to an external system.
+This act of encoding logs following a certain structure is called <strong>structured logging</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Log4j strives to provide top of the class support for structured logging.
+To create an end-to-end experience, it provides several <a href="messages.html#collection-structured" class="xref page">structured message types</a> along with layouts supporting structured logging.</p>
+</div>
+<div class="paragraph">
+<p>We recommend <a href="json-template-layout.html" class="xref page">JSON Template Layout</a> for structured logging purposes.</p>
+</div>
+</div>
+<div class="sect2">
 <h3 id="charset"><a class="anchor" href="#charset"></a>Character encoding</h3>
 <div class="paragraph">
-<p>All <a href="#collection[predefined layouts] produce <code>String</code> that eventually get converted into a <code>byte">[collection[predefined layouts] produce <code>String</code> that eventually get converted into a <code>byte]</a></code> using the <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html"><code>Charset</code></a> configured.
+<p>All <a href="#collection">predefined layouts</a> produce <code>String</code> that eventually get converted into a <code>byte</code> using the <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html"><code>Charset</code></a> configured.
 While doing so, unless an explicit encoding configuration is stated, they use <code>UTF-8</code> by default.
 If you want all your log events to be formatted in a certain character encoding that is different from what the employed layout defaults to, make sure to configure the layout&#8217;s character encoding as needed.</p>
 </div>
@@ -1660,6 +1675,10 @@ This attribute only applies to RFC 5424 Syslog records.</p></td>
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p>RFC 5424 Layout has specialized handling for <a href="messages.html#StructuredDataMessage" class="xref page"><code>StructuredDataMessage</code></a>s.
+By combining two, users can have complete control on how their message is encoded in a way compliant with RFC 5424, while RFC 5424 Layout will make sure the rest of the information attached to the log event is properly injected.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="SerializedLayout"><a class="anchor" href="#SerializedLayout"></a>Serialized Layout</h3>
