@@ -29,10 +29,20 @@ This page will try to answer following questions:
 
 This section introduces you to some common concerns shared by almost all <<collection,predefined layouts>> that you need to be aware of while using them.
 
+[#structured-logging]
+=== Structured logging
+
+include::partial$manual/structured-logging.adoc[]
+
+Log4j strives to provide top of the class support for structured logging.
+To create an end-to-end experience, it provides several xref:manual/messages.adoc#collection-structured[structured message types] along with layouts supporting structured logging.
+
+We recommend xref:manual/json-template-layout.adoc[] for structured logging purposes.
+
 [#charset]
 === Character encoding
 
-All <<collection[predefined layouts] produce `String` that eventually get converted into a `byte>>` using the https://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html[`Charset`] configured.
+All <<collection,predefined layouts>> produce `String` that eventually get converted into a `byte` using the https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/charset/Charset.html[`Charset`] configured.
 While doing so, unless an explicit encoding configuration is stated, they use `UTF-8` by default.
 If you want all your log events to be formatted in a certain character encoding that is different from what the employed layout defaults to, make sure to configure the layout's character encoding as needed.
 
@@ -485,6 +495,9 @@ This attribute only applies to RFC 5424 Syslog records.
 |String
 |The string that should be used to replace newlines within the message text
 |===
+
+RFC 5424 Layout has specialized handling for xref:manual/messages.adoc#StructuredDataMessage[`StructuredDataMessage`]s.
+By combining two, users can have complete control on how their message is encoded in a way compliant with RFC 5424, while RFC 5424 Layout will make sure the rest of the information attached to the log event is properly injected.
 
 [#SyslogLayout]
 === Syslog Layout
