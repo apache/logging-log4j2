@@ -161,19 +161,19 @@ It formats the message such that each `{}` placeholder in the pattern is replace
 [#ReusableObjectMessage]
 === `ReusableObjectMessage`
 
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableObjectMessage.html[`ReusableObjectMessage`] provides functionally equivalent to <<ObjectMessage[], plus methods to replace its content to enable xref:manual/garbagefree.adoc>>.
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableObjectMessage.html[`ReusableObjectMessage`] provides functionally equivalent to <<ObjectMessage>>, plus methods to replace its content to enable xref:manual/garbagefree.adoc[].
 When garbage-free logging is enabled, xref:manual/api.adoc#loggers[loggers] will use this instead of <<ObjectMessage>>.
 
 [#ReusableParameterizedMessage]
 === `ReusableParameterizedMessage`
 
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableParameterizedMessage.html[`ReusableParameterizedMessage`] provides functionally equivalent to <<ParameterizedMessage[], plus methods to replace its content to enable xref:manual/garbagefree.adoc>>.
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableParameterizedMessage.html[`ReusableParameterizedMessage`] provides functionally equivalent to <<ParameterizedMessage>>, plus methods to replace its content to enable xref:manual/garbagefree.adoc[].
 When garbage-free logging is enabled, xref:manual/api.adoc#loggers[loggers] will use this instead of <<ParameterizedMessage>>.
 
 [#ReusableSimpleMessage]
 === `ReusableSimpleMessage`
 
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableSimpleMessage.html[`ReusableSimpleMessage`] provides functionally equivalent to <<SimpleMessage[], plus methods to replace its content to enable xref:manual/garbagefree.adoc>>.
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableSimpleMessage.html[`ReusableSimpleMessage`] provides functionally equivalent to <<SimpleMessage>>, plus methods to replace its content to enable xref:manual/garbagefree.adoc[].
 When garbage-free logging is enabled, xref:manual/api.adoc#loggers[loggers] will use this instead of <<SimpleMessage>>.
 
 [#SimpleMessage]

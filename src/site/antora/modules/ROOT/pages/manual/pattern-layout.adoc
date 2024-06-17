@@ -17,7 +17,7 @@
 
 = Pattern Layout
 
-`PatternLayout` is a customizable, <<performance[efficient], xref:#garbage-free,garbage-free>>, and human-readable string generating layout using a user-provided pattern.
+`PatternLayout` is a customizable, <<performance,efficient>>, <<garbage-free,garbage-free>>, and human-readable string generating layout using a user-provided pattern.
 It is analogous to `String#format()` with specialized directives on injecting certain properties of a `LogEvent`.
 
 [IMPORTANT]
@@ -1683,7 +1683,15 @@ Format modifiers to control such things as field width, padding, left, and right
 
 |literal text
 a|Garbage-free, but care is needed for xref:manual/lookups.adoc[].
+
 include::partial$manual/layouts-gcfree-lookup.adoc[]
+
+[IMPORTANT]
+====
+Lookups are intended as a very generic, convenience utility to perform string interpolation for, in particular, configuration files and components (e.g., layouts) lacking this mechanism.
+*Pattern Layout has powerful directives to inject external values, and you should always prefer those whenever possible over lookups!*
+For example, always prefer <<converter-map, the `map` converter>> over xref:manual/lookups.adoc#MapLookup[the `map` lookup].
+====
 |===
 
 Patterns containing regular expressions and xref:manual/layouts.adoc#LocationInformation[location information] are not garbage-free.

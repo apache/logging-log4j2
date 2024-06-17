@@ -16,7 +16,7 @@
 ////
 = JSON Template Layout
 
-`JsonTemplateLayout` is a customizable, <<performance,efficient>>, and xref:#faq-garbage-free,garbage-free>> JSON generating layout.
+`JsonTemplateLayout` is a customizable, <<performance,efficient>>, and <<faq-garbage-free,garbage-free>> JSON generating layout.
 It encodes ``LogEvent``s according to the structure described by the JSON template provided.
 In a nutshell, it shines with its
 
@@ -1208,6 +1208,8 @@ pattern           = "pattern" -> string
 stackTraceEnabled = "stackTraceEnabled" -> boolean
 ----
 
+xref:manual/lookups.adoc[] (e.g., `${java:version}`, `${env:USER}`, `${date:MM-dd-yyyy}`) found in the `pattern` will be resolved.
+
 The default value of `stackTraceEnabled` is inherited from the parent JSON Template Layout.
 
 [NOTE]
@@ -2055,6 +2057,33 @@ To get the most out of it, mind the following checklist:
 === Are lookups supported in templates?
 
 Yes, xref:manual/lookups.adoc[lookups] (e.g., `${java:version}`, `${env:USER}`, `${date:MM-dd-yyyy}`) are supported in string literals of templates.
+Though this doesn't apply to literals located in _configuration object of resolvers_, unless the associated resolver explicitly does so.
+Consider the following:
+
+[source,json]
+----
+{
+    "java-version": "${java:version}", //<1>
+    "userId": {
+      "$resolver": "mdc",
+      "key": "${env:FOO:-userId}" //<2>
+    },
+    "pid": {
+      "$resolver": "pattern",
+      "pattern": "${env:NO_SUCH_KEY:-%pid}" //<3>
+    }
+}
+----
+<1> This works. `${java:version}` will be replaced with the corresponding value _once_ while compiling the event template.
+<2> This won't work! That is, `${env:FOO:-userId}` literal will not get substituted, since it is located in a _configuration object of a resolver_, and <<event-template-resolver-mdc,the `mdc` resolver>> does not explicitly do any substitutions either.
+<3> This works, even though it is located in a _configuration object of a resolver_, since <<event-template-resolver-pattern,the `pattern` resolver>> explicitly perform substitutions on the `pattern` argument.
+
+[IMPORTANT]
+====
+Lookups are intended as a very generic, convenience utility to perform string interpolation for, in particular, configuration files and components (e.g., layouts) lacking this mechanism.
+*JSON Template Layout has powerful directives to inject external values, and you should always prefer those whenever possible over lookups!*
+For example, always prefer <<event-template-resolver-map, the `map` resolver>> over xref:manual/lookups.adoc#MapLookup[the `map` lookup].
+====
 
 include::partial$manual/layouts-gcfree-lookup.adoc[]
 

@@ -35,6 +35,8 @@ import org.apache.logging.log4j.util.Strings;
  * stackTraceEnabled = "stackTraceEnabled" -> boolean
  * </pre>
  *
+ * Lookups (e.g., <tt>${java:version}</tt>, <tt>${env:USER}</tt>, <tt>${date:MM-dd-yyyy}</tt>) found in the <tt>pattern</tt> will be resolved.
+ *
  * The default value of <tt>stackTraceEnabled</tt> is inherited from the parent
  * {@link JsonTemplateLayout}.
  *
@@ -55,10 +57,7 @@ public final class PatternResolver implements EventResolver {
     private final BiConsumer<StringBuilder, LogEvent> emitter;
 
     PatternResolver(final EventResolverContext context, final TemplateResolverConfig config) {
-        final String pattern = config.getString("pattern");
-        if (Strings.isBlank(pattern)) {
-            throw new IllegalArgumentException("blank pattern: " + config);
-        }
+        final String pattern = readPattern(context.getSubstitutor(), config);
         final boolean stackTraceEnabled =
                 Optional.ofNullable(config.getBoolean("stackTraceEnabled")).orElse(context.isStackTraceEnabled());
         final PatternLayout patternLayout = PatternLayout.newBuilder()
@@ -69,6 +68,16 @@ public final class PatternResolver implements EventResolver {
                 .build();
         this.emitter = (final StringBuilder stringBuilder, final LogEvent logEvent) ->
                 patternLayout.serialize(logEvent, stringBuilder);
+    }
+
+    private static String readPattern(
+            final EventResolverStringSubstitutor substitutor, final TemplateResolverConfig config) {
+        final String pattern = config.getString("pattern");
+        if (Strings.isBlank(pattern)) {
+            throw new IllegalArgumentException("blank pattern: " + config);
+        }
+        final boolean substitutionNeeded = pattern.contains("${");
+        return substitutionNeeded ? substitutor.replace(null, pattern) : pattern;
     }
 
     static String getName() {
