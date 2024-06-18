@@ -38,8 +38,8 @@
 *** xref:manual/thread-context.adoc[]
 ** xref:manual/messages.adoc[]
 ** xref:manual/flowtracing.adoc[]
-* Configuration
-** xref:manual/configuration.adoc[Configuration file]
+* xref:manual/config-intro.adoc[]
+** xref:manual/configuration.adoc[]
 ** xref:manual/systemproperties.adoc[]
 ** xref:manual/customconfig.adoc[]
 ** xref:manual/appenders.adoc[]

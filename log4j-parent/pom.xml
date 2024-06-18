@@ -78,7 +78,7 @@
     <!-- `com.conversantmedia:disruptor` version 1.2.16 requires Java 9: -->
     <conversant.disruptor.version>1.2.15</conversant.disruptor.version>
     <disruptor.version>3.4.4</disruptor.version>
-    <elasticsearch-java.version>8.14.0</elasticsearch-java.version>
+    <elasticsearch-java.version>8.14.1</elasticsearch-java.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <felix.version>7.0.5</felix.version>
     <flapdoodle-embed.version>4.11.0</flapdoodle-embed.version>
@@ -136,7 +136,7 @@
     <pax-exam.version>4.13.5</pax-exam.version>
     <plexus-utils.version>3.5.1</plexus-utils.version>
     <spring-boot.version>2.7.18</spring-boot.version>
-    <spring-framework.version>5.3.36</spring-framework.version>
+    <spring-framework.version>5.3.37</spring-framework.version>
     <system-stubs.version>2.0.3</system-stubs.version>
     <tomcat-juli.version>10.0.27</tomcat-juli.version>
     <velocity.version>1.7</velocity.version>
