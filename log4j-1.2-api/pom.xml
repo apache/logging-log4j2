@@ -119,17 +119,6 @@
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- Place Felix before Equinox because Felix is signed. -->
-    <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.framework</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.tycho</groupId>
-      <artifactId>org.eclipse.osgi</artifactId>
-      <scope>test</scope>
-    </dependency>
     <!-- 1.2 tests -->
     <dependency>
       <groupId>oro</groupId>
