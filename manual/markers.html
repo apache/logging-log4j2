@@ -406,20 +406,43 @@ If you use the <a href="#example-configuration">configuration example below</a>,
 </div>
 </div>
 <div class="sect1">
+<h2 id="pitfalls"><a class="anchor" href="#pitfalls"></a>Pitfalls</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>It is important to note that marker names must be unique, as Log4j registers them permanently by name.
+Developers are advised to avoid generic marker names, as they may conflict with those provided by third parties.</p>
+</div>
+<div class="paragraph">
+<p>For technical reasons the
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/Marker.html#setParents(org.apache.logging.log4j.Marker&#8230;&#8203;)"><code>Marker.setParents(Marker&#8230;&#8203;)</code></a>
+method can be called at runtime to modify the list of parents of the current marker.
+However, we discourage such a practice and advise you to only use the method at initialization time.</p>
+</div>
+<div class="paragraph">
+<p>It is also worth noting that markers without parents are more efficient to evaluate
+than markers with multiple parents. It is generally a good idea to avoid
+complex hierarchies of markers where possible.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="configuring-log4j"><a class="anchor" href="#configuring-log4j"></a>Configuring filtering</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Developers can use markers to filter the log statements delivered to log files.
 Marker processing is supported at least by
-<a href="https://logback.qos.ch/manual/filters.html#TurboFilter">Logback</a>
+<a href="https://logback.qos.ch/manual/filters.html">Logback</a>
 and the Log4j Core logging backends.
-We will discuss only the configuration of the latter.</p>
+We will provide a sample configuration for both these backends.</p>
 </div>
+<div class="sect2">
+<h3 id="log4j-core"><a class="anchor" href="#log4j-core"></a>Log4j Core</h3>
 <div class="paragraph">
 <p>To filter messages by marker, you need to add
 <a href="filters.html#MarkerFilter" class="xref page"><code>MarkerFilter</code></a>
 to your configuration file.
-For example, one can use the snippet below to redirect all SQL-related logs to the <code>SQL_LOG</code> appender:</p>
+For example, you can use the configuration below to redirect all SQL-related logs to the <code>SQL_LOG</code> appender,
+regardless of the level of the events:</p>
 </div>
 <div id="example-configuration" class="openblock tabs is-sync is-loading">
 <div class="content">
@@ -442,61 +465,107 @@ For example, one can use the snippet below to redirect all SQL-related logs to t
 <div id="example_configuration_xml--panel" class="tabpanel" aria-labelledby="example_configuration_xml">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">    &lt;Logger name="example" level="ALL"&gt;<i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Configuration xmlns="https://logging.apache.org/xml/ns"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="
+                   https://logging.apache.org/xml/ns
+                   https://logging.apache.org/xml/ns/log4j-config-2.xsd"&gt;
+  &lt;Appenders&gt;
+    &lt;Console name="SQL_LOG"&gt;
+      &lt;PatternLayout pattern="%d{HH:mm:ss.SSS} (%marker) %m%n"/&gt;
+    &lt;/Console&gt;
+  &lt;/Appenders&gt;
+  &lt;MarkerFilter marker="SQL"
+                onMatch="ACCEPT"
+                onMismatch="NEUTRAL"/&gt;<i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;Loggers&gt;
+    &lt;Root level="INFO"&gt;
       &lt;AppenderRef ref="SQL_LOG"&gt;
-        &lt;MarkerFilter marker="SQL"
-                      onMatch="ACCEPT"
-                      onMismatch="DENY"/&gt;<i class="conum" data-value="2"></i><b>(2)</b>
+        &lt;MarkerFilter marker="SQL"/&gt;<i class="conum" data-value="2"></i><b>(2)</b>
       &lt;/AppenderRef&gt;
-    &lt;/Logger&gt;</code></pre>
+    &lt;/Root&gt;
+  &lt;/Loggers&gt;
+&lt;/Configuration&gt;</code></pre>
 </div>
 </div>
 </div>
 <div id="example_configuration_json--panel" class="tabpanel" aria-labelledby="example_configuration_json">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">      "Logger": {
-        "name": "example",
-        "level": "ALL", <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "Configuration": {
+    "Appenders": {
+      "Console": {
+        "name": "SQL_LOG",
+        "PatternLayout": {
+          "pattern": "%d{HH:mm:ss.SSS} (%marker) %m%n"
+        }
+      }
+    },
+    "MarkerFilter": { <i class="conum" data-value="1"></i><b>(1)</b>
+      "marker": "SQL",
+      "onMatch": "ACCEPT",
+      "onMismatch": "NEUTRAL"
+    },
+    "Loggers": {
+      "Root": {
+        "level": "INFO",
         "AppenderRef": {
           "ref": "SQL_LOG",
           "MarkerFilter": { <i class="conum" data-value="2"></i><b>(2)</b>
-            "marker": "SQL",
-            "onMatch": "ACCEPT",
-            "onMismatch": "DENY"
+            "marker": "SQL"
           }
         }
-      }</code></pre>
+      }
+    }
+  }
+}</code></pre>
 </div>
 </div>
 </div>
 <div id="example_configuration_yaml--panel" class="tabpanel" aria-labelledby="example_configuration_yaml">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">    Logger:
-      name: "example"
-      level: "ALL" <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Configuration:
+  Appenders:
+    Console:
+      name: "SQL_LOG"
+      PatternLayout:
+        pattern: "%d{HH:mm:ss.SSS} (%marker) %m%n"
+  MarkerFilter: <i class="conum" data-value="1"></i><b>(1)</b>
+    marker: "SQL"
+    onMatch: "ACCEPT"
+    onMismatch: "NEUTRAL"
+  Loggers:
+    Root:
+      level: "INFO"
       AppenderRef:
         ref: "SQL_LOG"
         MarkerFilter: <i class="conum" data-value="2"></i><b>(2)</b>
-          marker: "SQL"
-          onMatch: "ACCEPT"
-          onMismatch: DENY</code></pre>
+          marker: "SQL"</code></pre>
 </div>
 </div>
 </div>
 <div id="example_configuration_properties--panel" class="tabpanel" aria-labelledby="example_configuration_properties">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">logger.0.name = example
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = Console
+appender.0.name = SQL_LOG
+appender.0.layout.type = PatternLayout
+appender.0.layout.pattern = %d{HH:mm:ss.SSS} (%marker) %m%n
+
 <i class="conum" data-value="1"></i><b>(1)</b>
-logger.0.level = ALL
-logger.0.appenderRef.0.ref = SQL_LOG
+filter.0.type = MarkerFilter
+filter.0.marker = SQL
+filter.0.onMatch = ACCEPT
+filter.0.onMismatch = NEUTRAL
+
+rootLogger.level = INFO
+rootLogger.appenderRef.0.ref = SQL_LOG
 <i class="conum" data-value="2"></i><b>(2)</b>
-logger.0.appenderRef.0.filter.type = MarkerFilter
-logger.0.appenderRef.0.filter.marker = SQL
-logger.0.appenderRef.0.filter.onMatch = ACCEPT
-logger.0.appenderRef.0.filter.onMismatch = DENY</code></pre>
+rootLogger.appenderRef.0.filter.type = MarkerFilter
+rootLogger.appenderRef.0.filter.marker = SQL</code></pre>
 </div>
 </div>
 </div>
@@ -506,32 +575,63 @@ logger.0.appenderRef.0.filter.onMismatch = DENY</code></pre>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Match all messages from <code>example</code> package from all levels</td>
+<td>Accepts all events marked with <code>SQL</code> regardless of their level,</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Only allow messages marker with <code>SQL</code> or one of its children to be sent to the <code>SQL_LOG</code> appender.</td>
+<td>Only allow events marked with <code>SQL</code> or one of its children to be sent to the <code>SQL_LOG</code> appender.</td>
 </tr>
 </table>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="pitfalls"><a class="anchor" href="#pitfalls"></a>Pitfalls</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="logback"><a class="anchor" href="#logback"></a>Logback</h3>
 <div class="paragraph">
-<p>It is important to note that marker names must be unique, as Log4j registers them permanently by name.
-Developers should avoid generic marker names, as they may conflict with
-those provided by third parties. Except, of course, if the user is aware of the implications.</p>
+<p>Logback differentiates two kinds of filters: <code>TurboFilter</code>s, which are applied before a log event is created, and
+<code>Filter</code>s, which are applied only when a log event reaches an appender.
+See <a href="https://logback.qos.ch/manual/filters.html">Logback filters</a> for more information.</p>
 </div>
 <div class="paragraph">
-<p>While it is possible to add or remove parent markers dynamically through the <code>setParents()</code> method,
-it is generally advisable to set the parents when the marker is created for efficiency and performance reasons.</p>
+<p>You can use a combination of <code>MarkerFilter</code>, <code>EvaluatorFilter</code> and <code>OnMarkerEvaluator</code> to redirect all messages marked with <code>SQL</code> to a specific appender, regardless of their level.
+In order to do that, you can use a configuration as below:</p>
 </div>
-<div class="paragraph">
-<p>It is also worth noting that markers without parents are more efficient to evaluate
-than markers with multiple parents. It is generally a good idea to avoid
-complex hierarchies of markers where possible.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;configuration&gt;
+  &lt;turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+    &lt;Marker&gt;SQL&lt;/Marker&gt;
+    &lt;OnMatch&gt;ACCEPT&lt;/OnMatch&gt;
+  &lt;/turboFilter&gt;
+  &lt;appender name="SQL_LOG" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;encoder&gt;
+      &lt;pattern&gt;%d{HH:mm:ss.SSS} (%marker) %m%n&lt;/pattern&gt;
+    &lt;/encoder&gt;
+    &lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter"&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+      &lt;evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator"&gt;
+        &lt;marker&gt;SQL&lt;/marker&gt;
+      &lt;/evaluator&gt;
+      &lt;onMismatch&gt;DENY&lt;/onMismatch&gt;
+    &lt;/filter&gt;
+  &lt;/appender&gt;
+  &lt;root level="INFO"&gt;
+    &lt;appender-ref ref="SQL_LOG"/&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Accepts all events marked with <code>SQL</code> regardless of their level,</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Only allow events marked with <code>SQL</code> or one of its children to be sent to the <code>SQL_LOG</code> appender.git</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 </div>
@@ -549,8 +649,13 @@ complex hierarchies of markers where possible.</p>
 to the <code>src/main/java/example</code> folder of your project,</p>
 </li>
 <li>
-<p>add
+<p>if your project uses Log4j Core add
 <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/markers/log4j2.xml">log4j2.xml</a>
+to the <code>src/main/resources</code> folder of your project.</p>
+</li>
+<li>
+<p>if your project uses Logback add
+<a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/markers/logback.xml">logback.xml</a>
 to the <code>src/main/resources</code> folder of your project.</p>
 </li>
 </ul>
