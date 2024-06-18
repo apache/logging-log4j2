@@ -69,7 +69,7 @@ public class CoreOsgiTest {
         builder.setHeader(
                 Constants.PROVIDE_CAPABILITY,
                 "osgi.serviceloader;osgi.serviceloader=\"org.apache.logging.log4j.plugins.model.PluginService\";"
-                        + "register:=\"org.apache.logging.log4j.osgi.tests.plugins.Log4jPlugins\"");
+                        + "register:=\"org.apache.logging.log4j.osgi_test.plugins.Log4jPlugins\"");
         builder.setHeader(
                 Constants.REQUIRE_CAPABILITY,
                 "osgi.extender;filter:=\"(&(osgi.extender=osgi.serviceloader.registrar)(version>=1.0)(!(version>=2.0)))\"");

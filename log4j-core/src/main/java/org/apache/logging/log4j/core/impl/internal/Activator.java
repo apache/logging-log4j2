@@ -16,15 +16,33 @@
  */
 package org.apache.logging.log4j.core.impl.internal;
 
+import java.util.Hashtable;
 import org.apache.logging.log4j.core.impl.Log4jProvider;
-import org.apache.logging.log4j.util.ProviderActivator;
+import org.apache.logging.log4j.spi.Provider;
 import org.osgi.annotation.bundle.Header;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
+import org.osgi.framework.ServiceRegistration;
 
 @Header(name = Constants.BUNDLE_ACTIVATOR, value = "${@class}")
 @Header(name = Constants.BUNDLE_ACTIVATIONPOLICY, value = Constants.ACTIVATION_LAZY)
-public class Activator extends ProviderActivator {
-    public Activator() {
-        super(new Log4jProvider());
+public class Activator implements BundleActivator {
+
+    private ServiceRegistration<Provider> providerRegistration = null;
+
+    @Override
+    public void start(final BundleContext context) throws Exception {
+        final Provider provider = new Log4jProvider();
+        final Hashtable<String, String> props = new Hashtable<>();
+        props.put("APIVersion", provider.getVersions());
+        this.providerRegistration = context.registerService(Provider.class, provider, props);
+    }
+
+    @Override
+    public void stop(final BundleContext context) throws Exception {
+        if (this.providerRegistration != null) {
+            this.providerRegistration.unregister();
+        }
     }
 }

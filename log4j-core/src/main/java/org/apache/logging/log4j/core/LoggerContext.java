@@ -18,6 +18,8 @@ package org.apache.logging.log4j.core;
 
 import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.SHUTDOWN_HOOK_MARKER;
 
+import aQute.bnd.annotation.Cardinality;
+import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
@@ -76,6 +78,7 @@ import org.jspecify.annotations.Nullable;
  * applications and a reference to the Configuration. The Configuration will contain the configured loggers, appenders,
  * filters, etc. and will be atomically updated whenever a reconfigure occurs.
  */
+@ServiceConsumer(value = ConfigurableInstanceFactoryPostProcessor.class, cardinality = Cardinality.MULTIPLE)
 public class LoggerContext extends AbstractLifeCycle
         implements org.apache.logging.log4j.spi.LoggerContext,
                 AutoCloseable,

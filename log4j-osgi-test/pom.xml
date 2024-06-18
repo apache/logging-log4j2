@@ -27,7 +27,7 @@
   </parent>
 
   <artifactId>log4j-osgi-test</artifactId>
-  <packaging>jar</packaging>
+
   <name>Apache Log4j OSGi tests</name>
   <description>The Apache Log4j OSGi tests</description>
 
@@ -41,6 +41,9 @@
 
     <spotbugs.skip>true</spotbugs.skip>
     <spifly.version>1.3.7</spifly.version>
+
+    <!-- Fix the name of the package with `PluginService`, since it is also used in the code -->
+    <log4jPluginPackageForTests>org.apache.logging.log4j.osgi_test</log4jPluginPackageForTests>
   </properties>
 
   <dependencies>
@@ -150,6 +153,20 @@
 
     <plugins>
 
+      <!-- Disable randomisation of the package used by `PluginService`,
+           since it also must be referenced in the test code. -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>3.5.0</version>
+        <executions>
+          <execution>
+            <id>define-log4jPluginPackageForTests</id>
+            <phase>none</phase>
+          </execution>
+        </executions>
+      </plugin>
+
       <!--
         ~ Unban Logback.
         -->
@@ -198,16 +215,56 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <classpathDependencyExcludes>org.osgi:org.osgi.framework</classpathDependencyExcludes>
+          <classpathDependencyExcludes>
+            <exclude>org.osgi:org.osgi.framework</exclude>
+          </classpathDependencyExcludes>
           <systemPropertyVariables>
             <!-- PAX logging has a copy of Log4j2 API-->
             <pax.exam.logging>false</pax.exam.logging>
             <java.protocol.handler.pkgs>org.ops4j.pax.url</java.protocol.handler.pkgs>
+            <!-- Used in `osgi.properties -->
+            <felix.cache.rootdir>${project.build.directory}</felix.cache.rootdir>
           </systemPropertyVariables>
           <!-- Illegal access is disabled by default in Java 16 due to JEP-396.
                We are relaxing it for tests. -->
           <argLine>--add-opens java.base/java.net=ALL-UNNAMED</argLine>
         </configuration>
+        <executions>
+          <!-- Split the Felix and Equinox tests to prevent classpath conflicts.
+               Both frameworks contain e.g. the `org.apache.felix.resolver` package. -->
+          <execution>
+            <id>default-test</id>
+            <phase>none</phase>
+          </execution>
+          <execution>
+            <id>test-equinox</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <classpathDependencyExcludes combine.children="append">
+                <exclude>org.apache.felix:org.apache.felix.framework</exclude>
+              </classpathDependencyExcludes>
+              <excludes>
+                <exclude>org.apache.logging.log4j.osgi.tests.FelixLoadApiBundleTest</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>test-felix</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <classpathDependencyExcludes combine.children="append">
+                <exclude>org.eclipse.platform:org.eclipse.osgi</exclude>
+              </classpathDependencyExcludes>
+              <excludes>
+                <exclude>org.apache.logging.log4j.osgi.tests.EquinoxLoadApiBundleTest</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
     </plugins>

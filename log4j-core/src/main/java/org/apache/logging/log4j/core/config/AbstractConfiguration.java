@@ -92,6 +92,7 @@ import org.jspecify.annotations.Nullable;
  */
 @NullMarked
 @ServiceConsumer(value = ScriptManagerFactory.class, cardinality = Cardinality.SINGLE, resolution = Resolution.OPTIONAL)
+@ServiceConsumer(value = ConfigurableInstanceFactoryPostProcessor.class, cardinality = Cardinality.MULTIPLE)
 public abstract class AbstractConfiguration extends AbstractFilterable implements Configuration {
 
     private static final List<String> EXPECTED_ELEMENTS =
