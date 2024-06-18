@@ -203,7 +203,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <classpathDependencyExcludes>
-            <classpathDependencyExclude>org.osgi:org.osgi.framework</classpathDependencyExclude>
+            <exclude>org.osgi:org.osgi.framework</exclude>
           </classpathDependencyExcludes>
           <systemPropertyVariables>
             <!-- PAX logging has a copy of Log4j2 API-->
@@ -221,13 +221,13 @@
             <phase>none</phase>
           </execution>
           <execution>
-            <id>equinox-test</id>
+            <id>test-equinox</id>
             <goals>
               <goal>test</goal>
             </goals>
             <configuration>
               <classpathDependencyExcludes combine.children="append">
-                <classpathDependencyExclude>org.apache.felix:org.apache.felix.framework</classpathDependencyExclude>
+                <exclude>org.apache.felix:org.apache.felix.framework</exclude>
               </classpathDependencyExcludes>
               <excludes>
                 <exclude>org.apache.logging.log4j.osgi.tests.FelixLoadApiBundleTest</exclude>
@@ -235,13 +235,13 @@
             </configuration>
           </execution>
           <execution>
-            <id>felix-test</id>
+            <id>test-felix</id>
             <goals>
               <goal>test</goal>
             </goals>
             <configuration>
               <classpathDependencyExcludes combine.children="append">
-                <classpathDependencyExclude>org.eclipse.platform:org.eclipse.osgi</classpathDependencyExclude>
+                <exclude>org.eclipse.platform:org.eclipse.osgi</exclude>
               </classpathDependencyExcludes>
               <excludes>
                 <exclude>org.apache.logging.log4j.osgi.tests.EquinoxLoadApiBundleTest</exclude>
