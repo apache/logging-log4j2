@@ -111,7 +111,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.tycho</groupId>
+      <groupId>org.eclipse.platform</groupId>
       <artifactId>org.eclipse.osgi</artifactId>
       <scope>test</scope>
     </dependency>
@@ -202,7 +202,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <classpathDependencyExcludes>org.osgi:org.osgi.core</classpathDependencyExcludes>
+          <classpathDependencyExcludes>
+            <classpathDependencyExclude>org.osgi:org.osgi.framework</classpathDependencyExclude>
+          </classpathDependencyExcludes>
           <systemPropertyVariables>
             <!-- PAX logging has a copy of Log4j2 API-->
             <pax.exam.logging>false</pax.exam.logging>
@@ -211,17 +213,42 @@
             <felix.cache.rootdir>${project.build.directory}</felix.cache.rootdir>
           </systemPropertyVariables>
         </configuration>
-      </plugin>
-
-      <!-- Exclude `felix-cache` from `apache-rat-plugin` checks -->
-      <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-        <configuration>
-          <excludes combine.children="append">
-            <exclude>felix-cache/**/*</exclude>
-          </excludes>
-        </configuration>
+        <executions>
+          <!-- Split the Felix and Equinox tests to prevent classpath conflicts.
+               Both frameworks contain e.g. the `org.apache.felix.resolver` package. -->
+          <execution>
+            <id>default-test</id>
+            <phase>none</phase>
+          </execution>
+          <execution>
+            <id>equinox-test</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <classpathDependencyExcludes combine.children="append">
+                <classpathDependencyExclude>org.apache.felix:org.apache.felix.framework</classpathDependencyExclude>
+              </classpathDependencyExcludes>
+              <excludes>
+                <exclude>org.apache.logging.log4j.osgi.tests.FelixLoadApiBundleTest</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>felix-test</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <classpathDependencyExcludes combine.children="append">
+                <classpathDependencyExclude>org.eclipse.platform:org.eclipse.osgi</classpathDependencyExclude>
+              </classpathDependencyExcludes>
+              <excludes>
+                <exclude>org.apache.logging.log4j.osgi.tests.EquinoxLoadApiBundleTest</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
     </plugins>
