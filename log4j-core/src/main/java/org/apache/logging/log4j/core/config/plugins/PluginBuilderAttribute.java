@@ -44,4 +44,9 @@ public @interface PluginBuilderAttribute {
      * be output as a hashed value.
      */
     boolean sensitive() default false;
+
+    /**
+     * Indicates if the standard configuration value substitution should be done on the referenced value.
+     */
+    boolean substitute() default true;
 }

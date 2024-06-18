@@ -1682,9 +1682,9 @@ Format modifiers to control such things as field width, padding, left, and right
 |
 
 |literal text
-a|Garbage-free, but care is needed for xref:manual/lookups.adoc[].
+a|Garbage-free, but care is needed for xref:manual/configuration.adoc#property-substitution[property substitution], including xref:manual/lookups.adoc[].
 
-include::partial$manual/layouts-gcfree-lookup.adoc[]
+include::partial$manual/layouts-gcfree-property-substitution.adoc[]
 
 [IMPORTANT]
 ====

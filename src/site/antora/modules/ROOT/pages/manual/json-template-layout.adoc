@@ -243,6 +243,8 @@ Toggles access to the stack traces
 Inline <<event-templates,event template>> JSON for rendering ``LogEvent``s.
 If present, this configuration overrides <<plugin-attr-eventTemplateUri>>.
 
+Note that the value of this attribute in a configuration file will not be subject to <<faq-lookups,property substitution>>.
+
 [#plugin-attr-eventTemplateUri]
 ==== `eventTemplateUri`
 
@@ -280,6 +282,8 @@ If present, the event template is put into a JSON object composed of a single me
 
 Inline <<stack-trace-element-templates,stack trace element template>> JSON for rendering ``StackTraceElement``s
 If present, this configuration overrides <<plugin-attr-stackTraceElementTemplateUri>>.
+
+Note that the value of this attribute in a configuration file will not be subject to <<faq-lookups,property substitution>>.
 
 [#plugin-attr-stackTraceElementTemplateUri]
 ==== `stackTraceElementTemplateUri`
@@ -348,7 +352,7 @@ That is,
     "key00002": "value00002",
     "key00003": "value00003",
     // ...
-    "key16384": "value16384",
+    "key16384": "value16384"
   }
 }
 ----
@@ -390,7 +394,8 @@ Additional event template fields are convenient shortcuts to add custom fields t
 You can specify an additional event template field using an `EventTemplateAdditionalField` element composed of following attributes:
 
 `key`:: Entry key
-`value`:: Entry value
+`value`:: Entry value.
+This attribute in a configuration file will not be subject to <<faq-lookups,property substitution>>.
 `format`::
 Format of the value.
 Accepted values are:
@@ -2054,9 +2059,9 @@ To get the most out of it, mind the following checklist:
 == F.A.Q.
 
 [#faq-lookups]
-=== Are lookups supported in templates?
+=== Is property substitution, including lookups, supported in templates?
 
-Yes, xref:manual/lookups.adoc[lookups] (e.g., `${java:version}`, `${env:USER}`, `${date:MM-dd-yyyy}`) are supported in string literals of templates.
+Yes, xref:manual/configuration.adoc#property-substitution[property substitution] (e.g., `$\{myProperty}`), including xref:manual/lookups.adoc[lookups] (e.g., `${java:version}`, `${env:USER}`, `${date:MM-dd-yyyy}`), is supported in string literals in templates.
 Though this doesn't apply to literals located in _configuration object of resolvers_, unless the associated resolver explicitly does so.
 Consider the following:
 
@@ -2080,12 +2085,12 @@ Consider the following:
 
 [IMPORTANT]
 ====
-Lookups are intended as a very generic, convenience utility to perform string interpolation for, in particular, configuration files and components (e.g., layouts) lacking this mechanism.
+xref:manual/lookups.adoc[] are intended as a very generic, convenience utility to perform string interpolation for, in particular, configuration files and components (e.g., layouts) lacking this mechanism.
 *JSON Template Layout has powerful directives to inject external values, and you should always prefer those whenever possible over lookups!*
 For example, always prefer <<event-template-resolver-map, the `map` resolver>> over xref:manual/lookups.adoc#MapLookup[the `map` lookup].
 ====
 
-include::partial$manual/layouts-gcfree-lookup.adoc[]
+include::partial$manual/layouts-gcfree-property-substitution.adoc[]
 
 [#faq-recursive-collection]
 === Are recursive collections supported?

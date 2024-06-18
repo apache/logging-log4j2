@@ -327,7 +327,7 @@ public class JsonTemplateLayout implements StringLayout, LocationAware {
         @PluginBuilderAttribute
         private boolean stackTraceEnabled = JsonTemplateLayoutDefaults.isStackTraceEnabled();
 
-        @PluginBuilderAttribute
+        @PluginBuilderAttribute(substitute = false)
         private String eventTemplate = JsonTemplateLayoutDefaults.getEventTemplate();
 
         @PluginBuilderAttribute
@@ -339,7 +339,7 @@ public class JsonTemplateLayout implements StringLayout, LocationAware {
         @PluginElement("EventTemplateAdditionalField")
         private EventTemplateAdditionalField[] eventTemplateAdditionalFields;
 
-        @PluginBuilderAttribute
+        @PluginBuilderAttribute(substitute = false)
         private String stackTraceElementTemplate = JsonTemplateLayoutDefaults.getStackTraceElementTemplate();
 
         @PluginBuilderAttribute
@@ -594,7 +594,7 @@ public class JsonTemplateLayout implements StringLayout, LocationAware {
             @PluginBuilderAttribute
             private String key;
 
-            @PluginBuilderAttribute
+            @PluginBuilderAttribute(substitute = false)
             private String value;
 
             @PluginBuilderAttribute

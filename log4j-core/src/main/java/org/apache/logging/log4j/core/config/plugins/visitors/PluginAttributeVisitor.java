@@ -37,7 +37,7 @@ public class PluginAttributeVisitor extends AbstractPluginVisitor<PluginAttribut
         final String name = this.annotation.value();
         final Map<String, String> attributes = node.getAttributes();
         final String rawValue = removeAttributeValue(attributes, name, this.aliases);
-        final String replacedValue = this.substitutor.replace(event, rawValue);
+        final String replacedValue = annotation.substitute() ? this.substitutor.replace(event, rawValue) : rawValue;
         final Object defaultValue = findDefaultValue(event);
         final Object value = convert(replacedValue, defaultValue);
         final Object debugValue = this.annotation.sensitive() ? "*****" : value;
