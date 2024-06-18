@@ -35,7 +35,7 @@ import org.apache.logging.log4j.util.Strings;
  * stackTraceEnabled = "stackTraceEnabled" -> boolean
  * </pre>
  *
- * Lookups (e.g., <tt>${java:version}</tt>, <tt>${env:USER}</tt>, <tt>${date:MM-dd-yyyy}</tt>) found in the <tt>pattern</tt> will be resolved.
+ * Property substitutions (e.g., <tt>${myProperty}</tt>, <tt>${java:version}</tt>, <tt>${env:USER}</tt>, <tt>${date:MM-dd-yyyy}</tt>) found in the <tt>pattern</tt> will be resolved.
  *
  * The default value of <tt>stackTraceEnabled</tt> is inherited from the parent
  * {@link JsonTemplateLayout}.
@@ -76,8 +76,7 @@ public final class PatternResolver implements EventResolver {
         if (Strings.isBlank(pattern)) {
             throw new IllegalArgumentException("blank pattern: " + config);
         }
-        final boolean substitutionNeeded = pattern.contains("${");
-        return substitutionNeeded ? substitutor.replace(null, pattern) : pattern;
+        return substitutor.replace(null, pattern);
     }
 
     static String getName() {

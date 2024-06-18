@@ -1213,7 +1213,7 @@ pattern           = "pattern" -> string
 stackTraceEnabled = "stackTraceEnabled" -> boolean
 ----
 
-xref:manual/lookups.adoc[] (e.g., `${java:version}`, `${env:USER}`, `${date:MM-dd-yyyy}`) found in the `pattern` will be resolved.
+<<faq-lookups,Property substitutions>> found in the `pattern` will be resolved.
 
 The default value of `stackTraceEnabled` is inherited from the parent JSON Template Layout.
 
@@ -2076,12 +2076,22 @@ Consider the following:
     "pid": {
       "$resolver": "pattern",
       "pattern": "${env:NO_SUCH_KEY:-%pid}" //<3>
+    },
+    "instant": {
+      "$resolver": "pattern",
+      "pattern": "$${date:HH:mm:ss}" //<4>
     }
 }
 ----
 <1> This works. `${java:version}` will be replaced with the corresponding value _once_ while compiling the event template.
 <2> This won't work! That is, `${env:FOO:-userId}` literal will not get substituted, since it is located in a _configuration object of a resolver_, and <<event-template-resolver-mdc,the `mdc` resolver>> does not explicitly do any substitutions either.
-<3> This works, even though it is located in a _configuration object of a resolver_, since <<event-template-resolver-pattern,the `pattern` resolver>> explicitly perform substitutions on the `pattern` argument.
+<3> This works, even though it is located in a _configuration object of a resolver_, since <<event-template-resolver-pattern,the `pattern` resolver>> explicitly performs substitutions on the `pattern` argument.
+<4> This works.
+As mentioned above, <<event-template-resolver-pattern,the `pattern` resolver>> explicitly performs substitutions on the `pattern` argument.
+Hence, `$${date:HH:mm:ss}` will first be substituted with `${date:HH:mm:ss}` while compiling the event template, and then passed to the xref:manual/pattern-layout.adoc[] factory method.
+Consequently, Pattern Layout will substitute `${date:HH:mm:ss}` with the value returned from xref:manual/lookups.adoc#DateLookup[Date Lookup] _for every log event(!)_.
++
+Date Lookup is used as an example to demonstrate the case, *always prefer <<event-template-resolver-timestamp,the `timestamp` resolver>> over Date Lookup*.
 
 [IMPORTANT]
 ====
