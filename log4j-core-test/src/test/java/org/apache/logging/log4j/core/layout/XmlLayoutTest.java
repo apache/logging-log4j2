@@ -150,8 +150,8 @@ public class XmlLayoutTest {
         final String str = layout.toSerializable(expected);
         // System.out.println(str);
         assertEquals(str, !compact, str.contains("\n"));
-        assertEquals(str, includeSource, str.contains("Source"));
-        assertEquals(str, includeContext, str.contains("ContextMap"));
+        assertEquals(str, includeSource, str.contains("<Source"));
+        assertEquals(str, includeContext, str.contains("<ContextMap"));
         final Log4jLogEvent actual = new Log4jXmlObjectMapper().readValue(str, Log4jLogEvent.class);
         LogEventFixtures.assertEqualLogEvents(expected, actual, includeSource, includeContext, includeStacktrace);
         if (includeContext) {
