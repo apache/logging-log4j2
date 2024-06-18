@@ -1,0 +1,38 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+= Log4j-to-JUL bridge
+
+The Log4j-to-JUL bridge provides components that allow application and library that use the Log4j API
+to log to
+https://docs.oracle.com/javase/8/docs/api/java/util/logging/Logger.html[`java.util.logging.Logger`]
+(JUL) instead.
+
+[IMPORTANT]
+====
+This chapter covers the implementation details of the Log4j-to-JUL bridge.
+For the installation procedure and basic usage see
+xref:manual/installation.adoc#impl-jul[Installing JUL]
+section of our
+xref:manual/installation.adoc[Installation guide].
+====
+
+[#level-conversion]
+== Level conversion
+
+The current Log4j-to-JUL implementation does not use custom JUL levels and converts Log4j levels to JUL according to the following table:
+
+include::partial$manual/levels-log4j-to-jul.adoc[]

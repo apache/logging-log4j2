@@ -1,0 +1,196 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= JUL-to-Log4j bridge
+
+The JUL-to-Log4j bridge provides components that allow application and library that use
+https://docs.oracle.com/javase/8/docs/api/java/util/logging/Logger.html[`java.util.logging.Logger`]
+(JUL) to log to the Log4j API instead.
+
+[IMPORTANT]
+====
+This chapter covers advanced usage scenarios of the JUL-to-Log4j bridge.
+For the installation procedure and basic configuration see
+xref:manual/installation.adoc#impl-core-bridge-jul[Using JUL-to-Log4j]
+section of our
+xref:manual/installation.adoc[Installation guide].
+====
+
+[#configuration]
+== Configuration
+
+.Struggling with the logging API, implementation, and bridge concepts? Click for an introduction.
+[%collapsible]
+====
+include::partial$concepts.adoc[tag=!software-type]
+====
+
+The `java.util.logging` logging API, available since JRE 1.4, shares many similarities with other logging API, such as SLF4J or Log4j API.
+Similarly to other APIs, it allows users to change the underlying
+https://docs.oracle.com/javase/8/docs/api/java/util/logging/LogManager.html[`LogManager`]
+implementation, but unlike other APIs, it has two big limitations:
+
+* it is part of JRE, which means that each JVM can contain only one instance of the `LogManager` class and all the applications of an application server must use the same `LogManager` implementation,
+* it does not support auto-detection of the logging backend through `ServiceLoader` or a similar mechanim (see
+https://bugs.openjdk.org/browse/JDK-8262741[JDK-8262741]
+).
+In order to switch to an alternate `LogManager` implementation you must be able to set the `java.util.logging.manager` system property **before** the first logging call.
+
+To work around the limitations of JUL, the JUL-to-Log4j bridge offers two installation options:
+
+. If you are able to modify the `java.util.logging.manager` system property very early in the JVM startup process, you can replace the default `LogManager` implementation with a Log4j-specific one.
+This option gives the best performance.
+See <<bridge-logmanager>> for details.
+. If JUL initializes **before** your application does, which is a typical behavior in application servers, you can still configure JUL to use Log4j as appender.
+See <<bridge-handler>> for details.
+
+[#bridge-logmanager]
+=== Using `LogManager`
+
+The best way to install the JUL-to-Log4j bridge on your system is to set the value of the `java.util.logging.manager` Java system property to
+
+----
+org.apache.logging.log4j.jul.LogManager
+----
+
+This property must be set very early in an application initialization process, e.g. using the `-D<property>=<value>` command line option of the `java` executable or by adding:
+
+[source,java]
+----
+static {
+  if (System.getProperty("java.util.logging.manager") == null) {
+    System.setProperty("java.util.logging.manager", "org.apache.logging.log4j.jul.LogManager");
+  }
+}
+----
+
+at the top of your main class.
+
+Setting this property will replace the default JUL `LogManager` implementation with a custom implementation that translates JUL `Logger` method calls into Log4j `Logger` calls with a **minimal** overhead.
+
+[#bridge-logmanager-features]
+==== `LogManager`-specific features
+
+The use of a
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Filter.html[`java.util.logging.Filter`]
+is supported on a
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Logger.html[per-`Logger`]
+basis.
+However, it is recommended to use the standard xref:manual/filters.adoc[Filters] feature in Log4j instead.
+
+The use of
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Handler.html[`java.util.logging.Handler`]
+classes is **not** supported.
+Custom handlers should be replaced with the appropriate
+xref:manual/appenders.adoc[Log4j Appender].
+
+[#bridge-handler]
+=== Using `Log4jBridgeHandler`
+
+.Are you a Spring Boot user?
+[TIP]
+====
+Spring Boot will automatically configure `Log4jBridgeHandler`.
+====
+
+If setting the `java.util.logging.manager` system property is not possible, the JUL-to-Log4j bridge offers an implementation of JUL's
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Handler.html[`Handler`]
+abstract class, which redirects all log events to Log4j Core:
+`org.apache.logging.log4j.jul.Log4jBridgeHandler`.
+
+[WARNING]
+====
+The `Log4jBridgeHandler` requires Log4j Core as logging implementation and will fail with other Log4j API implementations.
+====
+
+In order to use `Log4jBridgeHandler` you can either:
+
+* modify the default JUL configuration file `logging.properties` to only contain:
++
+[source,properties]
+----
+# Set Log4jBridgeHandler as only handler for all JUL loggers
+handlers = org.apache.logging.log4j.jul.Log4jBridgeHandler
+----
++
+See the
+https://docs.oracle.com/javase/8/docs/api/java/util/logging/LogManager.html[JRE documentation]
+for details about the format and location of the `logging.properties` file.
+
+* or call the `Log4jBridgeHandler.install()` method in your code.
+
+[IMPORTANT]
+====
+Usage of `Log4jBridgeHandler` introduces a considerably higher overhead that the usage of `LogManager`, since logging events need to traverse the entire JUL logging pipeline followed by the logging pipeline of the Log4j API implementation.
+
+Consider setting <<#bridge-handler-propagateLevels>> to `true` to reduce the overhead.
+====
+
+You can tune the behavior of `Log4jBridgeHandler` by adding the following properties to the `logging.properties` configuration file, which are also available as parameters to the `install()` method call:
+
+[#bridge-handler-sysoutDebug]
+==== `sysoutDebug`
+
+[cols="2h,5"]
+|===
+| Property name         | `org.apache.logging.log4j.jul.Log4jBridgeHandler.sysoutDebug`
+| `install()` parameter | N/A
+| Type                  | `boolean`
+| Default value         | `false`
+|===
+
+If set to `true` the bridge will print diagnostic information on the standard output.
+
+[#bridge-handler-appendSuffix]
+==== `appendSuffix`
+
+[cols="2h,5"]
+|===
+| Property name         | `org.apache.logging.log4j.jul.Log4jBridgeHandler.appendSuffix`
+| `install()` parameter | `suffixToAppend`
+| Type                  | `String`
+| Default value         | `null`
+|===
+
+Specifies the suffix to append to the name of all JUL loggers, which allows to differentiate JUL log messages from native Log4j API messages.
+
+[#bridge-handler-propagateLevels]
+==== `propagateLevels`
+
+[cols="2h,5"]
+|===
+| Property name         | `org.apache.logging.log4j.jul.Log4jBridgeHandler.propagateLevels`
+| `install()` parameter | `propagateLevels`
+| Type                  | `boolean`
+| Default value         | `false`
+|===
+
+The additional overhead of `Log4jBridgeHandler` can be especially heavy for **disabled** log statements.
+This is why you must ensure that log event filtering of the Log4j implementation and JUL are aligned.
+You can do it by either:
+
+* configuring JUL loggers with the same levels as the Log4j loggers,
+* or setting this property to `true`, which will perform the synchronization automatically.
+
+[#common-configuration]
+=== Common configuration
+
+Independently of the way you install the JUL-to-Log4j bridge, you can finely tune the behavior of the bridge using the following configuration properties.
+See xref:manual/systemproperties.adoc[] for more details.
+
+include::partial$manual/systemproperties/properties-log4j-jul.adoc[leveloffset=+2]
+

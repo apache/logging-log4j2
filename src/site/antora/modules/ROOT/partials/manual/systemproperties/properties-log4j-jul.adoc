@@ -29,36 +29,36 @@ Fully qualified name of an alternative `org.apache.logging.log4j.jul.LevelConver
 .Default level conversions
 [%collapsible]
 ====
-[cols="1m,1m"]
+[cols="1m,1",id=default-level-conversions]
 |===
 | Java Level | Log4j Level
 
 | https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#OFF[OFF]
-| OFF
+| `OFF`
 
 | https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#SEVERE[SEVERE]
-| ERROR
+| `ERROR`
 
 | https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#WARNING[WARNING]
-| WARN
+| `WARN`
 
 | https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#INFO[INFO]
-| INFO
+| `INFO`
 
 | https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#CONFIG[CONFIG]
-| CONFIG
+| custom `CONFIG` level with a numeric value of `450`
 
 | https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#FINE[FINE]
-| DEBUG
+| `DEBUG`
 
 | https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#FINER[FINER]
-| TRACE
+| `TRACE`
 
 | https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#FINEST[FINEST]
-| FINEST
+| custom `FINEST` level with a numeric value of `700`
 
 | https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#ALL[ALL]
-| ALL
+| `ALL`
 |===
 ====
 
