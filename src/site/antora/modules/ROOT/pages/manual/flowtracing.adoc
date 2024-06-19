@@ -58,11 +58,10 @@ You can use them to track the input and output of the associated block:
 [source, java]
 ----
 public String someMethod(String input) {
-    logger.traceEntry(input); // <1>
+    logger.traceEntry(null, input); // <1>
     // method body
     String output = ...;
-    logger.traceExit(output); // <2>
-    return output;
+    return logger.traceExit(output); // <2>
 }
 ----
 <1> `traceEntry()` marks the entry to the block along with the input
@@ -95,8 +94,7 @@ public void someMethod() {
     try {
         // Business logic
     } catch (RuntimeException error) {
-        logger.throwing(error); // <1>
-        throw new RuntimeException(error); // <2>
+        throw logger.throwing(error); // <1>
     }
 }
 ----
@@ -160,12 +158,12 @@ Log4j Core implements the flow tracing methods such that the generated log event
 |`EXIT`, `FLOW`
 |link:../javadoc/log4j-api/org/apache/logging/log4j/message/EntryMessage.html[`ExitMessage`] extending from link:../javadoc/log4j-api/org/apache/logging/log4j/message/FlowMessage.html[`FlowMessage`]
 
-|`throwing()`
+| throwing()
 |ERROR
 |`THROWING`, `EXCEPTION`
 |Plain message
 
-|`catching()`
+| catching()
 |ERROR
 |`CATCHING`, `EXCEPTION`
 |Plain message
