@@ -39,7 +39,7 @@
       <onMatch>DENY</onMatch>
     </filter>
     <encoder class="PatternLayoutEncoder"><!--3-->
-      <pattern>%d %5p [%t] %c{1} - %m%n</pattern>
+      <pattern><![CDATA[%d %5p [%t] %c{1} -- %m%n]]></pattern>
     </encoder>
   </appender>
 
@@ -52,7 +52,7 @@
       <onMatch>ACCEPT</onMatch>
     </filter>
     <encoder class="PatternLayoutEncoder"><!--5-->
-      <pattern>%d %5p [%t] %c{1} → %m%n</pattern>
+      <pattern><![CDATA[%d %5p [%t] %c{1} => %m%n]]></pattern>
     </encoder>
   </appender>
 
@@ -65,7 +65,7 @@
       <onMatch>ACCEPT</onMatch>
     </filter>
     <encoder class="PatternLayoutEncoder"><!--7-->
-      <pattern>%d %5p [%t] %c{1} ← %m%n</pattern>
+      <pattern><![CDATA[%d %5p [%t] %c{1} <= %m%n]]></pattern>
     </encoder>
   </appender>
 

@@ -26,12 +26,12 @@ Configuration:
       name: "CONSOLE"
       PatternLayout:
         MarkerPatternSelector:
-        defaultPattern: "%d %5p [%t] %c{1} - %m%n" #<2>
+        defaultPattern: "%d %5p [%t] %c{1} -- %m%n" #<2>
         PatternMatch:
           - key: "ENTER" #<3>
-            pattern: "%d %5p [%t] %c{1} → %m%n"
+            pattern: "%d %5p [%t] %c{1} => %m%n"
           - key: "EXIT" #<4>
-            pattern: "%d %5p [%t] %c{1} ← %m%n"
+            pattern: "%d %5p [%t] %c{1} <= %m%n"
 
   Loggers:
     Root:

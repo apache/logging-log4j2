@@ -12,15 +12,15 @@
         "name": "CONSOLE",
         "PatternLayout": {
           "MarkerPatternSelector": {
-            "defaultPattern": "%d %5p [%t] %c{1} - %m%n",//<2>
+            "defaultPattern": "%d %5p [%t] %c{1} -- %m%n",//<2>
             "PatternMatch": [
               {//<3>
                 "key": "ENTER",
-                "pattern": "%d %5p [%t] %c{1} → %m%n"
+                "pattern": "%d %5p [%t] %c{1} => %m%n"
               },
               {//<4>
                 "key": "EXIT",
-                "pattern": "%d %5p [%t] %c{1} ← %m%n"
+                "pattern": "%d %5p [%t] %c{1} <= %m%n"
               }
             ]
           }

@@ -26,9 +26,9 @@
   <Appenders>
     <Console name="CONSOLE">
       <PatternLayout>
-        <MarkerPatternSelector defaultPattern="%d %5p [%t] %c{1} - %m%n"><!--2-->
-          <PatternMatch key="ENTER" pattern="%d %5p [%t] %c{1} → %m%n"/><!--3-->
-          <PatternMatch key="EXIT" pattern="%d %5p [%t] %c{1} ← %m%n"/><!--4-->
+        <MarkerPatternSelector defaultPattern="%d %5p [%t] %c{1} -- %m%n"><!--2-->
+          <PatternMatch key="ENTER" pattern="%d %5p [%t] %c{1} => %m%n"/><!--3-->
+          <PatternMatch key="EXIT" pattern="%d %5p [%t] %c{1} <= %m%n"/><!--4-->
         </MarkerPatternSelector>
       </PatternLayout>
     </Console>
