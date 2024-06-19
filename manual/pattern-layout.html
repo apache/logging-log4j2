@@ -323,7 +323,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p><code>PatternLayout</code> is a customizable, <a href="#performance[efficient]">xref:#garbage-free,garbage-free</a>, and human-readable string generating layout using a user-provided pattern.
+<p><code>PatternLayout</code> is a customizable, <a href="#performance">efficient</a>, <a href="#garbage-free">garbage-free</a>, and human-readable string generating layout using a user-provided pattern.
 It is analogous to <code>String#format()</code> with specialized directives on injecting certain properties of a <code>LogEvent</code>.</p>
 </div>
 <div class="admonitionblock important">
@@ -2701,13 +2701,7 @@ Format modifiers to control such things as field width, padding, left, and right
 <tr>
 <td class="tableblock halign-left valign-top" style="background-color: white;"><p class="tableblock"><code>literal text</code></p></td>
 <td class="tableblock halign-left valign-top" style="background-color: white;"><div class="content"><div class="paragraph">
-<p>Garbage-free, but care is needed for <a href="lookups.html" class="xref page">Lookups</a>.</p>
-</div>
-<div class="paragraph">
-<p>Encoding the output of a lookup is garbage-free, but executing the lookup might not be.
-For instance, even though <a href="lookups.html#DateLookup" class="xref page">the <code>date</code> lookup</a> allocates a new <code>String</code> for each invocation, adding <code>${date:YYYY-MM-dd}</code> is garbage-free, because it will be expanded at configuration time, that is, only once.
-Whereas adding <code>$${date:YYYY-MM-dd}</code> is not, since it will be expanded for each log event.
-See <a href="configuration.html#property-substitution" class="xref page">property substitution</a> for details.</p>
+<p>Garbage-free, but care is needed for <a href="#property-substitution">Property substitution</a>, including <a href="lookups.html" class="xref page">Lookups</a></p>
 </div></div></td>
 </tr>
 </tbody>
@@ -2715,6 +2709,77 @@ See <a href="configuration.html#property-substitution" class="xref page">propert
 <div class="paragraph">
 <p>Patterns containing regular expressions and <a href="layouts.html#LocationInformation" class="xref page">location information</a> are not garbage-free.</p>
 </div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="property-substitution"><a class="anchor" href="#property-substitution"></a>Property substitution</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="configuration.html#property-substitution" class="xref page">Property substitutions</a> (e.g., <code>${myProperty}</code>), including <a href="lookups.html" class="xref page">lookups</a> (e.g., <code>${java:version}</code>, <code>${env:USER}</code>, <code>${date:MM-dd-yyyy}</code>) are supported, but extra care needs to be taken.
+<strong>We strongly advise you to carefully read <a href="configuration.html#property-substitution" class="xref page">the configuration manual</a></strong> before using them.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><a href="lookups.html" class="xref page">Lookups</a> are intended as a very generic, convenience utility to perform string interpolation for, in particular, configuration files and components (e.g., layouts) lacking this mechanism.
+<strong>Pattern Layout has a rich converter collection, and you should always prefer it whenever possible over lookups.</strong></p>
+</div>
+<details>
+<summary class="title">Which converters can I use to replace lookups?</summary>
+<div class="content">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top" style="background-color: white;">Instead of this lookup</th>
+<th class="tableblock halign-left valign-top" style="background-color: white;">Use this converter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: white;"><p class="tableblock"><a href="lookups.html#ContextMapLookup" class="xref page">Context Map Lookup</a></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: white;"><p class="tableblock"><a href="#converter-thread-context-map">Thread context map</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: white;"><p class="tableblock"><a href="lookups.html#DateLookup" class="xref page">Date Lookup</a></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: white;"><p class="tableblock"><a href="#converter-date">Date</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: white;"><p class="tableblock"><a href="lookups.html#EventLookup" class="xref page">Event Lookup</a></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: white;"><p class="tableblock"><a href="#converter-exception">Exception</a><br>
+<a href="#converter-exception-extended">Exception (Extended)</a><br>
+<a href="#converter-level">Level</a><br>
+<a href="#converter-logger">Logger</a><br>
+<a href="#converter-marker">Marker</a><br>
+<a href="#converter-message">Message</a><br>
+<a href="#converter-thread-id">Thread ID</a><br>
+<a href="#converter-thread-name">Thread name</a><br>
+<a href="#converter-date">Date</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: white;"><p class="tableblock"><a href="lookups.html#MapLookup" class="xref page">Map Lookup</a></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: white;"><p class="tableblock"><a href="#converter-map">Map</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: white;"><p class="tableblock"><a href="lookups.html#marker-lookup" class="xref page">Marker Lookup</a></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: white;"><p class="tableblock"><a href="#converter-marker">Marker</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</details>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>

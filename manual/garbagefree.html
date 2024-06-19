@@ -434,7 +434,7 @@ If not for yours, keep on reading.</p>
 <p><a href="#core-properties">configure it using properties</a>,</p>
 </li>
 <li>
-<p>and employ garbage-free <a href="#Layouts[layouts]">xref:Appenders[appenders], and xref:#Filters,filters</a>.</p>
+<p>and employ garbage-free <a href="#Layouts">layouts</a>, <a href="#Appenders">appenders</a>, and <a href="#Filters">filters</a>.</p>
 </li>
 </ul>
 </div>
@@ -1031,7 +1031,7 @@ The <code>Unbox.box(primitive)</code> methods write directly into a <code>String
 <p><a href="scoped-context.html" class="xref page">Scoped Context</a> is not garbage-free.</p>
 </li>
 <li>
-<p>Logging very large messages (i.e., more than <a href="#log4j2.maxReusableMsgSize[<code>log4j2.maxReusableMsgSize</code>] characters">which defaults to 518), when all loggers are xref:manual/async.adoc,asynchronous loggers</a>, will cause the internal <code>StringBuilder</code> in the
+<p>Logging very large messages (i.e., more than <a href="#log4j2.maxReusableMsgSize"><code>log4j2.maxReusableMsgSize</code></a> characters, which defaults to 518), when all loggers are <a href="async.html" class="xref page">asynchronous loggers</a>, will cause the internal <code>StringBuilder</code> in the
 <code>RingBuffer</code> to be trimmed back to their configured maximum size.</p>
 </li>
 <li>
