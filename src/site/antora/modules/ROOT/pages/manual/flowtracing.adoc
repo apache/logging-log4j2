@@ -98,8 +98,8 @@ public void someMethod() {
     }
 }
 ----
-<1> `thrown()` reports the caught exception that is about to be rethrown
-<2> Rethrowing the exception, contrary to <<example-catching,the `catching()` example>> suppressing the exception
+<1> `thrown()` reports the caught exception that is about to be rethrown.
+Plus, rethrowing the exception, contrary to <<example-catching,the `catching()` example>> suppressing the exception.
 
 [source,java]
 ----
