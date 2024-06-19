@@ -88,7 +88,7 @@
     <docker-maven-plugin.version>0.43.4</docker-maven-plugin.version>
     <exam-maven-plugin.version>4.13.5</exam-maven-plugin.version>
     <!-- `surefire.version` property used in `apache.org:apache`: -->
-    <surefire.version>3.2.5</surefire.version>
+    <surefire.version>3.3.0</surefire.version>
 
     <!-- =====================================================
          Direct dependency version properties (in alphabetical order)
