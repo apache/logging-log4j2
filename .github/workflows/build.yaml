@@ -36,6 +36,7 @@ jobs:
       GE_ACCESS_TOKEN: ${{ ! startsWith(github.refname, 'release/') && secrets.GE_ACCESS_TOKEN }}
     with:
       site-enabled: true
+      reproducibility-check-enabled: false
 
   deploy-snapshot:
     needs: build

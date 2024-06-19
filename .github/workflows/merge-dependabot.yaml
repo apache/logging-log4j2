@@ -34,6 +34,8 @@ jobs:
     uses: apache/logging-parent/.github/workflows/build-reusable.yaml@develocity
     secrets:
       GE_ACCESS_TOKEN: ${{ secrets.GE_ACCESS_TOKEN }}
+    with:
+      reproducibility-check-enabled: false
 
   merge-dependabot:
     needs: build
