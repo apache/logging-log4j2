@@ -389,7 +389,7 @@ If not for yours, keep on reading.</p>
 <p><a href="#core-properties">configure it using properties</a>,</p>
 </li>
 <li>
-<p>and employ garbage-free <a href="#Layouts[layouts]">xref:Appenders[appenders], and xref:#Filters,filters</a>.</p>
+<p>and employ garbage-free <a href="#Layouts">layouts</a>, <a href="#Appenders">appenders</a>, and <a href="#Filters">filters</a>.</p>
 </li>
 </ul>
 </div>
@@ -1183,7 +1183,7 @@ The <code>Unbox.box(primitive)</code> methods write directly into a <code>String
 <p>The <code>ThreadContext</code> stack (aka. NDC) is not garbage-free.</p>
 </li>
 <li>
-<p><a href="https://logging.apache.org/log4j/2.x/manual/scoped-context.adoc" class="bare">https://logging.apache.org/log4j/2.x/manual/scoped-context.adoc</a> is not garbage-free.</p>
+<p><a href="https://logging.apache.org/log4j/2.x/manual/scoped-context.html">Scoped Context</a> is not garbage-free.</p>
 </li>
 <li>
 <p>Logging very large messages (i.e., more than <a href="#log4j.gc.maxReusableMsgSize"><code>log4j.gc.maxReusableMsgSize</code></a> characters, which defaults to 518), when all loggers are <a href="async.html" class="xref page">asynchronous loggers</a>, will cause the internal <code>StringBuilder</code> in the

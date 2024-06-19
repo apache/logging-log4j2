@@ -278,7 +278,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p><code>JsonTemplateLayout</code> is a customizable, <a href="#performance">efficient</a>, and xref:#faq-garbage-free,garbage-free&gt;&gt; JSON generating layout.
+<p><code>JsonTemplateLayout</code> is a customizable, <a href="#performance">efficient</a>, and <a href="#faq-garbage-free">garbage-free</a> JSON generating layout.
 It encodes <code>LogEvent</code>s according to the structure described by the JSON template provided.
 In a nutshell, it shines with its</p>
 </div>
@@ -887,7 +887,7 @@ That is,</p>
     "key00002": "value00002",
     "key00003": "value00003",
     // ...
-    "key16384": "value16384",
+    "key16384": "value16384"
   }
 }</code></pre>
 </div>
@@ -987,7 +987,7 @@ Accepted values are:</p>
 </div>
 <div id="_tabs_3_xml--panel" class="tabpanel" aria-labelledby="_tabs_3_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/json-template-layout/eventTemplateAdditionalField/log4j2.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/json-template-layout/event-template-additional-field/log4j2.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;JsonTemplateLayout eventTemplateUri="classpath:GelfLayout.json"&gt;
   &lt;EventTemplateAdditionalField
@@ -1011,7 +1011,7 @@ Accepted values are:</p>
 </div>
 <div id="_tabs_3_json--panel" class="tabpanel" aria-labelledby="_tabs_3_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/json-template-layout/eventTemplateAdditionalField/log4j2.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/json-template-layout/event-template-additional-field/log4j2.json"><code>log4j2.json</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"JsonTemplateLayout": {
   "eventTemplateUri": "classpath:GelfLayout.json",
@@ -1042,7 +1042,7 @@ Accepted values are:</p>
 </div>
 <div id="_tabs_3_yaml--panel" class="tabpanel" aria-labelledby="_tabs_3_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/json-template-layout/eventTemplateAdditionalField/log4j2.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/json-template-layout/event-template-additional-field/log4j2.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">JsonTemplateLayout:
   eventTemplateUri: "classpath:GelfLayout.json"
@@ -1063,7 +1063,7 @@ Accepted values are:</p>
 </div>
 <div id="_tabs_3_properties--panel" class="tabpanel" aria-labelledby="_tabs_3_properties">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/json-template-layout/eventTemplateAdditionalField/log4j2.properties"><code>log4j2.properties</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/json-template-layout/event-template-additional-field/log4j2.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">appender.0.layout.type = JsonTemplateLayout
 appender.0.layout.eventTemplateUri = classpath:GelfLayout.json
@@ -2042,6 +2042,9 @@ stackTraceEnabled = "stackTraceEnabled" -&gt; boolean</code></pre>
 </div>
 </div>
 <div class="paragraph">
+<p>Unlike providing the <code>pattern</code> attribute to Pattern Layout in a configuration file, <a href="#faq-lookups">property substitutions</a> found in the <code>pattern</code> will <em>not</em> be resolved.</p>
+</div>
+<div class="paragraph">
 <p>The default value of <code>stackTraceEnabled</code> is inherited from the parent JSON Template Layout.</p>
 </div>
 <div class="admonitionblock note">
@@ -2564,6 +2567,228 @@ The stack trace template used by these event template resolvers to encode <code>
 </div>
 </div>
 <div class="sect1">
+<h2 id="faq-lookups"><a class="anchor" href="#faq-lookups"></a>Property substitution</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Property substitutions (e.g., <code>${myProperty}</code>), including <a href="lookups.html" class="xref page">lookups</a> (e.g., <code>${java:version}</code>, <code>${env:USER}</code>, <code>${date:MM-dd-yyyy}</code>), are supported, but extra care needs to be taken.
+<strong>We strongly advise you to carefully read <a href="configuration.html#property-substitution" class="xref page">the configuration manual</a></strong> before using them.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><a href="lookups.html" class="xref page">Lookups</a> are intended as a very generic, convenience utility to perform string interpolation for, in particular, configuration files and components (e.g., layouts) lacking this mechanism.
+<strong>JSON Template Layout has a rich template resolver collection, and you should always prefer it whenever possible over lookups.</strong></p>
+</div>
+<details>
+<summary class="title">Which resolvers can I use to replace lookups?</summary>
+<div class="content">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Instead of this lookup</th>
+<th class="tableblock halign-left valign-top">Use this resolver</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="lookups.html#ContextMapLookup" class="xref page">Context Map Lookup</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#event-template-resolver-mdc"><code>mdc</code></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="lookups.html#DateLookup" class="xref page">Date Lookup</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#event-template-resolver-timestamp"><code>timestamp</code></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="lookups.html#EventLookup" class="xref page">Event Lookup</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#event-template-resolver-exception"><code>exception</code></a><br>
+<a href="#event-template-resolver-level"><code>level</code></a><br>
+<a href="#event-template-resolver-logger"><code>logger</code></a><br>
+<a href="#event-template-resolver-marker"><code>marker</code></a><br>
+<a href="#event-template-resolver-message"><code>message</code></a><br>
+<a href="#event-template-resolver-thread"><code>thread</code></a><br>
+<a href="#event-template-resolver-timestamp"><code>timestamp</code></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="lookups.html#LowerLookup" class="xref page">Lower Lookup</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#event-template-resolver-caseConverter"><code>caseConverter</code></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="lookups.html#AppMainArgsLookup" class="xref page">Main Arguments Lookup</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#event-template-resolver-main"><code>main</code></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="lookups.html#MapLookup" class="xref page">Map Lookup</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#event-template-resolver-map"><code>map</code></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="lookups.html#marker-lookup" class="xref page">Marker Lookup</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#event-template-resolver-marker"><code>marker</code></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="lookups.html#UpperLookup" class="xref page">Upper Lookup</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#event-template-resolver-caseConverter"><code>caseConverter</code></a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</details>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="property-substitution-in-template"><a class="anchor" href="#property-substitution-in-template"></a>Property substitution in event templates</h3>
+<div class="paragraph">
+<p>JSON Template Layout performs property substitution in string literals in templates, except if they are located in <em>configuration object of resolvers</em>.
+Consider the following event template file provided using <a href="#plugin-attr-eventTemplateUri">the <code>eventTemplateUri</code> attribute</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "java-version": "${java:version}", <i class="conum" data-value="1"></i><b>(1)</b>
+    "pid": {
+      "$resolver": "pattern",
+      "pattern": "${env:NO_SUCH_KEY:-%pid}" <i class="conum" data-value="2"></i><b>(2)</b>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This works. <code>${java:version}</code> will be replaced with the corresponding value.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This won&#8217;t work! That is, <code>${env:NO_SUCH_KEY:-%pid}</code> literal will not get substituted, since it is located in a <em>configuration object of a resolver</em>.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="property-substitution-in-config"><a class="anchor" href="#property-substitution-in-config"></a>Property substitution in configuration files</h3>
+<div class="paragraph">
+<p>If the very same event template <a href="#property-substitution-in-template">shared above</a> is inlined in a configuration file using <a href="#plugin-attr-eventTemplate">the <code>eventTemplate</code> attribute</a> or <a href="#plugin-element-EventTemplateAdditionalField">additional event template fields</a>, then all substitutions will be replaced, once, at configuration-time.
+This has nothing to do with the JSON Template Layout, but the substitution performed by the configuration mechanism when the configuration is read.
+Consider the following example:</p>
+</div>
+<div id="_tabs_4" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_4_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_4_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_4_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_4_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_4_xml--panel" class="tabpanel" aria-labelledby="_tabs_4_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/json-template-layout/property-substitution/log4j2.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;JsonTemplateLayout eventTemplate='{"instant": {"$resolver": "pattern", "pattern": "${env:LOG4J_DATE_PATTERN:-%d}"}}'&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;EventTemplateAdditionalField
+      key="message"
+      format="JSON"
+      value='{"$resolver": "pattern", "pattern": "${env:LOG4J_MESSAGE_PATTERN:-%m}"}'/&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+&lt;/JsonTemplateLayout&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_4_json--panel" class="tabpanel" aria-labelledby="_tabs_4_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/json-template-layout/property-substitution/log4j2.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"JsonTemplateLayout": {
+  "eventTemplate": "{\"instant\": {\"$resolver\": \"pattern\", \"pattern\": \"${env:LOG4J_DATE_PATTERN:-%d}\"}}", <i class="conum" data-value="1"></i><b>(1)</b>
+  "eventTemplateAdditionalField": [
+    {
+      "key": "message",
+      "format": "JSON",
+      "value": "{\"$resolver\": \"pattern\", \"pattern\": \"${env:LOG4J_MESSAGE_PATTERN:-%m}\"}" <i class="conum" data-value="2"></i><b>(2)</b>
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_4_yaml--panel" class="tabpanel" aria-labelledby="_tabs_4_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/json-template-layout/property-substitution/log4j2.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">JsonTemplateLayout:
+  eventTemplate: '{"instant": {"$resolver": "pattern", "pattern": "${env:LOG4J_DATE_PATTERN:-%d}"}}' <i class="conum" data-value="1"></i><b>(1)</b>
+  eventTemplateAdditionalField:
+    - key: "message"
+      format: "JSON"
+      value: '{"$resolver": "pattern", "pattern": "${env:LOG4J_MESSAGE_PATTERN:-%m}"}' <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_4_properties--panel" class="tabpanel" aria-labelledby="_tabs_4_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/json-template-layout/property-substitution/log4j2.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">appender.0.layout.type = JsonTemplateLayout
+appender.0.layout.eventTemplate = {"instant": {"$resolver": "pattern", "pattern": "${env:LOG4J_DATE_PATTERN:-%d}"}} <i class="conum" data-value="1"></i><b>(1)</b>
+appender.0.layout.eventTemplateAdditionalField[0].type = EventTemplateAdditionalField
+appender.0.layout.eventTemplateAdditionalField[0].key = message
+appender.0.layout.eventTemplateAdditionalField[0].format = JSON
+appender.0.layout.eventTemplateAdditionalField[0].value = {"$resolver": "pattern", "pattern": "${env:LOG4J_MESSAGE_PATTERN:-%m}"} <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>eventTemplate</code> will be passed to the layout with <code>${env:&#8230;&#8203;}</code> substituted</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>value</code> will be passed to the layout with <code>${env:&#8230;&#8203;}</code> substituted</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>External values injected this way can corrupt your JSON schema.
+It is your responsibility to ensure the sanitization and safety of the substitution source.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="extending"><a class="anchor" href="#extending"></a>Extending</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -2945,18 +3170,6 @@ To get the most out of it, mind the following checklist:</p>
 <h2 id="faq"><a class="anchor" href="#faq"></a>F.A.Q.</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="faq-lookups"><a class="anchor" href="#faq-lookups"></a>Are lookups supported in templates?</h3>
-<div class="paragraph">
-<p>Yes, <a href="lookups.html" class="xref page">lookups</a> (e.g., <code>${java:version}</code>, <code>${env:USER}</code>, <code>${date:MM-dd-yyyy}</code>) are supported in string literals of templates.</p>
-</div>
-<div class="paragraph">
-<p>Encoding the output of a lookup is garbage-free, but executing the lookup might not be.
-For instance, even though <a href="lookups.html#DateLookup" class="xref page">the <code>date</code> lookup</a> allocates a new <code>String</code> for each invocation, adding <code>${date:YYYY-MM-dd}</code> is garbage-free, because it will be expanded at configuration time, that is, only once.
-Whereas adding <code>$${date:YYYY-MM-dd}</code> is not, since it will be expanded for each log event.
-See <a href="configuration.html#property-substitution" class="xref page">property substitution</a> for details.</p>
-</div>
-</div>
-<div class="sect2">
 <h3 id="faq-recursive-collection"><a class="anchor" href="#faq-recursive-collection"></a>Are recursive collections supported?</h3>
 <div class="paragraph">
 <p>No. Consider a <code>Message</code> containing a recursive value as follows:</p>
@@ -2991,12 +3204,13 @@ Take into account the following caveats:</p>
 <p>Serialization of <code>MapMessage</code>s and <code>ObjectMessage</code>s are mostly garbage-free except for certain types (e.g., <code>BigDecimal</code>, <code>BigInteger</code>, <code>Collection</code>s, except <code>List</code>).</p>
 </li>
 <li>
-<p><a href="lookups.html" class="xref page">Lookups</a> (that is, <code>${&#8230;&#8203;}</code> variables) are not garbage-free.</p>
+<p><a href="#faq-lookups">Property substitutions</a> (that is, <code>${&#8230;&#8203;}</code> variables) <em>might</em> not be garbage-free.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Don&#8217;t forget to check out <a href="#event-template-resolvers">the notes on garbage footprint of resolvers</a> you employ in templates.</p>
+<p><a href="#event-template-resolvers">Event template resolvers</a> contain notes on their garbage footprint.
+Make sure to check those notes of resolvers you employ in templates.</p>
 </div>
 </div>
 </div>

@@ -585,7 +585,7 @@ or predefined constant</p></td>
 </table>
 <div class="paragraph">
 <p>Determines the
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html">AsyncQueueFullPolicy</a>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html"><code>AsyncQueueFullPolicy</code></a>
 to use when the underlying async component cannot keep up with the logging rate and the queue is filling up.</p>
 </div>
 <div class="paragraph">
@@ -1441,6 +1441,26 @@ For a thread local recycler, it corresponds to the per-thread buffer size.</p>
 <div class="paragraph">
 <p>To configure the thread context used by Log4j Core, you can use the following properties:</p>
 </div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>These configuration properties are only used by Log4j Core and <a href="https://logging.apache.org/log4j/2.x/manual/simple-logger.html">Simple Logger</a> of Log4j API.</p>
+</div>
+<div class="paragraph">
+<p>The <code>log4j-to-slf4j</code> logging bridge delegates <code>ThreadContext</code> calls to <a href="https://www.slf4j.org/api/org/slf4j/MDC.html">the SLF4J <code>MDC</code> class</a>.</p>
+</div>
+<div class="paragraph">
+<p>The <code>log4j-to-jul</code> logging bridge ignores all <code>ThreadContext</code> method calls.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div class="sect3">
 <h4 id="log4j.threadContext.enable"><a class="anchor" href="#log4j.threadContext.enable"></a><code>log4j.threadContext.enable</code></h4>
 <table class="tableblock frame-all grid-all stretch">
@@ -2062,7 +2082,7 @@ to use for the value of the <a href="#log4j.auth.basic.password"><code>log4j.aut
 </table>
 <div class="paragraph">
 <p>The type of private key store.
-See <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyStore">KeyStore types</a>.</p>
+See <a href="https://docs.oracle.com/javase/17/docs/technotes/guides/security/StandardNames.html#KeyStore"><code>KeyStore</code></a>.</p>
 </div>
 </div>
 <div class="sect3">
@@ -2140,7 +2160,7 @@ See <a href="https://docs.oracle.com/javase/17/docs/api/java/time/Clock.html#sys
 <dd>
 <p>uses a separate thread to update the timestamp value.
 See
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/CachedClock.html">JavaDoc</a>
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/CachedClock.html"><code>CachedClock</code></a>
 for details.</p>
 </dd>
 <dt class="hdlist1">CoarseCachedClock</dt>

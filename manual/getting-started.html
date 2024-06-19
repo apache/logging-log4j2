@@ -391,7 +391,7 @@ Let&#8217;s briefly explain these concepts:</p>
 <p>A logging API is an interface your code or your dependencies directly logs against.
 It is required at compile-time.
 It is implementation agnostic to ensure that your application can write logs, but is not tied to a specific logging implementation.
-Log4j API, <a href="https://www.slf4j.org/">SLF4J</a>, <a href="https://docs.oracle.com/en/java/javase/17/core/java-logging-overview.html">JUL (Java Logging)</a>, <a href="https://commons.apache.org/proper/commons-logging/">JCL (Apache Commons Logging)</a>, <a href="https://openjdk.org/jeps/264">JPL (Java Platform Logging)</a> and <a href="https://github.com/jboss-logging/jboss-logging">JBoss Logging</a> are major logging APIs.</p>
+Log4j API, <a href="https://www.slf4j.org">SLF4J</a>, <a href="https://docs.oracle.com/en/java/javase/17/core/java-logging-overview.html">JUL (Java Logging)</a>, <a href="https://commons.apache.org/proper/commons-logging/">JCL (Apache Commons Logging)</a>, <a href="https://openjdk.org/jeps/264">JPL (Java Platform Logging)</a> and <a href="https://github.com/jboss-logging/jboss-logging">JBoss Logging</a> are major logging APIs.</p>
 </dd>
 </dl>
 </div>
@@ -400,7 +400,7 @@ Log4j API, <a href="https://www.slf4j.org/">SLF4J</a>, <a href="https://docs.ora
 <dt class="hdlist1">Logging implementation</dt>
 <dd>
 <p>A logging implementation is only required at runtime and can be changed without the need to recompile your software.
-Log4j Core, <a href="https://docs.oracle.com/en/java/javase/17/core/java-logging-overview.html">JUL (Java Logging)</a>, <a href="https://logback.qos.ch/">Logback</a> are the most well-known logging implementations.</p>
+Log4j Core, <a href="https://docs.oracle.com/en/java/javase/17/core/java-logging-overview.html">JUL (Java Logging)</a>, <a href="https://logback.qos.ch">Logback</a> are the most well-known logging implementations.</p>
 </dd>
 </dl>
 </div>
@@ -803,7 +803,7 @@ This is the most secure way to format log events and should be preferred over th
 <div class="paragraph">
 <p>If your application has (direct or transitive!) dependencies that use another logging API, you need to <a href="#logging-bridge">bridge</a> that to Log4j.
 This way the foreign logging API calls will effectively be consumed by Log4j too.
-<a href="https://www.slf4j.org/">SLF4J</a> is another logging API used pretty common in the wild.
+<a href="https://www.slf4j.org">SLF4J</a> is another logging API used pretty common in the wild.
 (<a href="installation.html" class="xref page">Installation</a> covers all supported foreign APIs.)
 Let&#8217;s see how you can use the <code>log4j-slf4j2-impl</code> bridge to support SLF4J:</p>
 </div>
@@ -1041,7 +1041,7 @@ Start with adding the <code>log4j-core</code> dependency in <strong>test</strong
 <div class="paragraph">
 <p>If your library has (direct or transitive!) dependencies that use another logging API, you need to <a href="#logging-bridge">bridge</a> that to Log4j.
 This way the foreign logging API calls will effectively be consumed by Log4j too.
-<a href="https://www.slf4j.org/">SLF4J</a> is another logging API used pretty common in the wild.
+<a href="https://www.slf4j.org">SLF4J</a> is another logging API used pretty common in the wild.
 (<a href="installation.html" class="xref page">Installation</a> covers all supported foreign APIs.)
 Let&#8217;s see how you can use the <code>log4j-slf4j2-impl</code> bridge to support SLF4J:</p>
 </div>
