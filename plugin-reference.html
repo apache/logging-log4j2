@@ -1444,7 +1444,7 @@ Originally developed by Ceki Glc and Anders Kristensen.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>header</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
@@ -7405,7 +7405,7 @@ However, configurations set up for the 2.0 version of the JMS appenders will sti
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider">NoSqlProvider</a>?</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider">NoSqlProvider</a>?</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p>Sets the provider.</p>
 </div></div></td>
@@ -16127,10 +16127,10 @@ Supports Lookup expressions.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
 </div>
 <div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
 </div></div></td>
 </tr>
 <tr>
@@ -17426,10 +17426,10 @@ Supports Lookup expressions.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
 </div>
 <div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
 </div></div></td>
 </tr>
 <tr>
@@ -17625,10 +17625,10 @@ Supports Lookup expressions.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
 </div>
 <div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
 </div></div></td>
 </tr>
 <tr>
@@ -21770,6 +21770,37 @@ toString(), or to output the value of a specific key within the property bundle 
 <div class="sect2">
 <h3 id="org-apache-logging-log4j_log4j-couchdb"><a class="anchor" href="#org-apache-logging-log4j_log4j-couchdb"></a><code>log4j-couchdb</code></h3>
 <div class="sect3">
+<h4 id="org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider"><a class="anchor" href="#org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider"></a><code>NoSqlProvider</code></h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Class</dt>
+<dd>
+<p><code>org.apache.logging.log4j.core.appender.nosql.NoSqlProvider</code></p>
+</dd>
+<dt class="hdlist1">Provider</dt>
+<dd>
+<p><code>org.apache.logging.log4j:log4j-couchdb</code></p>
+</dd>
+</dl>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider_implementations"></a>Known implementations</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-couchdb-CouchDbProvider">CouchDbProvider</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider">MongoDbProvider</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-mongodb4-MongoDb4Provider">MongoDb4Provider</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect3">
 <h4 id="org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-couchdb-CouchDbProvider"><a class="anchor" href="#org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-couchdb-CouchDbProvider"></a>CouchDB</h4>
 <div class="dlist">
 <dl>
@@ -23903,37 +23934,6 @@ Minimum is 1000.</p>
 </div>
 <div class="sect2">
 <h3 id="org-apache-logging-log4j_log4j-mongodb"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb"></a><code>log4j-mongodb</code></h3>
-<div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider"></a><code>NoSqlProvider</code></h4>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Class</dt>
-<dd>
-<p><code>org.apache.logging.log4j.core.appender.nosql.NoSqlProvider</code></p>
-</dd>
-<dt class="hdlist1">Provider</dt>
-<dd>
-<p><code>org.apache.logging.log4j:log4j-mongodb</code></p>
-</dd>
-</dl>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider_implementations"></a>Known implementations</h5>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-couchdb-CouchDbProvider">CouchDbProvider</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider">MongoDbProvider</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-mongodb4-MongoDb4Provider">MongoDb4Provider</a></p>
-</li>
-</ul>
-</div>
-</div>
-</div>
 <div class="sect3">
 <h4 id="org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider"></a>MongoDb</h4>
 <div class="dlist">

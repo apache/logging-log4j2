@@ -322,53 +322,60 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Flow tracing in Log4j is an advanced logging technique designed to enhance
-the visibility of application processes. With this technique, developers can track
-data flow through their application using unique methods that log entry
-and exit points within the code.</p>
+<p><a href="api.html" class="xref page">Log4j API</a> provides convenience logging methods to aid the tracking of the data flow through an application, which is referred to as <strong>flow tracing</strong>.
+<a href="#impl">Logging implementations</a> can choose to <a href="#log-events">generate specialized log events</a> allowing users to handle these messages different from the rest – see <a href="#example">Example configuration</a>.</p>
 </div>
 <div class="paragraph">
-<p>These methods are:</p>
+<p>Flow tracing is known to help with the following use cases:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><code>traceEntry()</code> (Deprecated <code>entry()</code>)</p>
+<p>Troubleshooting without requiring a debugging session</p>
 </li>
 <li>
-<p><code>traceExit()</code> (Deprecated: <code>exit()</code>)</p>
-</li>
-<li>
-<p><code>throwing()</code></p>
-</li>
-<li>
-<p><code>catching()</code></p>
+<p>Helping educate new developers in learning the application</p>
 </li>
 </ul>
-</div>
-<div class="paragraph">
-<p>With these methods, we can investigate environments where traditional debugging is not possible,
-such as in production or during live application monitoring.
-Furthermore, new developers can be educated on the application&#8217;s behavior by examining the logs.</p>
-</div>
-<div class="paragraph">
-<p>Flow tracing offers a structured approach to all this.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_flow_tracing_methods"><a class="anchor" href="#_flow_tracing_methods"></a>Flow Tracing Methods</h2>
+<h2 id="usage"><a class="anchor" href="#usage"></a>Usage</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The methods often used are <code>traceEntry()</code> and <code>traceExit()</code>.
-As the name suggests, the "entry" method is used at the beginning and the "exit" method at the end of a method.</p>
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html"><code>Logger</code></a> provides following methods for flow tracing purposes:</p>
 </div>
-<div class="listingblock">
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>traceEntry()</code></dt>
+<dd>
+<p>Marks the entry to a block</p>
+</dd>
+<dt class="hdlist1"><code>traceExit()</code></dt>
+<dd>
+<p>Marks the exit from a block</p>
+</dd>
+<dt class="hdlist1"><code>catching()</code></dt>
+<dd>
+<p>Reports caught exceptions</p>
+</dd>
+<dt class="hdlist1"><code>throwing()</code></dt>
+<dd>
+<p>Reports exceptions that are either discarded or unlikely to be handled</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>The most used <code>traceEntry()</code> and <code>traceExit()</code> methods are intended to mark the <em>entry</em> and <em>exit</em> points of a particular block of code:</p>
+</div>
+<div id="example-trace" class="listingblock">
+<div class="title">Example <code>traceEntry()</code> and <code>traceExit()</code> usage</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public void someMethod() {
-    logger.traceEntry(); <i class="conum" data-value="1"></i><b>(1)</b>
+    LOGGER.traceEntry(); <i class="conum" data-value="1"></i><b>(1)</b>
     // method body
-    logger.traceExit(); <i class="conum" data-value="2"></i><b>(2)</b>
+    LOGGER.traceExit(); <i class="conum" data-value="2"></i><b>(2)</b>
 }</code></pre>
 </div>
 </div>
@@ -376,24 +383,26 @@ As the name suggests, the "entry" method is used at the beginning and the "exit"
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>entry()</code> method is called at the beginning of the method.</td>
+<td><code>traceEntry()</code> marks the entry to the block</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The <code>exit()</code> method is called at the end of the method.</td>
+<td><code>traceExit()</code> marks the exit from the block</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>Developers can call both <code>traceEntry()</code> and <code>traceExit()</code> methods with or without parameters.
-In the case of <code>traceEntry()</code>, it makes sense to pass the method parameters on as arguments.</p>
+<p>Both <code>traceEntry()</code> and <code>traceExit()</code> also accept parameters.
+You can use them to track the input and output of the associated block:</p>
 </div>
-<div class="listingblock">
+<div id="example-trace-args" class="listingblock">
+<div class="title">Example <code>traceEntry()</code> and <code>traceExit()</code> usage with arguments</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public void someMethod(String param) {
-    logger.traceEntry(param); <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public String someMethod(String input) {
+    logger.traceEntry(null, input); <i class="conum" data-value="1"></i><b>(1)</b>
     // method body
-    logger.traceExit(); <i class="conum" data-value="2"></i><b>(2)</b>
+    String output = ...;
+    return logger.traceExit(output); <i class="conum" data-value="2"></i><b>(2)</b>
 }</code></pre>
 </div>
 </div>
@@ -401,73 +410,25 @@ In the case of <code>traceEntry()</code>, it makes sense to pass the method para
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>traceEntry()</code> method is called at the beginning of the method.</td>
+<td><code>traceEntry()</code> marks the entry to the block along with the input</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The <code>traceExit()</code> method is called at the end of the method.</td>
+<td><code>traceExit()</code> marks the exit from the block along with the output</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>The <code>traceEntry()</code> also supports messages.</p>
+<p>The <code>catching()</code> method can be used by an application when it catches an exception that it will not rethrow, either explicitly or attached to another exception:</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public void someMethod(String[] text) {
-    logger.traceEntry(new JsonMessage(text)); <i class="conum" data-value="1"></i><b>(1)</b>
-    // method body
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Using the <code>JsonMessage</code> class to log the <code>text</code> parameter.</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Very similar, it is possible to use <code>traceExit()</code> with methods that return a value.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public String someMethod() {
-    String result = "Hello";
-    // method body
-    return logger.traceExit(result); <i class="conum" data-value="1"></i><b>(1)</b>
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>traceExit()</code> method can also return a value.</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Developers can use the <code>catching()</code> and <code>throwing()</code> methods to work with exceptions.</p>
-</div>
-<div class="paragraph">
-<p>The following code shows the <code>catching()</code> method. It will be called
-inside the <code>catch</code> block of a try-catch statement.</p>
-</div>
-<div class="paragraph">
-<p>The <code>catching()</code> method can be used by an application when it catches an
-Exception that it will not rethrow, either explicitly or attached
-to another Exception. The generated logging event will have an <code>ERROR</code> level.</p>
-</div>
-<div class="listingblock">
+<div id="example-catching" class="listingblock">
+<div class="title">Example <code>catching()</code> usage</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public void someMethod() {
     try {
-        // Let's assume an exception is thrown here
-        String msg = messages[messages.length];
-    } catch (Exception ex) {
-        logger.catching(ex); <i class="conum" data-value="1"></i><b>(1)</b>
+        // Business logic
+    } catch (Exception error) {
+        logger.catching(error); <i class="conum" data-value="1"></i><b>(1)</b>
     }
 }</code></pre>
 </div>
@@ -476,20 +437,34 @@ to another Exception. The generated logging event will have an <code>ERROR</code
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>catching()</code> method logs exceptions that are caught and not rethrown.</td>
+<td><code>catching()</code> reports the caught exception</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>The <code>throwing()</code> method is used to log exceptions that are thrown and not caught.
-The code shows how to use the <code>throwing()</code> method- like <code>catching()</code>, which will be called
-inside the <code>catch</code> block of a try-catch statement.</p>
+<p>The <code>throwing()</code> method can be used by an application when it is throwing an exception that is unlikely to be handled, such as a <code>RuntimeException</code>.
+This will ensure that proper diagnostics are available if needed.</p>
 </div>
-<div class="paragraph">
-<p>The <code>throwing()</code> method can be used by an application when it is throwing
-an exception that is unlikely to be handled, such as a RuntimeException.
-This will ensure that proper diagnostics are available if needed.
-The generated logging event will have an <code>ERROR</code> level.</p>
+<div id="example-throwing" class="listingblock">
+<div class="title">Example <code>throwing()</code> usage</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public void someMethod() {
+    try {
+        // Business logic
+    } catch (RuntimeException error) {
+        throw logger.throwing(error); <i class="conum" data-value="1"></i><b>(1)</b>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>thrown()</code> reports the caught exception that is about to be rethrown.
+Plus, rethrowing the exception, contrary to <a href="#example-catching">the <code>catching()</code> example</a> suppressing the exception.</td>
+</tr>
+</table>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -511,117 +486,383 @@ The generated logging event will have an <code>ERROR</code> level.</p>
 </tr>
 </table>
 </div>
+<div class="sect2">
+<h3 id="aop"><a class="anchor" href="#aop"></a>Aspect-oriented programming</h3>
+<div class="paragraph">
+<p>Logging has been a notorious example for demonstrating <a href="https://en.wikipedia.org/wiki/Aspect-oriented_programming">aspect-oriented programming</a> (AOP).
+For instance, using AOP, you can inject logging statements to methods that match a particular footprint, e.g., all public methods in <code>com.mycompany</code> package.
+With a couple of lines of AOP instructions, you can log input and output of all matching functions.
+Flow tracing methods fits like a glove to this AOP use case.
+You can see a demonstration of this in <a href="https://github.com/apache/logging-log4j-samples/tree/main/log4j-samples-aspectj">the <code>log4j-samples-aspectj</code> project</a> demonstrating how you can implement this use case using Log4j API flow methods and Spring Boot AspectJ support.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_differences_in_flow_tracing_methods"><a class="anchor" href="#_differences_in_flow_tracing_methods"></a>Differences in flow tracing methods</h2>
+<h2 id="impl"><a class="anchor" href="#impl"></a>Implementation</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Flow tracing methods have specific markers assigned and logs with a level of <code>TRACE</code>.
-It&#8217;s also noteworthy that all messages begin with "event".</p>
+<p>This section explains how flow tracing is implemented by different logging implementations.</p>
 </div>
+<div class="sect2">
+<h3 id="impl-log4j"><a class="anchor" href="#impl-log4j"></a>Log4j Core</h3>
 <div class="paragraph">
-<p>The table below shows the methods and their unique features.</p>
+<p>Log4j Core, the reference implementation of Log4j API, implements the flow tracing methods such that</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#impl-log4j-log-events">It generates specialized log events</a></p>
+</li>
+<li>
+<p><a href="#impl-log4j-config">Its behaviour is configurable</a></p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="impl-log4j-log-events"><a class="anchor" href="#impl-log4j-log-events"></a>Log events</h4>
+<div class="paragraph">
+<p>Log4j Core implements the flow tracing methods such that the generated log events are decorated to accommodate any need to selectively handle them:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 12.5%;">
+<col style="width: 25%;">
+<col style="width: 37.5%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Method Name</th>
-<th class="tableblock halign-left valign-top">Marker Name</th>
-<th class="tableblock halign-left valign-top">Special Features</th>
+<th class="tableblock halign-left valign-top">Method</th>
+<th class="tableblock halign-left valign-top">Level</th>
+<th class="tableblock halign-left valign-top">Markers</th>
+<th class="tableblock halign-left valign-top">Message</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>traceEntry()</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TRACE</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>ENTER</code>, <code>FLOW</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Can take a format string and a variable list of parameters.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>entry()</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ENTER</code>, <code>FLOW</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">DEPRECATED. Accepts 0 to 4 parameters</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/EntryMessage.html"><code>EntryMessage</code></a> extending from <a href="../javadoc/log4j-api/org/apache/logging/log4j/message/FlowMessage.html"><code>FlowMessage</code></a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>traceExit()</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TRACE</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>EXIT</code>, <code>FLOW</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Handles return values differently based on the method signature.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>exit()</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>EXIT</code>, <code>FLOW</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">DEPRECATED.  Can be called with or without parameters.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/EntryMessage.html"><code>ExitMessage</code></a> extending from <a href="../javadoc/log4j-api/org/apache/logging/log4j/message/FlowMessage.html"><code>FlowMessage</code></a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>throwing()</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>THROWING</code>, <code>EXCEPTION</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Typically used when an application throws an exception that is unlikely to be handled, such as a RuntimeException.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Plain message</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>catching()</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>CATCHING</code>, <code>EXCEPTION</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Used when catching exceptions that are not rethrown; logs with ERROR level.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Plain message</p></td>
 </tr>
 </tbody>
 </table>
 </div>
+<div class="sect3">
+<h4 id="impl-log4j-config"><a class="anchor" href="#impl-log4j-config"></a>Configuration</h4>
+<div class="paragraph">
+<p>Flow tracing implementation of Log4j Core can be configured using the following system properties:</p>
+</div>
+<div class="sect4">
+<h5 id="log4j2.flowMessageFactory"><a class="anchor" href="#log4j2.flowMessageFactory"></a><code>log4j2.flowMessageFactory</code></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_FLOW_MESSAGE_FACTORY</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/FlowMessageFactory.html"><code>Class&lt;? extends FlowMessageFactory&gt;</code></a></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/DefaultFlowMessageFactory.html"><code>DefaultFlowMessageFactory</code></a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Fully qualified class name of a
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/FlowMessageFactory.html"><code>FlowMessageFactory</code></a>
+implementation to be used by all loggers.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="impl-logback"><a class="anchor" href="#impl-logback"></a>Logback</h3>
+<div class="paragraph">
+<p><a href="https://logback.qos.ch">Logback</a> is another logging implementation for the <a href="https://www.slf4j.org">SLF4J</a> logging API, just like Log4j Core is a logging implementation for the <a href="api.html" class="xref page">Log4j API</a>.
+Using Log4j-to-SLF4J bridge, Logback can be <a href="installation.html#impl-logback" class="xref page">configured to consume Log4j API</a>.</p>
+</div>
+<div class="paragraph">
+<p>Log4j-to-SLF4J bridge implements flow tracing methods such that log events are generated with same <a href="#impl-log4j-log-events">marker and level changes of Log4j Core</a>.
+They only differ in generated message types, since SLF4J has no <a href="messages.html" class="xref page">extensible message contract</a> like Log4j, but plain <code>String</code>-based messages.
+This effectively means Logback also has access to the stated marker and level changes while using Log4j API flow tracing methods.</p>
+</div>
+</div>
+</div>
 </div>
 <div class="sect1">
-<h2 id="_flow_tracing_example_configuration"><a class="anchor" href="#_flow_tracing_example_configuration"></a>Flow Tracing Example Configuration</h2>
+<h2 id="example"><a class="anchor" href="#example"></a>Example configuration</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The following example demonstrates how to configure Log4j to use flow tracing.
-Note: While developers should prefer the <code>JsonTemplateLayout</code> in production, this example uses <code>PatternLayout</code> for simplicity.</p>
+<p>In this section, we will share logging implementation configuration examples to filter on flow tracing log events.</p>
+</div>
+<div class="sect2">
+<h3 id="example-log4j"><a class="anchor" href="#example-log4j"></a>Log4j Core</h3>
+<div class="paragraph">
+<p>Log4j Core is the reference implementation of Log4j API.
+In the example configurations below, we will employ a <a href="pattern-layout.html" class="xref page">Pattern Layout</a> depending on the associated markers of the log event:</p>
+</div>
+<div id="_tabs_1" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_1_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_1_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_1_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_1_xml--panel" class="tabpanel" aria-labelledby="_tabs_1_xml">
+<div class="listingblock">
+<div class="title"><a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examplesmanual/flowtracing/log4j2.xml">log4j2.xml</a> snippet</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;MarkerFilter marker="FLOW" onMatch="ACCEPT" onMismatch="NEUTRAL"/&gt;<i class="conum" data-value="1"></i><b>(1)</b>
+
+&lt;Appenders&gt;
+  &lt;Console name="CONSOLE"&gt;
+    &lt;PatternLayout&gt;
+      &lt;MarkerPatternSelector defaultPattern="%d %5p [%t] %c{1} -- %m%n"&gt;<i class="conum" data-value="2"></i><b>(2)</b>
+        &lt;PatternMatch key="ENTER" pattern="%d %5p [%t] %c{1} =&gt; %m%n"/&gt;<i class="conum" data-value="3"></i><b>(3)</b>
+        &lt;PatternMatch key="EXIT" pattern="%d %5p [%t] %c{1} &lt;= %m%n"/&gt;<i class="conum" data-value="4"></i><b>(4)</b>
+      &lt;/MarkerPatternSelector&gt;
+    &lt;/PatternLayout&gt;
+  &lt;/Console&gt;
+&lt;/Appenders&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_json--panel" class="tabpanel" aria-labelledby="_tabs_1_json">
+<div class="listingblock">
+<div class="title"><a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examplesmanual/flowtracing/log4j2.json">log4j2.json</a> snippet</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"MarkerFilter": { <i class="conum" data-value="1"></i><b>(1)</b>
+  "marker": "FLOW",
+  "onMatch": "ACCEPT",
+  "onMismatch": "NEUTRAL"
+},
+
+"Appenders": {
+  "Console": {
+    "name": "CONSOLE",
+    "PatternLayout": {
+      "MarkerPatternSelector": {
+        "defaultPattern": "%d %5p [%t] %c{1} -- %m%n",<i class="conum" data-value="2"></i><b>(2)</b>
+        "PatternMatch": [
+          {<i class="conum" data-value="3"></i><b>(3)</b>
+            "key": "ENTER",
+            "pattern": "%d %5p [%t] %c{1} =&gt; %m%n"
+          },
+          {<i class="conum" data-value="4"></i><b>(4)</b>
+            "key": "EXIT",
+            "pattern": "%d %5p [%t] %c{1} &lt;= %m%n"
+          }
+        ]
+      }
+    }
+  }
+},</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_yaml--panel" class="tabpanel" aria-labelledby="_tabs_1_yaml">
+<div class="listingblock">
+<div class="title"><a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examplesmanual/flowtracing/log4j2.yaml">log4j2.yaml</a> snippet</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">MarkerFilter: <i class="conum" data-value="1"></i><b>(1)</b>
+  marker: "FLOW"
+  onMatch: "ACCEPT"
+  onMismatch: "NEUTRAL"
+
+Appenders:
+  Console:
+    name: "CONSOLE"
+    PatternLayout:
+      MarkerPatternSelector:
+      defaultPattern: "%d %5p [%t] %c{1} -- %m%n" <i class="conum" data-value="2"></i><b>(2)</b>
+      PatternMatch:
+        - key: "ENTER" <i class="conum" data-value="3"></i><b>(3)</b>
+          pattern: "%d %5p [%t] %c{1} =&gt; %m%n"
+        - key: "EXIT" <i class="conum" data-value="4"></i><b>(4)</b>
+          pattern: "%d %5p [%t] %c{1} &lt;= %m%n"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_properties--panel" class="tabpanel" aria-labelledby="_tabs_1_properties">
+<div class="listingblock">
+<div class="title"><a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examplesmanual/flowtracing/log4j2.properties">log4j2.properties</a> snippet</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">filter.0.type = MarkerFilter <i class="conum" data-value="1"></i><b>(1)</b>
+filter.0.marker = FLOW
+filter.0.onMatch = ACCEPT
+filter.0.onMismatch = NEUTRAL
+
+appender.0.type = Console
+appender.0.name = CONSOLE
+appender.0.layout.type = PatternLayout
+appender.0.layout.patternSelector.type = MarkerPatternSelector
+appender.0.layout.patternSelector.defaultPattern = "%d %5p [%t] %c{1} -- %m%n <i class="conum" data-value="2"></i><b>(2)</b>
+appender.0.layout.patternSelector.properties.0.type = PatternMatch
+appender.0.layout.patternSelector.properties.0.key = ENTER
+appender.0.layout.patternSelector.properties.0.pattern = %d %5p [%t] %c{1} =&gt; %m%n <i class="conum" data-value="3"></i><b>(3)</b>
+appender.0.layout.patternSelector.properties.1.type = PatternMatch
+appender.0.layout.patternSelector.properties.1.key = EXIT
+appender.0.layout.patternSelector.properties.1.pattern = %d %5p [%t] %c{1} &lt;= %m%n <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Accepting log events marked with <code>FLOW</code> regardless of their level</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>By default, log event messages will be formatted with a <code>--</code> prefix</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Log events marked with <code>ENTER</code> (that is, generated by <code>traceEntry()</code>) will have their message formatted with a <code>&#8658;</code> prefix</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Log events marked with <code>EXIT</code> (that is, generated by <code>traceExit()</code>) will have their message formatted with a <code>&#8656;</code> prefix</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="example-logback"><a class="anchor" href="#example-logback"></a>Logback</h3>
+<div class="paragraph">
+<p><a href="https://logback.qos.ch">Logback</a> is another logging implementation for the <a href="https://www.slf4j.org">SLF4J</a> logging API, just like Log4j Core is a logging implementation for the <a href="api.html" class="xref page">Log4j API</a>.
+Using Log4j-to-SLF4J bridge, Logback can be <a href="installation.html#impl-logback" class="xref page">configured to consume Log4j API</a>.</p>
 </div>
 <div class="paragraph">
-<p>Two appenders are defined: <code>Console</code> and <code>File</code>.</p>
-</div>
-<div class="paragraph">
-<p>The <code>Console</code> appender outputs logs to <code>SYSTEM_OUT</code>, typically the console.
-It includes a <code>ThresholdFilter</code> set to only accept messages at the <code>ERROR</code> level or above.
-Less severe messages are filtered.</p>
-</div>
-<div class="paragraph">
-<p>Similarly, the File appender directs logs to a file named <code>target/test.log</code>.
-The appenders configuration will create a new file for every application run.</p>
-</div>
-<div class="paragraph">
-<p>Both appenders use the already mentioned <code>PatternLayout</code>, which includes detailed information such as time, log level, class name, line number, and method name.</p>
-</div>
-<div class="paragraph">
-<p>Finally, in the Loggers section, the Root logger is set to a <code>TRACE</code> level, which is necessary to see flow tracing in action.
-The Root logger references the File appender, directing its output to the configured file.</p>
+<p>Below we will use a combination of <code>EvaluatorFilter</code>, <code>MarkerFilter</code>, and <code>OnMarkerEvaluator</code> in Logback to adapt the formatting pattern of messages written to console based on flow tracing specific markers:</p>
 </div>
 <div class="listingblock">
+<div class="title"><a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examplesmanual/flowtracing/logback.xml">logback.xml</a> snippet</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration&gt;
-  &lt;Appenders&gt;
-    &lt;Console name="Console" target="SYSTEM_OUT"&gt;
-      &lt;ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/&gt;
-      &lt;!-- Flow tracing is most useful with a pattern that shows location.
-           Below pattern outputs class, line number and method name. --&gt;
-      &lt;PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/&gt;
-    &lt;/Console&gt;
-    &lt;File name="log" fileName="target/test.log" append="false"&gt;
-      &lt;PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/&gt;
-    &lt;/File&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="trace"&gt;
-      &lt;AppenderRef ref="log"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;turboFilter class="MarkerFilter"&gt;<i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;Marker&gt;FLOW&lt;/Marker&gt;
+  &lt;OnMatch&gt;ACCEPT&lt;/OnMatch&gt;
+&lt;/turboFilter&gt;
+
+&lt;appender name="CONSOLE_DEFAULT" class="ConsoleAppender"&gt;
+  &lt;filter class="EvaluatorFilter"&gt;<i class="conum" data-value="2"></i><b>(2)</b>
+    &lt;evaluator class="OnMarkerEvaluator"&gt;
+      &lt;marker&gt;ENTER&lt;/marker&gt;
+      &lt;marker&gt;EXIT&lt;/marker&gt;
+    &lt;/evaluator&gt;
+    &lt;onMismatch&gt;ACCEPT&lt;/onMismatch&gt;
+    &lt;onMatch&gt;DENY&lt;/onMatch&gt;
+  &lt;/filter&gt;
+  &lt;encoder class="PatternLayoutEncoder"&gt;<i class="conum" data-value="3"></i><b>(3)</b>
+    &lt;pattern&gt;&lt;![CDATA[%d %5p [%t] %c{1} -- %m%n]]&gt;&lt;/pattern&gt;
+  &lt;/encoder&gt;
+&lt;/appender&gt;
+
+&lt;appender name="CONSOLE_FLOW_ENTER" class="ConsoleAppender"&gt;
+  &lt;filter class="EvaluatorFilter"&gt;<i class="conum" data-value="4"></i><b>(4)</b>
+    &lt;evaluator class="OnMarkerEvaluator"&gt;
+      &lt;marker&gt;ENTER&lt;/marker&gt;
+    &lt;/evaluator&gt;
+    &lt;onMismatch&gt;DENY&lt;/onMismatch&gt;
+    &lt;onMatch&gt;ACCEPT&lt;/onMatch&gt;
+  &lt;/filter&gt;
+  &lt;encoder class="PatternLayoutEncoder"&gt;<i class="conum" data-value="5"></i><b>(5)</b>
+    &lt;pattern&gt;&lt;![CDATA[%d %5p [%t] %c{1} =&gt; %m%n]]&gt;&lt;/pattern&gt;
+  &lt;/encoder&gt;
+&lt;/appender&gt;
+
+&lt;appender name="CONSOLE_FLOW_EXIT" class="ConsoleAppender"&gt;
+  &lt;filter class="EvaluatorFilter"&gt;<i class="conum" data-value="6"></i><b>(6)</b>
+    &lt;evaluator class="OnMarkerEvaluator"&gt;
+      &lt;marker&gt;EXIT&lt;/marker&gt;
+    &lt;/evaluator&gt;
+    &lt;onMismatch&gt;DENY&lt;/onMismatch&gt;
+    &lt;onMatch&gt;ACCEPT&lt;/onMatch&gt;
+  &lt;/filter&gt;
+  &lt;encoder class="PatternLayoutEncoder"&gt;<i class="conum" data-value="7"></i><b>(7)</b>
+    &lt;pattern&gt;&lt;![CDATA[%d %5p [%t] %c{1} &lt;= %m%n]]&gt;&lt;/pattern&gt;
+  &lt;/encoder&gt;
+&lt;/appender&gt;
+
+&lt;root level="WARN"&gt;
+  &lt;appender-ref ref="CONSOLE_DEFAULT"/&gt;
+  &lt;appender-ref ref="CONSOLE_FLOW_ENTER"/&gt;
+  &lt;appender-ref ref="CONSOLE_FLOW_EXIT"/&gt;
+&lt;/root&gt;</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>By changing the Root logger&#8217;s level to <code>DEBUG</code>, developers can reduce the amount of output.</p>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Accepting log events marked with <code>FLOW</code> regardless of their level</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>In <code>CONSOLE_DEFAULT</code> appender, excluding all log events marked with <code>ENTER</code> and <code>EXIT</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>In <code>CONSOLE_DEFAULT</code> appender, log event messages will be formatted with a <code>-</code> prefix</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>In <code>CONSOLE_FLOW_ENTER</code> appender, accepting only log events marked with <code>ENTER</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>In <code>CONSOLE_FLOW_ENTER</code> appender, log event messages will be formatted with a <code>→</code> prefix</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>In <code>CONSOLE_FLOW_EXIT</code> appender, accepting only log events marked with <code>EXIT</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>In <code>CONSOLE_FLOW_EXIT</code> appender, log event messages will be formatted with a <code>←</code> prefix</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 </div>
