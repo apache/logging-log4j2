@@ -732,14 +732,10 @@ The `style` parameter is a comma-separated list of the following directives:
 See <<ansi-modifiers>> for the syntax of `<style_expression>`.
 
 | STYLE=default
-| Sets the default style, which is equivalent to the following sequence of directives:
-`FATAL=bold red, ERROR=bold red, WARN=yellow, INFO=green, DEBUG=cyan, TRACE=black`.
+| Sets the default style, which is equivalent to the following sequence of directives: `FATAL=bold red, ERROR=bold red, WARN=yellow, INFO=green, DEBUG=cyan, TRACE=black`.
 
 | STYLE=logback
-| Applies the style used by
-https://logback.qos.ch/manual/layouts.html#coloring[Logback's `%highlight` converter],
-which is equivalent to the following sequence of directives:
-`FATAL=blink bold red, ERROR=bold red, WARN=red, INFO=blue, DEBUG=normal, TRACE=normal`.
+| Applies the style used by {logback-url}/manual/layouts.html#coloring[Logback's `%highlight` converter], which is equivalent to the following sequence of directives: `FATAL=blink bold red, ERROR=bold red, WARN=red, INFO=blue, DEBUG=normal, TRACE=normal`.
 |===
 
 You can use the default colors with:
