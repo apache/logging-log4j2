@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="2367" link="https://github.com/apache/logging-log4j2/pull/2367"/>
-  <description format="asciidoc">Update `org.eclipse.platform:org.eclipse.osgi` to version `3.19.0`</description>
+  <issue id="2650" link="https://github.com/apache/logging-log4j2/pull/2650"/>
+  <description format="asciidoc">Update `org.eclipse.platform:org.eclipse.osgi` to version `3.20.0`</description>
 </entry>
