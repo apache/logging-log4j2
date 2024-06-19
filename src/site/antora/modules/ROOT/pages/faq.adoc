@@ -174,7 +174,7 @@ In contrast, Log4j API has methods for up to ten unrolled parameters.
 Log4j API lets you log any `CharSequence` or `Object`.
 Log4j Core can log any `Object` that implements `CharSequence` or `org.apache.logging.log4j.util.StringBuilderFormattable` without creating garbage.
 
-* The https://www.slf4j.org/api/org/slf4j/spi/LocationAwareLogger.html#log(org.slf4j.Marker,java.lang.String,int,java.lang.String,java.lang.Object%5B%5D,java.lang.Throwable)[`org.slf4j.spi.LocationAwareLogger::log`] method is not yet implemented in a garbage-free manner in the `log4j-slf4j-impl` and `log4j-slf4j2-impl` bridges.
+* The {slf4j-url}/api/org/slf4j/spi/LocationAwareLogger.html#log(org.slf4j.Marker,java.lang.String,int,java.lang.String,java.lang.Object%5B%5D,java.lang.Throwable)[`org.slf4j.spi.LocationAwareLogger::log`] method is not yet implemented in a garbage-free manner in the `log4j-slf4j-impl` and `log4j-slf4j2-impl` bridges.
 It creates a new message object for each call.
 
 [#gc-free-domain-object]

@@ -25,8 +25,6 @@
 :jcl-link: https://commons.apache.org/proper/commons-logging/[JCL (Apache Commons Logging)]
 :jpl-link: https://openjdk.org/jeps/264[JPL (Java Platform Logging)]
 :jul-link: https://docs.oracle.com/en/java/javase/{java-target-version}/core/java-logging-overview.html[JUL (Java Logging)]
-:logback-link: https://logback.qos.ch/[Logback]
-:slf4j-link: https://www.slf4j.org/[SLF4J]
 :jboss-logging-link: https://github.com/jboss-logging/jboss-logging[JBoss Logging]
 
 // end::inc[]
@@ -38,7 +36,7 @@ Logging API::
 A logging API is an interface your code or your dependencies directly logs against.
 It is required at compile-time.
 It is implementation agnostic to ensure that your application can write logs, but is not tied to a specific logging implementation.
-Log4j API, {slf4j-link}, {jul-link}, {jcl-link}, {jpl-link} and {jboss-logging-link} are major logging APIs.
+Log4j API, {slf4j-url}[SLF4J], {jul-link}, {jcl-link}, {jpl-link} and {jboss-logging-link} are major logging APIs.
 
 // end::api[]
 
@@ -47,7 +45,7 @@ Log4j API, {slf4j-link}, {jul-link}, {jcl-link}, {jpl-link} and {jboss-logging-l
 [#logging-impl]
 Logging implementation::
 A logging implementation is only required at runtime and can be changed without the need to recompile your software.
-Log4j Core, {jul-link}, {logback-link} are the most well-known logging implementations.
+Log4j Core, {jul-link}, {logback-url}[Logback] are the most well-known logging implementations.
 
 // end::impl[]
 

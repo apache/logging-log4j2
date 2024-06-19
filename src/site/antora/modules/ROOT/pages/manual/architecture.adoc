@@ -177,8 +177,8 @@ where the event should always be logged regardless of the configuration.
 However, it is generally recommended that a Marker with a corresponding
 global Marker Filter be used instead.
 
-http://logging.apache.org/log4j/1.2/manual.html[Log4j 1.x] and
-http://logback.qos.ch/manual/architecture.html#effectiveLevel[Logback]
+{logging-services-url}/log4j/1.x/manual.html[Log4j 1] and
+{logback-url}/manual/architecture.html#effectiveLevel[Logback]
 both have the concept of "Level Inheritance". In Log4j 2, Loggers and
 LoggerConfigs are two different objects so this concept is implemented
 differently. Each Logger references the appropriate LoggerConfig which

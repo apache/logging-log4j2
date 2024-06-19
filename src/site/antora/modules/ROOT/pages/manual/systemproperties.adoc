@@ -182,6 +182,15 @@ include::partial$manual/systemproperties/properties-jansi.adoc[leveloffset=+2]
 
 To configure the thread context used by Log4j Core, you can use the following properties:
 
+[WARNING]
+====
+These configuration properties are only used by Log4j Core and {log4j2-url}/manual/simple-logger.html[Simple Logger] of Log4j API.
+
+The `log4j-to-slf4j` logging bridge delegates `ThreadContext` calls to {slf4j-url}/api/org/slf4j/MDC.html[the SLF4J `MDC` class].
+
+The `log4j-to-jul` logging bridge ignores all `ThreadContext` method calls.
+====
+
 include::partial$manual/systemproperties/properties-thread-context.adoc[leveloffset=+2]
 
 [id=properties-transport-security]

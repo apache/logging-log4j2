@@ -218,7 +218,7 @@ dependencies {
 
 If your application has (direct or transitive!) dependencies that use another logging API, you need to <<logging-bridge,bridge>> that to Log4j.
 This way the foreign logging API calls will effectively be consumed by Log4j too.
-{slf4j-link} is another logging API used pretty common in the wild.
+{slf4j-url}[SLF4J] is another logging API used pretty common in the wild.
 (xref:manual/installation.adoc[] covers all supported foreign APIs.)
 Let's see how you can use the `log4j-slf4j2-impl` bridge to support SLF4J:
 
@@ -374,7 +374,7 @@ dependencies {
 
 If your library has (direct or transitive!) dependencies that use another logging API, you need to <<logging-bridge,bridge>> that to Log4j.
 This way the foreign logging API calls will effectively be consumed by Log4j too.
-{slf4j-link} is another logging API used pretty common in the wild.
+{slf4j-url}[SLF4J] is another logging API used pretty common in the wild.
 (xref:manual/installation.adoc[] covers all supported foreign APIs.)
 Let's see how you can use the `log4j-slf4j2-impl` bridge to support SLF4J:
 

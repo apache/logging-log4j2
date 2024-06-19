@@ -15,12 +15,9 @@ Licensed to the Apache Software Foundation (ASF) under one or more
     limitations under the License.
 ////
 
-:logback-link: https://logback.qos.ch/[Logback]
-:slf4j-link: https://www.slf4j.org/[SLF4J]
-
 = Migrating from Logback
 
-{logback-link} is a logging implementation for the {slf4j-link} logging API, just like Log4j Core is a logging implementation for the xref:manual/api.adoc[Log4j API].
+{logback-url}[Logback] is a logging implementation for the {slf4j-url}[SLF4J] logging API, just like Log4j Core is a logging implementation for the xref:manual/api.adoc[Log4j API].
 In this page we will guide you through migrating from Logback to Log4j Core as your logging implementation.
 
 [TIP]
