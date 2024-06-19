@@ -1682,19 +1682,55 @@ Format modifiers to control such things as field width, padding, left, and right
 |
 
 |literal text
-a|Garbage-free, but care is needed for xref:manual/configuration.adoc#property-substitution[property substitution], including xref:manual/lookups.adoc[].
-
-include::partial$manual/layouts-gcfree-property-substitution.adoc[]
-
-[IMPORTANT]
-====
-Lookups are intended as a very generic, convenience utility to perform string interpolation for, in particular, configuration files and components (e.g., layouts) lacking this mechanism.
-*Pattern Layout has powerful directives to inject external values, and you should always prefer those whenever possible over lookups!*
-For example, always prefer <<converter-map, the `map` converter>> over xref:manual/lookups.adoc#MapLookup[the `map` lookup].
-====
+a|Garbage-free, but care is needed for <<property-substitution>>, including xref:manual/lookups.adoc[]
 |===
 
 Patterns containing regular expressions and xref:manual/layouts.adoc#LocationInformation[location information] are not garbage-free.
+
+[#property-substitution]
+== Property substitution
+
+xref:manual/configuration.adoc#property-substitution[Property substitutions] (e.g., `$\{myProperty}`), including xref:manual/lookups.adoc[lookups] (e.g., `${java:version}`, `${env:USER}`, `${date:MM-dd-yyyy}`) are supported, but extra care needs to be taken.
+*We strongly advise you to carefully read xref:manual/configuration.adoc#property-substitution[the configuration manual]* before using them.
+
+[IMPORTANT]
+====
+xref:manual/lookups.adoc[] are intended as a very generic, convenience utility to perform string interpolation for, in particular, configuration files and components (e.g., layouts) lacking this mechanism.
+*Pattern Layout has a rich converter collection, and you should always prefer it whenever possible over lookups.*
+
+.Which converters can I use to replace lookups?
+[%collapsible]
+=====
+[%header,cols="1,1"]
+|===
+|Instead of this lookup
+|Use this converter
+
+|xref:manual/lookups.adoc#ContextMapLookup[Context Map Lookup]
+|<<converter-thread-context-map>>
+
+|xref:manual/lookups.adoc#DateLookup[Date Lookup]
+|<<converter-date>>
+
+|xref:manual/lookups.adoc#EventLookup[Event Lookup]
+|<<converter-exception>> +
+<<converter-exception-extended>> +
+<<converter-level>> +
+<<converter-logger>> +
+<<converter-marker>> +
+<<converter-message>> +
+<<converter-thread-id>> +
+<<converter-thread-name>> +
+<<converter-date>>
+
+|xref:manual/lookups.adoc#MapLookup[Map Lookup]
+|<<converter-map>>
+
+|xref:manual/lookups.adoc#marker-lookup[Marker Lookup]
+|<<converter-marker>>
+|===
+=====
+====
 
 [#extending]
 == Extending

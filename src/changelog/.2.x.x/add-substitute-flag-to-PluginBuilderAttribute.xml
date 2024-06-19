@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns="https://logging.apache.org/xml/ns"
-       xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
-       type="added">
-  <issue id="2667" link="https://github.com/apache/logging-log4j2/pull/2667"/>
-  <description format="asciidoc">Add `substitute` flag to `@PluginAttribute` and `@PluginBuilderAttribute` to toggle property substitution while reading values</description>
-</entry>

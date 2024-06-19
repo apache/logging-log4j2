@@ -43,7 +43,7 @@ public class PluginBuilderAttributeVisitor extends AbstractPluginVisitor<PluginB
         final String name = overridden.isEmpty() ? this.member.getName() : overridden;
         final Map<String, String> attributes = node.getAttributes();
         final String rawValue = removeAttributeValue(attributes, name, this.aliases);
-        final String replacedValue = annotation.substitute() ? this.substitutor.replace(event, rawValue) : rawValue;
+        final String replacedValue = this.substitutor.replace(event, rawValue);
         final Object value = convert(replacedValue, null);
         final Object debugValue = this.annotation.sensitive() ? "*****" : value;
         StringBuilders.appendKeyDqValue(log, name, debugValue);
