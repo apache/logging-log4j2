@@ -1,0 +1,27 @@
+{
+  "Configuration": {
+    "Appenders": {
+      "Console": {
+        "name": "CONSOLE",
+        "JsonTemplateLayout": {
+          "eventTemplate": "{\"instant\": {\"$resolver\": \"pattern\", \"pattern\": \"${env:LOG4J_DATE_PATTERN:-%d}\"}}", //<1>
+          "eventTemplateAdditionalField": [
+            {
+              "key": "message",
+              "format": "JSON",
+              "value": "{\"$resolver\": \"pattern\", \"pattern\": \"${env:LOG4J_MESSAGE_PATTERN:-%m}\"}" //<2>
+            }
+          ]
+        }
+      }
+    },
+    "Loggers": {
+      "Root": {
+        "level": "WARN",
+        "AppenderRef": {
+          "ref": "CONSOLE"
+        }
+      }
+    }
+  }
+}

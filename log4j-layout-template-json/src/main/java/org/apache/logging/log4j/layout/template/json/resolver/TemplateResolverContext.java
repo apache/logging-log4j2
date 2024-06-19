@@ -31,7 +31,7 @@ import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
  *
  * @see TemplateResolverFactory
  */
-interface TemplateResolverContext<V, C extends TemplateResolverContext<V, C>> {
+public interface TemplateResolverContext<V, C extends TemplateResolverContext<V, C>> {
 
     Class<C> getContextClass();
 

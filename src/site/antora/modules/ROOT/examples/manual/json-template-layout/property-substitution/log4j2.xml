@@ -15,22 +15,27 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="OFF" name="NestedLoggingTest">
-  <Properties>
-    <Property name="eventTemplate">[{"$resolver": "message", "stringified": true}, {"$resolver": "exception", "field": "message"}]</Property>
-  </Properties>
+<Configuration xmlns="https://logging.apache.org/xml/ns"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="
+                   https://logging.apache.org/xml/ns
+                   https://logging.apache.org/xml/ns/log4j-config-2.xsd">
+
   <Appenders>
-    <List name="List1" raw="true">
-      <JsonTemplateLayout eventTemplate="${eventTemplate}" eventDelimiter=""/>
-    </List>
-    <List name="List2" raw="true">
-      <JsonTemplateLayout eventTemplate="${eventTemplate}" eventDelimiter=""/>
-    </List>
+    <Console name="CONSOLE">
+      <JsonTemplateLayout eventTemplate='{"instant": {"$resolver": "pattern", "pattern": "${env:LOG4J_DATE_PATTERN:-%d}"}}'> <!--1-->
+        <EventTemplateAdditionalField
+            key="message"
+            format="JSON"
+            value='{"$resolver": "pattern", "pattern": "${env:LOG4J_MESSAGE_PATTERN:-%m}"}'/> <!--2-->
+      </JsonTemplateLayout>
+    </Console>
   </Appenders>
+
   <Loggers>
-    <Root level="trace">
-      <AppenderRef ref="List1"/>
-      <AppenderRef ref="List2"/>
+    <Root level="WARN">
+      <AppenderRef ref="CONSOLE"/>
     </Root>
   </Loggers>
+
 </Configuration>

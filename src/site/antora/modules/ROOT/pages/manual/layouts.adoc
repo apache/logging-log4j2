@@ -283,8 +283,6 @@ You can use time zone IDs supported by https://docs.oracle.com/javase/8/docs/api
 `JsonTemplateLayout` is a customizable, efficient, and garbage-free JSON generating layout.
 It encodes ``LogEvent``s according to the structure described by the JSON template provided.
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-JsonTemplateLayout[📖 Plugin reference for `JsonTemplateLayout`]
-
 For instance, given the following event template stored in `MyLayout.json` in your classpath:
 
 [source,json]
@@ -369,8 +367,6 @@ It is analogous to `String#format()` with specialized directives on injecting ce
 Pattern Layout is not intended for _structural logging_ purposes.
 For production environments, you are strongly advised to use xref:manual/json-template-layout.adoc[] producing JSON output ready to be delivered to log ingestion systems such as Elasticsearch or Google Cloud Logging.
 ====
-
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-PatternLayout[📖 Plugin reference for `PatternLayout`]
 
 A conversion pattern is composed of literal text and format control expressions.
 For instance, given the `%-5p [%t]: %m%n` pattern, following statements

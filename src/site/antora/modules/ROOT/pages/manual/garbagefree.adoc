@@ -57,7 +57,7 @@ If not for yours, keep on reading.
 In order to have a garbage-free Log4j Core, you need to
 
 * <<core-properties,configure it using properties>>,
-* and employ garbage-free <<Layouts[layouts], xref:Appenders[appenders], and xref:#Filters,filters>>.
+* and employ garbage-free <<Layouts,layouts>>, <<Appenders,appenders>>, and <<Filters,filters>>.
 
 [#core-properties]
 === Properties
@@ -303,7 +303,7 @@ Not all Log4j API feature set is garbage-free, specifically:
 
 * The `ThreadContext` map (aka. MDC) is not garbage-free by default, but can be configured to be garbage-free by setting the <<log4j.threadContext.map.garbageFree>> configuration property to `true`.
 * The `ThreadContext` stack (aka. NDC) is not garbage-free.
-* {log4j2-url}/manual/scoped-context.adoc[] is not garbage-free.
+* {log4j2-url}/manual/scoped-context.html[Scoped Context] is not garbage-free.
 * Logging very large messages (i.e., more than <<log4j.gc.maxReusableMsgSize>> characters, which defaults to 518), when all loggers are xref:manual/async.adoc[asynchronous loggers], will cause the internal `StringBuilder` in the
 `RingBuffer` to be trimmed back to their configured maximum size.
 * Logging messages containing `$\{variable}` substitutions creates temporary objects.

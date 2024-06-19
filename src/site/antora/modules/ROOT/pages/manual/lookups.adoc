@@ -470,6 +470,7 @@ page for information on how to set the default values.
 </Routing>
 ----
 
+[#marker-lookup]
 == Marker Lookup
 
 The marker lookup allows you to use markers in interesting
