@@ -35,7 +35,7 @@ This section introduces you to some common concerns shared by almost all <<colle
 include::partial$manual/structured-logging.adoc[]
 
 Log4j strives to provide top of the class support for structured logging.
-To create an end-to-end experience, it provides several xref:manual/messages.adoc#collection-structured[structured message types] along with layouts supporting structured logging.
+To create an end-to-end experience, it provides several {log4j2-url}/manual/messages.html#collection-structured[structured message types] along with layouts supporting structured logging.
 
 We recommend xref:manual/json-template-layout.adoc[] for structured logging purposes.
 
@@ -492,7 +492,7 @@ This attribute only applies to RFC 5424 Syslog records.
 |The string that should be used to replace newlines within the message text
 |===
 
-RFC 5424 Layout has specialized handling for xref:manual/messages.adoc#StructuredDataMessage[`StructuredDataMessage`]s.
+RFC 5424 Layout has specialized handling for {log4j2-url}/manual/messages.html#StructuredDataMessage[`StructuredDataMessage`]s.
 By combining two, users can have complete control on how their message is encoded in a way compliant with RFC 5424, while RFC 5424 Layout will make sure the rest of the information attached to the log event is properly injected.
 
 [#SyslogLayout]
