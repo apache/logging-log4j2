@@ -11,6 +11,9 @@
 <!-- `@asciidoctor/tabs` extension styles -->
 <link rel="stylesheet" href="./_/css/vendor/tabs.css">
 <style>
+  /* Swap colors of `IMPORTANT` and `WARNING` blocks */ 
+  .doc .admonitionblock.important .icon { background-color: #f70; }
+  .doc .admonitionblock.warning .icon { background-color: #e40046; }
   /* Default `h4`, `h5`, and `h6` are smaller than the normal text, fix header font sizing: */
   .doc h1 { font-size: 1.9rem; }
   .doc h2 { font-size: 1.7rem; }

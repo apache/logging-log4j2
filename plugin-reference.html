@@ -11,6 +11,9 @@
 <!-- `@asciidoctor/tabs` extension styles -->
 <link rel="stylesheet" href="./_/css/vendor/tabs.css">
 <style>
+  /* Swap colors of `IMPORTANT` and `WARNING` blocks */ 
+  .doc .admonitionblock.important .icon { background-color: #f70; }
+  .doc .admonitionblock.warning .icon { background-color: #e40046; }
   /* Default `h4`, `h5`, and `h6` are smaller than the normal text, fix header font sizing: */
   .doc h1 { font-size: 1.9rem; }
   .doc h2 { font-size: 1.7rem; }
@@ -2567,7 +2570,12 @@ This attribute is ignored if <code>immediateFlush</code> is set to <code>true</c
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Property</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property">Property</a>?</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>A generic list of key/value properties</p>
+</div>
+<div class="paragraph">
+<p>The meaning of these properties depends on the component.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"></td>

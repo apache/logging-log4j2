@@ -11,6 +11,9 @@
 <!-- `@asciidoctor/tabs` extension styles -->
 <link rel="stylesheet" href="../_/css/vendor/tabs.css">
 <style>
+  /* Swap colors of `IMPORTANT` and `WARNING` blocks */ 
+  .doc .admonitionblock.important .icon { background-color: #f70; }
+  .doc .admonitionblock.warning .icon { background-color: #e40046; }
   /* Default `h4`, `h5`, and `h6` are smaller than the normal text, fix header font sizing: */
   .doc h1 { font-size: 1.9rem; }
   .doc h2 { font-size: 1.7rem; }
@@ -310,7 +313,7 @@ This act of encoding logs following a certain structure is called <strong>struct
 </div>
 <div class="paragraph">
 <p>Log4j strives to provide top of the class support for structured logging.
-To create an end-to-end experience, it provides several <a href="#manual/messages.adoc#collection-structured" class="xref unresolved">structured message types</a> along with layouts supporting structured logging.</p>
+To create an end-to-end experience, it provides several <a href="https://logging.apache.org/log4j/2.x/manual/messages.html#collection-structured">structured message types</a> along with layouts supporting structured logging.</p>
 </div>
 <div class="paragraph">
 <p>We recommend <a href="json-template-layout.html" class="xref page">JSON Template Layout</a> for structured logging purposes.</p>
@@ -1037,7 +1040,7 @@ This attribute only applies to RFC 5424 Syslog records.</p></td>
 </tbody>
 </table>
 <div class="paragraph">
-<p>RFC 5424 Layout has specialized handling for <a href="#manual/messages.adoc#StructuredDataMessage" class="xref unresolved"><code>StructuredDataMessage</code></a>s.
+<p>RFC 5424 Layout has specialized handling for <a href="https://logging.apache.org/log4j/2.x/manual/messages.html#StructuredDataMessage"><code>StructuredDataMessage</code></a>s.
 By combining two, users can have complete control on how their message is encoded in a way compliant with RFC 5424, while RFC 5424 Layout will make sure the rest of the information attached to the log event is properly injected.</p>
 </div>
 </div>
