@@ -17,7 +17,6 @@
 
 :jpl-link: https://openjdk.org/jeps/264[JPL (Java Platform Logging)]
 :jul-link: https://docs.oracle.com/en/java/javase/{java-target-version}/core/java-logging-overview.html[JUL (Java Logging)]
-:slf4j-link: https://www.slf4j.org/[SLF4J]
 
 = Installation
 
@@ -186,9 +185,9 @@ The bridge that translates Log4j API calls to {jul-link}.
 See <<impl-jul>> for the installation instructions.
 
 `log4j-to-slf4j`::
-The bridge that translates Log4j API calls to {slf4j-link}.
+The bridge that translates Log4j API calls to {slf4j-url}[SLF4J].
 Since currently only
-https://logback.qos.ch/[Logback] implements SLF4J natively, refer to <<impl-logback>> for the installation instructions.
+{logback-url}[Logback] implements SLF4J natively, refer to <<impl-logback>> for the installation instructions.
 
 [IMPORTANT]
 ====
@@ -275,7 +274,7 @@ The following sections explain the installation of Log4j-provided bridges.
 [#impl-core-bridge-slf4j]
 ===== Installing SLF4J-to-Log4j bridge
 
-You can translate {slf4j-link} calls to Log4j API using the `log4j-slf4j2-impl` artifact:
+You can translate {slf4j-url}[SLF4J] calls to Log4j API using the `log4j-slf4j2-impl` artifact:
 
 [tabs]
 ====
@@ -610,7 +609,7 @@ See also:
 [#impl-logback]
 === Installing Logback
 
-To install https://logback.qos.ch/[Logback] as the logging implementation, you only need to add a Log4j-to-SLF4J bridge:
+To install {logback-url}[Logback] as the logging implementation, you only need to add a Log4j-to-SLF4J bridge:
 
 [tabs]
 ====
@@ -649,4 +648,4 @@ runtimeOnly 'org.apache.logging.log4j:log4j-to-slf4j' // Log4j-to-SLF4J bridge
 
 ====
 
-To configure Logback, see https://logback.qos.ch/manual/configuration.html[Logback's configuration documentation].
+To configure Logback, see {logback-url}/manual/configuration.html[Logback's configuration documentation].

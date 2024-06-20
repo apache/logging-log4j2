@@ -230,6 +230,7 @@ Fully qualified class name of a
 link:../javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory.html[`MessageFactory`]
 implementation that will be used by loggers if no explicit factory was specified.
 
+// tag::flow-tracing[]
 [id=log4j2.flowMessageFactory]
 == `log4j2.flowMessageFactory`
 
@@ -248,6 +249,7 @@ implementation that will be used by loggers if no explicit factory was specified
 Fully qualified class name of a
 link:../javadoc/log4j-api/org/apache/logging/log4j/message/FlowMessageFactory.html[`FlowMessageFactory`]
 implementation to be used by all loggers.
+// end::flow-tracing[]
 
 [id=log4j2.loggerContextStacktraceOnStart]
 == `log4j2.loggerContextStacktraceOnStart`

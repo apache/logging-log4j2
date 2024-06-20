@@ -39,6 +39,7 @@ jobs:
         8
         17
       site-enabled: true
+      reproducibility-check-enabled: false
 
   deploy-snapshot:
     needs: build

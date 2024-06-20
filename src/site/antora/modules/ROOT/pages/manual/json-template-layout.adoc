@@ -16,7 +16,7 @@
 ////
 = JSON Template Layout
 
-`JsonTemplateLayout` is a customizable, <<performance,efficient>>, and xref:#faq-garbage-free,garbage-free>> JSON generating layout.
+`JsonTemplateLayout` is a customizable, <<performance,efficient>>, and <<faq-garbage-free,garbage-free>> JSON generating layout.
 It encodes ``LogEvent``s according to the structure described by the JSON template provided.
 In a nutshell, it shines with its
 
@@ -348,7 +348,7 @@ That is,
     "key00002": "value00002",
     "key00003": "value00003",
     // ...
-    "key16384": "value16384",
+    "key16384": "value16384"
   }
 }
 ----
@@ -403,34 +403,34 @@ Below we share an example configuration overriding the `GelfLayout.json` event t
 ====
 XML::
 +
-.Snippet from an example {antora-examples-url}/manual/json-template-layout/eventTemplateAdditionalField/log4j2.xml[`log4j2.xml`]
+.Snippet from an example {antora-examples-url}/manual/json-template-layout/event-template-additional-field/log4j2.xml[`log4j2.xml`]
 [source,xml]
 ----
-include::example$manual/json-template-layout/eventTemplateAdditionalField/log4j2.xml[lines=26..42,indent=0]
+include::example$manual/json-template-layout/event-template-additional-field/log4j2.xml[lines=26..42,indent=0]
 ----
 
 JSON::
 +
-.Snippet from an example {antora-examples-url}/manual/json-template-layout/eventTemplateAdditionalField/log4j2.json[`log4j2.json`]
+.Snippet from an example {antora-examples-url}/manual/json-template-layout/event-template-additional-field/log4j2.json[`log4j2.json`]
 [source,json]
 ----
-include::example$manual/json-template-layout/eventTemplateAdditionalField/log4j2.json[lines=6..29,indent=0]
+include::example$manual/json-template-layout/event-template-additional-field/log4j2.json[lines=6..29,indent=0]
 ----
 
 YAML::
 +
-.Snippet from an example {antora-examples-url}/manual/json-template-layout/eventTemplateAdditionalField/log4j2.yaml[`log4j2.yaml`]
+.Snippet from an example {antora-examples-url}/manual/json-template-layout/event-template-additional-field/log4j2.yaml[`log4j2.yaml`]
 [source,xml]
 ----
-include::example$manual/json-template-layout/eventTemplateAdditionalField/log4j2.yaml[lines=22..35,indent=0]
+include::example$manual/json-template-layout/event-template-additional-field/log4j2.yaml[lines=22..35,indent=0]
 ----
 
 Properties::
 +
-.Snippet from an example {antora-examples-url}/manual/json-template-layout/eventTemplateAdditionalField/log4j2.properties[`log4j2.properties`]
+.Snippet from an example {antora-examples-url}/manual/json-template-layout/event-template-additional-field/log4j2.properties[`log4j2.properties`]
 [source,xml]
 ----
-include::example$manual/json-template-layout/eventTemplateAdditionalField/log4j2.properties[lines=19..35,indent=0]
+include::example$manual/json-template-layout/event-template-additional-field/log4j2.properties[lines=19..35,indent=0]
 ----
 ====
 <1> Since the `format` attribute is not explicitly set, the default (i.e., `STRING`) will be used
@@ -1208,6 +1208,8 @@ pattern           = "pattern" -> string
 stackTraceEnabled = "stackTraceEnabled" -> boolean
 ----
 
+Unlike providing the `pattern` attribute to Pattern Layout in a configuration file, <<faq-lookups,property substitutions>> found in the `pattern` will _not_ be resolved.
+
 The default value of `stackTraceEnabled` is inherited from the parent JSON Template Layout.
 
 [NOTE]
@@ -1642,6 +1644,127 @@ config = "field" -> (
 
 All above accesses to `StackTraceElement` is garbage-free.
 
+[#faq-lookups]
+== Property substitution
+
+Property substitutions (e.g., `$\{myProperty}`), including xref:manual/lookups.adoc[lookups] (e.g., `${java:version}`, `${env:USER}`, `${date:MM-dd-yyyy}`), are supported, but extra care needs to be taken.
+*We strongly advise you to carefully read xref:manual/configuration.adoc#property-substitution[the configuration manual]* before using them.
+
+[IMPORTANT]
+====
+xref:manual/lookups.adoc[] are intended as a very generic, convenience utility to perform string interpolation for, in particular, configuration files and components (e.g., layouts) lacking this mechanism.
+*JSON Template Layout has a rich template resolver collection, and you should always prefer it whenever possible over lookups.*
+
+.Which resolvers can I use to replace lookups?
+[%collapsible]
+=====
+[%header,cols="1,1"]
+|===
+|Instead of this lookup
+|Use this resolver
+
+|xref:manual/lookups.adoc#ContextMapLookup[Context Map Lookup]
+|<<event-template-resolver-mdc>>
+
+|xref:manual/lookups.adoc#DateLookup[Date Lookup]
+|<<event-template-resolver-timestamp>>
+
+|xref:manual/lookups.adoc#EventLookup[Event Lookup]
+|<<event-template-resolver-exception>> +
+<<event-template-resolver-level>> +
+<<event-template-resolver-logger>> +
+<<event-template-resolver-marker>> +
+<<event-template-resolver-message>> +
+<<event-template-resolver-thread>> +
+<<event-template-resolver-timestamp>>
+
+|xref:manual/lookups.adoc#LowerLookup[Lower Lookup]
+|<<event-template-resolver-caseConverter>>
+
+|xref:manual/lookups.adoc#AppMainArgsLookup[Main Arguments Lookup]
+|<<event-template-resolver-main>>
+
+|xref:manual/lookups.adoc#MapLookup[Map Lookup]
+|<<event-template-resolver-map>>
+
+|xref:manual/lookups.adoc#marker-lookup[Marker Lookup]
+|<<event-template-resolver-marker>>
+
+|xref:manual/lookups.adoc#UpperLookup[Upper Lookup]
+|<<event-template-resolver-caseConverter>>
+|===
+=====
+====
+
+[#property-substitution-in-template]
+=== Property substitution in event templates
+
+JSON Template Layout performs property substitution in string literals in templates, except if they are located in _configuration object of resolvers_.
+Consider the following event template file provided using <<plugin-attr-eventTemplateUri,the `eventTemplateUri` attribute>>:
+
+[source,json]
+----
+{
+    "java-version": "${java:version}", //<1>
+    "pid": {
+      "$resolver": "pattern",
+      "pattern": "${env:NO_SUCH_KEY:-%pid}" //<2>
+    }
+}
+----
+<1> This works. `${java:version}` will be replaced with the corresponding value.
+<2> This won't work! That is, `${env:NO_SUCH_KEY:-%pid}` literal will not get substituted, since it is located in a _configuration object of a resolver_.
+
+[#property-substitution-in-config]
+=== Property substitution in configuration files
+
+If the very same event template <<property-substitution-in-template,shared above>> is inlined in a configuration file using <<plugin-attr-eventTemplate,the `eventTemplate` attribute>> or <<plugin-element-EventTemplateAdditionalField,additional event template fields>>, then all substitutions will be replaced, once, at configuration-time.
+This has nothing to do with the JSON Template Layout, but the substitution performed by the configuration mechanism when the configuration is read.
+Consider the following example:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/json-template-layout/property-substitution/log4j2.xml[`log4j2.xml`]
+[source,xml]
+----
+include::example$manual/json-template-layout/property-substitution/log4j2.xml[lines=26..31,indent=0]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/json-template-layout/property-substitution/log4j2.json[`log4j2.json`]
+[source,json]
+----
+include::example$manual/json-template-layout/property-substitution/log4j2.json[lines=6..15,indent=0]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/json-template-layout/property-substitution/log4j2.yaml[`log4j2.yaml`]
+[source,xml]
+----
+include::example$manual/json-template-layout/property-substitution/log4j2.yaml[lines=22..27,indent=0]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/json-template-layout/property-substitution/log4j2.properties[`log4j2.properties`]
+[source,xml]
+----
+include::example$manual/json-template-layout/property-substitution/log4j2.properties[lines=19..24,indent=0]
+----
+====
+<1> `eventTemplate` will be passed to the layout with `${env:...}` substituted
+<2> `value` will be passed to the layout with `${env:...}` substituted
+
+[WARNING]
+====
+External values injected this way can corrupt your JSON schema.
+It is your responsibility to ensure the sanitization and safety of the substitution source.
+====
+
 [#recycling-strategy]
 == Recycling strategy
 
@@ -2051,13 +2174,6 @@ To get the most out of it, mind the following checklist:
 [#faq]
 == F.A.Q.
 
-[#faq-lookups]
-=== Are lookups supported in templates?
-
-Yes, xref:manual/lookups.adoc[lookups] (e.g., `${java:version}`, `${env:USER}`, `${date:MM-dd-yyyy}`) are supported in string literals of templates.
-
-include::partial$manual/layouts-gcfree-lookup.adoc[]
-
 [#faq-recursive-collection]
 === Are recursive collections supported?
 
@@ -2085,6 +2201,7 @@ Take into account the following caveats:
 
 * Serialization of ``MapMessage``s and ``ObjectMessage``s are mostly garbage-free except for certain types (e.g., `BigDecimal`, `BigInteger`, ``Collection``s, except `List`).
 
-* xref:manual/lookups.adoc[Lookups] (that is, `${...}` variables) are not garbage-free.
+* <<faq-lookups,Property substitutions>> (that is, `${...}` variables) _might_ not be garbage-free.
 
-Don't forget to check out <<event-template-resolvers,the notes on garbage footprint of resolvers>> you employ in templates.
+<<event-template-resolvers>> contain notes on their garbage footprint.
+Make sure to check those notes of resolvers you employ in templates.

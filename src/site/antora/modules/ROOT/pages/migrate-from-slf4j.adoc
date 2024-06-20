@@ -15,13 +15,9 @@ Licensed to the Apache Software Foundation (ASF) under one or more
     limitations under the License.
 ////
 
-:logback-link: https://logback.qos.ch/[Logback]
-:slf4j-link: https://www.slf4j.org/[SLF4J]
-:slf4j-javadoc-url: https://www.slf4j.org/api
-
 = Migrating from SLF4J
 
-{slf4j-link} is a logging API whose reference implementation is {logback-link}, just like xref:manual/api.adoc[Log4j API] is a logging API whose reference implementation is Log4j Core.
+{slf4j-url}[SLF4J] is a logging API whose reference implementation is {logback-url}[Logback], just like xref:manual/api.adoc[Log4j API] is a logging API whose reference implementation is Log4j Core.
 In this page we will guide you through migrating from SLF4J to Log4j API as your logging API.
 
 [TIP]
@@ -56,15 +52,15 @@ This you can use to
 . or run OpenRewrite to automatically migrate the code.
 ====
 +
-{slf4j-javadoc-url}/org/slf4j/LoggerFactory.html[`org.slf4j.LoggerFactory`]::
+{slf4j-url}/api/org/slf4j/LoggerFactory.html[`org.slf4j.LoggerFactory`]::
 Replace its usages with link:javadoc/log4j-api/org/apache/logging/log4j/LogManager.html[`org.apache.logging.log4j.LogManager`].
 Note that `LogManager.getLogger(Foo.class)` can be simplified as `LogManager.getLogger()`, if `Foo` is the enclosing class of the field.
 +
-{slf4j-javadoc-url}/org/slf4j/Logger.html[`org.slf4j.Logger`]::
+{slf4j-url}/api/org/slf4j/Logger.html[`org.slf4j.Logger`]::
 Replace its usages with link:javadoc/log4j-api/org/apache/logging/log4j/Logger.html[`org.apache.logging.log4j.Logger`].
 Since SLF4J's `Logger` is almost a parent of Log4j's `Logger`, most methods should work without any changes.
 +
-{slf4j-javadoc-url}/org/slf4j/MDC.html[`org.slf4j.MDC`]::
+{slf4j-url}/api/org/slf4j/MDC.html[`org.slf4j.MDC`]::
 Replace its usages with link:javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html[`org.apache.logging.log4j.ThreadContext`].
 
 . If you use https://projectlombok.org/features/log[`@Slf4j` from Lombok], you need to replace them with `@Log4j2` instead.
