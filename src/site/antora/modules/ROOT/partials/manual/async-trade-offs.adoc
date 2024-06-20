@@ -44,7 +44,7 @@ Error handling::
 If a problem happens during the logging process and an exception is thrown, it is less easy for an asynchronous setting to signal this problem to the application.
 This can partly be alleviated by configuring an exception handler, but this may still not cover all cases.
 +
-[CAUTION]
+[WARNING]
 ====
 If logging is part of your business logic, e.g. you are using Log4j as an audit logging framework, we would recommend to synchronously log those audit messages.
 

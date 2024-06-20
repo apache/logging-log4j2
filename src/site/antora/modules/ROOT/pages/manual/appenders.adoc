@@ -1797,7 +1797,7 @@ If your application contains any one of these dependencies, it might use the **L
 If you application only uses `org.mongodb:mongodb-driver-sync`, it uses the **Modern API**.
 ====
 
-[CAUTION]
+[WARNING]
 ====
 The version of the MongoDB Java driver is not the same as the version of the MongoDB server.
 See

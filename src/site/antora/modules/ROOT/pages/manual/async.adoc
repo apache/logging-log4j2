@@ -33,7 +33,7 @@ a lock-free inter-thread communication library, instead of queues, resulting in 
 +
 The rest of this chapter is dedicated to this new component.
 
-[CAUTION]
+[WARNING]
 ====
 Logging performance depends greatly on the architecture of your application and the way you use logging.
 The solutions offered by this chapter should be evaluated using benchmarks against your own application.

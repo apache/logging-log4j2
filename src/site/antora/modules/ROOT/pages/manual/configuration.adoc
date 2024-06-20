@@ -42,7 +42,7 @@ The default configuration prints all messages less specific than
 xref:manual/systemproperties.adoc#log4j.configuration.level[`log4j.configuration.level`]
 to the console.
 
-[CAUTION]
+[WARNING]
 ====
 The configuration files prefixed by `log4j2-test` should only be used on the test classpath.
 
@@ -374,7 +374,7 @@ Determines the polling interval used by Log4j to check for changes to the config
 If a change in the configuration file is detected, Log4j automatically reconfigures the logger context.
 If set to `0`, polling is disabled.
 
-[CAUTION]
+[WARNING]
 ====
 Log4j Core is designed with reliability in mind, unlike other logging backends.
 
@@ -617,7 +617,7 @@ See <<configuring-appenderrefs>> below for more details.
 
 Loggers can emit additional context data that will be integrated with other context data sources such as {log4j2-url}/manual/thread-context.html[thread context].
 
-[CAUTION]
+[WARNING]
 ====
 The `value` of each property is subject to <<property-substitution,property substitution>> twice:
 
@@ -855,7 +855,7 @@ and the OS environment variable `FOO` has a value of `environment`, Log4j will e
 |===
 =====
 
-[CAUTION]
+[WARNING]
 =====
 For security reasons, if the **expansion** of a `${...}` expression contains other expressions, these will **not** be expanded.
 The only exception to this rule is the expansion of properties in the `Properties` container.
