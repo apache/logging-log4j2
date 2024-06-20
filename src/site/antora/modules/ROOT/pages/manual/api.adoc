@@ -362,7 +362,7 @@ ThreadContext.clear(); // <5>
 <4> Popping the last pushed property from the thread context stack
 <5> Clearing the thread context (for both stack and map!)
 
-[CAUTION]
+[WARNING]
 ====
 **Thread Context is mostly superseded by Scoped Context**, which, unlike Thread Context,
 
