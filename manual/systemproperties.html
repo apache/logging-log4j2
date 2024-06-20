@@ -270,6 +270,12 @@
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
   </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-jul.html">JUL-to-Log4j bridge</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-to-jul.html">Log4j-to-JUL bridge</a>
+  </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="0">
@@ -3147,7 +3153,7 @@ implementation to be used by all loggers.</p>
 <details>
 <summary class="title">Default level conversions</summary>
 <div class="content">
-<table class="tableblock frame-all grid-all stretch">
+<table id="default-level-conversions" class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -3177,7 +3183,7 @@ implementation to be used by all loggers.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/Level.html#CONFIG">CONFIG</a></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CONFIG</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">custom <code>CONFIG</code> level with a numeric value of <code>450</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/Level.html#FINE">FINE</a></code></p></td>
@@ -3189,7 +3195,7 @@ implementation to be used by all loggers.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/Level.html#FINEST">FINEST</a></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>FINEST</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">custom <code>FINEST</code> level with a numeric value of <code>700</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/Level.html#ALL">ALL</a></code></p></td>

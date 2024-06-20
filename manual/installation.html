@@ -270,6 +270,12 @@
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
   </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-jul.html">JUL-to-Log4j bridge</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-to-jul.html">Log4j-to-JUL bridge</a>
+  </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="0">
@@ -865,6 +871,10 @@ And if so, which ones?</strong></p>
 <div class="paragraph">
 <p>to the JVM parameters in your application launcher.</p>
 </div>
+<div class="paragraph">
+<p>The JUL-to-Log4j bridge supports additional configuration and installation methods.
+See <a href="../log4j-jul.html" class="xref page">JUL-to-Log4j bridge</a> for more information.</p>
+</div>
 </div>
 <div class="sect4">
 <h5 id="impl-core-bridge-jpl"><a class="anchor" href="#impl-core-bridge-jpl"></a>Installing JPL-to-Log4j bridge</h5>
@@ -1329,7 +1339,17 @@ runtimeOnly 'org.slf4j:slf4j-jdk14:2.0.13' // SLF4J-to-JUL bridge</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>To configure JUL, see <a href="https://docs.oracle.com/en/java/javase/8/docs/api/java.logging/java/util/logging/LogManager.html"><code>java.util.logging.LogManager</code></a>.</p>
+<p>See also:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.oracle.com/en/java/javase/8/docs/api/java.logging/java/util/logging/LogManager.html"><code>java.util.logging.LogManager</code></a>, to learn more about JUL configuration,</p>
+</li>
+<li>
+<p><a href="../log4j-to-jul.html" class="xref page">Log4j-to-JUL bridge</a> to learn more about the <code>log4j-to-jul</code> artifact.</p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect2">
