@@ -11,6 +11,9 @@
 <!-- `@asciidoctor/tabs` extension styles -->
 <link rel="stylesheet" href="./_/css/vendor/tabs.css">
 <style>
+  /* Swap colors of `IMPORTANT` and `WARNING` blocks */ 
+  .doc .admonitionblock.important .icon { background-color: #f70; }
+  .doc .admonitionblock.warning .icon { background-color: #e40046; }
   /* Default `h4`, `h5`, and `h6` are smaller than the normal text, fix header font sizing: */
   .doc h1 { font-size: 1.9rem; }
   .doc h2 { font-size: 1.7rem; }
@@ -1444,7 +1447,7 @@ Originally developed by Ceki Glc and Anders Kristensen.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>header</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
@@ -16127,10 +16130,10 @@ Supports Lookup expressions.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
 </div>
 <div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
 </div></div></td>
 </tr>
 <tr>
@@ -17426,10 +17429,10 @@ Supports Lookup expressions.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
 </div>
 <div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
 </div></div></td>
 </tr>
 <tr>
@@ -17625,10 +17628,10 @@ Supports Lookup expressions.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
 </div>
 <div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
 </div></div></td>
 </tr>
 <tr>
