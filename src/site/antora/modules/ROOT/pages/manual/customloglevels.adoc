@@ -78,31 +78,31 @@ include::example$manual/customlevels/LevelExample.java[tag=standard]
 The `Logger` interface also contains shorthand methods that always log at a specified log level:
 
 .Shorthand `Logger` methods
-[%header,cols="1,1m"]
+[%header,cols="1m,3m"]
 |===
-| Name | Shorthand methods
+| Effective level | Shorthand methods
 
-| `FATAL`
+| FATAL
 | link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#fatal(org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message)[Logger.fatal(..)],
 link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#atFatal()[Logger.atFatal()]
 
-| `ERROR`
+| ERROR
 | link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#error(org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message)[Logger.error(..)],
 link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#atError()[Logger.atError()]
 
-| `WARN`
+| WARN
 | link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#warn(org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message)[Logger.warn(..)],
 link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#atWarn()[Logger.atWarn()]
 
-| `INFO`
+| INFO
 | link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#info(org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message)[Logger.info(..)],
 link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#atInfo()[Logger.atInfo()]
 
-| `DEBUG`
+| DEBUG
 | link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#debug(org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message)[Logger.debug(..)],
 link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#atDebug()[Logger.atDebug()]
 
-| `TRACE`
+| TRACE
 | link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#trace(org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message)[Logger.trace(..)],
 link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#atTrace()[Logger.atTrace()]
 
@@ -195,12 +195,12 @@ Filtering on levels for loggers is a pretty common example:
 [#implementation-support]
 == Implementation support
 
-All logging implementation support filtering of log events, based on their log level, but the number of available log levels varies between implementations.
+All logging implementations support filtering of log events, based on their log level, but the number of available log levels varies between implementations.
 
 [WARNING]
 ====
 While most logging implementations support <<standard-log-levels,standard log levels>>, custom log levels are only supported by Log4j Core (and the EOL Log4j 1).
-To ensure independence from a specific logging implementations you should restrict your log statements to **standard** log levels.
+To ensure independence from a specific logging implementation you should restrict your log statements to **standard** log levels.
 
 If you use custom log levels as a fish-tagging technique, you can use alternative
 xref:manual/api.adoc#fish-tagging[fish-tagging features]
