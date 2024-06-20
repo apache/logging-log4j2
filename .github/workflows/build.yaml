@@ -23,23 +23,24 @@ on:
       - "2.x"
       - "release/2*"
   pull_request:
+  pull_request_target:
 
 permissions: read-all
 
 jobs:
 
   build:
-    if: github.actor != 'dependabot[bot]'
+    if: github.repository == 'apache/logging-log4j2' && (github.actor == 'dependabot[bot]' && github.event_name == 'pull_request_target' || github.actor != 'dependabot[bot]' && github.event_name != 'pull_request_target')
     # Temporary use `develocity` branch
     uses: apache/logging-parent/.github/workflows/build-reusable.yaml@develocity
     secrets:
-      GE_ACCESS_TOKEN: ${{ ! startsWith(github.refname, 'release/') && secrets.GE_ACCESS_TOKEN }}
+      GE_ACCESS_TOKEN: ${{ ! startsWith(github.ref_name, 'release/') && secrets.GE_ACCESS_TOKEN }}
     with:
       java-version: |
         8
         17
       site-enabled: true
-      reproducibility-check-enabled: false
+      reproducibility-check-enabled: ${{ startsWith(github.ref_name, 'release/') }}
 
   deploy-snapshot:
     needs: build
@@ -73,3 +74,16 @@ jobs:
         8
         17
       project-id: log4j
+
+  merge-dependabot:
+    needs: build
+    if: github.repository == 'apache/logging-log4j2' && github.actor == 'dependabot[bot]' && github.event_name == 'pull_request_target'
+    uses: apache/logging-parent/.github/workflows/merge-dependabot-reusable.yaml@rel/11.1.0
+    with:
+      java-version: 17
+    permissions:
+      contents: write                                             # to push changelog commits
+      pull-requests: write                                        # to close the PR
+    # Secrets to add commits
+    secrets:
+      GPG_SECRET_KEY: ${{ secrets.LOGGING_GPG_SECRET_KEY }}       # to sign commits
