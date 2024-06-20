@@ -1,0 +1,43 @@
+{
+  "Configuration": {
+
+    "MarkerFilter": { //<1>
+      "marker": "FLOW",
+      "onMatch": "ACCEPT",
+      "onMismatch": "NEUTRAL"
+    },
+
+    "Appenders": {
+      "Console": {
+        "name": "CONSOLE",
+        "PatternLayout": {
+          "MarkerPatternSelector": {
+            "defaultPattern": "%d %5p [%t] %c{1} -- %m%n",//<2>
+            "PatternMatch": [
+              {//<3>
+                "key": "ENTER",
+                "pattern": "%d %5p [%t] %c{1} => %m%n"
+              },
+              {//<4>
+                "key": "EXIT",
+                "pattern": "%d %5p [%t] %c{1} <= %m%n"
+              }
+            ]
+          }
+        }
+      }
+    },
+
+    "Loggers": {
+      "Root": {
+        "level": "WARN",
+        "AppenderRef": [
+          {
+            "ref": "CONSOLE"
+          }
+        ]
+      }
+    }
+
+  }
+}

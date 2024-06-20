@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one or more
+  ~ contributor license agreements.  See the NOTICE file distributed with
+  ~ this work for additional information regarding copyright ownership.
+  ~ The ASF licenses this file to you under the Apache License, Version 2.0
+  ~ (the "License"); you may not use this file except in compliance with
+  ~ the License.  You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<!DOCTYPE configuration>
+<configuration>
+
+  <import class="ch.qos.logback.core.ConsoleAppender"/>
+  <import class="ch.qos.logback.core.filter.EvaluatorFilter"/>
+  <import class="ch.qos.logback.classic.boolex.OnMarkerEvaluator"/>
+  <import class="ch.qos.logback.classic.encoder.PatternLayoutEncoder"/>
+  <import class="ch.qos.logback.classic.turbo.MarkerFilter"/>
+
+  <turboFilter class="MarkerFilter"><!--1-->
+    <Marker>FLOW</Marker>
+    <OnMatch>ACCEPT</OnMatch>
+  </turboFilter>
+
+  <appender name="CONSOLE_DEFAULT" class="ConsoleAppender">
+    <filter class="EvaluatorFilter"><!--2-->
+      <evaluator class="OnMarkerEvaluator">
+        <marker>ENTER</marker>
+        <marker>EXIT</marker>
+      </evaluator>
+      <onMismatch>ACCEPT</onMismatch>
+      <onMatch>DENY</onMatch>
+    </filter>
+    <encoder class="PatternLayoutEncoder"><!--3-->
+      <pattern><![CDATA[%d %5p [%t] %c{1} -- %m%n]]></pattern>
+    </encoder>
+  </appender>
+
+  <appender name="CONSOLE_FLOW_ENTER" class="ConsoleAppender">
+    <filter class="EvaluatorFilter"><!--4-->
+      <evaluator class="OnMarkerEvaluator">
+        <marker>ENTER</marker>
+      </evaluator>
+      <onMismatch>DENY</onMismatch>
+      <onMatch>ACCEPT</onMatch>
+    </filter>
+    <encoder class="PatternLayoutEncoder"><!--5-->
+      <pattern><![CDATA[%d %5p [%t] %c{1} => %m%n]]></pattern>
+    </encoder>
+  </appender>
+
+  <appender name="CONSOLE_FLOW_EXIT" class="ConsoleAppender">
+    <filter class="EvaluatorFilter"><!--6-->
+      <evaluator class="OnMarkerEvaluator">
+        <marker>EXIT</marker>
+      </evaluator>
+      <onMismatch>DENY</onMismatch>
+      <onMatch>ACCEPT</onMatch>
+    </filter>
+    <encoder class="PatternLayoutEncoder"><!--7-->
+      <pattern><![CDATA[%d %5p [%t] %c{1} <= %m%n]]></pattern>
+    </encoder>
+  </appender>
+
+  <root level="WARN">
+    <appender-ref ref="CONSOLE_DEFAULT"/>
+    <appender-ref ref="CONSOLE_FLOW_ENTER"/>
+    <appender-ref ref="CONSOLE_FLOW_EXIT"/>
+  </root>
+
+</configuration>

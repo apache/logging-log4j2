@@ -25,16 +25,14 @@
       <PatternLayout pattern="%d{HH:mm:ss.SSS} (%marker) %m%n"/>
     </Console>
   </Appenders>
+  <MarkerFilter marker="SQL"
+                onMatch="ACCEPT"
+                onMismatch="NEUTRAL"/><!--1-->
   <Loggers>
-    <Root level="INFO"/>
-    <!-- tag::logger[] -->
-    <Logger name="example" level="ALL"><!--1-->
+    <Root level="INFO">
       <AppenderRef ref="SQL_LOG">
-        <MarkerFilter marker="SQL"
-                      onMatch="ACCEPT"
-                      onMismatch="DENY"/><!--2-->
+        <MarkerFilter marker="SQL"/><!--2-->
       </AppenderRef>
-    </Logger>
-    <!-- end::logger[] -->
+    </Root>
   </Loggers>
 </Configuration>

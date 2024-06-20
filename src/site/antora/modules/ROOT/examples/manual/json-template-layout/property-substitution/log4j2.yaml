@@ -14,19 +14,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-appender.0.type = Console
-appender.0.name = SQL_LOG
-appender.0.layout.type = PatternLayout
-appender.0.layout.pattern = %d{HH:mm:ss.SSS} (%marker) %m%n
+Configuration:
 
-# <1>
-filter.0.type = MarkerFilter
-filter.0.marker = SQL
-filter.0.onMatch = ACCEPT
-filter.0.onMismatch = NEUTRAL
+  Appenders:
+    Console:
+      name: "CONSOLE"
+      JsonTemplateLayout:
+        eventTemplate: '{"instant": {"$resolver": "pattern", "pattern": "${env:LOG4J_DATE_PATTERN:-%d}"}}' #<1>
+        eventTemplateAdditionalField:
+          - key: "message"
+            format: "JSON"
+            value: '{"$resolver": "pattern", "pattern": "${env:LOG4J_MESSAGE_PATTERN:-%m}"}' #<2>
 
-rootLogger.level = INFO
-rootLogger.appenderRef.0.ref = SQL_LOG
-# <2>
-rootLogger.appenderRef.0.filter.type = MarkerFilter
-rootLogger.appenderRef.0.filter.marker = SQL
+  Loggers:
+    Root:
+      level: "WARN"
+      AppenderRef:
+        ref: "CONSOLE"

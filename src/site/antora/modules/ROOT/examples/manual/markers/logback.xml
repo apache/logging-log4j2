@@ -15,22 +15,23 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="OFF" name="NestedLoggingFromThrowableMessageTest">
-  <Properties>
-    <Property name="eventTemplate">[{"$resolver": "message", "stringified": true}, {"$resolver": "exception", "field": "message"}]</Property>
-  </Properties>
-  <Appenders>
-    <List name="List1" raw="true">
-      <JsonTemplateLayout eventTemplate="${eventTemplate}" recyclerFactory="threadLocal" eventDelimiter=""/>
-    </List>
-    <List name="List2" raw="true">
-      <JsonTemplateLayout eventTemplate="${eventTemplate}" recyclerFactory="threadLocal" eventDelimiter=""/>
-    </List>
-  </Appenders>
-  <Loggers>
-    <Root level="trace">
-      <AppenderRef ref="List1"/>
-      <AppenderRef ref="List2"/>
-    </Root>
-  </Loggers>
-</Configuration>
+<configuration>
+  <turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter"> <!--1-->
+    <Marker>SQL</Marker>
+    <OnMatch>ACCEPT</OnMatch>
+  </turboFilter>
+  <appender name="SQL_LOG" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} (%marker) %m%n</pattern>
+    </encoder>
+    <filter class="ch.qos.logback.core.filter.EvaluatorFilter"> <!--2-->
+      <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
+        <marker>SQL</marker>
+      </evaluator>
+      <onMismatch>DENY</onMismatch>
+    </filter>
+  </appender>
+  <root level="INFO">
+    <appender-ref ref="SQL_LOG"/>
+  </root>
+</configuration>

@@ -38,6 +38,7 @@ jobs:
       java-version: |
         8
         17
+      reproducibility-check-enabled: false
 
   merge-dependabot:
     needs: build

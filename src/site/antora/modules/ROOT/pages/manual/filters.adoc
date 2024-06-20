@@ -73,7 +73,7 @@ If the logger is additive, the filter on the parent logger is applied recursivel
 <5> followed by a level check against the configured level of the reference.
 <6> The process ends with the filter attached to an appender.
 
-[CAUTION]
+[WARNING]
 ====
 For performance reasons, log events should be filtered as soon as possible in the logging pipeline.
 This reduces the costs (formatting, transfer through an asynchronous barrier) of disabled log events.

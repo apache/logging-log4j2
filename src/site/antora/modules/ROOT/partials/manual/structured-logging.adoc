@@ -15,7 +15,7 @@
     limitations under the License.
 ////
 
-Encoding the output of a lookup is garbage-free, but executing the lookup might not be.
-For instance, even though xref:manual/lookups.adoc#DateLookup[the `date` lookup] allocates a new `String` for each invocation, adding `${date:YYYY-MM-dd}` is garbage-free, because it will be expanded at configuration time, that is, only once.
-Whereas adding `$${date:YYYY-MM-dd}` is not, since it will be expanded for each log event.
-See xref:manual/configuration.adoc#property-substitution[property substitution] for details.
+In almost any modern production deployment, logs are no more written to files read by engineers while troubleshooting, but forwarded to log ingestion systems (Elasticsearch, Google Cloud Logging, etc.) for several observability use cases ranging from logging to metrics.
+This necessitates the applications to _structure_ their logs in a machine-readable way ready to be delivered to an external system.
+This act of encoding logs following a certain structure is called *structured logging*.
+
