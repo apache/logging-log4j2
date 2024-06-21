@@ -115,18 +115,15 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
             }
         });
         return createAppender(
-                name,
                 config,
-                layout.get(),
-                filter.get(),
                 append.get(),
                 bufferedIo.get(),
                 bufferSize.get(),
                 immediateFlush.get(),
                 fileName.get(),
-                level.get(),
                 maxSize.get(),
-                maxBackups.get());
+                maxBackups.get(),
+                new AppenderConfiguration(name, layout.get(), filter.get(), level.get()));
     }
 
     @Override
@@ -148,38 +145,34 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
         final String maxSize = getProperty(MAX_SIZE_PARAM, DEFAULT_MAX_SIZE);
         final String maxBackups = getProperty(MAX_BACKUP_INDEX, DEFAULT_MAX_BACKUPS);
         return createAppender(
-                name,
                 configuration,
-                layout,
-                filter,
                 append,
                 bufferedIo,
                 bufferSize,
                 immediateFlush,
                 fileName,
-                level,
                 maxSize,
-                maxBackups);
+                maxBackups,
+                new AppenderConfiguration(name, layout, filter, level));
     }
 
     private Appender createAppender(
-            final String name,
             final Log4j1Configuration config,
-            final Layout layout,
-            final Filter filter,
             final boolean append,
             final boolean bufferedIo,
             final int bufferSize,
             boolean immediateFlush,
             final String fileName,
-            final String level,
             final String maxSize,
-            final String maxBackups) {
-        final org.apache.logging.log4j.core.Layout<?> fileLayout = LayoutAdapter.adapt(layout);
+            final String maxBackups,
+            AppenderConfiguration appenderConfiguration) {
+        final org.apache.logging.log4j.core.Layout<?> fileLayout =
+                LayoutAdapter.adapt(appenderConfiguration.getLayout());
         if (!bufferedIo) {
             immediateFlush = false;
         }
-        final org.apache.logging.log4j.core.Filter fileFilter = buildFilters(level, filter);
+        final org.apache.logging.log4j.core.Filter fileFilter =
+                buildFilters(appenderConfiguration.getLevel(), appenderConfiguration.getFilter());
         if (fileName == null) {
             LOGGER.error("Unable to create RollingFileAppender, no file name provided");
             return null;
@@ -193,7 +186,7 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
                 .withFileIndex("min")
                 .build();
         return AppenderWrapper.adapt(RollingFileAppender.newBuilder()
-                .setName(name)
+                .setName(appenderConfiguration.getName())
                 .setConfiguration(config)
                 .setLayout(fileLayout)
                 .setFilter(fileFilter)

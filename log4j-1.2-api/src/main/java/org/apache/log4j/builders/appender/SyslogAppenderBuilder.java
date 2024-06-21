@@ -114,16 +114,13 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
         });
 
         return createAppender(
-                name,
                 config,
-                layout.get(),
                 facility.get(),
-                filter.get(),
                 host.get(),
-                level.get(),
                 protocol.get(),
                 header.get(),
-                facilityPrinting.get());
+                facilityPrinting.get(),
+                new AppenderConfiguration(name, layout.get(), filter.get(), level.get()));
     }
 
     @Override
@@ -144,33 +141,28 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
         final String syslogHost = getProperty(SYSLOG_HOST_PARAM, DEFAULT_HOST + ":" + DEFAULT_PORT);
 
         return createAppender(
-                name,
                 configuration,
-                layout,
                 facility,
-                filter,
                 syslogHost,
-                level,
                 Protocol.valueOf(protocol),
                 header,
-                facilityPrinting);
+                facilityPrinting,
+                new AppenderConfiguration(name, layout, filter, level));
     }
 
     private Appender createAppender(
-            final String name,
             final Log4j1Configuration configuration,
-            final Layout layout,
             final String facility,
-            final Filter filter,
             final String syslogHost,
-            final String level,
             final Protocol protocol,
             final boolean header,
-            final boolean facilityPrinting) {
+            final boolean facilityPrinting,
+            AppenderConfiguration appenderConfiguration) {
         final AtomicReference<String> host = new AtomicReference<>();
         final AtomicInteger port = new AtomicInteger();
         resolveSyslogHost(syslogHost, host, port);
-        final org.apache.logging.log4j.core.Layout<? extends Serializable> messageLayout = LayoutAdapter.adapt(layout);
+        final org.apache.logging.log4j.core.Layout<? extends Serializable> messageLayout =
+                LayoutAdapter.adapt(appenderConfiguration.getLayout());
         final Log4j1SyslogLayout appenderLayout = Log4j1SyslogLayout.newBuilder()
                 .setHeader(header)
                 .setFacility(Facility.toFacility(facility))
@@ -178,9 +170,10 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
                 .setMessageLayout(messageLayout)
                 .build();
 
-        final org.apache.logging.log4j.core.Filter fileFilter = buildFilters(level, filter);
+        final org.apache.logging.log4j.core.Filter fileFilter =
+                buildFilters(appenderConfiguration.getLevel(), appenderConfiguration.getFilter());
         return AppenderWrapper.adapt(SyslogAppender.newSyslogAppenderBuilder()
-                .setName(name)
+                .setName(appenderConfiguration.getName())
                 .setConfiguration(configuration)
                 .setLayout(appenderLayout)
                 .setFilter(fileFilter)

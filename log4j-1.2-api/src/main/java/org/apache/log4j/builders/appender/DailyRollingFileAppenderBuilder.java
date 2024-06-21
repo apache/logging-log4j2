@@ -112,17 +112,14 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
             }
         });
         return createAppender(
-                name,
-                layout.get(),
-                filter.get(),
                 fileName.get(),
                 append.get(),
                 immediateFlush.get(),
-                level.get(),
                 bufferedIo.get(),
                 bufferSize.get(),
                 datePattern.get(),
-                config);
+                config,
+                new AppenderConfiguration(name, layout.get(), filter.get(), level.get()));
     }
 
     @Override
@@ -143,37 +140,33 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
         final int bufferSize = getIntegerProperty(BUFFER_SIZE_PARAM, 8192);
         final String datePattern = getProperty(DATE_PATTERN_PARAM, DEFAULT_DATE_PATTERN);
         return createAppender(
-                name,
-                layout,
-                filter,
                 fileName,
                 append,
                 immediateFlush,
-                level,
                 bufferedIo,
                 bufferSize,
                 datePattern,
-                configuration);
+                configuration,
+                new AppenderConfiguration(name, layout, filter, level));
     }
 
     private <T extends Log4j1Configuration> Appender createAppender(
-            final String name,
-            final Layout layout,
-            final Filter filter,
             final String fileName,
             final boolean append,
             boolean immediateFlush,
-            final String level,
             final boolean bufferedIo,
             final int bufferSize,
             final String datePattern,
-            final T configuration) {
+            final T configuration,
+            AppenderConfiguration appenderConfiguration) {
 
-        final org.apache.logging.log4j.core.Layout<?> fileLayout = LayoutAdapter.adapt(layout);
+        final org.apache.logging.log4j.core.Layout<?> fileLayout =
+                LayoutAdapter.adapt(appenderConfiguration.getLayout());
         if (bufferedIo) {
             immediateFlush = false;
         }
-        final org.apache.logging.log4j.core.Filter fileFilter = buildFilters(level, filter);
+        final org.apache.logging.log4j.core.Filter fileFilter =
+                buildFilters(appenderConfiguration.getLevel(), appenderConfiguration.getFilter());
         if (fileName == null) {
             LOGGER.error("Unable to create DailyRollingFileAppender, no file name provided");
             return null;
@@ -187,7 +180,7 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
                 .withMax(Integer.toString(Integer.MAX_VALUE))
                 .build();
         return AppenderWrapper.adapt(RollingFileAppender.newBuilder()
-                .setName(name)
+                .setName(appenderConfiguration.getName())
                 .setConfiguration(configuration)
                 .setLayout(fileLayout)
                 .setFilter(fileFilter)

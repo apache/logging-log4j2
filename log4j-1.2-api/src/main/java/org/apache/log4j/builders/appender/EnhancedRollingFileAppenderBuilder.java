@@ -163,11 +163,7 @@ public class EnhancedRollingFileAppenderBuilder extends AbstractBuilder<Appender
             }
         });
         return createAppender(
-                name,
-                layout.get(),
-                filter.get(),
                 fileName.get(),
-                level.get(),
                 immediateFlush.get(),
                 append.get(),
                 bufferedIo.get(),
@@ -178,7 +174,8 @@ public class EnhancedRollingFileAppenderBuilder extends AbstractBuilder<Appender
                 minIndex.get(),
                 maxIndex.get(),
                 triggeringPolicy.get(),
-                configuration);
+                configuration,
+                new AppenderConfiguration(name, layout.get(), filter.get(), level.get()));
     }
 
     @Override
@@ -205,11 +202,7 @@ public class EnhancedRollingFileAppenderBuilder extends AbstractBuilder<Appender
         final TriggeringPolicy triggeringPolicy =
                 configuration.parseTriggeringPolicy(props, appenderPrefix + "." + TRIGGERING_TAG);
         return createAppender(
-                name,
-                layout,
-                filter,
                 fileName,
-                level,
                 immediateFlush,
                 append,
                 bufferedIo,
@@ -220,15 +213,12 @@ public class EnhancedRollingFileAppenderBuilder extends AbstractBuilder<Appender
                 minIndex,
                 maxIndex,
                 triggeringPolicy,
-                configuration);
+                configuration,
+                new AppenderConfiguration(name, layout, filter, level));
     }
 
     private Appender createAppender(
-            final String name,
-            final Layout layout,
-            final Filter filter,
             final String fileName,
-            final String level,
             final boolean immediateFlush,
             final boolean append,
             final boolean bufferedIo,
@@ -239,10 +229,13 @@ public class EnhancedRollingFileAppenderBuilder extends AbstractBuilder<Appender
             final int minIndex,
             final int maxIndex,
             final TriggeringPolicy triggeringPolicy,
-            final Configuration configuration) {
-        final org.apache.logging.log4j.core.Layout<?> fileLayout = LayoutAdapter.adapt(layout);
+            final Configuration configuration,
+            AppenderConfiguration appenderConfiguration) {
+        final org.apache.logging.log4j.core.Layout<?> fileLayout =
+                LayoutAdapter.adapt(appenderConfiguration.getLayout());
         final boolean actualImmediateFlush = bufferedIo ? false : immediateFlush;
-        final org.apache.logging.log4j.core.Filter fileFilter = buildFilters(level, filter);
+        final org.apache.logging.log4j.core.Filter fileFilter =
+                buildFilters(appenderConfiguration.getLevel(), appenderConfiguration.getFilter());
         if (rollingPolicyClassName == null) {
             LOGGER.error("Unable to create RollingFileAppender, no rolling policy provided.");
             return null;
@@ -285,7 +278,7 @@ public class EnhancedRollingFileAppenderBuilder extends AbstractBuilder<Appender
                 .setFilter(fileFilter)
                 .setImmediateFlush(actualImmediateFlush)
                 .setLayout(fileLayout)
-                .setName(name)
+                .setName(appenderConfiguration.getName())
                 .withPolicy(actualTriggeringPolicy)
                 .withStrategy(rolloverStrategyBuilder.build())
                 .build());

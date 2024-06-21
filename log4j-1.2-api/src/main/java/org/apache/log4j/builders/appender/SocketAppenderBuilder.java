@@ -67,23 +67,22 @@ public class SocketAppenderBuilder extends AbstractBuilder implements AppenderBu
     }
 
     private <T extends Log4j1Configuration> Appender createAppender(
-            final String name,
             final String host,
             final int port,
-            final Layout layout,
-            final Filter filter,
-            final String level,
             final boolean immediateFlush,
             final int reconnectDelayMillis,
-            final T configuration) {
-        final org.apache.logging.log4j.core.Layout<?> actualLayout = LayoutAdapter.adapt(layout);
-        final org.apache.logging.log4j.core.Filter actualFilter = buildFilters(level, filter);
+            final T configuration,
+            AppenderConfiguration appenderConfiguration) {
+        final org.apache.logging.log4j.core.Layout<?> actualLayout =
+                LayoutAdapter.adapt(appenderConfiguration.getLayout());
+        final org.apache.logging.log4j.core.Filter actualFilter =
+                buildFilters(appenderConfiguration.getLevel(), appenderConfiguration.getFilter());
         // @formatter:off
         return AppenderWrapper.adapt(SocketAppender.newBuilder()
                 .setHost(host)
                 .setPort(port)
                 .setReconnectDelayMillis(reconnectDelayMillis)
-                .setName(name)
+                .setName(appenderConfiguration.getName())
                 .setLayout(actualLayout)
                 .setFilter(actualFilter)
                 .setConfiguration(configuration)
@@ -132,15 +131,12 @@ public class SocketAppenderBuilder extends AbstractBuilder implements AppenderBu
             }
         });
         return createAppender(
-                name,
                 host.get(),
                 port.get(),
-                layout.get(),
-                filter.get(),
-                level.get(),
                 immediateFlush.get(),
                 reconnectDelay.get(),
-                config);
+                config,
+                new AppenderConfiguration(name, layout.get(), filter.get(), level.get()));
     }
 
     @Override
@@ -153,15 +149,16 @@ public class SocketAppenderBuilder extends AbstractBuilder implements AppenderBu
             final PropertiesConfiguration configuration) {
         // @formatter:off
         return createAppender(
-                name,
                 getProperty(HOST_PARAM),
                 getIntegerProperty(PORT_PARAM, DEFAULT_PORT),
-                configuration.parseLayout(layoutPrefix, name, props),
-                configuration.parseAppenderFilters(props, filterPrefix, name),
-                getProperty(THRESHOLD_PARAM),
                 getBooleanProperty(IMMEDIATE_FLUSH_PARAM),
                 getIntegerProperty(RECONNECTION_DELAY_PARAM, DEFAULT_RECONNECTION_DELAY),
-                configuration);
+                configuration,
+                new AppenderConfiguration(
+                        name,
+                        configuration.parseLayout(layoutPrefix, name, props),
+                        configuration.parseAppenderFilters(props, filterPrefix, name),
+                        getProperty(THRESHOLD_PARAM)));
         // @formatter:on
     }
 }
