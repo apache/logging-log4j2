@@ -1,0 +1,87 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+[id=log4j2.disableThreadContext]
+== `log4j2.disableThreadContext`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_DISABLE_THREAD_CONTEXT`
+| Type          | `boolean`
+| Default value | `false`
+|===
+
+If `true`, the `ThreadContext` stack and map are disabled.
+
+[id=log4j2.disableThreadContextStack]
+== `log4j2.disableThreadContextStack`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_DISABLE_THREAD_CONTEXT_STACK`
+| Type          | `boolean`
+| Default value | `false`
+|===
+
+If `true`, the `ThreadContext` stack is disabled.
+
+[id=log4j2.disableThreadContextMap]
+== `log4j2.disableThreadContextMap`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_DISABLE_THREAD_CONTEXT_MAP`
+| Type          | `boolean`
+| Default value | `false`
+|===
+
+If `true`, the `ThreadContext` map is disabled.
+
+[id=log4j2.threadContextMap]
+== `log4j2.threadContextMap`
+
+[cols="1h,5"]
+|===
+| Env. variable
+| `LOG4J_THREAD_CONTEXT_MAP`
+
+| Type
+| link:../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html[`Class<? extends ThreadContextMap>`]
+
+| Default value
+| link:../javadoc/log4j-api/org/apache/logging/log4j/spi/DefaultThreadContextMap.html[`DefaultThreadContextMap`]
+
+|===
+
+Fully specified class name of a custom
+link:../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html[`ThreadContextMap`]
+implementation class.
+
+[id=isThreadContextMapInheritable]
+== `log4j2.isThreadContextMapInheritable`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_IS_THREAD_CONTEXT_MAP_INHERITABLE`
+| Type          | `boolean`
+| Default value | `false`
+|===
+
+If `true` uses an `InheritableThreadLocal` to copy the thread context map to newly created threads.
+
+Note that, as explained in
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/concurrent/Executors.html#privilegedThreadFactory()[Java's `Executors#privilegedThreadFactory()`], when you are dealing with _privileged threads_, thread context might not get propagated completely.
+

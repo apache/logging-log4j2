@@ -20,6 +20,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.lang.reflect.Method;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.impl.Log4jProvider;
+import org.apache.logging.log4j.util.ProviderUtil;
 
 /**
  * <p>
@@ -34,13 +36,14 @@ public final class ThreadContextTestAccess {
     }
 
     public static void init() {
+        final Log4jProvider provider = (Log4jProvider) ProviderUtil.getProvider();
         try {
-            final Class<ThreadContext> clazz = ThreadContext.class;
-            final Method method = clazz.getDeclaredMethod("init");
+            final Method method = Log4jProvider.class.getDeclaredMethod("resetThreadContextMap");
             method.setAccessible(true);
-            method.invoke(null);
+            method.invoke(provider);
         } catch (Exception ex) {
-            fail("Unable to reinitialize ThreadContext");
+            fail("Unable to reset ThreadContextMap");
         }
+        ThreadContext.init();
     }
 }

@@ -27,6 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 import java.util.function.LongSupplier;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -82,37 +83,38 @@ public class AsyncThreadContextTest {
     }
 
     enum ContextImpl {
-        WEBAPP,
-        GARBAGE_FREE,
-        COPY_ON_WRITE;
+        WEBAPP("WebApp", "org.apache.logging.log4j.spi.DefaultThreadContextMap"),
+        GARBAGE_FREE(
+                "GarbageFree", "org.apache.logging.log4j.core.context.internal.GarbageFreeSortedArrayThreadContextMap");
+
+        private final String threadContextMap;
+        private final String implClass;
+
+        ContextImpl(final String threadContextMap, final String implClass) {
+            this.threadContextMap = threadContextMap;
+            this.implClass = implClass;
+        }
 
         void init() {
-            final String PACKAGE = "org.apache.logging.log4j.spi.";
-            TestConstants.setSystemProperty(TestConstants.THREAD_CONTEXT_MAP_TYPE, PACKAGE + implClassSimpleName());
+            props.setProperty("log4j2.threadContextMap", threadContextMap);
             ThreadContextTestAccess.init();
         }
 
-        public String implClassSimpleName() {
-            switch (this) {
-                case WEBAPP:
-                    return "DefaultThreadContextMap";
-                case GARBAGE_FREE:
-                    return "GarbageFreeSortedArrayThreadContextMap";
-                case COPY_ON_WRITE:
-                    return "CopyOnWriteSortedArrayThreadContextMap";
-            }
-            throw new IllegalStateException("Unknown state " + this);
+        public String getImplClassSimpleName() {
+            return StringUtils.substringAfterLast(implClass, '.');
+        }
+
+        public String getImplClass() {
+            return implClass;
         }
     }
 
     @ParameterizedTest(name = "{0} {1}")
     @CsvSource({
-        "COPY_ON_WRITE, MIXED",
         "WEBAPP, MIXED",
-        "COPY_ON_WRITE, ALL_ASYNC",
-        "COPY_ON_WRITE, BOTH_ALL_ASYNC_AND_MIXED",
         "WEBAPP, ALL_ASYNC",
         "WEBAPP, BOTH_ALL_ASYNC_AND_MIXED",
+        "GARBAGE_FREE, MIXED",
         "GARBAGE_FREE, ALL_ASYNC",
         "GARBAGE_FREE, BOTH_ALL_ASYNC_AND_MIXED",
     })
@@ -202,25 +204,25 @@ public class AsyncThreadContextTest {
     private static String contextMap() {
         final ReadOnlyThreadContextMap impl = ThreadContext.getThreadContextMap();
         return impl == null
-                ? ContextImpl.WEBAPP.implClassSimpleName()
+                ? ContextImpl.WEBAPP.getImplClassSimpleName()
                 : impl.getClass().getSimpleName();
     }
 
     private static void checkResult(final Path file, final String loggerContextName, final ContextImpl contextImpl)
             throws IOException {
-        final String contextDesc = contextImpl + " " + contextImpl.implClassSimpleName() + " " + loggerContextName;
+        final String contextDesc = contextImpl + " " + contextImpl.getImplClassSimpleName() + " " + loggerContextName;
         try (final BufferedReader reader = Files.newBufferedReader(file)) {
             String expect;
             for (int i = 0; i < LINE_COUNT; i++) {
                 final String line = reader.readLine();
                 if ((i & 1) == 1) {
-                    expect =
-                            "INFO c.f.Bar mapvalue [stackvalue] {KEY=mapvalue, configProp=configValue, configProp2=configValue2, count="
-                                    + i + "} " + contextDesc + " i=" + i;
+                    expect = "INFO c.f.Bar mapvalue [stackvalue] {KEY=mapvalue, configProp=configValue,"
+                            + " configProp2=configValue2, count="
+                            + i + "} " + contextDesc + " i=" + i;
                 } else {
-                    expect =
-                            "INFO c.f.Bar mapvalue [stackvalue] {KEY=mapvalue, configProp=configValue, configProp2=configValue2} "
-                                    + contextDesc + " i=" + i;
+                    expect = "INFO c.f.Bar mapvalue [stackvalue] {KEY=mapvalue, configProp=configValue,"
+                            + " configProp2=configValue2} "
+                            + contextDesc + " i=" + i;
                 }
                 assertThat(line).as("Log file '%s'", file.getFileName()).isEqualTo(expect);
             }

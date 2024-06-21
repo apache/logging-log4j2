@@ -67,7 +67,6 @@ or predefined constant
 | Default value
 | `WebApp`
 
-(GC-free mode: `CopyOnWrite`)
 |===
 
 Fully specified class name of a custom
@@ -76,7 +75,6 @@ implementation class or one of the predefined constants:
 
 NoOp:: to disable the thread context,
 WebApp:: a web application-safe implementation, that only binds JRE classes to `ThreadLocal` to prevent memory leaks,
-CopyOnWrite:: a copy-on-write implementation,
 GarbageFree:: a garbage-free implementation.
 
 [id=log4j.threadContext.map.garbageFree]
