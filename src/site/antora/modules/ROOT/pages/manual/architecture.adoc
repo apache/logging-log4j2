@@ -84,14 +84,15 @@ static method by passing the name of the desired Logger. Further
 information on the Logging API can be found in the
 xref:manual/api.adoc[Log4j API].
 
+[#logger-context]
 === LoggerContext
 
-The
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/LoggerContext.html[`LoggerContext`]
-acts as the anchor point for the Logging system. However, it is possible
-to have multiple active LoggerContexts in an application depending on
-the circumstances. More details on the LoggerContext are in the
-xref:manual/logsep.adoc[Log Separation] section.
+The link:../javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html[`LoggerContext`] acts as the anchor point for the logging system.
+It is primarily responsible for instantiating <<logger>>s.
+
+In most cases, applications have a single global `LoggerContext`.
+Though in certain cases (e.g., Java EE applications), Log4j can be configured to accommodate multiple ``LoggerContext``s.
+Refer to xref:manual/logsep.adoc[] for details.
 
 === Configuration
 
@@ -103,6 +104,7 @@ During reconfiguration, two Configuration objects will exist. Once all Loggers
 have been redirected to the new Configuration, the old Configuration
 will be stopped and discarded.
 
+[#logger]
 === Logger
 
 As stated previously, Loggers are created by calling

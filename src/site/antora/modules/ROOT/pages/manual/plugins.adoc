@@ -47,18 +47,20 @@ In this section we will give an overview of the Log4j plugin system by answering
 A class can be declared as a plugin by adding a link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/Plugin.html[`@Plugin`] annotation, which is essentially composed of following attributes:
 
 `name`::
-Denotes the name of the plugin and is recommended to be distinct among plugins sharing the same `category`.
+Name of the plugin.
+It is recommended to be distinct among plugins sharing the same `category`.
 `name` matching is case-insensitive.
 
-`category`::
+`category` (optional)::
 A name used for grouping a set of plugins.
-`name` matching is case-sensitive.
+`category` matching is case-sensitive.
 
-`elementType`::
+`elementType` (optional)::
 Name of the corresponding category of the xref:manual/configuration.adoc[Log4j configuration] file element this plugin belongs under.
 You can omit this attribute if your plugin is not meant to be represented in a configuration file.
 
-For example, xref:manual/lookups.adoc#extending[lookups] only use the `category` attribute and set it to link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrLookup.html#CATEGORY[`StrLookup.CATEGORY`] (`Lookup`).
+We will try to explain when to use `category` and `elementType` attributes with an example.
+xref:manual/lookups.adoc#extending[Lookups] only use the `category` attribute and set it to link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrLookup.html#CATEGORY[`StrLookup.CATEGORY`] (`Lookup`).
 On the other hand, xref:manual/appenders.adoc#extending[appenders] use both the `category` and `elementType` attributes and set them to link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Node.html#CATEGORY[`Node.CATEGORY`] (`Core`) and link:../javadoc/log4j-core/org/apache/logging/log4j/core/Appender.html#ELEMENT_TYPE[`Appender.ELEMENT_TYPE`] (`appender`), respectively.
 The reason appenders use an `elementType` and lookups don't is that appenders need to be referred to in an element in a Log4j configuration file (e.g., `log4j2.xml`) whereas lookups don't.
 See <<core>> for details.
@@ -160,7 +162,7 @@ Each attribute or element annotation must include the name that must be present 
 For plugin builders, the names of the fields will be used by default if no name is specified in the annotation.
 
 [#type-converters]
-=== Plugin factory attribute type converters
+==== Plugin factory attribute type converters
 
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/convert/TypeConverter.html[`TypeConverter`]s are a certain group of plugins for converting ``String``s read from configuration file elements into the types used in plugin factory attributes.
 Other plugins can already be injected via <<PluginElement,the `@PluginElement` annotation>>; now, any type supported by ``TypeConverter``s can be used in a `@PluginAttribute`-annotated factory attribute.
