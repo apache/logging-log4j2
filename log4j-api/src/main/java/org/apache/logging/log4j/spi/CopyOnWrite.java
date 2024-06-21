@@ -21,5 +21,7 @@ package org.apache.logging.log4j.spi;
  *
  * @see ReadOnlyThreadContextMap#getReadOnlyContextData()
  * @since 2.7
+ * @deprecated Since 2.24.0 no class implements this.
  */
+@Deprecated
 public interface CopyOnWrite {}

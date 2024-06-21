@@ -40,6 +40,8 @@
       -->
     <slf4j.support.range>[1.7,3)</slf4j.support.range>
     <bnd-extra-package-options>
+      <!-- Annotations only -->
+      org.jspecify.*;resolution:=optional,
       <!-- This bridge also support SLF4J 2.x -->
       org.slf4j.*;version="${slf4j.support.range}"
     </bnd-extra-package-options>
@@ -61,6 +63,11 @@
     <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jspecify</groupId>
+      <artifactId>jspecify</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
