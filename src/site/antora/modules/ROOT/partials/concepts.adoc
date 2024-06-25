@@ -79,53 +79,62 @@ In this case, you need to install `log4j-core` and `log4j-slf4j2-impl`.
 
 To make things a little bit more tangible, consider the following visualization of a typical Log4j Core installation with bridges for an application:
 
-.Visualization of a typical Log4j Core installation with SLF4J, JUL, and JPL bridges.
-[ditaa]
+.Visualization of a typical Log4j Core installation with SLF4J, JUL, and JPL bridges
+[plantuml]
 ....
-/-----------------------------------------------------------------------------------\
-|                                                                                   |
-|       +------------+                       +----------+          +----------+     |
-|       |            |                       |          |          |          |     |
-|       |            v                       |          v          |          v     |
-| +-----+-----+ +---------+ +---------+ +----+----+ +-------+ +----+----+ +-------+ |
-| |           | |{d}c1FF  | |         | |         | |{d}c1FF| |         | |{d}c1FF| |
-| |Application| |Log4j API| |Library 1| |Library 2| | SLF4J | |Library 3| |  JUL  | |
-| |           | |         | |         | |         | |       | |         | |       | |
-| +-----------+ +--+------+ +----+----+ +---------+ +---+---+ +---------+ +---+---+ |
-|                  :   ^         |                      :                     :     |
-|                  |   |         |                      |                     |     |
-| Compile time     |   |         |                      |                     |     |
-\------------------|---|---------|----------------------|---------------------|-----/
-                   |   |         |                      |                     |
-                   |   |         |                /-----/         /-----------/
-                   |   |         |                |               |
-        /----------/   \------+--|----------+-----|---------\     |
-        |                     |  |          |     |         |     |
-/-------|---------------------|--|----------|-----|---------|-----|-----------------\
-|       |                     |  |          |     |         |     |         Runtime |
-|       v                     :  |          :     v         :     v                 |
-| +----------+          +-----+------+ +----+---------+ +---+--------+              |
-| |cGRE      |          |cYEL        | |cYEL          | |cYEL        |              |
-| |Log4j Core|          |JPL to Log4j| |SLF4J to Log4j| |JUL to Log4j|              |
-| |          |          |            | |              | |            |              |
-| +----------+          +------------+ +--------------+ +------------+              |
-| |log4j2.xml|                ^  |                                                  |
-| +----------+                |  |                                                  |
-|                             |  |                                                  |
-|                             |  |                                                  |
-|            /-------------+--|--/                                                  |
-|            |             |  |                                                     |
-| +----------+-------------|--|---------------------------------------------------+ |
-| |JRE                     v  :                                                   | |
-| |                      +----+--+                                                | |
-| |                      |{d}c1FF|                                                | |
-| |                      |  JPL  |                                                | |
-| |                      |       |                                                | |
-| |                      +-------+                                                | |
-| |                                                                               | |
-| +-------------------------------------------------------------------------------+ |
-|                                                                                   |
-\-----------------------------------------------------------------------------------/
+@startuml
+
+frame "Compile time" {
+  [Application] --> [Log4j API] : logs to
+
+  [Log4j API] #Cyan
+
+  [SLF4J] #Cyan
+
+  [Library 1] --> [SLF4J] : logs to
+  [Application] --> [Library 1] : uses
+  [Application] --> [Library 2] : uses
+  [Application] --> [Library 3] : uses
+}
+
+frame Runtime {
+
+  [Log4j Core] <.. [Log4j API] : is implemented by
+  [Log4j Core] <.. (log4j2.xml) : is provided to
+  [Log4j Core] #LightGreen
+
+  [JPL-to-Log4j] ..> [Log4j Core] : forwards to
+  [JPL-to-Log4j] #Yellow
+
+  [SLF4J-to-Log4j] ..> [Log4j Core] : forwards to
+  [SLF4J-to-Log4j] #Yellow
+
+  [JUL-to-Log4j] ..> [Log4j Core] : forwards to
+  [JUL-to-Log4j] #Yellow
+
+  frame JRE {
+    [JPL] #Cyan
+    [JUL] #Cyan
+  }
+
+}
+
+[Library 2] --> [JUL] : logs to
+[Library 3] --> [JPL] : logs to
+
+[JPL] ..> [JPL-to-Log4j] : is implemented by
+[JUL] ..> [JUL-to-Log4j] : is implemented by
+[SLF4J] ..> [SLF4J-to-Log4j] : is implemented by
+
+legend top right
+  | <#LightGreen> | Logging implementation |
+  | <#Yellow> | Logging bridge |
+  | <#Cyan> | Logging API |
+  | <size:18><U+2192></size> | Compile-time usage |
+  | <size:18><U+21E2></size> | Runtime usage |
+endlegend
+
+@enduml
 ....
 
 // end::visual[]
