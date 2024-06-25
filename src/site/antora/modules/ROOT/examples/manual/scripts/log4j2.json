@@ -1,0 +1,65 @@
+{
+  "Configuration": {
+    "Appenders": {
+      "Console": {
+        "name": "STDOUT",
+        "PatternLayout": {
+          "ScriptPatternSelector": {
+            "defaultPattern": "%d %p %m%n",
+            "ScriptRef": {
+              "ref": "SELECTOR_SCRIPT",
+              "PatternMatch": [
+                {
+                  "key": "NoLocation",
+                  "pattern": "[%-5level] %c{1.} %msg%n"
+                },
+                {
+                  "key": "Flow",
+                  "pattern": "[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "Loggers": {
+      "Logger": {
+        "name": "EventLogger",
+        "ScriptFilter": {
+          "onMatch": "ACCEPT",
+          "onMismatch": "DENY",
+          "Script": {
+            "name": "EVENT_LOGGER_FILTER",
+            "language": "groovy",
+            "scriptText": "if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf('FLOW'))) { return true; } else if (logEvent.getContextMap().containsKey('UserId')) { return true; } return false;"
+          }
+        }
+      },
+      "Root": {
+        "level": "INFO",
+        "ScriptFilter": {
+          "onMatch": "ACCEPT",
+          "onMismatch": "DENY",
+          "ScriptRef": {
+            "ref": "ROOT_FILTER"
+          }
+        },
+        "AppenderRef": {
+          "ref": "STDOUT"
+        }
+      }
+    },
+    "Scripts": {
+      "Script": {
+        "name": "SELECTOR_SCRIPT",
+        "language": "javascript",
+        "scriptText": "var result; if (logEvent.getLoggerName().equals('JavascriptNoLocation')) { result = 'NoLocation'; } else if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf('FLOW')) { result = 'Flow'; } result;"
+      },
+      "ScriptFile": {
+        "name": "ROOT_FILTER",
+        "path": "scripts/filter.groovy"
+      }
+    }
+  }
+}
