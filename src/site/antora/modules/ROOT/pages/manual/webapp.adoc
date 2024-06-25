@@ -145,7 +145,7 @@ The `TimeUnit` to use for the shut-down delay.
 
 Specifies the name of the logger context to use.
 
-If <<log4j-jakarta-web-jndi-configuration,`JndiContextSelector`>> is used, this parameter **must** be explicitly provided. Otherwise, the default value is:
+If <<jndi-configuration,`JndiContextSelector`>> is used, this parameter **must** be explicitly provided. Otherwise, the default value is:
 
 . the servlet context name, if present,
 . the servlet context path, including the leading `/`, otherwise.
@@ -162,7 +162,7 @@ If <<log4j-jakarta-web-jndi-configuration,`JndiContextSelector`>> is used, this 
 | `false`
 |===
 
-Must be set to `true` to use the <<log4j-jakarta-web-jndi-configuration,JNDI configuration>>.
+Must be set to `true` to use the <<jndi-configuration,JNDI configuration>>.
 
 [id=log4jConfiguration]
 ==== `log4jConfiguration`
@@ -192,7 +192,7 @@ If no value is provided:
 . otherwise it searches for a configuration file on the classpath using the usual https://logging.apache.org/log4j/2.x/manual/configuration.html#automatic-configuration[automatic configuration procedure].
 
 [#async]
-=== Asynchronous Requests and Threads
+=== Asynchronous requests and threads
 
 In order for the
 xref:manual/lookups.adoc#WebLookup[web lookup]
@@ -221,6 +221,78 @@ link:../javadoc/log4j-jakarta-web/org/apache/logging/log4j/web/Log4jWebSupport.h
 ----
 include::example$manual/webapp/AsyncServlet.java[tag=manual]
 ----
+
+[#log4j-taglib]
+=== Logging in JavaServer Pages
+
+To help users add logging statements to JavaServer Pages, Log4j provides a JSP tag library modeled after the
+https://web.archive.org/web/20140215182415/http://jakarta.apache.org/taglibs/log/[Jakarta Commons Log Tag library].
+In order to use it, you need to add the following runtime dependency to your web application project:
+
+include::partial$manual/dependencies-log4j-taglib.adoc[]
+
+and add the following declaration to your JSP pages:
+
+[source,jsp]
+----
+include::example$manual/webapp/taglib.jsp[tag=declaration]
+----
+
+[WARNING]
+====
+The Log4j Taglib component is deprecated and is scheduled for removal in Log4j 3.
+
+Currently, it only works with JavaServer Pages 2.3 or older and no version compatible with Jakarta Server Pages 3.0 is available.
+====
+
+The Log4j Taglib library defines a tag for most
+link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html[`Logger`]
+methods, including:
+
+* simple and parameterized log statements:
++
+[source,xml,indent=0]
+----
+include::example$manual/webapp/taglib.jsp[tag=simple]
+----
+
+* flow tracing statements:
++
+[source,xml,indent=0]
+----
+include::example$manual/webapp/taglib.jsp[tag=entry-exit]
+----
+
+* catching and throwing statements:
++
+[source,xml,indent=0]
+----
+include::example$manual/webapp/taglib.jsp[tag=catching]
+----
+
+* tags to test the current log level:
++
+[source,xml,indent=0]
+----
+include::example$manual/webapp/taglib.jsp[tag=if-enabled]
+----
+
+* tags to set the name of the logger used:
++
+[source,xml,indent=0]
+----
+include::example$manual/webapp/taglib.jsp[tag=set-logger]
+----
+
+* a `dump` tag that prints the contents of a JSP scope:
++
+[source,xml,indent=0]
+----
+include::example$manual/webapp/taglib.jsp[tag=dump]
+----
+
+A complete JSP page example is available
+{antora-examples-url}/manual/webapp/taglib.jsp[on GitHub].
 
 [#application-server]
 == Configuring an application server
