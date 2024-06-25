@@ -334,6 +334,9 @@ In order to activate the bridge from JUL to Log4j API, you also need to add:
 
 to the JVM parameters in your application launcher.
 
+The JUL-to-Log4j bridge supports additional configuration and installation methods.
+See xref:log4j-jul.adoc[] for more information.
+
 [#impl-core-bridge-jpl]
 ===== Installing JPL-to-Log4j bridge
 
@@ -598,7 +601,10 @@ runtimeOnly 'org.slf4j:slf4j-jdk14:{slf4j-version}' // SLF4J-to-JUL bridge
 
 ====
 
-To configure JUL, see https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.logging/java/util/logging/LogManager.html[`java.util.logging.LogManager`].
+See also:
+
+* https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.logging/java/util/logging/LogManager.html[`java.util.logging.LogManager`], to learn more about JUL configuration,
+* xref:log4j-to-jul.adoc[] to learn more about the `log4j-to-jul` artifact.
 
 [#impl-logback]
 === Installing Logback
