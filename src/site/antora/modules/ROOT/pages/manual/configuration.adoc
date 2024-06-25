@@ -18,7 +18,7 @@
 = Configuration file
 
 Users can configure Log4j Core using different file formats.
-The `log4j-core` artifact includes XML, JSON, YAML, and Java properties formats factories. 
+The `log4j-core` artifact includes XML, JSON, YAML, and Java properties formats factories.
 
 As detailed in the table below, some configuration formats require additional dependencies on the classpath.
 
@@ -67,8 +67,7 @@ The `<contextName>` and `<extension>` placeholders above have the following mean
 
 * for standalone Java SE applications, it is a random identifier,
 * for web applications, it is derived from the application descriptor.
-See xref:manual/webapp.adoc#configuration[Log4j
- Web application configuration] for more details.
+See xref:manual/webapp.adoc#log4jContextName[Log4j Web application configuration] for more details.
 
 <extension>:: must be one of the file extensions assigned to a configuration file format:
 +
@@ -139,7 +138,7 @@ Since XML was the original configuration format developed, the mapping from conf
 +
 [NOTE]
 ====
-There is an alternative XML configuration format called "XML strict format" that is activated 
+There is an alternative XML configuration format called "XML strict format" that is activated
 by setting the `strict` attribute of the main `<Configuration>` element to `true`.
 It allows users to use any tag names as long as they provide the plugin type using a `type` property.
 
@@ -801,6 +800,7 @@ The same rule applies to the `name` parameter: if it contains a `${` sequence, i
 =====
 
 If your configuration file contains the following definitions:
+
 [tabs]
 ====
 XML::

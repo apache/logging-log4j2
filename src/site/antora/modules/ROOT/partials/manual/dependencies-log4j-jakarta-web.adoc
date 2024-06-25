@@ -24,8 +24,7 @@ Maven::
 <!-- We assume you use `log4j-bom` for dependency management -->
 <dependency>
   <groupId>org.apache.logging.log4j</groupId>
-  <artifactId>log4j-1.2-api</artifactId>
-  <version>{log4j-core-version}</version>
+  <artifactId>log4j-jakarta-web</artifactId>
   <scope>runtime</scope>
 </dependency>
 ----
@@ -35,6 +34,36 @@ Gradle::
 [source,groovy,subs="+attributes"]
 ----
 // We assume you use `log4j-bom` for dependency management
-runtimeOnly 'org.apache.logging.log4j:log4j-1.2-api:{log4j-core-version}'
+runtimeOnly 'org.apache.logging.log4j:log4j-jakarta-web'
 ----
 ====
+
+.Click here if you are you using Jakarta EE 8 or any version of Java EE?
+[%collapsible]
+=====
+Jakarta EE 8 and all Java EE applications servers use the legacy `javax` package prefix instead of `jakarta`.
+If you are using those application servers, you should replace the dependencies above with:
+
+[tabs]
+====
+Maven::
++
+[source,xml,subs="+attributes"]
+----
+<!-- We assume you use `log4j-bom` for dependency management -->
+<dependency>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-web</artifactId>
+  <scope>runtime</scope>
+</dependency>
+----
+
+Gradle::
++
+[source,groovy,subs="+attributes"]
+----
+// We assume you use `log4j-bom` for dependency management
+runtimeOnly 'org.apache.logging.log4j:log4j-web'
+----
+====
+=====

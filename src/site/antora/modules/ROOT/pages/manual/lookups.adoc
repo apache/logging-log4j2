@@ -72,6 +72,7 @@ be formatted as specified.
 The DockerLookup can be used to lookup attributes from the Docker container the application is running in.
 
 Log4j Docker provides access to the following container attributes:
+
 [cols="1m,4a"]
 |===
 |Key |Description
@@ -136,6 +137,7 @@ when the `USER` environment variable is undefined, the default value
   </PatternLayout>
 </File>
 ----
+
 [#EventLookup]
 == Event Lookup
 
@@ -173,6 +175,7 @@ The EventLookup provides access to fields within the log event from the configur
 
 In this example the RoutingAppender picks a route based on the presence of a Marker named "AUDIT" being
 present in the log event.
+
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
@@ -432,9 +435,9 @@ Example usage:
 
 The MapLookup serves several purposes.
 
-1.  Provide the base for Properties declared in the configuration file.
-2.  Retrieve values from MapMessages in LogEvents.
-3.  Retrieve values set with
+1. Provide the base for Properties declared in the configuration file.
+2. Retrieve values from MapMessages in LogEvents.
+3. Retrieve values set with
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/MapLookup.html#setMainArguments%28java.lang.String%5B%5D%29[`MapLookup.setMainArguments(String[])`]
 
 The first item simply means that the MapLookup is used to substitute
@@ -540,9 +543,10 @@ check for the existence of a marker where `name` is the marker name. If
 the marker exists, the expression returns the name, otherwise `null`.
 
 == Resource Bundle Lookup
+
 The resource bundle lookup retrieves values from Resource Bundles (see Java documentation). The format is `${bundle:BundleName:BundleKey}`. The bundle name follows package naming conventions, for example: `${bundle:com.domain.Messages:MyKey}`.
 
-[source, xml]
+[source,xml]
 ----
 <File name="Application" fileName="application-${spring:profiles.active[0]}.log">
 <PatternLayout>
@@ -552,11 +556,12 @@ The resource bundle lookup retrieves values from Resource Bundles (see Java docu
 ----
 
 == Spring Boot Lookup
+
 The Spring Boot Lookup retrieves the values of Spring properties from the Spring configuration as well as values of the active and default profiles. Specifying a key of "profiles.active" will return the active profiles while a key of "profiles.default" will return the default profiles. The default and active profiles can be an array. If more than one profile is present they will be returned as a comma separated list. To retrieve a single item from the array append "[\{index}]" to the key. For example, to return the first active profile in the list specify "profiles.active[0]".
 
 This Lookup will return null values until Spring Boot initializes application logging. The Spring Boot Lookup requires the log4j-spring-boot jar be included as a dependency.
 
-[source, xml]
+[source,xml]
 ----
 <File name="Application" fileName="application-${spring:profiles.active[0]}.log">
 <PatternLayout>
@@ -641,61 +646,61 @@ result of a nested lookup.
 [#WebLookup]
 == Web Lookup
 
-The WebLookup allows applications to retrieve variables that are
-associated with the ServletContext. In addition to being able to
-retrieve various fields in the ServletContext, WebLookup supports
-looking up values stored as attributes or configured as initialization
-parameters. The following table lists various keys that can be
-retrieved:
+The web lookup allows applications that run in a Jakarta EE environment to retrieve variables associated with a
+https://jakarta.ee/specifications/servlet/5.0/apidocs/jakarta/servlet/servletcontext[`ServletContext`].
+See xref:manual/webapp.adoc[] for more information.
 
-[cols="1m,4"]
+.Web lookup supported keys
+[cols="1m,5",options="header"]
 |===
-|Key |Description
 
-|attr._name_
-|Returns the ServletContext attribute with the specified name
+|Key
+|Description
 
-|contextPath
-|The context path of the web application
+|attr.<key>
+|Value of the `<key`> servlet context attribute.
 
 |contextPathName
-|The first token in the context path of the web application splitting on "/" characters.
+|The **first** fragment of the servlet context path.
+
+|contextPath
+|The **entire** servlet context path.
 
 |effectiveMajorVersion
-|Gets the major version of the Servlet specification that the application
-represented by this ServletContext is based on.
+|The major version of the Servlet specification supported by the application.
 
 |effectiveMinorVersion
-|Gets the minor version of the Servlet specification that the application
-represented by this ServletContext is based on.
+|The minor version of the Servlet specification supported by the application.
 
-|initParam._name_
-|Returns the ServletContext initialization parameter with the specified name
+|initParam.<key>
+|Value of the `<key>` servlet context initialization parameter.
 
 |majorVersion
-|Returns the major version of the Servlet API that this servlet container supports.
+|The major version of the Servlet specification supported by the server.
 
 |minorVersion
-|Returns the minor version of the Servlet API that this servlet container supports.
+|The minor version of the Servlet specification supported by the server.
 
 |rootDir
-|Returns the result of calling getRealPath with a value of "/".
+|The root directory of the servlet context.
 
 |serverInfo
-|Returns the name and version of the servlet container on which the servlet is running.
+|The server info.
 
 |servletContextName
-|Returns the name of the web application as defined in the display-name element of the deployment descriptor
+|The servlet context name.
+
+|<key>
+|The value of `<key>` is searched as context attribute or context initialization parameter.
 |===
 
-Any other key names specified will first be checked to see if a
-ServletContext attribute exists with that name and then will be checked
-to see if an initialization parameter of that name exists. If the key is
-located then the corresponding value will be returned.
+The web lookup can be used, for example, to provide a different log file for each application:
 
 [source,xml]
 ----
-<Appenders>
-  <File name="ApplicationLog" fileName="${web:rootDir}/app.log"/>
-</Appenders>
+<File name="ApplicationLog" fileName="logs${web:contextPath}.log"/>
 ----
+
+Additional runtime dependencies are required for using web lookup:
+
+include::partial$manual/dependencies-log4j-jakarta-web.adoc[]

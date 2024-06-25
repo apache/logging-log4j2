@@ -2600,9 +2600,9 @@ file attribute view.
 |=======================================================================
 
 [#TriggeringPolicies]
-== TriggeringPolicies
+=== TriggeringPolicies
 
-=== Composite Triggering Policy
+==== Composite Triggering Policy
 
 The `CompositeTriggeringPolicy` combines multiple triggering policies and returns true if any of the configured policies return true.
 The
@@ -2619,7 +2619,7 @@ For example, the following XML fragment defines policies that rollover the log w
 </Policies>
 ----
 
-=== Cron Triggering Policy
+==== Cron Triggering Policy
 
 The `CronTriggeringPolicy` triggers rollover based on a cron expression.
 This policy is controlled by a timer and is asynchronous in processing log events, so it is possible that log events from the previous or next period may appear at the beginning or end of the log file.
@@ -2640,7 +2640,7 @@ expression indicates a rollover should have occurred between that time
 and the current time the file will be immediately rolled over.
 |=======================================================================
 
-=== OnStartup Triggering Policy
+==== OnStartup Triggering Policy
 
 The `OnStartupTriggeringPolicy` policy causes a rollover if the log file is older than the current JVM's start time and the minimum file size is met or exceeded.
 
@@ -2660,7 +2660,7 @@ When running in Google App Engine, the OnStartup policy causes a rollover if the
 and falls back to Log4J initialization time instead.)
 
 [#sizebased-triggering-policy]
-=== SizeBased Triggering Policy
+==== SizeBased Triggering Policy
 
 The `SizeBasedTriggeringPolicy` causes a rollover once the file has reached the specified size.
 The size can be specified in bytes, with the suffix KB, MB, GB, or TB for example `20MB`.
@@ -2672,7 +2672,7 @@ Otherwise, the target file will be overwritten on every rollover as the SizeBase
 When used without a time-based triggering policy the SizeBased Triggering Policy will cause the timestamp value to change.
 
 [#timebased-triggering-policy]
-=== TimeBased Triggering Policy
+==== TimeBased Triggering Policy
 
 The `TimeBasedTriggeringPolicy` causes a rollover once the date/time pattern no longer applies to the active file.
 This policy accepts an
@@ -2701,10 +2701,10 @@ load of doing so across time.
 |=======================================================================
 
 [#RolloverStrategies]
-== RolloverStrategies
+=== RolloverStrategies
 
 [#DefaultRolloverStrategy]
-=== DefaultRolloverStrategy
+==== DefaultRolloverStrategy
 
 Default Rollover Strategy
 
@@ -2798,7 +2798,7 @@ archived log file during compression.
 |=======================================================================
 
 [#DirectWriteRolloverStrategy]
-=== DirectWriteRolloverStrategy
+==== DirectWriteRolloverStrategy
 
 DirectWrite Rollover Strategy
 
@@ -2959,7 +2959,7 @@ This sample configuration is the same as the previous one but limits the number 
 ----
 
 [#CustomDeleteOnRollover]
-=== CustomDeleteOnRollover
+==== CustomDeleteOnRollover
 
 Log Archive Retention Policy: Delete on Rollover
 
@@ -3045,7 +3045,7 @@ and must return a list with the paths to delete.
 |=======================================================================
 
 [#DeleteIfFileName]
-== DeleteIfFileName
+=== DeleteIfFileName
 
 .IfFileName Condition Parameters
 [cols="20%,20%,60%",options="header",]
@@ -3071,7 +3071,7 @@ the path name matches).
 |=======================================================================
 
 [#DeleteIfLastModified]
-== DeleteIfLastModified
+=== DeleteIfLastModified
 
 .IfLastModified Condition Parameters
 [cols="20%,20%,60%",options="header",]
@@ -3090,7 +3090,7 @@ the file is old enough).
 |=======================================================================
 
 [#DeleteIfAccumulatedFileCount]
-== DeleteIfAccumulatedFileCount
+=== DeleteIfAccumulatedFileCount
 
 .IfAccumulatedFileCount Condition Parameters
 [cols="20%,20%,60%",options="header",]
@@ -3107,7 +3107,7 @@ the threshold count has been exceeded).
 |=======================================================================
 
 [#DeleteIfAccumulatedFileSize]
-== DeleteIfAccumulatedFileSize
+=== DeleteIfAccumulatedFileSize
 
 .IfAccumulatedFileSize Condition Parameters
 [cols="20%,20%,60%",options="header",]
@@ -3201,7 +3201,7 @@ During every rollover, this configuration will delete files that match "*/app-*.
 ----
 
 [#ScriptCondition]
-== ScriptCondition
+=== ScriptCondition
 
 .ScriptCondition Parameters
 [cols="20%,20%,60%",options="header",]
@@ -3216,7 +3216,7 @@ how ScriptFiles and ScriptRefs can be configured.
 |=======================================================================
 
 [#ScriptParameters]
-== ScriptParameters
+=== ScriptParameters
 
 .Script Parameters
 [cols="20%,20%,60%",options="header",]
@@ -3306,7 +3306,7 @@ The Delete action will delete all files returned by the script.
 ----
 
 [#CustomPosixViewAttributeOnRollover]
-== CustomPosixViewAttributeOnRollover
+=== CustomPosixViewAttributeOnRollover
 
 Log Archive File Attribute View Policy: Custom file attribute on Rollover
 
@@ -3804,6 +3804,61 @@ Note that the AuditAppender was predefined while the RollingFileAppenders are cr
 </Configuration>
 ----
 
+[#servlet-appender]
+== Servlet appender
+
+The servlet appender allows users to forward all logging calls to the
+https://jakarta.ee/specifications/servlet/5.0/apidocs/jakarta/servlet/servletcontext#log(java.lang.String,java.lang.Throwable)[`ServletContext.log(String, Throwable)`]
+methods.
+You can use it by declaring an appender of type `Servlet` in your configuration file:
+
+[tabs]
+====
+XML::
++
+[source,xml,indent=0]
+----
+include::example$manual/appenders/servlet-appender.xml[tag=servlet]
+----
+
+JSON::
++
+[source,xml,indent=0]
+----
+include::example$manual/appenders/servlet-appender.json[tag=servlet]
+----
+
+YAML::
++
+[source,xml,indent=0]
+----
+include::example$manual/appenders/servlet-appender.yaml[tag=servlet]
+----
+
+Properties::
++
+[source,xml,indent=0]
+----
+include::example$manual/appenders/servlet-appender.properties[tag=servlet]
+----
+====
+
+<1> The appender passes the exception using the `Throwable` parameter of the
+https://jakarta.ee/specifications/servlet/5.0/apidocs/jakarta/servlet/servletcontext#log(java.lang.String,java.lang.Throwable)[`ServletContext.log(String, Throwable)`] method.
+Setting `alwaysWriteExceptions` to `false` prevents exceptions from appearing in the log file twice.
+
+Additional runtime dependencies are required for using the servlet appender:
+
+include::partial$manual/dependencies-log4j-jakarta-web.adoc[]
+
+See xref:manual/webapp.adoc[] for more information.
+
+[CAUTION]
+====
+`ServletContext.log(String, Throwable)` is a very primitive logging interface.
+Modern application servers usually forward its calls to a proper logging framework and use a **fixed** logging level for all the events.
+====
+
 [[SMTPAppender]]
 == SMTPAppender
 
@@ -3914,7 +3969,7 @@ As with other Appenders, the formatting can be controlled by specifying a Layout
 ----
 
 [#ScriptAppenderSelector]
-== ScriptAppenderSelector
+=== ScriptAppenderSelector
 
 When the configuration is built, the `ScriptAppenderSelector` appender calls a `ScriptPlugin` to compute an appender name.
 Log4j then creates one of the appender named listed under `AppenderSet` using the name of the

@@ -15,311 +15,231 @@
     limitations under the License.
 ////
 
-= Log4j Web Applications
+= Using Log4j in a Jakarta EE environment
 
-== Using Log4j in Web Applications
+[#web-applications]
+== Integrating with Web Applications
 
-You must take particular care when using Log4j or any other logging framework within a Java EE web application. It's important for logging resources to be properly cleaned up (database connections closed, files closed, etc.) when the container shuts down or the web application is undeployed. Because of the nature of class loaders within web applications, Log4j resources cannot be cleaned up through normal means. Log4j must be "started" when the web application deploys and "shut down" when the web application undeploys. How this works varies depending on whether your application is a <<Servlet-3-0,Servlet 3.0 or newer>> or <<Servlet-2-5,Servlet 2.5>> web application.
-
-Due to the namespace change from `javax` to `jakarta`, you need to use `log4j-jakarta-web` instead of `log4j-web` for Servlet 5.0 or newer.
-
-In either case, you'll need to add the `log4j-web` module to your deployment.
-
-[.note]
+[NOTE]
 ====
-To avoid problems, the Log4j shutdown hook will automatically be disabled when the log4j-web jar is included.
+To avoid problems, some Log4j API and Log4j Core features are automatically disabled, when running in a Jakarta EE environment. Most notably:
+
+- the usage of `ThreadLocal` for object pooling is disabled,
+- a web-safe implementation of
+link:../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html[`ThreadContextMap`] is used,
+- JMX notifications are sent synchronously,
+- the JVM shutdown hook is disabled.
+
+See xref:manual/systemproperties.adoc#log4j2.isWebapp[`log4j2.isWebapp`] for more details.
 ====
 
-[id=configuration]
+Using a logging implementation like **Log4j Core** in a Jakarta EE application requires particular care.
+Since the lifecycle of a container or web application is independent of the lifecycle of the JVM, it's important for logging resources to be properly cleaned up (database connections closed, files closed, etc.) when the container or web application shuts down.
+
+To properly synchronize the lifecycles of Log4j Core and Jakarta EE applications an additional **Log4j Web** artifact is provided.
+
+[#log4j-jakarta-web-installation]
+=== Installation
+
+In order to install Log4j Web in your Web application, you need to add it as runtime dependency:
+
+include::partial$manual/dependencies-log4j-jakarta-web.adoc[]
+
+If you are writing a Servlet 3.0 or later application, Apache Log4j Web will register a
+https://jakarta.ee/specifications/servlet/5.0/apidocs/jakarta/servlet/servletcontainerinitializer[`ServletContainerInitializer`]
+that takes care of configuring the Log4j lifecycle for you. Under the hood this will:
+
+* initialize Log4j Core with the correct configuration file,
+* register a `Log4jServletContextListener` to automatically shut down Log4j Core, when the application shuts down,
+* register a `Log4jServletFilter` to enable the xref:manual/lookups.adoc#WebLookup[web lookup].
+
+[WARNING]
+====
+While the Servlet Specification allows web fragments to automatically add context listeners, it does not give any guarantees regarding the order in which those listeners are executed
+(cf. https://jakarta.ee/specifications/servlet/5.0/jakarta-servlet-spec-5.0#Assembling_the_descriptor[section 8.2.3]).
+
+If other context listeners in your application use logging, you need to make sure that `Log4jServletContextListener` is the last listener to be executed at shutdown.
+In order to do it you must create a `web.xml` descriptor and add the `Log4jServletContextListener` explicitly as **first** context listener:
+
+[source,xml,indent=0]
+----
+include::example$manual/webapp/web.xml[tag=context-listener]
+----
+====
+
+==== Manual installation
+
+If you are maintaining an older Servlet 2.5 (or earlier) application or if you disabled
+
+[source,xml,indent=0]
+----
+include::example$manual/webapp/web.xml[tags=context-listener;filter]
+----
+
+[#configuration]
 === Configuration
 
-Log4j allows the configuration file to be specified in web.xml using the `log4jConfiguration` context parameter. Log4j will search for configuration files by:
+Log4j Web provides many configuration options to finely tune its installation.
+These configuration options should be specified as
+https://jakarta.ee/specifications/servlet/5.0/jakarta-servlet-spec-5.0#initialization-parameters[servlet context initialization parameters].
 
-1. If a location is provided it will be searched for as a servlet context resource. For example, if `log4jConfiguration` contains "logging.xml" then Log4j will look for a file with that name in the root directory of the web application.
-2. If no location is defined Log4j will search for a file that starts with "log4j2" in the WEB-INF directory. If more than one file is found, and if a file that starts with "log4j2-\{name}" is present, where \{name} is the name of the web application, then it will be used. Otherwise the first file will be used.
-3. The "normal" search sequence using the classpath and file URLs will be used to locate the configuration file.
+[id=isLog4jAutoInitializationDisabled]
+==== `isLog4jAutoInitializationDisabled`
 
-[#Servlet-3-0]
-=== Servlet 3.0 and Newer Web Applications
+[cols="1h,5"]
+|===
+| Type          | `boolean`
+| Default value | `false`
+|===
 
-A Servlet 3.0 or newer web application is any `<web-app>` whose `version` attribute has a value of "3.0" or higher. Of course, the application must also be running in a compatible web container.
+If set to `true`, the `Log4jServletContainerInitializer` will be disabled, which prevents the automatic registration of both the `Log4jServletContextListener` and `Log4jServletFilter`.
 
-Some examples are:
+[id=isLog4jAutoShutdownDisabled]
+==== `isLog4jAutoShutdownDisabled`
 
-* Tomcat 7.0 and higher
-* GlassFish 3.0 and higher
-* JBoss 7.0 and higher
-* Oracle WebLogic 12c and higher
-* IBM WebSphere 8.0 and higher
+[cols="1h,5"]
+|===
+| Type          | `boolean`
+| Default value | `false`
+|===
 
-==== The Short Story
+If set to `true`, the `Log4jServletContextListener` will not register a `Log4jServletContextListener` to handle the web application shut down.
 
-Log4j 2 "just works" in Servlet 3.0 and newer web applications. It is capable of automatically starting when the application deploys and shutting down when the application undeploys. Thanks to the https://docs.oracle.com/javaee/6/api/javax/servlet/ServletContainerInitializer.html[ServletContainerInitializer] API added to Servlet 3.0, the relevant `Filter` and `ServletContextListener` classes can be registered dynamically on web application startup.
+[id=log4j.stop.timeout.timeunit]
+==== `log4j.stop.timeout.timeunit`
 
-[warning]
-====
-Important Note!
-For performance reasons, containers often ignore certain JARs known not to contain TLDs or `ServletContainerInitializer`s and do not scan them for web-fragments and initializers. Importantly, Tomcat 7 <7.0.43 ignores all JAR files named log4j*.jar, which prevents this feature from working. This has been fixed in Tomcat 7.0.43, Tomcat 8, and later. In Tomcat 7 <7.0.43 you will need to change `catalina.properties` and remove "log4j*.jar" from the `jarsToSkip` property. You may need to do something similar on other containers if they skip scanning Log4j JAR files.
-====
+[cols="1h,5"]
+|===
+| Type
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/concurrent/TimeUnit.html[`TimeUnit`]
 
-==== The Long Story
+| Default value
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/concurrent/TimeUnit.html#SECONDS[`SECONDS`]
+|===
 
-The Log4j 2 Web JAR file is a web-fragment configured to order before any other web fragments in your application. It contains a `ServletContainerInitializer` (`Log4jServletContainerInitializer`) that the container automatically discovers and initializes. This adds the `Log4jServletContextListener` and `Log4jServletFilter` to the `ServletContext`. These classes properly initialize and deinitialize the Log4j configuration.
+The `TimeUnit` to use for the shut-down delay.
 
-For some users, automatically starting Log4j is problematic or undesirable. You can easily disable this feature using the `isLog4jAutoInitializationDisabled` context parameter. Simply add it to your deployment descriptor with the value "true" to disable auto-initialization. You _must_ define the context parameter in `web.xml`. If you set in programmatically, it will be too late for Log4j to detect the setting.
+[id=log4j.stop.timeout]
+==== `log4j.stop.timeout`
 
-[source,xml]
-----
-<context-param>
-    <param-name>isLog4jAutoInitializationDisabled</param-name>
-    <param-value>true</param-value>
-</context-param>
-----
+[cols="1h,5"]
+|===
+| Type
+| `long`
 
-Once you disable auto-initialization, you must initialize Log4j as you would a <<Servlet-2-5,Servlet 2.5 web application>>. You must do so in a way that this initialization happens before any other application code (such as Spring Framework startup code) executes.
+| Default value
+| `30`
+|===
 
-You can customize the behavior of the listener and filter using the `log4jContextName`, `log4jConfiguration`, and/or `isLog4jContextSelectorNamed` context parameters. Read more about this in the <<ContextParams,Context Parameters>> section below. You _must not_ manually configure the `Log4jServletContextListener` or `Log4jServletFilter` in your deployment descriptor (`web.xml`) or in another initializer or listener in a Servlet 3.0 or newer application _unless you disable auto-initialization_ with `isLog4jAutoInitializationDisabled`. Doing so will result in startup errors and unspecified erroneous behavior.
+[id=log4jContextName]
+==== `log4jContextName`
 
-[#Servlet-2-5]
-=== Servlet 2.5 Web Applications
+[cols="1h,5"]
+|===
+| Type
+| `String`
 
-A Servlet 2.5 web application is any `<web-app>` whose `version` attribute has a value of "2.5." The `version` attribute is the only thing that matters; even if the web application is running in a Servlet 3.0 or newer container, it is a Servlet 2.5 web application if the `version` attribute is "2.5." Note that Log4j 2 does not support Servlet 2.4 and older web applications.
+| Default value
+| _automatically computed_
+|===
 
-If you are using Log4j in a Servlet 2.5 web application, or if you have disabled auto-initialization with the isLog4jAutoInitializationDisabled context parameter, you must configure the Log4jServletContextListener and Log4jServletFilter in the deployment descriptor or programmatically. The filter should match all requests of any type. The listener should be the very first listener defined in your application, and the filter should be the very first filter defined and mapped in your application. This is easily accomplished using the following web.xml code:
+Specifies the name of the logger context to use.
 
-[source,xml]
-----
-<listener>
-        <listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>
-</listener>
+If <<log4j-jakarta-web-jndi-configuration,`JndiContextSelector`>> is used, this parameter **must** be explicitly provided. Otherwise, the default value is:
 
-<filter>
-    <filter-name>log4jServletFilter</filter-name>
-    <filter-class>org.apache.logging.log4j.web.Log4jServletFilter</filter-class>
-</filter>
-<filter-mapping>
-    <filter-name>log4jServletFilter</filter-name>
-    <url-pattern>/*</url-pattern>
-    <dispatcher>REQUEST</dispatcher>
-    <dispatcher>FORWARD</dispatcher>
-    <dispatcher>INCLUDE</dispatcher>
-    <dispatcher>ERROR</dispatcher>
-    <dispatcher>ASYNC</dispatcher><!-- Servlet 3.0 w/ disabled auto-initialization only; not supported in 2.5 -->
-</filter-mapping>
-----
+. the servlet context name, if present,
+. the servlet context path, including the leading `/`, otherwise.
 
-You can customize the behavior of the listener and filter using the log4jContextName, log4jConfiguration, and/or isLog4jContextSelectorNamed context parameters. Read more about this in the Context Parameters section below.
+[id=isLog4jContextSelectorNamed]
+==== `isLog4jContextSelectorNamed`
 
-[#ContextParams]
-=== Context Parameters
+[cols="1h,5"]
+|===
+| Type
+| `boolean`
 
-By default, Log4j 2 uses the ServletContext's context name as the LoggerContext name and uses the standard pattern for locating the Log4j configuration file. There are three context parameters that you can use to control this behavior. The first, isLog4jContextSelectorNamed, specifies whether the context should be selected using the JndiContextSelector. If isLog4jContextSelectorNamed is not specified or is anything other than true, it is assumed to be false.
+| Default value
+| `false`
+|===
 
-If isLog4jContextSelectorNamed is true, log4jContextName must be specified or display-name must be specified in web.xml; otherwise, the application will fail to start with an exception. log4jConfiguration should also be specified in this case, and must be a valid URI for the configuration file; however, this parameter is not required.
+Must be set to `true` to use the <<log4j-jakarta-web-jndi-configuration,JNDI configuration>>.
 
-If isLog4jContextSelectorNamed is not true, log4jConfiguration may optionally be specified and must be a valid URI or path to a configuration file or start with "classpath:" to denote a configuration file that can be found on the classpath. Without this parameter, Log4j will use the standard mechanisms for locating the configuration file.
+[id=log4jConfiguration]
+==== `log4jConfiguration`
 
-When specifying these context parameters, you must specify them in the deployment descriptor (web.xml) even in a Servlet 3.0 or never application. If you add them to the ServletContext within a listener, Log4j will initialize before the context parameters are available and they will have no effect. Here are some sample uses of these context parameters.
+[cols="1h,5"]
+|===
+| Type
+| https://docs.oracle.com/javase/8/docs/api/java/net/URI.html[`URI`]
 
-==== Set the Logging Context Name to "myApplication"
+| Default value
+| `false`
+|===
 
-[source,xml]
-----
-<context-param>
-    <param-name>log4jContextName</param-name>
-    <param-value>myApplication</param-value>
-</context-param>
-----
+The location of a Log4j Core configuration file.
+If the provided value is not an **absolute** URI, Log4j interprets it as:
 
-==== Set the Configuration Path/File/URI to "/etc/myApp/myLogging.xml"
+. path to a
+https://jakarta.ee/specifications/servlet/5.0/apidocs/jakarta/servlet/servletcontext#getResource(java.lang.String)[servlet context resource], if it exists,
+. path to a file, if it exists,
+. path to a
+https://docs.oracle.com/javase/8/docs/api/java/lang/ClassLoader.html#getResource-java.lang.String-[classpath resource], otherwise.
 
-[source,xml]
-----
-<context-param>
-    <param-name>log4jConfiguration</param-name>
-    <param-value>file:///etc/myApp/myLogging.xml</param-value>
-</context-param>
-----
+If no value is provided:
 
-[#use-jndi-context-selector]
-==== Use the JndiContextSelector
+. Log4j Web looks for a servlet context resource named `/WEB-INF/log4j2-<contextName>.<extension>`, where `<contextName>` is the name of the logger context,
+. if no such file exists it looks for a servlet context resource named `/WEB-INF/log4j2.<extension>`,
+. otherwise it searches for a configuration file on the classpath using the usual https://logging.apache.org/log4j/2.x/manual/configuration.html#automatic-configuration[automatic configuration procedure].
 
-[source,xml]
-----
-<context-param>
-    <param-name>isLog4jContextSelectorNamed</param-name>
-    <param-value>true</param-value>
-</context-param>
-<context-param>
-    <param-name>log4jContextName</param-name>
-    <param-value>appWithJndiSelector</param-value>
-</context-param>
-<context-param>
-    <param-name>log4jConfiguration</param-name>
-    <param-value>file:///D:/conf/myLogging.xml</param-value>
-</context-param>
-----
-
-Note that in this case you must also set the "Log4jContextSelector" system property to "org.apache.logging.log4j.core.selector.JndiContextSelector".
-
-For security reasons, from Log4j 2.17.0, JNDI must be enabled by setting system property log4j2.enableJndiContextSelector=true
-
-== Using Web Application Information During the Configuration
-
-You may want to use information about the web application during configuration. For example, you could embed the web application's context path in the name of a Rolling File Appender. See WebLookup in Lookups for more information.
-
-=== JavaServer Pages Logging
-
-You may use Log4j 2 within JSPs just as you would within any other Java code. Simply obtain a Logger and call its methods to log events. However, this requires you to use Java code within your JSPs, and some development teams rightly are not comfortable doing this. If you have a dedicated user interface development team that is not familiar with using Java, you may even have Java code disabled in your JSPs.
-
-For this reason, Log4j 2 provides a JSP Tag Library that enables you to log events without using any Java code. To read more about using this tag library, xref:log4j-taglib.adoc[read the Log4j Tag Library documentation].
-
-Important Note! As noted above, containers often ignore certain JARs known not to contain TLDs and do not scan them for TLD files. Importantly, Tomcat 7 <7.0.43 ignores all JAR files named log4j*.jar, which prevents the JSP tag library from being automatically discovered. This does not affect Tomcat 6.x and has been fixed in Tomcat 7.0.43, Tomcat 8, and later. In Tomcat 7 <7.0.43 you will need to change catalina.properties and remove "log4j*.jar" from the jarsToSkip property. You may need to do something similar on other containers if they skip scanning Log4j JAR files.
-
+[#async]
 === Asynchronous Requests and Threads
 
-The handling of asynchronous requests is tricky, and regardless of Servlet container version or configuration Log4j cannot handle everything automatically. When standard requests, forwards, includes, and error resources are processed, the Log4jServletFilter binds the LoggerContext to the thread handling the request. After request processing completes, the filter unbinds the LoggerContext from the thread.
+In order for the
+xref:manual/lookups.adoc#WebLookup[web lookup]
+to work correctly, Log4j must be able to always identify the `ServletContext` used by the current thread.
+When standard requests, forwards, includes, and error resources are processed, the `Log4jServletFilter` binds the `LoggerContext` to the thread handling the request, and you don't have to do anything.
 
-Similarly, when an internal request is dispatched using a javax.servlet.AsyncContext, the Log4jServletFilter also binds the LoggerContext to the thread handling the request and unbinds it when request processing completes. However, this only happens for requests dispatched through the AsyncContext. There are other asynchronous activities that can take place other than internal dispatched requests.
+The handling of asynchronous requests is however more tricky, since it allows you to execute code on threads that were not prepared by `Log4jServletFilter`.
+Such a situation occurs for example, if your code was started using the
+https://jakarta.ee/specifications/servlet/5.0/apidocs/jakarta/servlet/asynccontext#start(java.lang.Runnable)[`AsyncContext.start(Runnable)`]
+method.
 
-For example, after starting an AsyncContext you could start up a separate thread to process the request in the background, possibly writing the response with the ServletOutputStream. Filters cannot intercept the execution of this thread. Filters also cannot intercept threads that you start in the background during non-asynchronous requests. This is true whether you use a brand-new thread or a thread borrowed from a thread pool. So what can you do for these special threads?
+To successfully propagate the logger context along asynchronous calls, the
+link:../javadoc/log4j-jakarta-web/org/apache/logging/log4j/web/WebLoggerContextUtils.html[`WebLoggerContextUtils`]
+helper class is made available.
+Using this class you can either decorate a `Runnable` with method calls that bind the appropriate logger context to the thread:
 
-You may not need to do anything. If you didn't use the isLog4jContextSelectorNamed context parameter, there is no need to bind the LoggerContext to the thread. Log4j can safely locate the LoggerContext on its own. In these cases, the filter provides only very modest performance gains, and only when creating new Loggers. However, if you did specify the isLog4jContextSelectorNamed context parameter with the value "true", you will need to manually bind the LoggerContext to asynchronous threads. Otherwise, Log4j will not be able to locate it.
-
-Thankfully, Log4j provides a simple mechanism for binding the LoggerContext to asynchronous threads in these special circumstances. The simplest way to do this is to wrap the Runnable instance that is passed to the AsyncContext.start() method.
-
-[source,java]
+[source,java,indent=0]
 ----
-import java.io.IOException;
-import javax.servlet.AsyncContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.web.WebLoggerContextUtils;
-
-public class TestAsyncServlet extends HttpServlet {
-
-    @Override
-    protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
-        final AsyncContext asyncContext = req.startAsync();
-        asyncContext.start(WebLoggerContextUtils.wrapExecutionContext(this.getServletContext(), new Runnable() {
-            @Override
-            public void run() {
-                final Logger logger = LogManager.getLogger(TestAsyncServlet.class);
-                logger.info("Hello, servlet!");
-            }
-        }));
-    }
-
-    @Override
-    protected void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
-        final AsyncContext asyncContext = req.startAsync();
-        asyncContext.start(new Runnable() {
-            @Override
-            public void run() {
-                final Log4jWebSupport webSupport =
-                    WebLoggerContextUtils.getWebLifeCycle(TestAsyncServlet.this.getServletContext());
-                webSupport.setLoggerContext();
-                // do stuff
-                webSupport.clearLoggerContext();
-            }
-        });
-    }
-}
+include::example$manual/webapp/AsyncServlet.java[tag=automatic]
 ----
 
-This can be slightly more convenient when using Java 1.8 and lambda functions as demonstrated below.
+or, if more flexibility is required, you can apply the same logic by using
+link:../javadoc/log4j-jakarta-web/org/apache/logging/log4j/web/Log4jWebSupport.html[`Log4jWebSupport`]:
 
-[source,java]
+[source,java,indent=0]
 ----
-import java.io.IOException;
-import javax.servlet.AsyncContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.web.WebLoggerContextUtils;
-
-public class TestAsyncServlet extends HttpServlet {
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        final AsyncContext asyncContext = req.startAsync();
-        asyncContext.start(WebLoggerContextUtils.wrapExecutionContext(this.getServletContext(), () -> {
-            final Logger logger = LogManager.getLogger(TestAsyncServlet.class);
-            logger.info("Hello, servlet!");
-        }));
-    }
-}
+include::example$manual/webapp/AsyncServlet.java[tag=manual]
 ----
 
-Alternatively, you can obtain the `Log4jWebLifeCycle` instance from the ServletContext attributes, call its setLoggerContext method as the very first line of code in your asynchronous thread, and call its clearLoggerContext method as the very last line of code in your asynchronous thread. The following code demonstrates this. It uses the container thread pool to execute asynchronous request processing, passing an anonymous inner Runnable to the start method.
+[#application-server]
+== Configuring an application server
 
-[source,java]
+[#jndi-configuration]
+=== Using JNDI selectors
+
+Log4j Core allows the usage of JNDI to coordinate the usage of logger contexts in a Jakarta EE application server.
+In order to use this feature, you need to:
+
+. Set the
+xref:manual/systemproperties.adoc#log4j2.contextSelector[`log4j2.contextSelector`]
+Log4j configuration property to ``org.apache.logging.log4j.core.selector.JndiContextSelector``,
+. For security reasons you need to enable the selector, by setting the
+xref:manual/systemproperties.adoc#log4j2.enableJndiContextSelector[`log4j2.enableJndiContextSelector`]
+Log4j configuration property to `true`,
+. Each web application needs to configure the servlet context parameter `isLog4jContextSelectorNamed` to `true` and provide a value for the `log4jContextName` servlet context parameter and `java:comp/env/log4j/context-name` JNDI environment entry:
++
+[source,xml,indent=0]
 ----
-import java.io.IOException;
-import javax.servlet.AsyncContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.web.Log4jWebLifeCycle;
-import org.apache.logging.log4j.web.WebLoggerContextUtils;
-
-public class TestAsyncServlet extends HttpServlet {
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-         final AsyncContext asyncContext = req.startAsync();
-        asyncContext.start(new Runnable() {
-            @Override
-            public void run() {
-                final Log4jWebLifeCycle webLifeCycle =
-                    WebLoggerContextUtils.getWebLifeCycle(TestAsyncServlet.this.getServletContext());
-                webLifeCycle.setLoggerContext();
-                try {
-                    final Logger logger = LogManager.getLogger(TestAsyncServlet.class);
-                    logger.info("Hello, servlet!");
-                } finally {
-                    webLifeCycle.clearLoggerContext();
-                }
-            }
-        });
-   }
-}
+include::example$manual/webapp/jndi.xml[tag=jndi]
 ----
-
-Note that you must call clearLoggerContext once your thread is finished processing. Failing to do so will result in memory leaks. If using a thread pool, it can even disrupt the logging of other web applications in your container. For that reason, the example here shows clearing the context in a finally block, which will always execute.
-
-== Using the Servlet Appender
-
-Log4j provides a Servlet Appender that uses the servlet context as the log target. For example:
-
-[source,xml]
-----
-<Configuration status="WARN" name="ServletTest">
-
-    <Appenders>
-        <Servlet name="Servlet">
-            <PatternLayout pattern="%m%n%ex{none}"/>
-        </Servlet>
-    </Appenders>
-
-    <Loggers>
-        <Root level="debug">
-            <AppenderRef ref="Servlet"/>
-        </Root>
-    </Loggers>
-
-</Configuration>
-----
-
-To avoid double logging of exceptions to the servlet context, you must use %ex\{none} in your PatternLayout as shown in the example. The exception will be omitted from the message text but it is passed to the servlet context as the actual Throwable object.
