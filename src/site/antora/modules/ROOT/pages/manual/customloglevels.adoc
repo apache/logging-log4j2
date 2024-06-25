@@ -198,27 +198,31 @@ configuration elements:
 ====
 XML::
 +
+.Snippet from an example {antora-examples-url}/manual/customloglevels/log4j2.xml[`log4j2.xml`]
 [source,xml]
 ----
-include::example$manual/customloglevels/log4j2.xml[lines=1;18..-1]
+include::example$manual/customloglevels/log4j2.xml[lines=23..38,indent=0]
 ----
 
 JSON::
 +
+.Snippet from an example {antora-examples-url}/manual/customloglevels/log4j2.json[`log4j2.json`]
 [source,xml]
 ----
-include::example$manual/customloglevels/log4j2.json[]
+include::example$manual/customloglevels/log4j2.json[lines=3..39,indent=0]
 ----
 
 YAML::
 +
+.Snippet from an example {antora-examples-url}/manual/customloglevels/log4j2.yaml[`log4j2.yaml`]
 [source,yaml]
 ----
-include::example$manual/customloglevels/log4j2.yaml[lines=17..-1]
+include::example$manual/customloglevels/log4j2.yaml[lines=18..-1,indent=0]
 ----
 
 Properties::
 +
+.Snippet from an example {antora-examples-url}/manual/customloglevels/log4j2.properties[`log4j2.properties`]
 [source,properties]
 ----
 include::example$manual/customloglevels/log4j2.properties[lines=17..-1]

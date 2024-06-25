@@ -37,27 +37,31 @@ To decide whether a log event from a certain logger is delivered to a specific a
 ====
 XML::
 +
+.Snippet from an example {antora-examples-url}/manual/filters/filters.xml[`log4j2.xml`]
 [source,xml]
 ----
-include::example$manual/filters/filters.xml[lines=1;18..-1]
+include::example$manual/filters/filters.xml[lines=23..41,indent=0]
 ----
 
 JSON::
 +
+.Snippet from an example {antora-examples-url}/manual/filters/filters.json[`log4j2.json`]
 [source,json]
 ----
-include::example$manual/filters/filters.json[]
+include::example$manual/filters/filters.json[lines=3..35,indent=0]
 ----
 
 YAML::
 +
+.Snippet from an example {antora-examples-url}/manual/filters/filters.yaml[`log4j2.yaml`]
 [source,yaml]
 ----
-include::example$manual/filters/filters.yaml[lines=17..-1]
+include::example$manual/filters/filters.yaml[lines=18..-1]
 ----
 
 Properties::
 +
+.Snippet from an example {antora-examples-url}/manual/filters/filters.properties[`log4j2.properties`]
 [source,properties]
 ----
 include::example$manual/filters/filters.properties[lines=17..-1]
