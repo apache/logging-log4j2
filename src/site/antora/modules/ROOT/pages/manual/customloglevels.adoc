@@ -14,6 +14,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
+
 = Levels
 
 Log levels are used to categorize log events by severity and control the verbosity of the logs.
@@ -44,6 +45,14 @@ Priority can be used in several contexts to express a filtering capability, for 
 The entry point to log levels are through link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[`Level`].
 Predefined levels are available for Log4j API integrators through link:../javadoc/log4j-api/org/apache/logging/log4j/spi/StandardLevel.html[`StandardLevel`].
 
+[NOTE]
+====
+The `OFF` and `ALL` levels are not intended to be used on calls to the logging API.
+Specifying `OFF` in the configuration implies no logging events should match, while specifying `ALL` means all events match, including custom events.
+`OFF` can be used on logging API calls in special cases where the event should always be logged regardless of the configuration.
+However, it is generally recommended that a xref:manual/markers.adoc[marker] with a corresponding global xref:manual/filters.adoc#MarkerFilter[marker filter] be used instead.
+====
+
 [#usage]
 == [[StandardLoggerInterface]] Usage
 
@@ -57,39 +66,8 @@ LOGGER.log(Level.INFO, "Hello, {}!", userName); // <2>
 <1> Using `Logger#info()` to log a message at `INFO` level
 <2> Using `Logger#log()` to log a message and specifying the `INFO` level explicitly
 
-There are several ways levels can be employed in the Log4j configuration file for filtering purposes.
-Filtering on levels for loggers is a pretty common example:
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xmlns="https://logging.apache.org/xml/ns"
-               xsi:schemaLocation="
-                       https://logging.apache.org/xml/ns
-                       https://logging.apache.org/xml/ns/log4j-config-2.xsd">
-
-  <appenders>
-    <Console name="CONSOLE">
-      <JsonTemplateLayout/>
-    </Console>
-  </appenders>
-
-  <loggers>
-    <logger name="com.mycompany" level="INFO"/><!--1-->
-    <root level="ERROR"><!--2-->
-      <AppenderRef ref="CONSOLE"/>
-    </root>
-  </loggers>
-
-</Configuration>
-----
-<1> Logs of level `INFO` or higher severity (i.e., `WARN`, `ERROR`, `FATAL`) are allowed for `com.mycompany` package
-<2> Logs of level `ERROR` or higher severity (i.e., `FATAL`) are allowed for the rest
-
-[[top]]
-
 [#DefiningLevelsInCode]
-== Defining custom log levels programmatically
+=== Custom log levels
 
 Users can programmatically define custom levels using link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html#forName(java.lang.String,int)[the `Level.forName()` method]:
 
@@ -122,45 +100,113 @@ public class PurchaseOrder {
 ----
 <1> Logging with the created custom level
 
-[#DefiningLevelsInConfiguration]
-== Defining custom log levels in configuration
+[#config]
+== Configuration
 
-Similar to defining log levels programmatically, a custom level must be defined first, before it can be used in a configuration file.
+Levels can be used in various ways in a configuration file.
+We will explain some important ones from multiple logging implementations.
+
+[#config-core]
+=== Log4j Core
+
+Log4j Core, the reference implementation of Log4j API, has extensive support for levels.
+It allows both <<config-core-filter,basic level-based filtering>> and <<DefiningLevelsInConfiguration,custom log levels>>.
+
+[#config-core-filter]
+==== Basic filtering
+
+Filtering on levels for loggers is a pretty common example:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/customloglevels/filtering/log4j2.xml[`log4j2.xml`] configuring level-filtered loggers
+[source,xml]
+----
+include::example$manual/customloglevels/filtering/log4j2.xml[lines=14..19,indent=0]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/customloglevels/filtering/log4j2.json[`log4j2.json`] configuring level-filtered loggers
+[source,xml]
+----
+include::example$manual/customloglevels/filtering/log4j2.json[lines=9..22,indent=0]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/customloglevels/filtering/log4j2.yaml[`log4j2.yaml`] configuring level-filtered loggers
+[source,xml]
+----
+include::example$manual/customloglevels/filtering/log4j2.yaml[lines=24..31,indent=0]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/customloglevels/filtering/log4j2.properties[`log4j2.properties`] configuring level-filtered loggers
+[source,xml]
+----
+include::example$manual/customloglevels/filtering/log4j2.properties[lines=21..24]
+----
+====
+<1> Logs of level `INFO` or higher severity (i.e., `WARN`, `ERROR`, `FATAL`) are allowed for `com.mycompany` package
+<2> Logs of level `ERROR` or higher severity (i.e., `FATAL`) are allowed for the rest
+
+[#DefiningLevelsInConfiguration]
+==== Custom log levels
+
+Log4j Core, the reference implementation of Log4j API, requires a custom level to be defined first, before it can be used in a configuration file.
 To facilitate this, the `CustomLevel` configuration element is used to define a custom level.
 Internally it calls the same `Level.forName()` method discussed in <<DefiningLevelsInCode>>.
 
 The following example shows a configuration that defines the `VERBOSE` custom log level and uses it to filter log events sent to the console.
 
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/customloglevels/custom/log4j2.xml[`log4j2.xml`] configuring custom log levels
 [source,xml]
 ----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xmlns="https://logging.apache.org/xml/ns"
-               xsi:schemaLocation="
-                       https://logging.apache.org/xml/ns
-                       https://logging.apache.org/xml/ns/log4j-config-2.xsd">
-
-  <CustomLevels><!--1-->
-    <CustomLevel name="VERBOSE" intLevel="550"/>
-  </CustomLevels>
-
-  <appenders>
-    <Console name="CONSOLE">
-      <PatternLayout/>
-    </Console>
-    <File name="FILE" fileName="logs/app.log">
-      <PatternLayout/>
-    </File>
-  </appenders>
-
-  <loggers>
-    <root level="TRACE">
-      <AppenderRef ref="CONSOLE" level="VERBOSE" /><!--2-->
-      <AppenderRef ref="FILE"/>
-    </root>
-  </loggers>
-
-</Configuration>
+include::example$manual/customloglevels/custom/log4j2.xml[lines=17..26,indent=0]
 ----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/customloglevels/custom/log4j2.json[`log4j2.json`] configuring custom log levels
+[source,xml]
+----
+include::example$manual/customloglevels/custom/log4j2.json[lines=13..32,indent=0]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/customloglevels/custom/log4j2.yaml[`log4j2.yaml`] configuring custom log levels
+[source,xml]
+----
+include::example$manual/customloglevels/custom/log4j2.yaml[lines=27..37,indent=0]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/customloglevels/custom/log4j2.properties[`log4j2.properties`] configuring custom log levels
+[source,xml]
+----
+include::example$manual/customloglevels/custom/log4j2.properties[lines=24..30]
+----
+====
 <1> Defining the `VERBOSE` custom log level
 <2> Only events of `VERBOSE` level or higher severity are sent to the console
+
+[#config-logback]
+=== Logback
+
+{logback-url}[Logback] can be configured as follows to define level-filtered loggers:
+
+.Snippet from an example {antora-examples-url}/manual/customloglevels/filtering/logback.xml[`logback.xml`] configuring level-filtered loggers
+[source,xml]
+----
+include::example$manual/customloglevels/filtering/logback.xml[lines=29..32,indent=0]
+----

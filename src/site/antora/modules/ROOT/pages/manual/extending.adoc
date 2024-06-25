@@ -91,7 +91,7 @@ Yet when this happens, you can use xref:manual/systemproperties.adoc#log4j2.prov
 [#LoggerContextFactory]
 === `LoggerContextFactory`
 
-link:../javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextFactory.html[`LoggerContextFactory`] is the factory class used by Log4j API implementations to create xref:manual/architecture.adoc#logger-context[`LoggerContext`]s.
+link:../javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextFactory.html[`LoggerContextFactory`] is the factory class used by Log4j API implementations to create xref:manual/architecture.adoc#LoggerContext[`LoggerContext`]s.
 If you are using Log4j Core, you can provide a custom implementation using xref:manual/systemproperties.adoc#log4j2.loggerContextFactory[the `log4j2.loggerContextFactory` property].
 Another way to provide a custom `LoggerContextFactory` is to <<Provider,provide a custom `Provider`>>.
 But this is generally discouraged, since it requires a more complicated setup and is intended mostly to be used by Log4j API implementations.
@@ -105,7 +105,7 @@ It can be configured using xref:manual/systemproperties.adoc#log4j2.contextSelec
 [#ConfigurationFactory]
 === `ConfigurationFactory`
 
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html[`ConfigurationFactory`] is the factory class used by Log4j Core to create link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html[`Configuration`] instances given a xref:manual/architecture.adoc#logger-context[`LoggerContext`] and a link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationSource.html[`ConfigurationSource`].
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html[`ConfigurationFactory`] is the factory class used by Log4j Core to create link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html[`Configuration`] instances given a xref:manual/architecture.adoc#LoggerContext[`LoggerContext`] and a link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationSource.html[`ConfigurationSource`].
 
 You can provide a custom `ConfigurationFactory` in the form of a <<Custom_Plugins,plugin>>.
 For example, see {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/config/xml/XmlConfigurationFactory.java[`XmlConfigurationFactory.java`] and {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/config/xml/XmlConfiguration.java[`XmlConfiguration.java`] of Log4j Core.

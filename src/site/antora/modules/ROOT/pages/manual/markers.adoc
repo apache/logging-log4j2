@@ -100,9 +100,7 @@ complex hierarchies of markers where possible.
 == Configuring filtering
 
 Developers can use markers to filter the log statements delivered to log files.
-Marker processing is supported at least by
-https://logback.qos.ch/manual/filters.html[Logback]
-and the Log4j Core logging backends.
+Marker processing is supported at least by {logback-url}/manual/filters.html[Logback] and the Log4j Core logging implementations.
 We will provide a sample configuration for both these backends.
 
 [#log4j-core]
@@ -154,7 +152,7 @@ include::example$manual/markers/log4j2.properties[lines=17..-1]
 
 Logback differentiates two kinds of filters: ``TurboFilter``s, which are applied before a log event is created, and
 ``Filter``s, which are applied only when a log event reaches an appender.
-See https://logback.qos.ch/manual/filters.html[Logback filters] for more information.
+See {logback-url}/manual/filters.html[Logback filters] for more information.
 
 You can use a combination of `MarkerFilter`, `EvaluatorFilter` and `OnMarkerEvaluator` to redirect all messages marked with `SQL` to a specific appender, regardless of their level.
 In order to do that, you can use a configuration as below:

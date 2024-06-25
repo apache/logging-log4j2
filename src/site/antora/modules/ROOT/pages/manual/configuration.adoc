@@ -438,7 +438,7 @@ Other logger configurations are optional.
 Every
 link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html[`Logger`]
 in your application is assigned to one of these logger configurations (see
-xref:manual/architecture.adoc#loggerconfig[architecture]), which determines the events that will be logged and those that won't.
+xref:manual/architecture.adoc#LoggerConfig[architecture]), which determines the events that will be logged and those that won't.
 
 Let's start with an example of logger configuration:
 

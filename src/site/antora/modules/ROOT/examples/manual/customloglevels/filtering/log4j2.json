@@ -1,0 +1,24 @@
+{
+  "Configuration": {
+    "Appenders": {
+      "Console": {
+        "name": "CONSOLE",
+        "JsonTemplateLayout": {}
+      }
+    },
+    "Loggers": {
+      "Logger": [
+        {
+          "name": "com.mycompany",
+          "level": "INFO" //<1>
+        }
+      ],
+      "Root": {
+        "level": "ERROR", //<2>
+        "AppenderRef": {
+          "ref": "CONSOLE"
+        }
+      }
+    }
+  }
+}
