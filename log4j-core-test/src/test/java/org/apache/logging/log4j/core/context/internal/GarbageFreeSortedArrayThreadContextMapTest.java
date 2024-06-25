@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.spi;
+package org.apache.logging.log4j.core.context.internal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -23,26 +23,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
+import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.test.spi.ThreadContextMapSuite;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.jupiter.api.Test;
 
-/**
- * Tests the {@code DefaultThreadContextMap} class.
- */
-@UsingThreadContextMap
-class DefaultThreadContextMapTest extends ThreadContextMapSuite {
+public class GarbageFreeSortedArrayThreadContextMapTest extends ThreadContextMapSuite {
 
-    private ThreadContextMap createThreadContextMap() {
-        return new DefaultThreadContextMap();
+    private GarbageFreeSortedArrayThreadContextMap createThreadContextMap() {
+        return new GarbageFreeSortedArrayThreadContextMap();
     }
 
     private ThreadContextMap createInheritableThreadContextMap() {
         final Properties props = new Properties();
         props.setProperty("log4j2.isThreadContextMapInheritable", "true");
         final PropertiesUtil util = new PropertiesUtil(props);
-        return new DefaultThreadContextMap(util);
+        return new GarbageFreeSortedArrayThreadContextMap(util);
     }
 
     @Test
@@ -52,7 +48,7 @@ class DefaultThreadContextMapTest extends ThreadContextMapSuite {
 
     @Test
     void testPutAll() {
-        final DefaultThreadContextMap map = new DefaultThreadContextMap();
+        final GarbageFreeSortedArrayThreadContextMap map = createThreadContextMap();
         assertTrue(map.isEmpty());
         assertFalse(map.containsKey("key"));
         final int mapSize = 10;
@@ -70,7 +66,7 @@ class DefaultThreadContextMapTest extends ThreadContextMapSuite {
 
     @Test
     void testClear() {
-        final DefaultThreadContextMap map = createMap();
+        final GarbageFreeSortedArrayThreadContextMap map = createMap();
 
         map.clear();
         assertTrue(map.isEmpty());
@@ -78,8 +74,8 @@ class DefaultThreadContextMapTest extends ThreadContextMapSuite {
         assertFalse(map.containsKey("key2"));
     }
 
-    private DefaultThreadContextMap createMap() {
-        final DefaultThreadContextMap map = new DefaultThreadContextMap();
+    private GarbageFreeSortedArrayThreadContextMap createMap() {
+        final GarbageFreeSortedArrayThreadContextMap map = createThreadContextMap();
         assertTrue(map.isEmpty());
         map.put("key", "value");
         map.put("key2", "value2");
@@ -106,19 +102,6 @@ class DefaultThreadContextMapTest extends ThreadContextMapSuite {
     @Test
     void getImmutableMapCopyNotAffectedByContextMapChanges() {
         getImmutableMapCopyNotAffectedByContextMapChanges(createThreadContextMap());
-    }
-
-    @Test
-    void testToStringShowsMapContext() {
-        final DefaultThreadContextMap map = new DefaultThreadContextMap();
-        assertEquals("{}", map.toString());
-
-        map.put("key1", "value1");
-        assertEquals("{key1=value1}", map.toString());
-
-        map.remove("key1");
-        map.put("key2", "value2");
-        assertEquals("{key2=value2}", map.toString());
     }
 
     @Test

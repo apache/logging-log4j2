@@ -26,24 +26,26 @@ import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 import java.util.function.LongSupplier;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.ThreadContextTestAccess;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
+import org.apache.logging.log4j.core.impl.ThreadContextTestAccess;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
-import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
+import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.test.TestProperties;
 import org.apache.logging.log4j.test.junit.Log4jStaticResources;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.apache.logging.log4j.test.junit.UsingTestProperties;
+import org.apache.logging.log4j.util.ProviderUtil;
 import org.apache.logging.log4j.util.Unbox;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.parallel.ResourceLock;
@@ -89,26 +91,29 @@ public abstract class AbstractAsyncThreadContextTestBase {
     }
 
     protected enum ContextImpl {
-        WEBAPP,
-        GARBAGE_FREE,
-        COPY_ON_WRITE;
+        WEBAPP("WebApp", "org.apache.logging.log4j.spi.DefaultThreadContextMap"),
+        GARBAGE_FREE(
+                "GarbageFree", "org.apache.logging.log4j.core.context.internal.GarbageFreeSortedArrayThreadContextMap");
+
+        private final String threadContextMap;
+        private final String implClass;
+
+        ContextImpl(final String threadContextMap, final String implClass) {
+            this.threadContextMap = threadContextMap;
+            this.implClass = implClass;
+        }
 
         void init() {
-            final String PACKAGE = "org.apache.logging.log4j.spi.";
-            props.setProperty("log4j2.threadContextMap", PACKAGE + implClassSimpleName());
+            props.setProperty("log4j2.threadContextMap", threadContextMap);
             ThreadContextTestAccess.init();
         }
 
-        public String implClassSimpleName() {
-            switch (this) {
-                case WEBAPP:
-                    return DefaultThreadContextMap.class.getSimpleName();
-                case GARBAGE_FREE:
-                    return "GarbageFreeSortedArrayThreadContextMap";
-                case COPY_ON_WRITE:
-                    return "CopyOnWriteSortedArrayThreadContextMap";
-            }
-            throw new IllegalStateException("Unknown state " + this);
+        public String getImplClassSimpleName() {
+            return StringUtils.substringAfterLast(implClass, '.');
+        }
+
+        public String getImplClass() {
+            return implClass;
         }
     }
 
@@ -116,16 +121,12 @@ public abstract class AbstractAsyncThreadContextTestBase {
         asyncMode.initSelector();
         asyncMode.initConfigFile();
 
-        contextImpl.init();
         // Verify that we are using the requested context map
-        if (contextImpl == ContextImpl.WEBAPP) {
-            assertThat(ThreadContext.getThreadContextMap()).isNull();
-        } else {
-            assertThat(ThreadContext.getThreadContextMap())
-                    .isNotNull()
-                    .extracting(o -> o.getClass().getSimpleName())
-                    .isEqualTo(contextImpl.implClassSimpleName());
-        }
+        contextImpl.init();
+        final ThreadContextMap threadContextMap = ProviderUtil.getProvider().getThreadContextMapInstance();
+        assertThat(threadContextMap.getClass().getName())
+                .as("Check `ThreadContextMap` implementation")
+                .isEqualTo(contextImpl.getImplClass());
     }
 
     private LongSupplier remainingCapacity(final LoggerContext loggerContext, final LoggerConfig loggerConfig) {
@@ -197,25 +198,25 @@ public abstract class AbstractAsyncThreadContextTestBase {
     private static String contextMap() {
         final ReadOnlyThreadContextMap impl = ThreadContext.getThreadContextMap();
         return impl == null
-                ? ContextImpl.WEBAPP.implClassSimpleName()
+                ? ContextImpl.WEBAPP.getImplClassSimpleName()
                 : impl.getClass().getSimpleName();
     }
 
     private void checkResult(final Path file, final String loggerContextName, final ContextImpl contextImpl)
             throws IOException {
-        final String contextDesc = contextImpl + " " + contextImpl.implClassSimpleName() + " " + loggerContextName;
+        final String contextDesc = contextImpl + " " + contextImpl.getImplClassSimpleName() + " " + loggerContextName;
         try (final BufferedReader reader = Files.newBufferedReader(file)) {
             String expect;
             for (int i = 0; i < LINE_COUNT; i++) {
                 final String line = reader.readLine();
                 if ((i & 1) == 1) {
-                    expect =
-                            "INFO c.f.Bar mapvalue [stackvalue] {KEY=mapvalue, configProp=configValue, configProp2=configValue2, count="
-                                    + i + "} " + contextDesc + " i=" + i;
+                    expect = "INFO c.f.Bar mapvalue [stackvalue] {KEY=mapvalue, configProp=configValue,"
+                            + " configProp2=configValue2, count="
+                            + i + "} " + contextDesc + " i=" + i;
                 } else {
-                    expect =
-                            "INFO c.f.Bar mapvalue [stackvalue] {KEY=mapvalue, configProp=configValue, configProp2=configValue2} "
-                                    + contextDesc + " i=" + i;
+                    expect = "INFO c.f.Bar mapvalue [stackvalue] {KEY=mapvalue, configProp=configValue,"
+                            + " configProp2=configValue2} "
+                            + contextDesc + " i=" + i;
                 }
                 assertThat(line).as("Log file '%s'", file.getFileName()).isEqualTo(expect);
             }

@@ -53,6 +53,8 @@
       -->
     <bnd-multi-release>true</bnd-multi-release>
     <bnd-extra-package-options>
+      <!-- Annotations only -->
+      org.jspecify.*;resolution:=optional,
       <!-- External optional dependencies -->
       com.conversantmedia.util.concurrent;resolution:=optional;
       com.fasterxml.jackson.*;resolution:=optional,
@@ -121,6 +123,11 @@
       <artifactId>javax.mail-api</artifactId>
       <scope>provided</scope>
       <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.jspecify</groupId>
+      <artifactId>jspecify</artifactId>
+      <scope>provided</scope>
     </dependency>
     <!-- Used for OSGi bundle support -->
     <dependency>

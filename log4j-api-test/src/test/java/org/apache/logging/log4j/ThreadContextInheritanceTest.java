@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.test.ThreadContextUtilityClass;
-import org.apache.logging.log4j.test.junit.InitializesThreadContext;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.apache.logging.log4j.test.junit.UsingThreadContextStack;
@@ -31,13 +30,11 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.SetSystemProperty;
 
 /**
  * Tests {@link ThreadContext}.
  */
 @SetTestProperty(key = DefaultThreadContextMap.INHERITABLE_MAP, value = "true")
-@InitializesThreadContext
 @UsingThreadContextMap
 @UsingThreadContextStack
 public class ThreadContextInheritanceTest {
@@ -61,31 +58,6 @@ public class ThreadContextInheritanceTest {
         assertEquals(
                 ThreadContext.pop(), "ThreadContextInheritanceTest is running", "Incorrect parameterized stack value");
         assertEquals(ThreadContext.pop(), "Hello", "Incorrect simple stack value");
-    }
-
-    @Test
-    @SetSystemProperty(key = DefaultThreadContextMap.INHERITABLE_MAP, value = "true")
-    @InitializesThreadContext
-    public void testInheritanceSwitchedOn() throws Exception {
-        System.setProperty(DefaultThreadContextMap.INHERITABLE_MAP, "true");
-        try {
-            ThreadContext.clearMap();
-            ThreadContext.put("Greeting", "Hello");
-            StringBuilder sb = new StringBuilder();
-            TestThread thread = new TestThread(sb);
-            thread.start();
-            thread.join();
-            String str = sb.toString();
-            assertEquals("Hello", str, "Unexpected ThreadContext value. Expected Hello. Actual " + str);
-            sb = new StringBuilder();
-            thread = new TestThread(sb);
-            thread.start();
-            thread.join();
-            str = sb.toString();
-            assertEquals("Hello", str, "Unexpected ThreadContext value. Expected Hello. Actual " + str);
-        } finally {
-            System.clearProperty(DefaultThreadContextMap.INHERITABLE_MAP);
-        }
     }
 
     @Test

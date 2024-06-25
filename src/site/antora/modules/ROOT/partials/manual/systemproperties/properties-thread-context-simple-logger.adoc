@@ -50,8 +50,6 @@ If `true`, the `ThreadContext` stack is disabled.
 
 If `true`, the `ThreadContext` map is disabled.
 
-// tag::gcfree[]
-
 [id=log4j2.threadContextMap]
 == `log4j2.threadContextMap`
 
@@ -62,24 +60,15 @@ If `true`, the `ThreadContext` map is disabled.
 
 | Type
 | link:../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html[`Class<? extends ThreadContextMap>`]
-or predefined constant
 
 | Default value
-| `WebApp`
+| link:../javadoc/log4j-api/org/apache/logging/log4j/spi/DefaultThreadContextMap.html[`DefaultThreadContextMap`]
 
-(GC-free mode: `CopyOnWrite`)
 |===
 
 Fully specified class name of a custom
 link:../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html[`ThreadContextMap`]
-implementation class or one of the predefined constants:
-
-NoOp:: to disable the thread context,
-WebApp:: a web application-safe implementation, that only binds JRE classes to `ThreadLocal` to prevent memory leaks,
-CopyOnWrite:: a copy-on-write implementation,
-GarbageFree:: a garbage-free implementation.
-
-// end::gcfree[]
+implementation class.
 
 [id=isThreadContextMapInheritable]
 == `log4j2.isThreadContextMapInheritable`
@@ -96,17 +85,3 @@ If `true` uses an `InheritableThreadLocal` to copy the thread context map to new
 Note that, as explained in
 https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/concurrent/Executors.html#privilegedThreadFactory()[Java's `Executors#privilegedThreadFactory()`], when you are dealing with _privileged threads_, thread context might not get propagated completely.
 
-// tag::gcfree[]
-
-[id=log4j2.garbagefreeThreadContextMap]
-== `log4j2.garbagefreeThreadContextMap`
-
-[cols="1h,5"]
-|===
-| Env. variable | `LOG4J_GARBAGEFREE_THREAD_CONTEXT_MAP`
-| Default value | `false`
-|===
-
-If set to `true` selects a garbage-free thread context map implementation.
-
-// end::gcfree[]

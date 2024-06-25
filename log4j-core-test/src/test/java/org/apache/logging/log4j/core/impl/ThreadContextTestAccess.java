@@ -14,7 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j;
+package org.apache.logging.log4j.core.impl;
+
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.util.ProviderUtil;
 
 /**
  * <p>
@@ -29,6 +32,8 @@ public final class ThreadContextTestAccess {
     }
 
     public static void init() {
+        final Log4jProvider provider = (Log4jProvider) ProviderUtil.getProvider();
+        provider.resetThreadContextMap();
         ThreadContext.init();
     }
 }
