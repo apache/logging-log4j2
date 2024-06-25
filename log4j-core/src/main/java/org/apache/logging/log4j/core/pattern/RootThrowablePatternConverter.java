@@ -20,7 +20,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
-import org.apache.logging.log4j.util.Strings;
 
 /**
  * Outputs the Throwable portion of the LoggingEvent as a full stack trace
@@ -68,27 +67,17 @@ public final class RootThrowablePatternConverter extends ThrowablePatternConvert
                 super.format(event, toAppendTo);
                 return;
             }
-            final String trace = proxy.getCauseStackTraceAsString(
-                    options.getIgnorePackages(), options.getTextRenderer(), getSuffix(event), options.getSeparator());
             final int len = toAppendTo.length();
             if (len > 0 && !Character.isWhitespace(toAppendTo.charAt(len - 1))) {
                 toAppendTo.append(' ');
             }
-            if (!options.allLines() || !Strings.LINE_SEPARATOR.equals(options.getSeparator())) {
-                final StringBuilder sb = new StringBuilder();
-                final String[] array = trace.split(Strings.LINE_SEPARATOR);
-                final int limit = options.minLines(array.length) - 1;
-                for (int i = 0; i <= limit; ++i) {
-                    sb.append(array[i]);
-                    if (i < limit) {
-                        sb.append(options.getSeparator());
-                    }
-                }
-                toAppendTo.append(sb.toString());
-
-            } else {
-                toAppendTo.append(trace);
-            }
+            proxy.formatCauseStackTraceTo(
+                    toAppendTo,
+                    options.getIgnorePackages(),
+                    options.getTextRenderer(),
+                    getSuffix(event),
+                    options.getSeparator(),
+                    options.allLines() ? null : options.getLines());
         }
     }
 }

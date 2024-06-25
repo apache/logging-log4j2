@@ -240,10 +240,9 @@ final class ThrowableProxyRenderer {
             final List<String> ignorePackages,
             final TextRenderer textRenderer,
             final String suffix,
-            final String lineSeparator) {
-        textRenderer.render(src.getName(), sb, "Name");
-        textRenderer.render(": ", sb, "NameMessageSeparator");
-        textRenderer.render(src.getMessage(), sb, "Message");
+            final String lineSeparator,
+            final Integer linesToKeep) {
+        renderOn(src, sb, textRenderer);
         renderSuffix(suffix, sb, textRenderer);
         textRenderer.render(lineSeparator, sb, "Text");
         final StackTraceElement[] causedTrace =
@@ -260,6 +259,7 @@ final class ThrowableProxyRenderer {
                 lineSeparator);
         formatSuppressed(sb, TAB, src.getSuppressedProxies(), ignorePackages, textRenderer, suffix, lineSeparator);
         formatCause(sb, Strings.EMPTY, src.getCauseProxy(), ignorePackages, textRenderer, suffix, lineSeparator);
+        truncateLines(sb, lineSeparator, linesToKeep, textRenderer);
     }
 
     /**
@@ -272,23 +272,24 @@ final class ThrowableProxyRenderer {
      * @param suffix         Append this to the end of each stack frame.
      * @param lineSeparator  The end-of-line separator.
      */
-    static void formatCauseStackTrace(
+    static void formatCauseStackTraceTo(
             final ThrowableProxy src,
             final StringBuilder sb,
             final List<String> ignorePackages,
             final TextRenderer textRenderer,
             final String suffix,
-            final String lineSeparator) {
+            final String lineSeparator,
+            final Integer linesToKeep) {
         final ThrowableProxy causeProxy = src.getCauseProxy();
         if (causeProxy != null) {
             formatWrapper(sb, causeProxy, ignorePackages, textRenderer, suffix, lineSeparator);
             sb.append(WRAPPED_BY_LABEL);
-            ThrowableProxyRenderer.renderSuffix(suffix, sb, textRenderer);
+            renderSuffix(suffix, sb, textRenderer);
         }
         renderOn(src, sb, textRenderer);
-        ThrowableProxyRenderer.renderSuffix(suffix, sb, textRenderer);
+        renderSuffix(suffix, sb, textRenderer);
         textRenderer.render(lineSeparator, sb, "Text");
-        ThrowableProxyRenderer.formatElements(
+        formatElements(
                 sb,
                 Strings.EMPTY,
                 0,
@@ -298,6 +299,7 @@ final class ThrowableProxyRenderer {
                 textRenderer,
                 suffix,
                 lineSeparator);
+        truncateLines(sb, lineSeparator, linesToKeep, textRenderer);
     }
 
     private static void renderOn(
@@ -307,6 +309,26 @@ final class ThrowableProxyRenderer {
         if (msg != null) {
             textRenderer.render(": ", output, "NameMessageSeparator");
             textRenderer.render(msg, output, "Message");
+        }
+    }
+
+    private static void truncateLines(
+            StringBuilder sb, String lineSeparator, Integer linesToKeep, TextRenderer textRenderer) {
+        if (linesToKeep == null) {
+            return;
+        }
+
+        String content = sb.toString();
+        String[] lines = content.split(lineSeparator);
+
+        if (lines.length <= linesToKeep) {
+            return;
+        }
+
+        sb.setLength(0);
+        for (int i = 0; i < linesToKeep; i++) {
+            sb.append(lines[i]);
+            textRenderer.render(lineSeparator, sb, "Text");
         }
     }
 }

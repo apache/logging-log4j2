@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.pattern;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -188,23 +187,24 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         if (len > 0 && !Character.isWhitespace(buffer.charAt(len - 1))) {
             buffer.append(' ');
         }
-        if (!options.allLines() || nonStandardLineSeparator || Strings.isNotBlank(suffix)) {
-            final StringWriter w = new StringWriter();
-            throwable.printStackTrace(new PrintWriter(w));
-
-            final String[] array = w.toString().split(Strings.LINE_SEPARATOR);
-            final int limit = options.minLines(array.length) - 1;
-            final boolean suffixNotBlank = Strings.isNotBlank(suffix);
-            for (int i = 0; i <= limit; ++i) {
-                buffer.append(array[i]);
-                if (suffixNotBlank) {
-                    buffer.append(' ');
-                    buffer.append(suffix);
-                }
-                if (i < limit) {
-                    buffer.append(options.getSeparator());
+        if (requireAdditionalFormatting(suffix)) {
+            StackTraceElement[] stackTrace = throwable.getStackTrace();
+            int ignoredCount = 0;
+            for (StackTraceElement stackTraceElement : stackTrace) {
+                if (!ignoreElement(stackTraceElement, options.getIgnorePackages())) {
+                    if (ignoredCount > 0) {
+                        appendSuppressedCount(buffer, ignoredCount, suffix, options.getSeparator());
+                        ignoredCount = 0;
+                    }
+                    appendEntry(stackTraceElement, buffer, suffix, options.getSeparator());
+                } else {
+                    ++ignoredCount;
                 }
             }
+            if (ignoredCount > 0) {
+                appendSuppressedCount(buffer, ignoredCount, suffix, options.getSeparator());
+            }
+            truncateLines(buffer, options.getSeparator(), options.allLines() ? null : options.getLines());
         } else {
             throwable.printStackTrace(new PrintWriter(new StringBuilderWriter(buffer)));
         }
@@ -234,5 +234,70 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
 
     public ThrowableFormatOptions getOptions() {
         return options;
+    }
+
+    private boolean requireAdditionalFormatting(String suffix) {
+        return !options.allLines() || nonStandardLineSeparator || Strings.isNotBlank(suffix) || options.hasPackages();
+    }
+
+    private boolean ignoreElement(final StackTraceElement element, final List<String> ignorePackages) {
+        if (ignorePackages != null) {
+            final String className = element.getClassName();
+            for (final String pkg : ignorePackages) {
+                if (className.startsWith(pkg)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void appendSuppressedCount(
+            final StringBuilder sb, final int count, final String suffix, final String lineSeparator) {
+        if (count == 1) {
+            sb.append("\t... ");
+        } else {
+            sb.append("\t... suppressed ");
+            sb.append(count);
+            sb.append(" lines");
+        }
+        appendSuffix(sb, suffix);
+        sb.append(lineSeparator);
+    }
+
+    private void appendEntry(
+            final StackTraceElement stackTraceElement,
+            final StringBuilder sb,
+            final String suffix,
+            final String lineSeparator) {
+        sb.append(stackTraceElement.toString());
+        appendSuffix(sb, suffix);
+        sb.append(lineSeparator);
+    }
+
+    private void appendSuffix(StringBuilder buffer, String suffix) {
+        if (Strings.isNotBlank(suffix)) {
+            buffer.append(' ');
+            buffer.append(suffix);
+        }
+    }
+
+    private void truncateLines(StringBuilder sb, String lineSeparator, Integer linesToKeep) {
+        if (linesToKeep == null) {
+            return;
+        }
+
+        String content = sb.toString();
+        String[] lines = content.split(lineSeparator);
+
+        if (lines.length <= linesToKeep) {
+            return;
+        }
+
+        sb.setLength(0);
+        for (int i = 0; i < linesToKeep; i++) {
+            sb.append(lines[i]);
+            sb.append(lineSeparator);
+        }
     }
 }

@@ -76,7 +76,8 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
                     options.getIgnorePackages(),
                     options.getTextRenderer(),
                     getSuffix(event),
-                    options.getSeparator());
+                    options.getSeparator(),
+                    options.allLines() ? null : options.getLines());
         }
     }
 }
