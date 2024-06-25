@@ -924,72 +924,42 @@ This gives you more flexibility at the cost of a slight loss in performance (com
 </div>
 <div id="_tabs_2_xml--panel" class="tabpanel" aria-labelledby="_tabs_2_xml">
 <div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/async/mixed-async.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration xmlns="https://logging.apache.org/xml/ns"
-               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="
-                   https://logging.apache.org/xml/ns
-                   https://logging.apache.org/xml/ns/log4j-config-2.xsd"&gt;
-  &lt;Appenders&gt;
-    &lt;File name="AUDIT" fileName="logs/audit.log" ignoreExceptions="false"&gt;
-      &lt;JsonTemplateLayout/&gt;
-    &lt;/File&gt;
-    &lt;File name="DEBUG_LOG" fileName="logs/debug.log"&gt;
-      &lt;PatternLayout/&gt;
-    &lt;/File&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="INFO"&gt;
-      &lt;AppenderRef ref="AUDIT"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
-        &lt;MarkerFilter marker="AUDIT" onMatch="ACCEPT" onMismatch="DENY"/&gt;
-      &lt;/AppenderRef&gt;
-    &lt;/Root&gt;
-    &lt;AsyncLogger name="com.example" level="TRACE"&gt;
-      &lt;AppenderRef ref="DEBUG_LOG"/&gt; <i class="conum" data-value="2"></i><b>(2)</b>
-    &lt;/AsyncLogger&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Loggers&gt;
+  &lt;Root level="INFO"&gt;
+    &lt;AppenderRef ref="AUDIT"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+      &lt;MarkerFilter marker="AUDIT" onMatch="ACCEPT" onMismatch="DENY"/&gt;
+    &lt;/AppenderRef&gt;
+  &lt;/Root&gt;
+  &lt;AsyncLogger name="com.example" level="TRACE"&gt;
+    &lt;AppenderRef ref="DEBUG_LOG"/&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+  &lt;/AsyncLogger&gt;
+&lt;/Loggers&gt;</code></pre>
 </div>
 </div>
 </div>
 <div id="_tabs_2_json--panel" class="tabpanel" aria-labelledby="_tabs_2_json">
 <div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/async/mixed-async.json"><code>log4j2.json</code></a></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
-  "Configuration": {
-    "Appenders": [
-      {
-        "name": "AUDIT",
-        "fileName": "logs/audit.log",
-        "ignoreExceptions": false,
-        "JsonTemplateLayout": {}
-      },
-      {
-        "name": "DEBUG_LOG",
-        "fileName": "logs/debug.log",
-        "PatternLayout": {}
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Loggers": {
+  "Root": {
+    "level": "INFO",
+    "AppenderRef": { <i class="conum" data-value="1"></i><b>(1)</b>
+      "ref": "AUDIT",
+      "MarkerFilter": {
+        "marker": "AUDIT",
+        "onMatch": "ACCEPT",
+        "onMismatch": "DENY"
       }
-    ]
+    }
   },
-  "Loggers": {
-    "Root": {
-      "level": "INFO",
-      "AppenderRef": { <i class="conum" data-value="1"></i><b>(1)</b>
-        "ref": "AUDIT",
-        "MarkerFilter": {
-          "marker": "AUDIT",
-          "onMatch": "ACCEPT",
-          "onMismatch": "DENY"
-        }
-      }
-    },
-    "AsyncLogger": { <i class="conum" data-value="2"></i><b>(2)</b>
-      "name": "com.example",
-      "level": "TRACE",
-      "AppenderRef": {
-        "ref": "DEBUG_LOG"
-      }
+  "AsyncLogger": { <i class="conum" data-value="2"></i><b>(2)</b>
+    "name": "com.example",
+    "level": "TRACE",
+    "AppenderRef": {
+      "ref": "DEBUG_LOG"
     }
   }
 }</code></pre>
@@ -998,49 +968,30 @@ This gives you more flexibility at the cost of a slight loss in performance (com
 </div>
 <div id="_tabs_2_yaml--panel" class="tabpanel" aria-labelledby="_tabs_2_yaml">
 <div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/async/mixed-async.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Configuration:
-  Appenders:
-    File:
-      - name: "AUDIT"
-        fileName: "logs/audit.log"
-        ignoreExceptions: false
-        JsonTemplateLayout: {}
-      - name: "DEBUG_LOG"
-        fileName: "logs/debug.log"
-        PatternLayout: {}
-  Loggers:
-    Root:
-      level: "INFO"
-      AppenderRef: <i class="conum" data-value="1"></i><b>(1)</b>
-        ref: "AUDIT"
-        MarkerFilter:
-          marker: "AUDIT"
-          onMatch: "ACCEPT"
-          onMismatch: "DENY"
-    AsyncLogger:
-      name: "com.example"
-      level: "TRACE"
-      AppenderRef: <i class="conum" data-value="2"></i><b>(2)</b>
-        ref: "DEBUG_LOG"</code></pre>
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Loggers:
+  Root:
+    level: "INFO"
+    AppenderRef: <i class="conum" data-value="1"></i><b>(1)</b>
+      ref: "AUDIT"
+      MarkerFilter:
+        marker: "AUDIT"
+        onMatch: "ACCEPT"
+        onMismatch: "DENY"
+  AsyncLogger:
+    name: "com.example"
+    level: "TRACE"
+    AppenderRef: <i class="conum" data-value="2"></i><b>(2)</b>
+      ref: "DEBUG_LOG"</code></pre>
 </div>
 </div>
 </div>
 <div id="_tabs_2_properties--panel" class="tabpanel" aria-labelledby="_tabs_2_properties">
 <div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/async/mixed-async.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = File
-appender.0.name = AUDIT
-appender.0.fileName = logs/audit.log
-appender.0.ignoreExceptions = false
-appender.0.layout.type = JsonTemplateLayout
-
-appender.1.type = File
-appender.1.name = DEBUG_LOG
-appender.1.fileName = logs/debug.log
-appender.1.layout.type = PatternLayout
-
-rootLogger.level = INFO
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">rootLogger.level = INFO
 rootLogger.appenderRef.0.ref = AUDIT <i class="conum" data-value="1"></i><b>(1)</b>
 rootLogger.appenderRef.0.filter.0.type = MarkerFilter
 rootLogger.appenderRef.0.filter.0.marker = AUDIT
@@ -1479,42 +1430,34 @@ to your configuration.</p>
 </div>
 <div id="_tabs_3_xml--panel" class="tabpanel" aria-labelledby="_tabs_3_xml">
 <div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/async/custom-wait-strategy.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration xmlns="https://logging.apache.org/xml/ns"
-               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="
-                       https://logging.apache.org/xml/ns
-                       https://logging.apache.org/xml/ns/log4j-config-2.xsd"&gt;
-  &lt;AsyncWaitStrategyFactory class="com.example.AsyncWaitStrategyFactory"/&gt;
-&lt;/Configuration&gt;</code></pre>
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;AsyncWaitStrategyFactory class="com.example.AsyncWaitStrategyFactory"/&gt;</code></pre>
 </div>
 </div>
 </div>
 <div id="_tabs_3_json--panel" class="tabpanel" aria-labelledby="_tabs_3_json">
 <div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/async/custom-wait-strategy.json"><code>log4j2.json</code></a></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
-  "Configuration": {
-    "AsyncWaitStrategyFactor": {
-      "class": "com.example.AsyncWaitStrategyFactory"
-    }
-  }
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"AsyncWaitStrategyFactor": {
+  "class": "com.example.AsyncWaitStrategyFactory"
 }</code></pre>
 </div>
 </div>
 </div>
 <div id="_tabs_3_yaml--panel" class="tabpanel" aria-labelledby="_tabs_3_yaml">
 <div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/async/custom-wait-strategy.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Configuration:
-  AsyncWaitStrategyFactory:
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">  AsyncWaitStrategyFactory:
     class: "com.example.AsyncWaitStrategyFactory"</code></pre>
 </div>
 </div>
 </div>
 <div id="_tabs_3_properties--panel" class="tabpanel" aria-labelledby="_tabs_3_properties">
 <div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/async/custom-wait-strategy.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">strategy.type = AsyncWaitStrategyFactory
 strategy.class = com.exampleAsyncWaitStrategyFactory</code></pre>

@@ -473,59 +473,50 @@ regardless of the level of the events:</p>
 </div>
 <div id="example_configuration_xml--panel" class="tabpanel" aria-labelledby="example_configuration_xml">
 <div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/markers/log4j2.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration xmlns="https://logging.apache.org/xml/ns"
-               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="
-                   https://logging.apache.org/xml/ns
-                   https://logging.apache.org/xml/ns/log4j-config-2.xsd"&gt;
-  &lt;Appenders&gt;
-    &lt;Console name="SQL_LOG"&gt;
-      &lt;PatternLayout pattern="%d{HH:mm:ss.SSS} (%marker) %m%n"/&gt;
-    &lt;/Console&gt;
-  &lt;/Appenders&gt;
-  &lt;MarkerFilter marker="SQL"
-                onMatch="ACCEPT"
-                onMismatch="NEUTRAL"/&gt;<i class="conum" data-value="1"></i><b>(1)</b>
-  &lt;Loggers&gt;
-    &lt;Root level="INFO"&gt;
-      &lt;AppenderRef ref="SQL_LOG"&gt;
-        &lt;MarkerFilter marker="SQL"/&gt;<i class="conum" data-value="2"></i><b>(2)</b>
-      &lt;/AppenderRef&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Appenders&gt;
+  &lt;Console name="SQL_LOG"&gt;
+    &lt;PatternLayout pattern="%d{HH:mm:ss.SSS} (%marker) %m%n"/&gt;
+  &lt;/Console&gt;
+&lt;/Appenders&gt;
+&lt;MarkerFilter marker="SQL"
+              onMatch="ACCEPT"
+              onMismatch="NEUTRAL"/&gt;<i class="conum" data-value="1"></i><b>(1)</b>
+&lt;Loggers&gt;
+  &lt;Root level="INFO"&gt;
+    &lt;AppenderRef ref="SQL_LOG"&gt;
+      &lt;MarkerFilter marker="SQL"/&gt;<i class="conum" data-value="2"></i><b>(2)</b>
+    &lt;/AppenderRef&gt;
+  &lt;/Root&gt;
+&lt;/Loggers&gt;</code></pre>
 </div>
 </div>
 </div>
 <div id="example_configuration_json--panel" class="tabpanel" aria-labelledby="example_configuration_json">
 <div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/markers/log4j2.json"><code>log4j2.json</code></a></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
-  "Configuration": {
-    "Appenders": {
-      "Console": {
-        "name": "SQL_LOG",
-        "PatternLayout": {
-          "pattern": "%d{HH:mm:ss.SSS} (%marker) %m%n"
-        }
-      }
-    },
-    "MarkerFilter": { <i class="conum" data-value="1"></i><b>(1)</b>
-      "marker": "SQL",
-      "onMatch": "ACCEPT",
-      "onMismatch": "NEUTRAL"
-    },
-    "Loggers": {
-      "Root": {
-        "level": "INFO",
-        "AppenderRef": {
-          "ref": "SQL_LOG",
-          "MarkerFilter": { <i class="conum" data-value="2"></i><b>(2)</b>
-            "marker": "SQL"
-          }
-        }
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Appenders": {
+  "Console": {
+    "name": "SQL_LOG",
+    "PatternLayout": {
+      "pattern": "%d{HH:mm:ss.SSS} (%marker) %m%n"
+    }
+  }
+},
+"MarkerFilter": { <i class="conum" data-value="1"></i><b>(1)</b>
+  "marker": "SQL",
+  "onMatch": "ACCEPT",
+  "onMismatch": "NEUTRAL"
+},
+"Loggers": {
+  "Root": {
+    "level": "INFO",
+    "AppenderRef": {
+      "ref": "SQL_LOG",
+      "MarkerFilter": { <i class="conum" data-value="2"></i><b>(2)</b>
+        "marker": "SQL"
       }
     }
   }
@@ -535,29 +526,30 @@ regardless of the level of the events:</p>
 </div>
 <div id="example_configuration_yaml--panel" class="tabpanel" aria-labelledby="example_configuration_yaml">
 <div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/markers/log4j2.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Configuration:
-  Appenders:
-    Console:
-      name: "SQL_LOG"
-      PatternLayout:
-        pattern: "%d{HH:mm:ss.SSS} (%marker) %m%n"
-  MarkerFilter: <i class="conum" data-value="1"></i><b>(1)</b>
-    marker: "SQL"
-    onMatch: "ACCEPT"
-    onMismatch: "NEUTRAL"
-  Loggers:
-    Root:
-      level: "INFO"
-      AppenderRef:
-        ref: "SQL_LOG"
-        MarkerFilter: <i class="conum" data-value="2"></i><b>(2)</b>
-          marker: "SQL"</code></pre>
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Appenders:
+  Console:
+    name: "SQL_LOG"
+    PatternLayout:
+      pattern: "%d{HH:mm:ss.SSS} (%marker) %m%n"
+MarkerFilter: <i class="conum" data-value="1"></i><b>(1)</b>
+  marker: "SQL"
+  onMatch: "ACCEPT"
+  onMismatch: "NEUTRAL"
+Loggers:
+  Root:
+    level: "INFO"
+    AppenderRef:
+      ref: "SQL_LOG"
+      MarkerFilter: <i class="conum" data-value="2"></i><b>(2)</b>
+        marker: "SQL"</code></pre>
 </div>
 </div>
 </div>
 <div id="example_configuration_properties--panel" class="tabpanel" aria-labelledby="example_configuration_properties">
 <div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/markers/log4j2.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = Console
 appender.0.name = SQL_LOG
@@ -605,28 +597,26 @@ See <a href="https://logback.qos.ch/manual/filters.html">Logback filters</a> for
 In order to do that, you can use a configuration as below:</p>
 </div>
 <div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/markers/logback.xml"><code>logback.xml</code></a></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;configuration&gt;
-  &lt;turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
-    &lt;Marker&gt;SQL&lt;/Marker&gt;
-    &lt;OnMatch&gt;ACCEPT&lt;/OnMatch&gt;
-  &lt;/turboFilter&gt;
-  &lt;appender name="SQL_LOG" class="ch.qos.logback.core.ConsoleAppender"&gt;
-    &lt;encoder&gt;
-      &lt;pattern&gt;%d{HH:mm:ss.SSS} (%marker) %m%n&lt;/pattern&gt;
-    &lt;/encoder&gt;
-    &lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter"&gt; <i class="conum" data-value="2"></i><b>(2)</b>
-      &lt;evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator"&gt;
-        &lt;marker&gt;SQL&lt;/marker&gt;
-      &lt;/evaluator&gt;
-      &lt;onMismatch&gt;DENY&lt;/onMismatch&gt;
-    &lt;/filter&gt;
-  &lt;/appender&gt;
-  &lt;root level="INFO"&gt;
-    &lt;appender-ref ref="SQL_LOG"/&gt;
-  &lt;/root&gt;
-&lt;/configuration&gt;</code></pre>
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;Marker&gt;SQL&lt;/Marker&gt;
+  &lt;OnMatch&gt;ACCEPT&lt;/OnMatch&gt;
+&lt;/turboFilter&gt;
+&lt;appender name="SQL_LOG" class="ch.qos.logback.core.ConsoleAppender"&gt;
+  &lt;encoder&gt;
+    &lt;pattern&gt;%d{HH:mm:ss.SSS} (%marker) %m%n&lt;/pattern&gt;
+  &lt;/encoder&gt;
+  &lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter"&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+    &lt;evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator"&gt;
+      &lt;marker&gt;SQL&lt;/marker&gt;
+    &lt;/evaluator&gt;
+    &lt;onMismatch&gt;DENY&lt;/onMismatch&gt;
+  &lt;/filter&gt;
+&lt;/appender&gt;
+&lt;root level="INFO"&gt;
+  &lt;appender-ref ref="SQL_LOG"/&gt;
+&lt;/root&gt;</code></pre>
 </div>
 </div>
 <div class="colist arabic">

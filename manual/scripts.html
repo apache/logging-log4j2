@@ -454,29 +454,154 @@ container plugin in the configuration file.</p>
 </div>
 <div id="_tabs_1_xml--panel" class="tabpanel" aria-labelledby="_tabs_1_xml">
 <div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/scripts/log4j2.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration xmlns="https://logging.apache.org/xml/ns"
-               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="
-                   https://logging.apache.org/xml/ns
-                   https://logging.apache.org/xml/ns/log4j-config-2.xsd"&gt;
-  &lt;Appenders&gt;
-    &lt;Console name="STDOUT"&gt;
-      &lt;PatternLayout&gt;
-        &lt;ScriptPatternSelector defaultPattern="%d %p %m%n"&gt;
-          &lt;ScriptRef ref="SELECTOR_SCRIPT"/&gt;
-          &lt;PatternMatch key="NoLocation" pattern="[%-5level] %c{1.} %msg%n"/&gt;
-          &lt;PatternMatch key="Flow"
-                        pattern="[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"/&gt;
-        &lt;/ScriptPatternSelector&gt;
-      &lt;/PatternLayout&gt;
-    &lt;/Console&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Logger name="EventLogger"&gt;
-      &lt;ScriptFilter onMatch="ACCEPT" onMismatch="DENY"&gt;
-        &lt;Script name="EVENT_LOGGER_FILTER" language="groovy"&gt;&lt;![CDATA[
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Appenders&gt;
+  &lt;Console name="STDOUT"&gt;
+    &lt;PatternLayout&gt;
+      &lt;ScriptPatternSelector defaultPattern="%d %p %m%n"&gt;
+        &lt;ScriptRef ref="SELECTOR_SCRIPT"/&gt;
+        &lt;PatternMatch key="NoLocation" pattern="[%-5level] %c{1.} %msg%n"/&gt;
+        &lt;PatternMatch key="Flow"
+                      pattern="[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"/&gt;
+      &lt;/ScriptPatternSelector&gt;
+    &lt;/PatternLayout&gt;
+  &lt;/Console&gt;
+&lt;/Appenders&gt;
+&lt;Loggers&gt;
+  &lt;Logger name="EventLogger"&gt;
+    &lt;ScriptFilter onMatch="ACCEPT" onMismatch="DENY"&gt;
+      &lt;Script name="EVENT_LOGGER_FILTER" language="groovy"&gt;&lt;![CDATA[
+        if (logEvent.getMarker() != null
+            &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW")) {
+          return true;
+        } else if (logEvent.getContextMap().containsKey("UserId")) {
+          return true;
+        }
+        return false;
+        ]]&gt;
+      &lt;/Script&gt;
+    &lt;/ScriptFilter&gt;
+  &lt;/Logger&gt;
+  &lt;Root level="INFO"&gt;
+    &lt;ScriptFilter onMatch="ACCEPT" onMismatch="DENY"&gt;
+      &lt;ScriptRef ref="ROOT_FILTER"/&gt;
+    &lt;/ScriptFilter&gt;
+    &lt;AppenderRef ref="STDOUT"/&gt;
+  &lt;/Root&gt;
+&lt;/Loggers&gt;
+&lt;Scripts&gt;
+  &lt;Script name="SELECTOR_SCRIPT" language="javascript"&gt;&lt;![CDATA[
+    var result;
+    if (logEvent.getLoggerName().equals("JavascriptNoLocation")) {
+      result = "NoLocation";
+    } else if (logEvent.getMarker() != null
+        &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW")) {
+      result = "Flow";
+    }
+    result;
+    ]]&gt;
+  &lt;/Script&gt;
+  &lt;ScriptFile name="ROOT_FILTER" path="scripts/filter.groovy"/&gt;
+&lt;/Scripts&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_json--panel" class="tabpanel" aria-labelledby="_tabs_1_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/scripts/log4j2.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Appenders": {
+  "Console": {
+    "name": "STDOUT",
+    "PatternLayout": {
+      "ScriptPatternSelector": {
+        "defaultPattern": "%d %p %m%n",
+        "ScriptRef": {
+          "ref": "SELECTOR_SCRIPT",
+          "PatternMatch": [
+            {
+              "key": "NoLocation",
+              "pattern": "[%-5level] %c{1.} %msg%n"
+            },
+            {
+              "key": "Flow",
+              "pattern": "[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"
+            }
+          ]
+        }
+      }
+    }
+  }
+},
+"Loggers": {
+  "Logger": {
+    "name": "EventLogger",
+    "ScriptFilter": {
+      "onMatch": "ACCEPT",
+      "onMismatch": "DENY",
+      "Script": {
+        "name": "EVENT_LOGGER_FILTER",
+        "language": "groovy",
+        "scriptText": "if (logEvent.getMarker() != null &amp;&amp; logEvent.getMarker().isInstanceOf('FLOW'))) { return true; } else if (logEvent.getContextMap().containsKey('UserId')) { return true; } return false;"
+      }
+    }
+  },
+  "Root": {
+    "level": "INFO",
+    "ScriptFilter": {
+      "onMatch": "ACCEPT",
+      "onMismatch": "DENY",
+      "ScriptRef": {
+        "ref": "ROOT_FILTER"
+      }
+    },
+    "AppenderRef": {
+      "ref": "STDOUT"
+    }
+  }
+},
+"Scripts": {
+  "Script": {
+    "name": "SELECTOR_SCRIPT",
+    "language": "javascript",
+    "scriptText": "var result; if (logEvent.getLoggerName().equals('JavascriptNoLocation')) { result = 'NoLocation'; } else if (logEvent.getMarker() != null &amp;&amp; logEvent.getMarker().isInstanceOf('FLOW')) { result = 'Flow'; } result;"
+  },
+  "ScriptFile": {
+    "name": "ROOT_FILTER",
+    "path": "scripts/filter.groovy"
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_yaml--panel" class="tabpanel" aria-labelledby="_tabs_1_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/scripts/log4j2.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Appenders:
+  Console:
+    name: "STDOUT"
+    PatternLayout:
+      ScriptPatternSelector:
+        defaultPattern: "%d %p %m%n"
+        ScriptRef:
+          ref: "SELECTOR_SCRIPT"
+        PatternMatch:
+          - key: "NoLocation"
+            pattern: "[%-5level] %c{1.} %msg%n"
+          - key: "Flow"
+            pattern: "[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"
+Loggers:
+  Logger:
+    name: "EventLogger"
+    ScriptFilter:
+      onMatch: "ACCEPT"
+      onMismatch: "DENY"
+      Script:
+        name: "EVENT_LOGGER_FILTER"
+        language: "groovy"
+        scriptText: |
           if (logEvent.getMarker() != null
               &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW")) {
             return true;
@@ -484,19 +609,20 @@ container plugin in the configuration file.</p>
             return true;
           }
           return false;
-          ]]&gt;
-        &lt;/Script&gt;
-      &lt;/ScriptFilter&gt;
-    &lt;/Logger&gt;
-    &lt;Root level="INFO"&gt;
-      &lt;ScriptFilter onMatch="ACCEPT" onMismatch="DENY"&gt;
-        &lt;ScriptRef ref="ROOT_FILTER"/&gt;
-      &lt;/ScriptFilter&gt;
-      &lt;AppenderRef ref="STDOUT"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-  &lt;Scripts&gt;
-    &lt;Script name="SELECTOR_SCRIPT" language="javascript"&gt;&lt;![CDATA[
+  Root:
+    level: "INFO"
+    ScriptFilter:
+      onMatch: "ACCEPT"
+      onMismatch: "DENY"
+      ScriptRef:
+        ref: "ROOT_FILTER"
+    AppenderRef:
+      ref: "STDOUT"
+Scripts:
+  Script:
+    name: "SELECTOR_SCRIPT"
+    language: "javascript"
+    scriptText: |
       var result;
       if (logEvent.getLoggerName().equals("JavascriptNoLocation")) {
         result = "NoLocation";
@@ -505,149 +631,15 @@ container plugin in the configuration file.</p>
         result = "Flow";
       }
       result;
-      ]]&gt;
-    &lt;/Script&gt;
-    &lt;ScriptFile name="ROOT_FILTER" path="scripts/filter.groovy"/&gt;
-  &lt;/Scripts&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-<div id="_tabs_1_json--panel" class="tabpanel" aria-labelledby="_tabs_1_json">
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
-  "Configuration": {
-    "Appenders": {
-      "Console": {
-        "name": "STDOUT",
-        "PatternLayout": {
-          "ScriptPatternSelector": {
-            "defaultPattern": "%d %p %m%n",
-            "ScriptRef": {
-              "ref": "SELECTOR_SCRIPT",
-              "PatternMatch": [
-                {
-                  "key": "NoLocation",
-                  "pattern": "[%-5level] %c{1.} %msg%n"
-                },
-                {
-                  "key": "Flow",
-                  "pattern": "[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"
-                }
-              ]
-            }
-          }
-        }
-      },
-      "Loggers": {
-        "Logger": {
-          "name": "EventLogger",
-          "ScriptFilter": {
-            "onMatch": "ACCEPT",
-            "onMismatch": "DENY",
-            "Script": {
-              "name": "EVENT_LOGGER_FILTER",
-              "language": "groovy",
-              "scriptText": "if (logEvent.getMarker() != null &amp;&amp; logEvent.getMarker().isInstanceOf('FLOW'))) { return true; } else if (logEvent.getContextMap().containsKey('UserId')) { return true; } return false;"
-            }
-          }
-        },
-        "Root": {
-          "level": "INFO",
-          "ScriptFilter": {
-            "onMatch": "ACCEPT",
-            "onMismatch": "DENY",
-            "ScriptRef": {
-              "ref": "ROOT_FILTER"
-            }
-          },
-          "AppenderRef": {
-            "ref": "STDOUT"
-          }
-        },
-        "Scripts": {
-          "Script": {
-            "name": "SELECTOR_SCRIPT",
-            "language": "javascript",
-            "scriptText": "var result; if (logEvent.getLoggerName().equals('JavascriptNoLocation')) { result = 'NoLocation'; } else if (logEvent.getMarker() != null &amp;&amp; logEvent.getMarker().isInstanceOf('FLOW')) { result = 'Flow'; } result;"
-          },
-          "ScriptFile": {
-            "name": "ROOT_FILTER",
-            "path": "scripts/filter.groovy"
-          }
-        }
-      }
-    }
-  }
-}</code></pre>
-</div>
-</div>
-</div>
-<div id="_tabs_1_yaml--panel" class="tabpanel" aria-labelledby="_tabs_1_yaml">
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Configuration:
-  Appenders:
-    Console:
-      name: "STDOUT"
-      PatternLayout:
-        ScriptPatternSelector:
-          defaultPattern: "%d %p %m%n"
-          ScriptRef:
-            ref: "SELECTOR_SCRIPT"
-          PatternMatch:
-            - key: "NoLocation"
-              pattern: "[%-5level] %c{1.} %msg%n"
-            - key: "Flow"
-              pattern: "[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"
-  Loggers:
-    Logger:
-      name: "EventLogger"
-      ScriptFilter:
-        onMatch: "ACCEPT"
-        onMismatch: "DENY"
-        Script:
-          name: "EVENT_LOGGER_FILTER"
-          language: "groovy"
-          scriptText: |
-            if (logEvent.getMarker() != null
-                &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW")) {
-              return true;
-            } else if (logEvent.getContextMap().containsKey("UserId")) {
-              return true;
-            }
-            return false;
-    Root:
-      level: "INFO"
-      ScriptFilter:
-        onMatch: "ACCEPT"
-        onMismatch: "DENY"
-        ScriptRef:
-          ref: "ROOT_FILTER"
-      AppenderRef:
-        ref: "STDOUT"
-  Scripts:
-    Script:
-      name: "SELECTOR_SCRIPT"
-      language: "javascript"
-      scriptText: |
-        var result;
-        if (logEvent.getLoggerName().equals("JavascriptNoLocation")) {
-          result = "NoLocation";
-        } else if (logEvent.getMarker() != null
-            &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW")) {
-          result = "Flow";
-        }
-        result;
-    ScriptFile:
-      name: "ROOT_FILTER"
-      path: "scripts/filter.groovy"</code></pre>
+  ScriptFile:
+    name: "ROOT_FILTER"
+    path: "scripts/filter.groovy"</code></pre>
 </div>
 </div>
 </div>
 <div id="_tabs_1_properties--panel" class="tabpanel" aria-labelledby="_tabs_1_properties">
 <div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/scripts/log4j2.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = Console
 appender.0.name = STDOUT

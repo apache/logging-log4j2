@@ -385,83 +385,75 @@
 </div>
 <div id="_tabs_1_xml--panel" class="tabpanel" aria-labelledby="_tabs_1_xml">
 <div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/filters.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration xmlns="https://logging.apache.org/xml/ns"
-               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="
-                   https://logging.apache.org/xml/ns
-                   https://logging.apache.org/xml/ns/log4j-config-2.xsd"&gt;
-  &lt;Appenders&gt;
-    &lt;Console name="CONSOLE"&gt;
-      &lt;ThresholdFilter level="WARN"/&gt; <i class="conum" data-value="6"></i><b>(6)</b>
-    &lt;/Console&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="INFO"&gt;
-      &lt;ThresholdFilter level="DEBUG"/&gt; <i class="conum" data-value="3"></i><b>(3)</b>
-      &lt;AppenderRef ref="CONSOLE" level="WARN"&gt; <i class="conum" data-value="5"></i><b>(5)</b>
-        &lt;MarkerFilter marker="ALERT"
-                      onMatch="NEUTRAL"
-                      onMismatch="DENY"/&gt; <i class="conum" data-value="4"></i><b>(4)</b>
-      &lt;/AppenderRef&gt;
-    &lt;/Root&gt;
-    &lt;Logger name="org.example" level="TRACE"&gt; <i class="conum" data-value="2"></i><b>(2)</b>
-      &lt;ThresholdFilter level="TRACE"/&gt; <i class="conum" data-value="3"></i><b>(3)</b>
-    &lt;/Logger&gt;
-  &lt;/Loggers&gt;
-  &lt;MarkerFilter marker="PRIVATE"/&gt; <i class="conum" data-value="1"></i><b>(1)</b>
-&lt;/Configuration&gt;</code></pre>
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Appenders&gt;
+  &lt;Console name="CONSOLE"&gt;
+    &lt;ThresholdFilter level="WARN"/&gt; <i class="conum" data-value="6"></i><b>(6)</b>
+  &lt;/Console&gt;
+&lt;/Appenders&gt;
+&lt;Loggers&gt;
+  &lt;Root level="INFO"&gt;
+    &lt;ThresholdFilter level="DEBUG"/&gt; <i class="conum" data-value="3"></i><b>(3)</b>
+    &lt;AppenderRef ref="CONSOLE" level="WARN"&gt; <i class="conum" data-value="5"></i><b>(5)</b>
+      &lt;MarkerFilter marker="ALERT"
+                    onMatch="NEUTRAL"
+                    onMismatch="DENY"/&gt; <i class="conum" data-value="4"></i><b>(4)</b>
+    &lt;/AppenderRef&gt;
+  &lt;/Root&gt;
+  &lt;Logger name="org.example" level="TRACE"&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+    &lt;ThresholdFilter level="TRACE"/&gt; <i class="conum" data-value="3"></i><b>(3)</b>
+  &lt;/Logger&gt;
+&lt;/Loggers&gt;
+&lt;MarkerFilter marker="PRIVATE"/&gt; <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
 </div>
 </div>
 <div id="_tabs_1_json--panel" class="tabpanel" aria-labelledby="_tabs_1_json">
 <div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/filters.json"><code>log4j2.json</code></a></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
-  "Configuration": {
-    "Appenders": {
-      "Console": {
-        "name": "CONSOLE",
-        "ThresholdFilter": {
-          "level": "WARN" <i class="conum" data-value="6"></i><b>(6)</b>
-        }
-      }
-    },
-    "Loggers": {
-      "Root": {
-        "level": "INFO",
-        "ThresholdFilter": { <i class="conum" data-value="3"></i><b>(3)</b>
-          "level": "DEBUG"
-        },
-        "AppenderRef": {
-          "ref": "CONSOLE",
-          "level": "WARN", <i class="conum" data-value="5"></i><b>(5)</b>
-          "MarkerFilter": { <i class="conum" data-value="4"></i><b>(4)</b>
-            "marker": "ALERT",
-            "onMatch": "NEUTRAL",
-            "onMismatch": "DENY"
-          }
-        }
-      },
-      "Logger": {
-        "name": "org.example",
-        "level": "TRACE" <i class="conum" data-value="2"></i><b>(2)</b>
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">  "Appenders": {
+    "Console": {
+      "name": "CONSOLE",
+      "ThresholdFilter": {
+        "level": "WARN" <i class="conum" data-value="6"></i><b>(6)</b>
       }
     }
   },
-  "MarkerFilter": { <i class="conum" data-value="1"></i><b>(1)</b>
-    "marker": "PRIVATE"
+  "Loggers": {
+    "Root": {
+      "level": "INFO",
+      "ThresholdFilter": { <i class="conum" data-value="3"></i><b>(3)</b>
+        "level": "DEBUG"
+      },
+      "AppenderRef": {
+        "ref": "CONSOLE",
+        "level": "WARN", <i class="conum" data-value="5"></i><b>(5)</b>
+        "MarkerFilter": { <i class="conum" data-value="4"></i><b>(4)</b>
+          "marker": "ALERT",
+          "onMatch": "NEUTRAL",
+          "onMismatch": "DENY"
+        }
+      }
+    },
+    "Logger": {
+      "name": "org.example",
+      "level": "TRACE" <i class="conum" data-value="2"></i><b>(2)</b>
+    }
   }
+},
+"MarkerFilter": { <i class="conum" data-value="1"></i><b>(1)</b>
+  "marker": "PRIVATE"
 }</code></pre>
 </div>
 </div>
 </div>
 <div id="_tabs_1_yaml--panel" class="tabpanel" aria-labelledby="_tabs_1_yaml">
 <div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/filters.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Configuration:
-  Appenders:
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">  Appenders:
     Console:
       name: "CONSOLE"
       ThresholdFilter: <i class="conum" data-value="6"></i><b>(6)</b>
@@ -490,6 +482,7 @@
 </div>
 <div id="_tabs_1_properties--panel" class="tabpanel" aria-labelledby="_tabs_1_properties">
 <div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/filters.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = Console
 appender.0.name = CONSOLE
