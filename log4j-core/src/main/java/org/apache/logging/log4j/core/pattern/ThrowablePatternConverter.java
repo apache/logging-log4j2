@@ -236,7 +236,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         return options;
     }
 
-    private boolean requireAdditionalFormatting(String suffix) {
+    private boolean requireAdditionalFormatting(final String suffix) {
         return !options.allLines() || nonStandardLineSeparator || Strings.isNotBlank(suffix) || options.hasPackages();
     }
 
@@ -275,19 +275,14 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         sb.append(lineSeparator);
     }
 
-    private void appendSuffix(
-            final StringBuilder buffer,
-            final String suffix) {
+    private void appendSuffix(final StringBuilder buffer, final String suffix) {
         if (Strings.isNotBlank(suffix)) {
             buffer.append(' ');
             buffer.append(suffix);
         }
     }
 
-    private void truncateLines(
-            final StringBuilder sb,
-            final String lineSeparator,
-            final Integer maxLineCount) {
+    private void truncateLines(final StringBuilder sb, final String lineSeparator, final Integer maxLineCount) {
         if (maxLineCount == null) {
             return;
         }
