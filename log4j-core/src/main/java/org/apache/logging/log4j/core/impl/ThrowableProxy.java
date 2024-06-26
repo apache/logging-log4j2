@@ -411,7 +411,7 @@ public class ThrowableProxy implements Serializable {
             final String suffix,
             final String lineSeparator) {
         final StringBuilder sb = new StringBuilder(1024);
-        formatExtendedStackTraceTo(sb, ignorePackages, textRenderer, suffix, lineSeparator, null);
+        formatExtendedStackTraceTo(sb, ignorePackages, textRenderer, suffix, lineSeparator, Integer.MAX_VALUE);
         return sb.toString();
     }
 
