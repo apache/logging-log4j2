@@ -14,20 +14,26 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-= Programmatic Configuration
+= Programmatic configuration
 
-Log4j 2 provides a few ways for applications to create their own
-programmatic configuration:
+Log4j provides a few ways for applications to configure Log4j Core programmatically:
 
-* Specify a custom `ConfigurationFactory` to start Log4j with a
-programmatic configuration
-* Use the `Configurator` to replace the configuration after Log4j started
-* Initialize Log4j with a combination of a configuration file and
-programmatic configuration
-* Modify the current `Configuration` after initialization
+* Specify a custom <<ConfigurationFactory,`ConfigurationFactory`>> to initialize Log4j Core with a programmatic configuration
+* Use <<Configurator,`Configurator`>> to replace the configuration after Log4j Core initialized
+* Initialize Log4j Core with a <<Hybrid,combination of a configuration file and programmatic configuration>>
+* <<AddingToCurrent,Programmatically modify the current configuration>> after initialization
+
+[WARNING]
+====
+It is a *bad practice to retrieve the active link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration/.html[`Configuration`], and manually add appenders*, loggers, etc. to it.
+Instead, you should either create a new configuration or extend the existing one using <<ConfigurationBuilder,`ConfigurationBuilder`>>, and use <<Configurator,`Configurator`>> to reconfigure Log4j.
+====
 
 [#ConfigurationBuilder]
-== The ConfigurationBuilder API
+== The `ConfigurationBuilder` API
+
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/builder/api/ConfigurationBuilder.html[`ConfigurationBuilder`] provides a fluent API to programmatically create link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration/.html[`Configuration`]s.
+In essence, it allows you to build a xref:manual/configuration.adoc[configuration file] model in a type-safe way:
 
 Starting with release 2.4, Log4j provides a `ConfigurationBuilder` and a
 set of component builders that allow a `Configuration` to be created
@@ -61,31 +67,6 @@ RollingFileAppender you would use builder.newComponent().
 
 Examples of using the `ConfigurationBuilder` API are in the sections that
 follow.
-
-[#ConfigurationFactory]
-== Understanding ConfigurationFactory
-
-During initialization, Log4j 2 will search for available
-xref:manual/extending.adoc#ConfigurationFactory[ConfigurationFactories] and
-then select the one to use. The selected `ConfigurationFactory` creates
-the `Configuration` that Log4j will use. Here is how Log4j finds the
-available ConfigurationFactories:
-
-1.  A system property named `log4j2.configurationFactory` can be set
-with the name of the ConfigurationFactory to be used.
-2.  `ConfigurationFactory.setConfigurationFactory(ConfigurationFactory)`
-can be called with the instance of the `ConfigurationFactory` to be used.
-This must be called before any other calls to Log4j.
-3.  A `ConfigurationFactory` implementation can be added to the classpath
-and configured as a plugin in the "ConfigurationFactory" category. The
-`@Order` annotation can be used to specify the relative priority when
-multiple applicable ConfigurationFactories are found.
-
-ConfigurationFactories have the concept of "supported types", which
-basically maps to the file extension of the configuration file that the
-ConfigurationFactory can handle. If a configuration file location is
-specified, ConfigurationFactories whose supported type does not include
-"*" or the matching file extension will not be used.
 
 [#Example]
 == Initialize Log4j Using ConfigurationBuilder with a Custom ConfigurationFactory

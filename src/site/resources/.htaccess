@@ -44,6 +44,7 @@ RewriteRule "^log4j-mongodb3(/index)?\.html$" "manual/appenders.html#NoSQLAppend
 RewriteRule "^log4j-mongodb4(/index)?\.html$" "manual/appenders.html#log4j-mongodb4" [R=permanent,NE]
 RewriteRule "^log4j-slf4j2?-impl(/index)?\.html$" "manual/installation.html#impl-core-bridge-slf4j" [R=permanent,NE]
 RewriteRule "^manual/api-separation\.html$" "manual/api.html" [R=permanent]
+RewriteRule "^manual/customconfig\.html#ConfigurationFactory$" "manual/configuration.html#ConfigurationFactory" [R=permanent]
 RewriteRule "^manual/extending\.html#Appenders$" "manual/appenders.html#extending" [R=permanent]
 RewriteRule "^manual/extending\.html#Filters$" "manual/filters.html#extending" [R=permanent]
 RewriteRule "^manual/extending\.html#Layouts$" "manual/layouts.html#extending" [R=permanent]
