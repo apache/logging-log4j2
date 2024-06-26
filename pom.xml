@@ -326,7 +326,7 @@
     <log4j-api.version>2.24.0-SNAPSHOT</log4j-api.version>
 
     <!-- Enables Predictive Test Selection for the project -->
-    <predictive.test.selection.enabled>true</predictive.test.selection.enabled>
+    <predictive.test.selection.enabled>false</predictive.test.selection.enabled>
 
     <!-- ========================
          Site-specific properties
@@ -649,7 +649,7 @@
         <configuration>
           <forkCount>1C</forkCount>
           <reuseForks>false</reuseForks>
-          <runOrder>alphabetical</runOrder>
+          <runOrder>random</runOrder>
           <systemPropertyVariables>
             <java.awt.headless>true</java.awt.headless>
           </systemPropertyVariables>
