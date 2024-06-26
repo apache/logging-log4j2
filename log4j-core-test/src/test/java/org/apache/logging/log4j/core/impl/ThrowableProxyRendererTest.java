@@ -34,6 +34,6 @@ public class ThrowableProxyRendererTest {
                 new PlainTextRenderer(),
                 "",
                 System.lineSeparator(),
-                null);
+                Integer.MAX_VALUE);
     }
 }

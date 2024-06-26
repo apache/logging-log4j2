@@ -298,7 +298,7 @@ public class ThrowableProxy implements Serializable {
             final String lineSeparator) {
         final StringBuilder sb = new StringBuilder();
         ThrowableProxyRenderer.formatCauseStackTraceTo(
-                this, sb, ignorePackages, textRenderer, suffix, lineSeparator, null);
+                this, sb, ignorePackages, textRenderer, suffix, lineSeparator, Integer.MAX_VALUE);
         return sb.toString();
     }
 
@@ -433,7 +433,7 @@ public class ThrowableProxy implements Serializable {
             final String suffix,
             final String lineSeparator) {
         ThrowableProxyRenderer.formatExtendedStackTraceTo(
-                this, sb, ignorePackages, textRenderer, suffix, lineSeparator, null);
+                this, sb, ignorePackages, textRenderer, suffix, lineSeparator, Integer.MAX_VALUE);
     }
 
     /**

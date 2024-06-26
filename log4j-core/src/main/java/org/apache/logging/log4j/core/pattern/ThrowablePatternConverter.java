@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.impl.ThrowableFormatOptions;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.StringBuilderWriter;
+import org.apache.logging.log4j.core.util.internal.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -204,7 +205,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
             if (ignoredCount > 0) {
                 appendSuppressedCount(buffer, ignoredCount, suffix, options.getSeparator());
             }
-            truncateLines(buffer, options.getSeparator(), options.allLines() ? null : options.getLines());
+            StringBuilders.truncateLines(buffer, options.getSeparator(), options.getLines());
         } else {
             throwable.printStackTrace(new PrintWriter(new StringBuilderWriter(buffer)));
         }
@@ -279,25 +280,6 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         if (Strings.isNotBlank(suffix)) {
             buffer.append(' ');
             buffer.append(suffix);
-        }
-    }
-
-    private void truncateLines(final StringBuilder sb, final String lineSeparator, final Integer maxLineCount) {
-        if (maxLineCount == null) {
-            return;
-        }
-
-        String content = sb.toString();
-        String[] lines = content.split(lineSeparator);
-
-        if (lines.length <= maxLineCount) {
-            return;
-        }
-
-        sb.setLength(0);
-        for (int i = 0; i < maxLineCount; i++) {
-            sb.append(lines[i]);
-            sb.append(lineSeparator);
         }
     }
 }

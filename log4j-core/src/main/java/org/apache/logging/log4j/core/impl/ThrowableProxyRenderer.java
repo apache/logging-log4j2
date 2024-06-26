@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.impl;
 
 import java.util.List;
 import org.apache.logging.log4j.core.pattern.TextRenderer;
+import org.apache.logging.log4j.core.util.internal.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -259,7 +260,7 @@ final class ThrowableProxyRenderer {
                 lineSeparator);
         formatSuppressed(sb, TAB, src.getSuppressedProxies(), ignorePackages, textRenderer, suffix, lineSeparator);
         formatCause(sb, Strings.EMPTY, src.getCauseProxy(), ignorePackages, textRenderer, suffix, lineSeparator);
-        truncateLines(sb, lineSeparator, maxLineCount, textRenderer);
+        StringBuilders.truncateLines(sb, lineSeparator, maxLineCount);
     }
 
     /**
@@ -299,7 +300,7 @@ final class ThrowableProxyRenderer {
                 textRenderer,
                 suffix,
                 lineSeparator);
-        truncateLines(sb, lineSeparator, maxLineCount, textRenderer);
+        StringBuilders.truncateLines(sb, lineSeparator, maxLineCount);
     }
 
     private static void renderOn(
@@ -309,29 +310,6 @@ final class ThrowableProxyRenderer {
         if (msg != null) {
             textRenderer.render(": ", output, "NameMessageSeparator");
             textRenderer.render(msg, output, "Message");
-        }
-    }
-
-    private static void truncateLines(
-            final StringBuilder sb,
-            final String lineSeparator,
-            final Integer maxLineCount,
-            final TextRenderer textRenderer) {
-        if (maxLineCount == null) {
-            return;
-        }
-
-        String content = sb.toString();
-        String[] lines = content.split(lineSeparator);
-
-        if (lines.length <= maxLineCount) {
-            return;
-        }
-
-        sb.setLength(0);
-        for (int i = 0; i < maxLineCount; i++) {
-            sb.append(lines[i]);
-            textRenderer.render(lineSeparator, sb, "Text");
         }
     }
 }
