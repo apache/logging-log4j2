@@ -188,9 +188,9 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
             buffer.append(' ');
         }
         if (requireAdditionalFormatting(suffix)) {
-            StackTraceElement[] stackTrace = throwable.getStackTrace();
+            final StackTraceElement[] stackTrace = throwable.getStackTrace();
             int ignoredCount = 0;
-            for (StackTraceElement stackTraceElement : stackTrace) {
+            for (final StackTraceElement stackTraceElement : stackTrace) {
                 if (!ignoreElement(stackTraceElement, options.getIgnorePackages())) {
                     if (ignoredCount > 0) {
                         appendSuppressedCount(buffer, ignoredCount, suffix, options.getSeparator());

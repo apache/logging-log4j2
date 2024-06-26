@@ -423,6 +423,27 @@ public class ThrowableProxy implements Serializable {
      * @param textRenderer The message renderer.
      * @param suffix Append this to the end of each stack frame.
      * @param lineSeparator The end-of-line separator.
+     * @deprecated since 2.24.0. Use {@link #formatExtendedStackTraceTo(StringBuilder, List, TextRenderer, String, String, Integer)}.
+     */
+    @Deprecated
+    public void formatExtendedStackTraceTo(
+            final StringBuilder sb,
+            final List<String> ignorePackages,
+            final TextRenderer textRenderer,
+            final String suffix,
+            final String lineSeparator) {
+        ThrowableProxyRenderer.formatExtendedStackTraceTo(
+                this, sb, ignorePackages, textRenderer, suffix, lineSeparator, null);
+    }
+
+    /**
+     * Formats the stack trace including packaging information.
+     *
+     * @param sb Destination.
+     * @param ignorePackages List of packages to be ignored in the trace.
+     * @param textRenderer The message renderer.
+     * @param suffix Append this to the end of each stack frame.
+     * @param lineSeparator The end-of-line separator.
      * @param maxLineCount The total line count of final result
      */
     public void formatExtendedStackTraceTo(
