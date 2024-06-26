@@ -36,127 +36,112 @@ note left of LoggerContext {
   Anchor for the logging system
 }
 
-LoggerContext --> Configuration
-
 LoggerContext --> "0..*" Logger
 
-class Configuration {
-  Appender[] appenders
-  Filter[] filters
-  LoggerConfig[] loggerConfigs
-  LoggerConfig getLoggerConfig(String name)
-  StrSubstitutor substitutor
+package "Configuration" as c {
+
+    class Configuration {
+      Appender[] appenders
+      Filter[] filters
+      LoggerConfig[] loggerConfigs
+      LoggerConfig getLoggerConfig(String name)
+      StrSubstitutor substitutor
+    }
+
+    note left of Configuration
+      Encapsulates components compiled
+      from a user-provided configuration
+      file (e.g., `log4j2.xml`)
+    end note
+
+    Configuration --> Filter
+
+    Configuration --> "0..*" Appender
+
+    Configuration --> "0..*" LoggerConfig
+
+    Configuration --> StrSubstitutor
+
+    class Appender {
+      AbstractManager manager
+      Layout layout
+      Filter filter
+      void append(LogEvent)
+    }
+
+    Appender --> Layout
+
+    Appender --> Filter
+
+    class Layout {
+      byte[] encode(LogEvent)
+    }
+
+    class Filter {
+      Result filter(LogEvent)
+    }
+
+    note right of Filter
+      Note that a `Filter` can
+      be provided at 4 levels:
+      1. `Configuration`
+      2. `LoggerConfig`
+      3. `AppenderControl`
+      4. `Appender`
+    end note
+
+    class LoggerConfig {
+      AppenderControl[] appenderControls
+      Level level
+      Filter filter
+      void log(LogEvent)
+    }
+
+    LoggerConfig -[#green,thickness=6]-> "0..*" AppenderControl
+
+    LoggerConfig --> Filter
+
+    class AppenderControl {
+      Appender appender
+      Filter filter
+      void append(LogEvent)
+    }
+
+    note right of AppenderControl
+      Decorates an `Appender`
+      with a `Filter`
+    end note
+
+    AppenderControl -[#green,thickness=6]-> Appender
+
+    AppenderControl --> Filter
+
+    class StrSubstitutor {
+      Interpolator interpolator
+      String replace(String input)
+    }
+
+    note right of StrSubstitutor
+      Responsible for
+      property substitution
+      (e.g., `${env:USER}`)
+    end note
+
+    StrSubstitutor --> Interpolator
+
+    class Interpolator {
+      StrLookup[] lookups
+      String lookup(String input)
+    }
+
+    Interpolator --> "0..*" StrLookup
+
+    class StrLookup {
+      String lookup(String input)
+    }
 }
 
-note left of Configuration
-  Encapsulates components compiled
-  from a user-provided configuration
-  file (e.g., `log4j2.xml`)
-end note
-
-Configuration --> "0..*" Filter
-
-Configuration --> "0..*" Appender
-
-Configuration --> "0..*" LoggerConfig
-
-Configuration --> StrSubstitutor
-
-class Appender {
-  Layout layout
-  void append(LogEvent)
-}
-
-Appender -[#green,thickness=6]-> Layout
-
-class Layout {
-  byte[] encode(LogEvent)
-}
-
-class Filter {
-  Result filter(LogEvent)
-}
-
-note right of Filter
-  Note that a `Filter` can
-  be provided at 4 levels:
-  1. `Configuration`
-  2. `LoggerConfig`
-  3. `AppenderRef`
-  4. `AppenderControl`
-end note
-
-class LoggerConfig {
-  AppenderRef[] appenderRefs
-  AppenderControl[] appenderControls
-  Level level
-  Filter filter
-  void log(LogEvent)
-}
-
-LoggerConfig --> "0..*" AppenderRef
-
-LoggerConfig -[#green,thickness=6]-> "0..*" AppenderControl
-
-LoggerConfig --> Filter
-
-class AppenderRef {
-  String appenderName
-  Level level
-  Filter filter
-}
-
-note right of AppenderRef
-  Denotes a user-provided
-  appender configuration
-  for a `Logger`,
-  e.g., `<AppenderRef`
-  element in a `log4j2.xml`.
-
-  It is used to populate
-  `AppenderControl`s.
-end note
-
-AppenderRef --> Filter
-
-class AppenderControl {
-  Appender appender
-  Filter filter
-  void append(LogEvent)
-}
-
-note right of AppenderControl
-  Decorates an `Appender`
-  with a `Filter`
-end note
-
-AppenderControl -[#green,thickness=6]-> Appender
-
-AppenderControl --> Filter
-
-class StrSubstitutor {
-  Interpolator interpolator
-  String replace(String input)
-}
-
-note right of StrSubstitutor
-  Responsible for
-  property substitution
-  (e.g., `${env:USER}`)
-end note
-
-StrSubstitutor --> Interpolator
-
-class Interpolator {
-  StrLookup[] lookups
-  String lookup(String input)
-}
-
-Interpolator --> "0..*" StrLookup
-
-class StrLookup {
-  String lookup(String input)
-}
+LoggerContext --> Configuration
 
 class Logger {
   void log(Level level, Message message)
@@ -169,6 +154,11 @@ end note
 
 Logger -[#green,thickness=6]-> LoggerConfig : delegates `log()`
 
+class AbstractManager {
+}
+
+Appender -[#green,thickness=6]-> AbstractManager
+
 @enduml
 ....
 
@@ -177,12 +167,69 @@ At a really high level,
 * A <<LoggerContext>>, the composition anchor, gets created in combination with a <<Configuration>>.
 Both can be created either directly (i.e., programmatically) or indirectly at first interaction with Log4j.
 * `LoggerContext` creates <<Logger>>s that users interact with for logging purposes.
-* <<Appender>> delivers a link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html[`LogEvent`] to a target (file, socket, database, etc.) and typically uses a <<Layout>> to encode log events.
+* <<Appender>> delivers a
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html[`LogEvent`]
+to a target (file, socket, database, etc.) and typically uses a <<Layout>> to encode log events and an
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/AbstractManager.html[`AbstractManager`]
+to handle the lifecycle of the target resource.
 * <<LoggerConfig>> encapsulates configuration for a `Logger`, as `AppenderControl` and `AppenderRef` for ``Appender``s.
 * <<Configuration>> is equipped with <<StrSubstitutor>> to allow property substitution in `String`-typed values.
-* A typical `log()` call triggers a chain of invocations through classes `Logger`, `LoggerConfig`, `AppenderControl`, `Appender`, and `Layout` in order – this is depicted using green arrows in xref:architecture-diagram[xrefstyle=short].
+* A typical `log()` call triggers a chain of invocations through classes `Logger`, `LoggerConfig`, `AppenderControl`, `Appender`, and `AbstractManager` in order – this is depicted using green arrows in xref:architecture-diagram[xrefstyle=short].
 
 Following sections examine this interplay in detail.
+
+[#reconfiguration]
+== Reconfiguration reliability
+
+The main motivation for such an architecture is reliability to configuration changes.
+When a reconfiguration event occurs, two `Configuration` instances are active at the same time.
+Threads that already started processing a log event will either:
+
+* continue logging to the old configuration, if execution already reached the `LoggerConfig` class,
+* or switch to the new configuration.
+
+The service that manages the reconfiguration process is called
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ReliabilityStrategy.html[`ReliabilityStrategy`]
+and it decides:
+
+* when should ``Logger``s switch to the new configuration,
+* when should the old configuration be stopped.
+
+.Overview of the reconfiguration process
+[plantuml]
+....
+@startuml
+left to right direction
+
+package LoggerContext {
+    object Logger
+
+    package "New Configuration" as c2 {
+        object "LoggerConfig" as lc2
+        object "AppenderControl" as ac2
+        object "Appender" as app2
+    }
+
+    package "Old Configuration" as c1 {
+        object "LoggerConfig" as lc1
+        object "AppenderControl" as ac1
+        object "Appender" as app1
+    }
+}
+
+object AbstractManager
+
+Logger ..> lc1
+lc1 --> ac1
+ac1 --> app1
+app1 --> AbstractManager
+
+Logger --> lc2
+lc2 --> ac2
+ac2 --> app2
+app2 --> AbstractManager
+@enduml
+....
 
 [#LoggerContext]
 == `LoggerContext`
@@ -728,6 +775,27 @@ In xref:#appender-additivity-diagram[xrefstyle=short], the effective appenders f
 | -
 | ✅
 |===
+====
+
+[#AbstractManager]
+=== `AbstractManager`
+
+To multiplex the access to external resources (files, network connections, etc.), most appenders are split into an
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/AbstractManager.html[`AbstractManager`]
+that handles the low-level access to the external resource and an `Appender` that transforms log events into a format that the manager can handle.
+
+Managers that share the same resource are shared between appenders regardless of the `Configuration` or `LoggerContext` of the appenders.
+For example
+xref:manual/appenders.adoc#FileAppender[`FileAppender`]s
+with the same `fileName` attribute all share the same
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/FileManager.html[`FileManager`].
+
+[IMPORTANT]
+====
+Due to the manager-sharing feature of many Log4j appenders, it is not possible to configure multiple appenders for the same resource that only differ in the way the underlying resource is configured.
+
+For example, it is not possible to have two file appenders (even in different logger contexts) that use the same file, but a different value of the `append` option.
+Since during a <<reconfiguration,reconfiguration event>> multiple instances of the same appender exists, it is also not possible to toggle the value of the `append` option through reconfiguration.
 ====
 
 [#Layout]
