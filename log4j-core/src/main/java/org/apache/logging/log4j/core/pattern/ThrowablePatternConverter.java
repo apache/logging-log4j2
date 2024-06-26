@@ -275,27 +275,32 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         sb.append(lineSeparator);
     }
 
-    private void appendSuffix(StringBuilder buffer, String suffix) {
+    private void appendSuffix(
+            final StringBuilder buffer,
+            final String suffix) {
         if (Strings.isNotBlank(suffix)) {
             buffer.append(' ');
             buffer.append(suffix);
         }
     }
 
-    private void truncateLines(StringBuilder sb, String lineSeparator, Integer linesToKeep) {
-        if (linesToKeep == null) {
+    private void truncateLines(
+            final StringBuilder sb,
+            final String lineSeparator,
+            final Integer maxLineCount) {
+        if (maxLineCount == null) {
             return;
         }
 
         String content = sb.toString();
         String[] lines = content.split(lineSeparator);
 
-        if (lines.length <= linesToKeep) {
+        if (lines.length <= maxLineCount) {
             return;
         }
 
         sb.setLength(0);
-        for (int i = 0; i < linesToKeep; i++) {
+        for (int i = 0; i < maxLineCount; i++) {
             sb.append(lines[i]);
             sb.append(lineSeparator);
         }

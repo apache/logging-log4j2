@@ -241,7 +241,7 @@ final class ThrowableProxyRenderer {
             final TextRenderer textRenderer,
             final String suffix,
             final String lineSeparator,
-            final Integer linesToKeep) {
+            final Integer maxLineCount) {
         renderOn(src, sb, textRenderer);
         renderSuffix(suffix, sb, textRenderer);
         textRenderer.render(lineSeparator, sb, "Text");
@@ -259,7 +259,7 @@ final class ThrowableProxyRenderer {
                 lineSeparator);
         formatSuppressed(sb, TAB, src.getSuppressedProxies(), ignorePackages, textRenderer, suffix, lineSeparator);
         formatCause(sb, Strings.EMPTY, src.getCauseProxy(), ignorePackages, textRenderer, suffix, lineSeparator);
-        truncateLines(sb, lineSeparator, linesToKeep, textRenderer);
+        truncateLines(sb, lineSeparator, maxLineCount, textRenderer);
     }
 
     /**
@@ -279,7 +279,7 @@ final class ThrowableProxyRenderer {
             final TextRenderer textRenderer,
             final String suffix,
             final String lineSeparator,
-            final Integer linesToKeep) {
+            final Integer maxLineCount) {
         final ThrowableProxy causeProxy = src.getCauseProxy();
         if (causeProxy != null) {
             formatWrapper(sb, causeProxy, ignorePackages, textRenderer, suffix, lineSeparator);
@@ -299,7 +299,7 @@ final class ThrowableProxyRenderer {
                 textRenderer,
                 suffix,
                 lineSeparator);
-        truncateLines(sb, lineSeparator, linesToKeep, textRenderer);
+        truncateLines(sb, lineSeparator, maxLineCount, textRenderer);
     }
 
     private static void renderOn(
@@ -313,20 +313,23 @@ final class ThrowableProxyRenderer {
     }
 
     private static void truncateLines(
-            StringBuilder sb, String lineSeparator, Integer linesToKeep, TextRenderer textRenderer) {
-        if (linesToKeep == null) {
+            final StringBuilder sb,
+            final String lineSeparator,
+            final Integer maxLineCount,
+            final TextRenderer textRenderer) {
+        if (maxLineCount == null) {
             return;
         }
 
         String content = sb.toString();
         String[] lines = content.split(lineSeparator);
 
-        if (lines.length <= linesToKeep) {
+        if (lines.length <= maxLineCount) {
             return;
         }
 
         sb.setLength(0);
-        for (int i = 0; i < linesToKeep; i++) {
+        for (int i = 0; i < maxLineCount; i++) {
             sb.append(lines[i]);
             textRenderer.render(lineSeparator, sb, "Text");
         }
