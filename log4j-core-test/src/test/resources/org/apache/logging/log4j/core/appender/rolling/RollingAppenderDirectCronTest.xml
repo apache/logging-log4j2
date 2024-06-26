@@ -15,33 +15,19 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="WARN" name="RollingCronTest" monitorInterval="1">
-
+<Configuration xmlns="https://logging.apache.org/xml/ns"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-config-2.xsd"
+               status="OFF">
   <Appenders>
-    <Console name="STDOUT">
-      <PatternLayout pattern="%m%n"/>
-    </Console>
-    <RollingFile name="RollingFile" filePattern="target/rolling-direct-cron/test1-%d{MM-dd-yy-HH-mm-ss}.log">
-      <PatternLayout>
-        <Pattern>%d{MM-dd-yy-HH-mm-ss} %p %C{1.} [%t] %m%n</Pattern>
-      </PatternLayout>
+    <RollingFile name="RollingFile" filePattern="${test:logging.path}/test-%d{yyyy-MM-dd'T'hh-mm-ss}.log">
+      <PatternLayout pattern="%d{yyyy-MM-dd'T'hh-mm-ss} %m%n"/>
       <CronTriggeringPolicy schedule="* * * * * ?"/>
     </RollingFile>
-    <List name="List">
-      <Filters>
-        <ThresholdFilter level="error"/>
-      </Filters>
-    </List>
   </Appenders>
-
   <Loggers>
-    <Logger name="org.apache.logging.log4j.core.appender.rolling" level="debug" additivity="false">
+    <Root level="DEBUG">
       <AppenderRef ref="RollingFile"/>
-    </Logger>
-
-    <Root level="error">
-      <AppenderRef ref="STDOUT"/>
     </Root>
   </Loggers>
-
 </Configuration>

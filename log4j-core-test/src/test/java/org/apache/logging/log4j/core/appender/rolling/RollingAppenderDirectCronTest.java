@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.waitAtMost;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -23,39 +25,38 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.assertj.core.api.Assertions;
+import org.awaitility.Awaitility;
+import org.junit.jupiter.api.Test;
 
-/**
- *
- */
-public class RollingAppenderDirectCronTest {
+@UsingStatusListener
+class RollingAppenderDirectCronTest {
 
-    private static final String CONFIG = "log4j-rolling-direct-cron.xml";
-    private static final String DIR = "target/rolling-direct-cron";
+    private static final Pattern FILE_PATTERN = Pattern.compile("test-(\\d{4}-\\d{2}-\\d{2}T\\d{2}-\\d{2}-\\d{2})\\.log");
+    private static final Pattern LINE_PATTERN = Pattern.compile("This is test message number \\d+\\.");
 
-    private final LoggerContextRule loggerContextRule =
-            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
-
-    @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
-
-    private final Pattern filePattern = Pattern.compile(".*(\\d\\d-\\d\\d-\\d\\d-\\d\\d-\\d\\d-\\d\\d).*$");
+    @TempLoggingDir
+    private Path loggingPath;
 
     @Test
-    public void testAppender() throws Exception {
-        // TODO Is there a better way to test than putting the thread to sleep all over the place?
-        final RollingFileAppender app = loggerContextRule.getAppender("RollingFile");
-        final Logger logger = loggerContextRule.getLogger();
-        logger.debug("This is test message number 1");
+    @LoggerContextSource
+    void testAppender(final LoggerContext ctx, @Named("RollingFile") final RollingFileAppender app) throws Exception {
+        final Logger logger = ctx.getLogger(RollingAppenderDirectCronTest.class);
+        int msgNumber = 1;
+        logger.debug("This is test message number {}.", msgNumber++);
         final RolloverDelay delay = new RolloverDelay(app.getManager());
         delay.waitForRollover();
         final File dir = new File(DIR);
@@ -71,7 +72,7 @@ public class RollingAppenderDirectCronTest {
         delay.waitForRollover();
     }
 
-    private class RolloverDelay implements RolloverListener {
+    private static class RolloverDelay implements RolloverListener {
         private volatile CountDownLatch latch;
 
         public RolloverDelay(final RollingFileManager manager) {
@@ -80,13 +81,7 @@ public class RollingAppenderDirectCronTest {
         }
 
         public void waitForRollover() {
-            try {
-                if (!latch.await(3, TimeUnit.SECONDS)) {
-                    fail("failed to rollover");
-                }
-            } catch (InterruptedException ex) {
-                fail("failed to rollover");
-            }
+            waitAtMost(3, TimeUnit.SECONDS).until(() -> latch.getCount() == 0);
         }
 
         public void reset(final int count) {
@@ -98,11 +93,12 @@ public class RollingAppenderDirectCronTest {
 
         @Override
         public void rolloverComplete(final String fileName) {
-            final java.util.regex.Matcher matcher = filePattern.matcher(fileName);
-            assertTrue("Invalid file name: " + fileName, matcher.matches());
-            final Path path = new File(fileName).toPath();
+            final Path path = Paths.get(fileName);
+            final Matcher matcher = FILE_PATTERN.matcher(path.getFileName().toString());
+            assertThat(matcher).as("Rolled file").matches();
             try {
                 final List<String> lines = Files.readAllLines(path);
+                assertThat
                 assertTrue("Not enough lines in " + fileName + ":" + lines.size(), lines.size() > 0);
                 assertTrue(
                         "log and file times don't match. file: " + matcher.group(1) + ", log: " + lines.get(0),
