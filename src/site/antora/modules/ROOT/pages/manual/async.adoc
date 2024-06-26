@@ -123,33 +123,36 @@ A configuration that mixes asynchronous loggers might look like:
 ====
 XML::
 +
+.Snippet from an example {antora-examples-url}/manual/async/mixed-async.xml[`log4j2.xml`]
 [source,xml]
 ----
-include::example$manual/configuration/mixed-async.xml[lines=1;18..-1]
+include::example$manual/async/mixed-async.xml[lines=31..40,indent=0]
 ----
 
 JSON::
 +
+.Snippet from an example {antora-examples-url}/manual/async/mixed-async.json[`log4j2.json`]
 [source,json]
 ----
-include::example$manual/configuration/mixed-async.json[]
+include::example$manual/async/mixed-async.json[lines=17..36,indent=0]
 ----
 
 YAML::
 +
+.Snippet from an example {antora-examples-url}/manual/async/mixed-async.yaml[`log4j2.yaml`]
 [source,yaml]
 ----
-include::example$manual/configuration/mixed-async.yaml[lines=17..-1]
+include::example$manual/async/mixed-async.yaml[lines=27..-1,indent=0]
 ----
 
 Properties::
 +
+.Snippet from an example {antora-examples-url}/manual/async/mixed-async.properties[`log4j2.properties`]
 [source,properties]
 ----
-include::example$manual/configuration/mixed-async.properties[lines=17..-1]
+include::example$manual/async/mixed-async.properties[lines=28..-1]
 ----
 ====
-
 <1> All the appenders referenced by `Root` and `Logger` are called synchronously.
 This is especially important for audit logging, since exceptions can be forwarded to the caller.
 <2> All the appenders references by `AsyncRoot` and `AsyncLogger` are called asynchronously.
@@ -194,30 +197,34 @@ to your configuration.
 ====
 XML::
 +
+.Snippet from an example {antora-examples-url}/manual/async/custom-wait-strategy.xml[`log4j2.xml`]
 [source,xml]
 ----
-include::example$manual/configuration/custom-wait-strategy.xml[lines=1;18..-1]
+include::example$manual/async/custom-wait-strategy.xml[lines=23,indent=0]
 ----
 
 JSON::
 +
+.Snippet from an example {antora-examples-url}/manual/async/custom-wait-strategy.json[`log4j2.json`]
 [source,json]
 ----
-include::example$manual/configuration/custom-wait-strategy.json[]
+include::example$manual/async/custom-wait-strategy.json[lines=3..5,indent=0]
 ----
 
 YAML::
 +
+.Snippet from an example {antora-examples-url}/manual/async/custom-wait-strategy.yaml[`log4j2.yaml`]
 [source,yaml]
 ----
-include::example$manual/configuration/custom-wait-strategy.yaml[lines=17..-1]
+include::example$manual/async/custom-wait-strategy.yaml[lines=18..-1]
 ----
 
 Properties::
 +
+.Snippet from an example {antora-examples-url}/manual/async/custom-wait-strategy.properties[`log4j2.properties`]
 [source,properties]
 ----
-include::example$manual/configuration/custom-wait-strategy.properties[lines=17..-1]
+include::example$manual/async/custom-wait-strategy.properties[lines=17..-1]
 ----
 ====
 
