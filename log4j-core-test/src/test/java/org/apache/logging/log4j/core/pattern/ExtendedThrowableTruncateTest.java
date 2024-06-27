@@ -29,28 +29,27 @@ import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-/**
- * Unit tests for {@code throwable} pattern.
- */
-@LoggerContextSource("log4j-throwable.xml")
-public class ThrowableTest {
+@LoggerContextSource("log4j-extend-throwable-truncate.xml")
+public class ExtendedThrowableTruncateTest {
     private ListAppender app;
-    private Logger logger;
 
     @BeforeEach
-    public void setUp(final LoggerContext context, @Named("List") final ListAppender app) {
-        this.logger = context.getLogger("LoggerTest");
+    public void setUp(@Named("List") final ListAppender app) throws Exception {
         this.app = app.clear();
     }
 
     @Test
-    public void testException() {
+    public void testException(final LoggerContext context) {
+        final Logger logger = context.getLogger("LoggerTest");
         final Throwable cause = new NullPointerException("null pointer");
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
         logger.error("Exception", parent);
         final List<String> msgs = app.getMessages();
         assertNotNull(msgs);
         assertEquals(1, msgs.size(), "Incorrect number of messages. Should be 1 is " + msgs.size());
-        assertFalse(msgs.get(0).contains("suppressed"), "Should not suppress lines");
+        String[] splits = msgs.get(0).split("\n");
+        assertEquals(5, splits.length);
+        assertEquals("Exception java.lang.IllegalArgumentException: IllegalArgument", splits[0]);
+        assertFalse(msgs.get(0).contains("suppressed"), "No suppressed lines");
     }
 }

@@ -26,31 +26,24 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-/**
- * Unit tests for {@code throwable} pattern.
- */
-@LoggerContextSource("log4j-throwable.xml")
-public class ThrowableTest {
-    private ListAppender app;
-    private Logger logger;
-
-    @BeforeEach
-    public void setUp(final LoggerContext context, @Named("List") final ListAppender app) {
-        this.logger = context.getLogger("LoggerTest");
-        this.app = app.clear();
-    }
-
+@LoggerContextSource("log4j-root-throwable-truncate.xml")
+public class RootThrowableTruncateTest {
     @Test
-    public void testException() {
+    public void testException(final LoggerContext context, @Named("List") final ListAppender app) {
+        app.clear();
+        final Logger logger = context.getLogger("LoggerTest");
         final Throwable cause = new NullPointerException("null pointer");
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
         logger.error("Exception", parent);
         final List<String> msgs = app.getMessages();
         assertNotNull(msgs);
         assertEquals(1, msgs.size(), "Incorrect number of messages. Should be 1 is " + msgs.size());
+        String[] splits = msgs.get(0).split("\n");
+        assertEquals(10, splits.length);
+        assertEquals("Exception java.lang.NullPointerException: null pointer", splits[0]);
         assertFalse(msgs.get(0).contains("suppressed"), "Should not suppress lines");
+        app.clear();
     }
 }

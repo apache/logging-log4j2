@@ -17,8 +17,8 @@
 package org.apache.logging.log4j.core.pattern;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import org.apache.logging.log4j.Logger;
@@ -28,7 +28,7 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.Test;
 
-@LoggerContextSource("log4j-rootthrowablefilter.xml")
+@LoggerContextSource("log4j-root-throwable.xml")
 public class RootThrowableTest {
     @Test
     public void testException(final LoggerContext context, @Named("List") final ListAppender app) {
@@ -40,7 +40,7 @@ public class RootThrowableTest {
         final List<String> msgs = app.getMessages();
         assertNotNull(msgs);
         assertEquals(1, msgs.size(), "Incorrect number of messages. Should be 1 is " + msgs.size());
-        assertTrue(msgs.get(0).contains("suppressed"), "No suppressed lines");
+        assertFalse(msgs.get(0).contains("suppressed"), "Should not suppress lines");
         app.clear();
     }
 }
