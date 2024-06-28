@@ -3810,6 +3810,61 @@ Note that the AuditAppender was predefined while the RollingFileAppenders are cr
 </Configuration>
 ----
 
+[#servlet-appender]
+== Servlet appender
+
+The servlet appender allows users to forward all logging calls to the
+https://jakarta.ee/specifications/servlet/5.0/apidocs/jakarta/servlet/servletcontext#log(java.lang.String,java.lang.Throwable)[`ServletContext.log(String, Throwable)`]
+methods.
+You can use it by declaring an appender of type `Servlet` in your configuration file:
+
+[tabs]
+====
+XML::
++
+[source,xml,indent=0]
+----
+include::example$manual/appenders/servlet-appender.xml[tag=servlet]
+----
+
+JSON::
++
+[source,xml,indent=0]
+----
+include::example$manual/appenders/servlet-appender.json[tag=servlet]
+----
+
+YAML::
++
+[source,xml,indent=0]
+----
+include::example$manual/appenders/servlet-appender.yaml[tag=servlet]
+----
+
+Properties::
++
+[source,xml,indent=0]
+----
+include::example$manual/appenders/servlet-appender.properties[tag=servlet]
+----
+====
+
+<1> The appender passes the exception using the `Throwable` parameter of the
+https://jakarta.ee/specifications/servlet/5.0/apidocs/jakarta/servlet/servletcontext#log(java.lang.String,java.lang.Throwable)[`ServletContext.log(String, Throwable)`] method.
+Setting `alwaysWriteExceptions` to `false` prevents exceptions from appearing in the log file twice.
+
+Additional runtime dependencies are required for using the servlet appender:
+
+include::partial$manual/dependencies-log4j-jakarta-web.adoc[]
+
+See xref:manual/webapp.adoc[] for more information.
+
+[CAUTION]
+====
+`ServletContext.log(String, Throwable)` is a very primitive logging interface.
+Modern application servers usually forward its calls to a proper logging framework and use a **fixed** logging level for all the events.
+====
+
 [[SMTPAppender]]
 === SMTPAppender
 

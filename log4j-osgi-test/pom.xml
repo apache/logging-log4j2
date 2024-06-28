@@ -203,7 +203,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <classpathDependencyExcludes>
-            <exclude>org.osgi:org.osgi.framework</exclude>
+            <exclude>org.osgi:org.osgi.core</exclude>
           </classpathDependencyExcludes>
           <systemPropertyVariables>
             <!-- PAX logging has a copy of Log4j2 API-->

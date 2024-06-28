@@ -15,10 +15,6 @@ Licensed to the Apache Software Foundation (ASF) under one or more
     limitations under the License.
 ////
 
-#set($h1='#') #set($h2='##')
-
-== TODO: use properties for dynamic dependency versions
-
-$h1 Cassandra Appender
+= Cassandra Appender
 
 The Cassandra Appender allow applications to send events to Apache Cassandra repositories.

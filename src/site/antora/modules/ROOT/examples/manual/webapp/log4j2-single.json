@@ -1,0 +1,48 @@
+{
+  "Configuration": {
+    "Appenders": {
+      // tag::global[]
+      "File": {
+        "name": "GLOBAL",
+        "fileName": "logs/global.log",
+        "JsonTemplateLayout": {
+          "EventTemplateAdditionalField": {
+            "key": "contextName",
+            "value": "$${web:contextName}"
+          }
+        }
+      },
+      // end::global[]
+      // tag::routing[]
+      "Routing": {
+        "name": "ROUTING",
+        "Routes": {
+          "pattern": "$${web:contextName:-common}",
+          "Route": {
+            "File": {
+              "name": "${web:contextName:-common}",
+              "fileName": "logs/${web:contextName:-common}.log",
+              "PatternLayout": {
+                "pattern": "d [%t] %-5p %c - %m%n"
+              }
+            }
+          }
+        }
+      }
+      // end::routing[]
+    },
+    "Loggers": {
+      "Route": {
+        "level": "INFO",
+        "AppenderRef": [
+          {
+            "ref": "GLOBAL"
+          },
+          {
+            "ref": "ROUTING"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -27,14 +27,14 @@ import org.junit.jupiter.params.provider.EnumSource;
 // ThreadContext initialization will result in static final fields being set in various components.
 // To use a different ThreadContextMap, the test needs to be run in a new JVM.
 @Tag(Tags.ASYNC_LOGGERS)
-public class AsyncThreadContextGarbageFreeTest extends AbstractAsyncThreadContextTestBase {
+class AsyncThreadContextGarbageFreeTest extends AbstractAsyncThreadContextTestBase {
 
     @TempLoggingDir
     private static Path loggingPath;
 
     @ParameterizedTest
     @EnumSource
-    public void testAsyncLogWritesToLog(Mode asyncMode) throws Exception {
+    void testAsyncLogWritesToLog(final Mode asyncMode) throws Exception {
         testAsyncLogWritesToLog(ContextImpl.GARBAGE_FREE, asyncMode, loggingPath);
     }
 }
