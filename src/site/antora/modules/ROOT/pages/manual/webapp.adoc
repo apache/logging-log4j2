@@ -370,6 +370,9 @@ OpenLiberty::
 In OpenLiberty, you can add Log4j as a _global library_.
 See https://openliberty.io/docs/latest/class-loader-library-config.html#_configure_global_libraries[OpenLiberty documentation] for more details.
 
+Payara::
+See https://docs.payara.fish/community/docs/Technical%20Documentation/Payara%20Server%20Documentation/Server%20Configuration%20And%20Management/Classloading/Standard%20Classloading.html#common-libraries[Payara Common Libraries documentation].
+
 Tomcat::
 In Tomcat, you can use the _common classloader_.
 See {tomcat-latest-url}/class-loader-howto.html[Tomcat classloader documentation] for more details.
