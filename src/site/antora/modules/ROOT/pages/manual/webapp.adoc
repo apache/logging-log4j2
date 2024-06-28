@@ -415,7 +415,7 @@ xref:manual/architecture.adoc#LoggerContext[`LoggerContext`]s.
 You have therefore two ways to separate log events:
 
 . You can create a separate logger context for each web application and one for the common libraries.
-See <<context-selectors>> for more details.
+See <<multiple-contexts>> for more details.
 . You can also use a **single** logger context for all log events, but use
 xref:manual/lookups.adoc[lookups] to add context data to your log events.
 See <<single-context>> for more details.
@@ -559,6 +559,9 @@ See <<log4jContextName>> and <<log4jConfiguration>> for more details.
 
 Associating logger contexts to classloaders has however some limitations: **shared** libraries will not be able to use the per-application logger contexts.
 To overcome this limitation Log4j Core provides an alternative algorithm to determine the right logger context to choose: JNDI lookups.
+
+[#jndi-configuration]
+==== JNDI context selector
 
 Application servers set up the correct JNDI context as soon as they determine, which application will handle a request.
 Log4j Core allows the usage of JNDI to coordinate the usage of logger contexts in a Jakarta EE application server.
