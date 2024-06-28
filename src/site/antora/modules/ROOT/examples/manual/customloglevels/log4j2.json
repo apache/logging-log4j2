@@ -1,0 +1,41 @@
+{
+  "Configuration": {
+    "Appenders": {
+      "Console": {
+        "name": "CONSOLE",
+        "PatternLayout": {
+          "pattern": "%d [%t] %p %c - %m%n" // <1>
+        }
+      }
+    },
+    "CustomLevels": { // <4>
+      "CustomLevel": [
+        {
+          "name": "INFO2",
+          "intLevel": 375
+        },
+        {
+          "name": "INFO3",
+          "intLevel": 350
+        },
+        {
+          "name": "INFO4",
+          "intLevel": 325
+        }
+      ]
+    },
+    "Loggers": {
+      "Logger": {
+        "name": "com.example",
+        "level": "DEBUG" // <2>
+      },
+      "Root": {
+        "level": "INFO2", // <5>
+        "AppenderRef": {
+          "ref": "CONSOLE",
+          "level": "WARN" // <3>
+        }
+      }
+    }
+  }
+}

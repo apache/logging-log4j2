@@ -1592,33 +1592,33 @@ Format modifiers to control such things as field width, padding, left, and right
 |Pattern
 |Comment
 
-|xref:#converter-logger[%c\{precision} +
-%logger\{precision}]
+|<<converter-logger,%c\{precision} +
+%logger\{precision}>>
 |
 
-|xref:#converter-date[%d +
-%date]
+|<<converter-date,%d +
+%date>>
 |Only the predefined date formats (`DEFAULT`, `ISO8601`, `UNIX`, `UNIX_MILLIS`, etc.) are garbage-free
 
-|xref:#converter-encode[%enc\{pattern} +
-%encode\{pattern}]
+|<<converter-encode,%enc\{pattern} +
+%encode\{pattern}>>
 |
 
-|xref:#converter-equals[%equals\{pattern}\{test}\{substitution} +
-%equalsIgnoreCase\{pattern}\{test}\{substitution}]
+|<<converter-equals,%equals\{pattern}\{test}\{substitution} +
+%equalsIgnoreCase\{pattern}\{test}\{substitution}>>
 |
 
 |<<converter-highlight,%highlight\{pattern}\{style}>>
 |Granted nested pattern is garbage-free
 
-|xref:#converter-map[%K\{key} +
+|<<converter-map,%K\{key} +
 %map\{key} +
-%MAP\{key}]
+%MAP\{key}>>
 |
 
-|xref:#converter-message[%m +
+|<<converter-message,%m +
 %msg +
-%message]
+%message>>
 |
 
 |<<converter-marker,%marker>>
@@ -1627,54 +1627,54 @@ Format modifiers to control such things as field width, padding, left, and right
 |<<converter-marker,%markerSimpleName>>
 |
 
-|xref:#converter-max-len[%maxLen +
-%maxLength]
+|<<converter-max-len,%maxLen +
+%maxLength>>
 |
 
 |%n
 |
 
-|xref:#converter-nano[%N +
-%nano]
+|<<converter-nano,%N +
+%nano>>
 |
 
-|xref:#converter-not-empty[%notEmpty\{pattern} +
+|<<converter-not-empty,%notEmpty\{pattern} +
 %varsNotEmpty\{pattern} +
-%variablesNotEmpty\{pattern}]
+%variablesNotEmpty\{pattern}>>
 |
 
-|xref:#converter-level[%p +
-%level]
+|<<converter-level,%p +
+%level>>
 |
 
-|xref:#converter-relative[%r +
-%relative]
+|<<converter-relative,%r +
+%relative>>
 |
 
-|xref:#converter-seq[%sn +
-%sequenceNumber]
+|<<converter-seq,%sn +
+%sequenceNumber>>
 |
 
 |<<converter-style,%style\{pattern}{ANSI style}>>
 |
 
-|xref:#converter-thread-id[%T +
+|<<converter-thread-id,%T +
 %tid +
-%threadId]
+%threadId>>
 |
 
-|xref:#converter-thread-name[%t +
+|<<converter-thread-name,%t +
 %tn +
 %thread +
-%threadName]
+%threadName>>
 |
 
 |<<converter-thread-priority,%tp>>
 |
 
-|<<converter-thread-context-map[%X{key,,key2...\>>} +
+|<<converter-thread-context-map[%X{key,,key2...\} +
 %mdc{key[,key2...\]} +
-%MDC{key[,key2...\]}]
+%MDC{key[,key2...\]}>>
 |
 
 |literal text

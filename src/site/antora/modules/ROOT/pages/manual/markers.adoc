@@ -100,9 +100,7 @@ complex hierarchies of markers where possible.
 == Configuring filtering
 
 Developers can use markers to filter the log statements delivered to log files.
-Marker processing is supported at least by
-https://logback.qos.ch/manual/filters.html[Logback]
-and the Log4j Core logging backends.
+Marker processing is supported at least by {logback-url}/manual/filters.html[Logback] and the Log4j Core logging implementations.
 We will provide a sample configuration for both these backends.
 
 [#log4j-core]
@@ -119,33 +117,36 @@ regardless of the level of the events:
 ====
 XML::
 +
+.Snippet from an example {antora-examples-url}/manual/markers/log4j2.xml[`log4j2.xml`]
 [source,xml,indent=0]
 ----
-include::example$manual/markers/log4j2.xml[lines=1;18..-1]
+include::example$manual/markers/log4j2.xml[lines=23..37,indent=0]
 ----
 
 JSON::
 +
+.Snippet from an example {antora-examples-url}/manual/markers/log4j2.json[`log4j2.json`]
 [source,json,indent=0]
 ----
-include::example$manual/markers/log4j2.json[]
+include::example$manual/markers/log4j2.json[lines=3..26,indent=0]
 ----
 
 YAML::
 +
+.Snippet from an example {antora-examples-url}/manual/markers/log4j2.yaml[`log4j2.yaml`]
 [source,yaml,indent=0]
 ----
-include::example$manual/markers/log4j2.yaml[lines=17..-1]
+include::example$manual/markers/log4j2.yaml[lines=18..-1,indent=0]
 ----
 
 Properties::
 +
+.Snippet from an example {antora-examples-url}/manual/markers/log4j2.properties[`log4j2.properties`]
 [source,properties]
 ----
 include::example$manual/markers/log4j2.properties[lines=17..-1]
 ----
 ====
-
 <1> Accepts all events marked with `SQL` regardless of their level,
 <2> Only allow events marked with `SQL` or one of its children to be sent to the `SQL_LOG` appender.
 
@@ -154,16 +155,16 @@ include::example$manual/markers/log4j2.properties[lines=17..-1]
 
 Logback differentiates two kinds of filters: ``TurboFilter``s, which are applied before a log event is created, and
 ``Filter``s, which are applied only when a log event reaches an appender.
-See https://logback.qos.ch/manual/filters.html[Logback filters] for more information.
+See {logback-url}/manual/filters.html[Logback filters] for more information.
 
 You can use a combination of `MarkerFilter`, `EvaluatorFilter` and `OnMarkerEvaluator` to redirect all messages marked with `SQL` to a specific appender, regardless of their level.
 In order to do that, you can use a configuration as below:
 
+.Snippet from an example {antora-examples-url}/manual/markers/logback.xml[`logback.xml`]
 [source,xml]
 ----
-include::example$manual/markers/logback.xml[lines=1;18..-1]
+include::example$manual/markers/logback.xml[lines=19..36,indent=0]
 ----
-
 <1> Accepts all events marked with `SQL` regardless of their level,
 <2> Only allow events marked with `SQL` or one of its children to be sent to the `SQL_LOG` appender.git
 

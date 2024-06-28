@@ -56,7 +56,7 @@ Log4j contains following predefined levels:
 ====
 The `OFF` and `ALL` levels are special: they should not be used to fish-tag log events.
 
-Log4j implementations, such as Log4j Core, can use `OFF` in their configuration files to disable all log statements and `ALL` to enabled them all.
+Log4j API implementations, such as Log4j Core, can use `OFF` in their configuration files to disable all log statements and `ALL` to enabled them all.
 ====
 
 A level is composed of a case-sensitive name and a *priority* (of type `int`), which is used to define an order while comparing two.
@@ -79,7 +79,7 @@ methods:
 
 [source,java,indent=0]
 ----
-include::example$manual/customlevels/LevelExample.java[tag=standard]
+include::example$manual/customloglevels/LevelExample.java[tag=standard]
 ----
 
 The `Logger` interface also contains shorthand methods that always log at a specified log level:
@@ -119,7 +119,7 @@ By using shorthand methods, you can rewrite the example above as:
 
 [source,java,indent=0]
 ----
-include::example$manual/customlevels/LevelExample.java[tag=shorthand]
+include::example$manual/customloglevels/LevelExample.java[tag=shorthand]
 ----
 
 [#level-selection]
@@ -158,14 +158,14 @@ method:
 
 [source,java,indent=0]
 ----
-include::example$manual/customlevels/LevelExample.java[tag=custom-definition]
+include::example$manual/customloglevels/LevelExample.java[tag=custom-definition]
 ----
 
 Custom log levels can be used in your code with the usual `Logger.log(..)` and `Logger.atLevel(Level)` methods:
 
 [source,java,indent=0]
 ----
-include::example$manual/customlevels/LevelExample.java[tag=custom]
+include::example$manual/customloglevels/LevelExample.java[tag=custom]
 ----
 
 [#implementation-support]
@@ -198,30 +198,34 @@ configuration elements:
 ====
 XML::
 +
+.Snippet from an example {antora-examples-url}/manual/customloglevels/log4j2.xml[`log4j2.xml`]
 [source,xml]
 ----
-include::example$manual/customlevels/log4j2.xml[lines=1;18..-1]
+include::example$manual/customloglevels/log4j2.xml[lines=23..38,indent=0]
 ----
 
 JSON::
 +
+.Snippet from an example {antora-examples-url}/manual/customloglevels/log4j2.json[`log4j2.json`]
 [source,xml]
 ----
-include::example$manual/customlevels/log4j2.json[]
+include::example$manual/customloglevels/log4j2.json[lines=3..39,indent=0]
 ----
 
 YAML::
 +
+.Snippet from an example {antora-examples-url}/manual/customloglevels/log4j2.yaml[`log4j2.yaml`]
 [source,yaml]
 ----
-include::example$manual/customlevels/log4j2.yaml[lines=17..-1]
+include::example$manual/customloglevels/log4j2.yaml[lines=18..-1,indent=0]
 ----
 
 Properties::
 +
+.Snippet from an example {antora-examples-url}/manual/customloglevels/log4j2.properties[`log4j2.properties`]
 [source,properties]
 ----
-include::example$manual/customlevels/log4j2.properties[lines=17..-1]
+include::example$manual/customloglevels/log4j2.properties[lines=17..-1]
 ----
 ====
 

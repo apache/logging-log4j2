@@ -258,6 +258,7 @@ A moderately complex configuration might look like this:
 ====
 XML::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/main-elements.xml[`log4j2.xml`]
 [source,xml]
 ----
 include::example$manual/configuration/main-elements.xml[lines=1;18..-1]
@@ -265,6 +266,7 @@ include::example$manual/configuration/main-elements.xml[lines=1;18..-1]
 
 JSON::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/main-elements.json[`log4j2.json`]
 [source,json]
 ----
 include::example$manual/configuration/main-elements.json[]
@@ -272,6 +274,7 @@ include::example$manual/configuration/main-elements.json[]
 
 YAML::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/main-elements.yaml[`log4j2.yaml`]
 [source,yaml]
 ----
 include::example$manual/configuration/main-elements.yaml[lines=17..-1]
@@ -279,12 +282,12 @@ include::example$manual/configuration/main-elements.yaml[lines=17..-1]
 
 Properties::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/main-elements.properties[`log4j2.properties`]
 [source,properties]
 ----
 include::example$manual/configuration/main-elements.properties[lines=17..-1]
 ----
 ====
-
 <1> Configures a console appender named `CONSOLE` with a pattern layout.
 <2> Configures a file appender named `MAIN` with a JSON template layout.
 <3> Configures a file appender named `DEBUG_LOG` with a pattern layout.
@@ -437,7 +440,7 @@ Other logger configurations are optional.
 Every
 link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html[`Logger`]
 in your application is assigned to one of these logger configurations (see
-xref:manual/architecture.adoc#loggerconfig[architecture]), which determines the events that will be logged and those that won't.
+xref:manual/architecture.adoc#LoggerConfig[architecture]), which determines the events that will be logged and those that won't.
 
 Let's start with an example of logger configuration:
 
@@ -445,27 +448,31 @@ Let's start with an example of logger configuration:
 ====
 XML::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/loggers.xml[`log4j2.xml`]
 [source,xml]
 ----
-include::example$manual/configuration/loggers.xml[tag=loggers]
+include::example$manual/configuration/loggers.xml[tag=loggers,indent=0]
 ----
 
 JSON::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/loggers.json[`log4j2.json`]
 [source,json]
 ----
-include::example$manual/configuration/loggers.json[tag=loggers]
+include::example$manual/configuration/loggers.json[tag=loggers,indent=0]
 ----
 
 YAML::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/loggers.yaml[`log4j2.yaml`]
 [source,yaml]
 ----
-include::example$manual/configuration/loggers.yaml[tag=loggers]
+include::example$manual/configuration/loggers.yaml[tag=loggers,indent=0]
 ----
 
 Properties::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/loggers.properties[`log4j2.properties`]
 [source,properties]
 ----
 include::example$manual/configuration/loggers.properties[tags=loggers]
@@ -627,27 +634,31 @@ Therefore, if you wish to insert a value that changes in time, you must double t
 ====
 XML::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/logger-properties.xml[`log4j2.xml`]
 [source,xml]
 ----
-include::example$manual/configuration/logger-properties.xml[tag=loggers]
+include::example$manual/configuration/logger-properties.xml[tag=loggers,indent=0]
 ----
 
 JSON::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/logger-properties.json[`log4j2.json`]
 [source,json]
 ----
-include::example$manual/configuration/logger-properties.json[tag=loggers]
+include::example$manual/configuration/logger-properties.json[tag=loggers,indent=0]
 ----
 
 YAML::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/logger-properties.yaml[`log4j2.yaml`]
 [source,yaml]
 ----
-include::example$manual/configuration/logger-properties.yaml[tag=loggers]
+include::example$manual/configuration/logger-properties.yaml[tag=loggers,indent=0]
 ----
 
 Properties::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/logger-properties.properties[`log4j2.properties`]
 [source,properties]
 ----
 include::example$manual/configuration/logger-properties.properties[tag=loggers]
@@ -705,6 +716,7 @@ Reusable configuration values can be added directly to a configuration file by u
 ====
 XML::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/properties.xml[`log4j2.xml`]
 [source,xml]
 ----
 include::example$manual/configuration/properties.xml[lines=1;18..24;26]
@@ -712,23 +724,26 @@ include::example$manual/configuration/properties.xml[lines=1;18..24;26]
 
 JSON::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/properties.json[`log4j2.json`]
 [source,json]
 ----
-include::example$manual/configuration/properties.json[]
+include::example$manual/configuration/properties.json[lines=1..14]
 ----
 
 YAML::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/properties.yaml[`log4j2.yaml`]
 [source,yaml]
 ----
-include::example$manual/configuration/properties.yaml[lines=17..-1]
+include::example$manual/configuration/properties.yaml[lines=17..23]
 ----
 
 Properties::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/properties.properties[`log4j2.properties`]
 [source,properties]
 ----
-include::example$manual/configuration/properties.properties[lines=17..-1]
+include::example$manual/configuration/properties.properties[lines=17..18]
 ----
 ====
 
@@ -924,27 +939,31 @@ This case happens for the children of the `Route` element below:
 ====
 XML::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/routing.xml[`log4j2.xml`]
 [source,xml]
 ----
-include::example$manual/configuration/routing.xml[tag=appender]
+include::example$manual/configuration/routing.xml[tag=appender,indent=0]
 ----
 
 JSON::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/routing.json[`log4j2.json`]
 [source,json]
 ----
-include::example$manual/configuration/routing.json[tag=appender]
+include::example$manual/configuration/routing.json[tag=appender,indent=0]
 ----
 
 YAML::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/routing.yaml[`log4j2.yaml`]
 [source,yaml]
 ----
-include::example$manual/configuration/routing.yaml[tag=appender]
+include::example$manual/configuration/routing.yaml[tag=appender,indent=0]
 ----
 
 Properties::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/routing.properties[`log4j2.properties`]
 [source,properties]
 ----
 include::example$manual/configuration/routing.properties[tag=appender]
@@ -980,23 +999,26 @@ For example, you might want to use a different layout in a production and develo
 ====
 XML::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/arbiters.xml[`log4j2.xml`]
 [source,xml]
 ----
-include::example$manual/configuration/arbiters.xml[lines=1;18..-1]
+include::example$manual/configuration/arbiters.xml[lines=23..32,indent=0]
 ----
 
 JSON::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/arbiters.json[`log4j2.json`]
 [source,json]
 ----
-include::example$manual/configuration/arbiters.json[]
+include::example$manual/configuration/arbiters.json[lines=3..24,indent=0]
 ----
 
 YAML::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/arbiters.yaml[`log4j2.yaml`]
 [source,yaml]
 ----
-include::example$manual/configuration/arbiters.yaml[lines=17..-1]
+include::example$manual/configuration/arbiters.yaml[lines=18..29,indent=0]
 ----
 
 Properties::
@@ -1020,35 +1042,38 @@ If none of the arbiters match, the configuration from the `DefaultArbiter` eleme
 ====
 XML::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/arbiters-select.xml[`log4j2.xml`]
 [source,xml]
 ----
-include::example$manual/configuration/arbiters-select.xml[tag=select]
+include::example$manual/configuration/arbiters-select.xml[tag=select,indent=0]
 ----
 
 JSON::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/arbiters-select.json[`log4j2.json`]
 [source,json]
 ----
-include::example$manual/configuration/arbiters-select.json[tag=select]
+include::example$manual/configuration/arbiters-select.json[tag=select,indent=0]
 ----
 
 YAML::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/arbiters-select.yaml[`log4j2.yaml`]
 [source,yaml]
 ----
-include::example$manual/configuration/arbiters-select.yaml[tag=select]
+include::example$manual/configuration/arbiters-select.yaml[tag=select,indent=0]
 ----
 
 Properties::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/arbiters-select.properties[`log4j2.properties`]
 [source,properties]
 ----
 include::example$manual/configuration/arbiters-select.properties[tag=select]
 ----
 ====
-
-<1> If the Java system property `env` has a value of `dev`, a pattern layout will be used.
-<2> Otherwise, a JSON template layout will be used.
+<1> If the Java system property `env` has a value of `dev`, a Pattern Layout will be used.
+<2> Otherwise, a JSON Template Layout will be used.
 
 [#CompositeConfiguration]
 == Composite Configuration
@@ -1131,21 +1156,21 @@ https://www.w3.org/TR/xinclude/[XInclude].
 NOTE: The list of `XInclude` and `XPath` features supported depends upon your
 https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/xml/jaxp/index.html[JAXP implementation].
 
-Here is an example log4j2.xml file that includes two other files:
+Here is an example `log4j2.xml` file that includes two other files:
 
-.log4j2.xml
+.Snippet from an example {antora-examples-url}/manual/configuration/xinclude-main.xml[`log4j2.xml`]
 [source,xml]
 ----
 include::example$manual/configuration/xinclude-main.xml[lines=1;18..-1]
 ----
 
-.xinclude-appenders.xml
+.Snippet from an example {antora-examples-url}/manual/configuration/xinclude-appenders.xml[`xinclude-appenders.xml`]
 [source,xml]
 ----
 include::example$manual/configuration/xinclude-appenders.xml[lines=1;18..-1]
 ----
 
-.xinclude-loggers.xml
+.Snippet from an example {antora-examples-url}/manual/configuration/xinclude-loggers.xml[`xinclude-loggers.xml`]
 [source,xml]
 ----
 include::example$manual/configuration/xinclude-loggers.xml[lines=1;18..-1]

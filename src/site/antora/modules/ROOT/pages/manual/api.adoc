@@ -85,6 +85,11 @@ include::partial$manual/api-best-practice-use-supplier.adoc[]
 link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html[`Logger`]s are the primary entry point for logging.
 In this section we will introduce you to further details about ``Logger``s.
 
+[TIP]
+====
+Refer to xref:manual/architecture.adoc[] to see where ``Logger``s stand in the big picture.
+====
+
 [#logger-names]
 === Logger names
 
