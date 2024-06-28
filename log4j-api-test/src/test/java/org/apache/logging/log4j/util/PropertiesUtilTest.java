@@ -212,15 +212,15 @@ class PropertiesUtilTest {
         {null, "org.apache.logging.log4j.level"},
         {null, "Log4jAnotherProperty"},
         {null, "log4j2.catalinaBase"},
-        {"ok", "log4j2.configurationFile"},
-        {"ok", "log4j2.defaultStatusLevel"},
-        {"ok", "log4j2.newLevel"},
-        {"ok", "log4j2.asyncLoggerTimeout"},
-        {"ok", "log4j2.asyncLoggerConfigRingBufferSize"},
-        {"ok", "log4j2.disableThreadContext"},
-        {"ok", "log4j2.disableThreadContextStack"},
-        {"ok", "log4j2.disableThreadContextMap"},
-        {"ok", "log4j2.isThreadContextMapInheritable"}
+        {"ok", "log4j.configurationFile"},
+        {"ok", "Log4jDefaultStatusLevel"},
+        {"ok", "org.apache.logging.log4j.newLevel"},
+        {"ok", "AsyncLogger.Timeout"},
+        {"ok", "AsyncLoggerConfig.RingBufferSize"},
+        {"ok", "disableThreadContext"},
+        {"ok", "disableThreadContextStack"},
+        {"ok", "disableThreadContextMap"},
+        {"ok", "isThreadContextMapInheritable"}
     };
 
     /**
@@ -232,7 +232,9 @@ class PropertiesUtilTest {
     void testResolvesOnlyLog4jProperties() {
         final PropertiesUtil util = new PropertiesUtil("Jira3413Test.properties");
         for (final String[] pair : data) {
-            assertEquals(pair[0], util.getStringProperty(pair[1]));
+            assertThat(util.getStringProperty(pair[1]))
+                    .as("Checking property %s", pair[1])
+                    .isEqualTo(pair[0]);
         }
     }
 

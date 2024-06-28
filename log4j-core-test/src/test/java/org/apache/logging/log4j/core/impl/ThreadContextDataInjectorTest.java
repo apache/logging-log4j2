@@ -35,7 +35,6 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.test.ThreadContextUtilityClass;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.junit.After;
@@ -122,7 +121,6 @@ public class ThreadContextDataInjectorTest {
 
     private void prepareThreadContext(final boolean isThreadContextMapInheritable) {
         System.setProperty("log4j2.isThreadContextMapInheritable", Boolean.toString(isThreadContextMapInheritable));
-        PropertiesUtil.getProperties().reload();
         ThreadContextUtilityClass.reset();
         ThreadContext.remove("baz");
         ThreadContext.put("foo", "bar");
