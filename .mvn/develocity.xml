@@ -10,14 +10,14 @@
         </obfuscation>
         <publishing>
             <onlyIf>
-                <![CDATA[authenticated]]>
+                <![CDATA[env['CI'] != null]]>
             </onlyIf>
         </publishing>
-        <backgroundBuildScanUpload>#{isFalse(env['GITHUB_ACTIONS'])}</backgroundBuildScanUpload>
+        <backgroundBuildScanUpload>false</backgroundBuildScanUpload>
     </buildScan>
     <buildCache>
         <local>
-            <enabled>#{isFalse(env['GITHUB_ACTIONS'])}</enabled>
+            <enabled>false</enabled>
         </local>
         <remote>
             <enabled>false</enabled>
