@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.stream.Stream;
 import org.apache.logging.log4j.core.util.internal.StringBuilders;
@@ -24,24 +23,70 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 public class StringBuildersTest {
 
-    static Stream<Arguments> testTruncateLines_dataSource() {
+    static Stream<Arguments> testTruncateLines_happyCases() {
         return Stream.of(
-                Arguments.of("abc | def | ghi | jkl | ", " | ", 2, "abc | def | "),
+                // maxOccurrenceCount < lines count
                 Arguments.of("abc\ndef\nghi\njkl\n", "\n", 2, "abc\ndef\n"),
-                Arguments.of("abc | def | ghi | jkl | ", " | ", 4, "abc | def | ghi | jkl | "),
-                Arguments.of("abc | def | ghi | jkl | ", " | ", null, "abc | def | ghi | jkl | "),
-                Arguments.of("abc | def | ghi | jkl | ", " | ", Integer.MAX_VALUE, "abc | def | ghi | jkl | "),
-                Arguments.of("abc | def | ghi | jkl | ", " | ", 10, "abc | def | ghi | jkl | "),
-                Arguments.of("abc | def | ghi | jkl | ", "", 2, "abc | def | ghi | jkl | "));
+                // maxOccurrenceCount == lines count
+                Arguments.of("abc|def|ghi|jkl|", "|", 4, "abc|def|ghi|jkl|"),
+                // maxOccurrenceCount > lines count
+                Arguments.of("abc|def|ghi|jkl|", "|", 10, "abc|def|ghi|jkl|"),
+                // maxOccurrenceCount ==  Integer.MAX_VALUE
+                Arguments.of("abc|def|ghi|jkl|", "|", Integer.MAX_VALUE, "abc|def|ghi|jkl|"),
+                // maxOccurrenceCount ==  0
+                Arguments.of("abc|def|ghi|jkl|", "|", 0, ""),
+                // empty buffer
+                Arguments.of("", "|", 2, ""),
+                // empty delimiter
+                Arguments.of("abc|def|ghi|jkl|", "", 2, "abc|def|ghi|jkl|"),
+                // delimiter |
+                Arguments.of("|", "|", 10, "|"),
+                Arguments.of("||", "|", 10, "||"),
+                Arguments.of("a|", "|", 10, "a|"),
+                Arguments.of("|a", "|", 10, "|"),
+                // delimiter ||
+                Arguments.of("||", "||", 10, "||"),
+                Arguments.of("|||", "||", 10, "||"),
+                Arguments.of("||||", "||", 10, "||||"),
+                Arguments.of("a|", "||", 10, ""),
+                Arguments.of("a||", "||", 10, "a||"),
+                Arguments.of("a|||", "||", 10, "a||"),
+                Arguments.of("a||||", "||", 10, "a||||"),
+                Arguments.of("|a", "||", 10, ""),
+                Arguments.of("||a", "||", 10, "||"),
+                Arguments.of("|||a", "||", 10, "||"),
+                Arguments.of("||||a", "||", 10, "||||")
+        );
     }
 
     @ParameterizedTest
-    @MethodSource("testTruncateLines_dataSource")
-    public void testTruncateLines(String original, String lineSeparator, Integer maxLine, String expected) {
-        final StringBuilder sb = new StringBuilder(original);
-        StringBuilders.truncateLines(sb, lineSeparator, maxLine);
-        assertEquals(expected, sb.toString());
+    @MethodSource("testTruncateLines_happyCases")
+    void testTruncateLinesHappyCases(String input, String delimiter, int maxOccurrenceCount, String expected) {
+        final StringBuilder buffer = new StringBuilder(input);
+        StringBuilders.truncateAfterDelimiter(buffer, delimiter, maxOccurrenceCount);
+        assertThat(buffer.toString()).isEqualTo(expected);
+    }
+
+    static Stream<Arguments> testTruncateLines_failCases() {
+        return Stream.of(
+                // negative maxOccurrenceCount
+                Arguments.of("abc\ndef\nghi\njkl\n", "\n", -1, IllegalArgumentException.class),
+                // null buffer
+                Arguments.of(null, "|", 10, NullPointerException.class),
+                // null delimiter
+                Arguments.of("abc|def|ghi|jkl|", null, 10, NullPointerException.class)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("testTruncateLines_failCases")
+    void testTruncateLinesFailCases(String input, String delimiter, int maxOccurrenceCount, Class<Throwable> expected) {
+        final StringBuilder buffer = input == null ? null : new StringBuilder(input);
+        assertThatThrownBy(() -> StringBuilders.truncateAfterDelimiter(buffer, delimiter, maxOccurrenceCount)).isInstanceOf(expected);
     }
 }

@@ -318,7 +318,7 @@ public class ThrowableProxy implements Serializable {
             final TextRenderer textRenderer,
             final String suffix,
             final String lineSeparator,
-            final Integer maxLineCount) {
+            final int maxLineCount) {
         ThrowableProxyRenderer.formatCauseStackTraceTo(
                 this, sb, ignorePackages, textRenderer, suffix, lineSeparator, maxLineCount);
     }
@@ -452,7 +452,7 @@ public class ThrowableProxy implements Serializable {
             final TextRenderer textRenderer,
             final String suffix,
             final String lineSeparator,
-            final Integer maxLineCount) {
+            final int maxLineCount) {
         ThrowableProxyRenderer.formatExtendedStackTraceTo(
                 this, sb, ignorePackages, textRenderer, suffix, lineSeparator, maxLineCount);
     }

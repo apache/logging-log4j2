@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.util.internal;
 
+import java.util.Objects;
+
 /**
  * StringBuilder helpers
  */
@@ -24,33 +26,34 @@ public class StringBuilders {
     /**
      * Truncates the content of the given {@code StringBuilder} to the specified maximum number of lines.
      *
-     * <p>If {@code maxLineCount} is {@code null}, {@link Integer#MAX_VALUE}, or if {@code lineSeparator} is empty,
+     * <p>If {@code maxOccurrenceCount} is {@link Integer#MAX_VALUE}, or if {@code delimiter} is empty,
      * the method returns without making any changes to the {@code StringBuilder}.
      *
      * @param buffer             the {@code StringBuilder} whose content is to be truncated
-     * @param lineSeparator  the line separator used to determine the end of a line
-     * @param maxLineCount   the maximum number of lines to retain in the {@code StringBuilder};
-     *                       if this value is {@code null} or {@link Integer#MAX_VALUE}, no truncation will occur
+     * @param delimiter  the delimiter used to determine the end of a line
+     * @param maxOccurrenceCount   the maximum number of lines to retain in the {@code StringBuilder};
+     *                       if this value is {@link Integer#MAX_VALUE}, no truncation will occur
      */
-    public static void truncateLines(
-            final StringBuilder buffer, final String lineSeparator, final Integer maxLineCount) {
-        if (buffer == null
-                || maxLineCount == null
-                || maxLineCount == Integer.MAX_VALUE
-                || lineSeparator == null
-                || lineSeparator.isEmpty()) {
+    public static void truncateAfterDelimiter(
+            final StringBuilder buffer, final String delimiter, final int maxOccurrenceCount) {
+        Objects.requireNonNull(buffer, "buffer");
+        Objects.requireNonNull(delimiter, "delimiter");
+        if (maxOccurrenceCount < 0) {
+            throw new IllegalArgumentException("maxOccurrenceCount should not be negative");
+        }
+        if (buffer.length() < delimiter.length() || delimiter.isEmpty() || maxOccurrenceCount == Integer.MAX_VALUE) {
             return;
         }
-        final int lineSeparatorLen = lineSeparator.length();
+        final int delimiterLen = delimiter.length();
         int offset = 0;
-        int currentLineCount = 0;
-        while (currentLineCount < maxLineCount) {
-            int lineSeparatorIndex = buffer.indexOf(lineSeparator, offset);
-            if (lineSeparatorIndex == -1) {
+        int currentOccurrenceCount = 0;
+        while (currentOccurrenceCount < maxOccurrenceCount) {
+            int delimiterIndex = buffer.indexOf(delimiter, offset);
+            if (delimiterIndex == -1) {
                 break;
             }
-            currentLineCount++;
-            offset = lineSeparatorIndex + lineSeparatorLen;
+            currentOccurrenceCount++;
+            offset = delimiterIndex + delimiterLen;
         }
         buffer.setLength(offset);
     }

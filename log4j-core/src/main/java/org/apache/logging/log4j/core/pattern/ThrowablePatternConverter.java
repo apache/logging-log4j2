@@ -205,7 +205,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
             if (ignoredCount > 0) {
                 appendSuppressedCount(buffer, ignoredCount, suffix, options.getSeparator());
             }
-            StringBuilders.truncateLines(buffer, options.getSeparator(), options.getLines());
+            StringBuilders.truncateAfterDelimiter(buffer, options.getSeparator(), options.getLines());
         } else {
             throwable.printStackTrace(new PrintWriter(new StringBuilderWriter(buffer)));
         }
@@ -241,7 +241,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         return !options.allLines() || nonStandardLineSeparator || Strings.isNotBlank(suffix) || options.hasPackages();
     }
 
-    private boolean ignoreElement(final StackTraceElement element, final List<String> ignorePackages) {
+    private static boolean ignoreElement(final StackTraceElement element, final List<String> ignorePackages) {
         if (ignorePackages != null) {
             final String className = element.getClassName();
             for (final String pkg : ignorePackages) {
@@ -253,7 +253,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         return false;
     }
 
-    private void appendSuppressedCount(
+    private static void appendSuppressedCount(
             final StringBuilder sb, final int count, final String suffix, final String lineSeparator) {
         if (count == 1) {
             sb.append("\t... ");
@@ -266,7 +266,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         sb.append(lineSeparator);
     }
 
-    private void appendEntry(
+    private static void appendEntry(
             final StackTraceElement stackTraceElement,
             final StringBuilder sb,
             final String suffix,
@@ -276,7 +276,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         sb.append(lineSeparator);
     }
 
-    private void appendSuffix(final StringBuilder buffer, final String suffix) {
+    private static void appendSuffix(final StringBuilder buffer, final String suffix) {
         if (Strings.isNotBlank(suffix)) {
             buffer.append(' ');
             buffer.append(suffix);

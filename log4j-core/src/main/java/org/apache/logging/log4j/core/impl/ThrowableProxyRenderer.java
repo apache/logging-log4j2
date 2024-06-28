@@ -242,7 +242,7 @@ final class ThrowableProxyRenderer {
             final TextRenderer textRenderer,
             final String suffix,
             final String lineSeparator,
-            final Integer maxLineCount) {
+            final int maxLineCount) {
         renderOn(src, sb, textRenderer);
         renderSuffix(suffix, sb, textRenderer);
         textRenderer.render(lineSeparator, sb, "Text");
@@ -260,7 +260,7 @@ final class ThrowableProxyRenderer {
                 lineSeparator);
         formatSuppressed(sb, TAB, src.getSuppressedProxies(), ignorePackages, textRenderer, suffix, lineSeparator);
         formatCause(sb, Strings.EMPTY, src.getCauseProxy(), ignorePackages, textRenderer, suffix, lineSeparator);
-        StringBuilders.truncateLines(sb, lineSeparator, maxLineCount);
+        StringBuilders.truncateAfterDelimiter(sb, lineSeparator, maxLineCount);
     }
 
     /**
@@ -280,7 +280,7 @@ final class ThrowableProxyRenderer {
             final TextRenderer textRenderer,
             final String suffix,
             final String lineSeparator,
-            final Integer maxLineCount) {
+            final int maxLineCount) {
         final ThrowableProxy causeProxy = src.getCauseProxy();
         if (causeProxy != null) {
             formatWrapper(sb, causeProxy, ignorePackages, textRenderer, suffix, lineSeparator);
@@ -300,7 +300,7 @@ final class ThrowableProxyRenderer {
                 textRenderer,
                 suffix,
                 lineSeparator);
-        StringBuilders.truncateLines(sb, lineSeparator, maxLineCount);
+        StringBuilders.truncateAfterDelimiter(sb, lineSeparator, maxLineCount);
     }
 
     private static void renderOn(

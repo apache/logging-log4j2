@@ -77,7 +77,7 @@ public final class RootThrowablePatternConverter extends ThrowablePatternConvert
                     options.getTextRenderer(),
                     getSuffix(event),
                     options.getSeparator(),
-                    options.allLines() ? null : options.getLines());
+                    options.getLines());
         }
     }
 }
