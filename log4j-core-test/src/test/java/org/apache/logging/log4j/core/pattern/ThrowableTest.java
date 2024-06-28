@@ -48,8 +48,7 @@ public class ThrowableTest {
                 Arguments.of("%rEx", null, depth),
                 // ExtendedThrowable
                 Arguments.of("%xEx", filters, null),
-                Arguments.of("%xEx", null, depth)
-        );
+                Arguments.of("%xEx", null, depth));
     }
 
     @ParameterizedTest
@@ -88,7 +87,7 @@ public class ThrowableTest {
         }
     }
 
-    static private String buildPattern(String exceptionPattern, String filters, Integer depth) {
+    private static String buildPattern(String exceptionPattern, String filters, Integer depth) {
         final StringBuilder buffer = new StringBuilder("%m");
         buffer.append(exceptionPattern);
         if (filters != null) {
@@ -105,7 +104,7 @@ public class ThrowableTest {
         return buffer.toString();
     }
 
-    static private void verifyFilters(final String message, final String filters) {
+    private static void verifyFilters(final String message, final String filters) {
         if (filters != null) {
             assertThat(message).contains("suppressed");
             final String[] filterArray = filters.split(",");
@@ -117,7 +116,7 @@ public class ThrowableTest {
         }
     }
 
-    static private void verifyDepth(final String message, final Integer depth) {
+    private static void verifyDepth(final String message, final Integer depth) {
         if (depth != null) {
             assertThat(message).hasLineCount(depth);
         }

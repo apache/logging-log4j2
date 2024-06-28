@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.stream.Stream;
 import org.apache.logging.log4j.core.util.internal.StringBuilders;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class StringBuildersTest {
 
@@ -60,8 +59,7 @@ public class StringBuildersTest {
                 Arguments.of("|a", "||", 10, ""),
                 Arguments.of("||a", "||", 10, "||"),
                 Arguments.of("|||a", "||", 10, "||"),
-                Arguments.of("||||a", "||", 10, "||||")
-        );
+                Arguments.of("||||a", "||", 10, "||||"));
     }
 
     @ParameterizedTest
@@ -79,14 +77,14 @@ public class StringBuildersTest {
                 // null buffer
                 Arguments.of(null, "|", 10, NullPointerException.class),
                 // null delimiter
-                Arguments.of("abc|def|ghi|jkl|", null, 10, NullPointerException.class)
-        );
+                Arguments.of("abc|def|ghi|jkl|", null, 10, NullPointerException.class));
     }
 
     @ParameterizedTest
     @MethodSource("testTruncateLines_failCases")
     void testTruncateLinesFailCases(String input, String delimiter, int maxOccurrenceCount, Class<Throwable> expected) {
         final StringBuilder buffer = input == null ? null : new StringBuilder(input);
-        assertThatThrownBy(() -> StringBuilders.truncateAfterDelimiter(buffer, delimiter, maxOccurrenceCount)).isInstanceOf(expected);
+        assertThatThrownBy(() -> StringBuilders.truncateAfterDelimiter(buffer, delimiter, maxOccurrenceCount))
+                .isInstanceOf(expected);
     }
 }
