@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataMessage;
@@ -45,7 +46,7 @@ import org.apache.logging.log4j.util.StringBuilders;
 public final class StructuredDataFilter extends MapFilter {
 
     private static final int MAX_BUFFER_SIZE = 2048;
-    private static ThreadLocal<StringBuilder> threadLocalStringBuilder = new ThreadLocal<>();
+    private static final ThreadLocal<StringBuilder> threadLocalStringBuilder = new ThreadLocal<>();
 
     private StructuredDataFilter(
             final Map<String, List<String>> map, final boolean oper, final Result onMatch, final Result onMismatch) {
@@ -105,14 +106,17 @@ public final class StructuredDataFilter extends MapFilter {
     }
 
     private StringBuilder getStringBuilder() {
-        StringBuilder result = threadLocalStringBuilder.get();
-        if (result == null) {
-            result = new StringBuilder();
-            threadLocalStringBuilder.set(result);
+        if (Constants.ENABLE_THREADLOCALS) {
+            StringBuilder result = threadLocalStringBuilder.get();
+            if (result == null) {
+                result = new StringBuilder();
+                threadLocalStringBuilder.set(result);
+            }
+            StringBuilders.trimToMaxSize(result, MAX_BUFFER_SIZE);
+            result.setLength(0);
+            return result;
         }
-        StringBuilders.trimToMaxSize(result, MAX_BUFFER_SIZE);
-        result.setLength(0);
-        return result;
+        return new StringBuilder();
     }
 
     private StringBuilder appendOrNull(final String value, final StringBuilder sb) {

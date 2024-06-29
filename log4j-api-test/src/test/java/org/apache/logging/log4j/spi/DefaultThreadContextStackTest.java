@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.spi;
 
+import static org.apache.logging.log4j.test.ThreadLocalUtil.assertThreadLocalCount;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -28,7 +29,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
+import org.apache.logging.log4j.test.ThreadLocalUtil;
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
 import org.junit.jupiter.api.Test;
 
@@ -338,5 +341,29 @@ public class DefaultThreadContextStackTest {
 
         stack.retainAll(Arrays.asList("msg1", "msg3"));
         assertEquals("[msg1, msg3]", stack.toString());
+    }
+
+    @Test
+    void threadLocalUnsetWhenStackEmpty() throws Exception {
+        final DefaultThreadContextStack stack = new DefaultThreadContextStack(true);
+        final int threadLocalCount = ThreadLocalUtil.getThreadLocalCount();
+        // push and pop
+        stack.push("push and pop");
+        assertThreadLocalCount(threadLocalCount + 1);
+        stack.pop();
+        assertThreadLocalCount(threadLocalCount);
+
+        // push and remove
+        stack.push("push and remove");
+        assertThreadLocalCount(threadLocalCount + 1);
+        stack.remove("push and remove");
+        assertThreadLocalCount(threadLocalCount);
+
+        // addAll and removeAll
+        final List<String> data = Arrays.asList("addAll", "removeAll");
+        stack.addAll(data);
+        assertThreadLocalCount(threadLocalCount + 1);
+        stack.removeAll(data);
+        assertThreadLocalCount(threadLocalCount);
     }
 }

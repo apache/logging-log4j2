@@ -123,7 +123,7 @@ public class AppenderControl extends AbstractFilterable {
             recursive.set(this);
             callAppender0(event);
         } finally {
-            recursive.set(null);
+            recursive.remove();
         }
     }
 

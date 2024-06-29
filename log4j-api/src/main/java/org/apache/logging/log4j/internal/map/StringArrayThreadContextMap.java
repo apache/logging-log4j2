@@ -79,7 +79,11 @@ public class StringArrayThreadContextMap implements ThreadContextMap, ReadOnlySt
         if (state != null) {
             final UnmodifiableArrayBackedMap modifiedMap =
                     UnmodifiableArrayBackedMap.getInstance(state).copyAndRemove(key);
-            threadLocalMapState.set(modifiedMap.getBackingArray());
+            if (modifiedMap.isEmpty()) {
+                threadLocalMapState.remove();
+            } else {
+                threadLocalMapState.set(modifiedMap.getBackingArray());
+            }
         }
     }
 
@@ -89,6 +93,11 @@ public class StringArrayThreadContextMap implements ThreadContextMap, ReadOnlySt
             final UnmodifiableArrayBackedMap modifiedMap =
                     UnmodifiableArrayBackedMap.getInstance(state).copyAndRemoveAll(keys);
             threadLocalMapState.set(modifiedMap.getBackingArray());
+            if (modifiedMap.isEmpty()) {
+                threadLocalMapState.remove();
+            } else {
+                threadLocalMapState.set(modifiedMap.getBackingArray());
+            }
         }
     }
 

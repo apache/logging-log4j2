@@ -311,6 +311,10 @@ public final class Strings {
         return str.toUpperCase(Locale.ROOT);
     }
 
+    private static StringBuilder getStringBuilder() {
+        return Constants.ENABLE_THREADLOCALS ? FORMAT_BUFFER_REF.get() : new StringBuilder();
+    }
+
     /**
      * Concatenates 2 Strings without allocation.
      * @param str1 the first string.
@@ -323,7 +327,7 @@ public final class Strings {
         } else if (isEmpty(str2)) {
             return str1;
         }
-        final StringBuilder sb = FORMAT_BUFFER_REF.get();
+        final StringBuilder sb = getStringBuilder();
         try {
             return sb.append(str1).append(str2).toString();
         } finally {
@@ -344,7 +348,7 @@ public final class Strings {
         if (count < 0) {
             throw new IllegalArgumentException("count");
         }
-        final StringBuilder sb = FORMAT_BUFFER_REF.get();
+        final StringBuilder sb = getStringBuilder();
         try {
             for (int index = 0; index < count; index++) {
                 sb.append(str);

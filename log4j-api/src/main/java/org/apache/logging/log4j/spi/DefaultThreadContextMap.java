@@ -104,7 +104,11 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
         if (map != null) {
             final Map<String, String> copy = new HashMap<>(map);
             copy.remove(key);
-            localMap.set(Collections.unmodifiableMap(copy));
+            if (copy.isEmpty()) {
+                localMap.remove();
+            } else {
+                localMap.set(Collections.unmodifiableMap(copy));
+            }
         }
     }
 
@@ -115,7 +119,11 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
             for (final String key : keys) {
                 copy.remove(key);
             }
-            localMap.set(Collections.unmodifiableMap(copy));
+            if (copy.isEmpty()) {
+                localMap.remove();
+            } else {
+                localMap.set(Collections.unmodifiableMap(copy));
+            }
         }
     }
 

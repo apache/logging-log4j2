@@ -102,7 +102,12 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     protected final String name;
     private final MessageFactory2 messageFactory;
     private final FlowMessageFactory flowMessageFactory;
-    private static final ThreadLocal<int[]> recursionDepthHolder = new ThreadLocal<>(); // LOG4J2-1518, LOG4J2-2031
+    /**
+     * See <a href="https://issues.apache.org/jira/browse/LOG4J2-1518">LOG4J2-1518</a>,
+     * <a href="https://issues.apache.org/jira/browse/LOG4J2-2031">LOG4J2-2031</a>.
+     */
+    private static final ThreadLocal<Integer> recursionDepthHolder = ThreadLocal.withInitial(() -> 0);
+
     private static final ThreadLocal<DefaultLogBuilder> logBuilder = ThreadLocal.withInitial(DefaultLogBuilder::new);
 
     /**
@@ -2860,24 +2865,12 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         }
     }
 
-    private static int[] getRecursionDepthHolder() {
-        int[] result = recursionDepthHolder.get();
-        if (result == null) {
-            result = new int[1];
-            recursionDepthHolder.set(result);
-        }
-        return result;
-    }
-
     private static void incrementRecursionDepth() {
-        getRecursionDepthHolder()[0]++;
+        recursionDepthHolder.set(recursionDepthHolder.get() + 1);
     }
 
     private static void decrementRecursionDepth() {
-        final int newDepth = --getRecursionDepthHolder()[0];
-        if (newDepth < 0) {
-            throw new IllegalStateException("Recursion depth became negative: " + newDepth);
-        }
+        recursionDepthHolder.set(recursionDepthHolder.get() - 1);
     }
 
     /**
@@ -2887,7 +2880,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
      * @return the depth of the nested logging calls in the current Thread
      */
     public static int getRecursionDepth() {
-        return getRecursionDepthHolder()[0];
+        return recursionDepthHolder.get();
     }
 
     @PerformanceSensitive
