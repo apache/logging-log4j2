@@ -167,69 +167,12 @@ At a really high level,
 * A <<LoggerContext>>, the composition anchor, gets created in combination with a <<Configuration>>.
 Both can be created either directly (i.e., programmatically) or indirectly at first interaction with Log4j.
 * `LoggerContext` creates <<Logger>>s that users interact with for logging purposes.
-* <<Appender>> delivers a
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html[`LogEvent`]
-to a target (file, socket, database, etc.) and typically uses a <<Layout>> to encode log events and an
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/AbstractManager.html[`AbstractManager`]
-to handle the lifecycle of the target resource.
+* <<Appender>> delivers a link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html[`LogEvent`] to a target (file, socket, database, etc.) and typically uses a <<Layout>> to encode log events and an <<AbstractManager>> to handle the lifecycle of the target resource.
 * <<LoggerConfig>> encapsulates configuration for a `Logger`, as `AppenderControl` and `AppenderRef` for ``Appender``s.
 * <<Configuration>> is equipped with <<StrSubstitutor>> to allow property substitution in `String`-typed values.
 * A typical `log()` call triggers a chain of invocations through classes `Logger`, `LoggerConfig`, `AppenderControl`, `Appender`, and `AbstractManager` in order – this is depicted using green arrows in xref:architecture-diagram[xrefstyle=short].
 
 Following sections examine this interplay in detail.
-
-[#reconfiguration]
-== Reconfiguration reliability
-
-The main motivation for such an architecture is reliability to configuration changes.
-When a reconfiguration event occurs, two `Configuration` instances are active at the same time.
-Threads that already started processing a log event will either:
-
-* continue logging to the old configuration, if execution already reached the `LoggerConfig` class,
-* or switch to the new configuration.
-
-The service that manages the reconfiguration process is called
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ReliabilityStrategy.html[`ReliabilityStrategy`]
-and it decides:
-
-* when should ``Logger``s switch to the new configuration,
-* when should the old configuration be stopped.
-
-.Overview of the reconfiguration process
-[plantuml]
-....
-@startuml
-left to right direction
-
-package LoggerContext {
-    object Logger
-
-    package "New Configuration" as c2 {
-        object "LoggerConfig" as lc2
-        object "AppenderControl" as ac2
-        object "Appender" as app2
-    }
-
-    package "Old Configuration" as c1 {
-        object "LoggerConfig" as lc1
-        object "AppenderControl" as ac1
-        object "Appender" as app1
-    }
-}
-
-object AbstractManager
-
-Logger ..> lc1
-lc1 --> ac1
-ac1 --> app1
-app1 --> AbstractManager
-
-Logger --> lc2
-lc2 --> ac2
-ac2 --> app2
-app2 --> AbstractManager
-@enduml
-....
 
 [#LoggerContext]
 == `LoggerContext`
@@ -332,12 +275,60 @@ class StrSubstitutor {
 @enduml
 ....
 
-During reconfiguration, two `Configuration` instances will be present.
-Once all ``Logger``s have been redirected to the new `Configuration`, the old one will be stopped and discarded.
-
 Configuration of Log4j Core is typically done at application initialization.
 The preferred way is by reading a xref:manual/configuration.adoc[configuration file], but it can also be done xref:manual/customconfig.adoc[programmatically].
 This is further discussed in xref:manual/config-intro.adoc[].
+
+[#reconfiguration]
+=== Reconfiguration reliability
+
+The main motivation for the existing architecture is the reliability to configuration changes.
+When a reconfiguration event occurs, two `Configuration` instances are active at the same time.
+Threads that already started processing a log event will either:
+
+* continue logging to the old configuration, if execution already reached the `LoggerConfig` class,
+* or switch to the new configuration.
+
+The service that manages the reconfiguration process is called link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ReliabilityStrategy.html[`ReliabilityStrategy`] and it decides:
+
+* when should ``Logger``s switch to the new configuration,
+* when should the old configuration be stopped.
+
+.Overview of the reconfiguration process
+[plantuml]
+....
+@startuml
+left to right direction
+
+package LoggerContext {
+    object Logger
+
+    package "New Configuration" as c2 {
+        object "LoggerConfig" as lc2
+        object "AppenderControl" as ac2
+        object "Appender" as app2
+    }
+
+    package "Old Configuration" as c1 {
+        object "LoggerConfig" as lc1
+        object "AppenderControl" as ac1
+        object "Appender" as app1
+    }
+}
+
+object AbstractManager
+
+Logger ..> lc1
+lc1 --> ac1
+ac1 --> app1
+app1 --> AbstractManager
+
+Logger --> lc2
+lc2 --> ac2
+ac2 --> app2
+app2 --> AbstractManager
+@enduml
+....
 
 [#Logger]
 == `Logger`
