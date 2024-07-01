@@ -71,12 +71,15 @@ How this works under the hood and how you can introduce your custom implementati
 .Supported configuration file formats by predefined `ConfigurationFactory` plugins
 [%header,cols="1,1m,1"]
 |===
-| File format | Extension | Plugin order
+| File format | Extension | Order
 | XML | xml | 5
 | JSON | json, jsn | 6
 | YAML | yaml, yml | 7
 | Properties | properties | 8
 |===
+
+Note that `ConfigurationFactory` plugins will be employed in descending order.
+That is, for instance, XML file format will be checked last, as a fallback.
 
 Some `ConfigurationFactory` plugins require additional dependencies on the classpath:
 
@@ -1215,7 +1218,7 @@ Under the hood, Log4j Core uses plugins extending from link:../javadoc/log4j-cor
 This procedure can be summarized as follows:
 
 . Load plugins which extend from link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html[`ConfigurationFactory`] and whose plugin `category` is set to link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html#CATEGORY[`ConfigurationFactory.CATEGORY`]
-. Sort them by link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Order.html[`@Order`] annotation, if present
+. Sort them by link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Order.html[`@Order`] annotation (in decreasing value order), if present
 . Feed <<automatic-configuration,found configuration files>> to `ConfigurationFactory` instances in order, if the file extension is contained by `String[]` returned from link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html#getSupportedTypes()[`ConfigurationFactory#getSupportedTypes()`]
 
 If xref:manual/systemproperties.adoc#log4j2.configurationFactory[the `log4j2.configurationFactory` system property] is defined, it will be used before any other factory implementations.

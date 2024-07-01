@@ -158,7 +158,7 @@ link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFac
 You need to
 
 * xref:manual/configuration.adoc#ConfigurationFactory[Create a custom `ConfigurationFactory` plugin]
-* Assign it a higher priority (i.e., lower `@Order` value)
+* Assign it a higher priority (i.e., higher `@Order` value)
 * Support all configuration file types (i.e. return `*` from `getSupportedTypes()`)
 
 Consider the example below:
