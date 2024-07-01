@@ -216,6 +216,12 @@ include::partial$manual/composite-configuration.adoc[tag=how]
 [#Hybrid]
 === [[AddingToCurrent]] [[AppendingToWritersAndOutputStreams]] Modifying configuration components
 
+[WARNING]
+====
+*We strongly advise against programmatically modifying components of a configuration!*
+This section will explain what it is, and why you should avoid it.
+====
+
 It is unfortunately common that users modify components (appenders, filters, etc.) of a configuration programmatically as follows:
 
 [source,java]
@@ -229,7 +235,6 @@ config.addAppender(appender);
 updateLoggers(appender, config);
 ----
 
-*We strongly advise you to avoid programmatically modifying components of a configuration!*
 This approach is prone several problems:
 
 * Your code relies on Log4j Core internals which don't have any backward compatibility guarantees.
