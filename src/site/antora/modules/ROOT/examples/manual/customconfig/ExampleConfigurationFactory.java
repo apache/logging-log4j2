@@ -29,7 +29,12 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 public class ExampleConfigurationFactory extends ConfigurationFactory {
 
     @Override
-    public Configuration getConfiguration(LoggerContext loggerContext, ConfigurationSource source) {
+    public Configuration getConfiguration(LoggerContext loggerContext, ConfigurationSource source) { // <1>
+        // Return a `Configuration`...
+    }
+
+    @Override
+    public Configuration getConfiguration(LoggerContext loggerContext, String name, URI configLocation) {
         // Return a `Configuration`...
     }
 

@@ -167,6 +167,9 @@ Consider the example below:
 ----
 include::example$manual/customconfig/ExampleConfigurationFactory.java[tag=class]
 ----
+<1> `getConfiguration(LoggerContext, ConfigurationSource)` is only called if `ConfigurationSource` is not null.
+This is possible if the `Configuration` is provided programmatically.
+Hence, you are encouraged to implement `getConfiguration(LoggerContext, String, URI)` overload too.
 
 [#guides]
 == How-to guides
