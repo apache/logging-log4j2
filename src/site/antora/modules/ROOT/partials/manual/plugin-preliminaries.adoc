@@ -16,7 +16,7 @@
 ////
 
 Log4j plugin system is the de facto extension mechanism embraced by various Log4j components.
-Plugins make it possible for extensible components to _receive_ feature implementations without any explicit links in between.
+Plugins provide extension points to components, that can be used to implement new features, without modifying the original component.
 It is analogous to a https://en.wikipedia.org/wiki/Dependency_injection[dependency injection] framework, but curated for Log4j-specific needs.
 
 In a nutshell, you annotate your classes with link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/Plugin.html[`@Plugin`] and their (`static`) factory methods with link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/PluginFactory.html[`@PluginFactory`].
