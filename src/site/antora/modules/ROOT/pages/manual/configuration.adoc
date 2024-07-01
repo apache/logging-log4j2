@@ -1067,40 +1067,17 @@ include::example$manual/configuration/arbiters-select.properties[tag=select]
 <2> Otherwise, a JSON Template Layout will be used.
 
 [#CompositeConfiguration]
-== Composite Configuration
+== Composite configuration
 
-Log4j allows multiple configuration files to be used at the same time by specifying them as a list of comma-separated file paths or URLs in the
-xref:manual/systemproperties.adoc#log4j2.configurationFile[`log4j2.configurationFile`]
-configuration property.
+include::partial$manual/composite-configuration.adoc[tag=intro]
 
-These configuration files are merged into a single configuration file using
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy.html[`MergeStrategy`]
-service that can be customized using the
-xref:manual/systemproperties.adoc#log4j2.mergeStrategy[`log4j2.mergeStrategy`]
-configuration property.
+You can provide a list of comma-separated file paths or URLs in xref:manual/systemproperties.adoc#log4j2.configurationFile[the `log4j2.configurationFile` configuration property], where each resource will get read into a `Configuration`, and then eventually combined into a single one using link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/CompositeConfiguration.html[`CompositeConfiguration`].
 
-The default merge strategy will merge the files using the following rules:
-
-. <<global-configuration-attributes>> in later configurations replace those in previous configurations.
-+
-The exception is the `monitorInterval` attribute: the lowest positive value from all the configuration files will be used.
-
-. <<property-substitution,Properties>> from all configurations are aggregated.
-Duplicate properties replace those in previous configurations.
-
-. xref:manual/filters.adoc[Filters] are aggregated under
-xref:manual/filters.adoc#CompositeFilter[CompositeFilter], if more than one filter is defined.
-
-. xref:manual/scripts.adoc[] are aggregated.
-Duplicate definitions replace those in previous configurations.
-
-. xref:manual/appenders.adoc[Appenders] are aggregated.
-Appenders with the same name are **replaced** by those in later configurations, including all their elements.
-
-. <<configuring-loggers,Loggers>> are all aggregated.
-Logger attributes are individually merged, and those in later configurations replace duplicates.
-Appender references on a logger are aggregated, and those in later configurations replace duplicates.
-The strategy merges filters on loggers using the rule above.
+.How does `CompositeConfiguration` work?
+[%collapsible]
+====
+include::partial$manual/composite-configuration.adoc[tag=how]
+====
 
 [id=format-specific-notes]
 == Format specific notes
