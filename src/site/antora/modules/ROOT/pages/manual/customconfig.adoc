@@ -50,7 +50,7 @@ In short, we will create ``Configuration``s using `ConfigurationBuilder`, and ac
 === `ConfigurationBuilder`
 
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/builder/api/ConfigurationBuilder.html[`ConfigurationBuilder`] interface models a fluent API to programmatically create link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html[`Configuration`]s.
-If you have ever created a xref:manual/configuration.adoc[Log4j Core configuration file], consider `ConfigurationBuilder` as a convenience utility to model the very same declarative configuration structure programmatically, in a type-safe way.
+If you have ever created a xref:manual/configuration.adoc[Log4j Core configuration file], consider `ConfigurationBuilder` as a convenience utility to model the very same declarative configuration structure programmatically.
 
 Let's show `ConfigurationBuilder` usage with an example.
 Consider the following Log4j Core configuration file:
