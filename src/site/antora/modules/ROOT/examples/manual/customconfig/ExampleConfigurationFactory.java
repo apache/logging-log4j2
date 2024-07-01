@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.config.Order;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 
 // tag::class[]
-@Order(5)
+@Order(100)
 @Plugin(name = "ExampleConfigurationFactory", category = ConfigurationFactory.CATEGORY)
 public class ExampleConfigurationFactory extends ConfigurationFactory {
 
