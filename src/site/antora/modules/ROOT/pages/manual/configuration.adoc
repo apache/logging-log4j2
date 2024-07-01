@@ -400,11 +400,6 @@ Overrides the logging level of xref:manual/status-logger.adoc[].
 Since version `2.24.0`, this attribute is deprecated and should be replaced with the xref:manual/status-logger.adoc#log4j2.statusLoggerLevel[log4j2.statusLoggerLevel] configuration property instead.
 ====
 
-[id=configuration-elements-filters]
-=== Filters
-
-See xref:manual/filters.adoc#filters[Filters] for additional filtering capabilities that can be applied to the global configuration object.
-
 [id=configuring-loggers]
 == [[Loggers]] Loggers
 
