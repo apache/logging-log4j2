@@ -37,6 +37,5 @@ public class ExampleConfigurationFactory extends ConfigurationFactory {
     public String[] getSupportedTypes() {
         return new String[] {"*"};
     }
-
 }
 // end::class[]

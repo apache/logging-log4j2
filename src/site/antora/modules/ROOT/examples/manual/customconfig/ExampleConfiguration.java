@@ -34,16 +34,14 @@ public class ExampleConfiguration extends XmlConfiguration {
         Appender appender = createAppender("ExampleAppender");
         appender.start();
         addAppender(appender);
-        LoggerConfig loggerConfig = LoggerConfig
-                .newBuilder()
+        LoggerConfig loggerConfig = LoggerConfig.newBuilder()
                 .withConfig(this)
                 .withAdditivity(false)
                 .withLevel(Level.INFO)
                 .withLoggerName("com.example")
-                .withRefs(new AppenderRef[]{AppenderRef.createAppenderRef("ExampleAppender", null, null)})
+                .withRefs(new AppenderRef[] {AppenderRef.createAppenderRef("ExampleAppender", null, null)})
                 .build();
         loggerConfig.addAppender(appender, null, null);
         addLogger("com.example", loggerConfig);
     }
-
 }

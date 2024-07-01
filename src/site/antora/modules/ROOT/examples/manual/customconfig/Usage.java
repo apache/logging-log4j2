@@ -16,35 +16,35 @@
  */
 package com.example;
 
+import java.net.URI;
+import java.util.Arrays;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
-import org.apache.logging.log4j.core.LoggerContext;
-
-import java.net.URI;
-import java.util.Arrays;
 
 final class Usage {
 
     private static Configuration createConfiguration() {
         // tag::createConfiguration[]
         ConfigurationBuilder<BuiltConfiguration> configBuilder =
-                ConfigurationBuilderFactory.newConfigurationBuilder(); //<1>
+                ConfigurationBuilderFactory.newConfigurationBuilder(); // <1>
         Configuration configuration = configBuilder
-                .add(configBuilder //<2>
-                        .newAppender("CONSOLE", "List")
-                        .add(configBuilder.newLayout("JsonTemplateLayout")))
-                .add(configBuilder //<3>
-                        .newRootLogger(Level.WARN)
-                        .add(configBuilder.newAppenderRef("CONSOLE")))
-                .build(false); //<4>
+                .add(
+                        configBuilder // <2>
+                                .newAppender("CONSOLE", "List")
+                                .add(configBuilder.newLayout("JsonTemplateLayout")))
+                .add(
+                        configBuilder // <3>
+                                .newRootLogger(Level.WARN)
+                                .add(configBuilder.newAppenderRef("CONSOLE")))
+                .build(false); // <4>
         // end::createConfiguration[]
     }
 
@@ -66,26 +66,25 @@ final class Usage {
 
     private static Configuration loadConfigurationFile() {
         // tag::loadConfigurationFile[]
-        ConfigurationFactory.getInstance().getConfiguration(
-                null, //<1>
-                null, //<2>
-                URI.create("uri://to/my/log4j2.xml")); //<3>
+        ConfigurationFactory.getInstance()
+                .getConfiguration(
+                        null, // <1>
+                        null, // <2>
+                        URI.create("uri://to/my/log4j2.xml")); // <3>
         // end::loadConfigurationFile[]
     }
 
     private static Configuration combineConfigurations() {
         // tag::combineConfigurations[]
         ConfigurationFactory configFactory = ConfigurationFactory.getInstance();
-        AbstractConfiguration commonConfig = (AbstractConfiguration) //<2>
-                configFactory.getConfiguration(null, null, URI.create("classpath:log4j2-common.xml")); //<1>
-        AbstractConfiguration appConfig = (AbstractConfiguration) //<2>
-                configFactory.getConfiguration(null, null, URI.create("classpath:log4j2-app.xml")); //<1>
-        AbstractConfiguration runtimeConfig = ConfigurationBuilderFactory
-                .newConfigurationBuilder()
+        AbstractConfiguration commonConfig = (AbstractConfiguration) // <2>
+                configFactory.getConfiguration(null, null, URI.create("classpath:log4j2-common.xml")); // <1>
+        AbstractConfiguration appConfig = (AbstractConfiguration) // <2>
+                configFactory.getConfiguration(null, null, URI.create("classpath:log4j2-app.xml")); // <1>
+        AbstractConfiguration runtimeConfig = ConfigurationBuilderFactory.newConfigurationBuilder()
                 // ...
-                .build(false); //<3>
-        return new CompositeConfiguration(Arrays.asList(commonConfig, appConfig, runtimeConfig)); //<4>
+                .build(false); // <3>
+        return new CompositeConfiguration(Arrays.asList(commonConfig, appConfig, runtimeConfig)); // <4>
         // end::combineConfigurations[]
     }
-
 }
