@@ -124,9 +124,9 @@ See {project-github-url}/log4j-core-test/src/test/java/org/apache/logging/log4j/
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configurator.html[`Configurator`] is a programmatic interface to associate a ``Configuration`` with either new, or an existing `LoggerContext`.
 
 [#Configurator-initialize]
-==== Creating a new `LoggerContext`
+==== Obtaining a `LoggerContext`
 
-You can use `Configurator` to create a new `LoggerContext` as follows:
+You can use `Configurator` to obtain a `LoggerContext`:
 
 .Snippet from an example {antora-examples-url}/manual/customconfig/Usage.java[`Usage.java`]
 [source,java]
@@ -134,7 +134,8 @@ You can use `Configurator` to create a new `LoggerContext` as follows:
 include::example$manual/customconfig/Usage.java[tag=useConfiguration,indent=0]
 ----
 
-This is a convenient way to create single-use, isolated ``LoggerContext``s for tests, etc.
+`initialize()` will either return the `LoggerContext` currently associated with the caller, or create a new one.
+This is a convenient way to create isolated ``LoggerContext``s for tests, etc.
 
 [#Configurator-reconfigure]
 ==== Reconfiguring the active `LoggerContext`
