@@ -3811,7 +3811,7 @@ Note that the AuditAppender was predefined while the RollingFileAppenders are cr
 ----
 
 [#servlet-appender]
-== Servlet appender
+=== Servlet appender
 
 The servlet appender allows users to forward all logging calls to the
 https://jakarta.ee/specifications/servlet/5.0/apidocs/jakarta/servlet/servletcontext#log(java.lang.String,java.lang.Throwable)[`ServletContext.log()`]
@@ -3849,8 +3849,10 @@ include::example$manual/appenders/servlet-appender.properties[tag=servlet]
 ----
 ====
 
-<1> Encodes events using xref:manual/pattern-layout.adoc[] and forwards the call to `ServletContext.log()`.
-Setting `alwaysWriteExceptions` to `false` prevents exceptions from appearing in the log file twice.
+<1> Encodes events using xref:manual/pattern-layout.adoc[] and forwards the call to
+`ServletContext.log()`.
+Setting `alwaysWriteExceptions` to `false` prevents the stacktrace from appearing as both part of the `message` argument and as `throwable` argument:
+this usually results in the stacktrace being printed to the log file twice.
 
 Additional runtime dependencies are required for using the servlet appender:
 
@@ -3860,8 +3862,8 @@ See xref:manual/webapp.adoc[] for more information.
 
 [CAUTION]
 ====
-`ServletContext.log(String, Throwable)` is a very primitive logging interface.
-Modern application servers usually forward their calls to a proper logging framework and use a **fixed** logging level for all the events.
+The `ServletContext.log(String, Throwable)` method predates modern logging APIs.
+By using Servlet appender you typically will not be able to differentiate log events by log level or logger name.
 ====
 
 [[SMTPAppender]]

@@ -22,7 +22,7 @@ The table below contains links to the Javadoc API Documentation for the componen
 | Component | Description
 
 | link:javadoc/log4j-api/index.html[API]
-| The interface that applications should use and code against.
+| The logging interface (i.e., Log4j API) that applications should use and code against.
 
 | link:javadoc/log4j-core/index.html[Implementation]
 | The logging implementation (i.e., Log4j Core) that contains appenders, layouts, filters, and more.
