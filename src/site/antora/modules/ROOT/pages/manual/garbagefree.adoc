@@ -149,9 +149,9 @@ Any other filter not shared in the above list is not garbage-free.
 There are certain caveats associated with the configuration of garbage-free logging:
 
 [#core-limitation-properties]
-`<Properties>` section::
+Property substitutions::
 
-A configuration containing xref:manual/configuration.adoc#PropertySubstitution[a `<Properties>` section] will result in temporary objects being created during steady-state logging.
+Some xref:manual/configuration.adoc#PropertySubstitution[property substitutions] (e.g., ones using xref:manual/lookups.adoc#DateLookup[Date Lookup]) might result in temporary objects being created during steady-state logging.
 
 [#core-limitation-async-logger-wait-strategy]
 Asynchronous logger wait strategies::
