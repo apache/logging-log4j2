@@ -16,19 +16,37 @@
   ~ limitations under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>${revision}</version>
     <relativePath>../log4j-parent</relativePath>
   </parent>
+
   <artifactId>log4j-core</artifactId>
-  <packaging>jar</packaging>
+
   <name>Apache Log4j Core</name>
-  <description>The Apache Log4j Implementation</description>
+
+  <description>A versatile, industrial-grade, and reference implementation of the Log4j API.
+    It bundles a rich set of components to assist various use cases:
+    Appenders targeting files, network sockets, databases, SMTP servers;
+    Layouts that can render CSV, HTML, JSON, Syslog, etc. formatted outputs;
+    Filters that can be configured using log event rates, regular expressions, scripts, time, etc.
+    It contains several extension points to introduce custom components, if needed.</description>
+
   <properties>
-    <javadoc.skip>false</javadoc.skip>
+
+    <!-- Javadoc needs to be generated for this module -->
+    <maven.javadoc.skip>false</maven.javadoc.skip>
+
+    <!-- Tests are located elsewhere, no need to do any processing for the `src/test` directory: -->
+    <maven.test.skip>true</maven.test.skip>
+
+    <!-- `log4j-core` plugin descriptor needs to be consumed before other modules' descriptors -->
+    <log4j.docgen.pluginDescriptorsDir>${log4j.docgen.pluginDescriptorsDir.phase1}</log4j.docgen.pluginDescriptorsDir>
 
     <!--
       ~ OSGi and JPMS options
@@ -82,6 +100,7 @@
       javax.mail.api;substitute="javax.mail-api";transitive=false;static=true
     </bnd-extra-module-options>
   </properties>
+
   <dependencies>
     <dependency>
       <groupId>javax.activation</groupId>
@@ -192,17 +211,12 @@
       <scope>runtime</scope>
       <optional>true</optional>
     </dependency>
-    <!-- Kafka needs slf4j -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <scope>runtime</scope>
-      <optional>true</optional>
-    </dependency>
   </dependencies>
+
   <build>
     <plugins>
 
+      <!-- Add Java 9+ code for the MRJ -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
@@ -217,43 +231,6 @@
               <sources>
                 <source>${project.build.directory}/log4j-core-java9</source>
               </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <annotationProcessorPaths combine.self="override" />
-        </configuration>
-        <executions>
-          <execution>
-            <!-- disable annotation processing for first pass -->
-            <id>default-compile</id>
-            <configuration>
-              <annotationProcessorPaths>
-                <path>
-                  <groupId>com.google.errorprone</groupId>
-                  <artifactId>error_prone_core</artifactId>
-                  <version>${error-prone.version}</version>
-                </path>
-              </annotationProcessorPaths>
-            </configuration>
-          </execution>
-          <execution>
-            <!-- then do a processing-only pass to generate plugins .dat file -->
-            <id>process-plugins</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <phase>process-classes</phase>
-            <configuration>
-              <annotationProcessors>
-                <processor>org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor</processor>
-              </annotationProcessors>
-              <compilerArgs combine.self="override" />
-              <proc>only</proc>
             </configuration>
           </execution>
         </executions>
@@ -291,4 +268,5 @@
 
     </plugins>
   </build>
+
 </project>

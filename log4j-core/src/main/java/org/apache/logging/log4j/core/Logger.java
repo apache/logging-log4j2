@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,10 +33,16 @@ import org.apache.logging.log4j.core.config.LocationAwareReliabilityStrategy;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.ReliabilityStrategy;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
+import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.message.DefaultFlowMessageFactory;
+import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.ParameterizedMessageFactory;
+import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
 
@@ -54,6 +62,10 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
 
     private static final long serialVersionUID = 1L;
 
+    private static final String MESSAGE_FACTORY_PROPERTY_NAME = "log4j2.messageFactory";
+
+    private static final String FLOW_MESSAGE_FACTORY_PROPERTY_NAME = "log4j2.flowMessageFactory";
+
     /**
      * Config should be consistent across threads.
      */
@@ -63,16 +75,75 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
     private final LoggerContext context;
 
     /**
-     * The constructor.
+     * Constructs an instance using the given {@link LoggerContext}, logger name, and {@link MessageFactory}.
      *
-     * @param context The LoggerContext this Logger is associated with.
-     * @param messageFactory The message factory.
-     * @param name The name of the Logger.
+     * @param context the {@link LoggerContext} this logger is associated with
+     * @param messageFactory The message factory to be used.
+     *                       If null, first the {@value #MESSAGE_FACTORY_PROPERTY_NAME} property will be used to instantiate the message factory.
+     *                       If the property is missing and the {@code log4j2.enableThreadLocals} property is not {@code false}, {@link ReusableMessageFactory} will be used.
+     *                       Otherwise, we will fall back to {@link ParameterizedMessageFactory}.
+     * @param name the logger name
      */
     protected Logger(final LoggerContext context, final String name, final MessageFactory messageFactory) {
-        super(name, messageFactory);
-        this.context = context;
-        privateConfig = new PrivateConfig(context.getConfiguration(), this);
+        this(context, name, messageFactory, null);
+    }
+
+    /**
+     * The canonical constructor.
+     *
+     * @param context the {@link LoggerContext} this logger is associated with
+     * @param messageFactory The message factory to be used.
+     *                       If null, first the {@value #MESSAGE_FACTORY_PROPERTY_NAME} property will be used to instantiate the message factory.
+     *                       If the property is missing and the {@code log4j2.enableThreadLocals} property is not {@code false}, {@link ReusableMessageFactory} will be used.
+     *                       Otherwise, we will fall back to {@link ParameterizedMessageFactory}.
+     * @param flowMessageFactory The flow message factory to be used.
+     *                           If null, first the {@value #FLOW_MESSAGE_FACTORY_PROPERTY_NAME} property will be used to instantiate the flow message factory.
+     *                           If the property is missing, {@link DefaultFlowMessageFactory} will be used.
+     * @param name the logger name
+     */
+    protected Logger(
+            final LoggerContext context,
+            final String name,
+            final MessageFactory messageFactory,
+            final FlowMessageFactory flowMessageFactory) {
+        super(name, getEffectiveMessageFactory(messageFactory), getEffectiveFlowMessageFactory(flowMessageFactory));
+        this.context = requireNonNull(context, "context");
+        this.privateConfig = new PrivateConfig(context.getConfiguration(), this);
+    }
+
+    private static MessageFactory getEffectiveMessageFactory(final MessageFactory messageFactory) {
+        return createInstanceFromFactoryProperty(
+                MessageFactory.class,
+                messageFactory,
+                MESSAGE_FACTORY_PROPERTY_NAME,
+                () -> Constants.ENABLE_THREADLOCALS
+                        ? ReusableMessageFactory.INSTANCE
+                        : ParameterizedMessageFactory.INSTANCE);
+    }
+
+    private static FlowMessageFactory getEffectiveFlowMessageFactory(final FlowMessageFactory flowMessageFactory) {
+        return createInstanceFromFactoryProperty(
+                FlowMessageFactory.class,
+                flowMessageFactory,
+                FLOW_MESSAGE_FACTORY_PROPERTY_NAME,
+                () -> DefaultFlowMessageFactory.INSTANCE);
+    }
+
+    private static <V> V createInstanceFromFactoryProperty(
+            final Class<V> instanceType,
+            final V providedInstance,
+            final String propertyName,
+            final java.util.function.Supplier<V> fallbackInstanceSupplier) {
+        if (providedInstance != null) {
+            return providedInstance;
+        }
+        try {
+            return LoaderUtil.newCheckedInstanceOfProperty(propertyName, instanceType, fallbackInstanceSupplier);
+        } catch (final Exception error) {
+            final String message =
+                    String.format("failed instantiating the class pointed by the `%s` property", propertyName);
+            throw new RuntimeException(message, error);
+        }
     }
 
     protected Object writeReplace() throws ObjectStreamException {

@@ -20,12 +20,12 @@ import aQute.bnd.annotation.Cardinality;
 import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.io.File;
-import java.lang.invoke.MethodHandles;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.ServiceLoader;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -143,7 +143,8 @@ public class WatchManager extends AbstractLifeCycle {
 
     public WatchManager(final ConfigurationScheduler scheduler) {
         this.scheduler = Objects.requireNonNull(scheduler, "scheduler");
-        eventServiceList = ServiceLoaderUtil.loadServices(WatchEventService.class, MethodHandles.lookup(), true)
+        eventServiceList = ServiceLoaderUtil.safeStream(
+                        WatchEventService.class, ServiceLoader.load(WatchEventService.class), logger)
                 .collect(Collectors.toList());
     }
 
@@ -336,8 +337,7 @@ public class WatchManager extends AbstractLifeCycle {
      * @since 2.11.0
      */
     public void unwatchFile(final File file) {
-        final Source source = new Source(file);
-        unwatch(source);
+        unwatch(new Source(file));
     }
 
     /**

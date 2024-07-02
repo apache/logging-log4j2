@@ -38,12 +38,20 @@ class TruncatingBufferedWriterTest {
         writer.write(new char[] {Character.MIN_VALUE, Character.MAX_VALUE});
         writer.write("foo");
         writer.write("foobar", 3, 3);
+        writer.write("empty", 3, 0);
         writer.write(new char[] {'f', 'o', 'o', 'b', 'a', 'r', 'b', 'u', 'z', 'z'}, 6, 4);
+        writer.write(new char[] {'a', 'b', 'c'}, 0, 0);
+        writer.write(new char[] {}, 0, 0);
+        writer.write(new char[] {});
+        writer.write("", 0, 0);
+        writer.write("");
         writer.append('!');
         writer.append("yo");
         writer.append(null);
         writer.append("yo dog", 3, 6);
         writer.append(null, -1, -1);
+        writer.append("", -1, -1);
+        writer.append("");
 
         // Verify accessors.
         final char[] expectedBuffer = new char[capacity];

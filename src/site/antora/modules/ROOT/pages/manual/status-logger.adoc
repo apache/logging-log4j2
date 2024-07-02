@@ -1,0 +1,108 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+:status-logger-properties-file-name: "log4j2.StatusLogger.properties"
+
+= Status Logger
+
+link:../javadoc/log4j-api/org/apache/logging/log4j/status/StatusLogger.html[`StatusLogger`] is a standalone, self-sufficient `Logger` implementation to record events that occur in the logging system (i.e., Log4j) itself.
+It is the logging system used by Log4j for reporting status of its internals.
+
+[#usage]
+== Usage
+
+You can use the status logger for several purposes:
+
+[#usage-troubleshoot]
+Troubleshooting::
+When Log4j is not behaving in the way you expect it to, you can increase the verbosity of status logger messages emitted using <<log4j2.debug,the `log4j2.debug` system property>> for troubleshooting.
+See <<config>> for details.
+
+[#usage-report]
+Reporting internal status::
+If you have custom Log4j components (layouts, appenders, etc.), you cannot use Log4j API itself for logging, since this will result in a chicken and egg problem.
+This is where `StatusLogger` comes into play:
++
+[source,java]
+----
+private class CustomLog4jComponent {
+
+    private static final Logger LOGGER = StatusLogger.getInstance();
+
+    void doSomething(String input) {
+        LOGGER.trace("doing something with input: `{}`", input);
+    }
+
+}
+----
+
+[#usage-listen]
+Listening internal status::
+You can configure where the status logger messages are delivered to.
+See <<listeners>>.
+
+[#config]
+== Configuration
+
+`StatusLogger` can be configured in following ways:
+
+. Passing system properties to the Java process (e.g., <<log4j2.statusLoggerLevel,`-Dlog4j2.statusLoggerLevel=INFO`>>}
++
+[WARNING]
+====
+Due to several complexities involved, **you are strongly advised to <<properties,configure the status logger only using system properties>>!**
+====
+. Providing properties in a `{status-logger-properties-file-name}` file in the classpath
+. Using Log4j configuration (i.e., `<Configuration status="WARN" dest="out">` in a `log4j2.xml` in the classpath)
++
+WARNING: Since version `2.24.0`, `status` attribute in the `Configuration` element is deprecated and should be
+replaced with the <<log4j2.statusLoggerLevel>> configuration property.
+. Programmatically (e.g., `StatusLogger.getLogger().setLevel(Level.WARN)`)
+
+It is crucial to understand that there is a time between the first `StatusLogger` access and a configuration file (e.g., `log4j2.xml`) read.
+Consider the following example:
+
+. The default level (of fallback listener) is `ERROR`
+. You have `<Configuration status="WARN">` in your `log4j2.xml`
+. Until your `log4j2.xml` configuration is read, the effective level will be `ERROR`
+. Once your `log4j2.xml` configuration is read, the effective level will be `WARN` as you configured
+
+Hence, unless you use either system properties or `{status-logger-properties-file-name}` file in the classpath, there is a time window that only the defaults will be effective.
+
+`StatusLogger` is designed as a singleton class accessed statically.
+If you are running an application containing multiple Log4j configurations (e.g., in a servlet environment with multiple containers), and you happen to have differing `StatusLogger` configurations (e.g, one `log4j2.xml` containing `<Configuration status="ERROR">` while the other `<Configuration status="INFO">`), the last loaded configuration will be the effective one.
+
+[#properties]
+=== Properties
+
+`StatusLogger` can be configured using the following system properties:
+
+include::partial$manual/systemproperties/properties-status-logger.adoc[leveloffset=+2]
+
+[#debug]
+== Debug mode
+
+When the `log4j2.debug` system property is present, any level-related filtering will be skipped and all events will be notified to listeners.
+If no listeners are available, the fallback listener of type `StatusConsoleListener` will be used.
+
+[#listeners]
+== Listeners
+
+Each recorded log event by `StatusLogger` will first get buffered and then used to notify the registered link:../javadoc/log4j-api/org/apache/logging/log4j/status/StatusListener.html[`StatusListener`]s.
+If none are available, *the fallback listener* of type link:../javadoc/log4j-api/org/apache/logging/log4j/status/StatusConsoleListener.html[`StatusConsoleListener`] will be used.
+
+You can programmatically register listeners using link:../javadoc/log4j-api/org/apache/logging/log4j/status/StatusLogger.html#registerListener(org.apache.logging.log4j.status.StatusListener)[the `StatusLogger#registerListener(StatusListener)` method].

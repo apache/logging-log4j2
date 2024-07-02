@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="https://logging.apache.org/xml/ns"
+       xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="fixed">
+  <issue id="2380" link="https://github.com/apache/logging-log4j2/pull/2380"/>
+  <description format="asciidoc">
+    Fix that parameterized message formatting throws an exception when there are insufficient number of parameters.
+    It previously simply didn't replace the '{}' sequence. The behavior changed in 2.21.0 and should be restored for backward compatibility.
+  </description>
+</entry>

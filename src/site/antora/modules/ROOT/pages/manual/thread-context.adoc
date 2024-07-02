@@ -1,0 +1,154 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Thread Context
+
+Just like https://docs.oracle.com/javase/{java-target-version}/docs/api/java/lang/ThreadLocal.html[Java's `ThreadLocal`], _Thread Context_ facilitates associating information with the executing thread and making this information accessible to the rest of the logging system.
+Thread Context is one of many xref:manual/api.adoc#fish-tagging[_fish tagging_ capabilities provided by Log4j API].
+
+[#usage]
+== Usage
+
+The entry point for associating logging-related information with the executing thread is
+link:../javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html[`ThreadContext`].
+It offers both
+
+* map-structured – referred to as _Thread Context Map_ or _Mapped Diagnostic Context (MDC)_
+* stack-structured – referred to as _Thread Context Stack_ or _Nested Diagnostic Context (NDC)_
+
+storage:
+
+[source,java]
+----
+ThreadContext.put("ipAddress", request.getRemoteAddr()); // <1>
+ThreadContext.put("hostName", request.getServerName()); // <1>
+ThreadContext.put("loginId", session.getAttribute("loginId")); // <1>
+
+void performWork() {
+    ThreadContext.push("performWork()"); // <2>
+
+    LOGGER.debug("Performing work"); // <3>
+    // Perform the work
+
+    ThreadContext.pop(); // <4>
+}
+
+ThreadContext.clear(); // <5>
+----
+
+<1> Adding properties to the thread context map
+<2> Pushing properties to the thread context stack
+<3> Added properties can later on be used to, for instance, filter the log event, provide extra information in the layout, etc.
+<4> Popping the last pushed property from the thread context stack
+<5> Clearing the thread context (for both stack and map!)
+
+[#CloseableThreadContext]
+=== Auto-clearing thread context
+
+When placing items on the thread context stack or map, it's necessary to remove them again when appropriate.
+To assist with this, you can use
+link:../javadoc/log4j-api/org/apache/logging/log4j/CloseableThreadContext.html[`CloseableThreadContext`]
+(implementing
+http://docs.oracle.com/javase/{java-target-version}/docs/api/java/lang/AutoCloseable.html[`AutoCloseable`])
+in a try-with-resources block:
+
+[source,java]
+----
+try (CloseableThreadContext.Instance ignored = CloseableThreadContext
+        .put("ipAddress", request.getRemoteAddr()) // <1>
+        .push("performWork()")) { // <1>
+
+    LOGGER.debug("Performing work"); // <2>
+    // Perform the work
+
+}
+
+// ... // <3>
+----
+
+<1> Making thread context changes that will only be visible **within the scope of the try-with-resources block**
+<2> Added properties can later on be used to, for instance, filter the log event, provide extra information in the layout, etc.
+<3> Outside the scope of the try-with-resources block made thread context changes will not be visible
+
+[#init]
+=== Initializing thread context
+
+It is a common use case that a single threaded execution fans out to multiple threads by means of a thread pool.
+In such a case, you need to clone the context of the current thread to the ones in the pool.
+For that purpose, you can use `putAll()` and `pushAll()` methods that are provided by both `ThreadContext` and `CloseableThreadContext`:
+
+[source,java]
+----
+LOGGER.debug("Starting background thread for user");
+
+Map<String, String> mdc = ThreadContext.getImmutableContext(); // <1>
+List<String> ndc = ThreadContext.getImmutableStack().asList(); // <1>
+
+executor.submit(() -> {
+    try (CloseableThreadContext.Instance ignored = CloseableThreadContext
+            .putAll(values) // <2>
+            .pushAll(messages)) { // <2>
+
+        LOGGER.debug("Processing for user started");
+        // ...
+
+    }
+});
+----
+
+<1> Taking a snapshot of the thread context
+<2> Initializing the thread context for the background task
+
+[#config]
+== Configuration
+
+You can configure thread context using following properties:
+
+include::partial$manual/systemproperties/properties-thread-context.adoc[leveloffset=+1]
+
+[#extending]
+== Extending
+
+Certain thread context implementation details can be customized to fit your use case.
+
+[#custom-ContextDataProvider]
+=== Custom thread context data provider
+
+The link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/ContextDataProvider.html[`ContextDataProvider`] is an interface applications and libraries can use to inject additional properties into a log events' context data.
+Log4j uses `java.util.ServiceLoader` to locate and load `ContextDataProvider` instances.
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/ThreadContextDataProvider.html[`ThreadContextDataProvider`] is the default implementation provided.
+You can provide a custom `ContextDataProvider` implementation as follows:
+
+. Create the following file in your class path:
++
+[source,text]
+----
+META-INF/services/org.apache.logging.log4j.core.util.ContextDataProvider
+----
+. Write the fully-qualified class name of your custom implementation (e.g., `com.mycompany.CustomContextDataProvider`) to the file created in the previous step
+
+[#custom-ThreadContextMap]
+=== Custom thread context map
+
+Custom thread context map implementations can be provided by setting <<log4j2.threadContextMap,the `log4j2.threadContextMap` system property>> to the fully-qualified class name of the custom implementation class extending from
+link:../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html[`ThreadContextMap`].
+
+While providing a custom thread context map implementation, you are advised to also extend from
+link:../javadoc/log4j-api/org/apache/logging/log4j/spi/ReadOnlyThreadContextMap.html[`ReadOnlyThreadContextMap`]
+too.
+By this way, your custom thread context map implementation will be accessible to applications via
+link:../javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html#getThreadContextMap()[`ThreadContext.getThreadContextMap()`].

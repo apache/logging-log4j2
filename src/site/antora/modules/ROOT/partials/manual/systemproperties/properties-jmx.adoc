@@ -1,0 +1,42 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+[id=log4j2.disableJmx]
+== `log4j2.disableJmx`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_DISABLE_JMX`
+| Type          | `boolean`
+| Default value | `true`
+|===
+
+If `false`, Log4j configuration objects like ``LoggerContext``s, ``Appender``s, ``Logger``s, etc.
+will be instrumented with ``MBean``s and can be remotely monitored and managed.
+
+[id=log4j2.jmxNotifyAsync]
+== `log4j2.jmxNotifyAsync`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_JMX_NOTIFY_ASYNC`
+| Type          | `int`
+| Default value | `true`
+
+(Web-app mode: `false`)
+|===
+
+If `true`, Log4j's JMX notifications are sent from a separate background thread, otherwise they are sent from the caller thread.

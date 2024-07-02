@@ -1,0 +1,1115 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Layouts
+
+An xref:manual/appenders.adoc[appender] uses a *layout* to encode a link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html[`LogEvent`] into a form that meets the needs of whatever will be consuming the log event.
+This page will try to answer following questions:
+
+* <<concerns,What are some common concerns shared by all predefined layouts?>>
+* <<collection,Which layouts does Log4j provide?>>
+* <<extending,How can you create custom layouts?>>
+
+[#concerns]
+== Common concerns
+
+This section introduces you to some common concerns shared by almost all <<collection,predefined layouts>> that you need to be aware of while using them.
+
+[#structured-logging]
+=== Structured logging
+
+include::partial$manual/structured-logging.adoc[]
+
+Log4j strives to provide top of the class support for structured logging.
+To create an end-to-end experience, it provides several xref:manual/messages.adoc#collection-structured[structured message types] along with layouts supporting structured logging.
+
+We recommend xref:manual/json-template-layout.adoc[] for structured logging purposes.
+
+[#charset]
+=== Character encoding
+
+All <<collection,predefined layouts>> produce `String` that eventually get converted into a `byte` using the https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/charset/Charset.html[`Charset`] configured.
+While doing so, unless an explicit encoding configuration is stated, they use `UTF-8` by default.
+If you want all your log events to be formatted in a certain character encoding that is different from what the employed layout defaults to, make sure to configure the layout's character encoding as needed.
+
+[#LocationInformation]
+=== Location information
+
+include::partial$manual/layouts-location-information.adoc[]
+
+[#collection]
+== Collection
+
+Log4j bundles predefined layouts to assist in several common deployment use cases.
+Let's start with shortcuts to most used ones:
+
+* Are you looking for a production-grade *JSON layout ready to be deployed to a log ingestion system* such as Elasticsearch or Google Cloud?
+Refer to xref:manual/json-template-layout.adoc[].
+
+* Are you looking for a layout that encodes log events in a *human-readable format suitable for tests and local development*?
+Refer to xref:manual/pattern-layout.adoc[].
+
+Following sections explain all predefined layouts in detail.
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Layout[📖 Plugin reference for all `Layout` implementations]
+
+[#csv-layouts]
+=== [[CSVLayouts]] CSV Layouts
+
+There are two layouts performing https://en.wikipedia.org/wiki/Comma-separated_values[Comma Separated Value (CSV)] encoding:
+
+[#csv-layout-parameter]
+==== CSV Parameter Layout
+
+`CsvParameterLayout` encodes *only* the parameters of the message of a log event.
+Generated CSV records will be composed of fields denoting the message parameters.
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-CsvParameterLayout[📖 Plugin reference for `CsvParameterLayout`]
+
+.Click here for examples
+[%collapsible]
+====
+Given the following statement
+
+[source,java]
+----
+LOGGER.info("Record1 {} {}", "arg1", "arg2");
+LOGGER.error("Record2 {} {} {}", "arg3", "arg4", "arg5", throwable);
+----
+
+`CsvParameterLayout` will output
+
+[source,text]
+----
+arg1,arg2
+arg3,arg4,arg5
+----
+
+The same can be achieved using link:../javadoc/log4j-api/org/apache/logging/log4j/message/ObjectArrayMessage.html[`ObjectArrayMessage`] as follows:
+
+[source,java]
+----
+LOGGER.info(new ObjectArrayMessage("arg1", "arg2"));
+LOGGER.info(new ObjectArrayMessage("arg3", "arg4", "arg5"));
+----
+====
+
+[#csv-layout-log-event]
+==== CSV Log Event Layout
+
+`CsvLogEventLayout` encodes the complete log event, including the formatted message.
+Generated CSV records will be composed of following fields in the given order:
+
+. Time (in nanoseconds)
+. Time (in milliseconds)
+. Level
+. Thread ID
+. Thread name
+. Thread priority
+. Message (formatted, hence including parameters)
+. Logger FQCN
+. Logger name
+. Marker
+. Throwable
+. Source
+. Thread context map
+. Thread context stack
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-CsvLogEventLayout[📖 Plugin reference for `CsvLogEventLayout`]
+
+.Click here for examples
+[%collapsible]
+====
+Given the following statement
+
+[source,java]
+----
+LOGGER.debug("one={}, two={}, three={}", 1, 2, 3);
+----
+
+`CsvLogEventLayout` will output
+
+[source,text]
+----
+0,1441617184044,DEBUG,main,"one=1, two=2, three=3",org.apache.logging.log4j.spi.AbstractLogger,,,,org.apache.logging.log4j.core.layout.CsvLogEventLayoutTest.testLayout(CsvLogEventLayoutTest.java:98),{},[]
+----
+====
+
+[#csv-layout-config]
+==== Configuration
+
+Both `CsvParameterLayout` and `CsvLogEventLayout` are configured with the following parameters:
+
+[%header,cols="1m,1m,4"]
+|===
+|Parameter
+|Type
+|Description
+
+|format
+|String
+|A predefined format name (`Default`, `Excel`, `MySQL`, `RFC4180`, `TDF`, etc.) accepted by https://commons.apache.org/proper/commons-csv/apidocs/org/apache/commons/csv/CSVFormat.html[`CSVFormat`]
+
+|delimiter
+|Character
+|The field delimiter character
+
+|escape
+|Character
+|The escape character
+
+|quote
+|Character
+|The quote character
+
+|quoteMode
+|String
+|A quote mode name (`ALL`, `ALL_NONE_NULL`, `MINIMAL`, `NON_NUMERIC`, `NONE`, etc.) accepted by https://commons.apache.org/proper/commons-csv/apidocs/org/apache/commons/csv/QuoteMode.html[`QuoteMode`]
+
+|nullString
+|String
+|The string to denote `null` values
+
+|recordSeparator
+|String
+|The record separator string
+
+|charset
+|Charset
+|The character encoding
+
+|header
+|String
+|The header to include when the stream is opened
+
+|footer
+|String
+|The footer to include when the stream is closed
+|===
+
+Additional runtime dependencies are required for using CSV layouts:
+
+[tabs]
+====
+Maven::
++
+[source,xml,subs="+attributes"]
+----
+<dependency>
+  <groupId>org.apache.commons</groupId>
+  <artifactId>commons-csv</artifactId>
+  <version>{commons-csv-version}</version>
+  <scope>runtime</scope>
+</dependency>
+----
+
+Gradle::
++
+[source,groovy,subs="+attributes"]
+----
+runtimeOnly 'org.apache.commons:commons-csv:{commons-csv-version}'
+----
+====
+
+[#GELFLayout]
+=== GELF Layout
+
+`GelfLayout` encodes log events in https://go2docs.graylog.org/current/getting_in_log_data/gelf.html#GELFPayloadSpecification[the GELF specification] version `1.1`.
+It can compress the output when it exceeds a certain threshold.
+This layout does not implement chunking.
+
+[WARNING]
+====
+*This layout is planned to be removed in the next major release!*
+Unless compression is needed, we advise you to use xref:manual/json-template-layout.adoc[JSON Template Layout] instead, which provides GELF Layout support out of the box and offers more capabilities and performance.
+====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-GelfLayout[📖 Plugin reference for `GelfLayout`]
+
+GELF Layout is configured with the following parameters:
+
+[%header,cols="1m,1m,4"]
+|===
+|Parameter
+|Type
+|Description
+
+|additionalFields
+|link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/KeyValuePair.html[KeyValuePair[\]]
+|link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/KeyValuePair.html[`KeyValuePair`] elements denoting additional entries.
+Entry values can contain xref:manual/lookups.adoc[] using `${` syntax.
+
+|compressionThreshold
+|int
+|Triggers compression if the output is larger than this number of bytes (optional, defaults to 1024)
+
+|compressionType
+|String
+|The compression to use.
+It is optional, and defaults to `GZIP`.
+Accepted values are `GZIP`, `ZLIB`, or `OFF`.
+
+|host
+|String
+|The value of the `host` property (optional, defaults to the local host name)
+
+|includeMapMessage
+|boolean
+|Whether to include fields from xref:manual/messages.adoc#MapMessage[`MapMessage`]s as additional fields (optional, defaults to `true`)
+
+|includeNullDelimiter
+|boolean
+|Whether to include `NULL` byte as delimiter after each event.
+Optional and defaults to `false`.
+Useful for Graylog GELF TCP input.
+Cannot be used with compression.
+
+|includeStacktrace
+|boolean
+|Whether to include full stacktrace of logged ``Throwable``s.
+Optional and defaults to `true`.
+If set to `false`, only the class name and message of the `Throwable` will be included.
+
+|includeThreadContext
+|boolean
+|Whether to include thread context as additional fields (optional, defaults to `true`)
+
+|mapMessageExcludes
+|String
+|A comma separated list of attributes from the xref:manual/messages.adoc#MapMessage[`MapMessage`] to exclude when formatting the event.
+This attribute only applies when `includeMapMessage` is `true`.
+If `mapMessageIncludes` are also specified, this attribute will be ignored.
+
+|mapMessageIncludes
+|String
+|A comma separated list of attributes from the xref:manual/messages.adoc#MapMessage[`MapMessage`] to include when formatting the event.
+This attribute only applies when `includeMapMessage` is `true`.
+If `mapMessageExcludes` are also specified, this attribute will override them.
+`MapMessage` fields specified here that have no value will be omitted.
+
+|mapPrefix
+|String
+|A string to prepend to all elements of the xref:manual/messages.adoc#MapMessage[`MapMessage`] when rendered as a field (optional, defaults to an empty string)
+
+|[[GELFLayout-messagePattern]] messagePattern
+|String
+|The pattern to use to format the `String`.
+A `messagePattern` and <<GELFLayout-patternSelector,`patternSelector`>> cannot both be specified.
+If both are present, the message pattern will be ignored and an error will be logged.
+If not supplied, only the text derived from the log message will be used.
+See xref:manual/pattern-layout.adoc[] for information on the pattern strings.
+
+|omitEmptyFields
+|boolean
+|If `true`, fields which are null or are zero-length strings will not be included as a field in the produced JSON.
+This setting will not affect if those fields appear in the message fields.
+The default value is `false`.
+
+|[[GELFLayout-patternSelector]] patternSelector
+|xref:manual/pattern-layout.adoc#plugin-element-PatternSelector[PatternSelector]
+|The `PatternSelector` to use to format the `String`.
+A <<GELFLayout-messagePattern,`messagePattern`>> and `patternSelector` cannot both be specified.
+If both are present, the message pattern will be ignored and an error will be logged.
+If not supplied, only the text derived from the logging message will be used.
+See xref:manual/pattern-layout.adoc#plugin-element-PatternSelector[`PatternSelector`] for information on how to specify a `PatternSelector`.
+See xref:manual/pattern-layout.adoc[] for information on the pattern strings.
+
+|threadContextExcludes
+|String
+|A comma separated list of xref:manual/thread-context.adoc[] map keys to exclude when formatting the event.
+This attribute only applies when `includeThreadContext` is `true`.
+If `threadContextIncludes` are also specified, this attribute will be ignored.
+
+|threadContextIncludes
+|String
+|A comma separated list of xref:manual/thread-context.adoc[] map keys to include when formatting the event.
+This attribute only applies when `includeThreadContext` is `true`.
+If `threadContextExcludes` are also, specified this attribute will override them.
+Thread context fields specified here that have no value will be omitted.
+
+|threadContextPrefix
+|String
+|A string to prepend to all elements of the xref:manual/thread-context.adoc[] map when rendered as a field (defaults to an empty string)
+|===
+
+GELF Layout is garbage-free if `compressionType` is `OFF` and there are no additional fields containing `${`.
+
+.Example configurations
+[%collapsible]
+====
+[tabs]
+=====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/gelf-layout/log4j2.xml[`log4j2.xml`]
+[source,xml]
+----
+include::example$manual/gelf-layout/log4j2.xml[lines=26..41,indent=0]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/gelf-layout/log4j2.json[`log4j2.json`]
+[source,json]
+----
+include::example$manual/gelf-layout/log4j2.json[lines=5..48,indent=0]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/gelf-layout/log4j2.yaml[`log4j2.yaml`]
+[source,xml]
+----
+include::example$manual/gelf-layout/log4j2.yaml[lines=21..53,indent=0]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/gelf-layout/log4j2.properties[`log4j2.properties`]
+[source,xml]
+----
+include::example$manual/gelf-layout/log4j2.properties[lines=17..48,indent=0]
+----
+=====
+<1> Configuration with additional key value pairs
+<2> Configuration for appending to a Graylog server using TCP
+<3> Configuration for appending to a Graylog server using UDP
+====
+
+[#HTMLLayout]
+=== HTML Layout
+
+`HtmlLayout` generates an HTML page, and adds each log event to a row in a table.
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-HtmlLayout[📖 Plugin reference for `HtmlLayout`]
+
+It is configured with the following parameters:
+
+[%header,cols="1m,1m,4"]
+|===
+|Parameter
+|Type
+|Description
+
+|charset
+|String
+|The character encoding
+
+|contentType
+|String
+|The `Content-Type` header value (defaults to `text/html`)
+
+|datePattern
+|String
+|The date format of the log event.
+The default is `JVM_ELAPSE_TIME`, which outputs the milliseconds since JVM started.
+For other valid values, refer to xref:manual/pattern-layout.adoc#converter-date[the `date` conversion specifier of Pattern Layout].
+
+|fontName
+|String
+|The `font-family` (defaults to `arial,sans-serif`)
+
+|fontSize
+|String
+|The `font size` (defaults to `small`)
+
+|locationInfo
+|boolean
+|If `true`, the <<LocationInformation,source location information>> be included (defaults to `false`)
+
+|timezone
+|String
+|The time zone ID of the log event.
+If not specified, this layout uses the https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/TimeZone.html#getDefault()[`TimeZone.getDefault()`] as the default.
+You can use time zone IDs supported by https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)[`TimeZone.getTimeZone(String)`].
+
+|title
+|String
+|The HTML page title
+|===
+
+[[JSONLayout]]
+=== JSON Layout
+
+`JsonLayout` encodes a log event into JSON.
+
+[WARNING]
+====
+JSON Layout is considered deprecated.
+It is succeeded by <<JSONTemplateLayout>> providing more capabilities and efficiency.
+====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-JsonLayout[📖 Plugin reference for `JsonLayout`]
+
+.Click for an example output
+[%collapsible]
+====
+[source,json]
+----
+{
+  "instant": {
+    "epochSecond": 1493121664,
+    "nanoOfSecond": 118000000
+  },
+  "thread": "main",
+  "level": "INFO",
+  "loggerName": "HelloWorld",
+  "marker": {
+    "name": "child",
+    "parents": [
+      {
+        "name": "parent",
+        "parents": [
+          {
+            "name": "grandparent"
+          }
+        ]
+      }
+    ]
+  },
+  "message": "Hello, world!",
+  "thrown": {
+    "commonElementCount": 0,
+    "message": "error message",
+    "name": "java.lang.RuntimeException",
+    "extendedStackTrace": [
+      {
+        "class": "logtest.Main",
+        "method": "main",
+        "file": "Main.java",
+        "line": 29,
+        "exact": true,
+        "location": "classes/",
+        "version": "?"
+      }
+    ]
+  },
+  "contextStack": ["one", "two"],
+  "endOfBatch": false,
+  "loggerFqcn": "org.apache.logging.log4j.spi.AbstractLogger",
+  "contextMap": {
+    "bar": "BAR",
+    "foo": "FOO"
+  },
+  "threadId": 1,
+  "threadPriority": 5,
+  "source": {
+    "class": "logtest.Main",
+    "method": "main",
+    "file": "Main.java",
+    "line": 29
+  }
+}
+----
+====
+
+JSON Layout is configured with the following parameters:
+
+[%header,cols="1m,1m,4"]
+|===
+|Parameter Name
+|Type
+|Description
+
+|additionalFields
+|link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/KeyValuePair.html[KeyValuePair[\]]
+|link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/KeyValuePair.html[`KeyValuePair`] elements denoting additional entries.
+Entry values can contain xref:manual/lookups.adoc[] using `${` syntax.
+
+|charset
+|String
+|The character encoding (defaults to `UTF-8`)
+
+|compact
+|boolean
+|If `true`, does not use `endOfLine` and indentation.
+This feature is also referred to as _pretty-printing_ too.
+It defaults to `false`.
+
+|complete
+|boolean
+|
+If `true`, uses `header` and `footer`, and places comma between records – this leads to a well-formed JSON document given `header` and `footer` defaults to `[` and `]`, respectively.
+It defaults to `false`.
+
+|endOfLine
+|String
+|If set, overrides the default end-of-line string.
+For instance, set it to `\n` and use with `eventEol=true` and `compact=true` to have one record per line separated by `\n` instead of `\r\n`.
+It is not set by default.
+
+|eventEol
+|boolean
+|If `true`, appends an `endOfLine` after each log event, even if `compact=true`.
+It defaults to `false`.
+Use with `eventEol=true` and `compact=true` to get one record per line.
+
+|footer
+|String
+|The footer to include when the stream is closed and `complete=true` (defaults to `]`)
+
+|header
+|String
+|The header to include when the stream is opened and `complete=true` (defaults to `[`)
+
+|includeNullDelimiter
+|boolean
+|If `true`, a NULL byte will suffix each encoded log event (defaults to `false`)
+
+|includeStacktrace
+|boolean
+|If `true`, include full stacktrace of any logged `Throwable` (defaults to `true`)
+
+|includeTimeMillis
+|boolean
+|If `true`, a `timeMillis` attribute is included in the JSON payload instead of the `instant`.
+`timeMillis` will contain the number of milliseconds since 1970-01-01T00:00:00Z.
+
+|locationInfo
+|boolean
+|If `true`, the appender includes the <<LocationInformation,source location information>> in the generated JSON (defaults to `false`)
+
+|objectMessageAsJsonObject
+|boolean
+|If `true`, xref:manual/messages.adoc#ObjectMessage[`ObjectMessage`] is serialized as JSON object to the `message` field of the output log (defaults to `false`)
+
+|properties
+|boolean
+|If `true`, the appender includes the xref:manual/thread-context.adoc[] map in the generated JSON (defaults to `false`)
+
+|propertiesAsList
+|boolean
+|If `true`, the xref:manual/thread-context.adoc[] map is included as a list of map entry objects, where each entry is denoted as a JSON object containg `key` and `value` fields.
+It defaults to `false`, in which case the thread context map is included as a simple map of key-value pairs.
+
+|stacktraceAsString
+|boolean
+|If `true`, the stacktrace will be formatted as `String`, and not a nested object (optional, defaults to `false`)
+|===
+
+Additional runtime dependencies are required for using JSON Layout:
+
+[tabs]
+====
+Maven::
++
+[source,xml,subs="+attributes"]
+----
+<dependency>
+  <groupId>com.fasterxml.jackson.core</groupId>
+  <artifactId>jackson-databind</artifactId>
+  <version>{jackson-version}</version>
+  <scope>runtime</scope>
+</dependency>
+----
+
+Gradle::
++
+[source,groovy,subs="+attributes"]
+----
+runtimeOnly 'com.fasterxml.jackson.core:jackson-databind:{jackson-version}'
+----
+====
+
+[#JSONTemplateLayout]
+=== JSON Template Layout
+
+`JsonTemplateLayout` is a customizable, efficient, and garbage-free JSON generating layout.
+It encodes ``LogEvent``s according to the structure described by the JSON template provided.
+
+For instance, given the following event template stored in `MyLayout.json` in your classpath:
+
+[source,json]
+----
+{
+  "instant": { // <1>
+    "$resolver": "timestamp",
+    "pattern": {
+      "format": "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+      "timeZone": "UTC"
+    }
+  },
+  "someConstant": 1, // <2>
+  "message": { // <3>
+    "$resolver": "message",
+    "stringified": true
+  }
+}
+----
+<1> Using the `timestamp` event template resolver to populate the `instant` field
+<2> Passing a constant that will be rendered as is
+<3> Using the `message` event template resolver to populate the `message` field
+
+in combination with the below layout configuration:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/json-template-layout/usage/log4j2.xml[`log4j2.xml`]
+[source,xml]
+----
+include::example$manual/json-template-layout/usage/log4j2.xml[lines=26..26,indent=0]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/json-template-layout/usage/log4j2.json[`log4j2.json`]
+[source,json]
+----
+include::example$manual/json-template-layout/usage/log4j2.json[lines=6..8,indent=0]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/json-template-layout/usage/log4j2.yaml[`log4j2.yaml`]
+[source,xml]
+----
+include::example$manual/json-template-layout/usage/log4j2.yaml[lines=22..23,indent=0]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/json-template-layout/usage/log4j2.properties[`log4j2.properties`]
+[source,xml]
+----
+include::example$manual/json-template-layout/usage/log4j2.properties[lines=19..20,indent=0]
+----
+====
+
+JSON Template Layout generates JSON as follows:
+
+[source,json]
+----
+{"instant":"2017-05-25T19:56:23.370Z","someConstant":1,"message":"Hello, error!"} //<1>
+----
+<1> JSON pretty-printing is not supported for performance reasons.
+
+Good news is JSON Template Layout is perfectly production-ready without any configuration!
+It bundles several predefined event templates modeling popular JSON-based log formats.
+
+Read more on xref:manual/json-template-layout.adoc[]...
+
+[id=pattern-layout]
+=== [[PatternLayout]] Pattern Layout
+
+`PatternLayout` is a customizable, efficient, garbage-free, and human-readable string generating layout using a user-provided pattern.
+It is analogous to `String#format()` with specialized directives on injecting certain properties of a `LogEvent`.
+
+[IMPORTANT]
+====
+Pattern Layout is not intended for _structural logging_ purposes.
+For production environments, you are strongly advised to use xref:manual/json-template-layout.adoc[] producing JSON output ready to be delivered to log ingestion systems such as Elasticsearch or Google Cloud Logging.
+====
+
+A conversion pattern is composed of literal text and format control expressions.
+For instance, given the `%-5p [%t]: %m%n` pattern, following statements
+
+[source,java]
+----
+LOGGER.debug("Message 1");
+LOGGER.warn("Message 2");
+----
+
+will yield the output
+
+[source,text]
+----
+DEBUG [main]: Message 1
+WARN  [main]: Message 2
+----
+
+Read more on xref:manual/pattern-layout.adoc[]...
+
+[#RFC5424Layout]
+=== RFC 5424 Layout
+
+`Rfc5424` Layout encodes log events according to https://datatracker.ietf.org/doc/html/rfc5424#section-6[the Syslog message format described in RFC 5424].
+
+[NOTE]
+====
+RFC 5424 obsoletes RFC 3164, implemented by <<SyslogLayout>>.
+====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-Rfc5424Layout[📖 Plugin reference for `Rfc5424Layout`]
+
+RFC 5424 Layout is configured with the following parameters:
+
+[%header,cols="1m,1m,4"]
+|===
+|Parameter
+|Type
+|Description
+
+|appName
+|String
+|The `APP-NAME` field as described in RFC 5424
+
+|charset
+|String
+|The character encoding (defaults to `UTF-8`)
+
+|enterpriseNumber
+|integer
+|
+The `enterpriseId` parameter as described in RFC 5424.
+If missing, `32473` will be used, which is https://www.rfc-editor.org/rfc/rfc5612.html#section-2[reserved for documentation use].
+
+|exceptionPattern
+|String
+|An xref:manual/pattern-layout.adoc#converter-exception[`exception` conversion specifier of Pattern Layout].
+The default is to not include the `Throwable` from the event, if any, in the output.
+
+|facility
+|String
+|The name of link:../javadoc/log4j-core/org/apache/logging/log4j/core/net/Facility.html[`Facility`] as described in RFC 5424.
+The matching is case-insensitive.
+It defaults to `LOCAL0`.
+
+|id
+|String
+|The default _Structured Data ID_ to use when formatting according to RFC 5424.
+If the log event contains a xref:manual/messages.adoc#StructuredDataMessage[`StructuredDataMessage`], the ID from that message will be used instead.
+
+|includeMDC
+|boolean
+|Indicates whether data from the xref:manual/thread-context.adoc[] map will be included in the RFC 5424 Syslog record (defaults to `true`)
+
+|loggerFields
+|link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/KeyValuePair.html[KeyValuePair[\]]
+|Allows arbitrary xref:manual/thread-context.adoc[] map entries.
+To use, include a `LoggerFields` nested element, containing one or more `KeyValuePair` elements.
+Each `KeyValuePair` must have `key` and `value` attributes associating them with a thread context map entry.
+The `value` attribute can be an arbitrary xref:manual/pattern-layout.adoc[] pattern.
+
+|mdcExcludes
+|String
+|A comma-separated list of xref:manual/thread-context.adoc[] map (aka, MDC) keys that should be excluded.
+This is mutually exclusive with `mdcIncludes`.
+This attribute only applies to RFC 5424 Syslog records.
+
+|mdcIncludes
+|String
+|A comma-separated list of xref:manual/thread-context.adoc[] map (aka, MDC) keys that should be included.
+Any keys in the thread context map not found in the list will be excluded.
+This option is mutually exclusive with `mdcExcludes`.
+This attribute only applies to RFC 5424 Syslog records.
+
+|mdcId
+|String
+|The ID to use for the xref:manual/thread-context.adoc[] map (aka, MDC) Structured Data Element.
+It defaults to `mdc`.
+This attribute only applies to RFC 5424 Syslog records.
+
+|mdcPrefix
+|String
+|A string to be prepended to each xref:manual/thread-context.adoc[] map (aka, MDC) key to distinguish it from event attributes.
+It defaults to `mdc:`.
+This attribute only applies to RFC 5424 Syslog records.
+
+|mdcRequired
+|String
+|A comma-separated list of xref:manual/thread-context.adoc[] map (aka, MDC) keys that must be present.
+If a key is not present, a link:../javadoc/log4j-core/org/apache/logging/log4j/LoggingException.html[`LoggingException`] will be thrown.
+This attribute only applies to RFC 5424 Syslog records.
+
+|messageId
+|String
+|The default value to be used in the `MSGID` field of RFC 5424 Syslog records
+
+|newLine
+|boolean
+|If `true`, a `\n` character will be appended to the end of the Syslog record (defaults to `false`)
+
+|newLineEscape
+|String
+|The string that should be used to replace newlines within the message text
+|===
+
+RFC 5424 Layout has specialized handling for xref:manual/messages.adoc#StructuredDataMessage[`StructuredDataMessage`]s.
+By combining two, users can have complete control on how their message is encoded in a way compliant with RFC 5424, while RFC 5424 Layout will make sure the rest of the information attached to the log event is properly injected.
+
+[#SerializedLayout]
+=== Serialized Layout
+
+`SerializedLayout` encodes a log event using https://docs.oracle.com/javase/{java-target-version}/docs/platform/serialization/spec/protocol.html[Java Serialization].
+It accepts no configuration parameters.
+
+[WARNING]
+====
+This layout has been deprecated since version `2.9`.
+Java Serialization has inherent security weaknesses.
+*Serialized Layout users are strongly advised to migrate to another layout!*
+====
+
+ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-SerializedLayout[📖 Plugin reference for `SerializedLayout`]
+
+[#SyslogLayout]
+=== Syslog Layout
+
+`SyslogLayout` encodes log events according to https://datatracker.ietf.org/doc/html/rfc3164#section-4.1[the syslog message format described in RFC 3164].
+This matches the same format used by {logging-services-url}/log4j/1.x[Log4j 1].
+
+[IMPORTANT]
+====
+RFC 3164, implemented by Syslog Layout, is obsoleted by RFC 5424, implemented by <<RFC5424Layout>>.
+====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-SyslogLayout[📖 Plugin reference for `SyslogLayout`]
+
+Syslog Layout is configured with the following parameters:
+
+[%header,cols="1m,1m,4"]
+|===
+|Parameter
+|Type
+|Description
+
+|charset
+|String
+|The character encoding (defaults to `UTF-8`)
+
+|facility
+|String
+|The name of link:../javadoc/log4j-core/org/apache/logging/log4j/core/net/Facility.html[`Facility`] as described in RFC 5424.
+The matching is case-insensitive.
+It defaults to `LOCAL0`.
+
+|newLine
+|boolean
+|If `true`, a `\n` character will be appended to the end of the Syslog record (defaults to `false`)
+
+|newLineEscape
+|String
+|The string that should be used to replace newlines within the message text
+|===
+
+[[XMLLayout]]
+=== XML Layout
+
+`XmlLayout` encodes a log event into XML.
+
+[WARNING]
+====
+*This layout is planned to be removed in the next major release!*
+XML Layout users are strongly advised to migrate to another layout!
+====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-XmlLayout[📖 Plugin reference for `XmlLayout`]
+
+.Click for an example output
+[%collapsible]
+====
+[source,xml]
+----
+<Event xmlns="https://logging.apache.org/log4j/2.0/events"
+       level="INFO"
+       loggerName="HelloWorld"
+       endOfBatch="false"
+       thread="main"
+       loggerFqcn="org.apache.logging.log4j.spi.AbstractLogger"
+       threadId="1"
+       threadPriority="5">
+  <Instant epochSecond="1493121664" nanoOfSecond="118000000"/>
+  <Marker name="child">
+    <Parents>
+      <Marker name="parent">
+        <Parents>
+          <Marker name="grandparent"/>
+        </Parents>
+      </Marker>
+    </Parents>
+  </Marker>
+  <Message>Hello, world!</Message>
+  <ContextMap>
+    <item key="bar" value="BAR"/>
+    <item key="foo" value="FOO"/>
+  </ContextMap>
+  <ContextStack>
+    <ContextStackItem>one</ContextStackItem>
+    <ContextStackItem>two</ContextStackItem>
+  </ContextStack>
+  <Source
+      class="logtest.Main"
+      method="main"
+      file="Main.java"
+      line="29"/>
+  <Thrown commonElementCount="0" message="error message" name="java.lang.RuntimeException">
+    <ExtendedStackTrace>
+      <ExtendedStackTraceItem
+          class="logtest.Main"
+          method="main"
+          file="Main.java"
+          line="29"
+          exact="true"
+          location="classes/"
+          version="?"/>
+    </ExtendedStackTrace>
+  </Thrown>
+</Event>
+----
+====
+
+XML Layout configuration is identical to the one of <<JSONLayout>>, with following exceptions:
+
+* The `header` and `footer` parameters are discarded
+* If `complete=true`, each log event will be encoded into a well-formed XML document, such that:
+** `<?xml version...` preamble will be added
+** The root `<event` element will be enriched with `namespace="http://logging.apache.org/log4j/2.0/events"` attribute
+
+Additional runtime dependencies are required for using XML Layout:
+
+[tabs]
+====
+Maven::
++
+[source,xml,subs="+attributes"]
+----
+<dependency>
+  <groupId>com.fasterxml.jackson.dataformat</groupId>
+  <artifactId>jackson-dataformat-xml</artifactId>
+  <version>{jackson-version}</version>
+  <scope>runtime</scope>
+</dependency>
+----
+
+Gradle::
++
+[source,groovy,subs="+attributes"]
+----
+runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:{jackson-version}'
+----
+====
+
+[[YamlLayout]]
+=== YAML Layout
+
+`YamlLayout` encodes a log event into YAML.
+
+[WARNING]
+====
+This layout is planned to be removed in the next major release!
+
+YAML is a superset of JSON.
+*We strongly advise existing YAML Layout users to migrate to <<JSONTemplateLayout>>* providing more capabilities and efficiency.
+====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-YamlLayout[📖 Plugin reference for `YamlLayout`]
+
+.Click for an example output
+[%collapsible]
+====
+[source,yaml]
+----
+instant:
+  epochSecond: 1493121664
+  nanoOfSecond: 118000000
+thread: "main"
+level: "INFO"
+loggerName: "HelloWorld"
+marker:
+  name: "child"
+  parents:
+  - name: "parent"
+    parents:
+    - name: "grandparent"
+message: "Hello, world!"
+thrown:
+  commonElementCount: 0
+  message: "error message"
+  name: "java.lang.RuntimeException"
+  extendedStackTrace:
+  - class: "logtest.Main"
+    method: "main"
+    file: "Main.java"
+    line: 29
+    exact: true
+    location: "classes/"
+    version: "?"
+contextStack:
+- "one"
+- "two"
+endOfBatch: false
+loggerFqcn: "org.apache.logging.log4j.spi.AbstractLogger"
+contextMap:
+  bar: "BAR"
+  foo: "FOO"
+threadId: 1
+threadPriority: 5
+source:
+  class: "logtest.Main"
+  method: "main"
+  file: "Main.java"
+  line: 29
+----
+====
+
+YAML Layout configuration is identical to the one of <<JSONLayout>>, with following exceptions:
+
+* The `header` defaults to an empty string
+* The `footer` defaults to an empty string
+
+Additional runtime dependencies are required for using XML Layout:
+
+[tabs]
+====
+Maven::
++
+[source,xml,subs="+attributes"]
+----
+<dependency>
+  <groupId>com.fasterxml.jackson.dataformat</groupId>
+  <artifactId>jackson-dataformat-yaml</artifactId>
+  <version>{jackson-version}</version>
+  <scope>runtime</scope>
+</dependency>
+----
+
+Gradle::
++
+[source,groovy,subs="+attributes"]
+----
+runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:{jackson-version}'
+----
+====
+
+[#extending]
+== Extending
+
+Layouts are xref:manual/plugins.adoc[plugins] implementing link:../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html[the `Layout` interface].
+This section will guide you on how to create custom ones.
+
+[NOTE]
+====
+While <<collection,the predefined layout collection>> should address most common use cases, you might find yourself needing to implement a custom one.
+If this is the case, we really appreciate it if you can *share your use case in a {logging-services-url}/support.html[user support channel]*.
+====
+
+[#extending-plugins]
+=== Plugin preliminaries
+
+include::partial$manual/plugin-preliminaries.adoc[]
+
+[#extending-layouts]
+=== Extending layouts
+
+Layouts are xref:manual/plugins.adoc[plugins] implementing link:../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html[the `Layout` interface].
+If your layout is a `String`-based one, we recommend you to extend your plugin class from link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/AbstractStringLayout.html[`AbstractStringLayout`], which contains convenience for some of the boilerplate code shared by `String`-based layouts.
+You can check out following files for examples:
+
+* {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/layout/SyslogLayout.java[`SyslogLayout.java`] – simple, single-file, extending from `AbstractStringLayout`
+* {project-github-url}/log4j-layout-template-json/src/main/java/org/apache/logging/log4j/layout/template/json/JsonTemplateLayout.java[`JsonTemplateLayout.java`] – advanced, using plugins for composing several of its features, contains _recycler_ concept for xref:manual/garbagefree.adoc[garbage-free] operation, extends from link:../javadoc/log4j-core/org/apache/logging/log4j/core/StringLayout.html[`StringLayout`]

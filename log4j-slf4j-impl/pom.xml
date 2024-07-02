@@ -16,29 +16,34 @@
   ~ limitations under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>${revision}</version>
     <relativePath>../log4j-parent</relativePath>
   </parent>
+
   <artifactId>log4j-slf4j-impl</artifactId>
-  <packaging>jar</packaging>
-  <name>Apache Log4j SLF4J Binding</name>
-  <description>The Apache Log4j SLF4J API binding to Log4j 2 Core</description>
+
+  <name>SLF4J 1 Binding for Log4j API</name>
+
+  <description>SLF4J 1 binding (provider) for the Log4j API.
+    It forwards SLF4J 1 calls to the Log4j API.
+    (Refer to the `log4j-to-slf4j` artifact for forwarding the Log4j API to SLF4J.)</description>
+
   <properties>
-    <slf4j.version>1.7.36</slf4j.version>
+    <slf4j1.version>1.7.36</slf4j1.version>
   </properties>
 
-  <!-- Use explicit versions as a temporary workaround to a Coursier/Ivy bug:
-    https://github.com/apache/logging-log4j2/issues/2065 -->
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
-        <version>${slf4j.version}</version>
+        <version>${slf4j1.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

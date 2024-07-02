@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="https://logging.apache.org/xml/ns"
+       xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="changed">
+    <issue id="2462" link="https://github.com/apache/logging-log4j2/issues/2462"/>
+    <description format="asciidoc">Disable JMX support by default. Require `log4j2.disableJmx` to be set to `false` to enable JMX support.</description>
+</entry>

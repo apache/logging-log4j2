@@ -40,6 +40,15 @@
     "$resolver": "counter",
     "stringified": true
   },
+  "logging.googleapis.com/trace": {
+    "$resolver": "mdc",
+    "key": "trace_id"
+  },
+  "logging.googleapis.com/spanId": {
+    "$resolver": "mdc",
+    "key": "span_id"
+  },
+  "logging.googleapis.com/trace_sampled": true,
   "_exception": {
     "class": {
       "$resolver": "exception",

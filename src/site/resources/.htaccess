@@ -1,0 +1,113 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+RewriteEngine On
+RewriteBase "/log4j/2.x/"
+
+##
+# To simplify the redirection rules, we normalized them:
+#
+# 1. If the request URIs ends in `/` (necessarily a `path-info`), we add `index.html` to it:
+RewriteRule "^(.*)/$" "$1/index.html" [DPI]
+# 2. If the request URI points to a (non-existent) file, we try adding `.html`:
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond $1 "!\.html$"
+RewriteRule "^(.+)$" "$1.html"
+#
+# From this point rules match against the URI to the real file, with "/log4j/2.x/" stripped.
+
+# The content moved between pages
+RewriteRule "^articles\.html$" "manual/index.html" [R=permanent]
+RewriteRule "^log4j-1\.2-api(/index)?\.html$" "manual/migration.html" [R=permanent]
+RewriteRule "^log4j-api/apidocs(.*)$" "javadoc/log4j-api$1" [R=permanent]
+RewriteRule "^log4j-api(/index)?\.html$" "manual/api.html" [R=permanent]
+RewriteRule "^log4j-core/apidocs(.*)$" "javadoc/log4j-core$1" [R=permanent]
+RewriteRule "^log4j-jcl(/index)?\.html$" "manual/installation.html#impl-core-bridge-jcl" [R=permanent,NE]
+RewriteRule "^log4j-jmx-gui(/index)?\.html$" "/log4j/jmx-gui/latest/index.html" [R=permanent]
+RewriteRule "^log4j-jpl(/index)?\.html$" "manual/installation.html#impl-core-bridge-jpl" [R=permanent,NE]
+RewriteRule "^log4j-mongodb3(/index)?\.html$" "manual/appenders.html#NoSQLAppenderMongoDB" [R=permanent,NE]
+RewriteRule "^log4j-mongodb4(/index)?\.html$" "manual/appenders.html#log4j-mongodb4" [R=permanent,NE]
+RewriteRule "^log4j-slf4j2?-impl(/index)?\.html$" "manual/installation.html#impl-core-bridge-slf4j" [R=permanent,NE]
+RewriteRule "^manual/api-separation\.html$" "manual/api.html" [R=permanent]
+RewriteRule "^manual/extending\.html#Layouts$" "manual/layouts.html#extending" [R=permanent]
+RewriteRule "^manual/extending\.html#PatternConverters$" "manual/pattern-layout.html#extending-converters" [R=permanent]
+RewriteRule "^manual/layouts\.html#enable-jansi$" "manual/pattern-layout.html#jansi" [R=permanent]
+RewriteRule "^manual/layouts\.html#EndOfBatch$" "manual/pattern-layout.html#converter-end-of-batch" [R=permanent]
+RewriteRule "^manual/layouts\.html#LevelPatternSelector$" "manual/pattern-layout.html#plugin-element-LevelPatternSelector" [R=permanent]
+RewriteRule "^manual/layouts\.html#MarkerPatternSelector$" "manual/pattern-layout.html#plugin-element-MarkerPatternSelector" [R=permanent]
+RewriteRule "^manual/layouts\.html#(PatternLayout|pattern-layout)$" "manual/pattern-layout.html" [R=permanent]
+RewriteRule "^manual/layouts\.html#Patterns$" "manual/pattern-layout.html#converters" [R=permanent]
+RewriteRule "^manual/layouts\.html#PatternClass$" "manual/pattern-layout.html#converter-class" [R=permanent]
+RewriteRule "^manual/layouts\.html#PatternDate$" "manual/pattern-layout.html#converter-date" [R=permanent]
+RewriteRule "^manual/layouts\.html#PatternException$" "manual/pattern-layout.html#converter-exception" [R=permanent]
+RewriteRule "^manual/layouts\.html#PatternExtendedException$" "manual/pattern-layout.html#converter-exception-extended" [R=permanent]
+RewriteRule "^manual/layouts\.html#PatternFile$" "manual/pattern-layout.html#converter-file" [R=permanent]
+RewriteRule "^manual/layouts\.html#PatternLevel$" "manual/pattern-layout.html#converter-level" [R=permanent]
+RewriteRule "^manual/layouts\.html#PatternLine$" "manual/pattern-layout.html#converter-line" [R=permanent]
+RewriteRule "^manual/layouts\.html#PatternLocation$" "manual/pattern-layout.html#converter-location" [R=permanent]
+RewriteRule "^manual/layouts\.html#PatternLoggerFqcn$" "manual/pattern-layout.html#converter-fqcn" [R=permanent]
+RewriteRule "^manual/layouts\.html#PatternMap$" "manual/pattern-layout.html#converter-map" [R=permanent]
+RewriteRule "^manual/layouts\.html#PatternMarker(SimpleName)?$" "manual/pattern-layout.html#converter-marker" [R=permanent]
+RewriteRule "^manual/layouts\.html#PatternMaxLength$" "manual/pattern-layout.html#converter-max-len" [R=permanent]
+RewriteRule "^manual/layouts\.html#PatternMDC$" "manual/pattern-layout.html#converter-thread-context-map" [R=permanent]
+RewriteRule "^manual/layouts\.html#PatternMessage$" "manual/pattern-layout.html#converter-message" [R=permanent]
+RewriteRule "^manual/layouts\.html#PatternMethod$" "manual/pattern-layout.html#converter-method" [R=permanent]
+RewriteRule "^manual/layouts\.html#PatternNDC$" "manual/pattern-layout.html#converter-thread-context-stack" [R=permanent]
+RewriteRule "^manual/layouts\.html#PatternPercentLiteral$" "manual/pattern-layout.html#usage" [R=permanent]
+RewriteRule "^manual/layouts\.html#PatternRelative$" "manual/pattern-layout.html#converter-relative" [R=permanent]
+RewriteRule "^manual/layouts\.html#PatternRepeat$" "manual/pattern-layout.html#converter-repeat" [R=permanent]
+RewriteRule "^manual/layouts\.html#PatternReplace$" "manual/pattern-layout.html#converter-replace" [R=permanent]
+RewriteRule "^manual/layouts\.html#PatternSelectors$" "manual/pattern-layout.html#plugin-element-PatternSelector" [R=permanent]
+RewriteRule "^manual/layouts\.html#PatternSequenceNumber$" "manual/pattern-layout.html#converter-seq" [R=permanent]
+RewriteRule "^manual/layouts\.html#PatternStyle$" "manual/pattern-layout.html#converter-style" [R=permanent]
+RewriteRule "^manual/layouts\.html#PatternThreadId$" "manual/pattern-layout.html#converter-thread-id" [R=permanent]
+RewriteRule "^manual/layouts\.html#PatternThreadName$" "manual/pattern-layout.html#converter-thread-name" [R=permanent]
+RewriteRule "^manual/layouts\.html#PatternThreadPriority$" "manual/pattern-layout.html#converter-thread-priority" [R=permanent]
+RewriteRule "^manual/layouts\.html#PatternUUID$" "manual/pattern-layout.html#converter-uuid" [R=permanent]
+RewriteRule "^manual/layouts\.html#NanoTime$" "manual/pattern-layout.html#converter-nano" [R=permanent]
+RewriteRule "^manual/layouts\.html#PatternNewLine$" "manual/pattern-layout.html#usage" [R=permanent]
+RewriteRule "^manual/layouts\.html#Process_ID$" "manual/pattern-layout.html#converter-pid" [R=permanent]
+RewriteRule "^manual/layouts\.html#ScriptPatternSelector$" "manual/pattern-layout.html#plugin-element-ScriptPatternSelector" [R=permanent]
+RewriteRule "^manual/layouts\.html#VariablesNotEmpty$" "manual/pattern-layout.html#converter-not-empty" [R=permanent]
+RewriteRule "^manual/plugins\.html#converters$" "manual/pattern-layout.html#extending-converters" [R=permanent]
+RewriteRule "^manual/scala-api\.html$" "/log4j/scala/latest/index.html" [R=permanent]
+RewriteRule "^manual/usage\.html$" "manual/api.html" [R=permanent]
+RewriteRule "^runtime-dependencies\.html$" "manual/installation.html" [R=permanent]
+RewriteRule "^thanks\.html$" "/support.html#sponsors" [R=permanent,NE]
+
+# These redirects are special, since:
+#
+# 1. `mod_negotiate` is active and it is applied before `mod_rewrite`,
+# 2. we replaced a directory like `log4j-api/` with a file that has the same prefix like `log4j-api.html`,
+#
+# if the URI path is `/log4j/2.x/log4j-api/foo` we must match `log4j-api.html/foo`.
+RewriteRule "^log4j-appserver\.html/index\.html$" "log4j-appserver.html" [R=permanent]
+RewriteRule "^log4j-cassandra\.html/index\.html$" "log4j-cassandra.html" [R=permanent]
+RewriteRule "^log4j-couchdb\.html/index\.html$" "log4j-couchdb.html" [R=permanent]
+RewriteRule "^log4j-docker\.html/index\.html$" "log4j-docker.html" [R=permanent]
+RewriteRule "^log4j-flume-ng\.html/index\.html$" "log4j-flume-ng.html" [R=permanent]
+RewriteRule "^log4j-iostreams\.html/index\.html$" "log4j-iostreams.html" [R=permanent]
+RewriteRule "^log4j-jakarta-web\.html/index\.html$" "log4j-jakarta-web.html" [R=permanent]
+RewriteRule "^log4j-jul\.html/index\.html$" "log4j-jul.html" [R=permanent,NE]
+RewriteRule "^log4j-spring-boot\.html/index\.html$" "log4j-spring-boot.html" [R=permanent]
+RewriteRule "^log4j-spring-cloud-config\.html/index\.html$" "log4j-spring-cloud-config.html" [R=permanent]
+RewriteRule "^log4j-spring-cloud-config-client\.html/index\.html$" "log4j-spring-cloud-config-client.html" [R=permanent]
+RewriteRule "^log4j-taglib\.html/index\.html$" "log4j-taglib.html" [R=permanent]
+RewriteRule "^log4j-to-jul\.html/index\.html$" "log4j-to-jul.html" [R=permanent]
+RewriteRule "^log4j-web\.html/index\.html$" "log4j-web.html" [R=permanent]
+RewriteRule "^release-notes\.html/index\.html$" "release-notes.html" [R=permanent]

@@ -1,0 +1,54 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+[id=log4j2.provider]
+== `log4j2.provider`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_PROVIDER`
+| Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/spi/Provider.html[`Class<? extends Provider>`]
+| Default value | _automatically detected_
+| Since         | `2.24.0`
+|===
+
+Fully qualified class name of the Log4j API
+link:../javadoc/log4j-api/org/apache/logging/log4j/spi/Provider.html[`Provider`]
+to use.
+
+By default, Log4j uses
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/ServiceLoader.html[`ServiceLoader`]
+to select the provider to use.
+In case multiple providers are found on the classpath the provider with the highest priority is selected and a `WARN` message is logger by xref:manual/status-logger.adoc[].
+
+[id=log4j2.loggerContextFactory]
+== `log4j2.loggerContextFactory`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_LOGGER_CONTEXT_FACTORY`
+| Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextFactory.html[`Class<? extends LoggerContextFactory>`]
+| Default value | _automatically detected_
+|===
+
+WARNING: Since version `2.24.0` this property is deprecated, use <<log4j2.provider>> instead.
+
+Fully qualified class name of the
+link:../javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextFactory.html[`LoggerContextFactory`]
+to use to create ``Logger``s.
+
+By default, Log4j uses link:../javadoc/log4j-api/org/apache/logging/log4j/spi/Provider.html#getLoggerContextFactory()[`Provider.getLoggerContextFactory()`] to get a logger context factory.
+If <<log4j2.provider>> is set, this property is ignored.

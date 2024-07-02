@@ -1,0 +1,258 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Flow Tracing
+
+xref:manual/api.adoc[Log4j API] provides convenience logging methods to aid the tracking of the data flow through an application, which is referred to as *flow tracing*.
+<<impl,Logging implementations>> can choose to <<log-events,generate specialized log events>> allowing users to handle these messages different from the rest – see <<example>>.
+
+Flow tracing is known to help with the following use cases:
+
+* Troubleshooting without requiring a debugging session
+* Helping educate new developers in learning the application
+
+[#usage]
+== Usage
+
+link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html[`Logger`] provides following methods for flow tracing purposes:
+
+`traceEntry()`:: Marks the entry to a block
+`traceExit()`:: Marks the exit from a block
+`catching()`:: Reports caught exceptions
+`throwing()`:: Reports exceptions that are either discarded or unlikely to be handled
+
+The most used `traceEntry()` and `traceExit()` methods are intended to mark the _entry_ and _exit_ points of a particular block of code:
+
+[#example-trace]
+.Example `traceEntry()` and `traceExit()` usage
+[source,java]
+----
+public void someMethod() {
+    LOGGER.traceEntry(); //<1>
+    // method body
+    LOGGER.traceExit(); //<2>
+}
+----
+<1> `traceEntry()` marks the entry to the block
+<2> `traceExit()` marks the exit from the block
+
+Both `traceEntry()` and `traceExit()` also accept parameters.
+You can use them to track the input and output of the associated block:
+
+[#example-trace-args]
+.Example `traceEntry()` and `traceExit()` usage with arguments
+[source,java]
+----
+public String someMethod(String input) {
+    logger.traceEntry(null, input); // <1>
+    // method body
+    String output = ...;
+    return logger.traceExit(output); // <2>
+}
+----
+<1> `traceEntry()` marks the entry to the block along with the input
+<2> `traceExit()` marks the exit from the block along with the output
+
+The `catching()` method can be used by an application when it catches an exception that it will not rethrow, either explicitly or attached to another exception:
+
+[#example-catching]
+.Example `catching()` usage
+[source,java]
+----
+public void someMethod() {
+    try {
+        // Business logic
+    } catch (Exception error) {
+        logger.catching(error); // <1>
+    }
+}
+----
+<1> `catching()` reports the caught exception
+
+The `throwing()` method can be used by an application when it is throwing an exception that is unlikely to be handled, such as a `RuntimeException`.
+This will ensure that proper diagnostics are available if needed.
+
+[#example-throwing]
+.Example `throwing()` usage
+[source,java]
+----
+public void someMethod() {
+    try {
+        // Business logic
+    } catch (RuntimeException error) {
+        throw logger.throwing(error); // <1>
+    }
+}
+----
+<1> `thrown()` reports the caught exception that is about to be rethrown.
+Plus, rethrowing the exception, contrary to <<example-catching,the `catching()` example>> suppressing the exception.
+
+[source,java]
+----
+public void someMethod() {
+    try {
+        // Let's assume an exception is thrown here
+        String msg = messages[messages.length];        
+    } catch (Exception ex) {
+        logger.throwing(ex); <1>
+    }
+}
+----
+<1> The `throwing()` method logs exceptions that are thrown and not caught.
+
+[#aop]
+=== Aspect-oriented programming
+
+Logging has been a notorious example for demonstrating https://en.wikipedia.org/wiki/Aspect-oriented_programming[aspect-oriented programming] (AOP).
+For instance, using AOP, you can inject logging statements to methods that match a particular footprint, e.g., all public methods in `com.mycompany` package.
+With a couple of lines of AOP instructions, you can log input and output of all matching functions.
+Flow tracing methods fits like a glove to this AOP use case.
+You can see a demonstration of this in https://github.com/apache/logging-log4j-samples/tree/main/log4j-samples-aspectj[the `log4j-samples-aspectj` project] demonstrating how you can implement this use case using Log4j API flow methods and Spring Boot AspectJ support.
+
+[#impl]
+== Implementation
+
+This section explains how flow tracing is implemented by different logging implementations.
+
+[#impl-log4j]
+=== Log4j Core
+
+Log4j Core, the reference implementation of Log4j API, implements the flow tracing methods such that
+
+* <<impl-log4j-log-events,It generates specialized log events>>
+* <<impl-log4j-config,Its behaviour is configurable>>
+
+[#impl-log4j-log-events]
+==== Log events
+
+Log4j Core implements the flow tracing methods such that the generated log events are decorated to accommodate any need to selectively handle them:
+
+[%header,cols="2m,1m,2,3"]
+|===
+|Method
+|Level
+|Markers
+|Message
+
+|traceEntry()
+|TRACE
+|`ENTER`, `FLOW`
+|link:../javadoc/log4j-api/org/apache/logging/log4j/message/EntryMessage.html[`EntryMessage`] extending from link:../javadoc/log4j-api/org/apache/logging/log4j/message/FlowMessage.html[`FlowMessage`]
+
+|traceExit()
+|TRACE
+|`EXIT`, `FLOW`
+|link:../javadoc/log4j-api/org/apache/logging/log4j/message/EntryMessage.html[`ExitMessage`] extending from link:../javadoc/log4j-api/org/apache/logging/log4j/message/FlowMessage.html[`FlowMessage`]
+
+| throwing()
+|ERROR
+|`THROWING`, `EXCEPTION`
+|Plain message
+
+| catching()
+|ERROR
+|`CATCHING`, `EXCEPTION`
+|Plain message
+|===
+
+[#impl-log4j-config]
+==== Configuration
+
+Flow tracing implementation of Log4j Core can be configured using the following system properties:
+
+include::partial$manual/systemproperties/properties-log4j-core-misc.adoc[leveloffset=+3,tag=flow-tracing]
+
+[#impl-logback]
+=== Logback
+
+{logback-url}[Logback] is another logging implementation for the {slf4j-url}[SLF4J] logging API, just like Log4j Core is a logging implementation for the xref:manual/api.adoc[Log4j API].
+Using Log4j-to-SLF4J bridge, Logback can be xref:manual/installation.adoc#impl-logback[configured to consume Log4j API].
+
+Log4j-to-SLF4J bridge implements flow tracing methods such that log events are generated with same <<impl-log4j-log-events,marker and level changes of Log4j Core>>.
+They only differ in generated message types, since SLF4J has no xref:manual/messages.adoc[extensible message contract] like Log4j, but plain ``String``-based messages.
+This effectively means Logback also has access to the stated marker and level changes while using Log4j API flow tracing methods.
+
+[#example]
+== Example configuration
+
+In this section, we will share logging implementation configuration examples to filter on flow tracing log events.
+
+[#example-log4j]
+=== Log4j Core
+
+Log4j Core is the reference implementation of Log4j API.
+In the example configurations below, we will employ a xref:manual/pattern-layout.adoc[] depending on the associated markers of the log event:
+
+[tabs]
+====
+XML::
++
+.{antora-examples-url}manual/flowtracing/log4j2.xml[log4j2.xml] snippet
+[source,xml]
+----
+include::example$manual/flowtracing/log4j2.xml[lines=24..35,indent=0]
+----
+
+JSON::
++
+.{antora-examples-url}manual/flowtracing/log4j2.json[log4j2.json] snippet
+[source,json]
+----
+include::example$manual/flowtracing/log4j2.json[lines=4..29,indent=0]
+----
+
+YAML::
++
+.{antora-examples-url}manual/flowtracing/log4j2.yaml[log4j2.yaml] snippet
+[source,yaml]
+----
+include::example$manual/flowtracing/log4j2.yaml[lines=19..34,indent=0]
+----
+
+Properties::
++
+.{antora-examples-url}manual/flowtracing/log4j2.properties[log4j2.properties] snippet
+[source,properties]
+----
+include::example$manual/flowtracing/log4j2.properties[lines=18..33,indent=0]
+----
+====
+<1> Accepting log events marked with `FLOW` regardless of their level
+<2> By default, log event messages will be formatted with a `--` prefix
+<3> Log events marked with `ENTER` (that is, generated by `traceEntry()`) will have their message formatted with a `=>` prefix
+<4> Log events marked with `EXIT` (that is, generated by `traceExit()`) will have their message formatted with a `<=` prefix
+
+[#example-logback]
+=== Logback
+
+{logback-url}[Logback] is another logging implementation for the {slf4j-url}[SLF4J] logging API, just like Log4j Core is a logging implementation for the xref:manual/api.adoc[Log4j API].
+Using Log4j-to-SLF4J bridge, Logback can be xref:manual/installation.adoc#impl-logback[configured to consume Log4j API].
+
+Below we will use a combination of `EvaluatorFilter`, `MarkerFilter`, and `OnMarkerEvaluator` in Logback to adapt the formatting pattern of messages written to console based on flow tracing specific markers:
+
+.{antora-examples-url}manual/flowtracing/logback.xml[logback.xml] snippet
+[source,xml]
+----
+include::example$manual/flowtracing/logback.xml[lines=27..76,indent=0]
+----
+<1> Accepting log events marked with `FLOW` regardless of their level
+<2> In `CONSOLE_DEFAULT` appender, excluding all log events marked with `ENTER` and `EXIT`
+<3> In `CONSOLE_DEFAULT` appender, log event messages will be formatted with a `-` prefix
+<4> In `CONSOLE_FLOW_ENTER` appender, accepting only log events marked with `ENTER`
+<5> In `CONSOLE_FLOW_ENTER` appender, log event messages will be formatted with a `→` prefix
+<6> In `CONSOLE_FLOW_EXIT` appender, accepting only log events marked with `EXIT`
+<7> In `CONSOLE_FLOW_EXIT` appender, log event messages will be formatted with a `←` prefix

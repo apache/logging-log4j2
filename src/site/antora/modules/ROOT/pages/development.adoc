@@ -1,0 +1,109 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Development
+
+This page shares information related to the development of Log4j.
+Content is aimed for users who want to contribute source code patches and maintainers.
+
+[TIP]
+====
+Do you need help for setting up or configuring Log4j?
+Please refer to {logging-services-url}/support.html[the Support page] instead.
+====
+
+[#github]
+== GitHub setup
+
+Log4j uses GitHub extensively:
+
+Source code repository:: {project-github-url}[]
+Issue tracker:: {project-github-url}/issues[]
+Discussions::
+{project-github-url}/discussions[]
++
+[TIP]
+====
+Maintainer discussions mostly take place in mailing lists.
+Please refer to {logging-services-url}/support.html[the Support page] for the complete list of communication channels.
+====
+
+[#branching]
+== Branching scheme
+
+The following branching scheme is followed:
+
+`2.x`:: The most recent Log4j 2 code
+
+`main`:: The most recent Log4j 3 code
+
+`<sourceBranch>-site-<environment>`::
+`<sourceBranch>-site-<environment>-out`::
+Branches used to serve the staging and production websites.
+`out`-suffixed ones are automatically populated by CI, you are not supposed to touch them.
+See {logging-services-url}/logging-parent/usage.html#website[the Logging Parent website] for details.
+
+`release/<version>`::
+Branch triggering the CI logic to start {logging-services-url}/logging-parent/release-instructions-project.html[the release process]
+
+[#building]
+== How can I build Log4j from sources?
+
+See {project-github-url}/tree/2.x/BUILDING.adoc[the build instructions].
+
+[#contributor]
+== I am **not** a committer. How shall I submit a patch?
+
+. Is this a _trivial fix_ such as code or documentation typo?
+Simply submit a pull request.
+Changelog entry is not needed and make sure `./mvnw verify site` succeeds.
+
+. Is this a _non-trivial fix_ or a _new feature_?
+Pitch it in a {logging-services-url}/support.html#discussions-maintainer[maintainer discussion channel] and ask for assistance.
+
+[#committer]
+== I am a committer. How shall I push my changes?
+
+. Is it something trivial?
+Go ahead and push it.
+
+. Otherwise, submit a pull request.
+Make sure a changelog entry is attached and `./mvnw verify site` succeeds.
++
+[TIP]
+====
+You are strongly advised to spar with another maintainer first (see {logging-services-url}/support.html#discussions-maintainer[maintainer discussion channels]) before starting to code.
+====
+
+[#release-project]
+== I am a PMC member. How do I make a new release?
+
+All Maven-based Logging Services projects are parented by {logging-services-url}/logging-parent[Logging Parent], which streamlines several project-wide processes, including making a new release.
+See {logging-services-url}/logging-parent/release-instructions-project.html[its release instructions for projects].
+
+[#release-xml-schema]
+== I am a PMC member. How do I publish a new XML schema?
+
+All Maven-based Logging Services projects are parented by {logging-services-url}/logging-parent[Logging Parent], which streamlines several project-wide processes, including publishing XML schemas.
+See {logging-services-url}/logging-parent/release-instructions-xml-schema.html[its release instructions for XML schemas].
+
+[WARNING]
+====
+**Projects and XML schemas have different lifecycles!**
+A new release of a project does not necessarily mean a new release of its XML schemas.
+XML schemas might have been untouched, or they might contain minor changes while the project itself contains breaking changes, etc.
+====

@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.appender;
 
 import java.io.Serializable;
-import java.lang.invoke.MethodHandles;
+import java.util.ServiceLoader;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
@@ -45,6 +45,7 @@ import org.apache.logging.log4j.core.net.SmtpManager;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Integers;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.ServiceLoaderUtil;
 import org.apache.logging.log4j.util.Strings;
 
@@ -300,8 +301,11 @@ public final class SmtpAppender extends AbstractAppender {
                     bufferSize,
                     sslConfiguration,
                     getFilter().toString());
-            final MailManagerFactory factory = ServiceLoaderUtil.loadServices(
-                            MailManagerFactory.class, MethodHandles.lookup())
+            final MailManagerFactory factory = ServiceLoaderUtil.safeStream(
+                            MailManagerFactory.class,
+                            ServiceLoader.load(
+                                    MailManagerFactory.class, getClass().getClassLoader()),
+                            StatusLogger.getLogger())
                     .findAny()
                     .orElseGet(() -> SmtpManager.FACTORY);
             final MailManager smtpManager = AbstractManager.getManager(data.getManagerName(), factory, data);

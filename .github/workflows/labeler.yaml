@@ -1,0 +1,69 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to you under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+name: 'Check labels'
+on:
+  issue_comment:
+    types: [created]
+  issues:
+    types: [opened]
+env:
+  issue_user_type: >-
+    ${{
+      contains(fromJSON('["COLLABORATOR","CONTRIBUTOR","MEMBER","OWNER"]'), github.event.issue.author_association) && 'maintainer' || 'user'
+    }}
+  comment_user_type: >-
+    ${{
+      github.event_name == 'issue_comment' &&
+      (
+        contains(fromJSON('["COLLABORATOR","CONTRIBUTOR","MEMBER","OWNER"]'), github.event.comment.author_association) && 'maintainer' || 'user'
+      ) || null
+    }}
+
+permissions:
+  issues: write
+
+jobs:
+  check-labels:
+    # Prevents the job from running on pull requests
+    if: ${{ ! github.event.issue.pull_request }}
+    runs-on: ubuntu-latest
+
+    steps:
+
+     - name: Print user type
+       env:
+         ISSUE_AUTHOR: ${{ github.event.issue.author_association }}
+         COMMENT_AUTHOR: ${{ github.event.comment.author_association }}
+         EVENT_NAME: ${{ github.event_name }}
+         ISSUE_USER_TYPE: ${{ env.issue_user_type }}
+         COMMENT_USER_TYPE: ${{ env.comment_user_type }}
+       run: |
+         echo "Event name:" $EVENT_NAME
+         echo "Issue created by:" $ISSUE_USER_TYPE
+         echo "Issue author association:" $ISSUE_AUTHOR
+         echo "Comment created by:" $COMMENT_USER_TYPE
+         echo "Comment author association:" $COMMENT_AUTHOR
+
+     # The `waiting-for-maintainer` label needs to match with the one in `close-stale.yaml`!
+     - name: Add `waiting-for-maintainer` label
+       if: github.event_name == 'issues' && env.issue_user_type == 'user' || env.comment_user_type == 'user'
+       env:
+         ISSUE: ${{ github.event.issue.html_url }}
+         GH_TOKEN: ${{ github.token }}
+       run: |
+         gh issue edit $ISSUE --add-label 'waiting-for-maintainer' --remove-label 'waiting-for-user'

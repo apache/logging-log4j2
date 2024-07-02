@@ -16,19 +16,35 @@
  */
 package org.apache.logging.log4j.util;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.HOURS;
+import static java.time.temporal.ChronoUnit.MICROS;
+import static java.time.temporal.ChronoUnit.MILLIS;
+import static java.time.temporal.ChronoUnit.MINUTES;
+import static java.time.temporal.ChronoUnit.NANOS;
+import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Stream;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junitpioneer.jupiter.ReadsSystemProperty;
 
 public class PropertiesUtilTest {
@@ -78,6 +94,56 @@ public class PropertiesUtilTest {
         assertEquals(Charset.defaultCharset(), pu.getCharsetProperty("e.0"));
         assertEquals(StandardCharsets.US_ASCII, pu.getCharsetProperty("e.1"));
         assertEquals(Charset.defaultCharset(), pu.getCharsetProperty("e.2"));
+    }
+
+    static Stream<Arguments> should_properly_parse_duration() {
+        return Stream.of(
+                Arguments.of(Duration.of(1, NANOS), "1 ns"),
+                Arguments.of(Duration.of(1, NANOS), "1 nano"),
+                Arguments.of(Duration.of(3, NANOS), "3 nanos"),
+                Arguments.of(Duration.of(1, NANOS), "1 nanosecond"),
+                Arguments.of(Duration.of(5, NANOS), "5 nanoseconds"),
+                Arguments.of(Duration.of(6, MICROS), "6 us"),
+                Arguments.of(Duration.of(1, MICROS), "1 micro"),
+                Arguments.of(Duration.of(8, MICROS), "8 micros"),
+                Arguments.of(Duration.of(1, MICROS), "1 microsecond"),
+                Arguments.of(Duration.of(10, MICROS), "10 microseconds"),
+                Arguments.of(Duration.of(11, MILLIS), "11 ms"),
+                Arguments.of(Duration.of(1, MILLIS), "1 milli"),
+                Arguments.of(Duration.of(13, MILLIS), "13 millis"),
+                Arguments.of(Duration.of(1, MILLIS), "1 millisecond"),
+                Arguments.of(Duration.of(15, MILLIS), "15 milliseconds"),
+                Arguments.of(Duration.of(16, SECONDS), "16 s"),
+                Arguments.of(Duration.of(1, SECONDS), "1 second"),
+                Arguments.of(Duration.of(18, SECONDS), "18 seconds"),
+                Arguments.of(Duration.of(19, MINUTES), "19 m"),
+                Arguments.of(Duration.of(1, MINUTES), "1 minute"),
+                Arguments.of(Duration.of(21, MINUTES), "21 minutes"),
+                Arguments.of(Duration.of(22, HOURS), "22 h"),
+                Arguments.of(Duration.of(1, HOURS), "1 hour"),
+                Arguments.of(Duration.of(24, HOURS), "24 hours"),
+                Arguments.of(Duration.of(25, DAYS), "25 d"),
+                Arguments.of(Duration.of(1, DAYS), "1 day"),
+                Arguments.of(Duration.of(27, DAYS), "27 days"),
+                Arguments.of(Duration.of(28, MILLIS), "28"));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void should_properly_parse_duration(final Duration expected, final String value) {
+        Assertions.assertThat(PropertiesUtil.parseDuration(value)).isEqualTo(expected);
+    }
+
+    static List<String> should_throw_on_invalid_duration() {
+        return Arrays.asList(
+                // more than long
+                "18446744073709551616 nanos", "1 month", "invalid pattern");
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void should_throw_on_invalid_duration(final String value) {
+        assertThrows(IllegalArgumentException.class, () -> PropertiesUtil.parseDuration(value));
     }
 
     @Test

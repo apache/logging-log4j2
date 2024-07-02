@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="https://logging.apache.org/xml/ns"
+       xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="changed">
+  <issue id="2412" link="https://github.com/apache/logging-log4j2/pull/2412"/>
+  <description format="asciidoc">
+    Remove `log4j-kubernetes` lookup.
+    User should migrate to https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md[`io.fabric8:kubernetes-log4j`].
+  </description>
+</entry>

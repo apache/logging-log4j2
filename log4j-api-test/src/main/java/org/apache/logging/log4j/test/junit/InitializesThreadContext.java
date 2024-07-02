@@ -35,5 +35,5 @@ import org.junit.jupiter.api.parallel.ResourceLock;
 @Documented
 @Inherited
 @ExtendWith(ThreadContextInitializer.class)
-@ResourceLock(value = Resources.THREAD_CONTEXT, mode = ResourceAccessMode.READ_WRITE)
+@ResourceLock(value = Log4jStaticResources.THREAD_CONTEXT, mode = ResourceAccessMode.READ_WRITE)
 public @interface InitializesThreadContext {}

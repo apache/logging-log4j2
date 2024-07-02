@@ -14,150 +14,189 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+#
+# ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+# ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+# ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+# ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+#  ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+#
+# `dependabot.yaml` must be stored in the `.github` directory of the default branch[1].
+#
+#  1. Make all your changes to this file!
+#     Don't create another `dependabot.yaml` – it will simply be discarded.
+#
+#  2. Always associate your entries to a branch!
+#     For instance, use `target-branch` in `updates` entries
+#
+# [1] https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+#
+
 version: 2
-# Add Maven Central explicitly to work around:
-#   https://github.com/dependabot/dependabot-core/issues/8329
+
+# Fix the Maven Central to the ASF repository to work around: https://github.com/dependabot/dependabot-core/issues/8329
 registries:
   maven-central:
     type: maven-repository
     url: https://repo.maven.apache.org/maven2
 
 updates:
-- package-ecosystem: maven
-  directory: "/"
-  open-pull-requests-limit: 10
-  schedule:
-    interval: "daily"
-  target-branch: "2.x"
-  registries:
-    - maven-central
-  ignore:
-    # Jetty 10.x does not have an internal logging API
-    - dependency-name: "org.eclipse.jetty:*"
-      update-types: ["version-update:semver-major"]
-    # EclipseLink 3.x is Jakarta EE 9
-    - dependency-name: "org.eclipse.persistence:*"
-      update-types: ["version-update:semver-major"]
-    # Spring 6.x is Jakarta EE 9
-    - dependency-name: "org.springframework:*"
-      update-types: ["version-update:semver-major"]
-    # Spring Boot 3.x is Jakarta EE 9
-    - dependency-name: "org.springframework.boot:*"
-      update-types: ["version-update:semver-major"]
-    # Spring Cloud 2022.x is Jakarta EE 9
-    - dependency-name: "org.springframework.cloud:*"
-      update-types: ["version-update:semver-major"]
-    # Tomcat Juli 10.1.x requires Java 11
-    - dependency-name: "org.apache.tomcat:*"
-      update-types: ["version-update:semver-major", "version-update:semver-minor"]
-    # Keep Logback version 1.2.x
-    - dependency-name: "ch.qos.logback:*"
-      update-types: ["version-update:semver-major", "version-update:semver-minor"]
-    # Mockito 5.x requires Java 11
-    - dependency-name: "org.mockito:*"
-      update-types: ["version-update:semver-major"]
-    # JUnit Pioneer 2.x requires Java 11
-    - dependency-name: "org.junit-pioneer:*"
-      update-types: ["version-update:semver-major"]
-    # Apache Cassandra: keep version 3.x
-    - dependency-name: "org.apache.cassandra:*"
-      versions: ["[4.0.0,)"]
-    # Kubernetes: keep version 5.x
-    - dependency-name: "io.fabric8:*"
-      versions: ["[6.0.0,)"]
-    # `com.conversantmedia:disruptor` 1.2.16 requires Java 9
-    - dependency-name: "com.conversantmedia:disruptor"
-      versions: ["[1.2.16,)"]
-    # Keep Jakarta EE at version 9.0
-    - dependency-name: "jakarta.platform:*"
-      versions: ["[10.0.0,)"]
-    # OpenRewrite is quite noisy. Let us skip patch and minor updates:
-    - dependency-name: "org.openrewrite:*"
-      update-types: ["version-update:semver-minor", "version-update:semver-patch"]
-    - dependency-name: "org.openrewrite.maven:*"
-      update-types: ["version-update:semver-minor", "version-update:semver-patch"]
-    - dependency-name: "org.openrewrite.recipe:*"
-      update-types: ["version-update:semver-minor", "version-update:semver-patch"]
-    # Json Unit 3.x requires Java 17
-    - dependency-name: "net.javacrumbs.json-unit:*"
-      versions: ["[3.0.0,)"]
-    # Update both `disruptor.version` to latest 3.x version
-    # and `disruptor4.version` to latest 4.x version
-    - dependency-name: "com.lmax:disruptor"
-      update-types: ["version-update:semver-major"]
-    # WebCompere System Stubs requires Java 11
-    - dependency-name: "uk.org.webcompere:*"
-      versions: ["2.1.0,)"]
-    # SLF4J 1.7.x should only upgrade to 1.7.x and
-    # SLF4J 2.x should only upgrade to 2.x.
-    - dependency-name: "org.slf4j:slf4j-api"
-      update-types: ["version-update:semver-major"]
-    # Plexus Utils 4.x are for Maven 4.x
-    - dependency-name: "org.codehaus.plexus:plexus-utils"
-      versions: ["4,)"]
 
-- package-ecosystem: github-actions
-  directory: "/"
-  schedule:
-    interval: "daily"
-  target-branch: "2.x"
+  - package-ecosystem: maven
+    directory: "/"
+    open-pull-requests-limit: 10
+    schedule:
+      interval: "daily"
+    target-branch: "2.x"
+    registries:
+      - maven-central
+    ignore:
+      # Jetty 10.x does not have an internal logging API
+      - dependency-name: "org.eclipse.jetty:*"
+        update-types: [ "version-update:semver-major" ]
+      # EclipseLink 3.x is Jakarta EE 9
+      - dependency-name: "org.eclipse.persistence:*"
+        update-types: [ "version-update:semver-major" ]
+      # Spring 6.x is Jakarta EE 9
+      - dependency-name: "org.springframework:*"
+        update-types: [ "version-update:semver-major" ]
+      # Spring Boot 3.x is Jakarta EE 9
+      - dependency-name: "org.springframework.boot:*"
+        update-types: [ "version-update:semver-major" ]
+      # Spring Cloud 2022.x is Jakarta EE 9
+      - dependency-name: "org.springframework.cloud:*"
+        update-types: [ "version-update:semver-major" ]
+      # Tomcat Juli 10.1.x requires Java 11
+      - dependency-name: "org.apache.tomcat:*"
+        update-types: [ "version-update:semver-major", "version-update:semver-minor" ]
+      # Keep Logback version 1.2.x
+      - dependency-name: "ch.qos.logback:*"
+        update-types: [ "version-update:semver-major", "version-update:semver-minor" ]
+      # Mockito 5.x requires Java 11
+      - dependency-name: "org.mockito:*"
+        update-types: [ "version-update:semver-major" ]
+      # JUnit Pioneer 2.x requires Java 11
+      - dependency-name: "org.junit-pioneer:*"
+        update-types: [ "version-update:semver-major" ]
+      # Apache Cassandra: keep version 3.x
+      - dependency-name: "org.apache.cassandra:*"
+        versions: [ "[4.0.0,)" ]
+      # Kubernetes: keep version 5.x
+      - dependency-name: "io.fabric8:*"
+        versions: [ "[6.0.0,)" ]
+      # `com.conversantmedia:disruptor` 1.2.16 requires Java 9
+      - dependency-name: "com.conversantmedia:disruptor"
+        versions: [ "[1.2.16,)" ]
+      # Keep Jakarta EE at version 9.0
+      - dependency-name: "jakarta.platform:*"
+        versions: [ "[10.0.0,)" ]
+      # OpenRewrite is quite noisy. Let us skip patch and minor updates:
+      - dependency-name: "org.openrewrite:*"
+        update-types: [ "version-update:semver-minor", "version-update:semver-patch" ]
+      - dependency-name: "org.openrewrite.maven:*"
+        update-types: [ "version-update:semver-minor", "version-update:semver-patch" ]
+      - dependency-name: "org.openrewrite.recipe:*"
+        update-types: [ "version-update:semver-minor", "version-update:semver-patch" ]
+      # Json Unit 3.x requires Java 17
+      - dependency-name: "net.javacrumbs.json-unit:*"
+        versions: [ "[3.0.0,)" ]
+      # Update both `disruptor.version` to latest 3.x version
+      # and `disruptor4.version` to latest 4.x version
+      - dependency-name: "com.lmax:disruptor"
+        update-types: [ "version-update:semver-major" ]
+      # WebCompere System Stubs requires Java 11
+      - dependency-name: "uk.org.webcompere:*"
+        versions: [ "2.1.0,)" ]
+      # SLF4J 1.7.x should only upgrade to 1.7.x and
+      # SLF4J 2.x should only upgrade to 2.x.
+      - dependency-name: "org.slf4j:slf4j-api"
+        update-types: [ "version-update:semver-major" ]
+      # Plexus Utils 4.x are for Maven 4.x
+      - dependency-name: "org.codehaus.plexus:plexus-utils"
+        versions: [ "4,)" ]
+      # MongoDB 3.x should only upgrade to 3.x and
+      # MongoDB 4.x should only upgrade to 4.x
+      - dependency-name: "org.mongodb:*"
+        update-types: [ "version-update:semver-major" ]
 
-- package-ecosystem: maven
-  directory: "/"
-  open-pull-requests-limit: 10
-  schedule:
-    interval: "daily"
-  target-branch: "main"
-  registries:
-    - maven-central
-  ignore:
-    # Jetty 10.x does not have an internal logging API
-    - dependency-name: "org.eclipse.jetty:*"
-      update-types: ["version-update:semver-major"]
-    # EclipseLink 3.x is Jakarta EE 9
-    - dependency-name: "org.eclipse.persistence:*"
-      update-types: ["version-update:semver-major"]
-    # Spring 6.x is Jakarta EE 9
-    - dependency-name: "org.springframework:*"
-      update-types: ["version-update:semver-major"]
-    # Spring Boot 3.x is Jakarta EE 9
-    - dependency-name: "org.springframework.boot:*"
-      update-types: ["version-update:semver-major"]
-    # Spring Cloud 2022.x is Jakarta EE 9
-    - dependency-name: "org.springframework.cloud:*"
-      update-types: ["version-update:semver-major"]
-    # Keep Logback version 1.2.x
-    - dependency-name: "ch.qos.logback:*"
-      update-types: ["version-update:semver-major", "version-update:semver-minor"]
-    # Apache Cassandra: keep version 3.x
-    - dependency-name: "org.apache.cassandra:*"
-      versions: ["[4.0.0,)"]
-    # Kubernetes: keep version 5.x
-    - dependency-name: "io.fabric8:*"
-      versions: ["[6.0.0,)"]
-    # Keep Jakarta EE at version 9.0
-    - dependency-name: "jakarta.platform:*"
-      versions: ["[10.0.0,)"]
-    # OpenRewrite is quite noisy. Let us skip patch and minor updates:
-    - dependency-name: "org.openrewrite:*"
-      update-types: ["version-update:semver-minor", "version-update:semver-patch"]
-    - dependency-name: "org.openrewrite.maven:*"
-      update-types: ["version-update:semver-minor", "version-update:semver-patch"]
-    - dependency-name: "org.openrewrite.recipe:*"
-      update-types: ["version-update:semver-minor", "version-update:semver-patch"]
-    # Json Unit 3.x requires Java 17
-    - dependency-name: "net.javacrumbs.json-unit:*"
-      versions: ["[3.0.0,)"]
-    # SLF4J 1.7.x should only upgrade to 1.7.x and
-    # SLF4J 2.x should only upgrade to 2.x.
-    - dependency-name: "org.slf4j:slf4j-api"
-      update-types: ["version-update:semver-major"]
-    # Plexus Utils 4.x are for Maven 4.x
-    - dependency-name: "org.codehaus.plexus:plexus-utils"
-      versions: ["4,)"]
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: "daily"
+    target-branch: "2.x"
 
-- package-ecosystem: github-actions
-  directory: "/"
-  schedule:
-    interval: "daily"
-  target-branch: "main"
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: "daily"
+    target-branch: "2.x"
+
+  - package-ecosystem: maven
+    directory: "/"
+    open-pull-requests-limit: 10
+    schedule:
+      interval: "daily"
+    target-branch: "main"
+    registries:
+      - maven-central
+    ignore:
+      # Jetty 10.x does not have an internal logging API
+      - dependency-name: "org.eclipse.jetty:*"
+        update-types: [ "version-update:semver-major" ]
+      # EclipseLink 3.x is Jakarta EE 9
+      - dependency-name: "org.eclipse.persistence:*"
+        update-types: [ "version-update:semver-major" ]
+      # Spring 6.x is Jakarta EE 9
+      - dependency-name: "org.springframework:*"
+        update-types: [ "version-update:semver-major" ]
+      # Spring Boot 3.x is Jakarta EE 9
+      - dependency-name: "org.springframework.boot:*"
+        update-types: [ "version-update:semver-major" ]
+      # Spring Cloud 2022.x is Jakarta EE 9
+      - dependency-name: "org.springframework.cloud:*"
+        update-types: [ "version-update:semver-major" ]
+      # Keep Logback version 1.2.x
+      - dependency-name: "ch.qos.logback:*"
+        update-types: [ "version-update:semver-major", "version-update:semver-minor" ]
+      # Apache Cassandra: keep version 3.x
+      - dependency-name: "org.apache.cassandra:*"
+        versions: [ "[4.0.0,)" ]
+      # Kubernetes: keep version 5.x
+      - dependency-name: "io.fabric8:*"
+        versions: [ "[6.0.0,)" ]
+      # Keep Jakarta EE at version 9.0
+      - dependency-name: "jakarta.platform:*"
+        versions: [ "[10.0.0,)" ]
+      # OpenRewrite is quite noisy. Let us skip patch and minor updates:
+      - dependency-name: "org.openrewrite:*"
+        update-types: [ "version-update:semver-minor", "version-update:semver-patch" ]
+      - dependency-name: "org.openrewrite.maven:*"
+        update-types: [ "version-update:semver-minor", "version-update:semver-patch" ]
+      - dependency-name: "org.openrewrite.recipe:*"
+        update-types: [ "version-update:semver-minor", "version-update:semver-patch" ]
+      # Json Unit 3.x requires Java 17
+      - dependency-name: "net.javacrumbs.json-unit:*"
+        versions: [ "[3.0.0,)" ]
+      # SLF4J 1.7.x should only upgrade to 1.7.x and
+      # SLF4J 2.x should only upgrade to 2.x.
+      - dependency-name: "org.slf4j:slf4j-api"
+        update-types: [ "version-update:semver-major" ]
+      # Plexus Utils 4.x are for Maven 4.x
+      - dependency-name: "org.codehaus.plexus:plexus-utils"
+        versions: [ "[4,)" ]
+      # Don't upgrade to 3.x
+      - dependency-name: "org.apache.logging.log4j:log4j-api"
+        versions: [ "[3,)" ]
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: "daily"
+    target-branch: "main"
+
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: "daily"
+    target-branch: "main"

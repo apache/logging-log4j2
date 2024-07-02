@@ -1,0 +1,74 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+[#trade-offs]
+= [[Trade-offs]]Trade-offs
+
+There are certain trade-offs associated with asynchronous logging:
+
+[#async-benefits]
+== Benefits
+
+Higher peak throughput::
+Applications that occasionally need to log bursts of messages, can take advantage of asynchronous logging.
+It can prevent or dampen latency spikes by shortening the wait time until the next message can be logged.
+If the queue size is large enough to handle the burst, asynchronous logging will prevent your application from falling behind during a sudden increase of activity.
+
+Lower logging latency::
+link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html[`Logger`] method calls return faster, since most of the work is done on the I/O thread.
+
+[#async-drawbacks]
+== Drawbacks
+
+Lower sustainable throughput::
+If the _sustained rate_ at which your application is logging messages is faster than the maximum sustained throughput of the underlying appender, the queue will fill up and the application will end up logging at the speed of the slowest appender.
+If this happens, consider selecting a faster appender, or logging less.
+If neither of these is an option, you may get better throughput and fewer latency spikes by logging synchronously.
+
+Error handling::
+If a problem happens during the logging process and an exception is thrown, it is less easy for an asynchronous setting to signal this problem to the application.
+This can partly be alleviated by configuring an exception handler, but this may still not cover all cases.
++
+[WARNING]
+====
+If logging is part of your business logic, e.g. you are using Log4j as an audit logging framework, we would recommend to synchronously log those audit messages.
+
+See
+xref:manual/async.adoc#MixedSync-Async[mixed synchronous/asynchronous loggers] on how to log some messages synchronously.
+====
+
+Stateful messages::
+Most
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html[`Message`]
+implementations take a snapshot of the formatted message on the calling thread (cf.
+xref:manual/systemproperties.adoc#log4j2.formatMsgAsync[`log4j2.formatMsgAsync`]).
+The log message will not change even if the arguments of the logging call are modified later.
++
+There are some exceptions to this rule.
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html[`MapMessage`]
+and
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html[`StructuredDataMessage`]
+for example are mutable by design: fields can be added to these messages after the message object was created.
+These messages should not be modified after they are logged with asynchronous loggers or asynchronous appenders.
++
+Similarly, custom
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html[`Message`]
+implementations should be designed with asynchronous use in mind, and either take a snapshot of their parameters at construction time, or document their thread-safety characteristics (see
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/AsynchronouslyFormattable.html[`AsynchronouslyFormattable`]).
+
+Computational overhead::
+If your application is running in an environment where CPU resources are scarce, like a VM with a single vCPU, starting another thread is not likely to give better performance.

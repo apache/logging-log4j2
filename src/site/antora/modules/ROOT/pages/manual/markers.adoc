@@ -1,0 +1,186 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+= Markers
+
+Markers allow to _tag_ log statements with a
+link:../javadoc/log4j-api/org/apache/logging/log4j/Marker.html[`Marker`]
+object, labeling them as belonging to a specific type.
+For example, developers can use markers to tag log statements related to a particular subsystem or functionality.
+
+By using markers, it is possible to filter log statements based on the `Marker`
+and display only those log statements that are of interest, such as those
+related to XML processing or SQL queries.
+
+Markers offer more fine-grained control over log filtering beyond log levels or package names.
+
+[#create]
+== Creating Markers
+
+[#simple-markers]
+=== Simple markers
+
+To create a `Marker`, create a field in your class using the `MarkerManager.getMarker()` method:
+
+[source,java,indent=0]
+----
+include::example$manual/markers/MarkerExample.java[tag=create-marker]
+----
+
+Since a `Marker` is reusable across multiple log statements, storing it in a `static final` field makes it a constant.
+Once created, use it as the first argument in the log statement:
+
+[source,java,indent=0]
+----
+include::example$manual/markers/MarkerExample.java[tag=use-marker]
+----
+
+If you use the <<example-configuration,configuration example below>>, one can see the following log statement on your console:
+
+[source,text]
+----
+include::example$manual/markers/marker-filtering.log[tag=use-marker]
+----
+
+[#hierarchy]
+=== Parent and child markers
+
+A marker can have zero or more parent markers, allowing for a hierarchy of markers.
+To create such a hierarchy, you must use the `addParents()` method on the `Marker` object after you make the child marker.
+
+[source,java,indent=0]
+----
+include::example$manual/markers/MarkerExample.java[tag=create-marker-parent]
+----
+
+Child markers do not differ from simple markers; one must pass them on as the first argument of a logging call.
+
+[source,java,indent=0]
+----
+include::example$manual/markers/MarkerExample.java[tag=use-marker-parent]
+----
+
+Messages marked with children's markers behave as if they were both marked with the children's marker and all its parents.
+If you use the <<example-configuration,configuration example below>>, you'll see the following log statement on your console:
+
+[source,text]
+----
+include::example$manual/markers/marker-filtering.log[tag=use-marker-parent]
+----
+
+[#pitfalls]
+== Pitfalls
+
+It is important to note that marker names must be unique, as Log4j registers them permanently by name.
+Developers are advised to avoid generic marker names, as they may conflict with those provided by third parties.
+
+For technical reasons the
+link:../javadoc/log4j-api/org/apache/logging/log4j/Marker.html#setParents(org.apache.logging.log4j.Marker...)[`Marker.setParents(Marker...)`]
+method can be called at runtime to modify the list of parents of the current marker.
+However, we discourage such a practice and advise you to only use the method at initialization time.
+
+It is also worth noting that markers without parents are more efficient to evaluate
+than markers with multiple parents. It is generally a good idea to avoid
+complex hierarchies of markers where possible.
+
+[#configuring-log4j]
+== Configuring filtering
+
+Developers can use markers to filter the log statements delivered to log files.
+Marker processing is supported at least by
+https://logback.qos.ch/manual/filters.html[Logback]
+and the Log4j Core logging backends.
+We will provide a sample configuration for both these backends.
+
+[#log4j-core]
+=== Log4j Core
+
+To filter messages by marker, you need to add
+xref:manual/filters.adoc#MarkerFilter[`MarkerFilter`]
+to your configuration file.
+For example, you can use the configuration below to redirect all SQL-related logs to the `SQL_LOG` appender,
+regardless of the level of the events:
+
+[[example-configuration]]
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/markers/log4j2.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/markers/log4j2.xml[lines=23..37,indent=0]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/markers/log4j2.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/markers/log4j2.json[lines=3..26,indent=0]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/markers/log4j2.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/markers/log4j2.yaml[lines=18..-1,indent=0]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/markers/log4j2.properties[`log4j2.properties`]
+[source,properties]
+----
+include::example$manual/markers/log4j2.properties[lines=17..-1]
+----
+====
+<1> Accepts all events marked with `SQL` regardless of their level,
+<2> Only allow events marked with `SQL` or one of its children to be sent to the `SQL_LOG` appender.
+
+[#logback]
+=== Logback
+
+Logback differentiates two kinds of filters: ``TurboFilter``s, which are applied before a log event is created, and
+``Filter``s, which are applied only when a log event reaches an appender.
+See https://logback.qos.ch/manual/filters.html[Logback filters] for more information.
+
+You can use a combination of `MarkerFilter`, `EvaluatorFilter` and `OnMarkerEvaluator` to redirect all messages marked with `SQL` to a specific appender, regardless of their level.
+In order to do that, you can use a configuration as below:
+
+.Snippet from an example {antora-examples-url}/manual/markers/logback.xml[`logback.xml`]
+[source,xml]
+----
+include::example$manual/markers/logback.xml[lines=19..36,indent=0]
+----
+<1> Accepts all events marked with `SQL` regardless of their level,
+<2> Only allow events marked with `SQL` or one of its children to be sent to the `SQL_LOG` appender.git
+
+[#complete-example]
+== Complete example
+
+To try the examples on this page:
+
+* add
+{antora-examples-url}/manual/markers/MarkerExample.java[MarkerExample.java]
+to the `src/main/java/example` folder of your project,
+* if your project uses Log4j Core add
+{antora-examples-url}/manual/markers/log4j2.xml[log4j2.xml]
+to the `src/main/resources` folder of your project.
+* if your project uses Logback add
+{antora-examples-url}/manual/markers/logback.xml[logback.xml]
+to the `src/main/resources` folder of your project.

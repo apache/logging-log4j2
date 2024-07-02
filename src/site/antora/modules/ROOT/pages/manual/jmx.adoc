@@ -1,0 +1,108 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+= JMX
+
+Log4j 2 has built-in support for JMX.
+
+When JMX support is enabled, xref:manual/status-logger.adoc[], ContextSelector, and all LoggerContexts, LoggerConfigs, and xref:manual/appenders.adoc[] are instrumented with MBeans.
+
+Also included is a simple client GUI that can be used to monitor the
+status logger output, as well as to remotely reconfigure Log4j with a
+different configuration file, or to edit the current configuration
+directly.
+
+[#Enabling_JMX]
+== Enabling JMX
+
+JMX support is disabled by default.
+
+NOTE: JMX support was enabled by default in Log4j 2 versions before 2.24.0.
+
+To enable JMX support, set the
+xref:manual/systemproperties.adoc#log4j2.disableJmx[`log4j2.disableJmx`]
+system property when starting the Java VM:
+
+`log4j2.disableJmx=false`
+
+[#Local]
+== Local Monitoring and Management
+
+To perform local monitoring you need to set the
+xref:manual/systemproperties.adoc#log4j2.disableJmx[`log4j2.disableJmx`]
+system property to `false`.
+The JConsole tool that is included in the Java JDK can be
+used to monitor your application. Start JConsole by typing
+`$JAVA_HOME/bin/jconsole` in a command shell. For more details,
+see Oracle's documentation at
+https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/management/jconsole.html[how
+to use JConsole].
+
+[#Remote]
+== Remote Monitoring and Management
+
+To enable monitoring and management from remote systems, set the
+following two system properties when starting the Java VM:
+
+`log4j2.disableJmx=false`
+
+and
+
+`com.sun.management.jmxremote.port=portNum`
+
+In the property above, `portNum` is the port number through which you
+want to enable JMX RMI connections.
+
+For more details, see Oracle's documentation at
+https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/management/agent.html#gdenl[Remote
+Monitoring and Management].
+
+[#RMI_GC]
+== RMI impact on Garbage Collection
+
+Be aware that RMI by default triggers a full GC every hour. See the
+https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/rmi/sunrmiproperties.html[Oracle
+documentation] for the `sun.rmi.dgc.server.gcInterval` and
+`sun.rmi.dgc.client.gcInterval` properties. The default value of both
+properties is 3600000 milliseconds (one hour). Before Java 6, it was one
+minute.
+
+The two `sun.rmi` arguments reflect whether your JVM is running in server
+or client mode. If you want to modify the GC interval time it may be
+best to specify both properties to ensure the argument is picked up by
+the JVM.
+
+An alternative may be to disable explicit calls to `System.gc()`
+altogether with `-XX:+DisableExplicitGC`, or (if you are using the CMS
+or G1 collector) add `-XX:+ExplicitGCInvokesConcurrent` to ensure the
+full GCs are done concurrently in parallel with your application instead
+of forcing a stop-the-world collection.
+
+[#Log4j_MBeans]
+== Log4j Instrumented Components
+
+The best way to find out which methods and attributes of the various  Log4j components are accessible via JMX is to look at the `org.apache.logging.log4j.core.jmx` package contents in the `log4j-core` artifact or by exploring directly in JConsole.
+
+The screenshot below shows the Log4j MBeans in JConsole.
+
+image:jmx-jconsole-mbeans.png[JConsole screenshot of the
+MBeans tab]
+
+[#ClientGUI]
+== Client GUI
+
+https://github.com/apache/logging-log4j-jmx-gui[The Apache Log4j JMX GUI] is a basic client GUI that can be used to monitor the `StatusLogger` output and to remotely modify the Log4j configuration.
+The client GUI can be run as a stand-alone application or as a JConsole plug-in.

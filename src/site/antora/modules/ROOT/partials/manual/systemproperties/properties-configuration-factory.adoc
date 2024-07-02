@@ -1,0 +1,85 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+[id=log4j2.configurationFactory]
+== `log4j2.configurationFactory`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_CONFIGURATION_FACTORY`
+| Type          | link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html[`Class<? extends ConfigurationFactory>`]
+| Default value | `null`
+|===
+
+Specifies the fully qualified class name of the **preferred**
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html[`ConfigurationFactory`]
+to use.
+
+Log4j will attempt to use the provided configuration factory before any other factory implementation.
+
+[id=log4j2.configurationFile]
+== `log4j2.configurationFile`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_CONFIGURATION_FILE`
+| Type          | Comma-separated list of https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[`Path`]s or https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/URI.html[`URI`]s
+| Default value | xref:manual/configuration.adoc#AutomaticConfiguration[automatically detected]
+|===
+
+Specifies a comma-separated list of URIs or file paths to Log4j 2 configuration files.
+
+If a relative URL is provided, it is interpreted as:
+
+* path to a file, if the file exists,
+* a classpath resource otherwise.
+
+Usage of absolute URLs is restricted by the xref:manual/configuration.adoc#properties-transport-security[Transport Security] configuration options.
+
+See also xref:manual/configuration.adoc#AutomaticConfiguration[Automatic Configuration].
+
+[id=log4j2.level]
+== `log4j2.level`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_LEVEL`
+| Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[`Level`]
+| Default value | `ERROR`
+|===
+
+Specifies the level of the root logger if:
+
+* the default configuration is used,
+
+* or the configuration file does not specify a level for the root logger.
+
+[id=log4j2.mergeStrategy]
+== `log4j2.mergeStrategy`
+
+[cols="1h,5"]
+|===
+| Env. variable
+| `LOG4J_MERGE_STRATEGY`
+
+| Type
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy.html[`Class<? extends MergeStrategy>`]
+
+| Default value
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/DefaultMergeStrategy.html[`DefaultMergeStrategy`]
+|===
+
+Specifies the fully qualified class name of the link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy.html[`MergeStrategy`] implementation used to merge multiple configuration files into one.

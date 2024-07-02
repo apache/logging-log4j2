@@ -1,0 +1,52 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Event Logger
+
+link:../javadoc/log4j-api/org/apache/logging/log4j/EventLogger.html[`EventLogger`] is a convenience to log xref:manual/messages.adoc#StructuredDataMessage[`StructuredDataMessage`]s, which format their content in a way compliant with https://datatracker.ietf.org/doc/html/rfc5424#section-6[the Syslog message format described in RFC 5424].
+Historically, `EventLogger` was added to help users migrate from SLF4J `EventLogger`, which was removed in https://www.slf4j.org/news.html#1.7.26[SLF4J version `1.7.26`].
+
+[WARNING]
+====
+*Event Logger is deprecated for removal!*
+We advise users to switch to plain `Logger` instead.
+Refer to xref:manual/api.adoc[] on how to use `Logger`.
+====
+
+Compared to using link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html[a plain `Logger`], `EventLogger`
+
+* attaches an `EVENT` xref:manual/markers.adoc[marker], and
+* sets the xref:manual/customloglevels.adoc[level] to `OFF`, unless one is explicitly provided.
+
+That is, following `EventLogger` usages:
+
+[source,java]
+----
+EventLogger.logEvent(new StructuredDataMessage(...));
+EventLogger.logEvent(new StructuredDataMessage(...), Level.INFO);
+----
+
+are equivalent to the following plain `Logger` usages:
+
+[source,java]
+----
+private static final Marker EVENT_MARKER = MarkerManager.getMarker("EVENT");
+private static final Logger LOGGER = LogManager.getLogger();
+
+LOGGER.log(Level.OFF, EVENT_MARKER, new StructuredDataMessage(...));
+LOGGER.info(EVENT_MARKER, new StructuredDataMessage(...));
+----

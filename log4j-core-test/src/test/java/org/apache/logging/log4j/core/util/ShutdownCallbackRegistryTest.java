@@ -39,14 +39,14 @@ public class ShutdownCallbackRegistryTest {
 
     @BeforeAll
     public static void setUpClass() {
-        System.setProperty("log4j2.is.webapp", "false");
+        System.setProperty("log4j2.shutdownHookEnabled", "true");
         System.setProperty(ShutdownCallbackRegistry.SHUTDOWN_CALLBACK_REGISTRY, Registry.class.getName());
     }
 
     @AfterAll
     public static void afterClass() {
         System.clearProperty(ShutdownCallbackRegistry.SHUTDOWN_CALLBACK_REGISTRY);
-        System.clearProperty("log4j2.is.webapp");
+        System.clearProperty("log4j2.shutdownHookEnabled");
     }
 
     @Test

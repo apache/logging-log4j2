@@ -1,0 +1,264 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+= Asynchronous loggers
+
+Asynchronous logging is a technique to improve application logging performance by executing all I/O operations in a separate thread.
+
+Log4j offers out-of-the-box two different asynchronous logging solutions:
+
+Asynchronous appender::
+A classical queue-based asynchronous appender, which is available since Log4j 1.
++
+See xref:manual/appenders.adoc#AsyncAppender[Asynchronous appender] for more details.
+
+Asynchronous loggers::
+Asynchronous loggers are a new feature available since Log4j 2.
+They are based on
+{lmax-disruptor-url}[LMAX Disruptor],
+a lock-free inter-thread communication library, instead of queues, resulting in higher throughput and lower latency.
++
+The rest of this chapter is dedicated to this new component.
+
+[WARNING]
+====
+Logging performance depends greatly on the architecture of your application and the way you use logging.
+The solutions offered by this chapter should be evaluated using benchmarks against your own application.
+If benchmarks and profiling don't show a statistically significant difference between asynchronous and synchronous logging solutions, the latter one is recommended, since it is the simplest one.
+====
+
+include::partial$manual/async-trade-offs.adoc[leveloffset=+1]
+
+[#installation]
+== Installation
+
+In order to use async loggers, you need to add LMAX Disruptor to you application's dependencies, by adding the following dependency to your build tool:
+
+include::partial$manual/dependencies-log4j-async-logger.adoc[]
+
+[#configuration]
+== Configuration
+
+There are two ways asynchronous loggers can be used in Log4j.
+You can:
+
+** <<AllAsync>>, which gives a better performance,
+** <<MixedSync-Async>>, which gives more flexibility.
+
+Under the hood these methods use different Log4j plugins, but also share a
+<<common-configuration-properties,set of common configuration properties>>.
+
+[#AllAsync]
+=== Making all loggers asynchronous
+
+This is the simplest to configure and gives the best performance: to make all logger asynchronous, **all** you need to set the
+xref:manual/systemproperties.adoc#log4j2.contextSelector[`log4j2.contextSelector`]
+property to one of the asynchronous logger context selectors:
+
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/BasicAsyncLoggerContextSelector.html[`org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector`]::
+This will create a single logger context and disruptor for all the classes in the JVM,
+
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerContextSelector.html[`org.apache.logging.log4j.core.async.AsyncLoggerContextSelector`]::
+This will create a different logger context and disruptor for each classloader in the JVM.
+
+[IMPORTANT]
+====
+When using an asynchronous logger context you should use only `Root` and `Logger` elements (cf.
+xref:manual/configuration.adoc#configuring-loggers[Logger configuration]).
+
+If you use `AsyncRoot` and `AsyncLogger` configuration elements, two asynchronous barriers will be created instead of one, which will impair performance.
+====
+
+[#SysPropsAllAsync]
+=== Tuning a fully asynchronous configuration
+
+Since Disruptor is initialized at the same time as the logger context and before any Log4j configuration file is loaded, tuning async loggers is only possible through configuration properties.
+
+Beyond the <<common-configuration-properties,common configuration properties>>, the following additional elements are configurable:
+
+include::partial$manual/systemproperties/properties-async-logger.adoc[leveloffset=+2]
+
+* the generic behavior of asynchronous components, such as the queue full policy and message formatting.
++
+See xref:manual/systemproperties.adoc#properties-async[common asynchronous logging configurations] for more details.
+
+* the parameters of the disruptor, such as the size of the ring buffer and the wait strategy to use.
++
+See xref:manual/systemproperties.adoc#properties-async-logger[asynchronous logger configuration] for more details.
+
+[TIP]
+====
+You can place the selected value of the
+xref:manual/systemproperties.adoc#log4j2.contextSelector[`log4j2.contextSelector`] and other configuration properties in a `log4j2.component.properties` file at the root of your application's classpath.
+
+See xref:manual/systemproperties.adoc#property-sources[Property Sources] for more details.
+====
+
+[#MixedSync-Async]
+=== Mixing synchronous and asynchronous loggers
+
+Synchronous and asynchronous loggers can be combined in a single configuration.
+This gives you more flexibility at the cost of a slight loss in performance (compared to making all loggers asynchronous).
+
+In order to use this configuration, you need to keep the
+xref:manual/systemproperties.adoc#log4j2.contextSelector[`log4j2.contextSelector`] at its default value and use one of the
+`AsyncRoot` and `AsyncLogger` configuration elements to designate the loggers that you want to be asynchronous.
+
+A configuration that mixes asynchronous loggers might look like:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/async/mixed-async.xml[`log4j2.xml`]
+[source,xml]
+----
+include::example$manual/async/mixed-async.xml[lines=31..40,indent=0]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/async/mixed-async.json[`log4j2.json`]
+[source,json]
+----
+include::example$manual/async/mixed-async.json[lines=17..36,indent=0]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/async/mixed-async.yaml[`log4j2.yaml`]
+[source,yaml]
+----
+include::example$manual/async/mixed-async.yaml[lines=27..-1,indent=0]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/async/mixed-async.properties[`log4j2.properties`]
+[source,properties]
+----
+include::example$manual/async/mixed-async.properties[lines=28..-1]
+----
+====
+<1> All the appenders referenced by `Root` and `Logger` are called synchronously.
+This is especially important for audit logging, since exceptions can be forwarded to the caller.
+<2> All the appenders references by `AsyncRoot` and `AsyncLogger` are called asynchronously.
+These log statements will cause a smaller latency for the caller.
+
+[[SysPropsMixedSync-Async]]
+=== Tuning a mixed synchronous/asynchronous configuration
+
+Since all `AsyncRoot` and `AsyncLogger` components share the same Disruptor instance, its configuration is available through configuration properties.
+
+Beyond the <<common-configuration-properties,common configuration properties>>, the following additional elements are configurable:
+
+include::partial$manual/systemproperties/properties-async-logger-config.adoc[leveloffset=+2]
+
+[TIP]
+====
+You can place the values of configuration properties in a `log4j2.component.properties` file at the root of your application's classpath.
+
+See xref:manual/systemproperties.adoc#property-sources[Property Sources] for more details.
+====
+
+[#common-configuration-properties]
+=== Common configuration properties
+
+Regardless of the way you configure asynchronous loggers in Log4j, you can use the following properties to further tune your installation:
+
+include::partial$manual/systemproperties/properties-async.adoc[leveloffset=+2]
+
+[#custom-waitstrategy]
+== Custom `WaitStrategy`
+
+The system properties mentioned in the section above allow only to choose from among a fixed set of wait strategies.
+
+In order to use a custom wait strategy you need to:
+
+. Use the <<MixedSync-Async,mixed sync/async configuration method>> above,
+. Implement the interface link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncWaitStrategyFactory.html[`AsyncWaitStrategyFactory`]; the implementation must have a public no-arg constructor,
+. Add an xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-AsyncWaitStrategyFactoryConfig[AsyncWaitStrategyFactory Log4j plugin]
+to your configuration.
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/async/custom-wait-strategy.xml[`log4j2.xml`]
+[source,xml]
+----
+include::example$manual/async/custom-wait-strategy.xml[lines=23,indent=0]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/async/custom-wait-strategy.json[`log4j2.json`]
+[source,json]
+----
+include::example$manual/async/custom-wait-strategy.json[lines=3..5,indent=0]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/async/custom-wait-strategy.yaml[`log4j2.yaml`]
+[source,yaml]
+----
+include::example$manual/async/custom-wait-strategy.yaml[lines=18..-1]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/async/custom-wait-strategy.properties[`log4j2.properties`]
+[source,properties]
+----
+include::example$manual/async/custom-wait-strategy.properties[lines=17..-1]
+----
+====
+
+[#Location]
+== Location information
+
+xref:manual/layouts.adoc#LocationInformation[Computing the location information (i.e., the caller class, method, file, and line number) of a log event is an expensive operation.]
+The impact on asynchronous loggers and appenders is even higher, since the component must decide whether to compute it or not **before** crossing the asynchronous barrier.
+Hence, the location information is disabled by default for asynchronous loggers and appenders.
+In order to enable it for a certain logger, set its xref:manual/configuration.adoc#logger-attributes-includeLocation[`includeLocation`] attribute to `true`.
+
+[id=exception-handler]
+== Exception handler
+
+In order to handle exceptions that occur on the asynchronous thread, you can configure a custom
+https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html[`ExceptionHandler<T>`].
+
+The exact type of handler depends on the configuration mode:
+
+Full asynchronous::
++
+If all the loggers are asynchronous you need to:
++
+* implement an link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/RingBufferLogEvent.html[`ExceptionHandler<? super RingBufferLogEvent>`]
+* set its fully qualified class name as value of the
+xref:manual/systemproperties.adoc#log4j2.asyncLoggerExceptionHandler[`log4j2.asyncLoggerExceptionHandler`]
+configuration property.
+
+Mixed synchronous/asynchronous::
++
+If you use a mix of synchronous and asynchronous loggers you need to:
++
+* implement a
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerConfigDisruptor.Log4jEventWrapper.html[`ExceptionHandler<? super AsyncLoggerConfigDisruptor.Log4jEventWrapper>`]
+* set its fully qualified class name as value of the
+xref:manual/systemproperties.adoc#log4j2.asyncLoggerConfigExceptionHandler[`log4j2.asyncLoggerConfigExceptionHandler`]
+configuration property.

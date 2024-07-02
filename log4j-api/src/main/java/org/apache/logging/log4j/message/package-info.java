@@ -20,9 +20,9 @@
  */
 @Export
 /**
- * Bumped to 2.22.0, since FormattedMessage behavior changed.
+ * Bumped to 2.24.0, since FormattedMessage behavior changed.
  */
-@Version("2.22.0")
+@Version("2.24.0")
 package org.apache.logging.log4j.message;
 
 import org.osgi.annotation.bundle.Export;

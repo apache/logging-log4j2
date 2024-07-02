@@ -1,0 +1,144 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    I think it is unfortunate that Log4j calls its *fluent API* "Log Builder".
+    As explained in this[1] "Fluent API vs. Builder Pattern" post, the difference lies in semantics.
+    That is, if `LogBuilder` had been designed as follows:
+
+        LOGGER
+                .newBuilder()
+                .setLevel(...)
+                .setMarker(...)
+                .setMessage(...)
+                // ...
+
+    It would be perfectly valid to call it "Log Builder".
+    But instead, we provide a semantic model, a domain-specific language to log by chaining methods:
+
+        LOGGER
+                .atInfo()
+                .withMarker(...)
+                .withLocation()
+                .log(...)
+
+    Hence, my insistence on calling it "Fluent API".
+    Not to mention, other Java logging software call it "Fluent API" too[2][3].
+
+    [1] https://stackoverflow.com/a/17940086/1278899
+    [2] https://www.slf4j.org/manual.html#fluent
+    [3] https://tinylog.org/v2/news/#tags-for-log-entries
+////
+
+= Fluent API
+
+Next to the traditional `info()`, `error()`, etc. `Logger` methods, Log4j API also provides a https://en.wikipedia.org/wiki/Fluent_interface[fluent interface] for logging.
+
+[#rationale]
+== Rationale
+
+Developers use Log4j traditionally with logging statements like:
+
+[source,java]
+----
+LOGGER.error("Unable to process request due to {}", errorCode, exception);
+----
+
+This style has certain drawbacks:
+
+* It is confusing whether the last argument, `exception`, is a parameter of the message to be formatted, or is separately attached to the log event.
+* One must know in which order `error()` arguments should be passed to specify, say, a xref:manual/markers.adoc[marker].
+
+The fluent interface (also referred to as _the fluent API_) has been added to Log4j API to increase code legibility and avoid ambiguities.
+For instance, the above `error()` call can be expressed using the fluent API as follows:
+
+[source,java]
+----
+LOGGER
+    .atError() // <1>
+    .withThrowable(exception) // <2>
+    .log("Unable to process request due to {}", errorCode); // <3>
+----
+
+<1> The log level is set to `ERROR`
+<2> The associated exception is attached
+<3> The log message is formatted with the `errorCode` parameter
+
+With this syntax, it is clear that the `exception` is part of the log event and `errorCode` is a parameter of the message.
+
+[#usage]
+== Usage
+
+The fluent API entry point is
+link:../javadoc/log4j-api/org/apache/logging/log4j/LogBuilder.html[`LogBuilder`],
+which can be obtained by using one of the following `Logger` methods:
+
+- `atTrace()`
+- `atDebug()`
+- `atInfo()`
+- `atWarn()`
+- `atError()`
+- `atFatal()`
+- `always()`
+- `atLevel(Level)`
+
+`LogBuilder` allows attaching a xref:manual/markers.adoc[marker], a `Throwable`, and a location to the log event by means of following methods:
+
+- `withMarker()`
+- `withThrowable()`
+- `withLocation()`
+
+After that, developers can call the `log()` method to finalize and send the log event.
+
+In the following example, we log a parameterized message at `INFO` level, and attach a marker and an exception to the log event:
+
+[source,java]
+----
+LOGGER
+    .atInfo() // <1>
+    .withMarker(marker) // <2>
+    .withThrowable(exception) // <3>
+    .log("Unable to process request due to {}", errorCode); // <4>
+----
+
+<1> The log level is set to `INFO`
+<2> `marker` is attached to the log event
+<3> `exception` is attached to the log event
+<4> A message with `errorCode` parameter is provided and the statement is finalized
+
+[#location-information]
+== Location information
+
+The fluent API allows users to instruct the location information to be *eagerly* populated in the log event using the `withLocation()` method:
+
+[source,java]
+----
+LOGGER
+    .atInfo()
+    .withLocation() // <1>
+    .log("Login for user with ID `{}` failed", userId);
+----
+
+<1> Instructing to eagerly populate the location information
+
+Capturing location information using `withLocation()` is orders of magnitude more efficient compared to letting the `Logger` to figure it out indirectly.
+
+[WARNING]
+====
+You are strongly advised to use `withLocation()` if you are certain that the populated location information will be used.
+Otherwise – that is, if the log event might either get dropped due to some filtering or its location information not get used – it will only slow things down.
+====

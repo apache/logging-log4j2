@@ -1,0 +1,280 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+[id=log4j2.clock]
+== `log4j2.clock`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_CLOCK`
+| Type          | link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/Clock.html[`Class<? extends Clock>`] or predefined constant
+| Default value | ``SystemClock``
+|===
+
+Specifies the
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/Clock.html[`Clock`]
+implementation used to timestamp log events.
+
+This must be the fully qualified class name of the implementation or one of these predefined constants:
+
+SystemClock:: uses the best available system clock as time source.
+See https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/Clock.html#systemDefaultZone--[`Clock#systemDefaultZone()`] for details.
+
+SystemMillisClock:: same as `SystemClock`, but truncates the result to a millisecond.
+
+CachedClock:: uses a separate thread to update the timestamp value.
+See
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/CachedClock.html[`CachedClock`]
+for details.
+
+CoarseCachedClock:: alternative implementation of `CachedClock` with a slightly lower precision.
+See
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/CoarseCachedClock.html[`CoarseCachedClock`]
+for details.
+
+[id=log4j2.contextData]
+== `log4j2.contextData`
+
+[cols="1h,5"]
+|===
+| Env. variable
+| `LOG4J_CONTEXT_DATA`
+
+| Type
+| link:../javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html[`Class<? extends StringMap>`]
+
+| Default value
+| link:../javadoc/log4j-api/org/apache/logging/log4j/util/SortedArrayStringMap.html[`SortedArrayStringMap`]
+|===
+
+Fully qualified class name of a
+link:../javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html[`StringMap`]
+implementation to use to store context data in log events.
+The implementation must have:
+
+* a no-arg contructor,
+* a constructor accepting a single `int` parameter that specifies the capacity of the string map.
+
+[id=log4j2.contextDataInjector]
+== `log4j2.contextDataInjector`
+
+[cols="1h,5"]
+|===
+| Env. variable
+| `LOG4J_CONTEXT_DATA_INJECTOR`
+
+| Type
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/ContextDataInjector.html[`Class<? extends ContextDataInjector>`]
+
+| Default value
+| depends on the `ThreadContextMap` implementation
+|===
+
+Fully qualified class name of a
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/ContextDataInjector.html[`ContextDataInjector`]
+implementation.
+
+The default implementation uses all implementations of
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/ContextDataProvider.html[`ContextDataProvider`]
+registered with `ServiceLoader`.
+
+[id=log4j2.logEventFactory]
+== `log4j2.logEventFactory`
+
+[cols="1h,5"]
+|===
+| Env. variable
+| `LOG4J_LOG_EVENT_FACTORY`
+
+| Type
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/LogEventFactory.html[`Class<? extends LogEventFactory>`]
+
+| Default value
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/DefaultLogEventFactory.html[`DefaultLogEventFactory`]
+
+(GC-free mode:
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/ReusableLogEventFactory.html[`ReusableLogEventFactory`])
+|===
+
+Specifies the
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/LogEventFactory.html[`LogEventFactory`]
+implementation to use to create log events.
+
+[id=log4j2.reliabilityStrategy]
+== `log4j2.reliabilityStrategy`
+
+[cols="1h,5"]
+|===
+| Env. variable
+| `LOG4J_RELIABILITY_STRATEGY`
+
+| Type
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ReliabilityStrategy.html[`Class<? extends ReliabilityStrategy>`]
+or predefined constant
+
+| Default value
+| `AwaitCompletion`
+|===
+
+Specifies the
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ReliabilityStrategy.html[`ReliabilityStrategy`]
+to adopt in order to prevent loss of log events during a reconfiguration.
+
+The value must be the fully qualified class name of a `ReliabilityStrategy` implementation or one of these predefined constants:
+
+AwaitCompletion::
+Counts the number of threads that have started to log an event but have not completed yet and waits for these threads to finish before stopping the appenders.
+
+AwaitUnconditionally::
+Waits for a configured amount of time before stopping the appenders.
+See <<log4j2.waitMillisBeforeStopOldConfig>>.
+
+Locking::
+Uses read/write locks to prevent appenders from stopping while some threads are still logging events.
+
+[id=log4j2.waitMillisBeforeStopOldConfig]
+== `log4j2.waitMillisBeforeStopOldConfig`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_WAIT_MILLIS_BEFORE_STOP_OLD_CONFIG`
+| Type          | `long`
+| Default value | `5000`
+|===
+
+Number of milliseconds to wait before stopping the old configuration if the `AwaitUnconditionally` reliability strategy is used.
+See <<log4j2.reliabilityStrategy>>.
+
+[id=log4j2.shutdownHookEnabled]
+== `log4j2.shutdownHookEnabled`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_SHUTDOWN_HOOK_ENABLED`
+| Type          | `boolean`
+| Default value | `true`
+
+(Web-app mode: `false`)
+|===
+
+If `true` a shutdown hook will be installed to stop all logger contexts when the system stops.
+
+[id=log4j2.shutdownCallbackRegistry]
+== `log4j2.shutdownCallbackRegistry`
+
+[cols="1h,5"]
+|===
+| Env. variable
+| `LOG4J_SHUTDOWN_CALLBACK_REGISTRY`
+
+| Type
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/ShutdownCallbackRegistry.html[`Class<? extends ShutdownCallbackRegistry>`]
+
+| Default value
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/DefaultShutdownCallbackRegistry.html[`DefaultShutdownCallbackRegistry`]
+|===
+
+The fully qualified class name of a
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/ShutdownCallbackRegistry.html[`ShutdownCallbackRegistry`]
+implementation.
+Integrators can use this to customize the shutdown order of the JVM.
+
+The default implementation executes all shutdown actions in a separate `Thread` registered through https://docs.oracle.com/javase/{java-target-version}/docs/api/java/lang/Runtime.html#addShutdownHook-java.lang.Thread-[`Runtime#addShutdownHook()`].
+
+[id=log4j2.uuidSequence]
+== `log4j2.uuidSequence`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_UUID_SEQUENCE`
+| Type          | `long`
+| Default value | `0`
+|===
+
+Provides a `long` see to the UUID generator used by the `%uuid` pattern converter.
+
+Can be used to assure uniqueness of UUIDs generated by multiple JVMs on the same machine.
+
+[id=log4j2.messageFactory]
+== `log4j2.messageFactory`
+
+[cols="1h,5"]
+|===
+| Env. variable
+| `LOG4J_MESSAGE_FACTORY`
+
+| Type
+| link:../javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory.html[`Class<? extends MessageFactory>`]
+
+| Default value
+| link:../javadoc/log4j-api/org/apache/logging/log4j/message/ParameterizedMessageFactory.html[`ParameterizeMessageFactory`]
+
+(GC-free mode:
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessageFactory.html[`ReusableMessageFactory`])
+|===
+
+Fully qualified class name of a
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory.html[`MessageFactory`]
+implementation that will be used by loggers if no explicit factory was specified.
+
+// tag::flow-tracing[]
+[id=log4j2.flowMessageFactory]
+== `log4j2.flowMessageFactory`
+
+[cols="1h,5"]
+|===
+| Env. variable
+| `LOG4J_FLOW_MESSAGE_FACTORY`
+
+| Type
+| link:../javadoc/log4j-api/org/apache/logging/log4j/message/FlowMessageFactory.html[`Class<? extends FlowMessageFactory>`]
+
+| Default value
+| link:../javadoc/log4j-api/org/apache/logging/log4j/message/DefaultFlowMessageFactory.html[`DefaultFlowMessageFactory`]
+|===
+
+Fully qualified class name of a
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/FlowMessageFactory.html[`FlowMessageFactory`]
+implementation to be used by all loggers.
+// end::flow-tracing[]
+
+[id=log4j2.loggerContextStacktraceOnStart]
+== `log4j2.loggerContextStacktraceOnStart`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_LOGGER_CONTEXT_STACKTRACE_ON_START`
+| Type          | `boolean`
+| Default value | `false`
+|===
+
+Prints a stacktrace to the xref:manual/status-logger.adoc[] at `DEBUG` level when the `LoggerContext` is started.
+
+For debug purposes only.
+
+[id=log4j2.scriptEnableLanguages]
+== `log4j2.scriptEnableLanguages`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_SCRIPT_ENABLE_LANGUAGES`
+| Type          | Comma-separated list of https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/script/ScriptEngine.html[`ScriptEngine`] names
+| Default value | _empty_
+|===
+
+The list of script languages that are allowed to execute.
+
+The names specified must correspond to those returned by https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/script/ScriptEngineFactory.html#getNames--[`ScriptEngineFactory.getNames()`].

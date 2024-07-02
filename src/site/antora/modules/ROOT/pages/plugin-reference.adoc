@@ -1,0 +1,787 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+= Plugin reference
+
+This file is a stub.
+Its content will be auto-generated during build.
+
+The purpose of the sections below is to remove IDE errors while editing configuration files.
+
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-AbstractBuilder]
+== `AbstractBuilder`
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-appender-AppenderBuilder]
+== `AppenderBuilder`
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-appender-AsyncAppenderBuilder]
+== org.apache.log4j.AsyncAppender
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-appender-ConsoleAppenderBuilder]
+== org.apache.log4j.ConsoleAppender
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-appender-DailyRollingFileAppenderBuilder]
+== org.apache.log4j.DailyRollingFileAppender
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-appender-EnhancedRollingFileAppenderBuilder]
+== org.apache.log4j.rolling.RollingFileAppender
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-appender-FileAppenderBuilder]
+== org.apache.log4j.FileAppender
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-appender-NullAppenderBuilder]
+== org.apache.log4j.varia.NullAppender
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-appender-RewriteAppenderBuilder]
+== org.apache.log4j.rewrite.RewriteAppender
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-appender-RollingFileAppenderBuilder]
+== org.apache.log4j.RollingFileAppender
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-appender-SocketAppenderBuilder]
+== org.apache.log4j.net.SocketAppender
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-appender-SyslogAppenderBuilder]
+== org.apache.log4j.net.SyslogAppender
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-Builder]
+== `Builder`
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-filter-DenyAllFilterBuilder]
+== org.apache.log4j.varia.DenyAllFilter
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-filter-FilterBuilder]
+== `FilterBuilder`
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-filter-LevelMatchFilterBuilder]
+== org.apache.log4j.varia.LevelMatchFilter
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-filter-LevelRangeFilterBuilder]
+== org.apache.log4j.varia.LevelRangeFilter
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-filter-StringMatchFilterBuilder]
+== org.apache.log4j.varia.StringMatchFilter
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-layout-HtmlLayoutBuilder]
+== org.apache.log4j.HTMLLayout
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-layout-LayoutBuilder]
+== `LayoutBuilder`
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-layout-PatternLayoutBuilder]
+== org.apache.log4j.PatternLayout
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-layout-SimpleLayoutBuilder]
+== org.apache.log4j.SimpleLayout
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-layout-TTCCLayoutBuilder]
+== org.apache.log4j.TTCCLayout
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-layout-XmlLayoutBuilder]
+== org.apache.log4j.xml.XMLLayout
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-Parser]
+== `Parser`
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-rolling-CompositeTriggeringPolicyBuilder]
+== org.apache.log4j.rolling.CompositeTriggeringPolicy
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-rolling-SizeBasedTriggeringPolicyBuilder]
+== org.apache.log4j.rolling.SizeBasedTriggeringPolicy
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-rolling-TimeBasedRollingPolicyBuilder]
+== org.apache.log4j.rolling.TimeBasedRollingPolicy
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-rolling-TriggeringPolicyBuilder]
+== `TriggeringPolicyBuilder`
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-config-PropertiesConfigurationFactory]
+== Log4j1PropertiesConfigurationFactory
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-layout-Log4j1SyslogLayout]
+== Log4j1SyslogLayout
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-layout-Log4j1XmlLayout]
+== Log4j1XmlLayout
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-pattern-Log4j1LevelPatternConverter]
+== Log4j1LevelPatternConverter
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-pattern-Log4j1MdcPatternConverter]
+== Log4j1MdcPatternConverter
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-pattern-Log4j1NdcPatternConverter]
+== Log4j1NdcPatternConverter
+[#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-xml-XmlConfigurationFactory]
+== Log4j1XmlConfigurationFactory
+[#org-apache-logging-log4j_log4j-cassandra_com-datastax-driver-core-BatchStatement-Type]
+== `Type`
+[#org-apache-logging-log4j_log4j-cassandra_org-apache-logging-log4j-cassandra-CassandraAppender]
+== Cassandra
+[#org-apache-logging-log4j_log4j-core_com-conversantmedia-util-concurrent-SpinPolicy]
+== `SpinPolicy`
+[#org-apache-logging-log4j_log4j-core_org-apache-commons-csv-QuoteMode]
+== `QuoteMode`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-AbstractLifeCycle]
+== `AbstractLifeCycle`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-AbstractAppender]
+== `AbstractAppender`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-AbstractOutputStreamAppender]
+== `AbstractOutputStreamAppender`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-AbstractWriterAppender]
+== `AbstractWriterAppender`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Appender]
+== `Appender`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-AppenderSet]
+== AppenderSet
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-AsyncAppender]
+== Async
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-ConsoleAppender]
+== Console
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-ConsoleAppender-Target]
+== `Target`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-CountingNoOpAppender]
+== CountingNoOp
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-AbstractDatabaseAppender]
+== `AbstractDatabaseAppender`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-ColumnMapping]
+== ColumnMapping
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-AbstractConnectionSource]
+== `AbstractConnectionSource`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-AbstractDriverManagerConnectionSource]
+== `AbstractDriverManagerConnectionSource`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-ColumnConfig]
+== Column
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-ConnectionSource]
+== `ConnectionSource`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-DataSourceConnectionSource]
+== DataSource
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-DriverManagerConnectionSource]
+== DriverManager
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-FactoryMethodConnectionSource]
+== ConnectionFactory
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-JdbcAppender]
+== JDBC
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-FailoverAppender]
+== Failover
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-FailoversPlugin]
+== failovers
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-FileAppender]
+== File
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-HttpAppender]
+== Http
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-MemoryMappedFileAppender]
+== MemoryMappedFile
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-jeromq-JeroMqAppender]
+== JeroMQ
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-JmsAppender]
+== JMS
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-kafka-KafkaAppender]
+== Kafka
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-nosql-NoSqlAppender]
+== NoSql
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-NullAppender]
+== Null
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-OutputStreamAppender]
+== OutputStream
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-RandomAccessFileAppender]
+== RandomAccessFile
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-LoggerNameLevelRewritePolicy]
+== LoggerNameLevelRewritePolicy
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-MapRewritePolicy]
+== MapRewritePolicy
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-PropertiesRewritePolicy]
+== PropertiesRewritePolicy
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-RewriteAppender]
+== Rewrite
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-RewritePolicy]
+== `RewritePolicy`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-AbstractRolloverStrategy]
+== `AbstractRolloverStrategy`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-AbstractTriggeringPolicy]
+== `AbstractTriggeringPolicy`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-AbstractAction]
+== `AbstractAction`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-AbstractPathAction]
+== `AbstractPathAction`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-Action]
+== `Action`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-DeleteAction]
+== Delete
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-Duration]
+== `Duration`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfAccumulatedFileCount]
+== IfAccumulatedFileCount
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfAccumulatedFileSize]
+== IfAccumulatedFileSize
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfAll]
+== IfAll
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfAny]
+== IfAny
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfFileName]
+== IfFileName
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfLastModified]
+== IfLastModified
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfNot]
+== IfNot
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-PathCondition]
+== `PathCondition`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-PathSortByModificationTime]
+== SortByModificationTime
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-PathSorter]
+== `PathSorter`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-PosixViewAttributeAction]
+== PosixViewAttribute
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-ScriptCondition]
+== ScriptCondition
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-CompositeTriggeringPolicy]
+== Policies
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-CronTriggeringPolicy]
+== CronTriggeringPolicy
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-DefaultRolloverStrategy]
+== DefaultRolloverStrategy
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-DirectFileRolloverStrategy]
+== `DirectFileRolloverStrategy`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-DirectWriteRolloverStrategy]
+== DirectWriteRolloverStrategy
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-RollingFileAppender]
+== RollingFile
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-NoOpTriggeringPolicy]
+== NoOpTriggeringPolicy
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-OnStartupTriggeringPolicy]
+== OnStartupTriggeringPolicy
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-RollingRandomAccessFileAppender]
+== RollingRandomAccessFile
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-RolloverStrategy]
+== `RolloverStrategy`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-SizeBasedTriggeringPolicy]
+== SizeBasedTriggeringPolicy
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-TimeBasedTriggeringPolicy]
+== TimeBasedTriggeringPolicy
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-TriggeringPolicy]
+== `TriggeringPolicy`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-IdlePurgePolicy]
+== IdlePurgePolicy
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-PurgePolicy]
+== `PurgePolicy`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-Route]
+== Route
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-Routes]
+== Routes
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-RoutingAppender]
+== Routing
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-ScriptAppenderSelector]
+== ScriptAppenderSelector
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-SmtpAppender]
+== SMTP
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-SocketAppender]
+== `SocketAppender`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-SyslogAppender]
+== Syslog
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-WriterAppender]
+== Writer
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-ArrayBlockingQueueFactory]
+== ArrayBlockingQueue
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-AsyncLoggerConfig]
+== asyncLogger
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-AsyncLoggerConfig-RootLogger]
+== asyncRoot
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-AsyncWaitStrategyFactoryConfig]
+== AsyncWaitStrategyFactory
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-BlockingQueueFactory]
+== `BlockingQueueFactory`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-DisruptorBlockingQueueFactory]
+== DisruptorBlockingQueue
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-JCToolsBlockingQueueFactory]
+== JCToolsBlockingQueue
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-JCToolsBlockingQueueFactory-WaitStrategy]
+== `WaitStrategy`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-LinkedTransferQueueFactory]
+== LinkedTransferQueue
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-AppenderRef]
+== AppenderRef
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-AppendersPlugin]
+== appenders
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-arbiters-Arbiter]
+== `Arbiter`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-arbiters-ClassArbiter]
+== ClassArbiter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-arbiters-DefaultArbiter]
+== DefaultArbiter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-arbiters-EnvironmentArbiter]
+== EnvironmentArbiter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-arbiters-ScriptArbiter]
+== ScriptArbiter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-arbiters-SelectArbiter]
+== Select
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-arbiters-SystemPropertyArbiter]
+== SystemPropertyArbiter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-builder-api-ConfigurationBuilderFactory]
+== `ConfigurationBuilderFactory`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Configuration]
+== Configuration
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-ConfigurationAware]
+== `ConfigurationAware`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-ConfigurationFactory]
+== `ConfigurationFactory`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-CustomLevelConfig]
+== CustomLevel
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-CustomLevels]
+== CustomLevels
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-DefaultAdvertiser]
+== default
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-HttpWatcher]
+== http
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-json-JsonConfigurationFactory]
+== JsonConfigurationFactory
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig]
+== `LoggerConfig`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig-RootLogger]
+== root
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggersPlugin]
+== loggers
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-plugins-convert-TypeConverter]
+== `TypeConverter`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-plugins-convert-TypeConverters-BigDecimalConverter]
+== BigDecimal
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-plugins-convert-TypeConverters-BigIntegerConverter]
+== BigInteger
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-plugins-convert-TypeConverters-BooleanConverter]
+== Boolean
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-plugins-convert-TypeConverters-ByteArrayConverter]
+== ByteArray
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-plugins-convert-TypeConverters-ByteConverter]
+== Byte
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-plugins-convert-TypeConverters-CharacterConverter]
+== Character
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-plugins-convert-TypeConverters-CharArrayConverter]
+== CharacterArray
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-plugins-convert-TypeConverters-CharsetConverter]
+== Charset
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-plugins-convert-TypeConverters-ClassConverter]
+== Class
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-plugins-convert-TypeConverters-CronExpressionConverter]
+== CronExpression
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-plugins-convert-TypeConverters-DoubleConverter]
+== Double
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-plugins-convert-TypeConverters-DurationConverter]
+== Duration
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-plugins-convert-TypeConverters-FileConverter]
+== File
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-plugins-convert-TypeConverters-FloatConverter]
+== Float
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-plugins-convert-TypeConverters-InetAddressConverter]
+== InetAddress
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-plugins-convert-TypeConverters-IntegerConverter]
+== Integer
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-plugins-convert-TypeConverters-LevelConverter]
+== Level
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-plugins-convert-TypeConverters-LongConverter]
+== Long
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-plugins-convert-TypeConverters-PathConverter]
+== Path
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-plugins-convert-TypeConverters-PatternConverter]
+== Pattern
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-plugins-convert-TypeConverters-SecurityProviderConverter]
+== SecurityProvider
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-plugins-convert-TypeConverters-ShortConverter]
+== Short
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-plugins-convert-TypeConverters-StringConverter]
+== String
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-plugins-convert-TypeConverters-UriConverter]
+== URI
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-plugins-convert-TypeConverters-UrlConverter]
+== URL
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-plugins-convert-TypeConverters-UuidConverter]
+== UUID
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-PropertiesPlugin]
+== properties
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-properties-PropertiesConfigurationFactory]
+== PropertiesConfigurationFactory
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property]
+== property
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-ScriptsPlugin]
+== scripts
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-xml-XmlConfigurationFactory]
+== XmlConfigurationFactory
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-yaml-YamlConfigurationFactory]
+== YamlConfigurationFactory
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-AbstractFilterable]
+== `AbstractFilterable`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-AbstractFilter]
+== `AbstractFilter`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Filter]
+== `Filter`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-BurstFilter]
+== BurstFilter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-CompositeFilter]
+== filters
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-DenyAllFilter]
+== DenyAllFilter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-DynamicThresholdFilter]
+== DynamicThresholdFilter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-Filterable]
+== `Filterable`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-LevelMatchFilter]
+== LevelMatchFilter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-LevelRangeFilter]
+== LevelRangeFilter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-MapFilter]
+== `MapFilter`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-MarkerFilter]
+== MarkerFilter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-MutableThreadContextMapFilter]
+== MutableThreadContextMapFilter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-NoMarkerFilter]
+== NoMarkerFilter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-RegexFilter]
+== RegexFilter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Filter-Result]
+== `Result`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-ScriptFilter]
+== ScriptFilter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-StringMatchFilter]
+== StringMatchFilter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-StructuredDataFilter]
+== StructuredDataFilter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-ThreadContextMapFilter]
+== ThreadContextMapFilter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-ThresholdFilter]
+== ThresholdFilter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-TimeFilter]
+== TimeFilter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-impl-LocationAware]
+== `LocationAware`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-AbstractCsvLayout]
+== `AbstractCsvLayout`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-AbstractJacksonLayout]
+== `AbstractJacksonLayout`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-AbstractLayout]
+== `AbstractLayout`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-AbstractStringLayout]
+== `AbstractStringLayout`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Layout]
+== `Layout`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-CsvLogEventLayout]
+== CsvLogEventLayout
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-CsvParameterLayout]
+== CsvParameterLayout
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-Encoder]
+== `Encoder`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-GelfLayout]
+== GelfLayout
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-GelfLayout-CompressionType]
+== `CompressionType`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-HtmlLayout]
+== HtmlLayout
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-HtmlLayout-FontSize]
+== `FontSize`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-JsonLayout]
+== JsonLayout
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-LevelPatternSelector]
+== LevelPatternSelector
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-LoggerFields]
+== LoggerFields
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-MarkerPatternSelector]
+== MarkerPatternSelector
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-MessageLayout]
+== MessageLayout
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-PatternLayout]
+== PatternLayout
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-PatternMatch]
+== PatternMatch
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-PatternSelector]
+== `PatternSelector`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-Rfc5424Layout]
+== Rfc5424Layout
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-ScriptPatternSelector]
+== ScriptPatternSelector
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-SerializedLayout]
+== SerializedLayout
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-SyslogLayout]
+== SyslogLayout
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-XmlLayout]
+== XmlLayout
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-YamlLayout]
+== YamlLayout
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-LifeCycle2]
+== `LifeCycle2`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-LifeCycle]
+== `LifeCycle`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-AbstractConfigurationAwareLookup]
+== `AbstractConfigurationAwareLookup`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-AbstractLookup]
+== `AbstractLookup`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-ContextMapLookup]
+== ctx
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-DateLookup]
+== date
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-EnvironmentLookup]
+== env
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-EventLookup]
+== event
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-JavaLookup]
+== java
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-JmxRuntimeInputArgumentsLookup]
+== jvmrunargs
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-JndiLookup]
+== jndi
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-Log4jLookup]
+== log4j
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-LowerLookup]
+== lower
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-MainMapLookup]
+== main
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-MapLookup]
+== `MapLookup`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-MarkerLookup]
+== marker
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-ResourceBundleLookup]
+== bundle
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-StrLookup]
+== `StrLookup`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-StructuredDataLookup]
+== sd
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-SystemPropertiesLookup]
+== sys
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-UpperLookup]
+== upper
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-Advertiser]
+== `Advertiser`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-Facility]
+== `Facility`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-MulticastDnsAdvertiser]
+== multicastdns
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-Protocol]
+== `Protocol`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-Rfc1349TrafficClass]
+== `Rfc1349TrafficClass`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-SocketAddress]
+== SocketAddress
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-SocketOptions]
+== SocketOptions
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-SocketPerformancePreferences]
+== SocketPerformancePreferences
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-ssl-AbstractKeyStoreConfiguration]
+== `AbstractKeyStoreConfiguration`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-ssl-KeyStoreConfiguration]
+== KeyStore
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-ssl-SslConfiguration]
+== Ssl
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-ssl-StoreConfiguration]
+== `StoreConfiguration`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-ssl-TrustStoreConfiguration]
+== TrustStore
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-AbstractPatternConverter]
+== `AbstractPatternConverter`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-AbstractStyleNameConverter]
+== `AbstractStyleNameConverter`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-AbstractStyleNameConverter-Black]
+== black
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-AbstractStyleNameConverter-Blue]
+== blue
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-AbstractStyleNameConverter-Cyan]
+== cyan
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-AbstractStyleNameConverter-Green]
+== green
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-AbstractStyleNameConverter-Magenta]
+== magenta
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-AbstractStyleNameConverter-Red]
+== red
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-AbstractStyleNameConverter-White]
+== white
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-AbstractStyleNameConverter-Yellow]
+== yellow
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-AnsiConverter]
+== `AnsiConverter`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-ArrayPatternConverter]
+== `ArrayPatternConverter`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-ClassNamePatternConverter]
+== ClassNamePatternConverter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-DatePatternConverter]
+== DatePatternConverter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-EncodingPatternConverter]
+== encode
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-EndOfBatchPatternConverter]
+== EndOfBatchPatternConverter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-EqualsBaseReplacementConverter]
+== `EqualsBaseReplacementConverter`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-EqualsIgnoreCaseReplacementConverter]
+== equalsIgnoreCase
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-EqualsReplacementConverter]
+== equals
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-ExtendedThrowablePatternConverter]
+== ExtendedThrowablePatternConverter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-FileDatePatternConverter]
+== FileDatePatternConverter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-FileLocationPatternConverter]
+== FileLocationPatternConverter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-FullLocationPatternConverter]
+== FullLocationPatternConverter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-HighlightConverter]
+== highlight
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-IntegerPatternConverter]
+== IntegerPatternConverter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-LevelPatternConverter]
+== LevelPatternConverter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-LineLocationPatternConverter]
+== LineLocationPatternConverter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-LineSeparatorPatternConverter]
+== LineSeparatorPatternConverter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-LogEventPatternConverter]
+== `LogEventPatternConverter`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-LoggerFqcnPatternConverter]
+== LoggerFqcnPatternConverter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-LoggerPatternConverter]
+== LoggerPatternConverter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-MapPatternConverter]
+== MapPatternConverter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-MarkerPatternConverter]
+== MarkerPatternConverter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-MarkerSimpleNamePatternConverter]
+== MarkerNamePatternConverter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-MaxLengthConverter]
+== maxLength
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-MdcPatternConverter]
+== MdcPatternConverter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-MessagePatternConverter]
+== MessagePatternConverter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-MethodLocationPatternConverter]
+== MethodLocationPatternConverter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-NamePatternConverter]
+== `NamePatternConverter`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-NanoTimePatternConverter]
+== NanoTimePatternConverter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-NdcPatternConverter]
+== NdcPatternConverter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-PatternConverter]
+== `PatternConverter`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-ProcessIdPatternConverter]
+== ProcessIdPatternConverter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-RegexReplacement]
+== replace
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-RegexReplacementConverter]
+== replace
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-RelativeTimePatternConverter]
+== RelativeTimePatternConverter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-RepeatPatternConverter]
+== repeat
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-RootThrowablePatternConverter]
+== RootThrowablePatternConverter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-SequenceNumberPatternConverter]
+== SequenceNumberPatternConverter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-StyleConverter]
+== style
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-ThreadIdPatternConverter]
+== ThreadIdPatternConverter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-ThreadNamePatternConverter]
+== ThreadPatternConverter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-ThreadPriorityPatternConverter]
+== ThreadPriorityPatternConverter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-ThrowablePatternConverter]
+== `ThrowablePatternConverter`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-UuidPatternConverter]
+== UuidPatternConverter
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-VariablesNotEmptyReplacementConverter]
+== notEmpty
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-script-AbstractScript]
+== `AbstractScript`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-script-Script]
+== Script
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-script-ScriptFile]
+== ScriptFile
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-script-ScriptRef]
+== ScriptRef
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-StringLayout]
+== `StringLayout`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-util-AbstractWatcher]
+== `AbstractWatcher`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-util-Builder]
+== `Builder`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-util-KeyValuePair]
+== KeyValuePair
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-util-Watcher]
+== `Watcher`
+[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-Level]
+== `Level`
+[#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-AlwaysFailAppender]
+== AlwaysFail
+[#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-BlockingAppender]
+== Block
+[#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-FailOnceAppender]
+== FailOnce
+[#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-appender-ListAppender]
+== List
+[#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-ExtendedLevels]
+== ExtendedLevel
+[#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-test-junit-TestPropertyLookup]
+== test
+[#org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider]
+== `NoSqlProvider`
+[#org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-couchdb-CouchDbProvider]
+== CouchDB
+[#org-apache-logging-log4j_log4j-docker_org-apache-logging-log4j-docker-DockerLookup]
+== docker
+[#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-Agent]
+== Agent
+[#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender]
+== Flume
+[#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeEventFactory]
+== `FlumeEventFactory`
+[#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender]
+== Servlet
+[#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-WebLookup]
+== web
+[#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-core-appender-db-jdbc-PoolableConnectionFactoryConfig]
+== PoolableConnectionFactory
+[#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-core-appender-db-jdbc-PoolingDriverConnectionSource]
+== PoolingDriver
+[#org-apache-logging-log4j_log4j-jpa_org-apache-logging-log4j-core-appender-db-jpa-JpaAppender]
+== JPA
+[#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-JsonTemplateLayout]
+== JsonTemplateLayout
+[#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-JsonTemplateLayout-EventTemplateAdditionalField]
+== EventTemplateAdditionalField
+[#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-JsonTemplateLayout-EventTemplateAdditionalField-Format]
+== `Format`
+[#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-resolver-CaseConverterResolverFactory]
+== CaseConverterResolverFactory
+[#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-resolver-CounterResolverFactory]
+== CounterResolverFactory
+[#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-resolver-EndOfBatchResolverFactory]
+== EndOfBatchResolverFactory
+[#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-resolver-EventAdditionalFieldInterceptor]
+== EventAdditionalFieldInterceptor
+[#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-resolver-EventResolverFactory]
+== `EventResolverFactory`
+[#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-resolver-EventResolverInterceptor]
+== `EventResolverInterceptor`
+[#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-resolver-EventRootObjectKeyInterceptor]
+== EventRootObjectKeyInterceptor
+[#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-resolver-ExceptionResolverFactory]
+== ExceptionResolverFactory
+[#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-resolver-ExceptionRootCauseResolverFactory]
+== ExceptionRootCauseResolverFactory
+[#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-resolver-LevelResolverFactory]
+== LevelResolverFactory
+[#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-resolver-LoggerResolverFactory]
+== LoggerResolverFactory
+[#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-resolver-MainMapResolverFactory]
+== MainMapResolverFactory
+[#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-resolver-MapResolverFactory]
+== MapResolverFactory
+[#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-resolver-MarkerResolverFactory]
+== MarkerResolverFactory
+[#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-resolver-MessageParameterResolverFactory]
+== MessageParameterResolverFactory
+[#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-resolver-MessageResolverFactory]
+== MessageResolverFactory
+[#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-resolver-PatternResolverFactory]
+== PatternResolverFactory
+[#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-resolver-SourceResolverFactory]
+== SourceResolverFactory
+[#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-resolver-TemplateResolverFactory]
+== `TemplateResolverFactory`
+[#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-resolver-TemplateResolverInterceptor]
+== `TemplateResolverInterceptor`
+[#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-resolver-ThreadContextDataResolverFactory]
+== ThreadContextDataResolverFactory
+[#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-resolver-ThreadContextStackResolverFactory]
+== ThreadContextStackResolverFactory
+[#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-resolver-ThreadResolverFactory]
+== ThreadResolverFactory
+[#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-resolver-TimestampResolverFactory]
+== TimestampResolverFactory
+[#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-util-RecyclerFactory]
+== `RecyclerFactory`
+[#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-util-RecyclerFactoryConverter]
+== RecyclerFactoryConverter
+[#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-mongodb4-MongoDb4Provider]
+== MongoDb4
+[#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider]
+== MongoDb
+[#org-apache-logging-log4j_log4j-spring-boot_org-apache-logging-log4j-core-config-LoggerContextAware]
+== `LoggerContextAware`
+[#org-apache-logging-log4j_log4j-spring-boot_org-apache-logging-log4j-spring-boot-SpringLookup]
+== spring
+[#org-apache-logging-log4j_log4j-spring-boot_org-apache-logging-log4j-spring-boot-SpringProfileArbiter]
+== SpringProfile

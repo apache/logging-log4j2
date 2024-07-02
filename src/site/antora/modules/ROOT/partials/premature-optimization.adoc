@@ -1,0 +1,24 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+[IMPORTANT]
+====
+Extra tuning of any application will deviate you away from defaults and add up to the maintenance load.
+You are strongly advised to measure your application's overall performance and then, if Log4j is found to be an important bottleneck factor, tune it carefully.
+When this happens, we also recommend you to evaluate your assumptions on a regular basis to check if they still hold.
+Remember, https://en.wikipedia.org/wiki/Program_optimization#When_to_optimize[premature optimization is the root of all evil].
+====

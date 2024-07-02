@@ -1,0 +1,1235 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+[#configuration-file]
+= Configuration file
+
+Users can configure Log4j Core using different file formats.
+The `log4j-core` artifact includes XML, JSON, YAML, and Java properties formats factories. 
+
+As detailed in the table below, some configuration formats require additional dependencies on the classpath.
+
+include::partial$configuration-file-format-deps.adoc[]
+
+[WARNING]
+====
+The format of the configuration file changed between Log4j{nbsp}1 and Log4j{nbsp}2.
+Files in the Log4j{nbsp}1 format are ignored by default.
+
+To enable partial support for old configuration formats, see xref:manual/migration.adoc#ConfigurationCompatibility[configuration compatibility].
+====
+
+[id=automatic-configuration]
+== [[AutomaticConfiguration]] Configuration file location
+
+Upon initialization of a new logger context, Log4j assigns it a context name and scans the following **classpath** locations for a configuration file:
+
+. Files named `log4j2-test<contextName>.<extension>`
+. Files named `log4j2-test.<extension>`,
+. Files named `log4j2<contextName>.<extension>`
+. Files named `log4j2.<extension>`,
+. If no configuration file is found, Log4j uses the
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/DefaultConfiguration.html[`DefaultConfiguration`]
+and the xref:manual/status-logger.adoc[status logger] prints a warning.
+The default configuration prints all messages less specific than
+xref:manual/systemproperties.adoc#log4j2.level[`log4j2.level`]
+to the console.
+
+[WARNING]
+====
+The configuration files prefixed by `log4j2-test` should only be used on the test classpath.
+
+If multiple configuration files in the same category are found, Log4j uses a deterministic order to choose one of them (see
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Order.html[`@Order`]).
+
+Nevertheless:
+
+* If you're developing an app, don't use config files with different extensions.
+* If you're developing a library, only add config files to your test classpath.
+====
+
+The `<contextName>` and `<extension>` placeholders above have the following meaning
+
+<contextName>:: depends on the runtime environment in which Log4j runs:
+
+* for standalone Java SE applications, it is a random identifier,
+* for web applications, it is derived from the application descriptor.
+See xref:manual/webapp.adoc#configuration[Log4j
+ Web application configuration] for more details.
+
+<extension>:: must be one of the file extensions assigned to a configuration file format:
++
+[cols="1,1"]
+|===
+| Configuration file format | Extension
+
+| XML
+| `xml`
+
+| JSON
+| `json` or `jsn`
+
+| YAML
+| `yaml` or `yml`
+
+|Java properties
+| `properties`
+|===
+
+[NOTE]
+====
+It is also possible to override the location of the configuration file using the
+xref:manual/systemproperties.adoc#log4j2.configurationFile[`log4j2.configurationFile`]
+configuration property.
+In this case, Log4j will guess the configuration file format from the provided configuration file extension or use the default configuration factory if the extension is unknown.
+
+See xref:manual/systemproperties.adoc#log4j2.configurationFile[`log4j2.configurationFile`] for details.
+====
+
+[id=configuration-syntax]
+== [[ConfigurationSyntax]] Syntax
+
+The Log4j runtime is composed of xref:manual/plugins.adoc[plugins], which are like beans in the Spring Framework and Java EE.
+Appenders, layouts, filters, configuration loaders, and similar components are all accessed as plugins.
+
+All configuration files are represented internally as a tree of
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Node.html[`Node`]s,
+which is translated into a tree of Log4j plugins.
+The tree's root creates a
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html[`Configuration`]
+object.
+
+A node is a relatively simple structure representing a single Log4j plugin (see xref:plugin-reference.adoc[] for a complete list), such as an appender, layout, or logger configuration.
+
+Each node has:
+
+* a set of simple string key-value pairs called **attributes**.
+Attributes are **matched by name** against the list of available configuration options of a Log4j plugin.
+
+* The **plugin type** attribute specifies the kind of Log4j plugin we want to instantiate.
+
+* A set of child nodes called **nested elements**.
+They are **matched by type** against the list of nested components a plugin accepts.
+
+Log4j maps the concepts above to the specifics of the configuration format as follows:
+
+[tabs]
+=====
+XML::
++
+Since XML was the original configuration format developed, the mapping from configuration nodes and XML elements is trivial:
++
+* Each configuration node is represented by an XML element.
+* Each configuration attribute is represented by an XML attribute.
+* The **plugin type** of a node is equal to the name of the XML tag.
+* Each configuration nested element is represented by a nested XML element.
++
+[NOTE]
+====
+There is an alternative XML configuration format called "XML strict format" that is activated 
+by setting the `strict` attribute of the main `<Configuration>` element to `true`.
+It allows users to use any tag names as long as they provide the plugin type using a `type` property.
+
+The _XML strict format_ was conceived as a simplified XML format that can be validated by an XML schema but has fallen into disuse: nowadays, the automatically generated schemas published at https://logging.apache.org/xml/ns/
+offer a better alternative and allow users to use a more concise syntax.
+====
+
+JSON::
++
+In the JSON configuration format:
++
+[id=configuration-with-json]
+====
+* Each configuration node is represented by a JSON object,
+* JSON properties of type string, number, or boolean are mapped to node attributes.
+* JSON properties of type object or array represent nested configuration elements.
+* The **plugin type** of a JSON object is given by:
+** the value of the `type` key, if present,
+** or the key associated with the JSON object otherwise.
+** If the JSON object representing the node is part of an array, the key associated with the JSON array is used.
+====
++
+[TIP]
+====
+If you need to specify multiple plugins of the same type, you can use JSON arrays.
+The snippet below represents two plugins of type `File`.
+
+[source,json]
+----
+{
+  "File": [
+    {
+      "name": "file1"
+    },
+    {
+      "name": "file2"
+    }
+  ]
+}
+----
+====
+
+YAML::
++
+In the YAML configuration format:
++
+[id=configuration-with-yaml]
+====
+* A YAML mapping represents each configuration node,
+* YAML properties of scalar type are mapped to node attributes.
+* YAML properties of collection type are used to represent nested configuration elements.
+* The **plugin type** of a YAML mapping is given by:
+** the value of the `type` key, if present,
+** or the key associated with the YAML mapping otherwise.
+** If the YAML mapping representing the node is part of a YAML block sequence, the key associated with the YAML sequence is used.
+====
++
+[TIP]
+====
+If you need to specify multiple plugins of the same type, you can use YAML block sequences.
+The snippet below represents two plugins of type `File`.
+
+[source,yaml]
+----
+File:
+  - name: file1
+  - name: file2
+----
+====
+
+Properties::
++
+In the Java properties configuration format:
++
+[id=configuration-with-properties]
+====
+* Properties that share a common prefix (e.g., `appender.foo`) are mapped to a subtree of the configuration node tree.
+* Configuration attributes are specified by appending the property's name (e.g., `name`) to the prefix of the node, separated by a dot (e.g., `appender.foo.name`).
+* The **plugin type** must be specified as an attribute named `type`.
+* Nested elements are created by:
+** Choosing an arbitrary id for the nested component (e.g., `<0>`)
+** Appending the id to the prefix of the parent component (e.g., `appender.foo.<0>`)
+** Specifying the type of the nested plugin by assigning a `type` attribute (e.g., `appender.foo.<0>.type`)
+====
++
+[NOTE]
+====
+Nested components use the assigned ID for sorting purposes only.
+====
+=====
+
+See also <<format-specific-notes>> for exceptions to the rules above.
+
+[id=main-configuration-elements]
+== Main configuration elements
+
+Log4j Core's logging pipeline is quite complex (see xref:manual/architecture.adoc[Architecture]), but most users only require these elements:
+
+Loggers::
+xref:manual/api.adoc#loggers[Loggers] are the entry point of the logging pipeline, which is directly used in the code.
+Their configuration must specify which level of messages they log and to which appenders they send the messages.
+We will cover them while <<configuring-loggers, configuring loggers>>.
+
+[id=configuring-appenders]
+[[Appenders]] Appenders::
+xref:manual/appenders.adoc[] are the exit point of the logging pipeline.
+They decide which resource (console, file, database, or similar) the log event is sent to.
+In the examples of this chapter, we will only use the xref:manual/appenders.adoc#consoleappender[console appender] and the xref:manual/appenders.adoc#fileappender[file appender].
+
+Layouts::
+xref:manual/layouts.adoc[] tell appenders how to format the log event: text, JSON, XML, or similar.
+In the examples of this chapter, we will only use xref:manual/pattern-layout.adoc[] and xref:manual/json-template-layout.adoc[].
+
+A moderately complex configuration might look like this:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/configuration/main-elements.xml[`log4j2.xml`]
+[source,xml]
+----
+include::example$manual/configuration/main-elements.xml[lines=1;18..-1]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/configuration/main-elements.json[`log4j2.json`]
+[source,json]
+----
+include::example$manual/configuration/main-elements.json[]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/configuration/main-elements.yaml[`log4j2.yaml`]
+[source,yaml]
+----
+include::example$manual/configuration/main-elements.yaml[lines=17..-1]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/configuration/main-elements.properties[`log4j2.properties`]
+[source,properties]
+----
+include::example$manual/configuration/main-elements.properties[lines=17..-1]
+----
+====
+<1> Configures a console appender named `CONSOLE` with a pattern layout.
+<2> Configures a file appender named `MAIN` with a JSON template layout.
+<3> Configures a file appender named `DEBUG_LOG` with a pattern layout.
+<4> Configures the root logger at level `INFO` and connects it to the `CONSOLE` and `MAIN` appenders.
+The `CONSOLE` appender will only log messages less specific than `WARN`.
+<5> Configures a logger named `"org.example"` at level `DEBUG` and connects it to the `DEBUG_LOG` appender.
+The logger is configured to forward messages to its parent (the root appender).
+
+Using the above configuration, the list of appenders that will be used for each log event depends only on the level of the event and the name of the logger, as in the table below:
+
+[cols="2m,2m,5"]
+|===
+| Logger name | Log event level | Appenders
+
+| org.example.foo
+| WARN
+| `CONSOLE`, `MAIN`, `DEBUG_LOG`
+
+| org.example.foo
+| DEBUG
+| `MAIN`, `DEBUG_LOG`
+
+| org.example.foo
+| TRACE
+| _none_
+
+| com.example
+| WARN
+| `CONSOLE`, `MAIN`
+
+| com.example
+| INFO
+| `MAIN`
+
+| com.example
+| DEBUG
+| _none_
+
+|===
+
+[id=additional-configuration-elements]
+== Additional configuration elements
+
+A Log4j Core configuration file can also contain these configuration elements:
+
+CustomLevels::
++
+Log4j allows the configuration of custom log-level names.
++
+See xref:manual/customloglevels.adoc[Custom log level configuration] for details.
+
+Filters::
++
+Users can add Components to loggers, appender references, appenders, or the global configuration object to provide additional filtering of log events.
++
+See xref:manual/filters.adoc[Filter configuration] for details.
+
+Properties::
++
+Represent a set of reusable configuration values for property substitution.
++
+See <<property-substitution>> for details.
+
+Scripts::
++
+Scripts are a container for JSR 223 scripts that users can use in other Log4j components.
++
+For details, see xref:manual/scripts.adoc[Scripts configuration].
+
+[id=global-configuration-attributes]
+== Global configuration attributes
+
+The main `Configuration` element has a set of attributes that can be used to tune how the configuration file is used.
+The principal attributes are listed below.
+See xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Configuration[Plugin reference] for a complete list.
+
+[id=configuration-attribute-monitorInterval]
+=== [[AutomaticReconfiguration]] `monitorInterval`
+
+[cols="1h,5"]
+|===
+| Type          | `int`
+| Default value | `0`
+|===
+
+Determines the polling interval used by Log4j to check for changes to the configuration file.
+If a change in the configuration file is detected, Log4j automatically reconfigures the logger context.
+If set to `0`, polling is disabled.
+
+[WARNING]
+====
+Log4j Core is designed with reliability in mind, which implies that the reconfiguration process can not lose any log event.
+In order to achieve this Log4j does **not** stop any appender until the new `Configuration` is active and **reuses** resources that are present in both the old and the new `Configuration`.
+
+In order to guarantee reliability, Log4j _may_ ignore the changes to some appender options, if they would cause log event loss.
+For example, changing the `append` option of a file appender, without changing the `fileName` option is not possible, since
+it would require closing the underlying file and reopening it with different options.
+Between the two operations log events might be lost.
+
+
+====
+
+[id=configuration-attribute-status]
+=== `status`
+
+[cols="1h,5"]
+|===
+| Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[`LEVEL`]
+| Status | **DEPRECATED**
+| Default value (since 2.24.0) | xref:manual/status-logger.adoc#log4j2.statusLoggerLevel[`log4j2.statusLoggerLevel`]
+| Default value (before 2.24.0) | value of `log4j2.defaultStatusLevel`
+|===
+
+Overrides the logging level of xref:manual/status-logger.adoc[].
+
+[WARNING]
+====
+Since version `2.24.0`, this attribute is deprecated and should be replaced with the xref:manual/status-logger.adoc#log4j2.statusLoggerLevel[log4j2.statusLoggerLevel] configuration property instead.
+====
+
+[id=configuration-elements-filters]
+=== Filters
+
+See xref:manual/filters.adoc#filters[Filters] for additional filtering capabilities that can be applied to the global configuration object.
+
+[id=configuring-loggers]
+== [[Loggers]] Loggers
+
+Log4j 2 contains multiple types of logger configurations that can be added to the `Loggers` element of the configuration:
+
+`Root`:: is the logger that receives all events that do not have a more specific logger defined.
++
+See also xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig-RootLogger[Plugin reference].
+
+`AsyncRoot`:: is an alternative implementation of the root logger used in the xref:manual/async.adoc#MixedSync-Async[mixed synchronous and asynchronous mode].
++
+See also xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-AsyncLoggerConfig-RootLogger[Plugin reference].
+
+`Logger`:: the most common logger kind, which collects log events from itself and all the children loggers, which do not have an explicit configuration (see xref:manual/architecture.adoc#logger-hierarchy[logger hierarchy]).
++
+See also xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig[Plugin Reference].
+
+`AsyncLogger`:: the equivalent of `Logger`, used in the xref:manual/async.adoc#MixedSync-Async[mixed synchronous and asynchronous mode].
++
+See also xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-AsyncLoggerConfig[Plugin Reference].
+
+There **must** be at least a `Root` or `AsyncRoot` element in every configuration file.
+Other logger configurations are optional.
+
+Every
+link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html[`Logger`]
+in your application is assigned to one of these logger configurations (see
+xref:manual/architecture.adoc#loggerconfig[architecture]), which determines the events that will be logged and those that won't.
+
+Let's start with an example of logger configuration:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/configuration/loggers.xml[`log4j2.xml`]
+[source,xml]
+----
+include::example$manual/configuration/loggers.xml[tag=loggers,indent=0]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/configuration/loggers.json[`log4j2.json`]
+[source,json]
+----
+include::example$manual/configuration/loggers.json[tag=loggers,indent=0]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/configuration/loggers.yaml[`log4j2.yaml`]
+[source,yaml]
+----
+include::example$manual/configuration/loggers.yaml[tag=loggers,indent=0]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/configuration/loggers.properties[`log4j2.properties`]
+[source,properties]
+----
+include::example$manual/configuration/loggers.properties[tags=loggers]
+----
+====
+
+In the example above, we have four logger configurations.
+They differ from each other regarding the level of log messages that they allow, whether
+xref:manual/layouts.adoc#LocationInformation[location information]
+will be printed, and which appenders will be used.
+The table below summarizes the effects of each logger configuration:
+
+.Logger configurations
+[cols="1,2,2,2,2,5"]
+|===
+|
+| <<logger-attributes-name,Logger name>>
+| <<logger-attributes-level,Level>>
+| <<logger-attributes-additivity,Additivity>>
+| <<logger-attributes-includeLocation,Includes location>>
+h| Appenders used
+
+| 1
+| _empty_
+| `INFO`
+| N/A
+| _default_
+| `APPENDER1`
+
+| 2
+| `org.example.no_additivity`
+| `INFO`
+
+(inherited)
+| `false`
+| _default_
+| `APPENDER2`
+
+| 3
+| `org.example.no_location`
+| `INFO`
+
+(inherited)
+| `true`
+| `false`
+| `APPENDER1` and `APPENDER3`
+
+| 4
+| `org.example.level`
+| `DEBUG`
+| `true`
+| _default_
+| `APPENDER1` and `APPENDER4`
+|===
+
+In the following part of this section, we explain in detail all the available options for logger configurations:
+
+[id=logger-attributes-name]
+=== `name`
+
+[cols="1h,5"]
+|===
+| Type
+| `String`
+
+| Applies to
+| `Logger` and `AsyncLogger`
+|===
+
+Specifies the name of the logger configuration.
+
+Since loggers are usually named using fully qualified class names, this value usually contains the fully qualified name of a class or a package.
+
+[id=logger-attributes-additivity]
+=== [[Additivity]] `additivity`
+
+[cols="1h,5"]
+|===
+| Type          | `boolean`
+| Default value | `true`
+| Applies to    | `Logger` and `AsyncLogger`
+|===
+
+If `true` (default), all the messages this logger receives will also be transmitted to its
+xref:manual/architecture.adoc#logger-hierarchy[parent logger]).
+
+[id=logger-attributes-level]
+=== `level`
+
+[cols="1h,5"]
+|===
+| Type
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[`Level`]
+
+| Default value
+a|
+* xref:manual/systemproperties.adoc#log4j2.level[`log4j2.level`],
+for `Root` and `AsyncRoot`,
+* inherited from the
+xref:manual/architecture.adoc#logger-hierarchy[parent logger],
+for `Logger` and `AsyncLogger`.
+|===
+
+Specifies the level threshold that a log event must have to be logged.
+Log events that are more specific than this setting will be filtered out.
+
+See also xref:manual/filters.adoc#filters[Filters] if you require additional filtering.
+
+[id=logger-attributes-includeLocation]
+=== `includeLocation`
+
+[cols="1h,5"]
+|===
+| Type
+| `boolean`
+
+| Default value
+a|
+* `false`, if an asynchronous `ContextSelector` is used.
+* Otherwise,
+** `true` for `Root` and `Logger`,
+** `false` for `AsyncRoot` and `AsyncLogger`.
+
+See
+xref:manual/systemproperties.adoc#log4j2.contextSelector[`log4j2.contextSelector`]
+for more details.
+|===
+
+Specifies whether Log4j is allowed to compute location information.
+If set to `false`, Log4j will not attempt to infer the location of the logging call unless said location was provided explicitly using one of the available
+https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/LogBuilder.html[`LogBuilder#withLocation()`]
+methods.
+
+See xref:manual/layouts.adoc#LocationInformation[Location information] for more details.
+
+[id=logger-elements-appenderrefs]
+=== Appender references
+
+Loggers use appender references to list the appenders to deliver log events.
+
+See <<configuring-appenderrefs>> below for more details.
+
+[id=logger-elements-properties]
+=== Additional context properties
+
+Loggers can emit additional context data that will be integrated with other context data sources such as xref:manual/thread-context.adoc[ThreadContext].
+
+[WARNING]
+====
+The `value` of each property is subject to <<property-substitution,property substitution>> twice:
+
+* when the configuration is loaded,
+* each time a log event is generated.
+
+Therefore, if you wish to insert a value that changes in time, you must double the `$` sign, as shown in the example below.
+====
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/configuration/logger-properties.xml[`log4j2.xml`]
+[source,xml]
+----
+include::example$manual/configuration/logger-properties.xml[tag=loggers,indent=0]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/configuration/logger-properties.json[`log4j2.json`]
+[source,json]
+----
+include::example$manual/configuration/logger-properties.json[tag=loggers,indent=0]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/configuration/logger-properties.yaml[`log4j2.yaml`]
+[source,yaml]
+----
+include::example$manual/configuration/logger-properties.yaml[tag=loggers,indent=0]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/configuration/logger-properties.properties[`log4j2.properties`]
+[source,properties]
+----
+include::example$manual/configuration/logger-properties.properties[tag=loggers]
+----
+====
+
+[id=logger-elements-filters]
+=== Filters
+
+See xref:manual/filters.adoc#filters[Filters] for additional filtering capabilities that can be applied to a logger configuration.
+
+[id=configuring-appenderrefs]
+== Appender references
+
+Many Log4j components, such as loggers, use appender references to designate which appenders will be used to deliver their events.
+
+Unlike in Log4j 1, where appender references were simple pointers, in Log4j 2, they have additional filtering capabilities.
+
+Appender references can have the following configuration attributes and elements:
+
+[id=appenderref-attributes-name]
+=== `ref`
+
+[cols="1h,5"]
+|===
+| Type          | `String`
+|===
+
+Specifies the name of the appender to use.
+
+[id=appenderref-attributes-level]
+=== `level`
+
+[cols="1h,5"]
+|===
+| Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[`Level`]
+|===
+
+Specifies the level threshold that a log event must have to be logged.
+Log events that are more specific than this setting will be filtered out.
+
+[id=appenderrefs-elements-filters]
+=== Filters
+
+See xref:manual/filters.adoc#filters[Filters] for additional filtering capabilities that can be applied to a logger configuration.
+
+[id=property-substitution]
+== [[PropertySubstitution]]Property substitution
+
+Log4j provides a simple and extensible mechanism to reuse values in the configuration file using `$\{name}` expressions, such as those used in Bash, Ant or Maven.
+
+Reusable configuration values can be added directly to a configuration file by using a xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-PropertiesPlugin[Properties] component.
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/configuration/properties.xml[`log4j2.xml`]
+[source,xml]
+----
+include::example$manual/configuration/properties.xml[lines=1;18..24;26]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/configuration/properties.json[`log4j2.json`]
+[source,json]
+----
+include::example$manual/configuration/properties.json[lines=1..14]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/configuration/properties.yaml[`log4j2.yaml`]
+[source,yaml]
+----
+include::example$manual/configuration/properties.yaml[lines=17..23]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/configuration/properties.properties[`log4j2.properties`]
+[source,properties]
+----
+include::example$manual/configuration/properties.properties[lines=17..18]
+----
+====
+
+An extensible lookup mechanism can also provide reusable configuration values.
+See xref:manual/lookups.adoc[Lookup]s for more information.
+
+Configuration values defined this way can be used in **any** configuration attribute by using the following expansion rules:
+
+`$\{name}`::
++
+If the `Properties` element of the configuration file has a property named `name`, its value is substituted.
+Otherwise, the placeholder is not expanded.
++
+[WARNING]
+====
+If `name` contains a `:` character, it is expanded as in the rule below.
+====
+
+`${lookup:name}`::
+If both these conditions hold:
++
+--
+* `lookup` is a prefix assigned to a xref:manual/lookups.adoc[Lookup],
+* the lookup has a value assigned to `name`,
+--
++
+the value for the lookup is substituted.
+Otherwise, the expansion of `$\{name}` is substituted.
++
+If `name` starts with a hyphen `-` (e.g. `-variable`), it must be escaped with a backslash `\` (e.g. `\-variable`).
++
+The most common lookup prefixes are:
++
+* `sys` for Java system properties (see xref:manual/lookups.adoc#system-properties-lookup[System Properties lookup]),
+* `env` for environment variables (see xref:manual/lookups.adoc#environment-lookup[Environment lookup]).
+
+The above expansions have a version with an additional `default` value that is **expanded** if the lookup fails:
+
+`${name:-default}`::
++
+If the `Properties` element of the configuration file has a property named `name,` its value is substituted.
+Otherwise, the **expansion** of `default` is substituted.
++
+[WARNING]
+====
+If `name` contains a `:` character, it is expanded as in the rule below.
+====
+
+`${lookup:name:-default}`::
++
+If both these conditions hold:
++
+--
+* `lookup` is a prefix assigned to a xref:manual/lookups.adoc[Lookup],
+* the lookup has a value assigned to `name,`
+--
++
+the value for the lookup is substituted.
+Otherwise, the expansion of `${name:-default}` is substituted.
+
+[NOTE]
+====
+To prevent the expansion of one of the expressions above, the initial `$` must be doubled as `$$`.
+
+The same rule applies to the `name` parameter: if it contains a `${` sequence, it must be escaped as `$${`.
+====
+
+.Property substitution example
+=====
+
+If your configuration file contains the following definitions:
+[tabs]
+====
+XML::
++
+[source,xml]
+----
+include::example$manual/configuration/properties-example.xml[lines=18..-1]
+----
+
+JSON::
++
+[source,json]
+----
+include::example$manual/configuration/properties-example.json[]
+----
+
+YAML::
++
+[source,yaml]
+----
+include::example$manual/configuration/properties-example.yaml[lines=17..-1]
+----
+
+Properties::
++
+[source,properties]
+----
+include::example$manual/configuration/properties-example.properties[lines=17..-1]
+----
+====
+
+and the OS environment variable `FOO` has a value of `environment`, Log4j will evaluate the expression as follows
+
+[cols="1m,1m"]
+|===
+| Expression | Value
+
+| $\{FOO}             | foo
+| $\{BAZ}             | $\{BAZ}
+| ${BAR:-$\{FOO}}     | bar
+| ${BAZ:-$\{FOO}}     | foo
+| ${env:FOO}          | environment
+| ${env:BAR}          | bar
+| ${env:BAZ}          | $\{BAZ}
+| ${env:BAR:-$\{FOO}} | bar
+| ${env:BAZ:-$\{FOO}} | foo
+|===
+=====
+
+[WARNING]
+=====
+For security reasons, if the **expansion** of a `${...}` expression contains other expressions, these will **not** be expanded.
+The only exception to this rule is the expansion of properties in the `Properties` container.
+
+Properties defined in the `Properties` container can depend on each other.
+If your configuration contains, for example:
+
+[tabs]
+====
+XML::
++
+[source,xml]
+----
+include::example$manual/configuration/properties-recursion.xml[lines=18..-1]
+----
+
+JSON::
++
+[source,json]
+----
+include::example$manual/configuration/properties-recursion.json[]
+----
+
+YAML::
++
+[source,yaml]
+----
+include::example$manual/configuration/properties-recursion.yaml[lines=17..-1]
+----
+
+Properties::
++
+[source,properties]
+----
+include::example$manual/configuration/properties-recursion.properties[lines=17..-1]
+----
+====
+
+the `logging.dir` property will be expanded **before** the `logging.file` property, and the expanded value will be substituted in `${logging.dir}/app.log`.
+Therefore, the value of the `logging.file` property will be:
+
+* `./logs/app.log` if the environment variable `APP_BASE` is not defined,
+* `/var/lib/app/logs/app.log` if the environment variable `APP_BASE` has a value of `/var/lib/app`.
+
+
+=====
+
+[id=lazy-property-substitution]
+=== Lazy property substitution
+
+For most attributes, property substitution is performed only once at **configuration time**, but there are two categories of exceptions to this rule:
+
+* Some attributes are **also** evaluated when a component-specific event occurs.
+For example
+<<logger-elements-properties,additional context properties>>
+and the `pattern` attribute of the example below are evaluated at each log event, while the `filePattern` attribute of a
+xref:manual/appenders.adoc#rollingfileappender[rolling file appender]
+is evaluated at each rollover.
++
+In this case:
+
+** If you want property substitution to happen only once, use one dollar sign, e.g., `${date:HH:mm:ss}`.
+** If you want property substitution to happen at each cyclic event, you use two dollar signs, e.g., `$${date:HH:mm:ss}`
+
+* Other components defer the evaluation of their child components.
+In this case, you only need one dollar `$` sign.
++
+This case happens for the children of the `Route` element below:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/configuration/routing.xml[`log4j2.xml`]
+[source,xml]
+----
+include::example$manual/configuration/routing.xml[tag=appender,indent=0]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/configuration/routing.json[`log4j2.json`]
+[source,json]
+----
+include::example$manual/configuration/routing.json[tag=appender,indent=0]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/configuration/routing.yaml[`log4j2.yaml`]
+[source,yaml]
+----
+include::example$manual/configuration/routing.yaml[tag=appender,indent=0]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/configuration/routing.properties[`log4j2.properties`]
+[source,properties]
+----
+include::example$manual/configuration/routing.properties[tag=appender]
+----
+====
+
+<1> The `pattern` attribute is evaluated at configuration time and also each time a log event is routed.
+Therefore, the dollar `$` sign needs to be escaped.
+<2> All the attributes inside the `File` element have a **deferred** evaluation, therefore they need only one `$` sign.
+
+[id=arbiters]
+== [[Arbiters]] Arbiters
+
+While property substitution allows using the same configuration file in multiple deployment environments, sometimes changing the values of configuration attributes is not enough.
+
+Arbiters are to configuration elements what property substitution is for configuration attributes: they allow to conditionally add a subtree of configuration elements to a configuration file.
+
+Arbiters may occur anywhere an element is allowed in the configuration and can be nested.
+So, an Arbiter could encapsulate something as simple as a single property declaration or a whole set of appenders, loggers, or other arbiters.
+The child elements of an arbiter must be valid elements for whatever element is the parent of the arbiter.
+
+For a complete list of available arbiters, see
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-arbiters-Arbiter[plugin reference].
+In the examples below, we'll use the
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-arbiters-DefaultArbiter[DefaultArbiter],
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-arbiters-SelectArbiter[Select]
+and
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-arbiters-SystemPropertyArbiter[SystemPropertyArbiter].
+
+For example, you might want to use a different layout in a production and development environment:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/configuration/arbiters.xml[`log4j2.xml`]
+[source,xml]
+----
+include::example$manual/configuration/arbiters.xml[lines=23..32,indent=0]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/configuration/arbiters.json[`log4j2.json`]
+[source,json]
+----
+include::example$manual/configuration/arbiters.json[lines=3..24,indent=0]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/configuration/arbiters.yaml[`log4j2.yaml`]
+[source,yaml]
+----
+include::example$manual/configuration/arbiters.yaml[lines=18..29,indent=0]
+----
+
+Properties::
++
+[source,properties]
+----
+include::example$manual/configuration/arbiters.properties[lines=17..-1]
+----
+====
+
+<1> If the Java system property `env` has a value of `dev`, a pattern layout will be used.
+<2> If the Java system property `env` has a value of `prod`, a JSON template layout will be used.
+
+The above example has a problem: if the Java system property `env` has a value different from `dev` or `prod`, the appender will have no layout.
+
+This is a case when the `Select` plugin is useful: this configuration element contains a list of arbiters and a
+`DefaultArbiter` element.
+If none of the arbiters match, the configuration from the `DefaultArbiter` element will be used:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/configuration/arbiters-select.xml[`log4j2.xml`]
+[source,xml]
+----
+include::example$manual/configuration/arbiters-select.xml[tag=select,indent=0]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/configuration/arbiters-select.json[`log4j2.json`]
+[source,json]
+----
+include::example$manual/configuration/arbiters-select.json[tag=select,indent=0]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/configuration/arbiters-select.yaml[`log4j2.yaml`]
+[source,yaml]
+----
+include::example$manual/configuration/arbiters-select.yaml[tag=select,indent=0]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/configuration/arbiters-select.properties[`log4j2.properties`]
+[source,properties]
+----
+include::example$manual/configuration/arbiters-select.properties[tag=select]
+----
+====
+<1> If the Java system property `env` has a value of `dev`, a Pattern Layout will be used.
+<2> Otherwise, a JSON Template Layout will be used.
+
+[#CompositeConfiguration]
+== Composite Configuration
+
+Log4j allows multiple configuration files to be used at the same time by specifying them as a list of comma-separated file paths or URLs in the
+xref:manual/systemproperties.adoc#log4j2.configurationFile[`log4j2.configurationFile`]
+configuration property.
+
+These configuration files are merged into a single configuration file using
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy.html[`MergeStrategy`]
+service that can be customized using the
+xref:manual/systemproperties.adoc#log4j2.mergeStrategy[`log4j2.mergeStrategy`]
+configuration property.
+
+The default merge strategy will merge the files using the following rules:
+
+. <<global-configuration-attributes>> in later configurations replace those in previous configurations.
++
+The exception is the `monitorInterval` attribute: the lowest positive value from all the configuration files will be used.
+
+. <<property-substitution,Properties>> from all configurations are aggregated.
+Duplicate properties replace those in previous configurations.
+
+. xref:manual/filters.adoc[Filters] are aggregated under
+xref:manual/filters.adoc#CompositeFilter[CompositeFilter], if more than one filter is defined.
+
+. xref:manual/scripts.adoc[] are aggregated.
+Duplicate definitions replace those in previous configurations.
+
+. xref:manual/appenders.adoc[Appenders] are aggregated.
+Appenders with the same name are **replaced** by those in later configurations, including all their elements.
+
+. <<configuring-loggers,Loggers>> are all aggregated.
+Logger attributes are individually merged, and those in later configurations replace duplicates.
+Appender references on a logger are aggregated, and those in later configurations replace duplicates.
+The strategy merges filters on loggers using the rule above.
+
+[id=format-specific-notes]
+== Format specific notes
+
+[id=xml-features]
+=== XML format
+
+[id=xml-global-configuration-attributes]
+==== Global configuration attributes
+
+The XML format supports the following additional attributes on the `Configuration` element.
+
+[id=configuration-attribute-schema]
+===== `schema`
+
+[cols="1h,5"]
+|===
+| Type          | classpath resource
+| Default value | `null`
+|===
+
+Specifies the path to a classpath resource containing an XML schema.
+
+[id=configuration-attribute-strict]
+===== `strict`
+
+[cols="1h,5"]
+|===
+| Type          | `boolean`
+| Default value | `false`
+|===
+
+If set to `true,` all configuration files will be checked against the XML schema provided by the
+<<configuration-attribute-schema>>.
+
+This setting also enables "XML strict mode" and allows one to specify an element's **plugin type** through a `type` attribute instead of the tag name.
+
+[id=xinclude]
+==== [[XInlcude]] XInclude
+
+XML configuration files can include other files with
+https://www.w3.org/TR/xinclude/[XInclude].
+
+NOTE: The list of `XInclude` and `XPath` features supported depends upon your
+https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/xml/jaxp/index.html[JAXP implementation].
+
+Here is an example `log4j2.xml` file that includes two other files:
+
+.Snippet from an example {antora-examples-url}/manual/configuration/xinclude-main.xml[`log4j2.xml`]
+[source,xml]
+----
+include::example$manual/configuration/xinclude-main.xml[lines=1;18..-1]
+----
+
+.Snippet from an example {antora-examples-url}/manual/configuration/xinclude-appenders.xml[`xinclude-appenders.xml`]
+[source,xml]
+----
+include::example$manual/configuration/xinclude-appenders.xml[lines=1;18..-1]
+----
+
+.Snippet from an example {antora-examples-url}/manual/configuration/xinclude-loggers.xml[`xinclude-loggers.xml`]
+[source,xml]
+----
+include::example$manual/configuration/xinclude-loggers.xml[lines=1;18..-1]
+----
+
+[id=java-properties-features]
+=== Java properties format
+
+[TIP]
+====
+The Java properties format is not well suited to represent hierarchical structures.
+
+Switch to XML to avoid additional dependencies, or choose YAML for a format similar to Java properties but less verbose.
+====
+
+The Java properties configuration format is the most verbose of the available formats.
+To make it more usable, a series of exceptions to the rules in <<configuration-with-properties,Java properties syntax>> have been introduced over time:
+
+. The following direct children of `Configuration` have predefined prefixes and do not require to specify a `type` attribute:
+* The xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-AppendersPlugin[Appender container] has a predefined `appender` prefix.
+* The xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-CustomLevels[Custom levels container] has a predefined `customLevel` prefix.
+* The xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggersPlugin[Loggers container] has a predefined `logger` prefix.
+* The xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-PropertiesPlugin[Properties container] has a predefined `property` prefix.
+* The xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-ScriptsPlugin[Scripts container] has a predefined `script` prefix.
+
+. Properties that start with `property` are used for <<property-substitution>>.
+Their syntax is:
++
+[source,properties]
+----
+property.<key> = <value>
+----
+
+. Properties that start with `customLevel` are used to define custom levels. Their syntax is:
++
+[source,properties]
+----
+customLevel.<name> = <intValue>
+----
++
+where `<name>` is the name of the level and `<intValue>` its numerical value.
+
+. The root logger can be configured using properties that start with `rootLogger`.
+
+. A shorthand notation is available that allows users to write:
++
+[source,properties]
+----
+rootLogger = INFO, APPENDER
+----
++
+instead of:
++
+[source,properties]
+----
+rootLogger.level = INFO
+rootLogger.appenderRef.0.ref = APPENDER
+----
+
+. All the keys of the form `logger.<name>.appenderRef.<id>`, where `<name>` and `<id>` are arbitrary, are considered appender references.
+
+. To add a filter to a component use a `filter.<id>` prefix instead of just `<id>`.

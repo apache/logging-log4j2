@@ -1,0 +1,43 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+.Log4j to Java level conversion
+[%header,cols="1m,1m,1m"]
+|===
+| Log4j level priority | Log4j standard levels | Java Level
+
+| 0 &le; priority < 300
+| FATAL, ERROR
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#SEVERE[SEVERE]
+
+| 300 &le; priority < 400
+| WARN
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#WARNING[WARNING]
+
+| 400 &le; priority < 500
+| INFO
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#INFO[INFO]
+
+| 500 &le; priority < 600
+| DEBUG
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#FINE[FINE]
+
+| 600 &le; priority
+| TRACE
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/Level.html#FINER[FINER]
+
+|===

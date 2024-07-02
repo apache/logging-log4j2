@@ -1,0 +1,117 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+[id=log4j2.simplelogLevel]
+== `log4j2.simplelogLevel`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_SIMPLELOG_LEVEL`
+| Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[`Level`]
+| Default value | `ERROR`
+|===
+
+Default level for new logger instances.
+
+[id=log4j2.simplelog.loggerName.level]
+== `log4j2.simplelog.&lt;loggerName&gt;.level`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_SIMPLELOG_&lt;loggerName&gt;_LEVEL`
+| Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[`Level`]
+| Default value | value of <<log4j2.simplelogLevel>>
+|===
+
+Log level for a logger instance named `<loggerName>`.
+
+[id=log4j2.simplelogShowContextMap]
+== `log4j2.simplelogShowContextMap`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_SIMPLELOG_SHOW_CONTEXT_MAP`
+| Type          | `boolean`
+| Default value | `false`
+|===
+
+If `true`, the full thread context map is included in each log message.
+
+[id=log4j2.simplelogShowlogname]
+== `log4j2.simplelogShowlogname`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_SIMPLELOG_SHOWLOGNAME`
+| Type          | `boolean`
+| Default value | `false`
+|===
+
+If `true`, the logger name is included in each log message.
+
+[id=log4j2.simplelogShowShortLogname]
+== `log4j2.simplelogShowShortLogname`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_SIMPLELOG_SHOW_SHORT_LOGNAME`
+| Type          | `boolean`
+| Default value | `true`
+|===
+
+If `true`, only the last component of a logger name is included in each log message.
+
+[id=log4j2.simplelogShowdatetime]
+== `log4j2.simplelogShowdatetime`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_SIMPLELOG_SHOWDATETIME`
+| Type          | `boolean`
+| Default value | `false`
+|===
+
+If `true`, a timestamp is included in each log message.
+
+[id=log4j2.simplelogDateTimeFormat]
+== `log4j2.simplelogDateTimeFormat`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_SIMPLELOG_DATE_TIME_FORMAT`
+| Type          | https://docs.oracle.com/javase/{java-target-version}/docs/api/java/text/SimpleDateFormat.html[`SimpleDateFormat`] pattern
+| Default value | `yyyy/MM/dd HH:mm:ss:SSS zzz`
+|===
+
+Date-time format to use.
+Ignored if <<log4j2.simplelogShowdatetime>> is `false`.
+
+[id=log4j2.simplelogLogFile]
+== `log4j2.simplelogLogFile`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_SIMPLELOG_LOG_FILE`
+| Type          | https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[`Path`] or predefined constant
+| Default value | `System.err`
+|===
+
+Specifies the output stream used by all loggers.
+
+Its value can be the path to a log file or one of these constants:
+
+System.err:: logs to the standard error output stream,
+System.out:: logs to the standard output stream,

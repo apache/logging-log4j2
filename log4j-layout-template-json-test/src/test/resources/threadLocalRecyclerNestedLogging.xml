@@ -30,9 +30,7 @@
   <Loggers>
     <Root level="trace">
       <AppenderRef ref="List1"/>
-    </Root>
-    <Logger name="org" level="trace">
       <AppenderRef ref="List2"/>
-    </Logger>
+    </Root>
   </Loggers>
 </Configuration>

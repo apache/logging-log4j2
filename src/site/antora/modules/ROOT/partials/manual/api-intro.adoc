@@ -1,0 +1,108 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+To log, you need a link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html[`Logger`] instance which you will retrieve from the link:../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html[`LogManager`].
+These are all part of the `log4j-api` module, which you can install as follows:
+
+[tabs]
+====
+Maven::
++
+[source,xml]
+----
+<project>
+
+  <!-- Assuming `log4j-bom` is added -->
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+    </dependency>
+  </dependencies>
+
+</project>
+----
+
+Gradle::
++
+[source,groovy]
+----
+dependencies {
+
+  // Assuming `log4j-bom` is added
+
+  implementation 'org.apache.logging.log4j:log4j-api'
+
+}
+----
+====
+
+You can use the `Logger` instance to log by using methods like `info()`, `warn()`, `error()`, etc.
+These methods are named after the _log levels_ they represent, a way to categorize log events by severity.
+The log message can also contain placeholders written as `{}` that will be replaced by the arguments passed to the method.
+
+[source,java]
+----
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class DbTableService {
+
+    private static final Logger LOGGER = LogManager.getLogger(); // <1>
+
+    public void truncateTable(String tableName) throws IOException {
+        LOGGER.warn("truncating table `{}`", tableName); // <2>
+        db.truncate(tableName);
+    }
+
+}
+----
+<1> The returned `Logger` instance is thread-safe and reusable.
+Unless explicitly provided as an argument, `getLogger()` associates the returned `Logger` with the enclosing class, that is, `DbTableService` in this example.
+<2> The placeholder `{}` in the message will be replaced with the value of `tableName`
+
+The _generated_ **log event**, which contain the _user-provided_ **log message** and **log level** (i.e., `WARN`), will be enriched with several other implicitly derived contextual information: timestamp, class & method name, line number, etc.
+
+**What happens to the generated log event will vary significantly depending on the configuration used.**
+It can be pretty-printed to the console, written to a file, or get totally ignored due to insufficient severity or some other filtering.
+
+Log levels are used to categorize log events by severity and control the verbosity of the logs.
+Log4j contains various predefined levels, but the most common are `DEBUG`, `INFO`, `WARN`, and `ERROR`.
+With them, you can filter out less important logs and focus on the most critical ones.
+Previously we used `Logger#warn()` to log a warning message, which could mean that something is not right, but the application can continue.
+Log levels have a priority, and `WARN` is less severe than `ERROR`.
+
+Exceptions are often also errors.
+In this case, we might use the `ERROR` log level.
+Make sure to log exceptions that have diagnostics value.
+This is simply done by passing the exception as the last argument to the log method:
+
+[source,java]
+----
+LOGGER.warn("truncating table `{}`", tableName);
+try {
+    db.truncate(tableName);
+} catch (IOException exception) {
+    LOGGER.error("failed truncating table `{}`", tableName, exception); // <1>
+    throw new IOException("failed truncating table: " + tableName, exception);
+}
+----
+<1> By using `error()` instead of `warn()`, we signal that the operation failed.
+
+While there is only one placeholder in the message, we pass two arguments: `tableName` and `exception`.
+Log4j will attach the last extra argument of type `Throwable` in a separate field to the generated log event.

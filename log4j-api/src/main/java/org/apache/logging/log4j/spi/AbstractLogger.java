@@ -35,7 +35,6 @@ import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.LambdaUtil;
-import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StackLocatorUtil;
@@ -107,34 +106,57 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     private static final ThreadLocal<DefaultLogBuilder> logBuilder = ThreadLocal.withInitial(DefaultLogBuilder::new);
 
     /**
-     * Creates a new logger named after this class (or subclass).
+     * Constructs an instance named after this class.
      */
     public AbstractLogger() {
-        final String canonicalName = getClass().getCanonicalName();
-        this.name = canonicalName != null ? canonicalName : getClass().getName();
-        this.messageFactory = createDefaultMessageFactory();
-        this.flowMessageFactory = createDefaultFlowMessageFactory();
+        this(null, null, null);
     }
 
     /**
-     * Creates a new named logger.
+     * Constructs an instance using the provided name.
      *
-     * @param name the logger name
+     * @param name the logger name (if null, will be derived from this class or subclass)
      */
     public AbstractLogger(final String name) {
-        this(name, createDefaultMessageFactory());
+        this(name, null, null);
     }
 
     /**
-     * Creates a new named logger with a particular {@link MessageFactory}.
+     * Constructs an instance using the provided name and {@link MessageFactory}.
      *
-     * @param name the logger name
-     * @param messageFactory the message factory, if null then use the default message factory.
+     * @param name the logger name (if null, will be derived from this class)
+     * @param messageFactory the {@link Message} factory (if null, {@link ParameterizedMessageFactory} will be used)
      */
     public AbstractLogger(final String name, final MessageFactory messageFactory) {
-        this.name = name;
-        this.messageFactory = messageFactory == null ? createDefaultMessageFactory() : narrow(messageFactory);
-        this.flowMessageFactory = createDefaultFlowMessageFactory();
+        this(name, messageFactory, null);
+    }
+
+    /**
+     * The canonical constructor.
+     *
+     * @param name the logger name (if null, will be derived from this class)
+     * @param messageFactory the {@link Message} factory (if null, {@link ParameterizedMessageFactory} will be used)
+     * @param flowMessageFactory the {@link org.apache.logging.log4j.message.FlowMessage} factory (if null, {@link DefaultFlowMessageFactory} will be used)
+     */
+    protected AbstractLogger(
+            final String name, final MessageFactory messageFactory, final FlowMessageFactory flowMessageFactory) {
+        if (name != null) {
+            this.name = name;
+        } else {
+            final Class<? extends AbstractLogger> clazz = getClass();
+            final String canonicalName = clazz.getCanonicalName();
+            this.name = canonicalName != null ? canonicalName : clazz.getName();
+        }
+        this.messageFactory =
+                messageFactory != null ? adaptMessageFactory(messageFactory) : ParameterizedMessageFactory.INSTANCE;
+        this.flowMessageFactory = flowMessageFactory != null ? flowMessageFactory : DefaultFlowMessageFactory.INSTANCE;
+    }
+
+    private static MessageFactory2 adaptMessageFactory(final MessageFactory result) {
+        if (result instanceof MessageFactory2) {
+            return (MessageFactory2) result;
+        }
+        return new MessageFactory2Adapter(result);
     }
 
     /**
@@ -195,30 +217,6 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
 
     protected Message catchingMsg(final Throwable throwable) {
         return messageFactory.newMessage(CATCHING);
-    }
-
-    private static MessageFactory2 createDefaultMessageFactory() {
-        try {
-            final MessageFactory result = LoaderUtil.newInstanceOf(DEFAULT_MESSAGE_FACTORY_CLASS);
-            return narrow(result);
-        } catch (final ReflectiveOperationException e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    private static MessageFactory2 narrow(final MessageFactory result) {
-        if (result instanceof MessageFactory2) {
-            return (MessageFactory2) result;
-        }
-        return new MessageFactory2Adapter(result);
-    }
-
-    private static FlowMessageFactory createDefaultFlowMessageFactory() {
-        try {
-            return LoaderUtil.newInstanceOf(DEFAULT_FLOW_MESSAGE_FACTORY_CLASS);
-        } catch (final ReflectiveOperationException e) {
-            throw new IllegalStateException(e);
-        }
     }
 
     @Override

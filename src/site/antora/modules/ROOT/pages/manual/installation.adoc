@@ -1,0 +1,651 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+:jpl-link: https://openjdk.org/jeps/264[JPL (Java Platform Logging)]
+:jul-link: https://docs.oracle.com/en/java/javase/{java-target-version}/core/java-logging-overview.html[JUL (Java Logging)]
+
+= Installation
+
+In this page we will elaborate on various ways to install Log4j in your library or application.
+
+[#shortcuts]
+== Shortcuts
+
+Below we share some shortcuts for the impatient.
+
+[WARNING]
+====
+We strongly advise you to skim through this page to get a grip on fundamental logging concepts and understand which recipe fits your bill best.
+====
+
+Are you a library developer?::
+You just need to log against <<logging-api,a logging API>>.
+See <<api>>.
+
+Are you an application developer?::
+Your code and libraries it depends on are most probably already logging against a logging API, you just need to install <<logging-impl,a logging implementation>>.
+See <<impl-core>>.
+
+Are you a Spring Boot application developer?::
+See <<impl-core-spring-boot>>.
+
+[#concepts]
+== Concepts (APIs, Implementations, and Bridges)
+
+It is crucial to understand certain concepts in logging to be able to talk about the installation of them.
+
+include::partial$concepts.adoc[]
+
+[#requirements]
+== Requirements
+
+The Log4j 2 runtime requires a minimum of Java {java-target-version}.
+See xref:download.adoc#older[the Download page] for older releases supporting Java 6 and 7.
+
+[#build-tool]
+== Configuring the build tool
+
+The easiest way to install Log4j is through a build tool such as Maven or Gradle.
+The rest of the instructions in this page assume you use one of these.
+
+[#bom]
+=== Importing the Bill-of-Materials (aka. BOM)
+
+To keep your Log4j module versions in sync with each other, a BOM (Bill of Material) file is provided for your convenience.
+You can import the BOM in your build tool of preference:
+
+[tabs]
+====
+Maven::
++
+[source,xml,subs="+attributes"]
+----
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-bom</artifactId>
+      <version>{log4j-core-version}</version>
+      <scope>import</scope>
+      <type>pom</type>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+----
+
+Gradle::
++
+[source,groovy,subs="+attributes"]
+----
+dependencies {
+  implementation platform('org.apache.logging.log4j:log4j-bom:{log4j-core-version}')
+}
+----
+====
+
+Once you import the BOM, you don't need to explicitly provide the versions of the Log4j artifacts managed by it.
+
+In the rest of the explanations, we will assume that the Log4j BOM is imported.
+
+[#snapshots]
+=== Using snapshots
+
+[%collapsible]
+.Do you want to test the latest (**unstable!**) development version? Click here details.
+====
+
+You can access the latest development snapshots by using the `https://repository.apache.org/snapshots` repository.
+
+[WARNING]
+=====
+Snapshots are published for development and testing purposes; **they should not be used at production!**
+=====
+
+[tabs]
+=====
+Maven::
++
+[source,xml]
+----
+<repositories>
+  <repository>
+    <id>apache.snapshots</id>
+    <name>Apache Snapshot Repository</name>
+    <url>https://repository.apache.org/snapshots</url>
+    <releases>
+      <enabled>false</enabled>
+    </releases>
+  </repository>
+</repositories>
+----
+
+Gradle::
++
+[source,groovy]
+----
+repositories {
+  mavenCentral()
+  maven { url 'https://repository.apache.org/snapshots' }
+}
+----
+=====
+====
+
+[#api]
+== Installing Log4j API
+
+The easiest way to install Log4j API is through a dependency management tool such as Maven or Gradle, by adding the following dependency:
+
+[tabs]
+====
+Maven::
++
+[source,xml]
+----
+<dependency>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-api</artifactId>
+</dependency>
+----
+
+Gradle::
++
+[source,groovy]
+----
+implementation 'org.apache.logging.log4j:log4j-api'
+----
+====
+
+[#impl]
+== Installing a logging implementation
+
+Log4j provides several modules to facilitate the deployment of different logging implementations:
+
+`log4j-core`::
+The reference implementation.
+Log4 Core primarily accepts input from Log4j API.
+Refer to <<impl-core>> for the installation instructions.
+
+`log4j-to-jul`::
+The bridge that translates Log4j API calls to {jul-link}.
+See <<impl-jul>> for the installation instructions.
+
+`log4j-to-slf4j`::
+The bridge that translates Log4j API calls to {slf4j-url}[SLF4J].
+Since currently only
+{logback-url}[Logback] implements SLF4J natively, refer to <<impl-logback>> for the installation instructions.
+
+[IMPORTANT]
+====
+To ensure that your code does not directly depend on a particular logging implementation, the logging backend should be put in the appropriate scope of your dependency manager:
+
+[cols="2,1m,1m"]
+|===
+.2+h| Software type
+2+^h| Build tool
+
+h| Maven
+h| Gradle
+
+| Application
+| runtime
+| runtimeOnly
+
+| Library
+| test
+| testRuntimeOnly
+|===
+====
+
+[#impl-core]
+=== Installing Log4j Core
+
+Log4j Core is the reference logging implementation of the Log4j project.
+It primarily accepts input from Log4j API.
+
+[TIP]
+====
+Do you have a Spring Boot application?
+You can directly skip to <<impl-core-spring-boot>>.
+====
+
+To install Log4j Core as your logging implementation, you need to add the following dependency to your application:
+
+[tabs]
+====
+Maven::
++
+[source,xml]
+----
+<dependencies>
+
+  <!-- Logging implementation (Log4j Core) -->
+  <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <scope>runtime</scope>
+  </dependency>
+
+  <!-- Logging bridges will follow... -->
+
+</dependencies>
+----
+
+Gradle::
++
+[source,groovy]
+----
+runtimeOnly 'org.apache.logging.log4j:log4j-core'
+// Logging bridges will follow...
+----
+====
+
+[#impl-core-bridges]
+==== Installing bridges
+
+If either your application or one of its dependencies logs against a logging API that is different from Log4j API, you need to <<logging-bridge,bridge>> that API to Log4j API.
+
+[TIP]
+====
+**Do you need bridges?
+And if so, which ones?**
+
+* If you have any direct or transitive dependency on `org.slf4j:slf4j-api`, you need <<impl-core-bridge-slf4j,the SLF4J-to-Log4j bridge>>.
+* If you have any direct or transitive dependency on `commons-logging:commons-logging`, you need <<impl-core-bridge-jcl,the JCL-to-Log4j bridge>>.
+* If it is a standalone application (i.e., not running in a Java EE container), you will probably need <<impl-core-bridge-jul,JUL-to-Log4j>> and <<impl-core-bridge-jpl,JPL-to-Log4j>> bridges.
+====
+
+The following sections explain the installation of Log4j-provided bridges.
+
+[#impl-core-bridge-slf4j]
+===== Installing SLF4J-to-Log4j bridge
+
+You can translate {slf4j-url}[SLF4J] calls to Log4j API using the `log4j-slf4j2-impl` artifact:
+
+[tabs]
+====
+Maven::
++
+[source,xml]
+----
+<!-- SLF4J-to-Log4j bridge -->
+<dependency>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-slf4j2-impl</artifactId>
+  <scope>runtime</scope>
+</dependency>
+----
+
+Gradle::
++
+[source,groovy]
+----
+runtimeOnly 'org.apache.logging.log4j:log4j-slf4j2-impl' // SLF4J-to-Log4j bridge
+----
+====
+
+[#impl-core-bridge-jul]
+===== Installing JUL-to-Log4j bridge
+
+You can translate {jul-link} calls to Log4j API using the `log4j-jul` artifact:
+
+[tabs]
+====
+Maven::
++
+[source,xml]
+----
+<!-- JUL-to-Log4j bridge -->
+<dependency>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-jul</artifactId>
+  <scope>runtime</scope>
+</dependency>
+----
+
+Gradle::
++
+[source,groovy]
+----
+runtimeOnly 'org.apache.logging.log4j:log4j-jul' // JUL-to-Log4j bridge
+----
+====
+
+In order to activate the bridge from JUL to Log4j API, you also need to add:
+
+[source]
+----
+-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager
+----
+
+to the JVM parameters in your application launcher.
+
+The JUL-to-Log4j bridge supports additional configuration and installation methods.
+See xref:log4j-jul.adoc[] for more information.
+
+[#impl-core-bridge-jpl]
+===== Installing JPL-to-Log4j bridge
+
+You can translate {jpl-link} calls to Log4j API using the `log4j-jpl` artifact:
+
+[tabs]
+====
+Maven::
++
+[source,xml]
+----
+<!-- JPL-to-Log4j bridge -->
+<dependency>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-jpl</artifactId>
+  <scope>runtime</scope>
+</dependency>
+----
+
+Gradle::
++
+[source,groovy]
+----
+runtimeOnly 'org.apache.logging.log4j:log4j-jpl' // JPL-to-Log4j bridge
+----
+====
+
+[#impl-core-bridge-jcl]
+===== Installing JCL-to-Log4j bridge
+
+Since version `1.3.0` https://commons.apache.org/proper/commons-logging/[Apache Commons Logging] natively supports Log4j API.
+
+You can enforce the version of a transitive dependency using the dependency management mechanism appropriate to your
+build tool:
+
+[tabs]
+====
+Maven::
+Maven users should add an entry to the `<dependencyManagement>` section of their POM file:
++
+[source,xml,subs="+attributes"]
+----
+<dependencyManagement>
+  <dependency>
+    <groupId>commons-logging</groupId>
+    <artifactId>commons-logging</artifactId>
+    <version>{commons-logging-version}</version>
+  </dependency>
+</dependencyManagement>
+----
+
+Gradle::
++
+Gradle users should refer to the https://docs.gradle.org/current/userguide/platforms.html#sub:using-platform-to-control-transitive-deps[Using a platform to control transitive versions] of the Gradle documentation.
+====
+
+[#impl-core-bridge-jboss-logging]
+===== Installing JBoss Logging-to-Log4j bridge
+
+JBoss Logging is shipped with an integrated bridge to Log4j API and requires no steps on your part.
+See https://github.com/jboss-logging/jboss-logging/blob/main/README.adoc#supported-log-managers[Supported Log Managers] for more information.
+
+[#impl-core-spring-boot]
+==== Installing Log4j Core for Spring Boot applications
+
+Spring Boot users should replace the `spring-boot-starter-logging` dependency with `spring-boot-starter-log4j2`:
+
+[tabs]
+====
+
+Maven::
++
+[source,xml]
+----
+<dependencies>
+
+  <dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter</artifactId>
+    <exclusions>
+      <exclusion>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-logging</artifactId>
+      </exclusion>
+    </exclusions>
+  </dependency>
+
+  <dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-log4j2</artifactId>
+    <scope>runtime</scope>
+  </dependency>
+
+</dependencies>
+----
+
+Gradle::
++
+[source,groovy]
+----
+configurations {
+  all.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+}
+
+dependencies {
+  runtimeOnly group: 'org.springframework.boot', module: 'spring-boot-starter-log4j2'
+}
+----
+
+====
+
+The `spring-boot-starter-log4j2` artifact will automatically install Log4j Core, <<impl-core-bridge-jul,JUL-to-Log4j bridge>>, and configure them.
+You don't need to add any other dependency or configure JUL anymore.
+See https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.logging[Spring Boot Logging documentation] for further information.
+
+[#impl-core-config]
+==== Configuring Log4j Core
+
+As with any other logging implementation, Log4j Core needs to be properly configured.
+Log4j Core supports many different configuration formats: JSON, XML, YAML, and Java properties.
+To configure Log4j Core, see xref:manual/configuration.adoc[].
+A basic configuration can be obtained by adding one of these files to your application's classpath:
+
+[tabs]
+====
+
+log4j2.xml::
++
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration xmlns="https://logging.apache.org/xml/ns"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://logging.apache.org/xml/ns
+                                   https://logging.apache.org/xml/ns/log4j-config-2.xsd">
+
+  <appenders>
+    <Console name="CONSOLE">
+      <PatternLayout pattern="%d [%t] %5p %c{1.} - %m%n"/><!--1-->
+    </Console>
+  </appenders>
+
+  <loggers>
+    <root level="INFO">
+      <AppenderRef ref="CONSOLE"/>
+    </root>
+  </loggers>
+
+</Configuration>
+----
+
+log4j2.json::
++
+[source,json]
+----
+{
+  "Configuration": {
+    "Appenders": {
+      "Console": {
+        "name": "CONSOLE",
+        "PatternLayout": {
+          "pattern": "%d [%t] %5p %c{1.} - %m%n" // <1>
+        }
+      }
+    },
+    "Loggers": {
+      "Root": {
+        "level": "INFO",
+        "AppenderRef": {
+          "ref": "CONSOLE"
+        }
+      }
+    }
+  }
+}
+----
+
+log4j2.yaml::
++
+[source,yaml]
+----
+Configuration:
+  Appenders:
+    Console:
+      name: CONSOLE
+      PatternLayout:
+        pattern: "%d [%t] %5p %c{1.} - %m%n" # <1>
+  Loggers:
+    Root:
+      level: INFO
+      AppenderRef:
+        ref: CONSOLE
+----
+
+log4j2.properties::
++
+[source,properties]
+----
+appender.0.type = Console
+appender.0.name = CONSOLE
+appender.0.layout = PatternLayout # <1>
+appender.0.layout.pattern = %d [%t] %5p %c{1.} - %m%n
+rootLogger.level = INFO
+rootLogger.appenderRef.0.ref = CONSOLE
+----
+
+====
+<1> While xref:manual/pattern-layout.adoc[] is a good first choice and preferable for tests, we recommend using a structured format such as xref:manual/json-template-layout.adoc[] for production deployments.
+
+To use these formats, the following additional dependencies are required:
+
+include::partial$configuration-file-format-deps.adoc[]
+
+[#impl-jul]
+=== Installing JUL
+
+[TIP]
+====
+Are you using https://github.com/jboss-logging/jboss-logmanager[JBoss Log Manager] as your JUL implementation?
+You can skip this section and use the https://github.com/jboss-logging/log4j2-jboss-logmanager[`log4j2-jboss-logmanager`] and https://github.com/jboss-logging/slf4j-jboss-logmanager[`slf4j-jboss-logmanager`] bridges from the JBoss Logging project instead.
+====
+
+Java Platform contains a very simple logging API and its implementation called {jul-link}.
+Since it is embedded in the platform, it only requires the addition of bridges from Log4j API and SLF4J:
+
+[tabs]
+====
+
+Maven::
++
+[source,xml,subs="+attributes"]
+----
+<dependencies>
+
+    <!-- Log4j-to-JUL bridge -->
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-to-jul</artifactId>
+    <scope>runtime</scope>
+  </dependency>
+
+  <!-- SLF4J-to-JUL bridge -->
+  <dependency>
+    <groupId>org.slf4j</groupId>
+    <artifactId>slf4j-jdk14</artifactId>
+    <version>{slf4j-version}</version>
+    <scope>runtime</scope>
+  </dependency>
+
+  <!-- ... -->
+
+</dependencies>
+----
+
+Gradle::
++
+[source,groovy,subs="+attributes"]
+----
+runtimeOnly 'org.apache.logging.log4j:log4j-to-jul' // Log4j-to-JUL bridge
+runtimeOnly 'org.slf4j:slf4j-jdk14:{slf4j-version}' // SLF4J-to-JUL bridge
+----
+
+====
+
+See also:
+
+* https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.logging/java/util/logging/LogManager.html[`java.util.logging.LogManager`], to learn more about JUL configuration,
+* xref:log4j-to-jul.adoc[] to learn more about the `log4j-to-jul` artifact.
+
+[#impl-logback]
+=== Installing Logback
+
+To install {logback-url}[Logback] as the logging implementation, you only need to add a Log4j-to-SLF4J bridge:
+
+[tabs]
+====
+
+Maven::
++
+[source,xml]
+----
+<dependencies>
+
+  <!-- Logging implementation (Logback) -->
+  <dependency>
+    <groupId>ch.qos.logback</groupId>
+    <artifactId>logback-classic</artifactId>
+    <version>{logback-version}</version>
+    <scope>runtime</scope>
+  </dependency>
+
+  <!-- Log4j-to-SLF4J bridge -->
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-to-slf4j</artifactId>
+    <scope>runtime</scope>
+  </dependency>
+
+</dependencies>
+----
+
+Gradle::
++
+[source,groovy,subs="+attributes"]
+----
+runtimeOnly 'ch.qos.logback:logback-classic:{logback-version}'
+runtimeOnly 'org.apache.logging.log4j:log4j-to-slf4j' // Log4j-to-SLF4J bridge
+----
+
+====
+
+To configure Logback, see {logback-url}/manual/configuration.html[Logback's configuration documentation].

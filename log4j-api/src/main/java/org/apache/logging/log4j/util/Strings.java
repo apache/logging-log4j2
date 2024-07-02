@@ -25,7 +25,7 @@ import java.util.Objects;
 /**
  * <em>Consider this class private.</em>
  *
- * @see <a href="http://commons.apache.org/proper/commons-lang/">Apache Commons Lang</a>
+ * @see <a href="https://commons.apache.org/proper/commons-lang/index.html">Apache Commons Lang</a>
  */
 @InternalApi
 public final class Strings {
@@ -52,8 +52,7 @@ public final class Strings {
      * OS-dependent line separator, defaults to {@code "\n"} if the system property {@code ""line.separator"} cannot be
      * read.
      */
-    public static final String LINE_SEPARATOR =
-            SystemPropertiesPropertySource.getSystemProperty("line.separator", "\n");
+    public static final String LINE_SEPARATOR = System.lineSeparator();
 
     /**
      * Returns a double quoted string.

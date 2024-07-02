@@ -1,0 +1,84 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+:hibernate-manual-url: https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html
+:jboss-logging-url: https://github.com/jboss-logging/jboss-logging
+
+= Integrating with Hibernate
+
+https://hibernate.org[Hibernate] is an Object/Relational Mapping (ORM) solution for Java environments.
+It uses https://github.com/jboss-logging/jboss-logging[JBoss Logging] as its logging API.
+If you have a working xref:manual/installation.adoc#impl-core[Log4j installation], JBoss Logging requires no extra installation steps on your part, since it is shipped with an integrated bridge to Log4j API – see https://github.com/jboss-logging/jboss-logging/blob/main/README.adoc#supported-log-managers[Supported Log Managers by JBoss Logging] for more information.
+
+.Struggling with the logging API, implementation, and bridge concepts? Click for an introduction.
+[%collapsible]
+====
+include::partial$concepts.adoc[tag=!software-type]
+====
+
+[#config]
+== Configuration
+
+After successfully wiring Hibernate – to be precise, JBoss Logging – to log using Log4j API, you can fine-tune the verbosity of Hibernate loggers in your Log4j Core installation to accommodate your needs:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/hibernate/log4j2.xml[`log4j2.xml`] configuring Hibernate-specific loggers
+[source,xml]
+----
+include::example$hibernate/log4j2.xml[lines=30..45,indent=0]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/hibernate/log4j2.json[`log4j2.json`] configuring Hibernate-specific loggers
+[source,xml]
+----
+include::example$hibernate/log4j2.json[lines=9..36,indent=0]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/hibernate/log4j2.yaml[`log4j2.yaml`] configuring Hibernate-specific loggers
+[source,xml]
+----
+include::example$hibernate/log4j2.yaml[lines=24..44,indent=0]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/hibernate/log4j2.properties[`log4j2.properties`] configuring Hibernate-specific loggers
+[source,xml]
+----
+include::example$hibernate/log4j2.properties[lines=21..37]
+----
+====
+<1> Due to the sensitivity of the data involved, you are strongly advised to use these logger configurations **only in development environments**.
+
+See {hibernate-manual-url}#best-practices-logging[the Logging Best Practices section in Hibernate Manual] for further details.
+
+[#show-sql]
+[WARNING]
+====
+We strongly advise you to *avoid using {hibernate-manual-url}#settings-hibernate.show_sql[the `hibernate.show_sql` property]!*
+(It maps to `spring.jpa.show-sql` in Spring Boot.)
+`hibernate.show_sql` writes to the standard error output stream, not to the logging API.
+Logger-based configuration exemplified above gives a finer-grained control over logging and integrates with the logging system.
+https://stackoverflow.com/q/73734494/1278899[Combining `hibernate.show_sql` with logger-based configuration duplicates the logging effort.]
+====

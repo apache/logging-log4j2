@@ -1,0 +1,46 @@
+{
+  "Configuration": {
+    "Appenders": {
+      "Console": {
+        "name": "CONSOLE",
+        "PatternLayout": {}
+      }
+    },
+    "Loggers": {
+      "Logger": [
+
+        // Log just the SQL
+        {
+          "name": "org.hibernate.SQL",
+          "level": "DEBUG"
+        },
+
+        // Log JDBC bind parameters and extracted values
+        //
+        // Warning! <1>
+        // JDBC bind parameters can contain sensitive data:
+        // Passwords, credit card numbers, etc.
+        // Use these logger configurations with care!
+        //{
+        //  "name": "org.hibernate.type",
+        //  "level": "TRACE"
+        //},
+        //{
+        //  "name": "org.hibernate.orm.jdbc.bind",
+        //  "level": "TRACE"
+        //},
+        //{
+        //  "name": "org.hibernate.orm.jdbc.extract",
+        //  "level": "TRACE"
+        //}
+
+      ],
+      "Root": {
+        "level": "WARN",
+        "AppenderRef": {
+          "ref": "CONSOLE"
+        }
+      }
+    }
+  }
+}

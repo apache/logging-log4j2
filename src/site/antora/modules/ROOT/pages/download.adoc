@@ -1,0 +1,33 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Download
+
+You can manually download all published Log4j distributions, verify them, and see their licensing information by following the instructions in {logging-services-url}/download.html[the Download page] of {logging-services-url}[Logging Services].
+
+* Are you looking for **the Log4j installation instructions**? Proceed to xref:manual/installation.adoc[].
+* Are you looking for the list of changes associated with a particular release? Proceed to xref:release-notes.adoc[].
+
+[#older]
+== Older releases
+
+Are you looking for old versions of Log4j?
+While we recommend to always use the latest version, you can find the older versions here:
+
+* {logging-services-url}/1.x/[Log4j 1.x (End of Life, Java 1.4)]
+* {logging-services-url}/2.3.x/[Log4j 2.3.x (Java 6)]
+* {logging-services-url}/2.12.x/[Log4j 2.12.x (Java 7)]

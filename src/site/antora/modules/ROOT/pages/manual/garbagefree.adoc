@@ -1,0 +1,234 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Garbage-free logging
+
+include::partial$manual/garbagefree-intro.adoc[]
+
+include::partial$premature-optimization.adoc[]
+
+The act of logging is an interplay between the logging API (i.e., Log4j API) where the programmer publishes logs and a logging implementation (i.e., Log4j Core) where published logs get consumed; filtered, enriched, encoded, and written to files, databases, network sockets, etc.
+Both parties contain different features with different memory allocation characteristics.
+To achieve an end-to-end garbage-free logging system, they need to work hand in hand.
+Hence, we will discuss both:
+
+. <<Config>>
+. <<api>>
+
+[NOTE]
+====
+Garbage-free logging is currently implemented for Log4j API and its reference implementation, Log4j Core.
+If you use another setup (e.g., a different logging API or implementation) this promise might not hold.
+====
+
+[#quick]
+== Quick start
+
+If you want to have a garbage-free Log4j setup, but don't want to spend time with the associated details, you can quickly get started with the following instructions:
+
+. Set the following system properties to `true`:
+** <<log4j2.enableThreadlocals,`log4j2.enableThreadlocals`>>
+** <<log4j2.garbagefreeThreadContextMap,`log4j2.garbagefreeThreadContextMap`>>
+. Use garbage-free
+** <<Layouts>>
+** <<Appenders>>
+** <<Filters>>
+
+This should be sufficient for a majority of use cases.
+If not for yours, keep on reading.
+
+[#Config]
+== Log4j Core configuration
+
+In order to have a garbage-free Log4j Core, you need to
+
+* <<core-properties,configure it using properties>>,
+* and employ garbage-free <<Layouts,layouts>>, <<Appenders,appenders>>, and <<Filters,filters>>.
+
+[#core-properties]
+=== Properties
+
+Garbage-free logging can be configured for Log4j Core using properties listed below.
+(See xref:manual/configuration.adoc[] on details how you can set these properties.)
+
+include::partial$manual/systemproperties/properties-meta.adoc[leveloffset=+2]
+
+include::partial$manual/systemproperties/properties-garbage-collection.adoc[leveloffset=+2]
+
+include::partial$manual/systemproperties/properties-thread-context.adoc[leveloffset=+2,tag=gcfree]
+
+[#Layouts]
+=== Layouts
+
+The following xref:manual/layouts.adoc[layouts] can be configured to run garbage-free during steady-state logging.
+To understand which configuration knobs exhibit what kind of allocation behaviour, see their dedicated pages.
+
+// Maintain the alphabetical ordering while making changes, please!
+* xref:manual/layouts.adoc#GELFLayout[`GelfLayout`]
+* xref:manual/json-template-layout.adoc#faq-garbage-free[`JsonTemplateLayout`]
+* xref:manual/pattern-layout.adoc#garbage-free[`PatternLayout`]
+
+.Implementation notes
+[%collapsible]
+====
+Garbage-free xref:manual/layouts.adoc[layouts] need to implement the `Encoder<LogEvent>` interface.
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder.html[`StringBuilderEncoder`] helps with encoding text to bytes in a garbage-free manner.
+====
+
+[#Appenders]
+=== Appenders
+
+The following xref:manual/appenders.adoc[appenders] are garbage-free during steady-state logging:
+
+// Maintain the alphabetical ordering while making changes, please!
+* xref:manual/appenders.adoc#ConsoleAppender[`ConsoleAppender`]
+* xref:manual/appenders.adoc#FileAppender[`FileAppender`]
+* xref:manual/appenders.adoc#MemoryMappedFileAppender[`MemoryMappedFileAppender`]
+* xref:manual/appenders.adoc#RandomAccessFileAppender[`RandomAccessFileAppender`]
+* xref:manual/appenders.adoc#RollingFileAppender[`RollingFileAppender`] (except during rollover)
+* xref:manual/appenders.adoc#RollingRandomAccessFileAppender[`RollingRandomAccessFileAppender`] (except during rollover)
+
+Any other appender not shared in the above list (including xref:manual/appenders.adoc#AsyncAppender[`AsyncAppender`]) is not garbage-free.
+
+.Implementation notes
+[%collapsible]
+====
+Garbage-free xref:manual/appenders.adoc[appenders] need to provide their xref:manual/layouts.adoc[layout] with a `ByteBufferDestination` implementation that the layout can directly write into.
+
+[NOTE]
+=====
+`AbstractOutputStreamAppender` has been modified to make the following appenders garbage-free:
+
+* `ConsoleAppender`
+* `(Rolling)FileAppender`
+* `(Rolling)RandomAccessFileAppender`
+* `MemoryMappedFileAppender`
+
+An effort has been made to minimize impact on custom appenders that extend `AbstractOutputStreamAppender`, but it is impossible to guarantee that changing the superclass will not impact any and all subclasses.
+Custom appenders that extend `AbstractOutputStreamAppender` should verify that they still function correctly.
+In case there is a problem, <<log4j2.enableDirectEncoders,the `log4j2.enableDirectEncoders` system property>> can be set to `false` to revert to the pre-Log4j 2.6 behaviour.
+=====
+====
+
+[#Filters]
+=== Filters
+
+The following xref:manual/filters.adoc[filters] are garbage-free during steady-state logging:
+
+// Maintain the alphabetical ordering while making changes, please!
+* xref:manual/filters.adoc#CompositeFilter[`CompositeFilter`] (adding and removing element filters creates temporary
+objects for thread safety)
+* xref:manual/filters.adoc#DynamicThresholdFilter[`DynamicThresholdFilter`]
+* xref:manual/filters.adoc#LevelRangeFilter[`LevelRangeFilter`] (garbage-free since `2.8`)
+* xref:manual/filters.adoc#MapFilter[`MapFilter`] (garbage-free since `2.8`)
+* xref:manual/filters.adoc#MarkerFilter[`MarkerFilter`] (garbage-free since `2.8`)
+* xref:manual/filters.adoc#StructuredDataFilter[`StructuredDataFilter`] (garbage-free since `2.8`)
+* xref:manual/filters.adoc#ThreadContextMapFilter[`ThreadContextMapFilter]` (garbage-free since `2.8`)
+* xref:manual/filters.adoc#ThresholdFilter[`ThresholdFilter`] (garbage-free since `2.8`)
+* xref:manual/filters.adoc#TimeFilter[`TimeFilter`] (garbage-free since `2.8` except when range must be recalculated once per day)
+
+Any other filter not shared in the above list is not garbage-free.
+
+[#core-limitations]
+=== Limitations
+
+There are certain caveats associated with the configuration of garbage-free logging:
+
+[#core-limitation-properties]
+`<Properties>` section::
+
+A configuration containing xref:manual/configuration.adoc#PropertySubstitution[a `<Properties>` section] will result in temporary objects being created during steady-state logging.
+
+[#core-limitation-async-logger-wait-strategy]
+Asynchronous logger wait strategies::
+
+As of version `2.18.0`, the default xref:manual/async.adoc[asynchronous logger] wait strategy (i.e., `Timeout`) is garbage-free while running against both LMAX Disruptor 3 and 4.
+See xref:manual/async.adoc#log4j2.asyncLoggerWaitStrategy[`log4j2.asyncLoggerWaitStrategy`] for details on predefined wait strategies.
+
+[#api]
+== Log4j API usage
+
+xref:manual/api.adoc[Log4j API] contains several features to facilitate garbage-free logging:
+
+[#api-vararg]
+=== Parameterized message arguments
+
+The `Logger` interface contains methods for parameterized messages up to 10 arguments.
+Logging more than 10 parameters creates https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/language/varargs.html[vararg arrays].
+
+[#api-encode-custom-object]
+=== Encoding custom objects
+
+When a message parameter contains an unknown type by the layout, it will encode by calling `toString()` on these objects.
+Most objects don't have garbage-free `toString()` methods.
+Objects themselves can implement their own garbage-free encoders by either extending from https://docs.oracle.com/javase/{java-target-version}/docs/api/java/lang/CharSequence.html[Java's `CharSequence`] or link:../javadoc/log4j-api/org/apache/logging/log4j/util/StringBuilderFormattable.html[Log4j's `StringBuilderFormattable`].
+
+[#codeImpact]
+=== Avoiding autoboxing
+
+We made an effort to make logging garbage-free without requiring code
+changes in existing applications, but there is one area where this was
+not possible. When logging primitive values (i.e. int, double, boolean,
+etc.) the JVM autoboxes these primitive values to their Object wrapper
+equivalents, creating garbage.
+
+Log4j provides an `Unbox` utility to prevent autoboxing of primitive
+parameters. This utility contains a thread-local pool of reused
+`StringBuilder`s. The `Unbox.box(primitive)` methods write directly into
+a StringBuilder, and the resulting text will be copied into the final
+log message text without creating temporary objects.
+
+[source,java]
+----
+import static org.apache.logging.log4j.util.Unbox.box;
+
+LOGGER.debug("Prevent primitive autoboxing {} {}", box(10L), box(2.6d));
+----
+
+This utility contains a `ThreadLocal` pool of reused ``StringBuilder``s.
+The pool size is configured by <<log4j2.unboxRingbufferSize,the `log4j2.unboxRingbufferSize` system property>>.
+The `Unbox.box(primitive)` methods write directly into a `StringBuilder`, and the resulting text will be copied into the final log message text without creating temporary objects.
+
+[#api-limitations]
+=== Limitations
+
+Not all Log4j API feature set is garbage-free, specifically:
+
+* The `ThreadContext` map (aka. MDC) is not garbage-free by default, but can be configured to be garbage-free by setting <<log4j2.garbagefreeThreadContextMap,the `log4j2.garbagefreeThreadContextMap` system property>> to `true`.
+* The `ThreadContext` stack (aka. NDC) is not garbage-free.
+* xref:manual/scoped-context.adoc[] is not garbage-free.
+* Logging very large messages (i.e., more than <<log4j2.maxReusableMsgSize>> characters, which defaults to 518), when all loggers are xref:manual/async.adoc[asynchronous loggers], will cause the internal `StringBuilder` in the
+`RingBuffer` to be trimmed back to their configured maximum size.
+* Logging messages containing `$\{variable}` substitutions creates temporary objects.
+* Logging a lambda as a parameter:
++
+[source,java]
+----
+LOGGER.info("lambda value is {}", () -> callExpensiveMethod());
+----
++
+creates a vararg array.
+Logging a lambda expression by itself:
++
+[source,java]
+----
+LOGGER.debug(() -> callExpensiveMethod());
+----
++
+is garbage-free.
+* The link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#traceEntry()[`traceEntry()`] and link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#traceExit()[`traceExit()`] methods create temporary objects.
+* Time calculations are not garbage-free when the `log4j2.usePreciseClock` system property (defaults to `false`) is set to `true`.

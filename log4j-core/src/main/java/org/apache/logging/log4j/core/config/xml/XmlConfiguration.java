@@ -62,7 +62,6 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
 
     private static final String XINCLUDE_FIXUP_LANGUAGE = "http://apache.org/xml/features/xinclude/fixup-language";
     private static final String XINCLUDE_FIXUP_BASE_URIS = "http://apache.org/xml/features/xinclude/fixup-base-uris";
-    private static final String LOG4J_XSD = "Log4j-config.xsd";
 
     private final List<Status> status = new ArrayList<>();
     private Element rootElement;
@@ -142,7 +141,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             try (final InputStream is =
                     Loader.getResourceAsStream(schemaResource, XmlConfiguration.class.getClassLoader())) {
                 if (is != null) {
-                    final javax.xml.transform.Source src = new StreamSource(is, LOG4J_XSD);
+                    final javax.xml.transform.Source src = new StreamSource(is, schemaResource);
                     final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
                     Schema schema = null;
                     try {

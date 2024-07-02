@@ -39,9 +39,8 @@ public class EventParameterMemoryLeakTest {
 
     @BeforeAll
     public static void beforeClass() {
-        System.setProperty("log4j2.enable.threadlocals", "true");
-        System.setProperty("log4j2.enable.direct.encoders", "true");
-        System.setProperty("log4j2.is.webapp", "false");
+        System.setProperty("log4j2.enableThreadlocals", "true");
+        System.setProperty("log4j2.enableDirectEncoders", "true");
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "EventParameterMemoryLeakTest.xml");
     }
 

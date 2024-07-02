@@ -35,7 +35,10 @@ public final class Constants {
 
     /**
      * Property name for the default status (internal log4j logging) level to use if not specified in configuration.
+     * @deprecated since 2.24.0 use
+     * {@link org.apache.logging.log4j.status.StatusLogger#DEFAULT_STATUS_LISTENER_LEVEL} instead.
      */
+    @Deprecated
     public static final String LOG4J_DEFAULT_STATUS_LEVEL = "Log4jDefaultStatusLevel";
 
     /**
@@ -74,7 +77,7 @@ public final class Constants {
 
     /**
      * {@code true} if we think we are running in a web container, based on the boolean value of system property
-     * "log4j2.is.webapp", or (if this system property is not set) whether the  {@code javax.servlet.Servlet} class
+     * "log4j2.isWebapp", or (if this system property is not set) whether the  {@code javax.servlet.Servlet} class
      * is present in the classpath.
      */
     public static final boolean IS_WEB_APP = org.apache.logging.log4j.util.Constants.IS_WEB_APP;
@@ -94,9 +97,9 @@ public final class Constants {
      * {@link org.apache.logging.log4j.core.layout.ByteBufferDestination}s without creating intermediate temporary
      * Objects.
      * <p>
-     * {@code True} by default iff all loggers are asynchronous because system property
-     * {@code Log4jContextSelector} is set to {@code org.apache.logging.log4j.core.async.AsyncLoggerContextSelector}.
-     * Disable by setting system property "log4j2.enable.direct.encoders" to "false".
+     *     This constant is {@code true} by default, but can be disabled using the
+     *     {@code "log4j2.enableDirectEncoders"} system property.
+     * </p>
      *
      * @since 2.6
      */

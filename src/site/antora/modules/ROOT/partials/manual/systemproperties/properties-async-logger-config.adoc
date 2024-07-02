@@ -1,0 +1,134 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+[id=log4j2.asyncLoggerConfigExceptionHandler]
+== `log4j2.asyncLoggerConfigExceptionHandler`
+
+[cols="1h,5"]
+|===
+| Env. variable
+| `LOG4J_ASYNC_LOGGER_CONFIG_EXCEPTION_HANDLER`
+
+| Type
+| https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html[`Class<? extends ExceptionHandler<? super Log4jEventWrapper>>`]
+
+| Default value
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerConfigDefaultExceptionHandler.html[`AsyncLoggerConfigDefaultExceptionHandler`]
+|===
+
+Fully qualified name of a class that implements the https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html[`ExceptionHandler`] interface, which will be notified when an exception occurs while logging messages.
+The class needs to have a public zero-argument constructor.
+
+The default exception handler will print a message and stack trace to the standard error output stream.
+
+[id=log4j2.asyncLoggerConfigRingBufferSize]
+== `log4j2.asyncLoggerRingConfigBufferSize`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_ASYNC_LOGGER_CONFIG_RING_BUFFER_SIZE`
+| Type          | `int`
+| Default value | `256 &times; 1024`
+
+(GC-free mode: `4 &times; 1024`)
+|===
+
+Size (number of slots) in the RingBuffer used by the asynchronous logging subsystem.
+Make this value large enough to deal with bursts of activity.
+The minimum size is 128.
+The RingBuffer will be pre-allocated at first use and will never grow or shrink during the life of the system.
+
+When the application is logging faster than the underlying appender can keep up with for a long enough time to fill up the queue, the behaviour is determined by the link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[`AsyncQueueFullPolicy`].
+
+[id=log4j2.asyncLoggerConfigWaitStrategy]
+== `log4j2.asyncLoggerConfigWaitStrategy`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_ASYNC_LOGGER_CONFIG_WAIT_STRATEGY`
+| Type          | predefined constant
+| Default value | `Timeout`
+|===
+
+Specifies the https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/WaitStrategy.html[`WaitStrategy`] used by the LMAX Disruptor.
+
+The value needs to be one of the predefined constants:
+
+Block:: a strategy that uses a lock and condition variable for the I/O thread waiting for log events.
+Block can be used when throughput and low-latency are not as important as CPU resource.
+Recommended for resource constrained/virtualised environments.
+
+Timeout:: a variation of the `Block` strategy that will periodically wake up from the lock condition `await()` call.
+This ensures that if a notification is missed somehow the consumer thread is not stuck but will recover with a small latency delay (see <<log4j2.asyncLoggerTimeout>>)
+
+Sleep:: a strategy that initially spins, then uses a `Thread.yield()`, and eventually parks for the minimum number of nanos the OS and JVM will allow while the I/O thread is waiting for log events (see <<log4j2.asyncLoggerRetries>> and <<log4j2.asyncLoggerSleepTimeNs>>).
+Sleep is a good compromise between performance and CPU resource.
+This strategy has very low impact on the application thread, in exchange for some additional latency for actually getting the message logged.
+
+Yield:: is a strategy that will use `100%` CPU, but will give up the CPU if other threads require CPU resources.
+
+See also xref:manual/async.adoc#custom-waitstrategy[Custom `WaitStrategy`] for an alternative way to configure the wait strategy.
+
+[id=log4j2.asyncLoggerConfigTimeout]
+== `log4j2.asyncLoggerConfigTimeout`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_ASYNC_LOGGER_CONFIG_TIMEOUT`
+| Type          | `int`
+| Default value | `10`
+|===
+
+Timeout in milliseconds of `Timeout` wait strategy (see <<log4j2.asyncLoggerConfigWaitStrategy>>).
+
+[id=log4j2.asyncLoggerConfigSleepTimeNs]
+== `log4j2.asyncLoggerConfigSleepTimeNs`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_ASYNC_LOGGER_CONFIG_SLEEP_TIME_NS`
+| Type          | `long`
+| Default value | `100`
+|===
+
+Sleep time in nanoseconds of `Sleep` wait strategy (see <<log4j2.asyncLoggerConfigWaitStrategy>>)).
+
+[id=log4j2.asyncLoggerConfigRetries]
+== `log4j2.asyncLoggerConfigRetries`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_ASYNC_LOGGER_CONFIG_RETRIES`
+| Type          | `int`
+| Default value | `200`
+|===
+
+Total number of spin cycles and `Thread.yield()` cycles of `Sleep` (see <<log4j2.asyncLoggerConfigWaitStrategy>>)).
+
+[id=log4j2.asyncLoggerConfigSynchronizeEnqueueWhenQueueFull]
+== `log4j2.asyncLoggerConfigSynchronizeEnqueueWhenQueueFull`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_ASYNC_LOGGER_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL`
+| Type          | `boolean`
+| Default value | `true`
+|===
+
+Synchronizes access to the Disruptor ring buffer for blocking enqueue operations when the queue is full.
+Users encountered excessive CPU utilization with Disruptor v3.4.2 when the application was logging more than the underlying appender could keep up with and the ring buffer became full, especially when the number of application threads vastly outnumbered the number of cores.
+CPU utilization is significantly reduced by restricting access to the enqueue operation.
+Setting this value to `false` may lead to very high CPU utilization when the async logging queue is full.

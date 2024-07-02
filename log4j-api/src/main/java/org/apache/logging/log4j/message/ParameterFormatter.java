@@ -26,6 +26,8 @@ import java.util.Date;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StringBuilders;
 
 /**
@@ -64,6 +66,8 @@ final class ParameterFormatter {
 
     private static final DateTimeFormatter DATE_FORMATTER =
             DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ").withZone(ZoneId.systemDefault());
+
+    private static final Logger STATUS_LOGGER = StatusLogger.getLogger();
 
     private ParameterFormatter() {}
 
@@ -240,12 +244,17 @@ final class ParameterFormatter {
             return;
         }
 
-        // Fail if there are insufficient arguments
-        if (analysis.placeholderCount > args.length) {
-            final String message = String.format(
-                    "found %d argument placeholders, but provided %d for pattern `%s`",
-                    analysis.placeholderCount, args.length, pattern);
-            throw new IllegalArgumentException(message);
+        // #2380: check if the count of placeholder is not equal to the count of arguments
+        if (analysis.placeholderCount != argCount) {
+            final int noThrowableArgCount =
+                    argCount < 1 ? 0 : argCount - ((args[argCount - 1] instanceof Throwable) ? 1 : 0);
+            if (analysis.placeholderCount != noThrowableArgCount) {
+                STATUS_LOGGER.warn(
+                        "found {} argument placeholders, but provided {} for pattern `{}`",
+                        analysis.placeholderCount,
+                        argCount,
+                        pattern);
+            }
         }
 
         // Fast-path for patterns containing no escapes
@@ -450,7 +459,7 @@ final class ParameterFormatter {
         if (!(o instanceof Date)) {
             return false;
         }
-        str.append(DATE_FORMATTER.format(((Date) o).toInstant()));
+        DATE_FORMATTER.formatTo(((Date) o).toInstant(), str);
         return true;
     }
 

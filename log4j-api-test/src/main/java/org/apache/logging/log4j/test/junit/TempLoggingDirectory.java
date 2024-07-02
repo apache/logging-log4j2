@@ -28,7 +28,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.TestProperties;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -45,8 +44,6 @@ import org.junit.platform.commons.support.ModifierSupport;
 
 public class TempLoggingDirectory implements BeforeAllCallback, BeforeEachCallback, ParameterResolver {
 
-    private static final Logger LOGGER = StatusLogger.getLogger();
-
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
         final List<Field> fields = AnnotationSupport.findAnnotatedFields(
@@ -54,7 +51,7 @@ public class TempLoggingDirectory implements BeforeAllCallback, BeforeEachCallba
         Path loggingPath = null;
         for (final Field field : fields) {
             if (loggingPath != null) {
-                LOGGER.warn("Multiple fields with @TempLoggingDir annotation are not supported.");
+                StatusLogger.getLogger().warn("Multiple fields with @TempLoggingDir annotation are not supported.");
             } else {
                 final CleanupMode cleanup = determineCleanupMode(field);
                 loggingPath = createLoggingPath(context, cleanup).getPath();
@@ -81,7 +78,7 @@ public class TempLoggingDirectory implements BeforeAllCallback, BeforeEachCallba
         final Object instance = context.getRequiredTestInstance();
         for (final Field field : fields) {
             if (loggingPath != null) {
-                LOGGER.warn("Multiple fields with @TempLoggingDir annotation are not supported.");
+                StatusLogger.getLogger().warn("Multiple fields with @TempLoggingDir annotation are not supported.");
             } else {
                 final CleanupMode cleanup = determineCleanupMode(field);
                 loggingPath = createLoggingPath(context, cleanup).getPath();
@@ -180,7 +177,7 @@ public class TempLoggingDirectory implements BeforeAllCallback, BeforeEachCallba
                     || (cleanupMode == ON_SUCCESS
                             && contexts.keySet().stream().anyMatch(context -> context.getExecutionException()
                                     .isPresent()))) {
-                LOGGER.debug("Skipping cleanup of directory {}.", path);
+                StatusLogger.getLogger().debug("Skipping cleanup of directory {}.", path);
                 return;
             }
             DirectoryCleaner.deleteDirectory(path);

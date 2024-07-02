@@ -1,0 +1,171 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Performance
+
+In this page we will guide you through certain steps that will show how to improve the performance of your Log4j configuration to serve your particular use case best.
+
+The act of logging is an interplay between the logging API (i.e., Log4j API) where the programmer publishes logs and a logging implementation (i.e., Log4j Core) where published logs get consumed; filtered, enriched, encoded, and written to files, databases, network sockets, etc.
+Both parties can have dramatic impact on performance.
+Hence, we will discuss the performance optimization of both individually:
+
+. <<api,Using Log4j API efficiently>>
+. <<core,Tuning Log4j Core for performance>>
+
+[#api]
+== Using Log4j API efficiently
+
+Log4j API bundles a rich set of features to either totally avoid or minimize expensive computations whenever possible.
+We will walk you through these features with examples.
+
+[TIP]
+====
+Remember that a logging API and a logging implementation are two different things.
+You can use Log4j API in combination with a logging implementation other than Log4j Core (e.g., Logback).
+**The tips shared in this section are logging implementation agnostic.**
+====
+
+[#api-concat]
+=== Don't use string concatenation
+
+If you are using `String` concatenation while logging, you are doing something very wrong and dangerous!
+
+* [ ] Don't use `String` concatenation to format arguments!
+This circumvents the handling of arguments by message type and layout.
+More importantly, **this approach is prone to attacks!**
+Imagine `userId` being provided by the user with the following content:
+`placeholders for non-existing args to trigger failure: {} {} \{dangerousLookup}`
++
+[source,java]
+----
+/* BAD! */ LOGGER.info("failed for user ID: " + userId);
+----
+
+* [x] Use message parameters.
+Parameterized messages allow safe encoding of parameters and avoid formatting totally if the message is filtered.
+For instance, if the associated level for the logger is discarded, no formatting will take place.
++
+[source,java]
+----
+/* GOOD */ LOGGER.info("failed for user ID `{}`", userId);
+----
+
+[#api-supplier]
+=== Use ``Supplier``s to pass computationally expensive arguments
+
+If one or more arguments of the log statement are computationally expensive, it is not wise to evaluate them knowing that their results can be discarded.
+Consider the following example:
+
+[source,java]
+----
+/* BAD! */ LOGGER.info("failed for user ID `{}` and role `{}`", userId, db.findUserRoleById(userId));
+----
+
+The database query (i.e., `db.findUserNameById(userId)`) can be a significant bottleneck if the created the log event will be discarded anyway – maybe the `INFO` level or the associated xref:manual/markers.adoc[marker] is not accepted for this package, or due to some other filtering.
+
+* [ ] The old-school way of solving this problem is to level-guard the log statement:
++
+[source,java]
+----
+/* BAD! */ if (LOGGER.isInfoEnabled()) { LOGGER.info(...); }
+----
++
+While this would work for cases where the message can be dropped due to insufficient level, this approach is still prone to other filtering cases; e.g., maybe the associated xref:manual/markers.adoc[marker] is not accepted.
+
+* [x] Use ``Supplier``s to pass arguments containing computationally expensive items:
++
+[source,java]
+----
+/* GOOD */ LOGGER.info("failed for user ID `{}` and role `{}`", () -> userId, () -> db.findUserRoleById(userId));
+----
+
+* [x] Use a `Supplier` to pass the message and its arguments containing computationally expensive items:
++
+[source,java]
+----
+/* GOOD */ LOGGER.info(() -> new ParameterizedMessage("failed for user ID `{}` and role `{}`", userId, db.findUserRoleById(userId)));
+----
+
+[#core]
+== Tuning Log4j Core for performance
+
+Below sections walk you through a set of features that can have significant impact on the performance of Log4j Core.
+
+include::partial$premature-optimization.adoc[]
+
+[TIP]
+====
+Remember that a logging API and a logging implementation are two different things.
+You can use Log4j Core in combination with a logging API other than Log4j API (e.g., SLF4J, JUL, JPL).
+**The tips shared in this section are logging API agnostic.**
+====
+
+[#layouts]
+=== Layouts
+
+xref:manual/layouts.adoc[Layouts] are responsible for encoding a log event in a certain format (human-readable text, JSON, etc.) and they can have significant impact in your overall logging performance.
+
+[#layouts-location]
+==== Location information
+
+include::partial$manual/layouts-location-information.adoc[]
+
+[#layouts-efficiency]
+==== Layout efficiency
+
+Not all layouts are designed with the same performance considerations in mind.
+Following layouts are known to be well-optimized for performance-sensitive workloads:
+
+xref:manual/json-template-layout.adoc#performance[JSON Template Layout]::
+It encodes log events into JSON according to the structure described by the template provided.
+Its output can safely be ingested into several log storage solutions: Elasticsearch, Google Cloud Logging, Graylog, Logstash, etc.
+
+xref:manual/pattern-layout.adoc#performance[Pattern Layout]::
+It encodes log events into human-readable text according to the pattern provided.
+
+[#async]
+=== Asynchronous logging
+
+Asynchronous logging is useful to deal with bursts of events.
+How this works is that a minimum amount of work is done by the application thread to capture all required information in a log event, and this log event is then put on a queue for later processing by a background thread.
+As long as the queue is sized large enough, the application threads should be able to spend very little time on the logging call and return to the business logic very quickly.
+
+include::partial$manual/async-trade-offs.adoc[leveloffset=+3]
+
+[#async-strategies]
+==== Asynchronous logging strategies
+
+Log4j provides following strategies users can choose from to do asynchronous logging:
+
+[#async-logger]
+===== Asynchronous logger
+
+xref:manual/async.adoc[Asynchronous loggers] use {lmax-disruptor-url}[LMAX Disruptor] messaging library to consume log events.
+Their aim is to return from a `log()` call to the application as soon as possible.
+
+[#async-appender]
+===== Asynchronous appender
+
+The xref:manual/appenders.adoc#AsyncAppender[asynchronous appender] accepts references to other appenders and causes log events to be written to them on a separate thread.
+The backing queue uses `ArrayBlockingQueue` by default, though it can be replaced with a better performing one suitable for your use case.
+
+[#gcfree]
+=== Garbage-free logging
+
+include::partial$manual/garbagefree-intro.adoc[]
+
+See xref:manual/garbagefree.adoc[] for details.

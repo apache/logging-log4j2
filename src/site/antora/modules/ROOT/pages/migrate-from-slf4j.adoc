@@ -1,0 +1,80 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Migrating from SLF4J
+
+{slf4j-url}[SLF4J] is a logging API whose reference implementation is {logback-url}[Logback], just like xref:manual/api.adoc[Log4j API] is a logging API whose reference implementation is Log4j Core.
+In this page we will guide you through migrating from SLF4J to Log4j API as your logging API.
+
+[TIP]
+====
+Instead of migrating your logging API, SLF4J, are you looking for migrating your logging implementation, Logback?
+Please refer to xref:migrate-from-logback.adoc[].
+====
+
+.Struggling with the logging API, implementation, and bridge concepts? Click for an introduction.
+[%collapsible]
+====
+include::partial$concepts.adoc[tag=!software-type]
+====
+
+[#migrating]
+== Migrating
+
+If your application or library logs using SLF4J, you can migrate it to Log4j API as follows:
+
+. Remove `org.slf4j:slf4j-api` dependency
+
+. Follow the instructions shared in the _"Getting started"_ page for xref:manual/getting-started.adoc#using-api[installing `log4j-api` and using it]
+
+. Search for `org.slf4j` usages in your project and replace them with Log4j API equivalents
++
+[IMPORTANT]
+====
+For an exhaustive list of code changes that need to be carried out, refer to https://docs.openrewrite.org/recipes/java/logging/log4j/slf4jtolog4j[the SLF4J to Log4j API migration OpenRewrite recipe].
+This you can use to
+
+. either manually follow the described migrations,
+. or run OpenRewrite to automatically migrate the code.
+====
++
+{slf4j-url}/api/org/slf4j/LoggerFactory.html[`org.slf4j.LoggerFactory`]::
+Replace its usages with link:javadoc/log4j-api/org/apache/logging/log4j/LogManager.html[`org.apache.logging.log4j.LogManager`].
+Note that `LogManager.getLogger(Foo.class)` can be simplified as `LogManager.getLogger()`, if `Foo` is the enclosing class of the field.
++
+{slf4j-url}/api/org/slf4j/Logger.html[`org.slf4j.Logger`]::
+Replace its usages with link:javadoc/log4j-api/org/apache/logging/log4j/Logger.html[`org.apache.logging.log4j.Logger`].
+Since SLF4J's `Logger` is almost a parent of Log4j's `Logger`, most methods should work without any changes.
++
+{slf4j-url}/api/org/slf4j/MDC.html[`org.slf4j.MDC`]::
+Replace its usages with link:javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html[`org.apache.logging.log4j.ThreadContext`].
+
+. If you use https://projectlombok.org/features/log[`@Slf4j` from Lombok], you need to replace them with `@Log4j2` instead.
+
+At this stage, you should have your application or library logging using Log4j API.
+
+If it is a library that you migrated,::
+then you don't need to take any extra steps.
+Unlike applications, libraries should be logging implementation agnostic.
+That is, libraries should log through a logging API, but leave the decision of the logging implementation to the application.
+
+If it is an application that you migrated, and you are not using Log4j Core as your logging implementation,::
+then you can consider doing so.
+Certain xref:manual/api.adoc[Log4j API features] (e.g., xref:manual/garbagefree.adoc[garbage-free logging]) require an end-to-end setup which is mostly possible using Log4j API in combination with Log4j Core.
++
+See xref:manual/installation.adoc[] for installing Log4j Core. +
+If you are using Logback, refer to xref:migrate-from-logback.adoc[].

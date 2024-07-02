@@ -1,0 +1,329 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Messages
+
+Unlike other logging APIs, which either restrict the description of log events to (possibly interpolated) Java ``String``s or allow generic Java ``Object``s, the Log4j API encapsulates every log message into the logging-specific link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html[`Message`] interface, before passing it to the logging implementation.
+Such an approach opens to developers a wide range of customization possibilities.
+
+include::partial$manual/log-event.adoc[]
+
+[#usage]
+== Usage
+
+While internally Log4j uses `Message` objects, the `Logger` interface provides various shortcut methods to create the most commonly used messages:
+
+* To create a <<SimpleMessage,`SimpleMessage`>> from a `String` argument, the following logger calls are equivalent:
++
+[source,java,indent=0]
+----
+include::example$manual/messages/MessagesExample.java[tag=simple]
+----
+
+* To create a <<ParameterizedMessage,`ParameterizedMessage`>> from a format `String` and an array of object parameters, the following logger calls are equivalent:
++
+[source,java,indent=0]
+----
+include::example$manual/messages/MessagesExample.java[tag=parameterized]
+----
+
+*In most cases, this is sufficient.*
+
+Nex to use cases sufficed with `String`-based messages, the link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html[`Message`] interface abstraction also allows users to log custom objects.
+This effectively provides logging convenience in certain use cases.
+For instance, imagine a scenario that uses a domain event to signal authentication failures:
+
+[source,java]
+----
+record LoginFailureEvent(String userName, InetSocketAddress remoteAddress) {}
+----
+
+When the developer wants to log a message reporting the event, we can see that the string construction becomes more challenging to read:
+
+[source,java,indent=0]
+----
+include::example$manual/messages/MessagesExample.java[tag=complex]
+----
+
+By extending the `Message` interface, developers can simplify the reporting of a login failure:
+
+[source,java,indent=0]
+----
+include::example$manual/messages/MessagesExample.java[tag=loginFailure]
+----
+
+<1> Domain model needs to implement the `Message` interface
+<2> `getFormattedMessage()` provides the `String` to be logged
+
+As a result, logging of `LoginFailureEvent` instances can be simplified as follows:
+
+[source,java,indent=0]
+----
+include::example$manual/messages/MessagesExample.java[tag=complex-message]
+----
+
+[#collection]
+== Collection
+
+This section explains predefined Log4j `Message` implementations addressing certain use cases.
+We will group this collection into following titles:
+
+* <<collection-string,Types intended for plain `String`-based messages>>
+* <<collection-structured,Types intended for structured logging>>
+
+[#collection-string]
+=== String-based types
+
+This section explains message types intended for human-readable `String`-typed output.
+
+[#FormattedMessage]
+==== `FormattedMessage`
+
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/FormattedMessage.html[`FormattedMessage`] is intended as a generic entry point to actual message implementations that use pattern-based formatting.
+It works as follows:
+
+. If the input is a valid https://docs.oracle.com/javase/{java-target-version}/docs/api/java/text/MessageFormat.html[`MessageFormat`] pattern, use <<MessageFormatMessage>>
+. If the input is a valid https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/Formatter.html#syntax[`String.format()` pattern], use <<StringFormattedMessage>>
+. Otherwise, use <<ParameterizedMessage>>
+
+[WARNING]
+====
+Due to checks involved, `FormattedMessage` has an extra performance overhead compared to directly using a concrete `Message` implementation.
+====
+
+[#LocalizedMessage]
+==== LocalizedMessage
+
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/LocalizedMessage.html[`LocalizedMessage`] incorporates a `ResourceBundle`, and allows the message pattern parameter to be the key to the message pattern in the bundle.
+If no bundle is specified, `LocalizedMessage` will attempt to locate a bundle with the name of the `Logger` used to log the event.
+The message retrieved from the bundle will be formatted using a <<FormattedMessage>>.
+
+[WARNING]
+====
+`LocalizedMessage` is primarily provided for compatibility with {logging-services-url}/log4j/1.x[Log4j 1].
+We advise you to perform log message localization at the representation layer of your application, e.g., the client UI.
+====
+
+[#MessageFormatMessage]
+==== `MessageFormatMessage`
+
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/MessageFormatMessage.html[`MessageFormatMessage`] formats its input using https://docs.oracle.com/javase/{java-target-version}/docs/api/java/text/MessageFormat.html[Java's `MessageFormat`].
+
+[WARNING]
+====
+While `MessageFormatMessage` offers more flexibility compared to <<ParameterizedMessage>>,
+the latter is engineered for performance, e.g., it is xref:manual/garbagefree.adoc[garbage-free].
+You are recommended to use `ParameterizedMessage` for performance-sensitive setups.
+====
+
+[#ObjectMessage]
+==== `ObjectMessage`
+
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/ObjectMessage.html[`ObjectMessage`] is a wrapper `Message` implementation to log custom domain model instances.
+It formats an input `Object` by calling its `toString()` method.
+If the object is found to be extending from <<StringBuilderFormattable>>, it uses `formatTo(StringBuilder)` instead.
+
+`ObjectMessage` can be thought as a convenience for <<ParameterizedMessage>> such that the following message instances are analogous:
+
+* `new ObjectMessage(obj)`
+* `new ParameterizedMessage("{}", obj)`
+
+That is,
+
+* They will both be formatted in the same way
+* `Message#getParameters()` will return an `Object[]` containing only `obj`
+
+Hence, `ObjectMessage` is intended more as a marker interface to indicate the single value it encapsulates.
+
+[#ReusableObjectMessage]
+[NOTE]
+====
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableObjectMessage.html[`ReusableObjectMessage`] provides functionally equivalent to <<ObjectMessage>>, plus methods to replace its content to enable xref:manual/garbagefree.adoc[].
+When garbage-free logging is enabled, xref:manual/api.adoc#loggers[loggers] will use this instead of <<ObjectMessage>>.
+====
+
+[#ParameterizedMessage]
+==== `ParameterizedMessage`
+
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/ParameterizedMessage.html[`ParameterizedMessage`] accepts a formatting pattern containing `{}` placeholders and a list of arguments.
+It formats the message such that each `{}` placeholder in the pattern is replaced with the corresponding argument.
+
+[#ReusableParameterizedMessage]
+[NOTE]
+====
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableParameterizedMessage.html[`ReusableParameterizedMessage`] provides functionally equivalent to <<ParameterizedMessage>>, plus methods to replace its content to enable xref:manual/garbagefree.adoc[].
+When garbage-free logging is enabled, xref:manual/api.adoc#loggers[loggers] will use this instead of <<ParameterizedMessage>>.
+====
+
+[#SimpleMessage]
+==== `SimpleMessage`
+
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/SimpleMessage.html[`SimpleMessage`] encapsulates a `String` or `CharSequence` that requires no formatting.
+
+[#ReusableSimpleMessage]
+[NOTE]
+====
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableSimpleMessage.html[`ReusableSimpleMessage`] provides functionally equivalent to <<SimpleMessage>>, plus methods to replace its content to enable xref:manual/garbagefree.adoc[].
+When garbage-free logging is enabled, xref:manual/api.adoc#loggers[loggers] will use this instead of <<SimpleMessage>>.
+====
+
+[#StringFormattedMessage]
+==== `StringFormattedMessage`
+
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/StringFormattedMessage.html[`StringFormattedMessage`] accepts a https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/Formatter.html#syntax[format string] and a list of arguments.
+It formats the message using https://docs.oracle.com/javase/{java-target-version}/docs/api/java/lang/String.html#format(java.lang.String,%20java.lang.Object...)[`java.lang.String#format()`].
+
+[WARNING]
+====
+While `StringFormattedMessage` offers more flexibility compared to <<ParameterizedMessage>>,
+the latter is engineered for performance, e.g., it is xref:manual/garbagefree.adoc[garbage-free].
+You are recommended to use `ParameterizedMessage` for performance-sensitive setups.
+====
+
+[#ThreadDumpMessage]
+==== `ThreadDumpMessage`
+
+If a link:../javadoc/log4j-api/org/apache/logging/log4j/message/ThreadDumpMessage.html[`ThreadDumpMessage`] is logged, Log4j generates stack traces for all threads.
+These stack traces will include any held locks.
+
+[#collection-structured]
+=== Structured types
+
+Log4j strives to provide top of the class support for *structured logging*.
+It complements xref:manual/layouts.adoc#structured-logging[structured layouts] with message types allowing users to create structured messages effectively resulting in an end-to-end structured logging experience.
+This section will introduce the predefined structured message types.
+
+.What is *structured logging*?
+[%collapsible]
+====
+include::partial$manual/structured-logging.adoc[]
+====
+
+[#MapMessage]
+==== `MapMessage`
+
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html[`MapMessage`] is a `Message` implementation that models a Java `Map` with `String`-typed keys and values.
+*It is an ideal generic message type for passing structured data.*
+
+`MapMessage` implements link:../javadoc/log4j-api/org/apache/logging/log4j/message/MultiformatMessage.html[`MultiformatMessage`] to facilitate encoding of its content in multiple formats.
+It supports following formats:
+
+[%header,cols="1m,5"]
+|===
+|Format |Description
+|XML |format as XML
+|JSON |format as JSON
+|JAVA |format as `Map#toString()` (the default)
+|JAVA_UNQUOTED |format as `Map#toString()`, but without quotes
+|===
+
+Some appenders handle ``MapMessage``s differently when there is no layout:
+
+* JMS Appender converts to a JMS `javax.jms.MapMessage`
+* xref:manual/appenders.adoc#JDBCAppender[JDBC Appender] converts to values in an `SQL INSERT` statement
+* xref:manual/appenders.adoc#NoSQLAppenderMongoDB[MongoDB NoSQL provider] converts to fields in a MongoDB object
+
+[#MapMessage-JsonTemplateLayout]
+===== JSON Template Layout
+
+xref:manual/json-template-layout.adoc[] has a specialized handling for ``MapMessage``s to properly encode them as JSON objects.
+
+[#StructuredDataMessage]
+==== `StructuredDataMessage`
+
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html[`StructuredDataMessage`] formats its content in a way compliant with https://datatracker.ietf.org/doc/html/rfc5424#section-6[the Syslog message format described in RFC 5424].
+
+[#StructuredDataMessage-Rfc5424Layout]
+===== RFC 5424 Layout
+
+`StructuredDataMessage` is mostly intended to be used in combination with xref:manual/layouts.adoc#RFC5424Layout[RFC 5424 Layout], which has specialized handling for ``StructuredDataMessage``s.
+By combining two, users can have complete control on how their message is encoded in a way compliant with RFC 5424, while RFC 5424 Layout will make sure the rest of the information attached to the log event is properly injected.
+
+[#StructuredDataMessage-JsonTemplateLayout]
+===== JSON Template Layout
+
+Since `StructuredDataMessage` extends from <<MapMessage>>, which xref:manual/json-template-layout.adoc[] has a specialized handling for, ``StructuredDataMessage``s will be properly encoded by JSON Template Layout too.
+
+[#performance]
+== Performance
+
+As explained in xref:usage[], `SimpleMessage` and `ParameterizedMessage` instances are created indirectly while interacting with `Logger` methods; `info()`, `error()`, etc.
+In a modern JVM, the allocation cost difference between these `Message` instances and plain ``String`` objects is marginal.
+If you observe this cost to be significant enough for your use case, you can enable xref:manual/garbagefree.adoc[].
+This will effectively cause `Message` instances to be recycled and avoid creating pressure on the garbage collector.
+In such a scenario, if you also have custom message types, consider implementing <<StringBuilderFormattable>> and introducing a message recycling mechanism.
+
+[#extending]
+== Extending
+
+If <<collection,predefined message types>> fall short of addressing your needs, you can extend from the link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html[`Message`] interface to either create your own message types or make your domain models take control of the message formatting.
+
+.Example custom message class
+[%collapsible]
+====
+.Snippet from {antora-examples-url}/manual/messages/CustomMessageExample.java[`CustomMessageExample.java`]
+[source,java,indent=0]
+----
+include::example$manual/messages/CustomMessageExample.java[tag=loginFailure]
+----
+<1> Extending from both `Message` and <<StringBuilderFormattable>> interfaces
+<2> Formats the message directly into a `StringBuilder`
+<3> `getFormattedMessage()` reuses `formatTo()`
+====
+
+[#format-type]
+=== Format type
+
+The link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html[`Message`] interface supports the notion of _format_ (e.g., JSON, XML) through its `getFormat()` method of return type `String`.
+Layouts leverage this mechanism to encode a message in a particular format.
+For instance, when xref:manual/json-template-layout.adoc[] figures out that `getFormat()` of a `Message` returns `JSON`, it injects the `Message#getFormattedMessage()` output as is without quoting it.
+This way a message implementation can communicate its support for a particular encoding.
+If you want to support multiple formats, extend from <<MultiformatMessage>>, and optionally from <<MultiFormatStringBuilderFormattable>>, instead.
+
+[#marker-interfaces]
+=== Marker interfaces
+
+There are certain Log4j API interfaces that you can _optionally_ extend from in your `Message` implementations to enable associated features:
+
+[#LoggerNameAwareMessage]
+==== `LoggerNameAwareMessage`
+
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/LoggerNameAwareMessage.html[`LoggerNameAwareMessage`] is a marker interface with a `setLoggerName(String)` method.
+This method will be called during event construction to pass the associated `Logger` to the `Message`.
+
+[#MultiformatMessage]
+==== `MultiformatMessage`
+
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/MultiformatMessage.html[`MultiformatMessage`] extends from `Message` to support multiple <<format-type,format types>>.
+For example, see {project-github-url}/tree/2.x/log4j-api/src/main/java/org/apache/logging/log4j/message/MapMessage.java[`MapMessage.java`] extending from `MultiformatMessage` to support multiple formats; XML, JSON, etc.
+
+[#MultiFormatStringBuilderFormattable]
+==== `MultiFormatStringBuilderFormattable`
+
+link:../javadoc/log4j-api/org/apache/logging/log4j/util/MultiFormatStringBuilderFormattable.html[`MultiFormatStringBuilderFormattable`] extends <<StringBuilderFormattable>> to support multiple <<format-type,format types>>.
+
+[#StringBuilderFormattable]
+==== `StringBuilderFormattable`
+
+Many xref:manual/layouts.adoc[layouts] recycle ``StringBuilder``s to encode log events xref:manual/garbagefree.adoc[without generating garbage], and this effectively results in significant xref:manual/performance.adoc[performance] benefits.
+link:../javadoc/log4j-api/org/apache/logging/log4j/util/StringBuilderFormattable.html[`StringBuilderFormattable`] is the primary interface facilitating the formatting of objects to a `StringBuilder`.
+
+[#TimestampMessage]
+==== `TimestampMessage`
+
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/TimestampMessage.html[`TimestampMessage`] provides a `getTimestamp()` method that will be called during log event construction to determine the instant instead of using the current timestamp.
+`Message` implementations that want to control the timestamp of the log event they are encapsulated in, they can extend from `TimestampMessage`.

@@ -24,10 +24,11 @@ import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ServiceLoader;
 import org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.ServiceLoaderUtil;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
@@ -61,7 +62,10 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
     }
 
     private static ThreadInfoFactory initFactory() {
-        return ServiceLoaderUtil.loadServices(ThreadInfoFactory.class, MethodHandles.lookup(), false)
+        return ServiceLoaderUtil.safeStream(
+                        ThreadInfoFactory.class,
+                        ServiceLoader.load(ThreadInfoFactory.class, ThreadDumpMessage.class.getClassLoader()),
+                        StatusLogger.getLogger())
                 .findFirst()
                 .orElseGet(BasicThreadInfoFactory::new);
     }

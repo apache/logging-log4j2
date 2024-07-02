@@ -1,0 +1,66 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+= Manual
+
+Apache Log4j is a versatile, industrial-grade Java logging framework composed of an API, its implementation,  and components to assist the deployment for various use cases.
+The project is actively maintained by a {logging-services-url}/team-list.html[team] of volunteers and {logging-services-url}/support[support]ed by a big community.
+
+Logging is an essential part of the software development process. 
+It provides a way to track the flow of execution in a program, allowing developers 
+to understand the application's behavior without needing a debugger. 
+This is particularly useful when tracking bugs or understanding why a particular code runs slowly.
+
+The original concept for Log4j was conceived in early 1996 when the 
+E.U. SEMPER project decided to develop its own tracing API. 
+In 2003, the project was donated to the Apache Software Foundation, which became Apache Log4j. 
+
+Since then, Log4j has seen numerous releases and has become a widely adopted solution.
+
+== When should you use Log4j?
+
+Log4j is an excellent choice for any Java application that needs logging capabilities. 
+It is user-friendly, fast, and flexible. You can use it to log messages at 
+different levels of severity, from debug to fatal, and you can configure it to 
+log messages to various destinations, such as files, databases, or the console.
+See xref:manual/getting-started.adoc[] for an introduction.
+
+== When not to use Log4j?
+
+While Log4j is a highly suitable choice for many applications, 
+it may be challenging to locate the information you require when 
+logging a high volume of messages. 
+Additionally, logging can impact your application's performance.
+
+Log4j offers solutions to address these concerns. However, if you are in 
+a unique situation where you are concerned about logging overhead or volume, you may wish 
+to consider not using logging at all.
+
+== What does Log4j offer?
+
+Log4j offers numerous features, including:
+
+include::partial$log4j-features.adoc[]
+
+== How to learn more?
+
+* xref:manual/getting-started.adoc[How can I get started with Log4j?]
+* xref:manual/installation.adoc[How can I install Log4j?]
+* xref:manual/configuration.adoc[How can I configure Log4j?]
+* xref:manual/api.adoc[How can I use Log4j API?]
+* xref:manual/performance.adoc[How can I tune my Log4j setup for performance?]
+* xref:manual/migration.adoc[How can I migrate from Log4j 1 to Log4j 2]?
+* xref:manual/plugins.adoc[What are Log4j plugins] and xref:manual/extending.adoc[how can I use them to extend Log4j?]

@@ -1,0 +1,63 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to you under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+#
+#  ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+#  ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+#  ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+#  ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+#   ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+#
+#  THIS FILE IS A STUB!
+#
+#  The actual `antora.yml` that is used in `target/generated-site/antora` is auto-generated from `antora.tmpl.yml`.
+#  Auto-generation happens during `pre-site` phase of Maven.
+#  Hence, you must always
+#
+#  1. Edit `antora.tmpl.yml`
+#  2. Edit `antora.yml` to match the `antora.tmpl.yml` and fill Maven-injected attributes with dummy values
+#
+
+name: home
+title: Home
+version: ~
+start_page: index.adoc
+asciidoc:
+  attributes:
+    # Commons
+    antora-examples-url: "https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples"
+    project-github-url: "https://github.com/apache/logging-log4j2/tree/2.x"
+    project-name: "Log4j"
+    project-id: "log4j"
+    java-target-version: "8"
+    java-compiler-version: "[17,18)"
+    logback-url: "https://logback.qos.ch"
+    logging-services-url: "https://logging.apache.org"
+    lmax-disruptor-url: "https://lmax-exchange.github.io/disruptor"
+    slf4j-url: "https://www.slf4j.org"
+    # Dependency versions
+    commons-csv-version: "1.2.3-commons-csv"
+    commons-logging-version: "1.2.3-commons-logging"
+    disruptor-version: "1.2.3-disruptor"
+    jackson-version: "1.2.3-jackson"
+    log4j-api-version: "1.2.3-api"
+    log4j-core-version: "1.2.3-core"
+    log4j-layout-template-json-version: "1.2.3-layout-template-json"
+    logback-version: "1.2.3-logback"
+    slf4j-version: "1.2.3-slf4j"
+nav:
+  - modules/ROOT/nav.adoc

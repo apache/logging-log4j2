@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.monitoring.runtime.instrumentation.AllocationRecorder;
@@ -47,15 +46,13 @@ public enum GcFreeLoggingTestUtil {
 
     public static void executeLogging(final String configurationFile, final Class<?> testClass) throws Exception {
 
-        System.setProperty("log4j2.enable.threadlocals", "true");
-        System.setProperty("log4j2.enable.direct.encoders", "true");
-        System.setProperty("log4j2.is.webapp", "false");
-        System.setProperty("log4j.configurationFile", configurationFile);
+        System.setProperty("log4j2.enableThreadlocals", "true");
+        System.setProperty("log4j2.enableDirectEncoders", "true");
+        System.setProperty("log4j2.configurationFile", configurationFile);
         System.setProperty("log4j2.clock", "SystemMillisClock");
 
         assertTrue(Constants.ENABLE_THREADLOCALS, "Constants.ENABLE_THREADLOCALS");
         assertTrue(Constants.ENABLE_DIRECT_ENCODERS, "Constants.ENABLE_DIRECT_ENCODERS");
-        assertFalse(Constants.IS_WEB_APP, "Constants.IS_WEB_APP");
 
         final MyCharSeq myCharSeq = new MyCharSeq();
         final Marker testGrandParent = MarkerManager.getMarker("testGrandParent");

@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
@@ -33,14 +32,11 @@ import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.impl.ContextDataFactory;
-import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
+import org.apache.logging.log4j.core.impl.ContextData;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.apache.logging.log4j.util.PerformanceSensitive;
-import org.apache.logging.log4j.util.ReadOnlyStringMap;
-import org.apache.logging.log4j.util.StringMap;
 
 /**
  * Filter based on a value in the Thread Context Map (MDC).
@@ -53,7 +49,6 @@ import org.apache.logging.log4j.util.StringMap;
 @PluginAliases("ContextMapFilter")
 @PerformanceSensitive("allocation")
 public class ThreadContextMapFilter extends MapFilter {
-    private final ContextDataInjector injector = ContextDataInjectorFactory.createInjector();
     private final String key;
     private final String value;
 
@@ -62,12 +57,6 @@ public class ThreadContextMapFilter extends MapFilter {
     public ThreadContextMapFilter(
             final Map<String, List<String>> pairs, final boolean oper, final Result onMatch, final Result onMismatch) {
         super(pairs, oper, onMatch, onMismatch);
-        // ContextDataFactory looks up a property. The Spring PropertySource may log which will cause recursion.
-        // By initializing the ContextDataFactory here recursion will be prevented.
-        final StringMap map = ContextDataFactory.createContextData();
-        LOGGER.debug(
-                "Successfully initialized ContextDataFactory by retrieving the context data with {} entries",
-                map.size());
         if (pairs.size() == 1) {
             final Iterator<Map.Entry<String, List<String>>> iter =
                     pairs.entrySet().iterator();
@@ -109,26 +98,18 @@ public class ThreadContextMapFilter extends MapFilter {
     private Result filter() {
         boolean match = false;
         if (useMap) {
-            ReadOnlyStringMap currentContextData = null;
             final IndexedReadOnlyStringMap map = getStringMap();
             for (int i = 0; i < map.size(); i++) {
-                if (currentContextData == null) {
-                    currentContextData = currentContextData();
-                }
-                final String toMatch = currentContextData.getValue(map.getKeyAt(i));
+                final String toMatch = ContextData.getValue(map.getKeyAt(i));
                 match = toMatch != null && ((List<String>) map.getValueAt(i)).contains(toMatch);
                 if ((!isAnd() && match) || (isAnd() && !match)) {
                     break;
                 }
             }
         } else {
-            match = value.equals(currentContextData().getValue(key));
+            match = value.equals(ContextData.getValue(key));
         }
         return match ? onMatch : onMismatch;
-    }
-
-    private ReadOnlyStringMap currentContextData() {
-        return injector.rawContextData();
     }
 
     @Override

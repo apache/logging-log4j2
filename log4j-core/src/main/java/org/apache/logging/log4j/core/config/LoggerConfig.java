@@ -59,7 +59,7 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Logger object that is created via configuration.
  */
-@Plugin(name = "logger", category = Node.CATEGORY, printObject = true)
+@Plugin(name = "Logger", category = Node.CATEGORY, printObject = true)
 public class LoggerConfig extends AbstractFilterable implements LocationAware {
 
     public static final String ROOT = "root";
@@ -213,7 +213,16 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             return filter;
         }
 
+        /**
+         * @deprecated Use {@link #withFilter(Filter)} instead
+         */
+        @Deprecated
         public B withtFilter(final Filter filter) {
+            this.filter = filter;
+            return asBuilder();
+        }
+
+        public B withFilter(final Filter filter) {
             this.filter = filter;
             return asBuilder();
         }
@@ -828,7 +837,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
     /**
      * The root Logger.
      */
-    @Plugin(name = ROOT, category = Core.CATEGORY_NAME, printObject = true)
+    @Plugin(name = "Root", category = Core.CATEGORY_NAME, printObject = true)
     public static class RootLogger extends LoggerConfig {
 
         @PluginBuilderFactory

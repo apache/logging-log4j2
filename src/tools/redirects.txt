@@ -1,0 +1,60 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+##
+# List of site redirects to check
+/log4j/2.x/articles.html /log4j/2.x/manual/index.html
+/log4j/2.x/log4j-1.2-api/index.html /log4j/2.x/log4j-1.2-api.html
+/log4j/2.x/log4j-api/apidocs/org/apache/logging/log4j/Logger.html /log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Logger.html
+/log4j/2.x/log4j-api/index.html /log4j/2.x/manual/api.html
+/log4j/2.x/log4j-api.html /log4j/2.x/manual/api.html
+/log4j/2.x/log4j-appserver/index.html /log4j/2.x/log4j-appserver.html
+/log4j/2.x/log4j-cassandra/index.html /log4j/2.x/log4j-cassandra.html
+/log4j/2.x/log4j-core/apidocs/org/apache/logging/log4j/core/LoggerContext.html /log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LoggerContext.html
+/log4j/2.x/log4j-couchdb/index.html /log4j/2.x/log4j-couchdb.html
+/log4j/2.x/log4j-docker/index.html /log4j/2.x/log4j-docker.html
+/log4j/2.x/log4j-flume-ng/index.html /log4j/2.x/log4j-flume-ng.html
+/log4j/2.x/log4j-iostreams/index.html /log4j/2.x/log4j-iostreams.html
+/log4j/2.x/log4j-jakarta-web/index.html /log4j/2.x/log4j-jakarta-web.html
+/log4j/2.x/log4j-jcl/index.html /log4j/2.x/manual/installation.html#impl-core-bridge-jcl
+/log4j/2.x/log4j-jcl.html /log4j/2.x/manual/installation.html#impl-core-bridge-jcl
+/log4j/2.x/log4j-jmx-gui/index.html /log4j/jmx-gui/latest/index.html
+/log4j/2.x/log4j-jmx-gui.html /log4j/jmx-gui/latest/index.html
+/log4j/2.x/log4j-jpl/index.html /log4j/2.x/manual/installation.html#impl-core-bridge-jpl
+/log4j/2.x/log4j-jpl.html /log4j/2.x/manual/installation.html#impl-core-bridge-jpl
+/log4j/2.x/log4j-jul/index.html /log4j/2.x/manual/installation.html#impl-core-bridge-jul
+/log4j/2.x/log4j-jul.html /log4j/2.x/manual/installation.html#impl-core-bridge-jul
+/log4j/2.x/log4j-mongodb3/index.html /log4j/2.x/manual/appenders.html#NoSQLAppenderMongoDB
+/log4j/2.x/log4j-mongodb3.html /log4j/2.x/manual/appenders.html#NoSQLAppenderMongoDB
+/log4j/2.x/log4j-mongodb4/index.html /log4j/2.x/manual/appenders.html#log4j-mongodb4
+/log4j/2.x/log4j-mongodb4.html /log4j/2.x/manual/appenders.html#log4j-mongodb4
+/log4j/2.x/log4j-slf4j-impl/index.html /log4j/2.x/manual/installation.html#impl-core-bridge-slf4j
+/log4j/2.x/log4j-slf4j-impl.html /log4j/2.x/manual/installation.html#impl-core-bridge-slf4j
+/log4j/2.x/log4j-slf4j2-impl/index.html /log4j/2.x/manual/installation.html#impl-core-bridge-slf4j
+/log4j/2.x/log4j-slf4j2-impl.html /log4j/2.x/manual/installation.html#impl-core-bridge-slf4j
+/log4j/2.x/manual/api-separation.html /log4j/2.x/manual/api.html
+/log4j/2.x/manual/scala-api.html /log4j/scala/latest/index.html
+/log4j/2.x/manual/usage.html /log4j/2.x/manual/api.html
+/log4j/2.x/release-notes/index.html /log4j/2.x/release-notes.html
+/log4j/2.x/runtime-dependencies.html /log4j/2.x/manual/installation.html
+/log4j/2.x/log4j-spring-boot/index.html /log4j/2.x/log4j-spring-boot.html
+/log4j/2.x/log4j-spring-cloud-config/index.html /log4j/2.x/log4j-spring-cloud-config.html
+/log4j/2.x/log4j-spring-cloud-config-client/index.html /log4j/2.x/log4j-spring-cloud-config-client.html
+/log4j/2.x/thanks.html /support.html#sponsors
+/log4j/2.x/log4j-taglib/index.html /log4j/2.x/log4j-taglib.html
+/log4j/2.x/log4j-web/index.html /log4j/2.x/log4j-web.html

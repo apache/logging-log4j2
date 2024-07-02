@@ -1,0 +1,61 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+Several layouts offer directives to include the _location information_: the caller class, method, file, and line.
+Log4j takes a snapshot of the stack, and walks the stack trace to find the location information.
+**This is an expensive operation** and should be avoided in performance-sensitive setups.
+
+[TIP]
+====
+Note that _the caller class_ of the location information and _the logger name_ are two different things.
+In most setups just using _the logger name_ – which doesn't incur any overhead to obtain while logging! – is a sufficient and **zero-cost substitute for the caller class**.
+
+.Example demonstrating that the logger name can be a substitute for the caller name
+[%collapsible]
+=====
+[source,java]
+----
+package com.mycompany;
+
+public class PaymentService {
+
+    // Logger name: `com.mycompany.PaymentService`
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    private static final class PaymentTransaction {
+        void doPayment() {
+            // Caller class: `com.mycompany.PaymentService$PaymentTransaction`
+            LOGGER.trace("...");
+        }
+    }
+
+}
+----
+
+In the above example, if _the caller class_ (which is expensive to compute!) is omitted in the layout, the produced log line will still be likely to contain sufficient information to trace back the source by just looking at _the logger name_.
+=====
+====
+
+Asynchronous loggers need to capture the location information before passing the log message to another thread; otherwise the location information will be lost after that point.
+Due to associated performance implications, xref:manual/async.adoc[asynchronous loggers] and xref:manual/appenders.adoc#AsyncAppender[asynchronous appenders] do **not** include location information by default.
+You can override the default behaviour in your asynchronous logger or asynchronous appender configuration.
+
+[NOTE]
+====
+Even if a layout is configured not to **request** location information, it might use it if the information is already available.
+This is always the case if the location information is captured at build time using the {logging-services-url}/log4j/transform/latest/#log4j-transform-maven-plugin[Log4j Transform Maven Plugin].
+====

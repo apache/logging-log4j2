@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "@antora/cli": "^3.2.0-alpha.4",
+    "@antora/site-generator-default": "^3.2.0-alpha.4",
+    "@asciidoctor/tabs": "^1.0.0-beta.6",
+    "asciidoctor-kroki": "^0.18.1",
+    "fast-xml-parser": "^4.3.6",
+    "handlebars": "^4.7.8"
+  }
+}

@@ -17,8 +17,6 @@
 package org.apache.logging.log4j.message;
 
 import java.io.Serializable;
-import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
@@ -34,9 +32,10 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
     private static final String ENTRY_DEFAULT_PREFIX = "Enter";
     private static final long serialVersionUID = 8578655591131397576L;
 
+    public static final FlowMessageFactory INSTANCE = new DefaultFlowMessageFactory();
+
     private final String entryText;
     private final String exitText;
-    private final MessageFactory messageFactory;
 
     /**
      * Constructs a message factory with {@code "Enter"} and {@code "Exit"} as the default flow strings.
@@ -53,15 +52,6 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
     public DefaultFlowMessageFactory(final String entryText, final String exitText) {
         this.entryText = entryText;
         this.exitText = exitText;
-        this.messageFactory = createDefaultMessageFactory();
-    }
-
-    private static MessageFactory createDefaultMessageFactory() {
-        try {
-            return LoaderUtil.newInstanceOf(AbstractLogger.DEFAULT_MESSAGE_FACTORY_CLASS);
-        } catch (final ReflectiveOperationException e) {
-            throw new IllegalStateException(e);
-        }
     }
 
     private static class AbstractFlowMessage implements FlowMessage, StringBuilderFormattable {
@@ -194,9 +184,9 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
         final boolean hasFormat = Strings.isNotEmpty(format);
         final Message message;
         if (params == null || params.length == 0) {
-            message = hasFormat ? messageFactory.newMessage(format) : null;
+            message = hasFormat ? ParameterizedMessageFactory.INSTANCE.newMessage(format) : null;
         } else if (hasFormat) {
-            message = messageFactory.newMessage(format, params);
+            message = ParameterizedMessageFactory.INSTANCE.newMessage(format, params);
         } else {
             final StringBuilder sb = new StringBuilder("params(");
             for (int i = 0; i < params.length; i++) {
@@ -206,7 +196,7 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
                 sb.append("{}");
             }
             sb.append(")");
-            message = messageFactory.newMessage(sb.toString(), params);
+            message = ParameterizedMessageFactory.INSTANCE.newMessage(sb.toString(), params);
         }
         return newEntryMessage(message);
     }
@@ -233,9 +223,9 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
         final boolean hasFormat = Strings.isNotEmpty(format);
         final Message message;
         if (result == null) {
-            message = hasFormat ? messageFactory.newMessage(format) : null;
+            message = hasFormat ? ParameterizedMessageFactory.INSTANCE.newMessage(format) : null;
         } else {
-            message = messageFactory.newMessage(hasFormat ? format : "with({})", result);
+            message = ParameterizedMessageFactory.INSTANCE.newMessage(hasFormat ? format : "with({})", result);
         }
         return newExitMessage(message);
     }

@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.script.AbstractScript;
 /**
  * A  container of Scripts.
  */
-@Plugin(name = "scripts", category = Core.CATEGORY_NAME)
+@Plugin(name = "Scripts", category = Core.CATEGORY_NAME)
 public final class ScriptsPlugin {
 
     private ScriptsPlugin() {}

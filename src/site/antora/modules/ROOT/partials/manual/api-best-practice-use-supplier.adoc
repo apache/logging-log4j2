@@ -1,0 +1,47 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+If one or more arguments of the log statement are computationally expensive, it is not wise to evaluate them knowing that their results can be discarded.
+Consider the following example:
+
+[source,java]
+----
+/* BAD! */ LOGGER.info("failed for user ID `{}` and role `{}`", userId, db.findUserRoleById(userId));
+----
+
+The database query (i.e., `db.findUserNameById(userId)`) can be a significant bottleneck if the created the log event will be discarded anyway – maybe the `INFO` level is not accepted for this logger, or due to some other filtering.
+
+* [ ] The old-school way of solving this problem is to level-guard the log statement:
++
+[source,java]
+----
+/* OKAY */ if (LOGGER.isInfoEnabled()) { LOGGER.info(...); }
+----
++
+While this would work for cases where the message can be dropped due to insufficient level, this approach is still prone to other filtering cases; e.g., maybe the associated xref:manual/markers.adoc[marker] is not accepted.
+* [x] Use ``Supplier``s to pass arguments containing computationally expensive items:
++
+[source,java]
+----
+/* GOOD */ LOGGER.info("failed for user ID `{}` and role `{}`", () -> userId, () -> db.findUserRoleById(userId));
+----
+* [x] Use a `Supplier` to pass the message and its arguments containing computationally expensive items:
++
+[source,java]
+----
+/* GOOD */ LOGGER.info(() -> new ParameterizedMessage("failed for user ID `{}` and role `{}`", userId, db.findUserRoleById(userId)));
+----

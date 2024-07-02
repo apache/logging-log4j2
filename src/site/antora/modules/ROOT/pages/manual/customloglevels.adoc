@@ -1,0 +1,281 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+= Levels
+
+Log levels are used to categorize log events by severity and control the verbosity of the logs.
+They are one of many xref:manual/api.adoc#fish-tagging[_fish tagging_ capabilities provided by Log4j API].
+Using levels, you can filter out less important logs and focus on the most critical ones.
+
+Log4j contains following predefined levels:
+
+.Standard log levels
+[%header,cols="1,1m",id=standard-log-levels]
+|===
+| Name | Priority
+
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#OFF[`OFF`]<<dont-use-in-code,[see note]>>
+| 0
+
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#FATAL[`FATAL`]
+| 100
+
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#ERROR[`ERROR`]
+| 200
+
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#WARN[`WARN`]
+| 300
+
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#INFO[`INFO`]
+| 400
+
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#DEBUG[`DEBUG`]
+| 500
+
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#TRACE[`TRACE`]
+| 600
+
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#ALL[`ALL`]<<dont-use-in-code,[see note]>>
+| Integer.MAX_VALUE
+|===
+
+[IMPORTANT,id=dont-use-in-code]
+====
+The `OFF` and `ALL` levels are special: they should not be used to fish-tag log events.
+
+Log4j implementations, such as Log4j Core, can use `OFF` in their configuration files to disable all log statements and `ALL` to enabled them all.
+====
+
+A level is composed of a case-sensitive name and a *priority* (of type `int`), which is used to define an order while comparing two.
+Priority can be used in several contexts to express a filtering capability, for instance:
+
+* `WARN` is _less severe_ than `ERROR`
+* `WARN` is _more specific_ than `ERROR`
+
+The entry point to log levels are through link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[`Level`].
+Predefined levels are available for Log4j API integrators through link:../javadoc/log4j-api/org/apache/logging/log4j/spi/StandardLevel.html[`StandardLevel`].
+
+[#usage]
+== [[StandardLoggerInterface]] Usage
+
+To assign a level to a log event you can use one of the variants of the
+link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#log(org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message)[`Logger.log(..)`]
+and
+link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#atLevel(org.apache.logging.log4j.Level)[`Logger.atLevel(Level)`]
+methods:
+
+[source,java,indent=0]
+----
+include::example$manual/customloglevels/LevelExample.java[tag=standard]
+----
+
+The `Logger` interface also contains shorthand methods that always log at a specified log level:
+
+.Shorthand `Logger` methods
+[%header,cols="1m,3m"]
+|===
+| Effective level | Shorthand methods
+
+| FATAL
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#fatal(org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message)[Logger.fatal(..)],
+link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#atFatal()[Logger.atFatal()]
+
+| ERROR
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#error(org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message)[Logger.error(..)],
+link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#atError()[Logger.atError()]
+
+| WARN
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#warn(org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message)[Logger.warn(..)],
+link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#atWarn()[Logger.atWarn()]
+
+| INFO
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#info(org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message)[Logger.info(..)],
+link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#atInfo()[Logger.atInfo()]
+
+| DEBUG
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#debug(org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message)[Logger.debug(..)],
+link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#atDebug()[Logger.atDebug()]
+
+| TRACE
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#trace(org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message)[Logger.trace(..)],
+link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#atTrace()[Logger.atTrace()]
+
+|===
+
+By using shorthand methods, you can rewrite the example above as:
+
+[source,java,indent=0]
+----
+include::example$manual/customloglevels/LevelExample.java[tag=shorthand]
+----
+
+[#level-selection]
+=== Which level to use?
+
+[CAUTION]
+====
+While Log4j API defines a set of standard levels, it does not define the purpose of these levels.
+Many different conventions on which log levels to use coexist in the industry.
+When in doubt, you should ask your teammates about the convention used at your company.
+====
+
+Most log level usage conventions divide log levels into two categories:
+
+* the most severe log levels (e.g. `FATAL`, `ERROR` and `WARN`) are used to inform the system administrator about a problem in the Java application that needs to be fixed.
+The more severe the problem, the more severe the log level.
++
+Log events with these levels should be used sparingly and should allow the system administrator to fix the problem.
+
+* the less severe log levels (e.g. `INFO`, `DEBUG`, `TRACE`) provide context that allow a system administrator or developer to diagnose the reason of an application failure.
+The most severe of them describe events that concern the whole application, while the less severe describe events that are interesting for a single sub-system.
+
+[#DefiningLevelsInCode]
+=== Custom log levels
+
+While most Java logging APIs adopt the same set of standard logging levels, some logging APIs, such as xref:log4j-jul.adoc#default-level-conversions[JUL]
+and external logging systems, such as
+https://datatracker.ietf.org/doc/html/rfc5424#section-6.2.1[Syslog]
+and
+https://opentelemetry.io/docs/specs/otel/logs/data-model/#displaying-severity[OpenTelemetry]
+support additional logging levels that can not be mapped to the standard ones.
+
+To improve interoperability between logging systems, Log4j API supports custom log levels that can be defined using the
+link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html#forName(java.lang.String,int)[`Level.forName()`]
+method:
+
+[source,java,indent=0]
+----
+include::example$manual/customloglevels/LevelExample.java[tag=custom-definition]
+----
+
+Custom log levels can be used in your code with the usual `Logger.log(..)` and `Logger.atLevel(Level)` methods:
+
+[source,java,indent=0]
+----
+include::example$manual/customloglevels/LevelExample.java[tag=custom]
+----
+
+[#implementation-support]
+== Implementation support
+
+All logging implementations support filtering of log events, based on their log level, but the number of available log levels varies between implementations.
+
+[WARNING]
+====
+While most logging implementations support <<standard-log-levels,standard log levels>>, custom log levels are only supported by Log4j Core (and the EOL Log4j 1).
+To ensure independence from a specific logging implementation you should restrict your log statements to **standard** log levels.
+
+If you use custom log levels as a fish-tagging technique, you can use alternative
+xref:manual/api.adoc#fish-tagging[fish-tagging features]
+such as
+xref:manual/markers.adoc[],
+which are supported by multiple logging implementations.
+====
+
+[#DefiningLevelsInConfiguration]
+=== Log4j Core
+
+The Log4j Core implementation fully supports both standard and custom levels.
+Similarly to the <<DefiningLevelsInCode,Log4j API usage>>, custom levels must be defined in a configuration file before they can be used.
+You can do it using
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-CustomLevelConfig[`CustomLevel`]
+configuration elements:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/customloglevels/log4j2.xml[`log4j2.xml`]
+[source,xml]
+----
+include::example$manual/customloglevels/log4j2.xml[lines=23..38,indent=0]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/customloglevels/log4j2.json[`log4j2.json`]
+[source,xml]
+----
+include::example$manual/customloglevels/log4j2.json[lines=3..39,indent=0]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/customloglevels/log4j2.yaml[`log4j2.yaml`]
+[source,yaml]
+----
+include::example$manual/customloglevels/log4j2.yaml[lines=18..-1,indent=0]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/customloglevels/log4j2.properties[`log4j2.properties`]
+[source,properties]
+----
+include::example$manual/customloglevels/log4j2.properties[lines=17..-1]
+----
+====
+
+<1> All the available xref:manual/layouts.adoc[] support printing levels.
+In the case of
+xref:manual/pattern-layout.adoc[]
+you can use a xref:manual/pattern-layout.adoc#converter-level[`%p` or `%level`] pattern.
+<2> Loggers support a xref:manual/configuration.adoc#logger-attributes-level[`level`] configuration attribute to filter log events.
+<3> A xref:manual/configuration.adoc#appenderref-attributes-level[`level`] attribute is also available in appender references.
+<4> Custom levels must be defined before they can be used.
+<5> Custom levels can be used anywhere a standard level can be used.
+
+[#slf4j-implementations]
+=== SLF4J implementations (Logback)
+
+Since SLF4J only supports five log levels (`ERROR`, `WARN`, `INFO`, `DEBUG` and `TRACE`) and does not support custom log levels,
+Log4j API levels are converted according to the following table:
+
+.Log4j to SLF4J level conversion
+[%header,cols="1m,1m,1m"]
+|===
+| Log4j level priority | Log4j standard levels | SLF4J Level
+
+| 0 < priority < 300
+| FATAL, ERROR
+| https://www.slf4j.org/api/org/slf4j/event/Level.html#ERROR[ERROR]
+
+| 300 &le; priority < 400
+| WARN
+| https://www.slf4j.org/api/org/slf4j/event/Level.html#WARN[WARN]
+
+| 400 &le; priority < 500
+| INFO
+| https://www.slf4j.org/api/org/slf4j/event/Level.html#INFO[INFO]
+
+| 500 &le; priority < 600
+| DEBUG
+| https://www.slf4j.org/api/org/slf4j/event/Level.html#DEBUG[DEBUG]
+
+| 600 &le; priority
+| TRACE
+| https://www.slf4j.org/api/org/slf4j/event/Level.html#TRACE[TRACE]
+
+|===
+
+[#jul]
+=== JUL (`java.util.logging`)
+
+Similarly to Log4j API, `java.util.logging` also supports custom log levels, but the current
+xref:log4j-to-jul.adoc[] implementation does not take advantage of them.
+The conversion of between Log4j log levels and JUL levels is performed accordingly to the following table:
+
+include::partial$manual/levels-log4j-to-jul.adoc[]

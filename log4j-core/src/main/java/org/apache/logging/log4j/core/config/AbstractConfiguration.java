@@ -76,6 +76,7 @@ import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.core.util.Watcher;
 import org.apache.logging.log4j.core.util.WatcherFactory;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
@@ -479,8 +480,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     protected Level getDefaultStatus() {
-        final String statusLevel = PropertiesUtil.getProperties()
-                .getStringProperty(Constants.LOG4J_DEFAULT_STATUS_LEVEL, Level.ERROR.name());
+        final PropertiesUtil properties = PropertiesUtil.getProperties();
+        String statusLevel = properties.getStringProperty(StatusLogger.DEFAULT_STATUS_LISTENER_LEVEL);
+        if (statusLevel == null) {
+            statusLevel = properties.getStringProperty(Constants.LOG4J_DEFAULT_STATUS_LEVEL, Level.ERROR.name());
+        }
         try {
             return Level.toLevel(statusLevel);
         } catch (final Exception ex) {

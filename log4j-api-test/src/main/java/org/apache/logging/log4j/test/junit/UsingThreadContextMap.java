@@ -39,5 +39,5 @@ import org.junitpioneer.jupiter.ReadsSystemProperty;
 @Inherited
 @ExtendWith(ThreadContextMapExtension.class)
 @ReadsSystemProperty
-@ResourceLock(value = Resources.THREAD_CONTEXT, mode = ResourceAccessMode.READ)
+@ResourceLock(value = Log4jStaticResources.THREAD_CONTEXT, mode = ResourceAccessMode.READ)
 public @interface UsingThreadContextMap {}

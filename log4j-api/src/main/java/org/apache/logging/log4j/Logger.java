@@ -200,7 +200,6 @@ public interface Logger {
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void debug(Marker marker, String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -222,7 +221,6 @@ public interface Logger {
      *            message factory.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void debug(Marker marker, Supplier<?> messageSupplier);
 
     /**
@@ -235,7 +233,6 @@ public interface Logger {
      * @param throwable A Throwable or null.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void debug(Marker marker, Supplier<?> messageSupplier, Throwable throwable);
 
     /**
@@ -329,7 +326,6 @@ public interface Logger {
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void debug(String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -348,7 +344,6 @@ public interface Logger {
      *            message factory.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void debug(Supplier<?> messageSupplier);
 
     /**
@@ -360,7 +355,6 @@ public interface Logger {
      * @param throwable the {@code Throwable} to log, including its stack trace.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void debug(Supplier<?> messageSupplier, Throwable throwable);
 
     /**
@@ -811,7 +805,6 @@ public interface Logger {
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void error(Marker marker, String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -833,7 +826,6 @@ public interface Logger {
      *            message factory.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void error(Marker marker, Supplier<?> messageSupplier);
 
     /**
@@ -846,7 +838,6 @@ public interface Logger {
      * @param throwable A Throwable or null.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void error(Marker marker, Supplier<?> messageSupplier, Throwable throwable);
 
     /**
@@ -940,7 +931,6 @@ public interface Logger {
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void error(String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -959,7 +949,6 @@ public interface Logger {
      *            message factory.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void error(Supplier<?> messageSupplier);
 
     /**
@@ -971,7 +960,6 @@ public interface Logger {
      * @param throwable the {@code Throwable} to log, including its stack trace.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void error(Supplier<?> messageSupplier, Throwable throwable);
 
     /**
@@ -1414,7 +1402,6 @@ public interface Logger {
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void fatal(Marker marker, String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -1436,7 +1423,6 @@ public interface Logger {
      *            message factory.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void fatal(Marker marker, Supplier<?> messageSupplier);
 
     /**
@@ -1449,7 +1435,6 @@ public interface Logger {
      * @param throwable A Throwable or null.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void fatal(Marker marker, Supplier<?> messageSupplier, Throwable throwable);
 
     /**
@@ -1543,7 +1528,6 @@ public interface Logger {
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void fatal(String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -1562,7 +1546,6 @@ public interface Logger {
      *            message factory.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void fatal(Supplier<?> messageSupplier);
 
     /**
@@ -1574,7 +1557,6 @@ public interface Logger {
      * @param throwable the {@code Throwable} to log, including its stack trace.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void fatal(Supplier<?> messageSupplier, Throwable throwable);
 
     /**
@@ -1901,12 +1883,13 @@ public interface Logger {
 
     /**
      * Gets the message factory used to convert message Objects and Strings/CharSequences into actual log Messages.
-     *
-     * Since version 2.6, Log4j internally uses message factories that implement the {@link MessageFactory2} interface.
-     * From version 2.6.2, the return type of this method was changed from {@link MessageFactory} to
-     * {@code <MF extends MessageFactory> MF}. The returned factory will always implement {@link MessageFactory2},
-     * but the return type of this method could not be changed to {@link MessageFactory2} without breaking binary
-     * compatibility.
+     * <p>
+     *     Since version 2.6, Log4j internally uses message factories that implement the {@link MessageFactory2}
+     *     interface. From version 2.6.2, the return type of this method was changed from {@link MessageFactory} to
+     *     {@code <MF extends MessageFactory> MF}. The returned factory will always implement {@link MessageFactory2},
+     *     but the return type of this method could not be changed to {@link MessageFactory2} without breaking binary
+     *     compatibility.
+     * </p>
      *
      * @return the message factory, as an instance of {@link MessageFactory2}
      */
@@ -2030,7 +2013,6 @@ public interface Logger {
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void info(Marker marker, String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -2052,7 +2034,6 @@ public interface Logger {
      *            message factory.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void info(Marker marker, Supplier<?> messageSupplier);
 
     /**
@@ -2065,7 +2046,6 @@ public interface Logger {
      * @param throwable A Throwable or null.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void info(Marker marker, Supplier<?> messageSupplier, Throwable throwable);
 
     /**
@@ -2159,7 +2139,6 @@ public interface Logger {
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void info(String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -2178,7 +2157,6 @@ public interface Logger {
      *            message factory.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void info(Supplier<?> messageSupplier);
 
     /**
@@ -2190,7 +2168,6 @@ public interface Logger {
      * @param throwable the {@code Throwable} to log, including its stack trace.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void info(Supplier<?> messageSupplier, Throwable throwable);
 
     /**
@@ -2737,7 +2714,6 @@ public interface Logger {
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void log(Level level, Marker marker, String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -2760,7 +2736,6 @@ public interface Logger {
      *            message factory.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void log(Level level, Marker marker, Supplier<?> messageSupplier);
 
     /**
@@ -2774,7 +2749,6 @@ public interface Logger {
      * @param throwable A Throwable or null.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void log(Level level, Marker marker, Supplier<?> messageSupplier, Throwable throwable);
 
     /**
@@ -2878,7 +2852,6 @@ public interface Logger {
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void log(Level level, String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -2899,7 +2872,6 @@ public interface Logger {
      *            message factory.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void log(Level level, Supplier<?> messageSupplier);
 
     /**
@@ -2912,7 +2884,6 @@ public interface Logger {
      * @param throwable the {@code Throwable} to log, including its stack log.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void log(Level level, Supplier<?> messageSupplier, Throwable throwable);
 
     /**
@@ -3435,7 +3406,6 @@ public interface Logger {
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void trace(Marker marker, String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -3458,7 +3428,6 @@ public interface Logger {
      *            message factory.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void trace(Marker marker, Supplier<?> messageSupplier);
 
     /**
@@ -3471,7 +3440,6 @@ public interface Logger {
      * @param throwable A Throwable or null.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void trace(Marker marker, Supplier<?> messageSupplier, Throwable throwable);
 
     /**
@@ -3567,7 +3535,6 @@ public interface Logger {
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void trace(String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -3587,7 +3554,6 @@ public interface Logger {
      *            message factory.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void trace(Supplier<?> messageSupplier);
 
     /**
@@ -3599,7 +3565,6 @@ public interface Logger {
      * @param throwable the {@code Throwable} to log, including its stack trace.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void trace(Supplier<?> messageSupplier, Throwable throwable);
 
     /**
@@ -3967,7 +3932,6 @@ public interface Logger {
      *
      * @since 2.6
      */
-    @SuppressWarnings("deprecation")
     EntryMessage traceEntry(Supplier<?>... paramSuppliers);
 
     /**
@@ -3986,7 +3950,6 @@ public interface Logger {
      *
      * @since 2.6
      */
-    @SuppressWarnings("deprecation")
     EntryMessage traceEntry(String format, Supplier<?>... paramSuppliers);
 
     /**
@@ -4205,7 +4168,6 @@ public interface Logger {
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void warn(Marker marker, String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -4227,7 +4189,6 @@ public interface Logger {
      *            message factory.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void warn(Marker marker, Supplier<?> messageSupplier);
 
     /**
@@ -4240,7 +4201,6 @@ public interface Logger {
      * @param throwable A Throwable or null.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void warn(Marker marker, Supplier<?> messageSupplier, Throwable throwable);
 
     /**
@@ -4334,7 +4294,6 @@ public interface Logger {
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void warn(String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -4353,7 +4312,6 @@ public interface Logger {
      *            message factory.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void warn(Supplier<?> messageSupplier);
 
     /**
@@ -4365,7 +4323,6 @@ public interface Logger {
      * @param throwable the {@code Throwable} to log, including its stack warn.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
     void warn(Supplier<?> messageSupplier, Throwable throwable);
 
     /**
@@ -4695,7 +4652,12 @@ public interface Logger {
      * @since 2.13.0
      */
     default void logMessage(
-            Level level, Marker marker, String fqcn, StackTraceElement location, Message message, Throwable throwable) {
+            final Level level,
+            final Marker marker,
+            final String fqcn,
+            final StackTraceElement location,
+            final Message message,
+            final Throwable throwable) {
         // noop
     }
 
@@ -4768,7 +4730,7 @@ public interface Logger {
      * @return a LogBuilder.
      * @since 2.13.0
      */
-    default LogBuilder atLevel(Level level) {
+    default LogBuilder atLevel(final Level level) {
         return LogBuilder.NOOP;
     }
 }

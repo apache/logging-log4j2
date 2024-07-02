@@ -16,8 +16,10 @@
 .project
 .idea
 **/*.iml
+.vscode
 /.metadata/
 /.mvn/wrapper/maven-wrapper.jar
+/.mvn/.develocity
 .flattened-pom.xml
 .project
 .settings
@@ -35,3 +37,6 @@ velocity.log
 felix-cache/
 /.metadata/
 .DS_Store
+node
+node_modules
+package-lock.json

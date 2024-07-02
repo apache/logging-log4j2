@@ -28,8 +28,8 @@ public interface TemplateResolverStringSubstitutor<V> {
     StrSubstitutor getInternalSubstitutor();
 
     /**
-     * A substitutor is stable if the replacement doesn't vary with the provided
-     * value. In such a case, value is always set to {@code null}.
+     * A substitutor is stable if the replacement doesn't vary with the provided value.
+     * That is, in a stable substitutor, {@code value} argument of {@link #replace(Object, String)} is always ignored.
      */
     boolean isStable();
 
