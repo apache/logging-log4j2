@@ -540,7 +540,9 @@ include::example$manual/webapp/log4j2-single.properties[tag=global]
 * Logging events to a separate appender for each application.
 In this case, you can use
 xref:manual/appenders.adoc#RoutingAppender[routing appender]
-to separate the events:
+to separate the events.
+This kind of configuration might be used on the development server together with the
+xref:manual/pattern-layout.adoc[human-friendly Pattern Layout]:
 +
 [tabs]
 ====
@@ -606,6 +608,7 @@ xref:manual/systemproperties.adoc#log4j2.enableJndiContextSelector[`log4j2.enabl
 Log4j configuration property to `true`,
 . Each web application needs to configure the servlet context parameter `isLog4jContextSelectorNamed` to `true` and provide a value for the `log4jContextName` servlet context parameter and `java:comp/env/log4j/context-name` JNDI environment entry:
 +
+.Snippet from an example {antora-examples-url}/manual/webapp/jndi.xml[`web.xml`]
 [source,xml,indent=0]
 ----
 include::example$manual/webapp/jndi.xml[tag=jndi]
