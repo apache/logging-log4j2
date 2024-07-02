@@ -27,16 +27,20 @@ In a Jakarta EE environment, there are two possible approaches to logging:
 
 While the first approach is the easiest to implement, it has some limitations:
 
-* Log events emitted by each application and the libraries bundled with it will be handled by Log4j Core,
+Shared libraries::
+Log events emitted by each application and the libraries bundled with it will be handled by Log4j Core,
 but events related to the application emitted by a **shared** library (e.g. JPA implementation) will be handled by the application server.
 To diagnose a problem with the application, you might need to look into multiple log files.
-* Each application must use a **different** log file to prevent problems with concurrent access to the same file by multiple applications.
+Separate log files::
+Each application must use a **different** log file to prevent problems with concurrent access to the same file by multiple applications.
 Problems may arise, especially if xref:manual/appenders.adoc#rollingfileappender[rolling file appender] is used.
-* Web applications have a different lifecycle from the application server.
+Lifecycle::
+Web applications have a different lifecycle from the application server.
 Additional care is required to stop Log4j Core when the application is stopped.
 See <<log4j-jakarta-web>> for more details.
 
-The second approach is more complex and requires changes to the configuration of the application server.
+The second approach requires changes to the configuration of the application server,
+but produces better results in terms of separating log events of different applications.
 See <<sharing>> for more details.
 
 [#log4j-jakarta-web]
