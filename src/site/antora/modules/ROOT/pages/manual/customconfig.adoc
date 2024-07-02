@@ -188,8 +188,8 @@ You can use this `getInstance()` method to load a configuration file programmati
 ----
 include::example$manual/customconfig/Usage.java[tag=loadConfigurationFile,indent=0]
 ----
-<1> Passing the optional `LoggerContext` argument as null, since this `Configuration` is not associated with a `LoggerContext` yet
-<2> Passing the optional configuration name argument as null, it will default to the configuration source location
+<1> Passing the `LoggerContext` argument as null, since this is the first time we are instantiating this `Configuration`, and it is not associated with a `LoggerContext` yet
+<2> Passing the configuration name argument as null, since it is not used when the configuration source location is provided
 <3> URI pointing to the configuration file; `file://path/to/log4j2.xml`, `classpath:log4j2.xml`, etc.
 
 [#CompositeConfiguration]
