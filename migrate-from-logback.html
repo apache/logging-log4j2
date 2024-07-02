@@ -524,6 +524,89 @@ To assist with migrating Logback configuration components to Log4j Core, see the
 <p>For the complete list of all Log4j configuration knobs, see <a href="manual/configuration.html" class="xref page">the Configuration page</a>.</p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="parameterized-logging"><a class="anchor" href="#parameterized-logging"></a>Parameterized logging</h3>
+<div class="paragraph">
+<p>A common mistake in parameterized logging is to add a <code>{}</code> placeholder for the exception associated with a log event:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">} catch (Exception exception) {
+    logger.error("The foo process exited with an error: {}", exception);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Log4j Core and Logback differ in the way they treat this statement:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Logback</dt>
+<dd>
+<p>Logback interprets the <code>exception</code> argument as throwable and removes it from the list of parameters.
+We end up with a parameterized statement with one placeholder, but zero parameters.
+The placeholder therefore remains as is:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">The foo process exited with and error: {}
+java.lang.RuntimeException: Message
+    at example.MigrateFromLogback.doLogWrong(MigrateFromLogback.java:10)
+...</code></pre>
+</div>
+</div>
+</dd>
+<dt class="hdlist1">Log4j Core</dt>
+<dd>
+<p>Log4j Core first looks for the parameters of the message.
+Since the format string has one placeholder, the <code>exception</code> argument is interpreted as a parameter of the log message.
+The throwable associated to the log event is <code>null</code>, which results in a missing stack trace:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">The foo process exited with and error: java.lang.RuntimeException: Message</code></pre>
+</div>
+</div>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>To fix this problem and get the same output in both backends, you should remove the placeholder from the format string:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">} catch (Exception exception) {
+    logger.error("The foo process exited with an error.", exception);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After the change, the output will look us:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">The foo process exited with and error.
+java.lang.RuntimeException: Message
+    at example.MigrateFromLogback.doLogWrong(MigrateFromLogback.java:10)
+...</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>As a temporary solution, the SLF4J-to-Log4j API bridges contain a special
+<a href="manual/api.html#logger-message-factories" class="xref page"><code>MessageFactory</code></a>
+that classifies trailing <code>Throwable</code> arguments in the same way Logback does.
+To use it, you need to set the <a href="manual/systemproperties.html#log4j2.messageFactory" class="xref page"><code>log4j2.messageFactory</code></a> configuration property to <code>org.apache.logging.slf4j.message.ThrowableConsumingMessageFactory</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 </div>
 </article>
