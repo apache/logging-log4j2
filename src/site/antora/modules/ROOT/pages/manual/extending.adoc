@@ -92,9 +92,8 @@ Yet when this happens, you can use xref:manual/systemproperties.adoc#log4j2.prov
 === `LoggerContextFactory`
 
 link:../javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextFactory.html[`LoggerContextFactory`] is the factory class used by Log4j API implementations to create xref:manual/architecture.adoc#LoggerContext[`LoggerContext`]s.
-If you are using Log4j Core, you can provide a custom implementation using xref:manual/systemproperties.adoc#log4j2.loggerContextFactory[the `log4j2.loggerContextFactory` property].
-Another way to provide a custom `LoggerContextFactory` is to <<Provider,provide a custom `Provider`>>.
-But this is generally discouraged, since it requires a more complicated setup and is intended mostly to be used by Log4j API implementations.
+If you are using Log4j Core, you can use <<ContextSelector>>s to influence the way its `LoggerContextFactory` implementation works.
+If you are creating a new Log4j API implementation, you should <<Provider,provide a custom `Provider`>> to introduce your custom `LoggerContextFactory` implementation.
 
 [#ContextSelector]
 === `ContextSelector`
