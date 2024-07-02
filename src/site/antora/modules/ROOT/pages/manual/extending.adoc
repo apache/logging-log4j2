@@ -115,7 +115,7 @@ You can use xref:manual/systemproperties.adoc#log4j2.configurationFactory[the `l
 === `LoggerConfig`
 
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/LoggerConfig.html[`LoggerConfig`] denotes the `Logger` configurations in a `Configuration`.
-A custom `LoggerConfig` needs to suffice following conditions:
+A custom `LoggerConfig` needs to satisfy the following conditions:
 
 * It needs to extend from `LoggerConfig` class
 * It needs to be declared as a <<Custom_Plugins,plugin>>
