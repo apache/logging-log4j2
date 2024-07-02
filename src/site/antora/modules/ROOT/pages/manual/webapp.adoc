@@ -14,7 +14,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-
+[#jakarta-ee]
 = Using Log4j in a Jakarta EE environment
 :jetty-latest-url: https://jetty.org/docs/jetty/12
 :tomcat-latest-url: https://tomcat.apache.org/tomcat-11.0-doc
@@ -29,9 +29,9 @@ While the first approach is the easiest to implement, it has some limitations:
 
 * Log events emitted by each application and the libraries bundled with it will be handled by Log4j Core,
 but events related to the application emitted by a **shared** library (e.g. JPA implementation) will be handled by the application server.
-To diagnose a problem with the application you might need to look into multiple log files.
+To diagnose a problem with the application, you might need to look into multiple log files.
 * Each application must use a **different** log file to prevent problems with concurrent access to the same file by multiple applications.
-Problems may arise especially if xref:manual/appenders.adoc#rollingfileappender[rolling file appender] is used.
+Problems may arise, especially if xref:manual/appenders.adoc#rollingfileappender[rolling file appender] is used.
 * Web applications have a different lifecycle from the application server.
 Additional care is required to stop Log4j Core when the application is stopped.
 See <<log4j-jakarta-web>> for more details.
@@ -44,12 +44,14 @@ See <<sharing>> for more details.
 
 [NOTE]
 ====
-To avoid problems, some Log4j API and Log4j Core features are automatically disabled, when running in a Jakarta EE environment. Most notably:
+To avoid problems,
+some Log4j API and Log4j Core features are automatically disabled when running in a Jakarta EE environment.
+Most notably:
 
-- the usage of `ThreadLocal` for object pooling is disabled,
+- the usage of `ThreadLocal` for object pooling is disabled.
 - a web-safe implementation of
-link:../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html[`ThreadContextMap`] is used,
-- JMX notifications are sent synchronously,
+link:../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html[`ThreadContextMap`] is used.
+- JMX notifications are sent synchronously.
 - the JVM shutdown hook is disabled.
 
 See xref:manual/systemproperties.adoc#log4j2.isWebapp[`log4j2.isWebapp`] for more details.
@@ -58,12 +60,13 @@ See xref:manual/systemproperties.adoc#log4j2.isWebapp[`log4j2.isWebapp`] for mor
 Using a logging implementation like **Log4j Core** in a Jakarta EE application requires particular care.
 Since the lifecycle of a container or web application is independent of the lifecycle of the JVM, it's important for logging resources to be properly cleaned up (database connections closed, files closed, etc.) when the container or web application shuts down.
 
-To properly synchronize the lifecycles of Log4j Core and Jakarta EE applications an additional **Log4j Web** artifact is provided.
+To properly synchronize the lifecycles of Log4j Core and Jakarta EE applications,
+an additional **Log4j Web** artifact is provided.
 
 [#log4j-jakarta-web-installation]
 === Installation
 
-In order to install Log4j Web in your web application, you need to add it as runtime dependency:
+To install Log4j Web in your web application, you need to add it as a runtime dependency:
 
 include::partial$manual/dependencies-log4j-jakarta-web.adoc[]
 
@@ -71,8 +74,8 @@ If you are writing a Servlet 3.0 or later application, Apache Log4j Web will reg
 https://jakarta.ee/specifications/servlet/5.0/apidocs/jakarta/servlet/servletcontainerinitializer[`ServletContainerInitializer`]
 that takes care of configuring the Log4j lifecycle for you. Under the hood this will:
 
-* initialize Log4j Core with the correct configuration file,
-* register a `Log4jServletContextListener` to automatically shut down Log4j Core, when the application shuts down,
+* initialize Log4j Core with the correct configuration file.
+* register a `Log4jServletContextListener` to automatically shut down Log4j Core, when the application shuts down.
 * register a `Log4jServletFilter` to enable the xref:manual/lookups.adoc#WebLookup[web lookup].
 
 See also <<web-application-specific>>.
@@ -83,7 +86,7 @@ While the Servlet Specification allows web fragments to automatically add contex
 (see https://jakarta.ee/specifications/servlet/5.0/jakarta-servlet-spec-5.0#Assembling_the_descriptor[Section 8.2.3]).
 
 If other context listeners in your application use logging, you need to make sure that `Log4jServletContextListener` is the last listener to be executed at shutdown.
-In order to do it you must create a `web.xml` descriptor and add the `Log4jServletContextListener` explicitly as the **first** context listener:
+To do it, you must create a `web.xml` descriptor and add the `Log4jServletContextListener` explicitly as the **first** context listener:
 
 [source,xml,indent=0]
 ----
@@ -91,9 +94,11 @@ include::example$manual/webapp/web.xml[tag=context-listener]
 ----
 ====
 
+[#log4j-jakarta-manual-instalation]
 ==== Manual installation
 
-If you are maintaining an older Servlet 2.5 (or earlier) application or if you disabled
+If you are maintaining an older Servlet 2.5 (or earlier) application,
+or if you disabled the <<isLog4jAutoInitializationDisabled,servlet container initializer>>.
 
 [source,xml,indent=0]
 ----
@@ -141,7 +146,7 @@ If set to `true`, the `Log4jServletContextListener` will not register a `Log4jSe
 | https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/concurrent/TimeUnit.html#SECONDS[`SECONDS`]
 |===
 
-The `TimeUnit` to use for the shut-down delay.
+Specifies the `TimeUnit` used for the shut-down delay.
 
 [id=log4j.stop.timeout]
 ==== `log4j.stop.timeout`
@@ -167,7 +172,7 @@ The `TimeUnit` to use for the shut-down delay.
 | _automatically computed_
 |===
 
-Specifies the name of the logger context to use.
+Used to specify the name of the logger context.
 
 If <<jndi-configuration,`JndiContextSelector`>> is used, this parameter **must** be explicitly provided. Otherwise, the default value is:
 
@@ -203,17 +208,17 @@ Must be set to `true` to use the <<jndi-configuration,JNDI configuration>>.
 The location of a Log4j Core configuration file.
 If the provided value is not an **absolute** URI, Log4j interprets it as:
 
-. path to a
-https://jakarta.ee/specifications/servlet/5.0/apidocs/jakarta/servlet/servletcontext#getResource(java.lang.String)[servlet context resource], if it exists,
-. path to a file, if it exists,
-. path to a
-https://docs.oracle.com/javase/8/docs/api/java/lang/ClassLoader.html#getResource-java.lang.String-[classpath resource], otherwise.
+. the path to an existing
+https://jakarta.ee/specifications/servlet/5.0/apidocs/jakarta/servlet/servletcontext#getResource(java.lang.String)[servlet context resource],
+. the path to an existing file,
+. the path to a
+https://docs.oracle.com/javase/8/docs/api/java/lang/ClassLoader.html#getResource-java.lang.String-[classpath resource].
 
 If no value is provided:
 
 . Log4j Web looks for a servlet context resource named `/WEB-INF/log4j2-<contextName>.<extension>`, where `<contextName>` is the name of the logger context,
 . if no such file exists it looks for a servlet context resource named `/WEB-INF/log4j2.<extension>`,
-. otherwise it searches for a configuration file on the classpath using the usual https://logging.apache.org/log4j/2.x/manual/configuration.html#automatic-configuration[automatic configuration procedure].
+. otherwise, it searches for a configuration file on the classpath using the usual https://logging.apache.org/log4j/2.x/manual/configuration.html#automatic-configuration[automatic configuration procedure].
 
 [#async]
 === Asynchronous requests and threads
@@ -221,10 +226,12 @@ If no value is provided:
 In order for the
 xref:manual/lookups.adoc#WebLookup[web lookup]
 to work correctly, Log4j must be able to always identify the `ServletContext` used by the current thread.
-When standard requests, forwards, includes, and error resources are processed, the `Log4jServletFilter` binds the `LoggerContext` to the thread handling the request, and you don't have to do anything.
+When standard requests, forwards, inclusions, and error resources are processed,
+the `Log4jServletFilter` binds the `LoggerContext` to the thread handling the request,
+and you don't have to do anything.
 
 The handling of asynchronous requests is however more tricky, since it allows you to execute code on threads that were not prepared by `Log4jServletFilter`.
-Such a situation occurs for example, if your code was started using the
+Such a situation occurs, for example, if your code was started using the
 https://jakarta.ee/specifications/servlet/5.0/apidocs/jakarta/servlet/asynccontext#start(java.lang.Runnable)[`AsyncContext.start(Runnable)`]
 method.
 
@@ -251,7 +258,7 @@ include::example$manual/webapp/AsyncServlet.java[tag=manual]
 
 To help users add logging statements to JavaServer Pages, Log4j provides a JSP tag library modeled after the
 https://web.archive.org/web/20140215182415/http://jakarta.apache.org/taglibs/log/[Jakarta Commons Log Tag library].
-In order to use it, you need to add the following runtime dependency to your web application project:
+To use it, you need to add the following runtime dependency to your web application project:
 
 include::partial$manual/dependencies-log4j-taglib.adoc[]
 
@@ -266,7 +273,8 @@ include::example$manual/webapp/taglib.jsp[tag=declaration]
 ====
 The Log4j Taglib component is deprecated and is scheduled for removal in Log4j 3.
 
-Currently, it only works with JavaServer Pages 2.3 or older and no version compatible with Jakarta Server Pages 3.0 is available.
+Currently, it only works with JavaServer Pages 2.3 and previous releases,
+and no version compatible with Jakarta Server Pages 3.0 is available.
 ====
 
 The Log4j Taglib library defines a tag for most
@@ -327,7 +335,7 @@ WildFly::
 WildFly implicitly adds a shared copy of `log4j-api` to each web application deployment.
 This copy of `log4j-api` is configured to forward all events to WildFly's centralized logging system and does **not** use the copy of Log4j Core bundled with the web application.
 +
-In order to use Log4j Core, you need to set the `add-logging-api-dependencies` attribute of the logging subsystem to `false`.
+To use Log4j Core, you need to set the `add-logging-api-dependencies` attribute of the logging subsystem to `false`.
 See {wildfly-latest-url}/Admin_Guide.html#logging-attributes[WildFly documentation] for more details.
 
 [#sharing]
@@ -339,7 +347,7 @@ without losing the ability to configure logging for each application separately.
 Sharing Log4j Core has two main advantages:
 
 * You can send log statements from multiple applications to the same log file.
-Under the hood Log4j Core will use a single
+Under the hood, Log4j Core will use a single
 xref:manual/architecture.adoc#AbstractManager[manager]
 per file, which will serialize concurrent access from multiple applications.
 * You can capture log statements issued by other shared libraries, so you don't have to look for them in the global application server log.
@@ -347,7 +355,7 @@ per file, which will serialize concurrent access from multiple applications.
 [#sharing-setup]
 === Setup
 
-In order to share Log4j Core between applications, you need to share at least these two JAR files:
+To share Log4j Core between applications, you need to share at least these two JAR files:
 
 * https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-api/{log4j-api-version}[`log4j-api`]
 * https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-core/{log4j-core-version}[`log4j-core`]
@@ -359,7 +367,7 @@ if you use a Java EE application server)
 Since sharing libraries between applications is not part of the Jakarta EE standard, the instructions are specific to each application server:
 
 GlassFish::
-In GlassFish you can add those libraries to the _common classloader_.
+In GlassFish, you can add those libraries to the _common classloader_.
 See https://glassfish.org/docs/latest/application-development-guide.html#circumventing-class-loader-isolation[GlassFish documentation] for more details.
 
 Jetty::
@@ -390,7 +398,7 @@ https://jakarta.ee/specifications/servlet/6.0/jakarta-servlet-spec-6.0#web-appli
 ) use a _"parent last"_ delegation strategy, but prevent application from overriding implementation classes provided by the container.
 
 If you share Log4j between applications and the applications themselves contain Log4j Core, the logging behavior depends on the application server.
-Some application servers will use the shared instance (e.g. WildFly), while others will use the application instance (e.g. Tomcat).
+Some application servers will use the shared instance (e.g., WildFly), while others will use the application instance (e.g., Tomcat).
 There are two solutions to this problem:
 
 * you can remove Log4j from the WAR or EAR archive:
@@ -402,22 +410,23 @@ of all Log4j libraries as `provided`.
 
 Gradle::
 If you use Gradle, you can add `log4j-api` to the `providedCompile` configuration, while `log4j-core` to the `providedRuntime` configuration.
-See https://docs.gradle.org/current/userguide/war_plugin.html#sec:war_dependency_management[Gradle WAR plugin] for more details.
+See the https://docs.gradle.org/current/userguide/war_plugin.html#sec:war_dependency_management[Gradle WAR plugin] for more details.
 
-* you can use an application server specific configuration option to delegate the loading of Log4j API to the parent classloader.
+* you can use an application-server-specific configuration option to delegate the loading of Log4j API to the parent classloader.
 ====
 
 [#log-separation]
 === Log separation
 
-When using a shared instance of Log4j Core, you might be interested to identify the application associated to a given log event.
+When using a shared instance of Log4j Core,
+you might be interested in identifying the application associated with a given log event.
 Log4j Core provides a mechanism to split all
 link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html[`Logger`]
 instances into logging domains called
 xref:manual/architecture.adoc#LoggerContext[`LoggerContext`]s.
 You have therefore two ways to separate log events:
 
-. You can create a separate logger context for each web application and one for the common libraries.
+. You can create a separate logger context for each web application and one context for the common libraries.
 See <<multiple-contexts>> for more details.
 . You can also use a **single** logger context for all log events, but use
 xref:manual/lookups.adoc[lookups] to add context data to your log events.
@@ -425,7 +434,8 @@ See <<single-context>> for more details.
 
 [IMPORTANT]
 ====
-These two approaches deliver similar results for log events generates by the web applications themselves or the libraries bundled in the WAR or EAR archive.
+These two approaches deliver similar results for log events generated by the web applications themselves or the libraries
+bundled in the WAR or EAR archive.
 
 Differences between these approaches appear in the handling of **shared** libraries.
 There are two kinds of shared libraries:
@@ -436,18 +446,19 @@ These libraries will always use the same logger context, which will not be one o
 This kind includes all the shared libraries, which were not written with Jakarta EE in mind.
 
 . Shared libraries that use **instance** `Logger` fields.
-These libraries will use the logger context associated to the web application that uses them.
+These libraries will use the logger context associated with the web application that uses them.
 +
-Application server implementation usually use instance `Logger` fields.
+Application server implementations usually use instance `Logger` fields.
 
-Since the first kind of libraries is more common, counterintuitively the <<single-context>> approach will usually give better results than the <<multiple-contexts>> approach.
+Since the first kind of libraries is more common,
+counterintuitively the <<single-context>> approach will usually give better results than the <<multiple-contexts>> approach.
 ====
 
 [#single-context]
 ==== Single logger context
 
 By default, Log4j Core creates a separate logger context per classloader.
-In order to use a single logger context you need to set the
+To use a single logger context, you need to set the
 xref:manual/systemproperties.adoc#log4j2.contextSelector[`log4j2.contextSelector`]
 system property to:
 
@@ -458,7 +469,7 @@ to use synchronous loggers,
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/BasicAsyncLoggerContextSelector.html[`org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector`]
 to use asynchronous loggers.
 
-In this approach you must use xref:manual/lookups.adoc[lookups] to register the application that generated a log event.
+In this approach, you must use xref:manual/lookups.adoc[lookups] to register the application that generated a log event.
 The most useful lookups in this case are:
 
 Web lookup::
@@ -470,12 +481,12 @@ JNDI lookup::
 It covers a larger part of the handling of a request, but it requires additional setup to export the name of the application via JNDI.
 See xref:manual/lookups.adoc#JndiLookup[JNDI lookup] for more information.
 
-When using a single logger context you choose between:
+When using a single logger context, you choose between:
 
-* logging all events to a single appender.
+* Logging all events to a single appender.
 We strongly recommend using a structured layout (e.g., xref:manual/json-template-layout.adoc[]) with an additional field capturing the Servlet context name.
 This would allow separation of application logs by filtering on the context name.
-Following example demonstrates this scheme using a Socket Appender writing to Elasticsearch:
+The following example demonstrates this scheme using a Socket Appender writing to Elasticsearch:
 +
 [tabs]
 ====
@@ -508,8 +519,8 @@ include::example$manual/webapp/log4j2-single.properties[tag=global]
 ----
 ====
 
-* logging events to a separate appender for each application.
-In this case you can use
+* Logging events to a separate appender for each application.
+In this case, you can use
 xref:manual/appenders.adoc#RoutingAppender[routing appender]
 to separate the events:
 +
@@ -550,7 +561,7 @@ include::example$manual/webapp/log4j2-single.properties[tag=routing]
 Since Log4j Core uses
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ClassLoaderContextSelector.html[`ClassLoaderContextSelector`]
 by default, no configuration is needed to achieve multiple logger contexts in your application server:
-the classes of each classloader will use the logger context associated to the classloader.
+the classes of each classloader will use the logger context associated with the classloader.
 
 [TIP]
 ====
@@ -559,15 +570,15 @@ To provide a different configuration file for each logger context, you can add f
 See <<log4jContextName>> and <<log4jConfiguration>> for more details.
 ====
 
-Associating logger contexts to classloaders has however some limitations: **shared** libraries will not be able to use the per-application logger contexts.
-To overcome this limitation Log4j Core provides an alternative algorithm to determine the right logger context to choose: JNDI lookups.
+Associating logger contexts to classloaders has, however, some limitations: **shared** libraries will not be able to use the per-application logger contexts.
+To overcome this limitation, Log4j Core provides an alternative algorithm to determine the right logger context to choose: JNDI lookups.
 
 [#jndi-configuration]
 ==== JNDI context selector
 
-Application servers set up the correct JNDI context as soon as they determine, which application will handle a request.
+Application servers set up the correct JNDI context as soon as they determine which application will handle a request.
 Log4j Core allows the usage of JNDI to coordinate the usage of logger contexts in a Jakarta EE application server.
-In order to use this feature, you need to:
+To use this feature, you need to:
 
 . Set the
 xref:manual/systemproperties.adoc#log4j2.contextSelector[`log4j2.contextSelector`]
@@ -583,7 +594,7 @@ include::example$manual/webapp/jndi.xml[tag=jndi]
 ----
 
 [#replace]
-== Replacing application server logging subsystem
+== Replacing the application server logging subsystem
 
 Some application servers allow administrators to replace the default logging subsystem of the application server with Log4j Core.
 Known instructions are listed in the section.
@@ -594,10 +605,11 @@ If your application server is not listed here, check the documentation of the ap
 
 Tomcat uses a modified version of Apache Commons Logging called
 {tomcat-latest-url}/logging.html[Tomcat JULI]
-as internal logging system.
-Tomcat JULI uses `java.util.logging` as default logging implementation, but since Tomcat 8.5 you can easily replace it with a different backend.
+as the internal logging system.
+Tomcat JULI uses `java.util.logging` as default logging implementation,
+but since Tomcat 8.5 you can replace it with a different backend.
 
-In order to use Log4j Core as logging backend, you need to modify the
+To use Log4j Core as logging backend, you need to modify the
 {tomcat-latest-url}/class-loader-howto.html#Class_Loader_Definitions[system classloader]
 of the server.
 Assuming `$CATALINA_BASE` is the main directory of your Tomcat instance you need to:
