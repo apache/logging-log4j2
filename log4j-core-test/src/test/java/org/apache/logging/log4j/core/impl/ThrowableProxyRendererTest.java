@@ -33,6 +33,7 @@ public class ThrowableProxyRendererTest {
                 new ArrayList<>(),
                 new PlainTextRenderer(),
                 "",
-                System.lineSeparator());
+                System.lineSeparator(),
+                Integer.MAX_VALUE);
     }
 }

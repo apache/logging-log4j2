@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.pattern;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +27,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.impl.ThrowableFormatOptions;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.StringBuilderWriter;
+import org.apache.logging.log4j.core.util.internal.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -188,23 +188,24 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         if (len > 0 && !Character.isWhitespace(buffer.charAt(len - 1))) {
             buffer.append(' ');
         }
-        if (!options.allLines() || nonStandardLineSeparator || Strings.isNotBlank(suffix)) {
-            final StringWriter w = new StringWriter();
-            throwable.printStackTrace(new PrintWriter(w));
-
-            final String[] array = w.toString().split(Strings.LINE_SEPARATOR);
-            final int limit = options.minLines(array.length) - 1;
-            final boolean suffixNotBlank = Strings.isNotBlank(suffix);
-            for (int i = 0; i <= limit; ++i) {
-                buffer.append(array[i]);
-                if (suffixNotBlank) {
-                    buffer.append(' ');
-                    buffer.append(suffix);
-                }
-                if (i < limit) {
-                    buffer.append(options.getSeparator());
+        if (requireAdditionalFormatting(suffix)) {
+            final StackTraceElement[] stackTrace = throwable.getStackTrace();
+            int ignoredCount = 0;
+            for (final StackTraceElement stackTraceElement : stackTrace) {
+                if (!ignoreElement(stackTraceElement, options.getIgnorePackages())) {
+                    if (ignoredCount > 0) {
+                        appendSuppressedCount(buffer, ignoredCount, suffix, options.getSeparator());
+                        ignoredCount = 0;
+                    }
+                    appendEntry(stackTraceElement, buffer, suffix, options.getSeparator());
+                } else {
+                    ++ignoredCount;
                 }
             }
+            if (ignoredCount > 0) {
+                appendSuppressedCount(buffer, ignoredCount, suffix, options.getSeparator());
+            }
+            StringBuilders.truncateAfterDelimiter(buffer, options.getSeparator(), options.getLines());
         } else {
             throwable.printStackTrace(new PrintWriter(new StringBuilderWriter(buffer)));
         }
@@ -234,5 +235,51 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
 
     public ThrowableFormatOptions getOptions() {
         return options;
+    }
+
+    private boolean requireAdditionalFormatting(final String suffix) {
+        return !options.allLines() || nonStandardLineSeparator || Strings.isNotBlank(suffix) || options.hasPackages();
+    }
+
+    private static boolean ignoreElement(final StackTraceElement element, final List<String> ignorePackages) {
+        if (ignorePackages != null) {
+            final String className = element.getClassName();
+            for (final String pkg : ignorePackages) {
+                if (className.startsWith(pkg)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static void appendSuppressedCount(
+            final StringBuilder sb, final int count, final String suffix, final String lineSeparator) {
+        if (count == 1) {
+            sb.append("\t... ");
+        } else {
+            sb.append("\t... suppressed ");
+            sb.append(count);
+            sb.append(" lines");
+        }
+        appendSuffix(sb, suffix);
+        sb.append(lineSeparator);
+    }
+
+    private static void appendEntry(
+            final StackTraceElement stackTraceElement,
+            final StringBuilder sb,
+            final String suffix,
+            final String lineSeparator) {
+        sb.append(stackTraceElement.toString());
+        appendSuffix(sb, suffix);
+        sb.append(lineSeparator);
+    }
+
+    private static void appendSuffix(final StringBuilder buffer, final String suffix) {
+        if (Strings.isNotBlank(suffix)) {
+            buffer.append(' ');
+            buffer.append(suffix);
+        }
     }
 }
