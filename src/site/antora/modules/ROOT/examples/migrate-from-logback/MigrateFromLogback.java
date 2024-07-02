@@ -26,8 +26,8 @@ class MigrateFromLogback {
         try {
             // do something
             // tag::wrong[]
-        } catch (Exception e) {
-            logger.error("The foo process exited with an error: {}", e);
+        } catch (Exception exception) {
+            logger.error("The foo process exited with an error: {}", exception);
         }
         // end::wrong[]
     }
@@ -36,8 +36,8 @@ class MigrateFromLogback {
         try {
             // do something
             // tag::right[]
-        } catch (Exception e) {
-            logger.error("The foo process exited with an error.", e);
+        } catch (Exception exception) {
+            logger.error("The foo process exited with an error.", exception);
         }
         // end::right[]
     }
