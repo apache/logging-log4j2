@@ -120,7 +120,7 @@ include::example$migrate-from-logback/MigrateFromLogback.java[tag=wrong]
 Log4j Core and Logback differ in the way they treat this statement:
 
 Logback::
-Logback interprets the `e` argument as throwable and removes it from the list of parameters.
+Logback interprets the `exception` argument as throwable and removes it from the list of parameters.
 We end up with a parameterized statement with one placeholder, but zero parameters.
 The placeholder therefore remains as is:
 +
@@ -134,7 +134,7 @@ java.lang.RuntimeException: Message
 
 Log4j Core::
 Log4j Core first looks for the parameters of the message.
-Since the format string has one placeholder, the `e` argument is interpreted as a parameter of the log message.
+Since the format string has one placeholder, the `exception` argument is interpreted as a parameter of the log message.
 The throwable associated to the log event is `null`, which results in a missing stack trace:
 +
 [source]
@@ -142,7 +142,7 @@ The throwable associated to the log event is `null`, which results in a missing 
 The foo process exited with and error: java.lang.RuntimeException: Message
 ----
 
-To fix this problem and obtain the same output in both backends, you should remove the placeholder from the format string:
+To fix this problem and get the same output in both backends, you should remove the placeholder from the format string:
 
 [source,java,indent=0]
 ----
@@ -165,3 +165,4 @@ As a temporary solution, the SLF4J-to-Log4j API bridges contain a special
 xref:manual/api.adoc#logger-message-factories[`MessageFactory`]
 that classifies trailing `Throwable` arguments in the same way Logback does.
 To use it, you need to set the xref:manual/systemproperties.adoc#log4j2.messageFactory[`log4j2.messageFactory`] configuration property to `org.apache.logging.slf4j.message.ThrowableConsumingMessageFactory`.
+====
