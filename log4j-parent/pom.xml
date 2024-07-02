@@ -84,7 +84,7 @@
     <flapdoodle-embed.version>4.11.0</flapdoodle-embed.version>
     <flapdoodle-reverse.version>1.7.2</flapdoodle-reverse.version>
     <flume.version>1.11.0</flume.version>
-    <groovy.version>3.0.21</groovy.version>
+    <groovy.version>3.0.22</groovy.version>
     <guava.version>33.2.1-jre</guava.version>
     <h2.version>2.2.224</h2.version>
     <hadoop.version>1.2.1</hadoop.version>
