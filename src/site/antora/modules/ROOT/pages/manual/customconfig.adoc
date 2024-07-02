@@ -97,6 +97,7 @@ Above Log4j Core configuration can be programmatically built using `Configuratio
 ----
 include::example$manual/customconfig/Usage.java[tag=createConfiguration,indent=0]
 ----
+
 <1> The default `ConfigurationBuilder` instance is obtained using link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/builder/api/ConfigurationBuilderFactory.html#newConfigurationBuilder()[`ConfigurationBuilderFactory.newConfigurationBuilder()`] static method
 <2> Add the appender along with the layout
 <3> Add the root logger along with a level and appender reference
@@ -168,6 +169,7 @@ Consider the example below:
 ----
 include::example$manual/customconfig/ExampleConfigurationFactory.java[tag=class]
 ----
+
 <1> `getConfiguration(LoggerContext, ConfigurationSource)` is only called if `ConfigurationSource` is not null.
 This is possible if the `Configuration` is provided programmatically.
 Hence, you are encouraged to implement `getConfiguration(LoggerContext, String, URI)` overload too.
@@ -188,6 +190,7 @@ You can use this `getInstance()` method to load a configuration file programmati
 ----
 include::example$manual/customconfig/Usage.java[tag=loadConfigurationFile,indent=0]
 ----
+
 <1> Passing the optional `LoggerContext` argument as null, since this `Configuration` is not associated with a `LoggerContext` yet
 <2> Passing the optional configuration name argument as null, it will default to the configuration source location
 <3> URI pointing to the configuration file; `file://path/to/log4j2.xml`, `classpath:log4j2.xml`, etc.
@@ -204,6 +207,7 @@ You can programmatically combine multiple configurations into a single one using
 ----
 include::example$manual/customconfig/Usage.java[tag=combineConfigurations,indent=0]
 ----
+
 <1> Loading a common, and an application-specific configuration from file
 <2> Casting them to `AbstractConfiguration`, the type required by `CompositeConfiguration`
 <3> Programmatically creating an uninitialized configuration.
@@ -226,24 +230,35 @@ include::partial$manual/composite-configuration.adoc[tag=how]
 This section will explain what it is, and why you should avoid it.
 ====
 
-It is unfortunately common that users modify components (appenders, filters, etc.) of a configuration programmatically as follows:
+It is unfortunately common that users modify components (appenders, filters, etc.) of the currently active configuration.
+This can lead to problems as the ones in the example below:
 
-[source,java]
+[source,java,indent=0]
 ----
-LoggerContext context = LoggerContext.getContext(false);
-Configuration config = context.getConfiguration();
-PatternLayout layout = PatternLayout.createDefaultLayout(config);
-Appender appender = createCustomAppender();
-appender.start();
-config.addAppender(appender);
-updateLoggers(appender, config);
+include::example$manual/customconfig/ModifyConfiguration1.java[tag=wrong]
 ----
+<1> Retrieving the `LoggerContext` can throw an exception if a different implementation of Log4j API is used.
+<2> To prevent loss of log events, the old appender should be removed **after** the new one has been installed.
+<3> Appenders should be stopped **after** they have been removed.
+<4> Appenders should be started **before** they have been added.
 
-This approach is prone several problems:
+This approach is prone to several problems:
 
-* Your code relies on Log4j Core internals which don't have any backward compatibility guarantees.
-You not only risk breaking your build at a minor Log4j Core version upgrade, but also make the life of Log4j maintainers trying to evolve the project extremely difficult.
-* You move out from the safety zone, where Log4j Core takes care of components' life cycle (initialization, reconfiguration, etc.), and step into a minefield seriously undermining the reliability of your logging setup.
+* Your code relies on Log4j Core internals, which have lesser compatibility guarantees than the configuration file format.
+Major releases can break your code even if they don't break your configuration file.
 
-If you happen to have code programmatically modifying components of a configuration, we advise you to migrate to other declarative approaches shared in this page.
+* You move out from the safety zone, where Log4j Core takes care of component's' life cycle (initialization, reconfiguration, etc.), and step into a minefield seriously undermining the reliability of your logging setup.
+
+If you happen to have code programmatically modifying components of a configuration,
+you can easily transform it into a custom `Configuration` implementation:
+
+[source,java,indent=0]
+----
+include::example$manual/customconfig/ModifyConfiguration2.java[tag=right]
+----
+<1> `Configurator` takes care of retrieving the correct `LoggerContext` and check it is of the expected type.
+<2> The removal and addition of appenders can be performed in an arbitrary order.
+<3> Appenders don't need to be stopped.
+<4> Appenders don't need to be started.
+
 In case of need, feel free to ask for help in {logging-services-url}/support.html#discussions-user[user support channels].
