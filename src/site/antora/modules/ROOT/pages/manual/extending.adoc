@@ -142,3 +142,13 @@ You can replace the default `MessageFactory2` implementation with a custom one o
 
 In the case of xref:manual/flowtracing.adoc[], Log4j Core uses link:../javadoc/log4j-api/org/apache/logging/log4j/message/FlowMessageFactory.html[`FlowMessageFactory`].
 You can replace the default `FlowMessageFactory` implementation with a custom one of yours by using xref:manual/systemproperties.adoc#log4j2.flowMessageFactory[the `log4j2.flowMessageFactory` property].
+
+[IMPORTANT]
+====
+Message factory implementations are expected to interpret formatting patterns containing placeholders denoted with `{}`.
+For instance, the default message factory chooses between a xref:manual/messages.adoc#SimpleMessage[`SimpleMessage`] and a xref:manual/messages.adoc#ParameterizedMessage[`ParameterizedMessage`] depending on the presence of placeholders in the formatting pattern.
+
+If you want to change the placeholder style (e.g., switching from `{}` to `%s`), you should *not* replace the default message factory.
+Because this will break the existing Log4j API calls using the standard placeholder style.
+Instead, you can use link:../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html[`LogManager`] methods accepting a message factory to create ``Logger``s with your custom message factory implementations.
+====
