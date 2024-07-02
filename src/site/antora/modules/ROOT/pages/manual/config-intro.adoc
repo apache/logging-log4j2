@@ -17,17 +17,10 @@
 [id=configuration]
 = Configuration
 
-Logging is a standard method for monitoring the health of an application and diagnosing problems that may arise within it.
 Even moderately sized applications can contain thousands of logging statements.
+To decide which of these statements will be logged and where, users need to configure Log4j Core in one of following ways:
 
-To decide which of these statements will be logged and where, users need to configure Log4j Core in one of two ways:
+* Through a xref:manual/configuration.adoc[configuration file]
+* Through xref:manual/customconfig.adoc[programmatic configuration]
 
-* through a xref:manual/configuration.adoc[].
-Since version 2.0, the configuration file format has been considered part of the public API and has remained stable across significant version upgrades.
-
-* through xref:manual/customconfig.adoc[Programmatic Configuration], which provides a larger spectrum of possible customizations but might require code changes during version upgrades.
-
-[NOTE]
-====
-To prevent a chicken-and-egg problem, users can only supply some configuration options (e.g., the configuration file location) through xref:manual/systemproperties.adoc[configuration properties].
-====
+Some meta-configuration options (e.g., the configuration file location) are only available through xref:manual/systemproperties.adoc[system properties].

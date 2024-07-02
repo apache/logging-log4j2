@@ -56,7 +56,7 @@ Log4j contains following predefined levels:
 ====
 The `OFF` and `ALL` levels are special: they should not be used to fish-tag log events.
 
-Log4j implementations, such as Log4j Core, can use `OFF` in their configuration files to disable all log statements and `ALL` to enabled them all.
+Log4j API implementations, such as Log4j Core, can use `OFF` in their configuration files to disable all log statements and `ALL` to enabled them all.
 ====
 
 A level is composed of a case-sensitive name and a *priority* (of type `int`), which is used to define an order while comparing two.

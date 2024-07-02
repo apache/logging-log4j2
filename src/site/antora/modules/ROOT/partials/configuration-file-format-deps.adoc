@@ -23,11 +23,11 @@ Maven::
 [tabs]
 =====
 
-log4j2.xml::
+XML::
 +
 No dependency required.
 
-log4j2.json::
+JSON::
 +
 [source,xml,subs="+attributes"]
 ----
@@ -39,7 +39,7 @@ log4j2.json::
 </dependency>
 ----
 
-log4j2.yaml::
+YAML::
 +
 [source,xml,subs="+attributes"]
 ----
@@ -51,7 +51,7 @@ log4j2.yaml::
 </dependency>
 ----
 
-log4j2.properties::
+Properties::
 +
 No dependency required.
 
@@ -62,25 +62,25 @@ Gradle::
 [tabs]
 =====
 
-log4j2.xml::
+XML::
 +
 No dependency required.
 
-log4j2.json::
+JSON::
 +
 [source,groovy,subs="+attributes"]
 ----
 runtimeOnly 'com.fasterxml.jackson.core:jackson-databind:{jackson-version}'
 ----
 
-log4j2.yaml::
+YAML::
 +
 [source,groovy,subs="+attributes"]
 ----
 runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:{jackson-version}'
 ----
 
-log4j2.properties::
+Properties::
 +
 No dependency required.
 
