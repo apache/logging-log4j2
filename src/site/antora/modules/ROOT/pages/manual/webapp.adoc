@@ -92,6 +92,7 @@ While the Servlet Specification allows web fragments to automatically add contex
 If other context listeners in your application use logging, you need to make sure that `Log4jServletContextListener` is the last listener to be executed at shutdown.
 To do it, you must create a `web.xml` descriptor and add the `Log4jServletContextListener` explicitly as the **first** context listener:
 
+.Snippet from an example {antora-examples-url}/manual/webapp/web.xml[`web.xml`]
 [source,xml,indent=0]
 ----
 include::example$manual/webapp/web.xml[tag=context-listener]
@@ -104,6 +105,7 @@ include::example$manual/webapp/web.xml[tag=context-listener]
 If you are maintaining an older Servlet 2.5 (or earlier) application,
 or if you disabled the <<isLog4jAutoInitializationDisabled,servlet container initializer>>.
 
+.Snippet from an example {antora-examples-url}/manual/webapp/web.xml[`web.xml`]
 [source,xml,indent=0]
 ----
 include::example$manual/webapp/web.xml[tags=context-listener;filter]
@@ -163,6 +165,8 @@ Specifies the `TimeUnit` used for the shut-down delay.
 | Default value
 | `30`
 |===
+
+It specifies the duration of the shut-down delay.
 
 [id=log4jContextName]
 ==== `log4jContextName`
@@ -244,6 +248,7 @@ link:../javadoc/log4j-jakarta-web/org/apache/logging/log4j/web/WebLoggerContextU
 helper class is made available.
 Using this class you can either decorate a `Runnable` with method calls that bind the appropriate logger context to the thread:
 
+.Snippet from an example {antora-examples-url}/manual/webapp/AsyncServlet.java[`AsyncServlet.java`]
 [source,java,indent=0]
 ----
 include::example$manual/webapp/AsyncServlet.java[tag=automatic]
@@ -252,6 +257,7 @@ include::example$manual/webapp/AsyncServlet.java[tag=automatic]
 or, if more flexibility is required, you can apply the same logic by using
 link:../javadoc/log4j-jakarta-web/org/apache/logging/log4j/web/Log4jWebSupport.html[`Log4jWebSupport`]:
 
+.Snippet from an example {antora-examples-url}/manual/webapp/AsyncServlet.java[`AsyncServlet.java`]
 [source,java,indent=0]
 ----
 include::example$manual/webapp/AsyncServlet.java[tag=manual]
@@ -287,6 +293,7 @@ methods, including:
 
 * simple and parameterized log statements:
 +
+.Snippet from an example {antora-examples-url}/manual/webapp/taglib.jsp[`taglib.jsp`]
 [source,xml,indent=0]
 ----
 include::example$manual/webapp/taglib.jsp[tag=simple]
@@ -294,6 +301,7 @@ include::example$manual/webapp/taglib.jsp[tag=simple]
 
 * flow tracing statements:
 +
+.Snippet from an example {antora-examples-url}/manual/webapp/taglib.jsp[`taglib.jsp`]
 [source,xml,indent=0]
 ----
 include::example$manual/webapp/taglib.jsp[tag=entry-exit]
@@ -301,6 +309,7 @@ include::example$manual/webapp/taglib.jsp[tag=entry-exit]
 
 * catching and throwing statements:
 +
+.Snippet from an example {antora-examples-url}/manual/webapp/taglib.jsp[`taglib.jsp`]
 [source,xml,indent=0]
 ----
 include::example$manual/webapp/taglib.jsp[tag=catching]
@@ -315,6 +324,7 @@ include::example$manual/webapp/taglib.jsp[tag=if-enabled]
 
 * tags to set the name of the logger used:
 +
+.Snippet from an example {antora-examples-url}/manual/webapp/taglib.jsp[`taglib.jsp`]
 [source,xml,indent=0]
 ----
 include::example$manual/webapp/taglib.jsp[tag=set-logger]
@@ -322,13 +332,11 @@ include::example$manual/webapp/taglib.jsp[tag=set-logger]
 
 * a `dump` tag that prints the contents of a JSP scope:
 +
+.Snippet from an example {antora-examples-url}/manual/webapp/taglib.jsp[`taglib.jsp`]
 [source,xml,indent=0]
 ----
 include::example$manual/webapp/taglib.jsp[tag=dump]
 ----
-
-A complete JSP page example is available
-{antora-examples-url}/manual/webapp/taglib.jsp[on GitHub].
 
 [#web-application-specific]
 === Application server specific notes
@@ -370,6 +378,8 @@ if you use a Java EE application server)
 
 Since sharing libraries between applications is not part of the Jakarta EE standard, the instructions are specific to each application server:
 
+[tabs]
+====
 GlassFish::
 In GlassFish, you can add those libraries to the _common classloader_.
 See https://glassfish.org/docs/latest/application-development-guide.html#circumventing-class-loader-isolation[GlassFish documentation] for more details.
@@ -394,9 +404,10 @@ You can install Log4j as a _global module_ or in a _global directory_.
 See {wildfly-latest-url}/Admin_Guide.html#EE_Application_Deployment_Configuration[WildFly EE Application Deployment documentation] for more details.
 +
 Check also the <<web-application-wildfly,WildFly note above>>.
+====
 
 [WARNING]
-====
+=====
 Web application classloaders (see
 https://jakarta.ee/specifications/servlet/6.0/jakarta-servlet-spec-6.0#web-application-class-loader[Servlet Specification 10.7.2]
 ) use a _"parent last"_ delegation strategy, but prevent application from overriding implementation classes provided by the container.
@@ -406,18 +417,21 @@ Some application servers will use the shared instance (e.g., WildFly), while oth
 There are two solutions to this problem:
 
 * you can remove Log4j from the WAR or EAR archive:
-
++
+[tabs]
+====
 Maven::
-If you use Maven, you can declare the
+You can declare the
 https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Dependency_Scope[scope]
 of all Log4j libraries as `provided`.
 
 Gradle::
-If you use Gradle, you can add `log4j-api` to the `providedCompile` configuration, while `log4j-core` to the `providedRuntime` configuration.
+You can add `log4j-api` to the `providedCompile` configuration, while `log4j-core` to the `providedRuntime` configuration.
 See the https://docs.gradle.org/current/userguide/war_plugin.html#sec:war_dependency_management[Gradle WAR plugin] for more details.
+====
 
 * you can use an application-server-specific configuration option to delegate the loading of Log4j API to the parent classloader.
-====
+=====
 
 [#log-separation]
 === Log separation
