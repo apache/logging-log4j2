@@ -40,7 +40,7 @@ The second approach is more complex and requires changes to the configuration of
 See <<sharing>> for more details.
 
 [#log4j-jakarta-web]
-== Integrating with Web Applications
+== Integrating with web applications
 
 [NOTE]
 ====
@@ -63,7 +63,7 @@ To properly synchronize the lifecycles of Log4j Core and Jakarta EE applications
 [#log4j-jakarta-web-installation]
 === Installation
 
-In order to install Log4j Web in your Web application, you need to add it as runtime dependency:
+In order to install Log4j Web in your web application, you need to add it as runtime dependency:
 
 include::partial$manual/dependencies-log4j-jakarta-web.adoc[]
 
@@ -80,10 +80,10 @@ See also <<web-application-specific>>.
 [WARNING]
 ====
 While the Servlet Specification allows web fragments to automatically add context listeners, it does not give any guarantees regarding the order in which those listeners are executed
-(cf. https://jakarta.ee/specifications/servlet/5.0/jakarta-servlet-spec-5.0#Assembling_the_descriptor[section 8.2.3]).
+(see https://jakarta.ee/specifications/servlet/5.0/jakarta-servlet-spec-5.0#Assembling_the_descriptor[Section 8.2.3]).
 
 If other context listeners in your application use logging, you need to make sure that `Log4jServletContextListener` is the last listener to be executed at shutdown.
-In order to do it you must create a `web.xml` descriptor and add the `Log4jServletContextListener` explicitly as **first** context listener:
+In order to do it you must create a `web.xml` descriptor and add the `Log4jServletContextListener` explicitly as the **first** context listener:
 
 [source,xml,indent=0]
 ----
@@ -473,10 +473,9 @@ See xref:manual/lookups.adoc#JndiLookup[JNDI lookup] for more information.
 When using a single logger context you choose between:
 
 * logging all events to a single appender.
-You'll need a tool like Elastic Search to separate log events.
-We recommend the usage of a structured layout like
-xref:manual/json-template-layout.adoc[]
-in this case:
+We strongly recommend using a structured layout (e.g., xref:manual/json-template-layout.adoc[]) with an additional field capturing the Servlet context name.
+This would allow separation of application logs by filtering on the context name.
+Following example demonstrates this scheme using a Socket Appender writing to Elasticsearch:
 +
 [tabs]
 ====

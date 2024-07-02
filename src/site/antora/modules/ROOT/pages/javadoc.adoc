@@ -25,8 +25,8 @@ The table below contains links to the Javadoc API Documentation for the componen
 | The interface that applications should use and code against.
 
 | link:javadoc/log4j-core/index.html[Implementation]
-| The standard implementation, also called the Log4j 2 Core, that contains Appenders, Filters, and more.
+| The logging implementation (i.e., Log4j Core) that contains appenders, layouts, filters, and more.
 
 | link:javadoc/log4j-jakarta-web/index.html[Log4j Web]
-| Tools to use Log4j in Jakarta EE applications.
+| Tools to use Log4j Core in Jakarta EE applications.
 |===

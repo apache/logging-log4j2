@@ -663,7 +663,7 @@ See xref:manual/webapp.adoc[] for more information.
 |Description
 
 |attr.<key>
-|Value of the `<key`> servlet context attribute.
+|Value of the `<key>` servlet context attribute.
 
 |contextPathName
 |The **first** fragment of the servlet context path.
