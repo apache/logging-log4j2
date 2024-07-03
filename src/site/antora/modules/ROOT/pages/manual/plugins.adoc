@@ -55,20 +55,11 @@ It is recommended to be distinct among plugins sharing the same `category`.
 A name used for grouping a set of plugins.
 `category` matching is case-sensitive.
 
-`elementType` (optional)::
-Name of the corresponding category of the xref:manual/configuration.adoc[Log4j configuration] file element this plugin belongs under.
-You can omit this attribute if your plugin is not meant to be represented in a configuration file.
+`elementType` (deprecated)::
+We don't recommend the usage of `elementType` anymore.
+Existing usages are kept for backward compatibility reasons with the legacy configuration syntax: `<appender type="ConsoleAppender"`.
 
-We will try to explain when to use `category` and `elementType` attributes with an example.
-xref:manual/lookups.adoc#extending[Lookups] only use the `category` attribute and set it to link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrLookup.html#CATEGORY[`StrLookup.CATEGORY`] (`Lookup`).
-On the other hand, xref:manual/appenders.adoc#extending[appenders] use both the `category` and `elementType` attributes and set them to link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Node.html#CATEGORY[`Node.CATEGORY`] (`Core`) and link:../javadoc/log4j-core/org/apache/logging/log4j/core/Appender.html#ELEMENT_TYPE[`Appender.ELEMENT_TYPE`] (`appender`), respectively.
-The reason appenders use an `elementType` and lookups don't is that appenders need to be referred to in an element in a Log4j configuration file (e.g., `log4j2.xml`) whereas lookups don't.
-See <<core>> for details.
-
-For clarity's sake, see following examples:
-
-* {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/lookup/DateLookup.java[`LowerLookup.java`] (uses only `category`)
-* {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/layout/CsvParameterLayout.java[`CsvParameterLayout.java`] (uses both `category` and `elementType`)
+See {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/lookup/LowerLookup.java[`LowerLookup.java`] (a xref:manual/lookups.adoc[lookup] for lower-casing its input) for a simple example.
 
 .Click to read more on *name collision* and *overriding an existing plugin*
 [%collapsible]
@@ -86,14 +77,14 @@ In short, name collisions are even more unpredictable in an OSGi environment.
 If your plugin needs to be represented by an element in a configuration file (such as an xref:manual/appenders.adoc[appender], xref:manual/layouts.adoc[layout], xref:manual/api.adoc#loggers[logger], or xref:manual/filters.adoc[filter]), following requirements must be met:
 
 * The `category` attribute of the `@Plugin` annotation must be set to link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Node.html#CATEGORY[`Node.CATEGORY`] (`Core`)
-* The `elementType` attribute of the `@Plugin` annotation must be configured, if it belongs under a certain category of elements (appenders, layouts, etc.)
 * It must have a xref:declare-plugin-factory[plugin factory]
 
-See {project-github-url}/log4j-layout-template-json/src/main/java/org/apache/logging/log4j/layout/template/json/JsonTemplateLayout.java[`JsonTemplateLayout.java`] for following details:
+See {project-github-url}/log4j-layout-template-json/src/main/java/org/apache/logging/log4j/layout/template/json/JsonTemplateLayout.java[`JsonTemplateLayout.java`] for an example and notice these details:
 
-* Layout's `@Plugin` annotation sets `category` and `elementType` to `Node.CATEGORY` and link:../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html#ELEMENT_TYPE[`Layout.ELEMENT_TYPE`], respectively
-* All plugin declarations are provided with a `@PluginBuilderFactory`-annotated static method
-* ``EventTemplateAdditionalField`` class' `@Plugin` annotation doesn't have an `elementType` attribute, even though it maps to a configuration file element
+* There are two plugin declarations: `JsonTemplateLayout` and `JsonTemplateLayout.EventTemplateAdditionalField`
+* Both plugin declarations
+** Set the `category` attribute to `Node.CATEGORY`
+** Provide a `@PluginBuilderFactory`-annotated static method
 
 [#declare-plugin-factory]
 === Declaring plugin factories
@@ -261,7 +252,7 @@ dependencies {
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/util/PluginManager.html[`PluginManager`] is responsible for discovering plugins and loading their descriptions.
 It locates plugins by looking in following places in given order:
 
-. Plugin descriptor files on the classpath.
+. Plugin descriptor files on the classpath (using the class loader that loaded the `log4j-core` artifact).
 These files are generated automatically at compile-time by the Log4j plugin annotation processor.
 See <<plugin-registry>> for details.
 

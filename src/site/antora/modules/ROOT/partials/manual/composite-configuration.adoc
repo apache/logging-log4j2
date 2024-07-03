@@ -1,0 +1,50 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+// tag::intro[]
+There are occasions where multiple configurations might need to be combined.
+For instance,
+
+* You have a common Log4j Core configuration that should always be present, and an environment-specific one that extends the common one depending on the environment (test, production, etc.) the application is running on.
+* You develop a framework, and it contains a predefined Log4j Core configuration.
+Yet you want to allow users to extend it whenever necessary.
+* You collect Log4j Core configurations from multiple sources.
+// end::intro[]
+
+// tag::how[]
+`CompositeConfiguration` merges multiple configurations into a single one using a link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy.html[`MergeStrategy`], which can be customized using xref:manual/systemproperties.adoc#log4j2.mergeStrategy[the `log4j2.mergeStrategy` configuration property].
+The default merge strategy works as follows:
+
+* xref:manual/configuration.adoc#global-configuration-attributes[Global configuration attributes] in later configurations replace those in previous configurations.
+The only exception is the `monitorInterval` attribute: the lowest positive value from all the configuration files will be used.
+
+* xref:manual/configuration.adoc#property-substitution[Properties] are aggregated.
+Duplicate properties override those in previous configurations.
+
+* xref:manual/filters.adoc[Filters] are aggregated under xref:manual/filters.adoc#CompositeFilter[`CompositeFilter`], if more than one filter is defined.
+
+* xref:manual/scripts.adoc[] are aggregated.
+Duplicate definitions override those in previous configurations.
+
+* xref:manual/appenders.adoc[Appenders] are aggregated.
+Appenders with the same name are **overridden** by those in later configurations, including all their elements.
+
+* xref:manual/configuration.adoc#configuring-loggers[Loggers] are aggregated.
+Logger attributes are individually merged, and those in later configurations replace duplicates.
+Appender references on a logger are aggregated, and those in later configurations replace duplicates.
+The strategy merges filters on loggers using the rule above.
+// end::how[]

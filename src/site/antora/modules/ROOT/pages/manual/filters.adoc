@@ -1075,7 +1075,6 @@ While annotating your filter with `@Plugin`, you need to make sure that
 
 * It has a unique `name` attribute across all available `Filter` plugins
 * The `category` attribute is set to link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Node.html#CATEGORY[`Node.CATEGORY`]
-* The `elementType` attribute is set to link:../javadoc/log4j-core/org/apache/logging/log4j/core/Filter.html#ELEMENT_TYPE[`Filter.ELEMENT_TYPE`]
 
 You can check out following files for examples:
 

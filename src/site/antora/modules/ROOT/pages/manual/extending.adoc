@@ -92,9 +92,8 @@ Yet when this happens, you can use xref:manual/systemproperties.adoc#log4j2.prov
 === `LoggerContextFactory`
 
 link:../javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextFactory.html[`LoggerContextFactory`] is the factory class used by Log4j API implementations to create xref:manual/architecture.adoc#LoggerContext[`LoggerContext`]s.
-If you are using Log4j Core, you can provide a custom implementation using xref:manual/systemproperties.adoc#log4j2.loggerContextFactory[the `log4j2.loggerContextFactory` property].
-Another way to provide a custom `LoggerContextFactory` is to <<Provider,provide a custom `Provider`>>.
-But this is generally discouraged, since it requires a more complicated setup and is intended mostly to be used by Log4j API implementations.
+If you are using Log4j Core, you can use <<ContextSelector>>s to influence the way its `LoggerContextFactory` implementation works.
+If you are creating a new Log4j API implementation, you should <<Provider,provide a custom `Provider`>> to introduce your custom `LoggerContextFactory` implementation.
 
 [#ContextSelector]
 === `ContextSelector`
@@ -116,7 +115,7 @@ You can use xref:manual/systemproperties.adoc#log4j2.configurationFactory[the `l
 === `LoggerConfig`
 
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/LoggerConfig.html[`LoggerConfig`] denotes the `Logger` configurations in a `Configuration`.
-A custom `LoggerConfig` needs to suffice following conditions:
+A custom `LoggerConfig` needs to satisfy the following conditions:
 
 * It needs to extend from `LoggerConfig` class
 * It needs to be declared as a <<Custom_Plugins,plugin>>
@@ -143,3 +142,13 @@ You can replace the default `MessageFactory2` implementation with a custom one o
 
 In the case of xref:manual/flowtracing.adoc[], Log4j Core uses link:../javadoc/log4j-api/org/apache/logging/log4j/message/FlowMessageFactory.html[`FlowMessageFactory`].
 You can replace the default `FlowMessageFactory` implementation with a custom one of yours by using xref:manual/systemproperties.adoc#log4j2.flowMessageFactory[the `log4j2.flowMessageFactory` property].
+
+[IMPORTANT]
+====
+Message factory implementations are expected to interpret formatting patterns containing placeholders denoted with `{}`.
+For instance, the default message factory chooses between a xref:manual/messages.adoc#SimpleMessage[`SimpleMessage`] and a xref:manual/messages.adoc#ParameterizedMessage[`ParameterizedMessage`] depending on the presence of placeholders in the formatting pattern.
+
+If you want to change the placeholder style (e.g., switching from `{}` to `%s`), you should *not* replace the default message factory.
+Because this will break the existing Log4j API calls using the standard placeholder style.
+Instead, you can use link:../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html[`LogManager`] methods accepting a message factory to create ``Logger``s with your custom message factory implementations.
+====
