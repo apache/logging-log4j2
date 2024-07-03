@@ -252,7 +252,7 @@ dependencies {
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/util/PluginManager.html[`PluginManager`] is responsible for discovering plugins and loading their descriptions.
 It locates plugins by looking in following places in given order:
 
-. Plugin descriptor files on the classpath.
+. Plugin descriptor files on the classpath (using the class loader that loaded the `log4j-core` artifact).
 These files are generated automatically at compile-time by the Log4j plugin annotation processor.
 See <<plugin-registry>> for details.
 
