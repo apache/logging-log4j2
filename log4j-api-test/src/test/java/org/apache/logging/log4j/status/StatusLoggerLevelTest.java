@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.status;
 
 import static org.apache.logging.log4j.status.StatusLogger.DEFAULT_FALLBACK_LISTENER_LEVEL;
+import static org.apache.logging.log4j.util.Constants.LOG4J2_DEBUG;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -185,5 +186,13 @@ class StatusLoggerLevelTest {
         // Verify the listener invocation
         assertThat(expectedMessageCount).isGreaterThan(0);
         verify(listener, times(expectedMessageCount)).log(any());
+    }
+
+    @Test
+    void check_debug_false() {
+        final Properties statusLoggerConfigProperties = new Properties();
+        statusLoggerConfigProperties.put(LOG4J2_DEBUG, "fAlsE");
+        StatusLogger.Config loggerConfig = new StatusLogger.Config(statusLoggerConfigProperties);
+        assertThat(loggerConfig.isDebugEnabled()).isFalse();
     }
 }

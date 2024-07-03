@@ -381,6 +381,10 @@ public class StatusLogger extends AbstractLogger {
             }
             return formatter.withZone(zoneId);
         }
+
+        boolean isDebugEnabled() {
+            return debugEnabled;
+        }
     }
 
     /**
