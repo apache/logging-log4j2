@@ -161,7 +161,7 @@
     <a class="nav-link" href="systemproperties.html">Configuration properties</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
+    <a class="nav-link" href="customconfig.html">Programmatic configuration</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="appenders.html">Appenders</a>
@@ -327,214 +327,212 @@
 </aside>
 <article class="doc">
 <h1 class="page">Architecture</h1>
-<div class="sect1">
-<h2 id="_main_components"><a class="anchor" href="#_main_components"></a>Main Components</h2>
+<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Log4j uses the classes shown in the diagram below.</p>
+<p>Log4j Core is the reference implementation of <a href="api.html" class="xref page">Log4j API</a> and composed of several components.
+In this section we will try to explain major pillars its architecture stands on.
+An overview these major classes can be depicted as follows:</p>
 </div>
-<div class="paragraph">
-<p><span class="image"><img src="../_images/Log4jClasses.jpg" alt="Log4j 2 Class Relationships" title="Log4j 2 Class Relationships"></span></p>
-</div>
-<div class="paragraph">
-<p>Applications using the Log4j 2 API will request a Logger with a specific
-name from the LogManager. The LogManager will locate the appropriate
-LoggerContext and then obtain the Logger from it. If the Logger must be
-created it will be associated with the LoggerConfig that contains either
-a) the same name as the Logger, b) the name of a parent package, or c)
-the root LoggerConfig. LoggerConfig objects are created from Logger
-declarations in the configuration. The LoggerConfig is associated with
-the Appenders that deliver the LogEvents.</p>
-</div>
-<div class="sect2">
-<h3 id="logger-hierarchy"><a class="anchor" href="#logger-hierarchy"></a>Logger Hierarchy</h3>
-<div class="paragraph">
-<p>The first and foremost advantage of any logging API over plain
-<code>System.out.println()</code> resides in its ability to disable certain log
-statements while allowing others to print unhindered. This capability
-assumes that the logging space, that is, the space of all possible
-logging statements, is categorized according to some developer-chosen
-criteria.</p>
-</div>
-<div class="paragraph">
-<p>In Log4j 1.x the Logger Hierarchy was maintained through a relationship
-between Loggers. In Log4j 2 this relationship no longer exists. Instead,
-the hierarchy is maintained in the relationship between LoggerConfig
-objects.</p>
-</div>
-<div class="paragraph">
-<p>Loggers and LoggerConfigs are named entities. Logger names are
-case-sensitive and they follow the hierarchical naming rule:</p>
-</div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Named Hierarchy</dt>
-<dd>
-<p>A LoggerConfig is said to be an <em>ancestor</em> of another LoggerConfig if
-its name followed by a dot is a prefix of the <em>descendant</em> logger
-name. A LoggerConfig is said to be a <em>parent</em> of a <em>child</em>
-LoggerConfig if there are no ancestors between itself and the
-descendant LoggerConfig.</p>
-</dd>
-</dl>
-</div>
-<div class="paragraph">
-<p>For example, the LoggerConfig named <code>"com.foo"</code> is a parent of the
-LoggerConfig named <code>"com.foo.Bar"</code>. Similarly, <code>"java"</code> is a parent of
-<code>"java.util"</code> and an ancestor of <code>"java.util.Vector"</code>. This naming
-scheme should be familiar to most developers.</p>
-</div>
-<div class="paragraph">
-<p>The root LoggerConfig resides at the top of the LoggerConfig hierarchy.
-It is exceptional in that it always exists and it is part of every
-hierarchy. A Logger that is directly linked to the root LoggerConfig can
-be obtained as follows:</p>
-</div>
-<div class="listingblock">
+<div id="architecture-diagram" class="imageblock kroki">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Logger logger = LogManager.getLogger(LogManager.ROOT_LOGGER_NAME);</code></pre>
+<img src="../_images/diag-ce9936638b62ac5c763a2a3b54dbda70bb0144ff.svg" alt="An overview of major classes and their relation">
 </div>
+<div class="title">Figure 1. An overview of major classes and their relation</div>
 </div>
 <div class="paragraph">
-<p>Alternatively, and more simply:</p>
+<p>At a really high level,</p>
 </div>
-<div class="listingblock">
+<div class="ulist">
+<ul>
+<li>
+<p>A <a href="#LoggerContext"><code>LoggerContext</code></a>, the composition anchor, gets created in combination with a <a href="#Configuration"><code>Configuration</code></a>.
+Both can be created either directly (i.e., programmatically) or indirectly at first interaction with Log4j.</p>
+</li>
+<li>
+<p><code>LoggerContext</code> creates <a href="#Logger"><code>Logger</code></a>s that users interact with for logging purposes.</p>
+</li>
+<li>
+<p><a href="#Appender"><code>Appender</code></a> delivers a <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html"><code>LogEvent</code></a> to a target (file, socket, database, etc.) and typically uses a <a href="#Layout"><code>Layout</code></a> to encode log events and an <a href="#AbstractManager"><code>AbstractManager</code></a> to handle the lifecycle of the target resource.</p>
+</li>
+<li>
+<p><a href="#LoggerConfig"><code>LoggerConfig</code></a> encapsulates configuration for a <code>Logger</code>, as <code>AppenderControl</code> and <code>AppenderRef</code> for <code>Appender</code>s.</p>
+</li>
+<li>
+<p><a href="#Configuration"><code>Configuration</code></a> is equipped with <a href="#StrSubstitutor"><code>StrSubstitutor</code> et al.</a> to allow property substitution in <code>String</code>-typed values.</p>
+</li>
+<li>
+<p>A typical <code>log()</code> call triggers a chain of invocations through classes <code>Logger</code>, <code>LoggerConfig</code>, <code>AppenderControl</code>, <code>Appender</code>, and <code>AbstractManager</code> in order – this is depicted using green arrows in <a href="#architecture-diagram">Figure 1</a>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Following sections examine this interplay in detail.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="LoggerContext"><a class="anchor" href="#LoggerContext"></a><code>LoggerContext</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html"><code>LoggerContext</code></a> acts as the anchor point for the logging system.
+It is associated with an active <a href="#Configuration"><code>Configuration</code></a> and is primarily responsible for instantiating <a href="#Logger"><code>Logger</code></a>s.</p>
+</div>
+<div id="LoggerContext-diagram" class="imageblock kroki">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Logger logger = LogManager.getRootLogger();</code></pre>
+<img src="../_images/diag-3179a6738d88762b267e7c0bf55d9407cd45c450.svg" alt="`LoggerContext` and other directly related classes">
 </div>
-</div>
-<div class="paragraph">
-<p>All other Loggers can be retrieved using the
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#getLogger(java.lang.String)"><code>LogManager.getLogger</code></a>
-static method by passing the name of the desired Logger. Further
-information on the Logging API can be found in the
-<a href="api.html" class="xref page">Log4j API</a>.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_loggercontext"><a class="anchor" href="#_loggercontext"></a>LoggerContext</h3>
-<div class="paragraph">
-<p>The
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LoggerContext.html"><code>LoggerContext</code></a>
-acts as the anchor point for the Logging system. However, it is possible
-to have multiple active LoggerContexts in an application depending on
-the circumstances. More details on the LoggerContext are in the
-<a href="logsep.html" class="xref page">Log Separation</a> section.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_configuration"><a class="anchor" href="#_configuration"></a>Configuration</h3>
-<div class="paragraph">
-<p>Every LoggerContext has an active
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html"><code>Configuration</code></a>.
-The Configuration contains all the Appenders, context-wide Filters,
-LoggerConfigs and contains the reference to the StrSubstitutor.
-During reconfiguration, two Configuration objects will exist. Once all Loggers
-have been redirected to the new Configuration, the old Configuration
-will be stopped and discarded.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_logger"><a class="anchor" href="#_logger"></a>Logger</h3>
-<div class="paragraph">
-<p>As stated previously, Loggers are created by calling
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#getLogger(java.lang.String)"><code>LogManager.getLogger</code></a>.
-The Logger itself performs no direct actions. It simply has a name and
-is associated with a LoggerConfig. It extends
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/AbstractLogger.html"><code>AbstractLogger</code></a>
-and implements the required methods. As the configuration is modified
-Loggers may become associated with a different LoggerConfig, thus
-causing their behavior to be modified.</p>
+<div class="title">Figure 2. <code>LoggerContext</code> and other directly related classes</div>
 </div>
 <div class="paragraph">
-<p>Retrieving Loggers</p>
+<p>In most cases, applications have a single global <code>LoggerContext</code>.
+Though in certain cases (e.g., Java EE applications), Log4j can be configured to accommodate multiple <code>LoggerContext</code>s.
+Refer to <a href="logsep.html" class="xref page">Logging Separation</a> for details.</p>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Configuration"><a class="anchor" href="#Configuration"></a><code>Configuration</code></h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>Calling the <code>LogManager.getLogger</code> method with the same name will always
-return a reference to the same Logger object.</p>
+<p>Every <a href="#LoggerContext"><code>LoggerContext</code></a> is associated with an active <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html"><code>Configuration</code></a>.
+It models the configuration of all appenders, layouts, filters, loggers, and contains the reference to <a href="#StrSubstitutor"><code>StrSubstitutor</code> et al.</a>.</p>
 </div>
-<div class="paragraph">
-<p>For example, in</p>
-</div>
-<div class="listingblock">
+<div id="Configuration-diagram" class="imageblock kroki">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Logger x = LogManager.getLogger("wombat");
-Logger y = LogManager.getLogger("wombat");</code></pre>
+<img src="../_images/diag-1a68f90761e6350de59d964e3f2cfeb22b591a02.svg" alt="`Configuration` and other directly related classes">
 </div>
-</div>
-<div class="paragraph">
-<p><code>x</code> and <code>y</code> refer to <em>exactly</em> the same Logger object.</p>
+<div class="title">Figure 3. <code>Configuration</code> and other directly related classes</div>
 </div>
 <div class="paragraph">
-<p>Configuration of the log4j environment is typically done at application
-initialization. The preferred way is by reading a configuration file.
-This is discussed in <a href="configuration.html" class="xref page">Configuration</a>.</p>
-</div>
-<div class="paragraph">
-<p>Log4j makes it easy to name Loggers by <em>software component</em>. This can be
-accomplished by instantiating a Logger in each class, with the logger
-name equal to the fully qualified name of the class. This is a useful
-and straightforward method of defining loggers. As the log output bears
-the name of the generating Logger, this naming strategy makes it easy to
-identify the origin of a log message. However, this is only one
-possible, albeit common, strategy for naming loggers. Log4j does not
-restrict the possible set of loggers. The developer is free to name the
-loggers as desired.</p>
-</div>
-<div class="paragraph">
-<p>Since naming Loggers after their owning class is such a common idiom,
-the convenience method <code>LogManager.getLogger()</code> is provided to
-automatically use the calling class&#8217;s fully qualified class name as the
-Logger name.</p>
-</div>
-<div class="paragraph">
-<p>Nevertheless, naming loggers after the class where they are located
-seems to be the best strategy known so far.</p>
-</div>
+<p>Configuration of Log4j Core is typically done at application initialization.
+The preferred way is by reading a <a href="configuration.html" class="xref page">configuration file</a>, but it can also be done <a href="customconfig.html" class="xref page">programmatically</a>.
+This is further discussed in <a href="config-intro.html" class="xref page">Configuration</a>.</p>
 </div>
 <div class="sect2">
-<h3 id="loggerconfig"><a class="anchor" href="#loggerconfig"></a>LoggerConfig</h3>
+<h3 id="reconfiguration"><a class="anchor" href="#reconfiguration"></a>Reconfiguration reliability</h3>
 <div class="paragraph">
-<p><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/LoggerConfig.html"><code>LoggerConfig</code></a>
-objects are created when Loggers are declared in the logging
-configuration. The LoggerConfig contains a set of Filters that must
-allow the LogEvent to pass before it will be passed to any Appenders. It
-contains references to the set of Appenders that should be used to
-process the event.</p>
+<p>The main motivation for the existing architecture is the reliability to configuration changes.
+When a reconfiguration event occurs, two <code>Configuration</code> instances are active at the same time.
+Threads that already started processing a log event will either:</p>
 </div>
-<div class="sect3">
-<h4 id="_log_levels"><a class="anchor" href="#_log_levels"></a>Log Levels</h4>
-<div class="paragraph">
-<p>LoggerConfigs will be assigned a Log
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html"><code>Level</code></a>.
-The set of built-in levels includes ALL, TRACE, DEBUG, INFO, WARN, ERROR,
-FATAL, and OFF. Log4j 2 also supports <a href="customloglevels.html" class="xref page">custom log
-levels</a>. Another mechanism for getting more granularity is to use
-<a href="markers.html" class="xref page">markers</a> instead. The OFF and ALL
-levels are not intended to be used on calls to the logging API.
-Specifying OFF in the configuration implies no logging events should
-match while specifying ALL would mean all events match, including custom
-events. However, OFF can be used on logging API calls in special cases
-where the event should always be logged regardless of the configuration.
-However, it is generally recommended that a Marker with a corresponding
-global Marker Filter be used instead.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>continue logging to the old configuration, if execution already reached the <code>LoggerConfig</code> class,</p>
+</li>
+<li>
+<p>or switch to the new configuration.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p><a href="https://logging.apache.org/log4j/1.x/manual.html">Log4j 1</a> and
-<a href="https://logback.qos.ch/manual/architecture.html#effectiveLevel">Logback</a>
-both have the concept of "Level Inheritance". In Log4j 2, Loggers and
-LoggerConfigs are two different objects so this concept is implemented
-differently. Each Logger references the appropriate LoggerConfig which
-in turn can reference its parent, thus achieving the same effect.</p>
+<p>The service that manages the reconfiguration process is called <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/ReliabilityStrategy.html"><code>ReliabilityStrategy</code></a> and it decides:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>when should <code>Logger</code>s switch to the new configuration,</p>
+</li>
+<li>
+<p>when should the old configuration be stopped.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock kroki">
+<div class="content">
+<img src="../_images/diag-01168003b98f120d2f0736e5172de8e1218f189e.svg" alt="Overview of the reconfiguration process">
+</div>
+<div class="title">Figure 4. Overview of the reconfiguration process</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Logger"><a class="anchor" href="#Logger"></a><code>Logger</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html"><code>Logger</code></a>s are the primary user entry point for logging.
+They are created by calling one of the <code>getLogger()</code> methods of <a href="../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html"><code>LogManager</code></a> – this is further documented in <a href="api.html" class="xref page">Log4j API</a>.
+The <code>Logger</code> itself performs no direct actions.
+It simply has a name and is associated with a <a href="#LoggerConfig"><code>LoggerConfig</code></a>.</p>
+</div>
+<div id="Logger-diagram" class="imageblock kroki">
+<div class="content">
+<img src="../_images/diag-77a13b00749af95e3ed0eefd605a73f25d70973c.svg" alt="`Logger` and other directly related classes">
+</div>
+<div class="title">Figure 5. <code>Logger</code> and other directly related classes</div>
 </div>
 <div class="paragraph">
-<p>Below are five tables with various assigned level values and the
-resulting levels that will be associated with each Logger. Note that in
-all these cases if the root LoggerConfig is not configured a default
-Level will be assigned to it.</p>
+<p>The hierarchy between <a href="#LoggerConfig"><code>LoggerConfig</code></a>s, implies the very same hierarchy between <code>Logger</code>s too.
+You can use <code>LogManager.getRootLogger()</code> to get the root logger.
+Note that Log4j API has no assumptions on a <code>Logger</code> hierarchy – this is a feature implemented by Log4j Core.</p>
+</div>
+<div class="paragraph">
+<p>When the <a href="#Configuration"><code>Configuration</code></a> is modified, <code>Logger</code>s may become associated with a different <code>LoggerConfig</code>, thus causing their behavior to be modified.
+Refer to <a href="configuration.html#configuring-loggers" class="xref page">configuring <code>Logger</code>s</a> for further information.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="LoggerConfig"><a class="anchor" href="#LoggerConfig"></a><code>LoggerConfig</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/LoggerConfig.html"><code>LoggerConfig</code></a> binds <a href="#Logger"><code>Logger</code></a> definitions to their associated components (appenders, filters, etc.) as declared in the active <a href="#Configuration"><code>Configuration</code></a>.
+The details of mapping a <code>Configuration</code> to <code>LoggerConfig</code>s is explained <a href="configuration.html#configuring-loggers" class="xref page">here</a>.
+<code>Logger</code>s effectively interact with appenders, filters, etc. through corresponding <code>LoggerConfig</code>s.
+A <code>LoggerConfig</code> essentially contains</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A reference to its parent (except if it is the root logger)</p>
+</li>
+<li>
+<p>A <a href="customloglevels.html" class="xref page">level</a> denoting the severity of messages that are accepted (defaults to <code>ERROR</code>)</p>
+</li>
+<li>
+<p><a href="#Filter"><code>Filter</code></a>s that must allow the <code>LogEvent</code> to pass before it will be passed to any <a href="#Appender"><code>Appender</code></a>s</p>
+</li>
+<li>
+<p>References to <a href="#Appender"><code>Appender</code></a>s that should be used to process the event</p>
+</li>
+</ul>
+</div>
+<div id="LoggerConfig-diagram" class="imageblock kroki">
+<div class="content">
+<img src="../_images/diag-2dc8fe44284ab476198b745bd5308956e31b6352.svg" alt="`LoggerConfig` and other directly related classes">
+</div>
+<div class="title">Figure 6. <code>LoggerConfig</code> and other directly related classes</div>
+</div>
+<div class="sect2">
+<h3 id="logger-hiearchy"><a class="anchor" href="#logger-hiearchy"></a>Logger hierarchy</h3>
+<div class="paragraph">
+<p>Log4j Core has a <strong>hierarchical</strong> model of <code>LoggerConfig</code>s, and hence <code>Logger</code>s.
+A <code>LoggerConfig</code> called <code>child</code> is said to be parented by <code>parent</code>, if <code>parent</code> has the <em>longest prefix match</em> on name.
+This match is case-sensitive and performed after tokenizing the name by splitting it from <code>.</code> (dot) characters.
+For a positive name match, tokens must match exhaustively.
+See <a href="#logger-hiearchy-diagram">Figure 7</a> for an example.</p>
+</div>
+<div id="logger-hiearchy-diagram" class="imageblock kroki">
+<div class="content">
+<img src="../_images/diag-892fd9dbd9ea6bece55c1d4078ae1de2edd5c689.svg" alt="Example hierarchy of loggers named `X`, `X.Y`, `X.Y.Z`, and `X.YZ`">
+</div>
+<div class="title">Figure 7. Example hierarchy of loggers named <code>X</code>, <code>X.Y</code>, <code>X.Y.Z</code>, and <code>X.YZ</code></div>
+</div>
+<div class="paragraph">
+<p>If a <code>LoggerConfig</code> is not provided an explicit level, it will be inherited from its parent.
+Similarly, if a user programmatically requests a <code>Logger</code> with a name that doesn&#8217;t have a directly corresponding <code>LoggerConfig</code> configuration entry with its name, the <code>LoggerConfig</code> of the parent will be used.</p>
+</div>
+<details>
+<summary class="title">Click for examples on <code>LoggerConfig</code> hierarchy</summary>
+<div class="content">
+<div class="paragraph">
+<p>Below we demonstrate the <code>LoggerConfig</code> hierarchy by means of <em>level inheritance</em>.
+That is, we will examine the effective level of a <code>Logger</code> in various <code>LoggerConfig</code> settings.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. Example 1</caption>
+<caption class="title">Table 1. Only the root logger is configured with a level, and it is <code>DEBUG</code></caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -543,627 +541,440 @@ Level will be assigned to it.</p>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Logger Name</th>
-<th class="tableblock halign-left valign-top">Assigned LoggerConfig</th>
-<th class="tableblock halign-left valign-top">LoggerConfig Level</th>
-<th class="tableblock halign-left valign-top">Logger Level</th>
+<th class="tableblock halign-left valign-top">Logger name</th>
+<th class="tableblock halign-left valign-top">Assigned <code>LoggerConfig</code> name</th>
+<th class="tableblock halign-left valign-top">Configured level</th>
+<th class="tableblock halign-left valign-top">Effective level</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">root</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">root</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">DEBUG</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">DEBUG</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">root</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">DEBUG</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">DEBUG</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X.Y</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">root</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">DEBUG</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">DEBUG</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X.Y.Z</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">root</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">DEBUG</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">DEBUG</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>In example 1 above, only the root logger is configured and has a Log
-Level. All the other Loggers reference the root LoggerConfig and use its
-Level.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. Example 2</caption>
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Logger Name</th>
-<th class="tableblock halign-left valign-top">Assigned LoggerConfig</th>
-<th class="tableblock halign-left valign-top">LoggerConfig Level</th>
-<th class="tableblock halign-left valign-top">Level</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">root</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">root</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">DEBUG</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">DEBUG</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ERROR</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ERROR</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X.Y</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X.Y</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">INFO</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">INFO</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X.Y.Z</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X.Y.Z</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">WARN</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">WARN</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>In example 2, all loggers have a configured LoggerConfig and obtain
-their Level from it.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. Example 3</caption>
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Logger Name</th>
-<th class="tableblock halign-left valign-top">Assigned LoggerConfig</th>
-<th class="tableblock halign-left valign-top">LoggerConfig Level</th>
-<th class="tableblock halign-left valign-top">Level</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">root</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">root</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">DEBUG</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">DEBUG</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ERROR</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ERROR</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X.Y</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ERROR</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ERROR</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X.Y.Z</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X.Y.Z</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">WARN</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">WARN</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>In example 3, the loggers`root`, <code>X</code> and <code>X.Y.Z</code> each have a configured
-LoggerConfig with the same name. The Logger <code>X.Y</code> does not have a
-configured LoggerConfig with a matching name so uses the configuration
-of LoggerConfig <code>X</code> since that is the LoggerConfig whose name has the
-the longest match to the start of the Logger&#8217;s name.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. Example 4</caption>
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Logger Name</th>
-<th class="tableblock halign-left valign-top">Assigned LoggerConfig</th>
-<th class="tableblock halign-left valign-top">LoggerConfig Level</th>
-<th class="tableblock halign-left valign-top">level</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">root</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">root</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">DEBUG</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">DEBUG</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ERROR</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ERROR</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X.Y</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ERROR</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ERROR</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X.Y.Z</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ERROR</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ERROR</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>In example 4, the loggers <code>root</code> and <code>X</code> each have a Configured
-LoggerConfig with the same name. The loggers <code>X.Y</code> and <code>X.Y.Z</code> do not
-have configured LoggerConfigs and so get their Level from the
-LoggerConfig assigned to them, <code>X</code>, since it is the LoggerConfig whose
-name has the longest match to the start of the Logger&#8217;s name.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. Example 5</caption>
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Logger Name</th>
-<th class="tableblock halign-left valign-top">Assigned LoggerConfig</th>
-<th class="tableblock halign-left valign-top">LoggerConfig Level</th>
-<th class="tableblock halign-left valign-top">level</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">root</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">root</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">DEBUG</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">DEBUG</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ERROR</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ERROR</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X.Y</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X.Y</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">INFO</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">INFO</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X.YZ</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ERROR</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ERROR</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>In example 5, the loggers <code>root</code>.<code>X</code>, and <code>X.Y</code> each has a configured
-LoggerConfig with the same name. The logger <code>X.YZ</code> does not have
-configured LoggerConfig and so gets its Level from the LoggerConfig
-assigned to it, <code>X</code>, since it is the LoggerConfig whose name has the
-longest match to the start of the Logger&#8217;s name. It is not associated
-with LoggerConfig <code>X.Y</code> since tokens after periods must match exactly.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. Example 6</caption>
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Logger Name</th>
-<th class="tableblock halign-left valign-top">Assigned LoggerConfig</th>
-<th class="tableblock halign-left valign-top">LoggerConfig Level</th>
-<th class="tableblock halign-left valign-top">Level</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">root</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">root</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">DEBUG</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">DEBUG</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ERROR</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ERROR</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X.Y</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X.Y</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ERROR</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X.Y.Z</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X.Y</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ERROR</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>In example 6, LoggerConfig X.Y has no configured level so it inherits
-its level from LoggerConfig X. Logger X.Y.Z uses LoggerConfig X.Y since
-it doesn&#8217;t have a LoggerConfig with a name that exactly matches. It too
-inherits its logging level from LoggerConfig X.</p>
-</div>
-<div class="paragraph">
-<p>The table below illustrates how Level filtering works. In the table,
-the vertical header shows the Level of the LogEvent, while the horizontal
-header shows the Level associated with the appropriate LoggerConfig. The
-intersection identifies whether the LogEvent would be allowed to pass
-for further processing (Yes) or discarded (No).</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Event Level</th>
-<th class="tableblock halign-left valign-top" colspan="7">LoggerConfig Level</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TRACE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>root</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>root</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFO</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WARN</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>FATAL</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>OFF</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ALL</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TRACE</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFO</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>root</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WARN</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X.Y</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>root</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>FATAL</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>OFF</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X.Y.Z</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>root</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
 </tr>
 </tbody>
 </table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_filter"><a class="anchor" href="#_filter"></a>Filter</h3>
-<div class="paragraph">
-<p>In addition to the automatic log Level filtering that takes place as
-described in the previous section, Log4j provides
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Filter.html"><code>Filter</code></a>s
-that can be applied before control is passed to any LoggerConfig, after
-control is passed to a LoggerConfig but before calling any Appenders,
-after control is passed to a LoggerConfig but before calling a specific
-Appender, and on each Appender. In a manner very similar to firewall
-filters, each Filter can return one of three results, <code>Accept</code>, <code>Deny</code>
-or <code>Neutral</code>. A response of <code>Accept</code> means that no other Filters should
-be called and the event should progress. A response of <code>Deny</code> means the
-event should be immediately ignored and control should be returned to
-the caller. A response of <code>Neutral</code> indicates the event should be passed
-to other Filters. If there are no other Filters the event will be
-processed.</p>
-</div>
-<div class="paragraph">
-<p>Although an event may be accepted by a Filter the event still might not
-be logged. This can happen when the event is accepted by the
-pre-LoggerConfig Filter but is then denied by a LoggerConfig filter or
-is denied by all Appenders.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_appender"><a class="anchor" href="#_appender"></a>Appender</h3>
-<div class="paragraph">
-<p>The ability to selectively enable or disable logging requests based on
-their logger is only part of the picture. Log4j allows logging requests
-to print to multiple destinations. In log4j speak, an output destination
-is called an
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Appender.html"><code>Appender</code></a>.
-Currently, appenders exist for the console, files, remote socket
-servers, Apache Flume, remote UNIX Syslog daemons, and various
-database APIs. See the section on <a href="appenders.html" class="xref page">Appenders</a> for
-more details on the various types available. More than one Appender can
-be attached to a Logger.</p>
-</div>
-<div class="paragraph">
-<p>An Appender can be added to a Logger by calling the
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html#addLoggerAppender(org.apache.logging.log4j.core.Logger,%20org.apache.logging.log4j.core.Appender)"><code>addLoggerAppender</code></a>
-method of the current Configuration. If a LoggerConfig matching the name
-of the Logger does not exist, one will be created, and the Appender will be
-attached to it and then all Loggers will be notified to update their
-LoggerConfig references.</p>
-</div>
-<div class="paragraph">
-<p><strong>Each enabled logging request for a given logger will be forwarded to
-all the appenders in that Logger&#8217;s LoggerConfig as well as the Appenders
-of the LoggerConfig&#8217;s parents.</strong> In other words, Appenders are inherited
-additively from the LoggerConfig hierarchy. For example, if a console
-appender is added to the root logger, then all enabled logging requests
-will at least print on the console. If in addition a file appender is
-added to a LoggerConfig, say <em>C</em>, then enabled logging requests for <em>C</em>
-and <em>C</em>'s children will print in a file <em>and</em> on the console. It is
-possible to override this default behavior so that Appender accumulation
-is no longer additive by setting <code>additivity="false"</code> on the Logger
-declaration in the configuration file.</p>
-</div>
-<div class="paragraph">
-<p>The rules governing appender additivity are summarized below.</p>
-</div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Appender Additivity</dt>
-<dd>
-<p>The output of a log statement of Logger <em>L</em> will go to all the
-Appenders in the LoggerConfig associated with <em>L</em> and the ancestors of
-that LoggerConfig. This is the meaning of the term "appender
-additivity".</p>
-<div class="paragraph">
-<p>However, if an ancestor of the LoggerConfig associated with Logger
-<em>L</em>, say <em>P</em>, has the additivity flag set to <code>false</code>, then <em>L</em>'s
-output will be directed to all the appenders in <em>L</em>'s LoggerConfig and
-it&#8217;s ancestors up to and including <em>P</em> but not the Appenders in any of
-the ancestors of <em>P</em>.</p>
-</div>
-<div class="paragraph">
-<p>Loggers have their additivity flag set to <code>true</code> by default.</p>
-</div>
-</dd>
-</dl>
-</div>
-<div class="paragraph">
-<p>The table below shows an example:</p>
-</div>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. All loggers are configured with a level</caption>
 <colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Logger Name</th>
-<th class="tableblock halign-left valign-top">Added Appenders</th>
-<th class="tableblock halign-left valign-top">Additivity Flag</th>
-<th class="tableblock halign-left valign-top">Output Targets</th>
-<th class="tableblock halign-left valign-top">Comment</th>
+<th class="tableblock halign-left valign-top">Logger name</th>
+<th class="tableblock halign-left valign-top">Assigned <code>LoggerConfig</code></th>
+<th class="tableblock halign-left valign-top">Configured level</th>
+<th class="tableblock halign-left valign-top">Effective level</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">root</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A1</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">not applicable</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A1</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The root logger has no parent so additivity does not apply to it.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>root</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>root</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A-x1, A-x2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A1, A-x1, A-x2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Appenders of "x" and root.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">x.y</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">none</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A1, A-x1, A-x2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Appenders of "x" and root. It would not be typical to configure a Logger with no Appenders.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X.Y</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X.Y</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFO</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFO</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">x.y.z</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A-xyz1</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A1, A-x1, A-x2, A-xyz1</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Appenders in "x.y.z", "x" and root.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X.Y.Z</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X.Y.Z</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WARN</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WARN</code></p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. All loggers are configured with a level, except the logger <code>X.Y</code></caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Logger name</th>
+<th class="tableblock halign-left valign-top">Assigned <code>LoggerConfig</code></th>
+<th class="tableblock halign-left valign-top">Configured level</th>
+<th class="tableblock halign-left valign-top">Effective level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>root</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>root</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">security</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A-sec</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A-sec</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">No appender accumulation since the additivity flag is set to <code>false</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">security.access</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">none</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A-sec</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Only appenders of "security" because the additivity flag in "security" is set to <code>false</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X.Y</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X.Y.Z</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X.Y.Z</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WARN</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WARN</code></p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. All loggers are configured with a level, except loggers <code>X.Y</code> and <code>X.Y.Z</code></caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Logger name</th>
+<th class="tableblock halign-left valign-top">Assigned <code>LoggerConfig</code></th>
+<th class="tableblock halign-left valign-top">Configured level</th>
+<th class="tableblock halign-left valign-top">Effective level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>root</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>root</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X.Y</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X.Y.Z</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 5. All loggers are configured with a level, except the logger <code>X.YZ</code></caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Logger name</th>
+<th class="tableblock halign-left valign-top">Assigned <code>LoggerConfig</code></th>
+<th class="tableblock halign-left valign-top">Configured level</th>
+<th class="tableblock halign-left valign-top">Effective level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>root</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>root</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X.Y</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X.Y</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFO</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFO</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X.YZ</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
 </tr>
 </tbody>
 </table>
 </div>
-<div class="sect2">
-<h3 id="_layout"><a class="anchor" href="#_layout"></a>Layout</h3>
+</details>
 <div class="paragraph">
-<p>More often than not, users wish to customize not only the output
-destination but also the output format. This is accomplished by
-associating a
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html"><code>Layout</code></a>
-with an Appender. The Layout is responsible for formatting the LogEvent
-according to the user&#8217;s wishes, whereas an appender takes care of
-sending the formatted output to its destination. The
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/PatternLayout.html"><code>PatternLayout</code></a>,
-part of the standard log4j distribution, lets the user specify the
-output format according to conversion patterns similar to the C language
-<code>printf()</code> function.</p>
+<p>For further information on log levels and using them for filtering purposes in a configuration, see <a href="customloglevels.html" class="xref page">Levels</a>.</p>
 </div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Filter"><a class="anchor" href="#Filter"></a><code>Filter</code></h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>For example, the PatternLayout with the conversion pattern "%r [%t] %-5p
-%c - %m%n" will output something akin to:</p>
+<p>In addition to <a href="#LoggerConfig">the level-based filtering facilitated by <code>LoggerConfig</code></a>, Log4j provides <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Filter.html"><code>Filter</code></a>s to evaluate the parameters of a logging call (i.e., context-wide filter) or a log event, and decide if it should be processed further in the pipeline.</p>
 </div>
-<div class="literalblock">
+<div id="Filter-diagram" class="imageblock kroki">
 <div class="content">
-<pre>176 [main] INFO  org.foo.Bar - Located nearest gas station.</pre>
+<img src="../_images/diag-96b353807a86d1e31f8907713d4f2b7fe5a59ce6.svg" alt="`Filter` and other directly related classes">
 </div>
-</div>
-<div class="paragraph">
-<p>The first field is the number of milliseconds elapsed since the start of
-the program. The second field is the thread making the log request. The
-third field is the level of the log statement. The fourth field is the
-name of the logger associated with the log request. The text after the
-'-' is the message of the statement.</p>
+<div class="title">Figure 8. <code>Filter</code> and other directly related classes</div>
 </div>
 <div class="paragraph">
-<p>Log4j comes with many different <a href="layouts.html" class="xref page">Layouts</a> for various
-use cases such as JSON, XML, HTML, and Syslog (including the new RFC
-5424 version). Other appenders such as the database connectors fill in
-specified fields instead of a particular textual layout.</p>
+<p>Refer to <a href="filters.html" class="xref page">Filters</a> for further information.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Appender"><a class="anchor" href="#Appender"></a><code>Appender</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Appender.html"><code>Appender</code></a>s are responsible for delivering a <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html"><code>LogEvent</code></a> to a certain target; console, file, database, etc.
+While doing so, they typically use <a href="#Layout"><code>Layout</code></a>s to encode the log event.
+See <a href="appenders.html" class="xref page">Appenders</a> for the complete guide.</p>
+</div>
+<div id="Appender-diagram" class="imageblock kroki">
+<div class="content">
+<img src="../_images/diag-d0e5615e7f18a6e132c1d6809c9813be92de6923.svg" alt="`Appender` and other directly related classes">
+</div>
+<div class="title">Figure 9. <code>Appender</code> and other directly related classes</div>
 </div>
 <div class="paragraph">
-<p>Just as importantly, log4j will render the content of the log message
-according to user-specified criteria. For example, if you frequently
-need to log <code>Oranges</code>, an object type used in your current project, then
-you can create an OrangeMessage that accepts an Orange instance and pass
-that to Log4j so that the Orange object can be formatted into an
-appropriate byte array when required.</p>
-</div>
+<p>An <code>Appender</code> can be added to a <a href="#Logger"><code>Logger</code></a> by calling the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html#addLoggerAppender(org.apache.logging.log4j.core.Logger,%20org.apache.logging.log4j.core.Appender)"><code>addLoggerAppender()</code></a> method of the current <a href="#Configuration"><code>Configuration</code></a>.
+If a <a href="#LoggerConfig"><code>LoggerConfig</code></a> matching the name of the <code>Logger</code> does not exist, one will be created, and the <code>Appender</code> will be  attached to it, and then all <code>Logger</code>s will be notified to update their <code>LoggerConfig</code> references.</p>
 </div>
 <div class="sect2">
-<h3 id="_strsubstitutor_and_strlookup"><a class="anchor" href="#_strsubstitutor_and_strlookup"></a>StrSubstitutor and StrLookup</h3>
+<h3 id="appender-additivity"><a class="anchor" href="#appender-additivity"></a>Appender additivity</h3>
 <div class="paragraph">
-<p>The
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrSubstitutor.html"><code>StrSubstitutor</code></a>
-class and
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrLookup.html"><code>StrLookup</code></a>
-interface was borrowed from
-<a href="https://commons.apache.org/proper/commons-lang/">Apache Commons Lang</a> and
-then modified to support evaluating LogEvents. In addition the
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/Interpolator.html"><code>Interpolator</code></a>
-class was borrowed from Apache Commons Configuration to allow the
-StrSubstitutor to evaluate variables from multiple StrLookups. It
-too was modified to support evaluating LogEvents. Together these provide
-a mechanism to allow the configuration to reference variables coming
-from System Properties, the configuration file, the ThreadContext Map,
-StructuredData in the LogEvent. The variables can either be resolved
-when the configuration is processed or as each event is processed if
-the component is capable of handling it. See <a href="lookups.html" class="xref page">Lookups</a>
-for more information.</p>
+<p>Each enabled logging request for a given logger will be forwarded to all the appenders in the corresponding <code>Logger</code>'s <code>LoggerConfig</code>, as well as to the <code>Appender</code>s of the <code>LoggerConfig</code>'s parents.
+In other words, <code>Appender</code>s are inherited <strong>additively</strong> from the <code>LoggerConfig</code> hierarchy.
+For example, if a console appender is added to the root logger, then all enabled logging requests will at least print on the console.
+If in addition a file appender is added to a <code>LoggerConfig</code>, say <code>LC</code>, then enabled logging requests for <code>LC</code> and <code>LC</code>'s children will print in a file <em>and</em> on the console.
+It is possible to override this default behavior so that appender accumulation is no longer additive by setting <code>additivity</code> attribute to <code>false</code> on <a href="configuration.html#configuring-loggers" class="xref page">the <code>Logger</code> declaration in the configuration file</a>.</p>
 </div>
+<div class="paragraph">
+<p>The output of a log statement of <code>Logger</code> <code>L</code> will go to all the appenders in the <code>LoggerConfig</code> associated with <code>L</code> and the ancestors of that <code>LoggerConfig</code>.
+However, if an ancestor of the <code>LoggerConfig</code> associated with <code>Logger</code>
+<code>L</code>, say <code>P</code>, has the additivity flag set to <code>false</code>, then <code>L</code>'s output will be directed to all the appenders in <code>L</code>'s <code>LoggerConfig</code> and it&#8217;s ancestors up to and including <code>P</code> but not the appenders in any of the ancestors of <code>P</code>.</p>
+</div>
+<details>
+<summary class="title">Click for an example on appender additivity</summary>
+<div class="content">
+<div id="appender-additivity-diagram" class="imageblock kroki">
+<div class="content">
+<img src="../_images/diag-58c484caf8cd616db4f1c7ed31b51c123b5859d4.svg" alt="Example hierarchy of logger configurations to demonstrate appender additivity">
+</div>
+<div class="title">Figure 10. Example hierarchy of logger configurations to demonstrate appender additivity</div>
+</div>
+<div class="paragraph">
+<p>In <a href="#appender-additivity-diagram">Figure 10</a>, the effective appenders for each logger configuration are as follows:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 6. Effective appenders of logger configurations in <a href="#appender-additivity-diagram">Figure 10</a></caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2858%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-center valign-middle" rowspan="2"><p class="tableblock">Appender</p></th>
+<th class="tableblock halign-center valign-top" colspan="6"><p class="tableblock">Logger configuration</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A.B1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A.B1.C</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A.B1.C.D</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A.B2.C</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A.B2.C.D</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>root</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A.B1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A.B1.C</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A.B1.C.D</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A.B2.C</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A.B2.C.D</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</details>
+</div>
+<div class="sect2">
+<h3 id="AbstractManager"><a class="anchor" href="#AbstractManager"></a><code>AbstractManager</code></h3>
+<div class="paragraph">
+<p>To multiplex the access to external resources (files, network connections, etc.), most appenders are split into an
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/AbstractManager.html"><code>AbstractManager</code></a>
+that handles the low-level access to the external resource and an <code>Appender</code> that transforms log events into a format that the manager can handle.</p>
+</div>
+<div class="paragraph">
+<p>Managers that share the same resource are shared between appenders regardless of the <code>Configuration</code> or <code>LoggerContext</code> of the appenders.
+For example
+<a href="appenders.html#FileAppender" class="xref page"><code>FileAppender</code></a>s
+with the same <code>fileName</code> attribute all share the same
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/FileManager.html"><code>FileManager</code></a>.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Due to the manager-sharing feature of many Log4j appenders, it is not possible to configure multiple appenders for the same resource that only differ in the way the underlying resource is configured.</p>
+</div>
+<div class="paragraph">
+<p>For example, it is not possible to have two file appenders (even in different logger contexts) that use the same file, but a different value of the <code>append</code> option.
+Since during a <a href="#reconfiguration">reconfiguration event</a> multiple instances of the same appender exists, it is also not possible to toggle the value of the <code>append</code> option through reconfiguration.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Layout"><a class="anchor" href="#Layout"></a><code>Layout</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>An <a href="#Appender"><code>Appender</code></a> uses a <strong>layout</strong> to encode a <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html"><code>LogEvent</code></a> into a form that meets the needs of whatever will be consuming the log event.</p>
+</div>
+<div id="Layout-diagram" class="imageblock kroki">
+<div class="content">
+<img src="../_images/diag-232cdf1d44336897239fa03f6521cc730f38f32d.svg" alt="`Layout` and other directly related classes">
+</div>
+<div class="title">Figure 11. <code>Layout</code> and other directly related classes</div>
+</div>
+<div class="paragraph">
+<p>Refer to <a href="layouts.html" class="xref page">Layouts</a> for details.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="StrSubstitutor"><a class="anchor" href="#StrSubstitutor"></a><code>StrSubstitutor</code> et al.</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrSubstitutor.html"><code>StrSubstitutor</code></a> is a <code>String</code> interpolation tool that can be used in both configurations and components (e.g., appenders, layouts).
+It accepts an <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/Interpolator.html"><code>Interpolator</code></a> to determine if a key maps to a certain value.
+<code>Interpolator</code> is essentially a facade delegating to multiple <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrLookup.html"><code>StrLookup</code></a> (aka. <em>lookup</em>) implementations.</p>
+</div>
+<div id="StrSubstitutor-diagram" class="imageblock kroki">
+<div class="content">
+<img src="../_images/diag-7a08e5a79432e9299cc0d9671bd39677be5618e8.svg" alt="`StrSubstitutor` et al. and other directly related classes">
+</div>
+<div class="title">Figure 12. <code>StrSubstitutor</code> et al. and other directly related classes</div>
+</div>
+<div class="paragraph">
+<p>See <a href="configuration.html#property-substitution" class="xref page">how property substitution works</a> and <a href="lookups.html" class="xref page">the predefined lookups</a> for further information.</p>
 </div>
 </div>
 </div>

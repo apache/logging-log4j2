@@ -161,7 +161,7 @@
     <a class="nav-link" href="systemproperties.html">Configuration properties</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
+    <a class="nav-link" href="customconfig.html">Programmatic configuration</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="appenders.html">Appenders</a>
@@ -328,36 +328,21 @@
 <article class="doc">
 <h1 class="page">Configuration</h1>
 <div class="paragraph">
-<p>Logging is a standard method for monitoring the health of an application and diagnosing problems that may arise within it.
-Even moderately sized applications can contain thousands of logging statements.</p>
-</div>
-<div class="paragraph">
-<p>To decide which of these statements will be logged and where, users need to configure Log4j Core in one of two ways:</p>
+<p>Even moderately sized applications can contain thousands of logging statements.
+To decide which of these statements will be logged and where, users need to configure Log4j Core in one of following ways:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>through a <a href="configuration.html" class="xref page">Configuration file</a>.
-Since version 2.0, the configuration file format has been considered part of the public API and has remained stable across significant version upgrades.</p>
+<p>Through a <a href="configuration.html" class="xref page">configuration file</a></p>
 </li>
 <li>
-<p>through <a href="customconfig.html" class="xref page">Programmatic Configuration</a>, which provides a larger spectrum of possible customizations but might require code changes during version upgrades.</p>
+<p>Through <a href="customconfig.html" class="xref page">programmatic configuration</a></p>
 </li>
 </ul>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
 <div class="paragraph">
-<p>To prevent a chicken-and-egg problem, users can only supply some configuration options (e.g., the configuration file location) through <a href="systemproperties.html" class="xref page">configuration properties</a>.</p>
-</div>
-</td>
-</tr>
-</table>
+<p>Some meta-configuration options (e.g., the configuration file location) are only available through <a href="systemproperties.html" class="xref page">system properties</a>.</p>
 </div>
 </article>
   </div>

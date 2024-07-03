@@ -161,7 +161,7 @@
     <a class="nav-link" href="systemproperties.html">Configuration properties</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
+    <a class="nav-link" href="customconfig.html">Programmatic configuration</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="appenders.html">Appenders</a>
@@ -343,8 +343,14 @@ page.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="ContextMapLookup"><a class="anchor" href="#ContextMapLookup"></a>Context Map Lookup</h2>
+<h2 id="collection"><a class="anchor" href="#collection"></a>Collection</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>Log4j bundles several predefined lookups to assist in several common deployment use cases.
+Following sections explain all these in detail.</p>
+</div>
+<div class="sect2">
+<h3 id="ContextMapLookup"><a class="anchor" href="#ContextMapLookup"></a>Context Map Lookup</h3>
 <div class="paragraph">
 <p>The ContextMapLookup allows applications to store data in the Log4j
 ThreadContext Map and then retrieve the values in the Log4j
@@ -365,10 +371,8 @@ resolve the variable for each event. Note that the pattern
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="DateLookup"><a class="anchor" href="#DateLookup"></a>Date Lookup</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="DateLookup"><a class="anchor" href="#DateLookup"></a>Date Lookup</h3>
 <div class="paragraph">
 <p>The DateLookup is somewhat unusual from the other lookups as it doesn&#8217;t
 use the key to locate an item. Instead, the key can be used to specify a
@@ -388,10 +392,8 @@ be formatted as specified.</p>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="DockerLookup"><a class="anchor" href="#DockerLookup"></a>Docker Lookup</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="DockerLookup"><a class="anchor" href="#DockerLookup"></a>Docker Lookup</h3>
 <div class="paragraph">
 <p>The DockerLookup can be used to lookup attributes from the Docker container the application is running in.</p>
 </div>
@@ -461,10 +463,8 @@ be formatted as specified.</p>
 <p>This Lookup is subject to the requirements listed at <a href="../log4j-docker.html" class="xref page">Log4j Docker Support</a></p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="environment-lookup"><a class="anchor" href="#environment-lookup"></a><a id="EnvironmentLookup"></a> Environment Lookup</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="environment-lookup"><a class="anchor" href="#environment-lookup"></a><a id="EnvironmentLookup"></a> Environment Lookup</h3>
 <div class="paragraph">
 <p>The EnvironmentLookup allows systems to configure environment variables,
 either in global files such as /etc/profile or in the startup scripts
@@ -496,10 +496,8 @@ when the <code>USER</code> environment variable is undefined, the default value
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="EventLookup"><a class="anchor" href="#EventLookup"></a>Event Lookup</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="EventLookup"><a class="anchor" href="#EventLookup"></a>Event Lookup</h3>
 <div class="paragraph">
 <p>The EventLookup provides access to fields within the log event from the configuration.</p>
 </div>
@@ -608,10 +606,8 @@ present in the log event.</p>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="JavaLookup"><a class="anchor" href="#JavaLookup"></a>Java Lookup</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="JavaLookup"><a class="anchor" href="#JavaLookup"></a>Java Lookup</h3>
 <div class="paragraph">
 <p>The JavaLookup allows Java environment information to be retrieved in
 convenient preformatted strings using the <code>java:</code> prefix.</p>
@@ -697,10 +693,8 @@ convenient preformatted strings using the <code>java:</code> prefix.</p>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="JndiLookup"><a class="anchor" href="#JndiLookup"></a>JNDI Lookup</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="JndiLookup"><a class="anchor" href="#JndiLookup"></a>JNDI Lookup</h3>
 <div class="paragraph">
 <p>As of Log4j 2.15.1 JNDI operations require that <code>log4j2.enableJndi=true</code> be set as a system property or the
 corresponding environment variable for this lookup to function. See the
@@ -733,10 +727,8 @@ or ip address are supported along with any hosts or ip addresses listed in the
 <p><strong>Java&#8217;s JNDI module is not available on Android.</strong></p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="JmxRuntimeInputArgumentsLookup"><a class="anchor" href="#JmxRuntimeInputArgumentsLookup"></a>JVM Input Arguments Lookup (JMX)</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="JmxRuntimeInputArgumentsLookup"><a class="anchor" href="#JmxRuntimeInputArgumentsLookup"></a>JVM Input Arguments Lookup (JMX)</h3>
 <div class="paragraph">
 <p>Maps JVM input arguments&#8201;&#8212;&#8201;but not <em>main</em> arguments&#8201;&#8212;&#8201;using JMX to
 acquire the JVM arguments.</p>
@@ -752,12 +744,11 @@ acquire the JVM arguments.</p>
 <p><strong>Java&#8217;s JMX module is not available on Android or on Google App Engine.</strong></p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="KubernetesLookup"><a class="anchor" href="#KubernetesLookup"></a>Kubernetes Lookup</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="KubernetesLookup"><a class="anchor" href="#KubernetesLookup"></a>Kubernetes Lookup</h3>
 <div class="paragraph">
 <p>For retrieving attributes using Fabric8&#8217;s Kubernetes Client, see their <a href="https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md">Kubernetes Log4j Lookup</a>.</p>
+</div>
 </div>
 </div>
 </div>
@@ -783,11 +774,8 @@ relative to the log4j configuration file.</p>
 &lt;/File&gt;</code></pre>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="LowerLookup"><a class="anchor" href="#LowerLookup"></a>Lower Lookup</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="LowerLookup"><a class="anchor" href="#LowerLookup"></a>Lower Lookup</h3>
 <div class="paragraph">
 <p>The LowerLookup converts the passed in argument to lower case. Presumably the value will be the
 result of a nested lookup.</p>
@@ -802,10 +790,8 @@ result of a nested lookup.</p>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="AppMainArgsLookup"><a class="anchor" href="#AppMainArgsLookup"></a>Main Arguments Lookup (Application)</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="AppMainArgsLookup"><a class="anchor" href="#AppMainArgsLookup"></a>Main Arguments Lookup (Application)</h3>
 <div class="paragraph">
 <p>This lookup requires that you manually provide the main arguments of the
 application to Log4j:</p>
@@ -838,9 +824,9 @@ key must be followed by a backslash as an escape character as in <code>${main:\-
 <div class="paragraph">
 <p>For example, suppose the static void main String[] arguments are:</p>
 </div>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
-<pre>--file foo.txt --verbose -x bar</pre>
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">--file foo.txt --verbose -x bar</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -909,10 +895,8 @@ key must be followed by a backslash as an escape character as in <code>${main:\-
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="MapLookup"><a class="anchor" href="#MapLookup"></a>Map Lookup</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="MapLookup"><a class="anchor" href="#MapLookup"></a>Map Lookup</h3>
 <div class="paragraph">
 <p>The MapLookup serves several purposes.</p>
 </div>
@@ -964,10 +948,8 @@ page for information on how to set the default values.</p>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="marker-lookup"><a class="anchor" href="#marker-lookup"></a>Marker Lookup</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="marker-lookup"><a class="anchor" href="#marker-lookup"></a>Marker Lookup</h3>
 <div class="paragraph">
 <p>The marker lookup allows you to use markers in interesting
 configurations like a routing appender. Consider the following YAML
@@ -1039,10 +1021,8 @@ check for the existence of a marker where <code>name</code> is the marker name. 
 the marker exists, the expression returns the name, otherwise <code>null</code>.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_resource_bundle_lookup"><a class="anchor" href="#_resource_bundle_lookup"></a>Resource Bundle Lookup</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_resource_bundle_lookup"><a class="anchor" href="#_resource_bundle_lookup"></a>Resource Bundle Lookup</h3>
 <div class="paragraph">
 <p>The resource bundle lookup retrieves values from Resource Bundles (see Java documentation). The format is <code>${bundle:BundleName:BundleKey}</code>. The bundle name follows package naming conventions, for example: <code>${bundle:com.domain.Messages:MyKey}</code>.</p>
 </div>
@@ -1056,10 +1036,8 @@ the marker exists, the expression returns the name, otherwise <code>null</code>.
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_spring_boot_lookup"><a class="anchor" href="#_spring_boot_lookup"></a>Spring Boot Lookup</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_spring_boot_lookup"><a class="anchor" href="#_spring_boot_lookup"></a>Spring Boot Lookup</h3>
 <div class="paragraph">
 <p>The Spring Boot Lookup retrieves the values of Spring properties from the Spring configuration as well as values of the active and default profiles. Specifying a key of "profiles.active" will return the active profiles while a key of "profiles.default" will return the default profiles. The default and active profiles can be an array. If more than one profile is present they will be returned as a comma separated list. To retrieve a single item from the array append "[{index}]" to the key. For example, to return the first active profile in the list specify "profiles.active[0]".</p>
 </div>
@@ -1079,10 +1057,8 @@ the marker exists, the expression returns the name, otherwise <code>null</code>.
 <p>This Lookup requires log4j-spring-cloud-config-client be included in the application.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="StructuredDataLookup"><a class="anchor" href="#StructuredDataLookup"></a>Structured Data Lookup</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="StructuredDataLookup"><a class="anchor" href="#StructuredDataLookup"></a>Structured Data Lookup</h3>
 <div class="paragraph">
 <p>The StructuredDataLookup is very similar to the MapLookup in that it
 will retrieve values from StructuredDataMessages. In addition to the Map
@@ -1111,10 +1087,8 @@ while "type" would have to be an item in the Map in a MapMessage.</p>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="system-properties-lookup"><a class="anchor" href="#system-properties-lookup"></a><a id="SystemPropertiesLookup"></a> System Properties Lookup</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="system-properties-lookup"><a class="anchor" href="#system-properties-lookup"></a><a id="SystemPropertiesLookup"></a> System Properties Lookup</h3>
 <div class="paragraph">
 <p>As it is quite common to define values inside and outside the
 application by using System Properties, it is only natural that they
@@ -1142,10 +1116,8 @@ when the <code>logPath</code> system property is undefined, the default value
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="UpperLookup"><a class="anchor" href="#UpperLookup"></a>Upper Lookup</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="UpperLookup"><a class="anchor" href="#UpperLookup"></a>Upper Lookup</h3>
 <div class="paragraph">
 <p>The LowerLookup converts the passed in argument to upper case. Presumably the value will be the
 result of a nested lookup.</p>
@@ -1160,10 +1132,8 @@ result of a nested lookup.</p>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="WebLookup"><a class="anchor" href="#WebLookup"></a>Web Lookup</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="WebLookup"><a class="anchor" href="#WebLookup"></a>Web Lookup</h3>
 <div class="paragraph">
 <p>The WebLookup allows applications to retrieve variables that are
 associated with the ServletContext. In addition to being able to
@@ -1243,6 +1213,75 @@ located then the corresponding value will be returned.</p>
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Appenders&gt;
   &lt;File name="ApplicationLog" fileName="${web:rootDir}/app.log"/&gt;
 &lt;/Appenders&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="extending"><a class="anchor" href="#extending"></a>Extending</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Lookups are <a href="plugins.html" class="xref page">plugins</a> implementing <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrLookup.html">the <code>StrLookup</code> interface</a>.
+This section will guide you on how to create custom ones.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>While <a href="#collection">the predefined lookup collection</a> should address most common use cases, you might find yourself needing to implement a custom one.
+If this is the case, we really appreciate it if you can <strong>share your use case in a <a href="https://logging.apache.org/support.html">user support channel</a></strong>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="extending-plugins"><a class="anchor" href="#extending-plugins"></a>Plugin preliminaries</h3>
+<div class="paragraph">
+<p>Log4j plugin system is the de facto extension mechanism embraced by various Log4j components.
+Plugins provide extension points to components, that can be used to implement new features, without modifying the original component.
+It is analogous to a <a href="https://en.wikipedia.org/wiki/Dependency_injection">dependency injection</a> framework, but curated for Log4j-specific needs.</p>
+</div>
+<div class="paragraph">
+<p>In a nutshell, you annotate your classes with <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/Plugin.html"><code>@Plugin</code></a> and their (<code>static</code>) factory methods with <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/PluginFactory.html"><code>@PluginFactory</code></a>.
+Last, you inform the Log4j plugin system to discover these custom classes.
+This is done using running the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/processor/PluginProcessor.html"><code>PluginProcessor</code></a> annotation processor while building your project.
+Refer to <a href="plugins.html" class="xref page">Plugins</a> for details.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="extending-lookups"><a class="anchor" href="#extending-lookups"></a>Extending lookups</h3>
+<div class="paragraph">
+<p>Lookups are <a href="plugins.html" class="xref page">plugins</a> implementing <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrLookup.html">the <code>StrLookup</code> interface</a>.
+While annotating your lookup with <code>@Plugin</code>, you need to make sure that</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>It has a unique <code>name</code> attribute across all available <code>StrLookup</code> plugins</p>
+</li>
+<li>
+<p>The <code>category</code> attribute is set to <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrLookup.html#CATEGORY"><code>StrLookup.CATEGORY</code></a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You can check out following files for examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-core/src/main/java/org/apache/logging/log4j/core/lookup/DateLookup.java"><code>LowerLookup.java</code></a> – <a href="#LowerLookup">Lower Lookup</a> lower-cases its input</p>
+</li>
+<li>
+<p><a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-core/src/main/java/org/apache/logging/log4j/core/lookup/EventLookup.java"><code>EventLookup.java</code></a> – <a href="#EventLookup">Event Lookup</a> extracts specified fields from the effective <code>LogEvent</code> in the context</p>
+</li>
+</ul>
 </div>
 </div>
 </div>

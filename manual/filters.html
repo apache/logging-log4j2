@@ -161,7 +161,7 @@
     <a class="nav-link" href="systemproperties.html">Configuration properties</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
+    <a class="nav-link" href="customconfig.html">Programmatic configuration</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="appenders.html">Appenders</a>
@@ -576,8 +576,14 @@ This reduces the costs (formatting, transfer through an asynchronous barrier) of
 </div>
 </div>
 <div class="sect1">
-<h2 id="BurstFilter"><a class="anchor" href="#BurstFilter"></a>BurstFilter</h2>
+<h2 id="collection"><a class="anchor" href="#collection"></a>Collection</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>Log4j bundles several predefined filters to assist in several common deployment use cases.
+Following sections explain all these in detail.</p>
+</div>
+<div class="sect2">
+<h3 id="BurstFilter"><a class="anchor" href="#BurstFilter"></a>BurstFilter</h3>
 <div class="paragraph">
 <p>The BurstFilter provides a mechanism to control the rate at which LogEvents are processed by silently discarding events after the maximum limit has been reached.</p>
 </div>
@@ -656,10 +662,8 @@ be ACCEPT, DENY or NEUTRAL. The default value is DENY.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="CompositeFilter"><a class="anchor" href="#CompositeFilter"></a>CompositeFilter</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="CompositeFilter"><a class="anchor" href="#CompositeFilter"></a>CompositeFilter</h3>
 <div class="paragraph">
 <p>The CompositeFilter provides a way to specify more than one filter.
 It is added to the configuration as a filter element and contains other filters to be evaluated.
@@ -706,10 +710,8 @@ The filter element accepts no parameters.</p>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="DynamicThresholdFilter"><a class="anchor" href="#DynamicThresholdFilter"></a>DynamicThresholdFilter</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="DynamicThresholdFilter"><a class="anchor" href="#DynamicThresholdFilter"></a>DynamicThresholdFilter</h3>
 <div class="paragraph">
 <p>The DynamicThresholdFilter allows filtering by log level based on specific attributes.
 For example, if the user&#8217;s loginId is being captured in the ThreadContext Map then it is possible to enable debug logging for only that user.
@@ -794,10 +796,8 @@ be ACCEPT, DENY or NEUTRAL. The default value is DENY.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="LevelRangeFilter"><a class="anchor" href="#LevelRangeFilter"></a>LevelRangeFilter</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="LevelRangeFilter"><a class="anchor" href="#LevelRangeFilter"></a>LevelRangeFilter</h3>
 <div class="paragraph">
 <p><code>LevelRangeFilter</code> allows filtering against a level range, where levels get compared by their associated integral values; <code>OFF</code> has an integral value of 0, <code>FATAL</code> 100, <code>ERROR</code> 200, and so on.</p>
 </div>
@@ -862,10 +862,8 @@ The filter will return <code>onMismatch</code> result (i.e., <code>DENY</code>, 
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="MapFilter"><a class="anchor" href="#MapFilter"></a>MapFilter</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="MapFilter"><a class="anchor" href="#MapFilter"></a>MapFilter</h3>
 <div class="paragraph">
 <p>The MapFilter allows filtering against data elements that are in a MapMessage.</p>
 </div>
@@ -1003,10 +1001,8 @@ be ACCEPT, DENY or NEUTRAL. The default value is DENY.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="MarkerFilter"><a class="anchor" href="#MarkerFilter"></a>MarkerFilter</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="MarkerFilter"><a class="anchor" href="#MarkerFilter"></a>MarkerFilter</h3>
 <div class="paragraph">
 <p>The MarkerFilter compares the configured Marker value against the Marker that is included in the LogEvent.
 A match occurs when the Marker name matches either the Log Event&#8217;s Marker or one of its parents.</p>
@@ -1071,10 +1067,8 @@ be ACCEPT, DENY or NEUTRAL. The default value is DENY.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="MutableThreadContextMapFilter"><a class="anchor" href="#MutableThreadContextMapFilter"></a>MutableThreadContextMapFilter</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="MutableThreadContextMapFilter"><a class="anchor" href="#MutableThreadContextMapFilter"></a>MutableThreadContextMapFilter</h3>
 <div class="paragraph">
 <p>The MutableThreadContextMapFilter or MutableContextMapFilter allows filtering against data elements that are in the current context.
 By default, this is the ThreadContext Map.
@@ -1166,10 +1160,8 @@ be ACCEPT, DENY or NEUTRAL. The default value is DENY.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="NoMarkerFilter"><a class="anchor" href="#NoMarkerFilter"></a>NoMarkerFilter</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="NoMarkerFilter"><a class="anchor" href="#NoMarkerFilter"></a>NoMarkerFilter</h3>
 <div class="paragraph">
 <p>The NoMarkerFilter checks that there is no marker included in the LogEvent.
 A match occurs when there is no marker in the Log Event.</p>
@@ -1229,10 +1221,8 @@ be ACCEPT, DENY or NEUTRAL. The default value is DENY.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="RegexFilter"><a class="anchor" href="#RegexFilter"></a>RegexFilter</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="RegexFilter"><a class="anchor" href="#RegexFilter"></a>RegexFilter</h3>
 <div class="paragraph">
 <p>The RegexFilter allows the formatted or unformatted message to be compared against a regular expression.</p>
 </div>
@@ -1452,10 +1442,8 @@ See
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="StructuredDataFilter"><a class="anchor" href="#StructuredDataFilter"></a>StructuredDataFilter</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="StructuredDataFilter"><a class="anchor" href="#StructuredDataFilter"></a>StructuredDataFilter</h3>
 <div class="paragraph">
 <p>The StructuredDataFilter is a MapFilter that also allows filtering on the event id, type and message.</p>
 </div>
@@ -1536,10 +1524,8 @@ be ACCEPT, DENY or NEUTRAL. The default value is DENY.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="ThreadContextMapFilter"><a class="anchor" href="#ThreadContextMapFilter"></a>ThreadContextMapFilter</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="ThreadContextMapFilter"><a class="anchor" href="#ThreadContextMapFilter"></a>ThreadContextMapFilter</h3>
 <div class="paragraph">
 <p>The ThreadContextMapFilter or ContextMapFilter allows filtering against data elements that are in the current context.
 By default, this is the ThreadContext Map.</p>
@@ -1647,10 +1633,8 @@ be ACCEPT, DENY or NEUTRAL. The default value is DENY.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="ThresholdFilter"><a class="anchor" href="#ThresholdFilter"></a>ThresholdFilter</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="ThresholdFilter"><a class="anchor" href="#ThresholdFilter"></a>ThresholdFilter</h3>
 <div class="paragraph">
 <p>This filter returns the onMatch result if the level in the LogEvent is the same or more specific than the configured level and the <code>onMismatch</code>
 value otherwise.
@@ -1717,10 +1701,8 @@ be ACCEPT, DENY or NEUTRAL. The default value is DENY.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="TimeFilter"><a class="anchor" href="#TimeFilter"></a>TimeFilter</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="TimeFilter"><a class="anchor" href="#TimeFilter"></a>TimeFilter</h3>
 <div class="paragraph">
 <p>The time filter can be used to restrict the filter to only a certain portion of the day.</p>
 </div>
@@ -1793,6 +1775,76 @@ be ACCEPT, DENY or NEUTRAL. The default value is DENY.</p></td>
     &lt;/Root&gt;
   &lt;/Loggers&gt;
 &lt;/Configuration&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="extending"><a class="anchor" href="#extending"></a>Extending</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Filters are <a href="plugins.html" class="xref page">plugins</a> implementing <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Filter.html">the <code>Filter</code> interface</a>.
+This section will guide you on how to create custom ones.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>While <a href="#collection">the predefined filter collection</a> should address most common use cases, you might find yourself needing to implement a custom one.
+If this is the case, we really appreciate it if you can <strong>share your use case in a <a href="https://logging.apache.org/support.html">user support channel</a></strong>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="extending-plugins"><a class="anchor" href="#extending-plugins"></a>Plugin preliminaries</h3>
+<div class="paragraph">
+<p>Log4j plugin system is the de facto extension mechanism embraced by various Log4j components.
+Plugins provide extension points to components, that can be used to implement new features, without modifying the original component.
+It is analogous to a <a href="https://en.wikipedia.org/wiki/Dependency_injection">dependency injection</a> framework, but curated for Log4j-specific needs.</p>
+</div>
+<div class="paragraph">
+<p>In a nutshell, you annotate your classes with <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/Plugin.html"><code>@Plugin</code></a> and their (<code>static</code>) factory methods with <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/PluginFactory.html"><code>@PluginFactory</code></a>.
+Last, you inform the Log4j plugin system to discover these custom classes.
+This is done using running the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/processor/PluginProcessor.html"><code>PluginProcessor</code></a> annotation processor while building your project.
+Refer to <a href="plugins.html" class="xref page">Plugins</a> for details.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="extending-filters"><a class="anchor" href="#extending-filters"></a>Extending filters</h3>
+<div class="paragraph">
+<p>Filter are <a href="plugins.html" class="xref page">plugins</a> implementing <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Filter.html">the <code>Filter</code> interface</a>.
+We recommend users to extend from <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/filter/AbstractFilter.html"><code>AbstractFilter</code></a>, which provides implementation convenience.
+While annotating your filter with <code>@Plugin</code>, you need to make sure that</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>It has a unique <code>name</code> attribute across all available <code>Filter</code> plugins</p>
+</li>
+<li>
+<p>The <code>category</code> attribute is set to <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Node.html#CATEGORY"><code>Node.CATEGORY</code></a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You can check out following files for examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-core/src/main/java/org/apache/logging/log4j/core/filter/MarkerFilter.java"><code>MarkerFilter.java</code></a> – <a href="#MarkerFilter">MarkerFilter</a> matching on markers associated with the effective <code>LogEvent</code> in the context</p>
+</li>
+<li>
+<p><a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-core/src/main/java/org/apache/logging/log4j/core/filter/RegexFilter.java"><code>RegexFilter.java</code></a> – <a href="#RegexFilter">RegexFilter</a> matching on the message associated with the effective <code>LogEvent</code> in the context</p>
+</li>
+</ul>
 </div>
 </div>
 </div>

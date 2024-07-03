@@ -161,7 +161,7 @@
     <a class="nav-link" href="systemproperties.html">Configuration properties</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
+    <a class="nav-link" href="customconfig.html">Programmatic configuration</a>
   </li>
   <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="appenders.html">Appenders</a>
@@ -419,8 +419,14 @@ It does not ensure that the operating system writes the event to the underlying 
 </div>
 </div>
 <div class="sect1">
-<h2 id="AsyncAppender"><a class="anchor" href="#AsyncAppender"></a><a id="asyncappender"></a> AsyncAppender</h2>
+<h2 id="collection"><a class="anchor" href="#collection"></a>Collection</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>Log4j bundles several predefined appenders to assist in several common deployment use cases.
+Following sections explain all these in detail.</p>
+</div>
+<div class="sect2">
+<h3 id="AsyncAppender"><a class="anchor" href="#AsyncAppender"></a><a id="asyncappender"></a> AsyncAppender</h3>
 <div class="paragraph">
 <p>The AsyncAppender accepts references to other Appenders and causes LogEvents to be written to them on a separate Thread.
 Note that exceptions while writing to those Appenders will be hidden from the application.
@@ -671,10 +677,8 @@ maximum capacity.</p></td>
 </tbody>
 </table>
 </div>
-</div>
-<div class="sect1">
-<h2 id="CassandraAppender"><a class="anchor" href="#CassandraAppender"></a>CassandraAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="CassandraAppender"><a class="anchor" href="#CassandraAppender"></a>CassandraAppender</h3>
 <div class="paragraph">
 <p>The CassandraAppender writes its output to an <a href="https://cassandra.apache.org/">Apache Cassandra</a>
 database.
@@ -841,10 +845,8 @@ TimestampGenerator. By default, this is <code>false</code>.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="consoleappender"><a class="anchor" href="#consoleappender"></a><a id="ConsoleAppender"></a> ConsoleAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="consoleappender"><a class="anchor" href="#consoleappender"></a><a id="ConsoleAppender"></a> ConsoleAppender</h3>
 <div class="paragraph">
 <p>As one might expect, the ConsoleAppender writes its output to either
 <code>System.out</code> or <code>System.err</code> with <code>System.out</code> being the default target.
@@ -941,10 +943,8 @@ Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="FailoverAppender"><a class="anchor" href="#FailoverAppender"></a>FailoverAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="FailoverAppender"><a class="anchor" href="#FailoverAppender"></a>FailoverAppender</h3>
 <div class="paragraph">
 <p>The FailoverAppender wraps a set of appenders.
 If the primary Appender fails the secondary appenders will be tried in order until one succeeds or there are no more secondaries to try.</p>
@@ -1041,10 +1041,8 @@ caller, instead.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="fileappender"><a class="anchor" href="#fileappender"></a><a id="FileAppender"></a> FileAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="fileappender"><a class="anchor" href="#fileappender"></a><a id="FileAppender"></a> FileAppender</h3>
 <div class="paragraph">
 <p>The FileAppender is an OutputStreamAppender that writes to the File defined in the <code>fileName</code> parameter.
 The FileAppender uses a FileManager (which extends OutputStreamManager) to perform the file I/O.
@@ -1237,10 +1235,8 @@ file attribute view.</p>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="FlumeAppender"><a class="anchor" href="#FlumeAppender"></a>FlumeAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="FlumeAppender"><a class="anchor" href="#FlumeAppender"></a>FlumeAppender</h3>
 <div class="paragraph">
 <p><em>This is an optional component supplied in a separate jar.</em></p>
 </div>
@@ -1570,10 +1566,8 @@ indicate which variation of the Appender is desired.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="JDBCAppender"><a class="anchor" href="#JDBCAppender"></a>JDBCAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="JDBCAppender"><a class="anchor" href="#JDBCAppender"></a>JDBCAppender</h3>
 <div class="paragraph">
 <p>As of Log4j 2.11.0, JDBC support has moved from the existing module
 <code>log4j-core</code> to the new module <code>log4j-jdbc</code>.</p>
@@ -2239,10 +2233,8 @@ table based on a Log4j `MapMessage</code> instead of values from <code>LogEvent<
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="jms-appender"><a class="anchor" href="#jms-appender"></a><a id="JMSAppender"></a>JMS Appender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="jms-appender"><a class="anchor" href="#jms-appender"></a><a id="JMSAppender"></a>JMS Appender</h3>
 <div class="paragraph">
 <p>The JMS Appender sends the formatted log event to a JMS Destination.</p>
 </div>
@@ -2407,10 +2399,8 @@ However, configurations written for 2.0 that use the <code>&lt;JMSQueue/&gt;</co
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="JPAAppender"><a class="anchor" href="#JPAAppender"></a>JPAAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="JPAAppender"><a class="anchor" href="#JPAAppender"></a>JPAAppender</h3>
 <div class="paragraph">
 <p>As of Log4j 2.11.0, JPA support has moved from the existing module <code>log4j-core</code> to the new module <code>log4j-jpa</code>.</p>
 </div>
@@ -2609,10 +2599,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="HttpAppender"><a class="anchor" href="#HttpAppender"></a>HttpAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="HttpAppender"><a class="anchor" href="#HttpAppender"></a>HttpAppender</h3>
 <div class="paragraph">
 <p>The HttpAppender sends log events over HTTP.
 A Layout must be provided to format the LogEvent.</p>
@@ -2735,10 +2723,8 @@ Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="KafkaAppender"><a class="anchor" href="#KafkaAppender"></a>KafkaAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="KafkaAppender"><a class="anchor" href="#KafkaAppender"></a>KafkaAppender</h3>
 <div class="paragraph">
 <p>The KafkaAppender logs events to an <a href="https://kafka.apache.org/">Apache Kafka</a> topic.
 Each log event is sent as a Kafka record.</p>
@@ -2846,10 +2832,8 @@ Note that you need to use a version of the Kafka client library matching the Kaf
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="MemoryMappedFileAppender"><a class="anchor" href="#MemoryMappedFileAppender"></a>MemoryMappedFileAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="MemoryMappedFileAppender"><a class="anchor" href="#MemoryMappedFileAppender"></a>MemoryMappedFileAppender</h3>
 <div class="paragraph">
 <p><em>New since 2.1. Be aware that this is a new addition, and although it has been tested on several platforms, it does not have as much track record as the other file appenders.</em></p>
 </div>
@@ -2982,10 +2966,8 @@ Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="NoSQLAppender"><a class="anchor" href="#NoSQLAppender"></a>NoSQLAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="NoSQLAppender"><a class="anchor" href="#NoSQLAppender"></a>NoSQLAppender</h3>
 <div class="paragraph">
 <p>The NoSQLAppender writes log events to a NoSQL database using an internal lightweight provider interface.
 Provider implementations currently exist for MongoDB, and writing a custom provider is quite simple.</p>
@@ -3104,10 +3086,10 @@ We recommend you review the source code for the MongoDB providers as a guide for
 }</code></pre>
 </div>
 </div>
-<div class="sect2">
-<h3 id="NoSQLAppenderMongoDB"><a class="anchor" href="#NoSQLAppenderMongoDB"></a>NoSQL providers for MongoDB</h3>
 <div class="sect3">
-<h4 id="mongo-installation"><a class="anchor" href="#mongo-installation"></a>Installation</h4>
+<h4 id="NoSQLAppenderMongoDB"><a class="anchor" href="#NoSQLAppenderMongoDB"></a>NoSQL providers for MongoDB</h4>
+<div class="sect4">
+<h5 id="mongo-installation"><a class="anchor" href="#mongo-installation"></a>Installation</h5>
 <div class="paragraph">
 <p>Starting with version 2.11.0, Log4j supplies providers for the
 <a href="https://www.mongodb.com/">MongoDB</a>
@@ -3235,8 +3217,8 @@ for more information.</p>
 </table>
 </div>
 </div>
-<div class="sect3">
-<h4 id="log4j-mongodb"><a class="anchor" href="#log4j-mongodb"></a>NoSQL provider for MongoDB (current)</h4>
+<div class="sect4">
+<h5 id="log4j-mongodb"><a class="anchor" href="#log4j-mongodb"></a>NoSQL provider for MongoDB (current)</h5>
 <div class="paragraph">
 <p>This section details specializations of the
 <a href="#NoSQLAppender">NoSQLAppender</a> provider for MongoDB using the current MongoDB driver (version 5).
@@ -3349,8 +3331,8 @@ collection documentation linked above for more information.</p></td>
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="log4j-mongodb4"><a class="anchor" href="#log4j-mongodb4"></a><a id="NoSQLAppenderMongoDB4"></a> NoSQL provider  for MongoDB 4 (deprecated)</h4>
+<div class="sect4">
+<h5 id="log4j-mongodb4"><a class="anchor" href="#log4j-mongodb4"></a><a id="NoSQLAppenderMongoDB4"></a> NoSQL provider  for MongoDB 4 (deprecated)</h5>
 <div class="paragraph">
 <p>The <code>log4j-mongodb4</code> module is deprecated in favor of <a href="#log4j-mongodb">NoSQL provider for MongoDB</a>.</p>
 </div>
@@ -3467,10 +3449,8 @@ collection documentation linked above for more information.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="NoSQLAppenderApacheCouchDB"><a class="anchor" href="#NoSQLAppenderApacheCouchDB"></a>NoSQLAppender for Apache CouchDB</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="NoSQLAppenderApacheCouchDB"><a class="anchor" href="#NoSQLAppenderApacheCouchDB"></a>NoSQLAppender for Apache CouchDB</h3>
 <div class="paragraph">
 <p>This section details specializations of the <a href="#NoSQLAppender">NoSQLAppender</a> provider for CouchDB.
 The NoSQLAppender writes log events to a NoSQL database using an internal lightweight provider interface.</p>
@@ -3553,10 +3533,8 @@ The NoSQLAppender writes log events to a NoSQL database using an internal lightw
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="OutputStreamAppender"><a class="anchor" href="#OutputStreamAppender"></a>OutputStreamAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="OutputStreamAppender"><a class="anchor" href="#OutputStreamAppender"></a>OutputStreamAppender</h3>
 <div class="paragraph">
 <p>The OutputStreamAppender provides the base for many of the other Appenders such as the File and Socket appenders that write the event to an Output Stream.
 It cannot be directly configured.
@@ -3564,10 +3542,8 @@ Support for immediateFlush and buffering is provided by the OutputStreamAppender
 The OutputStreamAppender uses an OutputStreamManager to handle the actual I/O, allowing the stream to be shared by Appenders in multiple configurations.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="RandomAccessFileAppender"><a class="anchor" href="#RandomAccessFileAppender"></a>RandomAccessFileAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="RandomAccessFileAppender"><a class="anchor" href="#RandomAccessFileAppender"></a>RandomAccessFileAppender</h3>
 <div class="paragraph">
 <p>The RandomAccessFileAppender is similar to the standard
 <a href="#FileAppender">[FileAppender]</a> except it is always buffered (this cannot be switched off) and internally it uses a
@@ -3687,10 +3663,8 @@ Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="RewriteAppender"><a class="anchor" href="#RewriteAppender"></a>RewriteAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="RewriteAppender"><a class="anchor" href="#RewriteAppender"></a>RewriteAppender</h3>
 <div class="paragraph">
 <p>The RewriteAppender allows the LogEvent to be manipulated before it is processed by another Appender.
 This can be used to mask sensitive information such as passwords or to inject information into each event.
@@ -3748,15 +3722,15 @@ Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
 </tr>
 </tbody>
 </table>
-<div class="sect2">
-<h3 id="RewritePolicy"><a class="anchor" href="#RewritePolicy"></a>RewritePolicy</h3>
+<div class="sect3">
+<h4 id="RewritePolicy"><a class="anchor" href="#RewritePolicy"></a>RewritePolicy</h4>
 <div class="paragraph">
 <p>RewritePolicy is an interface that allows implementations to inspect and possibly modify LogEvents before they are passed to Appender.
 RewritePolicy declares a single method named rewrite that must be implemented.
 The method is passed the LogEvent and can return the same event or create a new one.</p>
 </div>
-<div class="sect3">
-<h4 id="_maprewritepolicy"><a class="anchor" href="#_maprewritepolicy"></a>MapRewritePolicy</h4>
+<div class="sect4">
+<h5 id="_maprewritepolicy"><a class="anchor" href="#_maprewritepolicy"></a>MapRewritePolicy</h5>
 <div class="paragraph">
 <p>MapRewritePolicy will evaluate LogEvents that contain a MapMessage and will add or update elements of the Map.</p>
 </div>
@@ -3813,8 +3787,8 @@ The method is passed the LogEvent and can return the same event or create a new 
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_propertiesrewritepolicy"><a class="anchor" href="#_propertiesrewritepolicy"></a>PropertiesRewritePolicy</h4>
+<div class="sect4">
+<h5 id="_propertiesrewritepolicy"><a class="anchor" href="#_propertiesrewritepolicy"></a>PropertiesRewritePolicy</h5>
 <div class="paragraph">
 <p>PropertiesRewritePolicy will add properties configured on the policy to the ThreadContext Map being logged.
 The properties will not be added to the actual ThreadContext Map.
@@ -3870,8 +3844,8 @@ keys and values to be added to the ThreadContext Map.</p></td>
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_loggernamelevelrewritepolicy"><a class="anchor" href="#_loggernamelevelrewritepolicy"></a>LoggerNameLevelRewritePolicy</h4>
+<div class="sect4">
+<h5 id="_loggernamelevelrewritepolicy"><a class="anchor" href="#_loggernamelevelrewritepolicy"></a>LoggerNameLevelRewritePolicy</h5>
 <div class="paragraph">
 <p>You can use this policy to make loggers in third-party code less chatty by changing event levels.
 The LoggerNameLevelRewritePolicy will rewrite log event levels for a given logger name prefix.
@@ -3935,10 +3909,8 @@ is a source level, each value a target level.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="rollingfileappender"><a class="anchor" href="#rollingfileappender"></a><a id="RollingFileAppender"></a> RollingFileAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="rollingfileappender"><a class="anchor" href="#rollingfileappender"></a><a id="RollingFileAppender"></a> RollingFileAppender</h3>
 <div class="paragraph">
 <p>The RollingFileAppender is an OutputStreamAppender that writes to the file named in the fileName parameter and rolls the file over according to the <code>TriggeringPolicy</code> and the <code>RolloverPolicy</code>.
 The <code>RollingFileAppender</code>
@@ -4143,12 +4115,10 @@ file attribute view.</p>
 </tbody>
 </table>
 </div>
-</div>
-<div class="sect1">
-<h2 id="TriggeringPolicies"><a class="anchor" href="#TriggeringPolicies"></a>TriggeringPolicies</h2>
-<div class="sectionbody">
 <div class="sect2">
-<h3 id="_composite_triggering_policy"><a class="anchor" href="#_composite_triggering_policy"></a>Composite Triggering Policy</h3>
+<h3 id="TriggeringPolicies"><a class="anchor" href="#TriggeringPolicies"></a>TriggeringPolicies</h3>
+<div class="sect3">
+<h4 id="_composite_triggering_policy"><a class="anchor" href="#_composite_triggering_policy"></a>Composite Triggering Policy</h4>
 <div class="paragraph">
 <p>The <code>CompositeTriggeringPolicy</code> combines multiple triggering policies and returns true if any of the configured policies return true.
 The
@@ -4167,8 +4137,8 @@ The
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_cron_triggering_policy"><a class="anchor" href="#_cron_triggering_policy"></a>Cron Triggering Policy</h3>
+<div class="sect3">
+<h4 id="_cron_triggering_policy"><a class="anchor" href="#_cron_triggering_policy"></a>Cron Triggering Policy</h4>
 <div class="paragraph">
 <p>The <code>CronTriggeringPolicy</code> triggers rollover based on a cron expression.
 This policy is controlled by a timer and is asynchronous in processing log events, so it is possible that log events from the previous or next period may appear at the beginning or end of the log file.
@@ -4208,8 +4178,8 @@ and the current time the file will be immediately rolled over.</p></td>
 </tbody>
 </table>
 </div>
-<div class="sect2">
-<h3 id="_onstartup_triggering_policy"><a class="anchor" href="#_onstartup_triggering_policy"></a>OnStartup Triggering Policy</h3>
+<div class="sect3">
+<h4 id="_onstartup_triggering_policy"><a class="anchor" href="#_onstartup_triggering_policy"></a>OnStartup Triggering Policy</h4>
 <div class="paragraph">
 <p>The <code>OnStartupTriggeringPolicy</code> policy causes a rollover if the log file is older than the current JVM&#8217;s start time and the minimum file size is met or exceeded.</p>
 </div>
@@ -4245,8 +4215,8 @@ When running in Google App Engine, the OnStartup policy causes a rollover if the
 and falls back to Log4J initialization time instead.)</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="sizebased-triggering-policy"><a class="anchor" href="#sizebased-triggering-policy"></a>SizeBased Triggering Policy</h3>
+<div class="sect3">
+<h4 id="sizebased-triggering-policy"><a class="anchor" href="#sizebased-triggering-policy"></a>SizeBased Triggering Policy</h4>
 <div class="paragraph">
 <p>The <code>SizeBasedTriggeringPolicy</code> causes a rollover once the file has reached the specified size.
 The size can be specified in bytes, with the suffix KB, MB, GB, or TB for example <code>20MB</code>.
@@ -4258,8 +4228,8 @@ Otherwise, the target file will be overwritten on every rollover as the SizeBase
 When used without a time-based triggering policy the SizeBased Triggering Policy will cause the timestamp value to change.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="timebased-triggering-policy"><a class="anchor" href="#timebased-triggering-policy"></a>TimeBased Triggering Policy</h3>
+<div class="sect3">
+<h4 id="timebased-triggering-policy"><a class="anchor" href="#timebased-triggering-policy"></a>TimeBased Triggering Policy</h4>
 <div class="paragraph">
 <p>The <code>TimeBasedTriggeringPolicy</code> causes a rollover once the date/time pattern no longer applies to the active file.
 This policy accepts an
@@ -4310,12 +4280,10 @@ load of doing so across time.</p></td>
 </table>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="RolloverStrategies"><a class="anchor" href="#RolloverStrategies"></a>RolloverStrategies</h2>
-<div class="sectionbody">
 <div class="sect2">
-<h3 id="DefaultRolloverStrategy"><a class="anchor" href="#DefaultRolloverStrategy"></a>DefaultRolloverStrategy</h3>
+<h3 id="RolloverStrategies"><a class="anchor" href="#RolloverStrategies"></a>RolloverStrategies</h3>
+<div class="sect3">
+<h4 id="DefaultRolloverStrategy"><a class="anchor" href="#DefaultRolloverStrategy"></a>DefaultRolloverStrategy</h4>
 <div class="paragraph">
 <p>Default Rollover Strategy</p>
 </div>
@@ -4506,8 +4474,8 @@ archived log file during compression.</p></td>
 </tbody>
 </table>
 </div>
-<div class="sect2">
-<h3 id="DirectWriteRolloverStrategy"><a class="anchor" href="#DirectWriteRolloverStrategy"></a>DirectWriteRolloverStrategy</h3>
+<div class="sect3">
+<h4 id="DirectWriteRolloverStrategy"><a class="anchor" href="#DirectWriteRolloverStrategy"></a>DirectWriteRolloverStrategy</h4>
 <div class="paragraph">
 <p>DirectWrite Rollover Strategy</p>
 </div>
@@ -4696,8 +4664,8 @@ The cron trigger causes a rollover every hour while the file size is limited to 
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="CustomDeleteOnRollover"><a class="anchor" href="#CustomDeleteOnRollover"></a>CustomDeleteOnRollover</h3>
+<div class="sect3">
+<h4 id="CustomDeleteOnRollover"><a class="anchor" href="#CustomDeleteOnRollover"></a>CustomDeleteOnRollover</h4>
 <div class="paragraph">
 <p>Log Archive Retention Policy: Delete on Rollover</p>
 </div>
@@ -4842,10 +4810,8 @@ and must return a list with the paths to delete.</p>
 </table>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="DeleteIfFileName"><a class="anchor" href="#DeleteIfFileName"></a>DeleteIfFileName</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="DeleteIfFileName"><a class="anchor" href="#DeleteIfFileName"></a>DeleteIfFileName</h3>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 32. IfFileName Condition Parameters</caption>
 <colgroup>
@@ -4891,10 +4857,8 @@ the path name matches).</p></td>
 </tbody>
 </table>
 </div>
-</div>
-<div class="sect1">
-<h2 id="DeleteIfLastModified"><a class="anchor" href="#DeleteIfLastModified"></a>DeleteIfLastModified</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="DeleteIfLastModified"><a class="anchor" href="#DeleteIfLastModified"></a>DeleteIfLastModified</h3>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 33. IfLastModified Condition Parameters</caption>
 <colgroup>
@@ -4930,10 +4894,8 @@ the file is old enough).</p></td>
 </tbody>
 </table>
 </div>
-</div>
-<div class="sect1">
-<h2 id="DeleteIfAccumulatedFileCount"><a class="anchor" href="#DeleteIfAccumulatedFileCount"></a>DeleteIfAccumulatedFileCount</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="DeleteIfAccumulatedFileCount"><a class="anchor" href="#DeleteIfAccumulatedFileCount"></a>DeleteIfAccumulatedFileCount</h3>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 34. IfAccumulatedFileCount Condition Parameters</caption>
 <colgroup>
@@ -4967,10 +4929,8 @@ the threshold count has been exceeded).</p></td>
 </tbody>
 </table>
 </div>
-</div>
-<div class="sect1">
-<h2 id="DeleteIfAccumulatedFileSize"><a class="anchor" href="#DeleteIfAccumulatedFileSize"></a>DeleteIfAccumulatedFileSize</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="DeleteIfAccumulatedFileSize"><a class="anchor" href="#DeleteIfAccumulatedFileSize"></a>DeleteIfAccumulatedFileSize</h3>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 35. IfAccumulatedFileSize Condition Parameters</caption>
 <colgroup>
@@ -5083,10 +5043,8 @@ During every rollover, this configuration will delete files that match "<strong>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="ScriptCondition"><a class="anchor" href="#ScriptCondition"></a>ScriptCondition</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="ScriptCondition"><a class="anchor" href="#ScriptCondition"></a>ScriptCondition</h3>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 36. ScriptCondition Parameters</caption>
 <colgroup>
@@ -5115,10 +5073,8 @@ how ScriptFiles and ScriptRefs can be configured.</p></td>
 </tbody>
 </table>
 </div>
-</div>
-<div class="sect1">
-<h2 id="ScriptParameters"><a class="anchor" href="#ScriptParameters"></a>ScriptParameters</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="ScriptParameters"><a class="anchor" href="#ScriptParameters"></a>ScriptParameters</h3>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 37. Script Parameters</caption>
 <colgroup>
@@ -5238,10 +5194,8 @@ The Delete action will delete all files returned by the script.</p>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="CustomPosixViewAttributeOnRollover"><a class="anchor" href="#CustomPosixViewAttributeOnRollover"></a>CustomPosixViewAttributeOnRollover</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="CustomPosixViewAttributeOnRollover"><a class="anchor" href="#CustomPosixViewAttributeOnRollover"></a>CustomPosixViewAttributeOnRollover</h3>
 <div class="paragraph">
 <p>Log Archive File Attribute View Policy: Custom file attribute on Rollover</p>
 </div>
@@ -5374,10 +5328,8 @@ file attribute view.</p>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="RollingRandomAccessFileAppender"><a class="anchor" href="#RollingRandomAccessFileAppender"></a>RollingRandomAccessFileAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="RollingRandomAccessFileAppender"><a class="anchor" href="#RollingRandomAccessFileAppender"></a>RollingRandomAccessFileAppender</h3>
 <div class="paragraph">
 <p>The RollingRandomAccessFileAppender is similar to the standard
 <a href="#RollingFileAppender">[RollingFileAppender]</a> except it is always buffered (this cannot be switched off) and internally it uses a
@@ -5554,14 +5506,14 @@ file attribute view.</p>
 </tr>
 </tbody>
 </table>
-<div class="sect2">
-<h3 id="_triggering_policies"><a class="anchor" href="#_triggering_policies"></a>Triggering Policies</h3>
+<div class="sect3">
+<h4 id="_triggering_policies"><a class="anchor" href="#_triggering_policies"></a>Triggering Policies</h4>
 <div class="paragraph">
 <p>See <a href="#TriggeringPolicies">RollingFileAppender Triggering Policies</a>.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_rollover_strategies"><a class="anchor" href="#_rollover_strategies"></a>Rollover Strategies</h3>
+<div class="sect3">
+<h4 id="_rollover_strategies"><a class="anchor" href="#_rollover_strategies"></a>Rollover Strategies</h4>
 <div class="paragraph">
 <p>See <a href="#RolloverStrategies"><code>RollingFileAppender</code> rollover strategies</a>.</p>
 </div>
@@ -5649,10 +5601,8 @@ file attribute view.</p>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="RoutingAppender"><a class="anchor" href="#RoutingAppender"></a>RoutingAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="RoutingAppender"><a class="anchor" href="#RoutingAppender"></a>RoutingAppender</h3>
 <div class="paragraph">
 <p>The <code>RoutingAppender</code> evaluates LogEvents and then routes them to a subordinate Appender.
 The target Appender may be an appender previously configured and may be referenced by its name or the Appender can be dynamically created as needed.
@@ -5769,8 +5719,8 @@ Note that the List Appender is one of our test appenders, any appender can be us
 &lt;/Configuration&gt;</code></pre>
 </div>
 </div>
-<div class="sect2">
-<h3 id="Routes"><a class="anchor" href="#Routes"></a>Routes</h3>
+<div class="sect3">
+<h4 id="Routes"><a class="anchor" href="#Routes"></a>Routes</h4>
 <div class="paragraph">
 <p>The <code>Routes</code> element accepts a single attribute named "pattern".
 The pattern is evaluated against all the registered Lookups and the result is used to select a <code>Route</code>.
@@ -5881,8 +5831,8 @@ Script.</p></td>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="Purge"><a class="anchor" href="#Purge"></a>Purge Policy</h3>
+<div class="sect3">
+<h4 id="Purge"><a class="anchor" href="#Purge"></a>Purge Policy</h4>
 <div class="paragraph">
 <p>The RoutingAppender can be configured with a PurgePolicy whose purpose is to stop and remove dormant Appenders that have been dynamically created by the RoutingAppender.
 Log4j currently provides the IdlePurgePolicy is the only PurgePolicy available for cleaning up the Appenders.
@@ -5928,10 +5878,8 @@ Note that the AuditAppender was predefined while the RollingFileAppenders are cr
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="SMTPAppender"><a class="anchor" href="#SMTPAppender"></a>SMTPAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="SMTPAppender"><a class="anchor" href="#SMTPAppender"></a>SMTPAppender</h3>
 <div class="paragraph">
 <p>Sends an e-mail when a specific logging event occurs, typically on errors or fatal errors.</p>
 </div>
@@ -6071,10 +6019,8 @@ As with other Appenders, the formatting can be controlled by specifying a Layout
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="ScriptAppenderSelector"><a class="anchor" href="#ScriptAppenderSelector"></a>ScriptAppenderSelector</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="ScriptAppenderSelector"><a class="anchor" href="#ScriptAppenderSelector"></a>ScriptAppenderSelector</h3>
 <div class="paragraph">
 <p>When the configuration is built, the <code>ScriptAppenderSelector</code> appender calls a <code>ScriptPlugin</code> to compute an appender name.
 Log4j then creates one of the appender named listed under <code>AppenderSet</code> using the name of the
@@ -6111,10 +6057,8 @@ The appender name is recorded under the name of the
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="SocketAppender"><a class="anchor" href="#SocketAppender"></a>SocketAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="SocketAppender"><a class="anchor" href="#SocketAppender"></a>SocketAppender</h3>
 <div class="paragraph">
 <p>The <code>SocketAppender</code> is an OutputStreamAppender that writes its output to a remote destination specified by a host and port.
 The data can be sent over either TCP or UDP and can be sent in any format.
@@ -6280,10 +6224,8 @@ Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="SSL"><a class="anchor" href="#SSL"></a>SSL</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="SSL"><a class="anchor" href="#SSL"></a>SSL</h3>
 <div class="paragraph">
 <p>Several appenders can be configured to use either a plain network connection or a Secure Socket Layer (SSL) connection.
 This section documents the parameters available for SSL configuration.</p>
@@ -6326,8 +6268,8 @@ counterparty. Determines whether the remote authentication credentials
 </tr>
 </tbody>
 </table>
-<div class="sect2">
-<h3 id="KeyStore"><a class="anchor" href="#KeyStore"></a>KeyStore</h3>
+<div class="sect3">
+<h4 id="KeyStore"><a class="anchor" href="#KeyStore"></a>KeyStore</h4>
 <div class="paragraph">
 <p>The Keystore is meant to contain your private keys and certificates, and determines which authentication credentials to send to the remote host.</p>
 </div>
@@ -6390,8 +6332,8 @@ algorithms</a>.</p></td>
 </tbody>
 </table>
 </div>
-<div class="sect2">
-<h3 id="TrustStore"><a class="anchor" href="#TrustStore"></a>TrustStore</h3>
+<div class="sect3">
+<h4 id="TrustStore"><a class="anchor" href="#TrustStore"></a>TrustStore</h4>
 <div class="paragraph">
 <p>The trust store is meant to contain the CA certificates you are willing to trust when a remote party presents its certificate.
 Determines whether the remote authentication credentials (and thus the connection) should be trusted.</p>
@@ -6458,8 +6400,8 @@ algorithms</a>.</p></td>
 </tbody>
 </table>
 </div>
-<div class="sect2">
-<h3 id="Example"><a class="anchor" href="#Example"></a>Example</h3>
+<div class="sect3">
+<h4 id="Example"><a class="anchor" href="#Example"></a>Example</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;SSL&gt;
@@ -6470,10 +6412,8 @@ algorithms</a>.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="SyslogAppender"><a class="anchor" href="#SyslogAppender"></a>SyslogAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="SyslogAppender"><a class="anchor" href="#SyslogAppender"></a>SyslogAppender</h3>
 <div class="paragraph">
 <p>The <code>SyslogAppender</code> is a <code>SocketAppender</code> that writes its output to a remote destination specified by a host and port in a format that conforms with either the BSD Syslog format or the RFC 5424 format.
 The data can be sent over either TCP or UDP.</p>
@@ -6734,10 +6674,8 @@ application if <code>ignoreExceptions</code> is set to <code>false</code>).</p><
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="JeroMQAppender"><a class="anchor" href="#JeroMQAppender"></a>ZeroMQ/JeroMQ Appender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="JeroMQAppender"><a class="anchor" href="#JeroMQAppender"></a>ZeroMQ/JeroMQ Appender</h3>
 <div class="paragraph">
 <p>The ZeroMQ appender uses the <a href="https://github.com/zeromq/jeromq">JeroMQ</a> library to send log events to one or more ZeroMQ endpoints.</p>
 </div>
@@ -6907,6 +6845,93 @@ Please consult the JeroMQ and ZeroMQ documentation for details.</p>
 </tr>
 </tbody>
 </table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="extending"><a class="anchor" href="#extending"></a>Extending</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Appenders are <a href="plugins.html" class="xref page">plugins</a> implementing <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Appender.html">the <code>Appender</code> interface</a>.
+This section will guide you on how to create custom ones.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Implementing a reliable and efficient appender is a difficult task!</strong>
+We strongly advise you to</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Use existing appenders and/or managers whenever appropriate</p>
+</li>
+<li>
+<p>Share your use case and ask for feedback in a <a href="https://logging.apache.org/support.html">user support channel</a></p>
+</li>
+</ol>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="extending-plugins"><a class="anchor" href="#extending-plugins"></a>Plugin preliminaries</h3>
+<div class="paragraph">
+<p>Log4j plugin system is the de facto extension mechanism embraced by various Log4j components.
+Plugins provide extension points to components, that can be used to implement new features, without modifying the original component.
+It is analogous to a <a href="https://en.wikipedia.org/wiki/Dependency_injection">dependency injection</a> framework, but curated for Log4j-specific needs.</p>
+</div>
+<div class="paragraph">
+<p>In a nutshell, you annotate your classes with <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/Plugin.html"><code>@Plugin</code></a> and their (<code>static</code>) factory methods with <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/PluginFactory.html"><code>@PluginFactory</code></a>.
+Last, you inform the Log4j plugin system to discover these custom classes.
+This is done using running the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/processor/PluginProcessor.html"><code>PluginProcessor</code></a> annotation processor while building your project.
+Refer to <a href="plugins.html" class="xref page">Plugins</a> for details.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="extending-appenders"><a class="anchor" href="#extending-appenders"></a>Extending appenders</h3>
+<div class="paragraph">
+<p>Appenders are <a href="plugins.html" class="xref page">plugins</a> implementing <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Appender.html">the <code>Appender</code> interface</a>.
+We recommend users to extend from <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/AbstractAppender.html"><code>AbstractAppender</code></a>, which provides implementation convenience.
+While annotating your appender with <code>@Plugin</code>, you need to make sure that</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>It has a unique <code>name</code> attribute across all available <code>Appender</code> plugins</p>
+</li>
+<li>
+<p>The <code>category</code> attribute is set to <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Node.html#CATEGORY"><code>Node.CATEGORY</code></a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Most appender implementation use <strong>managers</strong>, which model an abstraction owning the resources, such as an <code>OutputStream</code> or a socket.
+When a reconfiguration occurs a new appender will be created.
+However, if nothing significant in the previous manager has changed, the new appender will simply reference it instead of creating a new one.
+This ensures that events are not lost while a reconfiguration is taking place without requiring that logging pause while the reconfiguration takes place.
+You are strongly advised to study the manager concept in <a href="#collection">the predefined appenders</a>, and either use an existing manager, or create your own.</p>
+</div>
+<div class="paragraph">
+<p>You can check out following files for examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-core/src/main/java/org/apache/logging/log4j/core/appender/HttpAppender.java"><code>HttpAppender.java</code></a> – <a href="#HttpAppender">HttpAppender</a> sends log events over HTTP using <code>HttpURLConnectionManager</code></p>
+</li>
+<li>
+<p><a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-core/src/main/java/org/apache/logging/log4j/core/appender/ConsoleAppender.java"><code>ConsoleAppender.java</code></a> – <a href="#ConsoleAppender">[ConsoleAppender]</a> writes log events to either <code>System.out</code> or <code>System.err</code> using <code>OutputStreamManager</code></p>
+</li>
+</ul>
+</div>
+</div>
 </div>
 </div>
 </article>

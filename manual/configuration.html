@@ -161,7 +161,7 @@
     <a class="nav-link" href="systemproperties.html">Configuration properties</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
+    <a class="nav-link" href="customconfig.html">Programmatic configuration</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="appenders.html">Appenders</a>
@@ -331,11 +331,149 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Users can configure Log4j Core using different file formats.
-The <code>log4j-core</code> artifact includes XML, JSON, YAML, and Java properties formats factories.</p>
+<p>Using a configuration file is the most popular and recommended approach for configuring Log4j Core.
+In this page we will examine the composition of a configuration file and how Log4j Core uses it.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you are looking for a quick start on using Log4j in your application or library, please refer to <a href="getting-started.html" class="xref page">Getting started</a> instead.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="automatic-configuration"><a class="anchor" href="#automatic-configuration"></a><a id="AutomaticConfiguration"></a> Configuration file location</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Upon initialization of a new <a href="architecture.html#LoggerContext" class="xref page">logger context, the anchor of the logging implementation</a>, Log4j Core assigns it a context name and scans the following <strong>classpath</strong> locations for a configuration file in following order:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Files named <code>log4j2-test&lt;contextName&gt;.&lt;extension&gt;</code></p>
+</li>
+<li>
+<p>Files named <code>log4j2-test.&lt;extension&gt;</code></p>
+</li>
+<li>
+<p>Files named <code>log4j2&lt;contextName&gt;.&lt;extension&gt;</code></p>
+</li>
+<li>
+<p>Files named <code>log4j2.&lt;extension&gt;</code></p>
+</li>
+</ol>
 </div>
 <div class="paragraph">
-<p>As detailed in the table below, some configuration formats require additional dependencies on the classpath.</p>
+<p>The <code>&lt;contextName&gt;</code> and <code>&lt;extension&gt;</code> placeholders above have the following meaning</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">&lt;contextName&gt;</dt>
+<dd>
+<p>A name derived from the runtime environment:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>For standalone Java SE applications, it is a random identifier.</p>
+</li>
+<li>
+<p>For web applications, it is an identifier derived from the application descriptor.
+See <a href="webapp.html#configuration" class="xref page">Log4j Web application configuration</a> for details.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">&lt;extension&gt;</dt>
+<dd>
+<p>A file extension supported by a <code>ConfigurationFactory</code>.
+The order in which an extension will be searched for first depends on the order of the associated <code>ConfigurationFactory</code>.
+See <a href="#configuration-factories">Predefined <code>ConfigurationFactory</code> plugins</a> for details.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>If no configuration file is found, Log4j Core uses the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/DefaultConfiguration.html"><code>DefaultConfiguration</code></a> and the <a href="status-logger.html" class="xref page">status logger</a> prints a warning.
+The default configuration prints all messages less specific than <a href="systemproperties.html#log4j2.level" class="xref page"><code>log4j2.level</code></a> to the console.</p>
+</div>
+<div class="paragraph">
+<p>You can override the location of the configuration file using the <a href="systemproperties.html#log4j2.configurationFile" class="xref page">the <code>log4j2.configurationFile</code> system property</a>.
+In such a case, Log4j Core will guess the configuration file format from the provided file name, or use the default configuration factory if the extension is unknown.</p>
+</div>
+<div class="paragraph">
+<p>There are certain <strong>best-practices</strong> we strongly recommend you to adapt in your Log4j configuration:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Files prefixed by <code>log4j2-test</code> should only be used on the test classpath.</p>
+</li>
+<li>
+<p>If you are developing an application, don&#8217;t use multiple Log4j configuration files with same name, but different extensions.
+That is, don&#8217;t provide both <code>log4j2.xml</code> and <code>log4j2.json</code> files.</p>
+</li>
+<li>
+<p>If you are developing a library, only add configuration files to your test classpath.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="configuration-factories"><a class="anchor" href="#configuration-factories"></a>Predefined <code>ConfigurationFactory</code> plugins</h3>
+<div class="paragraph">
+<p>Log4j Core uses plugins extending from <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html"><code>ConfigurationFactory</code></a> to determine which configuration file extensions are supported, in which order, and how to read them.
+How this works under the hood and how you can introduce your custom implementations is explained in <a href="#ConfigurationFactory">Extending <code>ConfigurationFactory</code> plugins</a>.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Supported configuration file formats by predefined <code>ConfigurationFactory</code> plugins</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">File format</th>
+<th class="tableblock halign-left valign-top">Extension</th>
+<th class="tableblock halign-left valign-top">Order</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">XML</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>xml</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JSON</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>json, jsn</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">YAML</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>yaml, yml</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">7</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Properties</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>properties</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Note that <code>ConfigurationFactory</code> plugins will be employed in descending order.
+That is, for instance, XML file format will be checked last, as a fallback.</p>
+</div>
+<div class="paragraph">
+<p>Some <code>ConfigurationFactory</code> plugins require additional dependencies on the classpath:</p>
 </div>
 <div id="_tabs_1" class="openblock tabs is-sync is-loading">
 <div class="content">
@@ -354,26 +492,26 @@ The <code>log4j-core</code> artifact includes XML, JSON, YAML, and Java properti
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_2_log4j2_xml" class="tab">
-<p>log4j2.xml</p>
+<li id="_tabs_2_xml" class="tab">
+<p>XML</p>
 </li>
-<li id="_tabs_2_log4j2_json" class="tab">
-<p>log4j2.json</p>
+<li id="_tabs_2_json" class="tab">
+<p>JSON</p>
 </li>
-<li id="_tabs_2_log4j2_yaml" class="tab">
-<p>log4j2.yaml</p>
+<li id="_tabs_2_yaml" class="tab">
+<p>YAML</p>
 </li>
-<li id="_tabs_2_log4j2_properties" class="tab">
-<p>log4j2.properties</p>
+<li id="_tabs_2_properties" class="tab">
+<p>Properties</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_2_log4j2_xml--panel" class="tabpanel" aria-labelledby="_tabs_2_log4j2_xml">
+<div id="_tabs_2_xml--panel" class="tabpanel" aria-labelledby="_tabs_2_xml">
 <div class="paragraph">
 <p>No dependency required.</p>
 </div>
 </div>
-<div id="_tabs_2_log4j2_json--panel" class="tabpanel" aria-labelledby="_tabs_2_log4j2_json">
+<div id="_tabs_2_json--panel" class="tabpanel" aria-labelledby="_tabs_2_json">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
@@ -385,7 +523,7 @@ The <code>log4j-core</code> artifact includes XML, JSON, YAML, and Java properti
 </div>
 </div>
 </div>
-<div id="_tabs_2_log4j2_yaml--panel" class="tabpanel" aria-labelledby="_tabs_2_log4j2_yaml">
+<div id="_tabs_2_yaml--panel" class="tabpanel" aria-labelledby="_tabs_2_yaml">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
@@ -397,7 +535,7 @@ The <code>log4j-core</code> artifact includes XML, JSON, YAML, and Java properti
 </div>
 </div>
 </div>
-<div id="_tabs_2_log4j2_properties--panel" class="tabpanel" aria-labelledby="_tabs_2_log4j2_properties">
+<div id="_tabs_2_properties--panel" class="tabpanel" aria-labelledby="_tabs_2_properties">
 <div class="paragraph">
 <p>No dependency required.</p>
 </div>
@@ -410,40 +548,40 @@ The <code>log4j-core</code> artifact includes XML, JSON, YAML, and Java properti
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_3_log4j2_xml" class="tab">
-<p>log4j2.xml</p>
+<li id="_tabs_3_xml" class="tab">
+<p>XML</p>
 </li>
-<li id="_tabs_3_log4j2_json" class="tab">
-<p>log4j2.json</p>
+<li id="_tabs_3_json" class="tab">
+<p>JSON</p>
 </li>
-<li id="_tabs_3_log4j2_yaml" class="tab">
-<p>log4j2.yaml</p>
+<li id="_tabs_3_yaml" class="tab">
+<p>YAML</p>
 </li>
-<li id="_tabs_3_log4j2_properties" class="tab">
-<p>log4j2.properties</p>
+<li id="_tabs_3_properties" class="tab">
+<p>Properties</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_3_log4j2_xml--panel" class="tabpanel" aria-labelledby="_tabs_3_log4j2_xml">
+<div id="_tabs_3_xml--panel" class="tabpanel" aria-labelledby="_tabs_3_xml">
 <div class="paragraph">
 <p>No dependency required.</p>
 </div>
 </div>
-<div id="_tabs_3_log4j2_json--panel" class="tabpanel" aria-labelledby="_tabs_3_log4j2_json">
+<div id="_tabs_3_json--panel" class="tabpanel" aria-labelledby="_tabs_3_json">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.core:jackson-databind:2.17.1'</code></pre>
 </div>
 </div>
 </div>
-<div id="_tabs_3_log4j2_yaml--panel" class="tabpanel" aria-labelledby="_tabs_3_log4j2_yaml">
+<div id="_tabs_3_yaml--panel" class="tabpanel" aria-labelledby="_tabs_3_yaml">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.17.1'</code></pre>
 </div>
 </div>
 </div>
-<div id="_tabs_3_log4j2_properties--panel" class="tabpanel" aria-labelledby="_tabs_3_log4j2_properties">
+<div id="_tabs_3_properties--panel" class="tabpanel" aria-labelledby="_tabs_3_properties">
 <div class="paragraph">
 <p>No dependency required.</p>
 </div>
@@ -453,144 +591,12 @@ The <code>log4j-core</code> artifact includes XML, JSON, YAML, and Java properti
 </div>
 </div>
 </div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>The format of the configuration file changed between Log4j&#160;1 and Log4j&#160;2.
-Files in the Log4j&#160;1 format are ignored by default.</p>
-</div>
-<div class="paragraph">
-<p>To enable partial support for old configuration formats, see <a href="migration.html#ConfigurationCompatibility" class="xref page">configuration compatibility</a>.</p>
-</div>
-</td>
-</tr>
-</table>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="automatic-configuration"><a class="anchor" href="#automatic-configuration"></a><a id="AutomaticConfiguration"></a> Configuration file location</h2>
+<h2 id="configuration-syntax"><a class="anchor" href="#configuration-syntax"></a><a id="ConfigurationSyntax"></a> Syntax</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>Upon initialization of a new logger context, Log4j assigns it a context name and scans the following <strong>classpath</strong> locations for a configuration file:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Files named <code>log4j2-test&lt;contextName&gt;.&lt;extension&gt;</code></p>
-</li>
-<li>
-<p>Files named <code>log4j2-test.&lt;extension&gt;</code>,</p>
-</li>
-<li>
-<p>Files named <code>log4j2&lt;contextName&gt;.&lt;extension&gt;</code></p>
-</li>
-<li>
-<p>Files named <code>log4j2.&lt;extension&gt;</code>,</p>
-</li>
-<li>
-<p>If no configuration file is found, Log4j uses the
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/DefaultConfiguration.html"><code>DefaultConfiguration</code></a>
-and the <a href="status-logger.html" class="xref page">status logger</a> prints a warning.
-The default configuration prints all messages less specific than
-<a href="systemproperties.html#log4j2.level" class="xref page"><code>log4j2.level</code></a>
-to the console.</p>
-</li>
-</ol>
-</div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>The configuration files prefixed by <code>log4j2-test</code> should only be used on the test classpath.</p>
-</div>
-<div class="paragraph">
-<p>If multiple configuration files in the same category are found, Log4j uses a deterministic order to choose one of them (see
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Order.html"><code>@Order</code></a>).</p>
-</div>
-<div class="paragraph">
-<p>Nevertheless:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>If you&#8217;re developing an app, don&#8217;t use config files with different extensions.</p>
-</li>
-<li>
-<p>If you&#8217;re developing a library, only add config files to your test classpath.</p>
-</li>
-</ul>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>The <code>&lt;contextName&gt;</code> and <code>&lt;extension&gt;</code> placeholders above have the following meaning</p>
-</div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">&lt;contextName&gt;</dt>
-<dd>
-<p>depends on the runtime environment in which Log4j runs:</p>
-<div class="ulist">
-<ul>
-<li>
-<p>for standalone Java SE applications, it is a random identifier,</p>
-</li>
-<li>
-<p>for web applications, it is derived from the application descriptor.
-See <a href="webapp.html#configuration" class="xref page">Log4j
- Web application configuration</a> for more details.</p>
-</li>
-</ul>
-</div>
-</dd>
-<dt class="hdlist1">&lt;extension&gt;</dt>
-<dd>
-<p>must be one of the file extensions assigned to a configuration file format:</p>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Configuration file format</th>
-<th class="tableblock halign-left valign-top">Extension</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">XML</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>xml</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">JSON</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>json</code> or <code>jsn</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">YAML</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>yaml</code> or <code>yml</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Java properties</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>properties</code></p></td>
-</tr>
-</tbody>
-</table>
-</dd>
-</dl>
-</div>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -599,34 +605,35 @@ See <a href="webapp.html#configuration" class="xref page">Log4j
 </td>
 <td class="content">
 <div class="paragraph">
-<p>It is also possible to override the location of the configuration file using the
-<a href="systemproperties.html#log4j2.configurationFile" class="xref page"><code>log4j2.configurationFile</code></a>
-configuration property.
-In this case, Log4j will guess the configuration file format from the provided configuration file extension or use the default configuration factory if the extension is unknown.</p>
-</div>
-<div class="paragraph">
-<p>See <a href="systemproperties.html#log4j2.configurationFile" class="xref page"><code>log4j2.configurationFile</code></a> for details.</p>
+<p>Starting with Log4j 2, the configuration file syntax has been considered part of the public API and has remained stable across significant version upgrades.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The syntax of the configuration file changed between Log4j&#160;1 and Log4j&#160;2.
+Files in the Log4j&#160;1 syntax are ignored by default.
+To enable partial support for old configuration syntax, see <a href="migration.html#ConfigurationCompatibility" class="xref page">configuration compatibility</a>.</p>
 </div>
+</td>
+</tr>
+</table>
 </div>
-<div class="sect1">
-<h2 id="configuration-syntax"><a class="anchor" href="#configuration-syntax"></a><a id="ConfigurationSyntax"></a> Syntax</h2>
-<div class="sectionbody">
 <div class="paragraph">
 <p>The Log4j runtime is composed of <a href="plugins.html" class="xref page">plugins</a>, which are like beans in the Spring Framework and Java EE.
 Appenders, layouts, filters, configuration loaders, and similar components are all accessed as plugins.</p>
 </div>
 <div class="paragraph">
-<p>All configuration files are represented internally as a tree of
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Node.html"><code>Node</code></a>s,
-which is translated into a tree of Log4j plugins.
-The tree&#8217;s root creates a
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html"><code>Configuration</code></a>
-object.</p>
+<p>All configuration files are represented internally as a tree of <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Node.html"><code>Node</code></a>s, which is translated into a tree of Log4j plugins.
+The tree&#8217;s root creates a <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html"><code>Configuration</code></a> object.</p>
 </div>
 <div class="paragraph">
 <p>A node is a relatively simple structure representing a single Log4j plugin (see <a href="../plugin-reference.html" class="xref page">Plugin reference</a> for a complete list), such as an appender, layout, or logger configuration.</p>
@@ -1325,12 +1332,6 @@ Between the two operations log events might be lost.</p>
 </table>
 </div>
 </div>
-<div class="sect2">
-<h3 id="configuration-elements-filters"><a class="anchor" href="#configuration-elements-filters"></a>Filters</h3>
-<div class="paragraph">
-<p>See <a href="filters.html#filters" class="xref page">Filters</a> for additional filtering capabilities that can be applied to the global configuration object.</p>
-</div>
-</div>
 </div>
 </div>
 <div class="sect1">
@@ -1379,7 +1380,7 @@ Other logger configurations are optional.</p>
 <p>Every
 <a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html"><code>Logger</code></a>
 in your application is assigned to one of these logger configurations (see
-<a href="architecture.html#loggerconfig" class="xref page">architecture</a>), which determines the events that will be logged and those that won&#8217;t.</p>
+<a href="architecture.html#LoggerConfig" class="xref page">architecture</a>), which determines the events that will be logged and those that won&#8217;t.</p>
 </div>
 <div class="paragraph">
 <p>Let&#8217;s start with an example of logger configuration:</p>
@@ -1517,7 +1518,7 @@ will be printed, and which appenders will be used.
 The table below summarizes the effects of each logger configuration:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. Logger configurations</caption>
+<caption class="title">Table 2. Logger configurations</caption>
 <colgroup>
 <col style="width: 7.1428%;">
 <col style="width: 14.2857%;">
@@ -2806,55 +2807,67 @@ appender.0.select.1.layout.type = JsonTemplateLayout</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="CompositeConfiguration"><a class="anchor" href="#CompositeConfiguration"></a>Composite Configuration</h2>
+<h2 id="CompositeConfiguration"><a class="anchor" href="#CompositeConfiguration"></a>Composite configuration</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Log4j allows multiple configuration files to be used at the same time by specifying them as a list of comma-separated file paths or URLs in the
-<a href="systemproperties.html#log4j2.configurationFile" class="xref page"><code>log4j2.configurationFile</code></a>
-configuration property.</p>
+<p>There are occasions where multiple configurations might need to be combined.
+For instance,</p>
 </div>
-<div class="paragraph">
-<p>These configuration files are merged into a single configuration file using
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy.html"><code>MergeStrategy</code></a>
-service that can be customized using the
-<a href="systemproperties.html#log4j2.mergeStrategy" class="xref page"><code>log4j2.mergeStrategy</code></a>
-configuration property.</p>
-</div>
-<div class="paragraph">
-<p>The default merge strategy will merge the files using the following rules:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist">
+<ul>
 <li>
-<p><a href="#global-configuration-attributes">Global configuration attributes</a> in later configurations replace those in previous configurations.</p>
-<div class="paragraph">
-<p>The exception is the <code>monitorInterval</code> attribute: the lowest positive value from all the configuration files will be used.</p>
-</div>
+<p>You have a common Log4j Core configuration that should always be present, and an environment-specific one that extends the common one depending on the environment (test, production, etc.) the application is running on.</p>
 </li>
 <li>
-<p><a href="#property-substitution">Properties</a> from all configurations are aggregated.
-Duplicate properties replace those in previous configurations.</p>
+<p>You develop a framework, and it contains a predefined Log4j Core configuration.
+Yet you want to allow users to extend it whenever necessary.</p>
 </li>
 <li>
-<p><a href="filters.html" class="xref page">Filters</a> are aggregated under
-<a href="filters.html#CompositeFilter" class="xref page">CompositeFilter</a>, if more than one filter is defined.</p>
+<p>You collect Log4j Core configurations from multiple sources.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You can provide a list of comma-separated file paths or URLs in <a href="systemproperties.html#log4j2.configurationFile" class="xref page">the <code>log4j2.configurationFile</code> configuration property</a>, where each resource will get read into a <code>Configuration</code>, and then eventually combined into a single one using <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/CompositeConfiguration.html"><code>CompositeConfiguration</code></a>.</p>
+</div>
+<details>
+<summary class="title">How does <code>CompositeConfiguration</code> work?</summary>
+<div class="content">
+<div class="paragraph">
+<p><code>CompositeConfiguration</code> merges multiple configurations into a single one using a <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy.html"><code>MergeStrategy</code></a>, which can be customized using <a href="systemproperties.html#log4j2.mergeStrategy" class="xref page">the <code>log4j2.mergeStrategy</code> configuration property</a>.
+The default merge strategy works as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#global-configuration-attributes">Global configuration attributes</a> in later configurations replace those in previous configurations.
+The only exception is the <code>monitorInterval</code> attribute: the lowest positive value from all the configuration files will be used.</p>
+</li>
+<li>
+<p><a href="#property-substitution">Properties</a> are aggregated.
+Duplicate properties override those in previous configurations.</p>
+</li>
+<li>
+<p><a href="filters.html" class="xref page">Filters</a> are aggregated under <a href="filters.html#CompositeFilter" class="xref page"><code>CompositeFilter</code></a>, if more than one filter is defined.</p>
 </li>
 <li>
 <p><a href="scripts.html" class="xref page">Scripts</a> are aggregated.
-Duplicate definitions replace those in previous configurations.</p>
+Duplicate definitions override those in previous configurations.</p>
 </li>
 <li>
 <p><a href="appenders.html" class="xref page">Appenders</a> are aggregated.
-Appenders with the same name are <strong>replaced</strong> by those in later configurations, including all their elements.</p>
+Appenders with the same name are <strong>overridden</strong> by those in later configurations, including all their elements.</p>
 </li>
 <li>
-<p><a href="#configuring-loggers">Loggers</a> are all aggregated.
+<p><a href="#configuring-loggers">Loggers</a> are aggregated.
 Logger attributes are individually merged, and those in later configurations replace duplicates.
 Appender references on a logger are aggregated, and those in later configurations replace duplicates.
 The strategy merges filters on loggers using the rule above.</p>
 </li>
-</ol>
+</ul>
 </div>
+</div>
+</details>
 </div>
 </div>
 <div class="sect1">
@@ -3080,6 +3093,76 @@ rootLogger.appenderRef.0.ref = APPENDER</code></pre>
 <p>To add a filter to a component use a <code>filter.&lt;id&gt;</code> prefix instead of just <code>&lt;id&gt;</code>.</p>
 </li>
 </ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="extending"><a class="anchor" href="#extending"></a>Extending</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Log4j Core uses <a href="plugins.html" class="xref page">plugins</a> to inject necessary components while reading a configuration file.
+In this section, we will explore extension points users can hook into to customize the way Log4j Core reads configuration files.</p>
+</div>
+<div class="sect2">
+<h3 id="extending-plugins"><a class="anchor" href="#extending-plugins"></a>Plugin preliminaries</h3>
+<div class="paragraph">
+<p>Log4j plugin system is the de facto extension mechanism embraced by various Log4j components.
+Plugins provide extension points to components, that can be used to implement new features, without modifying the original component.
+It is analogous to a <a href="https://en.wikipedia.org/wiki/Dependency_injection">dependency injection</a> framework, but curated for Log4j-specific needs.</p>
+</div>
+<div class="paragraph">
+<p>In a nutshell, you annotate your classes with <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/Plugin.html"><code>@Plugin</code></a> and their (<code>static</code>) factory methods with <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/PluginFactory.html"><code>@PluginFactory</code></a>.
+Last, you inform the Log4j plugin system to discover these custom classes.
+This is done using running the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/processor/PluginProcessor.html"><code>PluginProcessor</code></a> annotation processor while building your project.
+Refer to <a href="plugins.html" class="xref page">Plugins</a> for details.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="ConfigurationFactory"><a class="anchor" href="#ConfigurationFactory"></a>Extending <code>ConfigurationFactory</code> plugins</h3>
+<div class="paragraph">
+<p>Under the hood, Log4j Core uses plugins extending from <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html"><code>ConfigurationFactory</code></a> to load configuration files.
+This procedure can be summarized as follows:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Load plugins which extend from <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html"><code>ConfigurationFactory</code></a> and whose plugin <code>category</code> is set to <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html#CATEGORY"><code>ConfigurationFactory.CATEGORY</code></a></p>
+</li>
+<li>
+<p>Sort them by <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Order.html"><code>@Order</code></a> annotation (in decreasing value order), if present</p>
+</li>
+<li>
+<p>Feed <a href="#automatic-configuration">found configuration files</a> to <code>ConfigurationFactory</code> instances in order, if the file extension is contained by <code>String[]</code> returned from <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html#getSupportedTypes()"><code>ConfigurationFactory#getSupportedTypes()</code></a></p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>If <a href="systemproperties.html#log4j2.configurationFactory" class="xref page">the <code>log4j2.configurationFactory</code> system property</a> is defined, it will be used before any other factory implementations.</p>
+</div>
+<div class="paragraph">
+<p>For an example, see <a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-core/src/main/java/org/apache/logging/log4j/core/config/json/JsonConfigurationFactory.java"><code>JsonConfigurationFactory.java</code></a> on how Log4j Core implements JSON-formatted configuration file read.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Next to introducing new configuration file formats, <code>ConfigurationFactory</code> can be used for <a href="customconfig.html" class="xref page">programmatic configuration</a> too.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="extending-config-file-plugins"><a class="anchor" href="#extending-config-file-plugins"></a>Plugins represented in a configuration file</h3>
+<div class="paragraph">
+<p>As explained in <a href="#configuration-syntax"> Syntax</a>, a configuration file gets parsed into a tree of plugins.
+If your plugin needs to be represented in a configuration file element, some <a href="plugins.html#core" class="xref page">extra plugin configuration</a> needs to be administered.</p>
 </div>
 </div>
 </div>
