@@ -57,7 +57,7 @@ A name used for grouping a set of plugins.
 
 `elementType` (deprecated)::
 We don't recommend the usage of `elementType` anymore.
-Existing usages are kept for backward compatibility reasons with the legacy configuration syntax: `<appender type="Console"`.
+Existing usages are kept for backward compatibility reasons with the legacy configuration syntax: `<appender type="ConsoleAppender"`.
 
 See {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/lookup/LowerLookup.java[`LowerLookup.java`] (a xref:manual/lookups.adoc[lookup] for lower-casing its input) for a simple example.
 
