@@ -4496,7 +4496,6 @@ While annotating your appender with `@Plugin`, you need to make sure that
 
 * It has a unique `name` attribute across all available `Appender` plugins
 * The `category` attribute is set to link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Node.html#CATEGORY[`Node.CATEGORY`]
-* The `elementType` attribute is set to link:../javadoc/log4j-core/org/apache/logging/log4j/core/Appender.html#ELEMENT_TYPE[`Appender.ELEMENT_TYPE`]
 
 Most appender implementation use *managers*, which model an abstraction owning the resources, such as an `OutputStream` or a socket.
 When a reconfiguration occurs a new appender will be created.
