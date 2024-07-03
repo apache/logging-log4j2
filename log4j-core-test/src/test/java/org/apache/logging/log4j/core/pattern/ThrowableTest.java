@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.LoggerTest;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
@@ -75,7 +76,7 @@ public class ThrowableTest {
             final Throwable cause = new NullPointerException("null pointer");
             final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
 
-            final Logger logger = loggerContext.getLogger("LoggerTest");
+            final Logger logger = loggerContext.getLogger(LoggerTest.class);
             final ListAppender appender = loggerContext.getConfiguration().getAppender(appenderName);
             logger.error("Exception", parent);
 

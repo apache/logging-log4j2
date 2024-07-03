@@ -24,22 +24,23 @@ import java.util.Objects;
 public class StringBuilders {
 
     /**
-     * Truncates the content of the given {@code StringBuilder} to the specified maximum number of lines.
+     * Truncates the content of the given {@code StringBuilder} after the specified times of occurrences of the given delimiter.
      *
      * <p>If {@code maxOccurrenceCount} is {@link Integer#MAX_VALUE}, or if {@code delimiter} is empty,
      * the method returns without making any changes to the {@code StringBuilder}.
      *
-     * @param buffer             the {@code StringBuilder} whose content is to be truncated
-     * @param delimiter  the delimiter used to determine the end of a line
-     * @param maxOccurrenceCount   the maximum number of lines to retain in the {@code StringBuilder};
-     *                       if this value is {@link Integer#MAX_VALUE}, no truncation will occur
+     * @param buffer the {@code StringBuilder} to be truncated
+     * @param delimiter The delimiter to be used.
+     *                  Setting this value to an empty string effectively disables truncation.
+     * @param maxOccurrenceCount Denotes the maximum number of {@code delimiter} occurrences allowed.
+     *                           Setting this value to {@link Integer#MAX_VALUE} effectively disables truncation.
      */
     public static void truncateAfterDelimiter(
             final StringBuilder buffer, final String delimiter, final int maxOccurrenceCount) {
         Objects.requireNonNull(buffer, "buffer");
         Objects.requireNonNull(delimiter, "delimiter");
         if (maxOccurrenceCount < 0) {
-            throw new IllegalArgumentException("maxOccurrenceCount should not be negative");
+            throw new IllegalArgumentException("`maxOccurrenceCount` should not be negative");
         }
         if (buffer.length() < delimiter.length() || delimiter.isEmpty() || maxOccurrenceCount == Integer.MAX_VALUE) {
             return;
