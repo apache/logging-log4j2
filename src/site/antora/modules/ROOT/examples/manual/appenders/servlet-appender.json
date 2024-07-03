@@ -1,0 +1,23 @@
+{
+  "Configuration": {
+    "Appenders": {
+      // tag::servlet[]
+      "Servlet": {
+        "name": "SERVLET",
+        "PatternLayout": {
+          "pattern": "%m%n",
+          "alwaysWriteExceptions": false // <1>
+        }
+      }
+      // end::servlet[]
+    },
+    "Loggers": {
+      "Root": {
+        "level": "INFO",
+        "AppenderRef": {
+          "ref": "SERVLET"
+        }
+      }
+    }
+  }
+}
