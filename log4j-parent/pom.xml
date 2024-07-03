@@ -84,7 +84,7 @@
     <flapdoodle-embed.version>4.11.0</flapdoodle-embed.version>
     <flapdoodle-reverse.version>1.7.2</flapdoodle-reverse.version>
     <flume.version>1.11.0</flume.version>
-    <groovy.version>3.0.21</groovy.version>
+    <groovy.version>3.0.22</groovy.version>
     <guava.version>33.2.1-jre</guava.version>
     <h2.version>2.2.224</h2.version>
     <hadoop.version>1.2.1</hadoop.version>
@@ -114,7 +114,7 @@
     <jetty.version>9.4.54.v20240208</jetty.version>
     <jmdns.version>3.5.9</jmdns.version>
     <jmh.version>1.37</jmh.version>
-    <json-unit.version>2.38.0</json-unit.version>
+    <json-unit.version>2.39.0</json-unit.version>
     <junit.version>4.13.2</junit.version>
     <junit-jupiter.version>5.10.3</junit-jupiter.version>
     <junit-pioneer.version>1.9.1</junit-pioneer.version>
