@@ -247,6 +247,9 @@
     <a class="nav-link" href="../hibernate.html">Integrating with Hibernate</a>
   </li>
   <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="webapp.html">Using Log4j in a Jakarta EE environment</a>
+  </li>
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
   </li>
   <li class="nav-item" data-depth="1">
@@ -259,13 +262,25 @@
     <span class="nav-text">Components</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-cassandra.html">Cassandra Appender</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-couchdb.html">CouchDB Appender</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-docker.html">Log4j Docker Support</a>
+  </li>
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-flume-ng.html">Flume Appender</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-docker.html">Log4j Docker Support</a>
+    <a class="nav-link" href="../log4j-spring-boot.html">Log4j Spring Boot Support</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-cloud-config.html">Log4j Spring Cloud Config</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
@@ -5876,6 +5891,189 @@ Note that the AuditAppender was predefined while the RollingFileAppenders are cr
 &lt;/Configuration&gt;</code></pre>
 </div>
 </div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="servlet-appender"><a class="anchor" href="#servlet-appender"></a>Servlet appender</h3>
+<div class="paragraph">
+<p>The servlet appender allows users to forward all logging calls to the
+<a href="https://jakarta.ee/specifications/servlet/5.0/apidocs/jakarta/servlet/servletcontext#log(java.lang.String,java.lang.Throwable)"><code>ServletContext.log()</code></a>
+methods.
+You can use it by declaring an appender of type <code>Servlet</code> in your configuration file:</p>
+</div>
+<div id="_tabs_1" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_1_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_1_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_1_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_1_xml--panel" class="tabpanel" aria-labelledby="_tabs_1_xml">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Servlet name="SERVLET"&gt;
+  &lt;PatternLayout pattern="%m%n" alwaysWriteExceptions="false"/&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+&lt;/Servlet&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_json--panel" class="tabpanel" aria-labelledby="_tabs_1_json">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">"Servlet": {
+  "name": "SERVLET",
+  "PatternLayout": {
+    "pattern": "%m%n",
+    "alwaysWriteExceptions": false <i class="conum" data-value="1"></i><b>(1)</b>
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_yaml--panel" class="tabpanel" aria-labelledby="_tabs_1_yaml">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">Servlet:
+  name: "SERVLET"
+  PatternLayout:
+    pattern: "%m%n"
+    alwaysWriteExceptions: false <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_properties--panel" class="tabpanel" aria-labelledby="_tabs_1_properties">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">appender.0.type = Servlet
+appender.0.name = SERVLET
+appender.0.layout.type = PatternLayout
+appender.0.layout.pattern = %m%n
+<i class="conum" data-value="1"></i><b>(1)</b>
+appender.0.layout.alwaysWriteExceptions = false</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Encodes events using <a href="pattern-layout.html" class="xref page">Pattern Layout</a> and forwards the call to
+<code>ServletContext.log()</code>.
+Setting <code>alwaysWriteExceptions</code> to <code>false</code> prevents the stacktrace from appearing as both part of the <code>message</code> argument and as <code>throwable</code> argument:
+this usually results in the stacktrace being printed to the log file twice.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Additional runtime dependencies are required for using the servlet appender:</p>
+</div>
+<div id="_tabs_2" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_2_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_2_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_2_maven--panel" class="tabpanel" aria-labelledby="_tabs_2_maven">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;!-- We assume you use `log4j-bom` for dependency management --&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+  &lt;artifactId&gt;log4j-jakarta-web&lt;/artifactId&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_2_gradle--panel" class="tabpanel" aria-labelledby="_tabs_2_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">// We assume you use `log4j-bom` for dependency management
+runtimeOnly 'org.apache.logging.log4j:log4j-jakarta-web'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<details>
+<summary class="title">Click here if you are you using Jakarta EE 8 or any version of Java EE?</summary>
+<div class="content">
+<div class="paragraph">
+<p>Jakarta EE 8 and all Java EE applications servers use the legacy <code>javax</code> package prefix instead of <code>jakarta</code>.
+If you are using those application servers, you should replace the dependencies above with:</p>
+</div>
+<div id="_tabs_3" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_3_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_3_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_3_maven--panel" class="tabpanel" aria-labelledby="_tabs_3_maven">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;!-- We assume you use `log4j-bom` for dependency management --&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+  &lt;artifactId&gt;log4j-web&lt;/artifactId&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_3_gradle--panel" class="tabpanel" aria-labelledby="_tabs_3_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">// We assume you use `log4j-bom` for dependency management
+runtimeOnly 'org.apache.logging.log4j:log4j-web'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p>See <a href="webapp.html" class="xref page">Using Log4j in a Jakarta EE environment</a> for more information.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The <code>ServletContext.log(String, Throwable)</code> method predates modern logging APIs.
+By using Servlet appender you typically will not be able to differentiate log events by log level or logger name.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
