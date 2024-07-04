@@ -25,12 +25,18 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
+import java.util.stream.Stream;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import uk.org.webcompere.systemstubs.SystemStubs;
 
@@ -188,11 +194,21 @@ class StatusLoggerLevelTest {
         verify(listener, times(expectedMessageCount)).log(any());
     }
 
-    @Test
-    void check_debug_false() {
-        final Properties statusLoggerConfigProperties = new Properties();
-        statusLoggerConfigProperties.put(LOG4J2_DEBUG, "fAlsE");
-        StatusLogger.Config loggerConfig = new StatusLogger.Config(statusLoggerConfigProperties);
-        assertThat(loggerConfig.isDebugEnabled()).isFalse();
+    @ParameterizedTest
+    @MethodSource("debugPropertyTestCases")
+    void debug_property_should_be_read_correctly(final String propertyValue, final boolean debugEnabled) {
+        final Properties configProperties = new Properties();
+        if (propertyValue != null) {
+            configProperties.put(LOG4J2_DEBUG, propertyValue);
+        }
+        final StatusLogger.Config config = new StatusLogger.Config(configProperties);
+        assertThat(config.debugEnabled).isEqualTo(debugEnabled);
+    }
+
+    static List<Arguments> debugPropertyTestCases() {
+        List<Arguments> testCases = new ArrayList<>();
+        Arrays.asList("t", "true", "True", "TRUE", "f", "fals", "falsx").forEach(propertyValue -> testCases.add(Arguments.of(propertyValue, true)));
+        Arrays.asList("false", "FALSE", "faLSe").forEach(propertyValue -> testCases.add(Arguments.of(propertyValue, false)));
+        return testCases;
     }
 }
