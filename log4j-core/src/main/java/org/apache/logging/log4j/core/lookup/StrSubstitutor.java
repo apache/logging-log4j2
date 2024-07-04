@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import java.time.ZoneId;
+import java.time.zone.ZoneRulesException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -155,6 +157,8 @@ public class StrSubstitutor implements ConfigurationAware {
      * Constant for the default variable suffix.
      */
     public static final StrMatcher DEFAULT_SUFFIX = StrMatcher.stringMatcher("}");
+
+    private static final StrMatcher TIMEZONE_PREFIX = StrMatcher.stringMatcher("%d{");
 
     /**
      * Constant for the default value delimiter of a variable.
@@ -1048,12 +1052,22 @@ public class StrSubstitutor implements ConfigurationAware {
                 pos += startMatchLen;
                 int endMatchLen = 0;
                 int nestedVarCount = 0;
+                boolean isDateTimePattern = false;
                 while (pos < bufEnd) {
                     if (substitutionInVariablesEnabled
                             && (endMatchLen = prefixMatcher.isMatch(chars, pos, offset, bufEnd)) != 0) {
                         // found a nested variable start
                         nestedVarCount++;
                         pos += endMatchLen;
+                        continue;
+                    }
+
+                    if (substitutionInVariablesEnabled
+                        && (endMatchLen = TIMEZONE_PREFIX.isMatch(chars, pos, offset, bufEnd)) != 0) {
+                        // found a nested variable start
+                        nestedVarCount++;
+                        pos += endMatchLen;
+                        isDateTimePattern = true;
                         continue;
                     }
 
@@ -1163,6 +1177,10 @@ public class StrSubstitutor implements ConfigurationAware {
                         }
                         nestedVarCount--;
                         pos += endMatchLen;
+                        if (isDateTimePattern) {
+
+                            pos = this.hasLocalePosition(chars, pos, offset, bufEnd);
+                        }
                     }
                 }
             }
@@ -1542,6 +1560,42 @@ public class StrSubstitutor implements ConfigurationAware {
                     sb.append(separator);
                 }
             }
+        }
+    }
+
+    private int hasLocalePosition(
+        final char[] chars,
+        final int pos,
+        final int offset,
+        final int bufEnd) {
+
+        // avoid prefix
+        int startLocalePosition = pos + 1;
+        int endLocalePosition = startLocalePosition;
+
+        if (endLocalePosition == bufEnd) {
+
+            return pos;
+        }
+
+        while (suffixMatcher.isMatch(chars, endLocalePosition, offset, bufEnd) == 0) {
+
+            endLocalePosition++;
+        }
+
+        try {
+
+            String zoneId = new String(
+                chars,
+                startLocalePosition,
+                endLocalePosition - startLocalePosition);
+            ZoneId.of(zoneId);
+
+            // avoid suffix
+            return endLocalePosition + 1;
+        } catch (Exception ex) {
+
+            return pos;
         }
     }
 
