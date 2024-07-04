@@ -29,8 +29,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import java.util.stream.Stream;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
 import org.junit.jupiter.api.Test;
@@ -207,8 +205,10 @@ class StatusLoggerLevelTest {
 
     static List<Arguments> debugPropertyTestCases() {
         List<Arguments> testCases = new ArrayList<>();
-        Arrays.asList("t", "true", "True", "TRUE", "f", "fals", "falsx").forEach(propertyValue -> testCases.add(Arguments.of(propertyValue, true)));
-        Arrays.asList("false", "FALSE", "faLSe").forEach(propertyValue -> testCases.add(Arguments.of(propertyValue, false)));
+        Arrays.asList("t", "true", "True", "TRUE", "f", "fals", "falsx")
+                .forEach(propertyValue -> testCases.add(Arguments.of(propertyValue, true)));
+        Arrays.asList("false", "FALSE", "faLSe")
+                .forEach(propertyValue -> testCases.add(Arguments.of(propertyValue, false)));
         return testCases;
     }
 }
