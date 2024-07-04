@@ -15,24 +15,19 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="off" name="XMLConfigTest">
-  <Properties>
-    <Property name="logDir">${test:logging.path}</Property>
-  </Properties>
+<Configuration xmlns="https://logging.apache.org/xml/ns"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-config-2.xsd"
+               status="OFF">
   <Appenders>
-    <RollingFile name="RollingFile" filePattern="${logDir}/%d{MM-dd-yy-HH-mm-ss}/processor.log">
-      <PatternLayout>
-        <Pattern>%d} %p %C{1.} [%t] %m%n</Pattern>
-      </PatternLayout>
-      <TimeBasedTriggeringPolicy />
-      <DirectWriteRolloverStrategy/>
+    <RollingFile name="RollingFile" filePattern="${test:logging.path}/test-%d{yyyy-MM-dd'T'hh-mm-ss}.log">
+      <PatternLayout pattern="%d{yyyy-MM-dd'T'hh-mm-ss} %m%n"/>
+      <CronTriggeringPolicy schedule="* * * * * ?"/>
     </RollingFile>
   </Appenders>
-
   <Loggers>
-    <Root level="info">
+    <Root level="DEBUG">
       <AppenderRef ref="RollingFile"/>
     </Root>
   </Loggers>
-
 </Configuration>
