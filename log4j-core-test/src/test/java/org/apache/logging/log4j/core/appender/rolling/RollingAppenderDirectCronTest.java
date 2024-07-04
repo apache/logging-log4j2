@@ -18,10 +18,8 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.waitAtMost;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,36 +36,32 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
-import org.assertj.core.api.Assertions;
-import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 
 @UsingStatusListener
 class RollingAppenderDirectCronTest {
 
-    private static final Pattern FILE_PATTERN = Pattern.compile("test-(\\d{4}-\\d{2}-\\d{2}T\\d{2}-\\d{2}-\\d{2})\\.log");
-    private static final Pattern LINE_PATTERN = Pattern.compile("This is test message number \\d+\\.");
+    private static final Pattern FILE_PATTERN =
+            Pattern.compile("test-(\\d{4}-\\d{2}-\\d{2}T\\d{2}-\\d{2}-\\d{2})\\.log");
 
     @TempLoggingDir
-    private Path loggingPath;
+    private static Path loggingPath;
 
     @Test
-    @LoggerContextSource
+    @LoggerContextSource("classpath:appender/rolling/RollingAppenderDirectCronTest.xml")
     void testAppender(final LoggerContext ctx, @Named("RollingFile") final RollingFileAppender app) throws Exception {
         final Logger logger = ctx.getLogger(RollingAppenderDirectCronTest.class);
         int msgNumber = 1;
         logger.debug("This is test message number {}.", msgNumber++);
+        assertThat(loggingPath).isNotEmptyDirectory();
         final RolloverDelay delay = new RolloverDelay(app.getManager());
         delay.waitForRollover();
-        final File dir = new File(DIR);
-        final File[] files = dir.listFiles();
-        assertTrue("Directory not created", dir.exists() && files != null && files.length > 0);
-        delay.reset(3);
 
+        delay.reset(3);
         final int MAX_TRIES = 30;
         for (int i = 0; i < MAX_TRIES; ++i) {
-            logger.debug("Adding new event {}", i);
-            Thread.sleep(100);
+            logger.debug("This is test message number {}.", msgNumber++);
+            Thread.sleep(110);
         }
         delay.waitForRollover();
     }
@@ -98,12 +92,9 @@ class RollingAppenderDirectCronTest {
             assertThat(matcher).as("Rolled file").matches();
             try {
                 final List<String> lines = Files.readAllLines(path);
-                assertThat
-                assertTrue("Not enough lines in " + fileName + ":" + lines.size(), lines.size() > 0);
-                assertTrue(
-                        "log and file times don't match. file: " + matcher.group(1) + ", log: " + lines.get(0),
-                        lines.get(0).startsWith(matcher.group(1)));
-            } catch (IOException ex) {
+                assertThat(lines).isNotEmpty();
+                assertThat(lines.get(0)).startsWith(matcher.group(1));
+            } catch (final IOException ex) {
                 fail("Unable to read file " + fileName + ": " + ex.getMessage());
             }
             latch.countDown();
