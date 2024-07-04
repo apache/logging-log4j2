@@ -34,6 +34,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
@@ -67,7 +68,9 @@ class RollingAppenderDirectCronTest {
     }
 
     private static class RolloverDelay implements RolloverListener {
+        private final Logger logger = StatusLogger.getLogger();
         private volatile CountDownLatch latch;
+        private volatile AssertionError assertion;
 
         public RolloverDelay(final RollingFileManager manager) {
             latch = new CountDownLatch(1);
@@ -75,7 +78,12 @@ class RollingAppenderDirectCronTest {
         }
 
         public void waitForRollover() {
-            waitAtMost(3, TimeUnit.SECONDS).until(() -> latch.getCount() == 0);
+            waitAtMost(5, TimeUnit.SECONDS)
+                    .alias("Rollover timeout")
+                    .until(() -> latch.getCount() == 0 || assertion != null);
+            if (assertion != null) {
+                throw assertion;
+            }
         }
 
         public void reset(final int count) {
@@ -83,21 +91,28 @@ class RollingAppenderDirectCronTest {
         }
 
         @Override
-        public void rolloverTriggered(final String fileName) {}
+        public void rolloverTriggered(final String fileName) {
+            logger.info("Rollover triggered for file {}.", fileName);
+        }
 
         @Override
         public void rolloverComplete(final String fileName) {
-            final Path path = Paths.get(fileName);
-            final Matcher matcher = FILE_PATTERN.matcher(path.getFileName().toString());
-            assertThat(matcher).as("Rolled file").matches();
+            logger.info("Rollover completed for file {}.", fileName);
             try {
-                final List<String> lines = Files.readAllLines(path);
-                assertThat(lines).isNotEmpty();
-                assertThat(lines.get(0)).startsWith(matcher.group(1));
-            } catch (final IOException ex) {
-                fail("Unable to read file " + fileName + ": " + ex.getMessage());
+                final Path path = Paths.get(fileName);
+                final Matcher matcher = FILE_PATTERN.matcher(path.getFileName().toString());
+                assertThat(matcher).as("Rolled file").matches();
+                try {
+                    final List<String> lines = Files.readAllLines(path);
+                    assertThat(lines).isNotEmpty();
+                    assertThat(lines.get(0)).startsWith(matcher.group(1));
+                } catch (final IOException ex) {
+                    fail("Unable to read file " + fileName + ": " + ex.getMessage());
+                }
+                latch.countDown();
+            } catch (final AssertionError ex) {
+                assertion = ex;
             }
-            latch.countDown();
         }
     }
 }
