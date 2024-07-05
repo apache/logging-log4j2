@@ -22,21 +22,21 @@
                    https://logging.apache.org/xml/ns/log4j-config-2.xsd">
   <Appenders>
     <Console name="CONSOLE">
-      <ThresholdFilter level="WARN"/> <!--6-->
+      <ThresholdFilter level="FATAL"/> <!--7-->
     </Console>
   </Appenders>
   <Loggers>
-    <Root level="INFO">
-      <ThresholdFilter level="DEBUG"/> <!--3-->
-      <AppenderRef ref="CONSOLE" level="WARN"> <!--5-->
-        <MarkerFilter marker="ALERT"
-                      onMatch="NEUTRAL"
-                      onMismatch="DENY"/> <!--4-->
+    <Root level="OFF">
+      <ThresholdFilter level="WARN"/> <!--4-->
+      <AppenderRef ref="CONSOLE" level="ERROR"> <!--5-->
+        <MarkerFilter marker="SECURITY_ALERT"/> <!--6-->
       </AppenderRef>
     </Root>
-    <Logger name="org.example" level="TRACE"> <!--2-->
-      <ThresholdFilter level="TRACE"/> <!--3-->
+    <Logger name="org.example" level="DEBUG"> <!--2-->
+      <ThresholdFilter level="INFO"/> <!--3-->
     </Logger>
   </Loggers>
-  <MarkerFilter marker="PRIVATE"/> <!--1-->
+  <MarkerFilter marker="ALERT"
+                onMatch="ACCEPT"
+                onMismatch="NEUTRAL"/> <!--1-->
 </Configuration>

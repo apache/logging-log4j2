@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration xmlns="https://logging.apache.org/xml/ns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="
+                   https://logging.apache.org/xml/ns
+                   https://logging.apache.org/xml/ns/log4j-config-2.xsd">
+  <Appenders>
+    <Console name="CONSOLE">
+      <JsonTemplateLayout/>
+    </Console>
+    <SMTP name="SMTP" to="root@localhost">
+      <JsonTemplateLayout/>
+    </SMTP>
+  </Appenders>
+  <Loggers>
+    <Root level="INFO">
+      <!-- tag::filter[] -->
+      <AppenderRef ref="CONSOLE">
+        <TimeFilter start="08:00:00" end="16:00:00"/>
+      </AppenderRef>
+      <AppenderRef ref="SMTP">
+        <TimeFilter start="16:00:00" end="08:00:00"/>
+      </AppenderRef>
+      <!-- end::filter[] -->
+    </Root>
+  </Loggers>
+</Configuration>

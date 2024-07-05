@@ -288,7 +288,7 @@ include::example$manual/configuration/main-elements.properties[lines=17..-1]
 <2> Configures a file appender named `MAIN` with a JSON template layout.
 <3> Configures a file appender named `DEBUG_LOG` with a pattern layout.
 <4> Configures the root logger at level `INFO` and connects it to the `CONSOLE` and `MAIN` appenders.
-The `CONSOLE` appender will only log messages less specific than `WARN`.
+The `CONSOLE` appender will only log messages at least as severe as `WARN`.
 <5> Configures a logger named `"org.example"` at level `DEBUG` and connects it to the `DEBUG_LOG` appender.
 The logger is configured to forward messages to its parent (the root appender).
 
@@ -336,6 +336,7 @@ Log4j allows the configuration of custom log-level names.
 See
 {log4j2-url}/manual/customloglevels.html#DefiningLevelsInConfiguration[Defining custom log levels in configuration] for details.
 
+[#global-filters]
 Filters::
 +
 Users can add Components to loggers, appender references, appenders, or the global configuration object to provide additional filtering of log events.
@@ -573,8 +574,8 @@ xref:manual/architecture.adoc#logger-hierarchy[parent logger],
 for `Logger` and `AsyncLogger`.
 |===
 
-Specifies the level threshold that a log event must have to be logged.
-Log events that are more specific than this setting will be filtered out.
+It specifies the level threshold that a log event must have to be logged.
+Log events that are less severe than this setting will be filtered out.
 
 See also xref:manual/filters.adoc#filters[Filters] if you require additional filtering.
 
@@ -691,8 +692,8 @@ Specifies the name of the appender to use.
 | {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html[`Level`]
 |===
 
-Specifies the level threshold that a log event must have to be logged.
-Log events that are more specific than this setting will be filtered out.
+It specifies the level threshold that a log event must have to be logged.
+Log events that are less severe than this setting will be filtered out.
 
 [id=appenderrefs-elements-filters]
 === Filters

@@ -16,21 +16,225 @@
 ////
 [id=filters]
 = Filters
+:stem:
 
-Log4j supports filtering of log events at each level of the logging pipeline using two features:
+Filters are Log4j plugins that evaluate the parameters of a logging call or a log event and return one of three results:
 
-* the `level` attributes that can be set on loggers and appender references,
-* filter components that can be attached to loggers, appenders, appender references or the global configuration object.
+ACCEPT:: The log event is accepted by the filter and goes to the next stage of the logging pipeline.
 
-Filters evaluate the parameters of a logging call (context-wide filter) or a log event and return one of three results:
-
-ACCEPT:: The log event is accepted by the filter and goes to the next stage of the logging pipeline,
-
-DENY:: The log event is unconditionally dropped,
+DENY:: The log event is unconditionally dropped.
 
 NEUTRAL:: Log4j behaves as if the filter was not present.
 
-To decide whether a log event from a certain logger is delivered to a specific appender, the following procedure is followed:
+Filters can be used at each level of the
+xref:manual/architecture.adoc#architecture-diagram[logging pipeline]:
+
+* the global configuration element can contain a xref:manual/configuration.adoc#global-filters[global filter].
+* each xref:manual/configuration.adoc#configuring-loggers[logger] configuration element can contain a xref:manual/configuration.adoc#logger-elements-filters[logger filter].
+* each xref:manual/configuration.adoc#configuring-appenderrefs[appender reference] configuration element can contain an xref:manual/configuration.adoc#appenderrefs-elements-filters[appender reference filter].
+* each xref:manual/appenders.adoc[appender] configuration element can contain an xref:manual/appenders.adoc[appender filter].
+
+Additionally, the following configuration attributes take part in the filtering process:
+
+* the xref:manual/configuration.adoc#logger-attributes-level[`level` attribute] of logger configuration elements.
+* the xref:manual/configuration.adoc#appenderref-attributes-level[`level` attribute] of appender reference configuration elements.
+
+[#filtering-process]
+== Filtering process
+
+Due to the interaction of many elements,
+the filtering process in Log4j is quite complex and can be divided in four stages:
+
+. <<logger-stage,`Logger` stage>>
+. <<logger-config-stage,`LoggerConfig` stage>>
+. <<appender-control-stage,`AppenderControl` stage>>
+. <<appender-stage,`Appender` stage>>
+
+[IMPORTANT]
+====
+For performance reasons, log events should be filtered at the earliest possible stage.
+This reduces the cost of disabled log events:
+e.g., log event creation, population of context data, formatting, transfer through an asynchronous barrier.
+====
+
+[#logger-stage]
+=== 1. `Logger` stage
+
+[plantuml]
+....
+@startuml
+start
+group Logger
+
+:A Logger method;
+
+switch (Apply global filter)
+case (DENY)
+    #pink:Discard;
+    detach
+case (ACCEPT)
+case (NEUTRAL)
+    if (Is less severe than logger level?) then (yes)
+        #pink:Discard;
+        detach
+    else (no)
+        ' The label improves spacing
+        label a1
+    endif
+endswitch
+end group
+:Create LogEvent;
+stop
+....
+
+The parameters of the logging call are passed to the global filter.
+If the global filter returns:
+
+DENY:: The log message is immediately discarded.
+NEUTRAL:: If the level of the log message is less severe than the configured logger threshold, the message is discarded.
+Otherwise, a
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html[`LogEvent`] is created and processing continues.
+ACCEPT:: A `LogEvent` is created and processing continues in the next stage.
+
+[TIP]
+====
+Filtering logging calls at this stage provides the best performance:
+
+* this stage precedes the creation of log events, therefore operations like the
+{log4j2-url}/manual/thread-context.adoc[injection of context data],
+xref:manual/layouts.adoc#LocationInformation[computation of location information]
+will not be performed for disabled log statements.
+* this stage precedes the asynchronous calls performed by either
+xref:manual/async.adoc[asynchronous loggers]
+or
+xref:manual/appenders.adoc#AsyncAppender[asynchronous appenders].
+====
+
+[#logger-config-stage]
+=== 2. `LoggerConfig` stage
+
+[plantuml]
+....
+@startuml
+start
+group LoggerConfig
+repeat
+
+:LoggerConfig.log();
+
+if (Apply logger filter) then (DENY)
+    #pink:Discard;
+    detach
+else (not DENY)
+    ' The label improves spacing
+    label a1
+endif
+repeat while (Go to parent logger?) is (yes)
+-> no;
+end group
+stop
+@enduml
+....
+
+In this stage, log events are evaluated by all the
+xref:manual/configuration.adoc#logger-elements-filters[logger filters]
+that stand on the path from the logger to an appender.
+Due to the
+xref:manual/configuration.adoc#logger-attributes-additivity[additivity of logger configurations],
+this means that a log event must also pass the filters of all the parent loggers,
+until it reaches the logger that references the chosen appender.
+
+[#appender-control-stage]
+=== 3. `AppenderControl` stage
+
+[plantuml]
+....
+@startuml
+!pragma useVerticalIf on
+start
+group AppenderControl
+
+:AppenderControl.callAppender();
+
+if (Is less severe then appender reference level?) then (yes)
+    #pink:Discard;
+    detach
+else (no)
+    ' The label improves spacing
+    label a2
+endif
+if (Apply appender reference filter) then (DENY)
+    #pink:Discard;
+    detach
+else (not DENY)
+    ' The label improves spacing
+    label a1
+endif
+end group
+stop
+@enduml
+....
+
+To pass this stage, log events must satisfy both conditions:
+
+* the log event must be at least as severe as the
+xref:manual/configuration.adoc#appenderref-attributes-level[`level` attribute]
+of the appender reference.
+* the xref:manual/configuration.adoc#appenderrefs-elements-filters[appender reference filter] must return `ACCEPT` or `NEUTRAL`,
+
+[#appender-stage]
+=== 4. `Appender` stage
+
+[plantuml]
+....
+@startuml
+start
+group Appender
+
+:Appender.append();
+
+if (Apply appender filter) then (DENY)
+    #pink:Discard;
+    detach
+else (not DENY)
+    ' The label improves spacing
+    label a1
+endif
+end group
+#palegreen:Log message;
+@enduml
+....
+
+When log events reach an appender,
+the filter attached to an appender is evaluated and if the result is `DENY`,
+the log event is discarded.
+
+[NOTE]
+====
+Some appenders like the
+xref:manual/appenders.adoc#AsyncAppender[asynchronous appender]
+use appender references to transfer log events to other appenders.
+In such a case, the filtering process goes back to the <<appender-control-stage,`AppenderControl` stage>>.
+====
+
+[TIP]
+====
+Users migrating from Log4j 1 often replace the `threshold` property of a Log4j 1 appender with a <<ThresholdFilter>> on the equivalent Log4j 2 appender.
+
+Using the `level` property of appender references will give a better performance.
+====
+
+[WARNING]
+====
+Configuring filters is a measure of last resort,
+since it adds a large overhead to disabled log events.
+You should rather configure the filtering in one of the previous stages.
+====
+
+[#example-configuration-file]
+=== Example configuration file
+
+The following example shows the order in which filters are evaluated:
 
 [tabs]
 ====
@@ -63,977 +267,1189 @@ include::example$manual/filters/filters.properties[lines=17..-1]
 ----
 ====
 
-<1> First the context-wide filter is consulted.
-If it returns `ACCEPT` the log message goes directly to point 3.
-<2> Then Log4j checks the message against the configured logger level.
-<3> The filter configured on a logger is applied next.
-If the logger is additive, the filter on the parent logger is applied recursively until we end up on the logger that references the given appender.
-<4> Next comes the turn of the filter configured on an appender reference,
-<5> followed by a level check against the configured level of the reference.
-<6> The process ends with the filter attached to an appender.
+<1> Global filter
+<2> Logger `level` attribute (it is skipped if the event matches the global filter)
+<3> Filter of the "org.example" logger
+<4> Filter of the root logger (it is the parent of the "org.example" logger)
+<5> Appender reference `level` attribute
+<6> Filter of the appender reference
+<7> Filter of the appender
 
-[WARNING]
+[#common-configuration]
+== Common configuration
+
+[#common-configuration-attributes]
+=== Common configuration attributes
+
+The default behavior of filters is in line with the `filter()` methods of functional interfaces, such as
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/Optional.html#filter-java.util.function.Predicate-[`Optional.filter()`]
+or
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/stream/Stream.html#filter-java.util.function.Predicate-[`Stream.filter()`]:
+filters pass matching events to the next filter and drop those that do not match.
+
+To allow for a larger spectrum of behaviors,
+all standard filters, except `CompositeFilter` and `DenyAllFilter`, accept the following configuration attributes:
+
+.Common filter configuration attributes
+[cols="1m,1,1,4"]
+|===
+|Attribute |Type | Default value |Description
+
+| [[onMatch]]onMatch
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/Filter.Result.html[`Result`]
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/Filter.Result.html#NEUTRAL[`NEUTRAL`]
+| Result returned if the condition matches.
+
+| [[onMismatch]]onMismatch
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/Filter.Result.html[`Result`]
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/Filter.Result.html#DENY[`DENY`]
+| Result returned if the condition does not match.
+
+|===
+
+[#CompositeFilter]
+=== Composing filters
+
+Filters usually test for a single condition.
+To express a more complex filtering logic, Log4j provides a
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-CompositeFilter[`Filters`]
+plugin.
+This plugin can contain a sequence of filters and has no other configuration option.
+
+The `Filters` plugin sequentially evaluates each sub-filter and:
+
+* if the sub-filter returns `ACCEPT` (resp. `DENY`), the `Filters` plugin returns `ACCEPT` (resp. `DENY`).
+* if the sub-filter return `NEUTRAL`, the `Filters` plugin evaluates the next sub-filter in the chain.
+* if the last sub-filter returns `NEUTRAL`, the `Filters` plugin returns `NEUTRAL`.
+
+The `Filters` plugin together with the ternary logic of filters, can be used to express all the boolean operators.
+In the following examples `A` and `B` are two filters.
+
+`NOT A`::
+You can invert the functionality of filter `A` by swapping the `onMatch` and `onMismatch`:
++
+[source,xml]
+----
+<A onMatch="DENY" onMismatch="NEUTRAL"/>
+----
+
+`A AND B`::
+To select the events that match both `A` and `B` you can use:
++
+[source,xml]
+----
+<Filters>
+  <A/>
+  <B/>
+</Filters>
+----
+
+`A OR B`::
+To select the events that match `A` or `B` we can replace `NEUTRAL` with `ACCEPT` in the `onMatch` attribute:
++
+[source,xml]
+----
+<Filters>
+  <A onMatch="ACCEPT"/>
+  <B onMatch="ACCEPT"/>
+</Filters>
+----
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-CompositeFilter[📖 Plugin reference for `Filters`]
+
+[#collection]
+== Collection
+
+Log4j Core provides the following filters out-of-the-box.
+
+[#timestamp-filters]
+=== Timestamp filters
+
+Timestamp filters use the timestamp of log events to decide whether to log them or not.
+
+[#BurstFilter]
+==== `BurstFilter`
+
+The `BurstFilter` uses the _sliding window log_ algorithm to limit the rate of log events.
+The rate limit is only applied to log events less severe than a configured log level.
+
+Besides the common configuration attributes,
+the `BurstFilter` supports the following parameters:
+
+.`BurstFilter` -- configuration attributes
+[cols="1m,1,1,4"]
+|===
+|Attribute | Type | Default value | Description
+
+| level
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[`Level`]
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html#WARN[`WARN`]
+| The rate limit only applies to log events less severe than this level.
+Events at least as severe as this level will always match.
+
+| rate
+| `float`
+| `10`
+| The average number of events per second to allow.
+
+| maxBurst
+| `long`
+| `10 &times; rate`
+| The maximum number of events in a sliding window.
+
+|===
+
+The sliding window can be easily computed as:
+
+[stem]
+++++
+wi\ndow = (m\axBurst) / (rate),
+++++
+
+where `window` is the duration of the sliding window in seconds.
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-BurstFilter[📖 Plugin reference for `BurstFilter`]
+
+[#TimeFilter]
+==== `TimeFilter`
+
+The `TimeFilter` only matches log events emitted during a certain time of the day.
+
+Besides the common configuration attributes,
+the `TimeFilter` supports the following parameters:
+
+.`TimeFilter` -- configuration attributes
+[cols="1m,2,1,4"]
+|===
+| Attribute | Type | Default value | Description
+
+| start
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/LocalTime.html[`LocalTime`] in `HH:mm:ss` format
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/LocalTime.html#MIN[`LocalTime.MIN`]
+| The beginning of the time slot.
+
+| start
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/LocalTime.html[`LocalTime`] in `HH:mm:ss` format
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/LocalTime.html#MAX[`LocalTime.MAX`]
+| The end of the time slot.
+
+| timezone
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/ZoneId.html[`ZoneId`]
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/ZoneId.html#systemDefault--[`ZoneId.systemDefault()`]
+| The timezone to use when comparing `start` and `end` to the event timestamp.
+
+|===
+
+As a simple application of this filter,
+if you want to forward messages to your console during work hours and to your e-mail account after work hours,
+you can use a configuration snippet like:
+
+[tabs]
 ====
-For performance reasons, log events should be filtered as soon as possible in the logging pipeline.
-This reduces the costs (formatting, transfer through an asynchronous barrier) of disabled log events.
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/filters/TimeFilter.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/filters/TimeFilter.xml[tag=filter]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/filters/TimeFilter.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/filters/TimeFilter.json[tag=filter]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/filters/TimeFilter.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/filters/TimeFilter.yaml[tag=filter]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/filters/TimeFilter.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/filters/TimeFilter.properties[tag=filter]
+----
+====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-TimeFilter[📖 Plugin reference for `TimeFilter`]
+
+[#level-filters]
+=== Level filters
+
+The following filters allow you to filter log events based on their level.
+
+[#LevelMatchFilter]
+==== `LevelMatchFilter`
+
+The `LevelMatchFilter` matches log events that have exactly a certain log level.
+
+Besides the common configuration attributes, the `LevelMatchFilter` supports the following parameter:
+
+.`LevelMatchFilter` -- configuration attributes
+[cols="1m,1,1,4"]
+|===
+| Attribute | Type | Default value | Description
+
+| level
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[`Level`]
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html#ERROR[`ERROR`]
+| The filter only matches log events of this level.
+
+|===
+
+[TIP]
+====
+If you wish to use a different log file for each log level, you can also use a
+xref:manual/appenders.adoc#RoutingAppender[`Routing` appender] together with the
+xref:manual/lookups.adoc#EventLookup[`${event:Level}` lookup].
+====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-LevelMatchFilter[📖 Plugin reference for `LevelMatchFilter`]
+
+[#LevelRangeFilter]
+==== `LevelRangeFilter`
+
+The `LevelRangeFilter` matches log events with a log level within a configured range.
+
+Besides the common configuration attributes, the `LevelRangeFilter` supports the following parameter:
+
+.`LevelRangeFilter` -- configuration attributes
+[cols="1m,1,1,4"]
+|===
+| Attribute | Type | Default value | Description
+
+| minLevel
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[`Level`]
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html#OFF[`OFF`]
+| The filter only matches log events at most as severe as this level.
+
+| maxLevel
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[`Level`]
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html#ALL[`ALL`]
+| The filter only matches log events at least as severe as this level.
+
+|===
+
+[TIP]
+====
+Make sure not to invert the bounds of the range.
+Starting from the smallest level, the Log4j API defines: `OFF`,
+`FATAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`, `TRACE` and `ALL`.
+====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-LevelRangeFilter[📖 Plugin reference for `LevelRangeFilter`]
+
+[#ThresholdFilter]
+==== `ThresholdFilter`
+
+The `ThresholdFilter` matches log events at least as severe as a configured level.
+
+Besides the common configuration attributes, the `ThresholdFilter` supports the following parameter:
+
+.`ThresholdFilter`—configuration attributes
+[cols="1m,1,1,4"]
+|===
+| Attribute | Type | Default value | Description
+
+| level
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[`Level`]
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html#OFF[`OFF`]
+| The filter only matches log events at least as severe as this level.
+
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-ThresholdFilter[📖 Plugin reference for `ThresholdFilter`]
+
+[#DynamicThresholdFilter]
+==== `DynamicThresholdFilter`
+
+The `DynamicThresholdFilter` is a variant of <<ThresholdFilter>>,
+which uses a different threshold for each log event.
+The effective threshold to use is determined by querying the
+{log4j2-url}/manual/thread-context.adoc[context data]
+of the log event.
+For each log event:
+
+. The filter retrieves the value of `key` in the context data map.
+. The filter checks the list of nested
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-util-KeyValuePair[`KeyValuePair`]
+configuration elements to decide which level to apply.
+
+Besides the common configuration attributes, the `DynamicThresholdFilter` supports the following parameters:
+
+.`DynamicThresholdFilter`—configuration attributes
+[cols="1m,1,1,4"]
+|===
+| Attribute | Type | Default value | Description
+
+| key
+| `String`
+|
+| The key to a value in the context map of the log event.
+
+**Required**
+
+| defaultThreshold
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[`Level`]
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html#ERROR[`ERROR`]
+| Threshold to apply to log events that don't have a corresponding `KeyValuePair`.
+
+|===
+
+.`DynamicThresholdFilter`—nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-util-KeyValuePair[`KeyValuePair`]
+| One or more
+| Associates a log level with the context map value associated with `key`.
+
+|===
+
+For example, if `loginId` contains the login of the current user,
+you can use this configuration to apply different thresholds to different users:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/filters/DynamicThresholdFilter.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/filters/DynamicThresholdFilter.xml[tag=filter]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/filters/DynamicThresholdFilter.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/filters/DynamicThresholdFilter.json[tag=filter]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/filters/DynamicThresholdFilter.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/filters/DynamicThresholdFilter.yaml[tag=filter]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/filters/DynamicThresholdFilter.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/filters/DynamicThresholdFilter.properties[tag=filter]
+----
+====
+
+<1> If the `loginId` is `alice` a threshold level of `DEBUG` will be used.
+<2> If the `loginId` is `bob` a threshold level of `INFO` will be used.
+<3> For all the other values of `loginId` a threshold level of `ERROR` will be used.
+
+[TIP]
+====
+You can use Log4j Core's
+xref:manual/configuration.adoc#configuration-attribute-monitorInterval[automatic reconfiguration feature]
+to modify the ``KeyValuePair``s without restarting your application.
+====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-DynamicThresholdFilter[📖 Plugin reference for `DynamicThresholdFilter`]
+
+[#marker-filters]
+=== Marker filters
+
+The following filters use the
+{log4j2-url}/manual/markers.adoc[log event marker]
+to filter log events.
+
+[#NoMarkerFilter]
+==== `NoMarkerFilter`
+
+The `NoMarkerFilter` matches log events that do not have any markers.
+
+This filter does not have any additional configuration attribute, except the common attributes.
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-NoMarkerFilter[📖 Plugin reference for `NoMarkerFilter`]
+
+[#MarkerFilter]
+==== `MarkerFilter`
+
+The `MarkerFilter` matches log events marked with a specific marker or **any** of its descendants.
+
+Besides the common configuration attributes, the `MarkerFilter` supports the following parameter:
+
+.`MarkerFilter`—configuration attributes
+[cols="1m,1,1,4"]
+|===
+|Attribute | Type | Default value | Description
+
+| marker
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Marker.html[`Marker`]
+|
+| The filter only matches log events of marker with the given marker or one of its descendants.
+
+**Required**
+
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-MarkerFilter[📖 Plugin reference for `MarkerFilter`]
+
+[#message-filters]
+=== Message filters
+
+Message filters allow filtering log events based on the
+{log4j2-url}/manual/messages.adoc[`Message`]
+contained in the log event.
+
+include::partial$manual/log-event.adoc[]
+
+[#RegexFilter]
+==== `RegexFilter`
+
+The `RegexFilter` matches a regular expression against either the result of
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html#getFormat()[`Message.getFormat()`]
+or
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html#getFormat()[`Message.getFormattedMessage()`].
+It can be used with all kinds of `Message` implementations.
+
+Besides the common configuration attributes, the `RegexFilter` supports the following parameters:
+
+.`RegexFilter` -- configuration attributes
+[cols="1m,1,1,4"]
+|===
+|Attribute | Type | Default value | Description
+
+| regex
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/regex/Pattern.html[`Pattern`]
+|
+| The regular expression used to match log messages.
+
+**Required**
+
+| useRawMsg
+| `boolean`
+| `false`
+| If `true` the result of
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html#getFormat()[`Message.getFormat()`]
+will be used.
+Otherwise,
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html#getFormat()[`Message.getFormattedMessage()`]
+is used.
+
+|===
+
+[NOTE]
+====
+This filter only matches if the **whole** log message matches the regular expression.
+====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-RegexFilter[📖 Plugin reference for `RegexFilter`]
+
+[#StringMatchFilter]
+==== `StringMatchFilter`
+
+The `StringMatchFilter` matches a log event, if its message contains the given string.
+
+Besides the common configuration attributes, the `StringMatchFilter` supports the following parameters:
+
+.`StringMatchFilter`—configuration attributes
+[cols="1m,1,1,4"]
+|===
+| Attribute | Type | Default value | Description
+
+| text
+| `String`
+|
+| The text to look for.
+
+**Required**
+
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-StringMatchFilter[📖 Plugin reference for `StringMatchFilter`]
+
+[#map-filters]
+=== Map filters
+
+The following filters match log events based on the content of one of these map structures:
+
+* The map contained in a
+{log4j2-url}/manual/messages.adoc#MapMessage[`MapMessage`] object.
+See
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html#getData()[`MapMessage.getData()`]
+for details.
+* The context data map contained in a
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html[`LogEvent`].
+See
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getContextData()[`LogEvent.getContextData()`]
+for details.
+
+[#configuration-map]
+==== Configuration map
+
+These filters are configured with a configuration map of type `Map<String, String[]>`,
+which,
+depending on the filter,
+is encoded as either JSON:
+
+[source,json]
+----
+include::example$manual/filters/configs.json[]
+----
+
+or as a sequence of
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-util-KeyValuePair[`KeyValuePair`]
+plugins:
+
+[source,xml,indent=0]
+----
+include::example$manual/filters/ContextMapFilter.xml[tag=kvp]
+----
+
+The configuration map associates to each key a list of allowed values for that key.
+In the example above the allowed values for the `loginId` key are either `alice` or `bob`.
+The only allowed value for the `clientId` key is `1234`.
+
+The map filters can work in two matching modes:
+
+[[matching-mode-and]]
+AND::
+A map structure matches
+if the value associated with **each** key
+that appears in the configuration map is one of the allowed values.
+
+[[matching-mode-or]]
+OR::
+A map structure matches
+if the value associated with **at least one** key
+that appears in the configuration map is one of the allowed values.
+
+[#MapFilter]
+==== `MapFilter`
+
+The `MapFilter` allows filtering based on the contents of all
+{log4j2-url}/manual/messages.adoc#collection-structured[structured ``Message``s].
+
+This filter encodes the <<configuration-map>> introduced above as a list of
+`KeyValuePair` elements.
+
+Besides the common configuration attributes, the `MapFilter` supports the following parameters:
+
+.`MapFilter` -- configuration attributes
+[cols="1m,1,1,4"]
+|===
+| Attribute | Type | Default value | Description
+
+| operator
+| _enumeration_
+| `AND`
+a| Determines the matching mode of the filter.
+Can be:
+
+* <<matching-mode-and,AND>>
+* <<matching-mode-or,OR>>
+
+|===
+
+.`MapFilter` -- nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-util-KeyValuePair[`KeyValuePair`]
+| One or more
+| Adds a value as allowed value for a key.
+See <<configuration-map>> for more details.
+
+|===
+
+For example,
+if you want to filter all ``MapMessage``s
+that have an `eventType` key with value `authentication` **and** an `eventId` key with value either `login` **or** `logout`,
+you can use the following configuration:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/filters/MapFilter.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/filters/MapFilter.xml[tag=filter]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/filters/MapFilter.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/filters/MapFilter.json[tag=filter]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/filters/MapFilter.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/filters/MapFilter.yaml[tag=filter]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/filters/MapFilter.yaml[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/filters/MapFilter.properties[tag=filter]
+----
 ====
 
 [TIP]
 ====
-Users migrating from Log4j 1 often replace the `threshold` property of a Log4j 1 appender with a <<ThresholdFilter>> on the equivalent Log4j 2 appender.
-
-Using the `level` property of appender references will give a better performance.
+You can use Log4j Core's
+xref:manual/configuration.adoc#configuration-attribute-monitorInterval[automatic reconfiguration feature]
+to modify the ``KeyValuePair``s without restarting your application.
 ====
 
-[#BurstFilter]
-== BurstFilter
-
-The BurstFilter provides a mechanism to control the rate at which LogEvents are processed by silently discarding events after the maximum limit has been reached.
-
-.Burst Filter Parameters
-[cols="1m,1,4"]
-|===
-|Parameter Name |Type |Description
-
-|level
-|String
-|Level of messages to be filtered. Anything at or below
-this level will be filtered out if `maxBurst` has been exceeded. The
-default is WARN meaning any messages that are higher than warn will be
-logged regardless of the size of a burst.
-
-|rate
-|float
-|The average number of events per second to allow.
-
-|maxBurst
-|integer
-|The maximum number of events that can occur before
-events are filtered for exceeding the average rate. The default is 10
-times the rate.
-
-|onMatch
-|String
-|Action to take when the filter matches. Can be ACCEPT,
-DENY or NEUTRAL. The default value is NEUTRAL.
-
-|onMismatch
-|String
-|Action to take when the filter does not match. Can
-be ACCEPT, DENY or NEUTRAL. The default value is DENY.
-|===
-
-A configuration containing the BurstFilter might look like:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
-      <BurstFilter level="INFO" rate="16" maxBurst="100"/>
-      <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
-      </PatternLayout>
-      <TimeBasedTriggeringPolicy />
-    </RollingFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="RollingFile"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-[#CompositeFilter]
-== CompositeFilter
-
-The CompositeFilter provides a way to specify more than one filter.
-It is added to the configuration as a filter element and contains other filters to be evaluated.
-The filter element accepts no parameters.
-
-A configuration containing the CompositeFilter might look like:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Filters>
-    <MarkerFilter marker="EVENT" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
-    <DynamicThresholdFilter key="loginId" defaultThreshold="ERROR"
-                            onMatch="ACCEPT" onMismatch="NEUTRAL">
-      <KeyValuePair key="User1" value="DEBUG"/>
-    </DynamicThresholdFilter>
-  </Filters>
-  <Appenders>
-    <File name="Audit" fileName="logs/audit.log">
-      <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
-      </PatternLayout>
-    </File>
-    <RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
-      <BurstFilter level="INFO" rate="16" maxBurst="100"/>
-      <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
-      </PatternLayout>
-      <TimeBasedTriggeringPolicy />
-    </RollingFile>
-  </Appenders>
-  <Loggers>
-    <Logger name="EventLogger" level="info">
-      <AppenderRef ref="Audit"/>
-    </Logger>
-    <Root level="error">
-      <AppenderRef ref="RollingFile"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-[#DynamicThresholdFilter]
-== DynamicThresholdFilter
-
-The DynamicThresholdFilter allows filtering by log level based on specific attributes.
-For example, if the user's loginId is being captured in the ThreadContext Map then it is possible to enable debug logging for only that user.
-If the log event does not contain the specified ThreadContext item NEUTRAL will be returned.
-
-.Dynamic Threshold Filter Parameters
-[cols="1m,1,4"]
-|===
-|Parameter Name |Type |Description
-
-|key
-|String
-|The name of the item in the ThreadContext Map to compare.
-
-|defaultThreshold
-|String
-|Level of messages to be filtered. The default
-threshold only applies if the log event contains the specified
-ThreadContext Map item and its value do not match any key in the
-key/value pairs.
-
-|keyValuePair
-|KeyValuePair[]
-|One or more KeyValuePair elements that
-define the matching value for the key and the Level to evaluate when the
-key matches.
-
-|onMatch
-|String
-|Action to take when the filter matches. Can be ACCEPT,
-DENY or NEUTRAL. The default value is NEUTRAL.
-
-|onMismatch
-|String
-|Action to take when the filter does not match. Can
-be ACCEPT, DENY or NEUTRAL. The default value is DENY.
-|===
-
-Here is a sample configuration containing the DynamicThresholdFilter:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <DynamicThresholdFilter key="loginId" defaultThreshold="ERROR"
-                          onMatch="ACCEPT" onMismatch="NEUTRAL">
-    <KeyValuePair key="User1" value="DEBUG"/>
-  </DynamicThresholdFilter>
-  <Appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
-      <BurstFilter level="INFO" rate="16" maxBurst="100"/>
-      <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
-      </PatternLayout>
-      <TimeBasedTriggeringPolicy />
-    </RollingFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="RollingFile"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-[#LevelRangeFilter]
-== LevelRangeFilter
-
-`LevelRangeFilter` allows filtering against a level range, where levels get compared by their associated integral values; `OFF` has an integral value of 0, `FATAL` 100, `ERROR` 200, and so on.
-
-.`LevelRangeFilter` parameters
-[cols="1m,1m,4"]
-|===
-|Parameter Name |Type |Description
-
-|minLevel
-|Level
-|the minimum level threshold (defaults to `OFF`, which has an integral value of 0)
-
-|maxLevel
-|Level
-|the maximum level threshold (defaults to `ALL`, which has an integral value of `Integer.MAX_VALUE`)
-
-|onMatch
-|Filter.Result
-|the result to return on a match, where allowed values are `ACCEPT`, `DENY`, or `NEUTRAL` (default)
-
-|onMismatch
-|Filter.Result
-|the result to return on a mismatch, where allowed values are `ACCEPT`, `DENY` (default), or `NEUTRAL`
-|===
-
-In the following example configuration, a `LevelRangeFilter` is configured with `maxLevel` set to `INFO`.
-The filter will return `onMismatch` result (i.e., `DENY`, the default) for log events of level with higher integral values than `INFO`; i.e., `DEBUG`, `TRACE`, etc.
-
-.Example configuration using `LevelRangeFilter`
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN" name="MyApp">
-  <Appenders>
-    <Console name="STDOUT">
-      <LevelRangeFilter maxLevel="INFO"/>
-      <PatternLayout pattern="%d %p %c{1.} [%t] %m%n"/>
-    </Console>
-  </Appenders>
-  <Loggers>
-    <Root level="ERROR">
-      <AppenderRef ref="STDOUT"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-[#MapFilter]
-== MapFilter
-
-The MapFilter allows filtering against data elements that are in a MapMessage.
-
-.Map Filter Parameters
-[cols="1m,1,4"]
-|===
-|Parameter Name |Type |Description
-
-|keyValuePair
-|KeyValuePair[]
-|One or more KeyValuePair elements that
-define the key in the map and the value to match. If the same key is
-specified more than once then the check for that key will automatically
-be an "or" since a Map can only contain a single value.
-
-|operator
-|String
-|If the operator is "or" then a match by any one of
-the key/value pairs will be considered to be a match, otherwise all the
-key/value pairs must match.
-
-|onMatch
-|String
-|Action to take when the filter matches. Can be ACCEPT,
-DENY or NEUTRAL. The default value is NEUTRAL.
-
-|onMismatch
-|String
-|Action to take when the filter does not match. Can
-be ACCEPT, DENY or NEUTRAL. The default value is DENY.
-|===
-
-As in this configuration, the MapFilter can be used to log particular events:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <MapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
-    <KeyValuePair key="eventId" value="Login"/>
-    <KeyValuePair key="eventId" value="Logout"/>
-  </MapFilter>
-  <Appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
-      <BurstFilter level="INFO" rate="16" maxBurst="100"/>
-      <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
-      </PatternLayout>
-      <TimeBasedTriggeringPolicy />
-    </RollingFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="RollingFile"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-This sample configuration will exhibit the same behavior as the preceding example since the only logger configured is the root.
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
-      <BurstFilter level="INFO" rate="16" maxBurst="100"/>
-      <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
-      </PatternLayout>
-      <TimeBasedTriggeringPolicy />
-    </RollingFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <MapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
-        <KeyValuePair key="eventId" value="Login"/>
-        <KeyValuePair key="eventId" value="Logout"/>
-      </MapFilter>
-      <AppenderRef ref="RollingFile">
-      </AppenderRef>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-This third sample configuration will exhibit the same behavior as the preceding examples since the only logger configured is the root and the root is only configured with a single appender reference.
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
-      <BurstFilter level="INFO" rate="16" maxBurst="100"/>
-      <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
-      </PatternLayout>
-      <TimeBasedTriggeringPolicy />
-    </RollingFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="RollingFile">
-        <MapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
-          <KeyValuePair key="eventId" value="Login"/>
-          <KeyValuePair key="eventId" value="Logout"/>
-        </MapFilter>
-      </AppenderRef>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-[#MarkerFilter]
-== MarkerFilter
-
-The MarkerFilter compares the configured Marker value against the Marker that is included in the LogEvent.
-A match occurs when the Marker name matches either the Log Event's Marker or one of its parents.
-
-.Marker Filter Parameters
-[cols="1m,1,4"]
-|===
-|Parameter Name |Type |Description
-
-|marker
-|String
-|The name of the Marker to compare.
-
-|onMatch
-|String
-|Action to take when the filter matches. Can be ACCEPT,
-DENY or NEUTRAL. The default value is NEUTRAL.
-
-|onMismatch
-|String
-|Action to take when the filter does not match. Can
-be ACCEPT, DENY or NEUTRAL. The default value is DENY.
-|===
-
-A sample configuration that only allows the event to be written by the appender if the Marker matches:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
-      <MarkerFilter marker="FLOW" onMatch="ACCEPT" onMismatch="DENY"/>
-      <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
-      </PatternLayout>
-      <TimeBasedTriggeringPolicy />
-    </RollingFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="RollingFile"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-[#MutableThreadContextMapFilter]
-== MutableThreadContextMapFilter
-
-The MutableThreadContextMapFilter or MutableContextMapFilter allows filtering against data elements that are in the current context.
-By default, this is the ThreadContext Map.
-The values to compare are defined externally and can be periodically polled for changes.
-
-.Mutable Context Map Filter Parameters
-[cols="1m,1,4"]
-|===
-|Parameter Name |Type |Description
-
-|configLocation
-|String
-|A file path or URI that points to the configuration. See below for a sample configuration.
-
-|operator
-|String
-|If the operator is "or" then a match by any one of
-the key/value pairs will be considered to be a match, otherwise all the
-key/value pairs must match.
-
-|pollInterval
-|int
-|The number of seconds to wait before checking to see if the configuration has been modified. When using HTTP or HTTPS the server must support the If-Modified-Since header and return a Last-Modified header containing the date and time the file was last modified. Note that by default only the https, file, and jar protocols are allowed. Support for other protocols can be enabled by specifying them in the `log4j2.Configuration.allowedProtocols` system property
-
-|onMatch
-|String
-|Action to take when the filter matches. Can be ACCEPT,
-DENY or NEUTRAL. The default value is NEUTRAL.
-
-|onMismatch
-|String
-|Action to take when the filter does not match. Can
-be ACCEPT, DENY or NEUTRAL. The default value is DENY.
-|===
-
-A sample configuration that only allows the event to be written by the appender if the Marker matches:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <MutableContextMapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or"
-    configLocation="http://localhost:8080/threadContextFilter.json" pollInterval="300"/>
-  <Appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
-      <BurstFilter level="INFO" rate="16" maxBurst="100"/>
-      <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
-      </PatternLayout>
-      <TimeBasedTriggeringPolicy />
-    </RollingFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="RollingFile"/>
-    </Root>
-  </Loggers>
-----
-
-The configuration file supplied to the filter should look similar to:
-
-[source,json]
-----
-{
-  "configs": {
-    "loginId": ["rgoers@apache.org", "logging@apache.org"],
-    "accountNumber": ["30510263"]
-  }
-}
-----
-
-[#NoMarkerFilter]
-== NoMarkerFilter
-
-The NoMarkerFilter checks that there is no marker included in the LogEvent.
-A match occurs when there is no marker in the Log Event.
-
-.No Marker Filter Parameters
-[cols="1m,1,3"]
-|===
-|Parameter Name |Type |Description
-
-|onMatch
-|String
-|Action to take when the filter matches. Can be ACCEPT,
-DENY or NEUTRAL. The default value is NEUTRAL.
-
-|onMismatch
-|String
-|Action to take when the filter does not match. Can
-be ACCEPT, DENY or NEUTRAL. The default value is DENY.
-|===
-
-A sample configuration that only allows the event to be written by the appender if no marker is there:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
-      <NoMarkerFilter onMatch="ACCEPT" onMismatch="DENY"/>
-      <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
-      </PatternLayout>
-      <TimeBasedTriggeringPolicy />
-    </RollingFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="RollingFile"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-[#RegexFilter]
-== RegexFilter
-
-The RegexFilter allows the formatted or unformatted message to be compared against a regular expression.
-
-.Regex Filter Parameters
-[cols="1m,1,4"]
-|===
-|Parameter Name |Type |Description
-
-|regex
-|String
-|The regular expression.
-
-|useRawMsg
-|boolean
-|If true the unformatted message will be used,
-otherwise, the formatted message will be used. The default value is
-false.
-
-|onMatch
-|String
-|Action to take when the filter matches. Can be ACCEPT,
-DENY or NEUTRAL. The default value is NEUTRAL.
-
-|onMismatch
-|String
-|Action to take when the filter does not match. Can
-be ACCEPT, DENY or NEUTRAL. The default value is DENY.
-|===
-
-A sample configuration that only allows the event to be written by the appender if it contains the word "test":
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
-      <RegexFilter regex=".* test .*" onMatch="ACCEPT" onMismatch="DENY"/>
-      <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
-      </PatternLayout>
-      <TimeBasedTriggeringPolicy />
-    </RollingFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="RollingFile"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-[[Script]]
-The ScriptFilter executes a script that returns true or false.
-
-.Script Filter Parameters
-[cols="1m,1,4"]
-|===
-|Parameter Name |Type |Description
-
-|script
-|Script, ScriptFile or ScriptRef
-|The Script element that specifies the logic to be executed.
-
-|onMatch
-|String
-|Action to take when the script returns true. Can be
-ACCEPT, DENY or NEUTRAL. The default value is NEUTRAL.
-
-|onMismatch
-|String
-|Action to take when the filter returns false. Can
-be ACCEPT, DENY or NEUTRAL. The default value is DENY.
-|===
-
-.Script Parameters
-[cols="1m,1,4"]
-|===
-|Parameter Name |Type |Description
-
-|configuration
-|Configuration
-|The Configuration that owns this
-ScriptFilter.
-
-|level
-|Level
-|The logging Level associated with the event. Only present
-when configured as a global filter.
-
-|loggerName
-|String
-|The name of the logger. Only present when
-configured as a global filter.
-
-|logEvent
-|LogEvent
-|The LogEvent being processed. Not present when
-configured as a global filter.
-
-|marker
-|Marker
-|The Marker passed on the logging call, if any. Only
-present when configured as a global filter.
-
-|message
-|Message
-|The Message associated with the logging call. Only
-present when configured as a global filter.
-
-|parameters
-|Object[]
-|The parameters passed to the logging call. Only
-present when configured as a global filter. Some Messages include the
-parameters as part of the Message.
-
-|throwable
-|Throwable
-|The Throwable passed to the logging call, if any.
-Only present when configured as a global filter. Som Messages include
-Throwable as part of the Message.
-
-|substitutor
-|StrSubstitutor
-|The StrSubstitutor is used to replace lookup variables.
-|===
-
-The sample below shows how to declare script fields and then reference them in specific components.
-See
-xref:manual/appenders.adoc#ScriptCondition[ScriptCondition] for an example of how the `ScriptPlugin` element can be used to embed script code directly in the configuration.
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="ERROR">
-  <Scripts>
-    <ScriptFile name="filter.js" language="JavaScript" path="src/test/resources/scripts/filter.js" charset="UTF-8" />
-    <ScriptFile name="filter.groovy" language="groovy" path="src/test/resources/scripts/filter.groovy" charset="UTF-8" />
-  </Scripts>
-  <Appenders>
-    <List name="List">
-      <PatternLayout pattern="[%-5level] %c{1.} %msg%n"/>
-    </List>
-  </Appenders>
-  <Loggers>
-    <Logger name="TestJavaScriptFilter" level="trace" additivity="false">
-      <AppenderRef ref="List">
-        <ScriptFilter onMatch="ACCEPT" onMisMatch="DENY">
-          <ScriptRef ref="filter.js" />
-        </ScriptFilter>
-      </AppenderRef>
-    </Logger>
-    <Logger name="TestGroovyFilter" level="trace" additivity="false">
-      <AppenderRef ref="List">
-        <ScriptFilter onMatch="ACCEPT" onMisMatch="DENY">
-          <ScriptRef ref="filter.groovy" />
-        </ScriptFilter>
-      </AppenderRef>
-    </Logger>
-    <Root level="trace">
-      <AppenderRef ref="List" />
-    </Root>
-  </Loggers>
-</Configuration>
-          
-----
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-MapFilter[📖 Plugin reference for `MapFilter`]
 
 [#StructuredDataFilter]
-== StructuredDataFilter
+==== `StructuredDataFilter`
 
-The StructuredDataFilter is a MapFilter that also allows filtering on the event id, type and message.
+The `StructuredDataFilter` is a variant of <<MapFilter>> that only matches
+{log4j2-url}/manual/messages.adoc#StructuredDataMessage[`StructureDataMessage`]s.
 
-.StructuredData Filter Parameters
+In addition to matching the map structure contained in a `StructuredDataMessage`
+(which corresponds to https://datatracker.ietf.org/doc/html/rfc5424#section-6.3.3[RFC 5424 `SD-PARAM` elements])
+it provides the following virtual keys:
+
+.`StructuredDataFilter` -- virtual keys
 [cols="1m,1,4"]
 |===
-|Parameter Name |Type |Description
+| Key | RFC5424 field | Description
 
-|keyValuePair
-|KeyValuePair[]
-|One or more KeyValuePair elements that
-define the key in the map and the value to match on. "id", "id.name",
-"type", and "message" should be used to match the StructuredDataId,
-the name portion of the StructuredDataId, the type, and the formatted
-message respectively. If the same key is specified more than once then
-the check for that key will automatically be an "or" since a Map can
-only contain a single value.
+| id
+| https://datatracker.ietf.org/doc/html/rfc5424#section-6.3.2[`SD-ID`]
+| The
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html#getId()[`id` field]
+of the `StructuredDataMessage`.
 
-|operator
-|String
-|If the operator is "or" then a match by any one of
-the key/value pairs will be considered to be a match, otherwise all the
-key/value pairs must match.
+| id.name
+|
+| The
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataId.html#getName()[`name` field]
+of the `StructuredDataId` element.
 
-|onMatch
-|String
-|Action to take when the filter matches. Can be ACCEPT,
-DENY or NEUTRAL. The default value is NEUTRAL.
+| type
+| https://datatracker.ietf.org/doc/html/rfc5424#section-6.2.7[`MSGID`]
+| The
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html#getType()[`type` field]
+of a `StructuredDataMessage`.
 
-|onMismatch
-|String
-|Action to take when the filter does not match. Can
-be ACCEPT, DENY or NEUTRAL. The default value is DENY.
+| message
+| https://datatracker.ietf.org/doc/html/rfc5424#section-6.4[`MSG`]
+| The result of a
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html#getFormat()[`Message.getFormat()`] method call.
+
 |===
 
-As in this configuration, the StructuredDataFilter can be used to log particular events:
+The `StructuredDataFilter` encodes the <<configuration-map>> introduced above as a list of
+`KeyValuePair` and supports the following parameters, besides the common configuration attributes:
 
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <StructuredDataFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
-    <KeyValuePair key="id" value="Login"/>
-    <KeyValuePair key="id" value="Logout"/>
-  </StructuredDataFilter>
-  <Appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
-      <BurstFilter level="INFO" rate="16" maxBurst="100"/>
-      <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
-      </PatternLayout>
-      <TimeBasedTriggeringPolicy />
-    </RollingFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="RollingFile"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
+.`StructuredDataFilter`—configuration attributes
+[cols="1m,1,1,4"]
+|===
+| Attribute | Type | Default value | Description
 
-[#ThreadContextMapFilter]
-== ThreadContextMapFilter
+| operator
+| _enumeration_
+| `AND`
+a| Determines the matching mode of the filter.
+Can be:
 
-The ThreadContextMapFilter or ContextMapFilter allows filtering against data elements that are in the current context.
-By default, this is the ThreadContext Map.
+* <<matching-mode-and,AND>>
+* <<matching-mode-or,OR>>
 
-.Context Map Filter Parameters
+|===
+
+.`StructuredDataFilter` -- nested elements
 [cols="1m,1,4"]
 |===
-|Parameter Name |Type |Description
+| Type | Multiplicity | Description
 
-|keyValuePair
-|KeyValuePair[]
-|One or more KeyValuePair elements that
-define the key in the map and the value to match. If the same key is
-specified more than once then the check for that key will automatically
-be an "or" since a Map can only contain a single value.
+| xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-util-KeyValuePair[`KeyValuePair`]
+| One or more
+| Adds a value as allowed value for a key.
+See <<configuration-map>> for more details.
 
-|operator
-|String
-|If the operator is "or" then a match by any one of
-the key/value pairs will be considered to be a match, otherwise all the
-key/value pairs must match.
-
-|onMatch
-|String
-|Action to take when the filter matches. Can be ACCEPT,
-DENY or NEUTRAL. The default value is NEUTRAL.
-
-|onMismatch
-|String
-|Action to take when the filter does not match. Can
-be ACCEPT, DENY or NEUTRAL. The default value is DENY.
 |===
 
-A configuration containing the ContextMapFilter might look like:
+If you want
+to match all log messages with an `SD-ID` equal to `authentication` and the value of the `userId` `SD-PARAM` equal to either `alice` or `bob`,
+you can use the following configuration:
 
-[source,xml]
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/filters/StructuredDataFilter.xml[`log4j2.xml`]
+[source,xml,indent=0]
 ----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <ContextMapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
-    <KeyValuePair key="User1" value="DEBUG"/>
-    <KeyValuePair key="User2" value="WARN"/>
-  </ContextMapFilter>
-  <Appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
-      <BurstFilter level="INFO" rate="16" maxBurst="100"/>
-      <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
-      </PatternLayout>
-      <TimeBasedTriggeringPolicy />
-    </RollingFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="RollingFile"/>
-    </Root>
-  </Loggers>
-</Configuration>
+include::example$manual/filters/StructuredDataFilter.xml[tag=filter]
 ----
 
-The ContextMapFilter can also be applied to a logger for filtering:
-
-[source,xml]
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/filters/StructuredDataFilter.json[`log4j2.json`]
+[source,json,indent=0]
 ----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
-      <BurstFilter level="INFO" rate="16" maxBurst="100"/>
-      <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
-      </PatternLayout>
-      <TimeBasedTriggeringPolicy />
-    </RollingFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="RollingFile"/>
-      <ContextMapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
-        <KeyValuePair key="foo" value="bar"/>
-        <KeyValuePair key="User2" value="WARN"/>
-      </ContextMapFilter>
-    </Root>
-  </Loggers>
-</Configuration>
-  
+include::example$manual/filters/StructuredDataFilter.json[tag=filter]
 ----
 
-[#ThresholdFilter]
-== ThresholdFilter
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/filters/StructuredDataFilter.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/filters/StructuredDataFilter.yaml[tag=filter]
+----
 
-This filter returns the onMatch result if the level in the LogEvent is the same or more specific than the configured level and the `onMismatch`
-value otherwise.
-For example, if the ThresholdFilter is configured with Level ERROR and the LogEvent contains Level DEBUG then the `onMismatch`
-value will be returned since ERROR events are more specific than DEBUG.
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/filters/StructuredDataFilter.yaml[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/filters/StructuredDataFilter.properties[tag=filter]
+----
+====
 
-.Threshold Filter Parameters
+[TIP]
+====
+You can use Log4j Core's
+xref:manual/configuration.adoc#configuration-attribute-monitorInterval[automatic reconfiguration feature]
+to modify the ``KeyValuePair``s without restarting your application.
+====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-StructuredDataFilter[📖 Plugin reference for `StructuredDataFilter`]
+
+[#ContextMapFilter]
+==== `ContextMapFilter`
+
+The `ContextMapFilter` works in the same way as the <<MapFilter>> above,
+except it checks the
+{log4j2-url}/manual/thread-context.adoc[context map data]
+of the log event instead of the log message.
+
+This filter also encodes the <<configuration-map>> introduced above as a list of
+`KeyValuePair` elements.
+
+Besides the common configuration attributes, the `ContextMapFilter` supports the following parameters:
+
+.`ContextMapFilter` -- configuration attributes
+[cols="1m,1,1,4"]
+|===
+| Attribute | Type | Default value | Description
+
+| operator
+| _enumeration_
+| `AND`
+a| Determines the matching mode of the filter.
+Can be:
+
+* <<matching-mode-and,AND>>
+* <<matching-mode-or,OR>>
+
+|===
+
+.`ContextMapFilter` -- nested elements
 [cols="1m,1,4"]
 |===
-|Parameter Name |Type |Description
+| Type | Multiplicity | Description
 
-|level
-|String
-|A valid Level name to match.
+| xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-util-KeyValuePair[`KeyValuePair`]
+| One or more
+| Adds a value as allowed value for a key.
+See <<configuration-map>> for more details.
 
-|onMatch
-|String
-|Action to take when the filter matches. Can be ACCEPT,
-DENY or NEUTRAL. The default value is NEUTRAL.
-
-|onMismatch
-|String
-|Action to take when the filter does not match. Can
-be ACCEPT, DENY or NEUTRAL. The default value is DENY.
 |===
 
-A sample configuration that only allows the event to be written by the appender if the level matches:
+For example,
+if the `clientId` and `userId` keys in the context data map identify your client and his end users,
+you can filter the log events generated by users `alice` and `bob` of client `1234` using this configuration:
 
-[source,xml]
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/filters/ContextMapFilter.xml[`log4j2.xml`]
+[source,xml,indent=0]
 ----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
-      <ThresholdFilter level="TRACE" onMatch="ACCEPT" onMismatch="DENY"/>
-      <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
-      </PatternLayout>
-      <TimeBasedTriggeringPolicy />
-    </RollingFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="RollingFile"/>
-    </Root>
-  </Loggers>
-</Configuration>
+include::example$manual/filters/ContextMapFilter.xml[tag=filter]
 ----
 
-[#TimeFilter]
-== TimeFilter
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/filters/ContextMapFilter.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/filters/ContextMapFilter.json[tag=filter]
+----
 
-The time filter can be used to restrict the filter to only a certain portion of the day.
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/filters/ContextMapFilter.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/filters/ContextMapFilter.yaml[tag=filter]
+----
 
-.Time Filter Parameters
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/filters/ContextMapFilter.yaml[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/filters/ContextMapFilter.properties[tag=filter]
+----
+====
+
+[TIP]
+====
+You can use Log4j Core's
+xref:manual/configuration.adoc#configuration-attribute-monitorInterval[automatic reconfiguration feature]
+to modify the ``KeyValuePair``s without restarting your application.
+====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-ThreadContextMapFilter[📖 Plugin reference for `ContextMapFilter`]
+
+[#MutableThreadContextMapFilter]
+==== `MutableContextMapFilter`
+
+The `MutableContextMapFilter` is an alternative version of <<ContextMapFilter>> that also uses the
+{log4j2-url}/manual/thread-context.adoc[context data map]
+to filter messages, but externalizes the <<configuration-map>>, so it can be kept in a separate location.
+
+This filter encodes the <<configuration-map>> as JSON.
+The configuration map must be stored in an **external** location and will be regularly polled for changes.
+
+Besides the common configuration attributes, the `MutableContextMapFilter` supports the following parameters:
+
+.`MutableContextMapFilter` -- configuration attributes
+[cols="1m,1,1,4"]
+|===
+| Attribute | Type | Default value | Description
+
+| configLocation
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[`Path`]
+or
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/URI.html[`URI`]
+|
+| The location of the JSON <<configuration-map>>.
+
+**Required**
+
+| pollInterval
+| `long`
+| `0`
+|
+Determines the polling interval used by Log4j to check for changes to the configuration map.
+
+If set to `0`, polling is disabled.
+
+|===
+
+[CAUTION]
+====
+Unlike other map filters that have a configurable matching mode,
+this filter always uses the <<matching-mode-or,OR>> matching mode.
+====
+
+To use this filter, you need to:
+
+. Create a JSON configuration map and place it at a known location (e.g. `++https://server.example/configs.json++`):
++
+[source,json]
+----
+include::example$manual/filters/configs2.json[]
+----
++
+<1> The filter will match all events for client `1234` regardless of the `userId`.
+<2> The filter will match all events for the `root` account regardless of the `clientId`.
+
+. Reference the configuration map location in your configuration file:
++
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/filters/MutableContextMapFilter.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/filters/MutableContextMapFilter.xml[tag=filter]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/filters/MutableContextMapFilter.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/filters/MutableContextMapFilter.json[tag=filter]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/filters/MutableContextMapFilter.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/filters/MutableContextMapFilter.yaml[tag=filter]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/filters/MutableContextMapFilter.yaml[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/filters/MutableContextMapFilter.properties[tag=filter]
+----
+====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-MutableThreadContextMapFilter[📖 Plugin reference for `MutableContextMapFilter`]
+
+[#other-filters]
+=== Other filters
+
+[#deny-filter]
+==== `DenyFilter`
+
+The `DenyFilter` always returns `DENY`.
+It does not support **any** configuration attribute, even the common configuration attributes.
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-DenyAllFilter[📖 Plugin reference for `DenyAllFilter`]
+
+[#Script]
+==== `ScriptFilter`
+
+The `ScriptFilter` executes a script that must return `true` if the event matches and `false` otherwise.
+
+Besides the common configuration attributes, it accepts a single nested element:
+
+.`ScriptFilter` -- nested elements
+[cols="3,1,4"]
+|===
+| Type | Multiplicity | Description
+
+|
+xref:manual/scripts.adoc#Script[`Script`],
+xref:manual/scripts.adoc#ScriptFile[`ScriptFile`]
+or
+xref:manual/scripts.adoc#ScriptRef[`ScriptRef`]
+| one
+| A reference to the script to execute.
+
+See xref:manual/scripts.adoc[Scripts] for more details about scripting.
+|===
+
+The bindings available to the script depend
+on whether the `ScriptFilter` is used as a global filter in the <<logger-stage,Logger stage>> or in the remaining stages.
+For global filters, the following bindings are available:
+
+.Script Bindings -- global filter
 [cols="1m,1,4"]
 |===
-|Parameter Name |Type |Description
+| Binding name | Type | Description
 
-|start
-|String
-|A time in HH:mm:ss format.
+| logger
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/Logger.html[`Logger`]
+| The logger used in the log statement.
 
-|end
-|String
-|A time in HH:mm:ss format. Specifying an end time less
-than the start time will result in no log entries being written.
+| level
+| {log4j2-url}/manual/customloglevels.adoc[`Level`]
+| The level used in the log statement.
 
-|timezone
-|String
-|The timezone to use when comparing to the event
-timestamp.
+| marker
+| {log4j2-url}/manual/markers.adoc[`Marker`]
+| The marker used in the log statement.
 
-|onMatch
-|String
-|Action to take when the filter matches. Can be ACCEPT,
-DENY or NEUTRAL. The default value is NEUTRAL.
+| message
+| {log4j2-url}/manual/messages.adoc[`Message`]
+a| The message used in the log event if the user directly supplied one.
+Otherwise:
 
-|onMismatch
-|String
-|Action to take when the filter does not match. Can
-be ACCEPT, DENY or NEUTRAL. The default value is DENY.
+* If the logging statement contained an `Object` argument, it is wrapped in a
+{log4j2-url}/manual/messages.adoc#ObjectMessage[`ObjectMessage`].
+* If the logging statement contained a format `String`, it is wrapped in a
+{log4j2-url}/manual/messages.adoc#SimpleMessage[`SimpleMessage`].
+
+| parameters
+| `Object[]`
+| The parameters passed to the logging call.
+Some logging calls include the parameters as part of `message`.
+
+| throwable
+| `Throwable`
+| The `Throwable` passed to the logging call, if any.
+Some logging calls include the `Throwable` as part of `message`.
+
+| substitutor
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrSubstitutor.html[`StrSubstitutor`]
+| The `StrSubstitutor` used to replace lookup variables.
+
 |===
 
-A sample configuration that only allows the event to be written by the appender from 5:00 to 5:30 am each day using the default timezone:
+For the remaining filters, only these bindings are available:
 
-[source,xml]
+.Script Bindings -- internal filter
+[cols="1m,1,4"]
+|===
+| Binding name | Type | Description
+
+| logEvent
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html[`LogEvent`]
+| The LogEvent being processed.
+
+| substitutor
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrSubstitutor.html[`StrSubstitutor`]
+| The `StrSubstitutor` used to replace lookup variables.
+
+
+|===
+
+As an example, if you wish to match only log events that contain a certain exception,
+you can use a simple Groovy script:
+
+.`scripts/local.groovy`
+[source,groovy]
 ----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
-      <TimeFilter start="05:00:00" end="05:30:00" onMatch="ACCEPT" onMismatch="DENY"/>
-      <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
-      </PatternLayout>
-      <TimeBasedTriggeringPolicy />
-    </RollingFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="RollingFile"/>
-    </Root>
-  </Loggers>
-</Configuration>
+include::example$manual/filters/local.groovy[]
 ----
+
+You can then integrate the script in a Log4j configuration:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/filters/ScriptFilter.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/filters/ScriptFilter.xml[tag=local]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/filters/ScriptFilter.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/filters/ScriptFilter.json[tag=local]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/filters/ScriptFilter.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/filters/ScriptFilter.yaml[tag=local]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/filters/ScriptFilter.yaml[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/filters/ScriptFilter.properties[tag=local]
+----
+====
+
+Writing an equivalent **global** script is a little bit more complex,
+since you need to take into account all the places where a throwable can be passed as a parameter.
+The script becomes:
+
+.`scripts/global.groovy`
+[source,groovy]
+----
+include::example$manual/filters/global.groovy[]
+----
+
+You can use it as a global filter:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/filters/ScriptFilter.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/filters/ScriptFilter.xml[tag=global]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/filters/ScriptFilter.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/filters/ScriptFilter.json[tag=global]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/filters/ScriptFilter.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/filters/ScriptFilter.yaml[tag=global]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/filters/ScriptFilter.yaml[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/filters/ScriptFilter.properties[tag=global]
+----
+====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-ScriptFilter[📖 Plugin reference for `ScriptFilter`]
+
+[#extending]
+== Extending
+
+Filters are xref:manual/plugins.adoc[plugins] implementing link:../javadoc/log4j-core/org/apache/logging/log4j/core/Filter.html[the `Filter` interface].
+This section will guide you on how to create custom ones.
+
+[NOTE]
+====
+While <<collection,the predefined filter collection>> should address most common use cases, you might find yourself needing to implement a custom one.
+If this is the case, we really appreciate it if you can *share your use case in a {logging-services-url}/support.html[user support channel]*.
+====
+
+[#extending-plugins]
+=== Plugin preliminaries
+
+include::partial$manual/plugin-preliminaries.adoc[]
+
+[#extending-filters]
+=== Extending filters
+
+Filters are xref:manual/plugins.adoc[plugins]
+implementing link:../javadoc/log4j-core/org/apache/logging/log4j/core/Filter.html[the `Filter`
+interface].
+We recommend users
+to extend from link:../javadoc/log4j-core/org/apache/logging/log4j/core/filter/AbstractFilter.html[`AbstractFilter`],
+which provides implementation convenience.
+While annotating your filter with `@Plugin`, you need to make sure that
+
+* It has a unique `name` attribute across all available `Filter` plugins
+* The `category` attribute is set to link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Node.html#CATEGORY[`Node.CATEGORY`]
+
+You can check out the following files for examples:
+
+* {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/filter/MarkerFilter.java[`MarkerFilter.java`] – <<MarkerFilter>> matching on markers associated with the effective `LogEvent` in the context
+* {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/filter/RegexFilter.java[`RegexFilter.java`] – <<RegexFilter>> matching on the message associated with the effective `LogEvent` in the context

@@ -30,6 +30,7 @@ configuration property.
 
 Each component that allows scripts can contain on of the following configuration elements:
 
+[[Script]]
 Script::
 +
 This element specifies the content of the script directly and has:
@@ -46,6 +47,7 @@ The element can be assigned a name using the `name` configuration attribute.
 See also
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-script-Script[Plugin reference].
 
+[[ScriptFile]]
 ScriptFile::
 +
 This element points to an external script file and has:
@@ -63,6 +65,7 @@ The element can be assigned a name using the `name` configuration attribute.
 See also
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-script-ScriptFile[Plugin reference].
 
+[[ScriptRef]]
 ScriptRef::
 +
 This element references a **named** script from the global
