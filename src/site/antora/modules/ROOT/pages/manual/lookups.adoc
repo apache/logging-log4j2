@@ -275,6 +275,12 @@ Do you want to use the values in Spring Boot's `application.properties` file?
 Use <<SpringBootLookup3>> instead.
 ====
 
+[#collection]
+== Collection
+
+Log4j bundles several predefined lookups to assist in several common deployment use cases.
+Following sections explain all these in detail.
+
 [#ContextMapLookup]
 === Context Map Lookup
 
@@ -388,9 +394,8 @@ include::partial$components/log4j-docker.adoc[]
 [#EnvironmentLookup]
 === Environment Lookup
 
-[cols="1h,4"]
-|===
-| Context | _global_
+[id=environment-lookup]
+=== [[EnvironmentLookup]] Environment Lookup
 
 | Syntax
 | `env:<key>`
@@ -401,6 +406,15 @@ where `<key>` is any `String`
 The Environment Lookup retrieves the value of the
 https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/lang/System.html#getenv(java.lang.String)[OS environment variable]
 associated with the key.
+
+[source,xml]
+----
+<File name="Application" fileName="application.log">
+  <PatternLayout>
+    <pattern>%d %p %c{1.} [%t] $${env:USER:-jdoe} %m%n</pattern>
+  </PatternLayout>
+</File>
+----
 
 [#EventLookup]
 === Event Lookup
@@ -537,10 +551,8 @@ As an example, to retrieve the value of `java:comp/env/app_name` you can use:
 $${jndi:app_name}
 ----
 
-[NOTE]
-====
-Android does not support JNDI.
-====
+[#JavaLookup]
+=== Java Lookup
 
 Additional runtime dependencies are required for using JNDI Lookup:
 
@@ -573,10 +585,140 @@ The Configuration Location Lookup supports two keys:
 |Returns the location of the folder containing the configuration file as an absolute file path or URI.
 |===
 
+For example:
+
+[source,xml]
+----
+<File name="Application" fileName="application.log">
+  <PatternLayout header="${java:runtime} - ${java:vm} - ${java:os}">
+    <Pattern>%d %m%n</Pattern>
+  </PatternLayout>
+</File>
+----
+
+[#JndiLookup]
+=== JNDI Lookup
+
+As of Log4j 2.15.1 JNDI operations require that `log4j2.enableJndi=true` be set as a system property or the
+corresponding environment variable for this lookup to function. See the
+xref:manual/systemproperties.adoc#log4j.jndi.enableLookup[`log4j.jndi.enableLookup`]
+system property.
+
+The JndiLookup allows variables to be retrieved via JNDI. By default the
+key will be prefixed with java:comp/env/, however if the key contains a
+":" no prefix will be added.
+
+By default the JNDI Lookup only supports the java, ldap, and ldaps protocols or no protocol. Additional
+protocols may be supported by specifying them on the ``log4j2.allowedJndiProtocols`` property.
+When using LDAP Java classes that implement the Referenceable interface are not supported for security
+reasons. Only the Java primative classes are supported by default as well as any classes specified by the
+``log4j2.allowedLdapClasses`` property. When using LDAP only references to the local host name
+or ip address are supported along with any hosts or ip addresses listed in the
+``log4j2.allowedLdapHosts`` property.
+
+[source,xml]
+----
+<File name="Application" fileName="application.log">
+  <PatternLayout>
+    <pattern>%d %p %c{1.} [%t] $${jndi:logging/context-name} %m%n</pattern>
+  </PatternLayout>
+</File>
+----
+
+*Java's JNDI module is not available on Android.*
+
+[#JmxRuntimeInputArgumentsLookup]
+=== JVM Input Arguments Lookup (JMX)
+
+Maps JVM input arguments -- but not _main_ arguments -- using JMX to
+acquire the JVM arguments.
+
+Use the prefix `jvmrunargs` to access JVM arguments.
+
+See the Javadocs for
+https://docs.oracle.com/javase/8/docs/api/java/lang/management/RuntimeMXBean.html#getInputArguments--[`java.lang.management.RuntimeMXBean.getInputArguments()`].
+
+*Java's JMX module is not available on Android or on Google App Engine.*
+
+[#KubernetesLookup]
+=== Kubernetes Lookup
+
+For retrieving attributes using Fabric8's Kubernetes Client, see their https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md[Kubernetes Log4j Lookup].
+
+[#Log4jConfigLookup]
+== Log4j Configuration Location Lookup
+
+Log4j configuration properties. The expressions
+`${log4j:configLocation}` and `${log4j:configParentLocation}`
+respectively provide the absolute path to the log4j configuration file
+and its parent folder.
+
+The example below uses this lookup to place log files in a directory
+relative to the log4j configuration file.
+
+[source,xml]
+----
+<File name="Application" fileName="${log4j:configParentLocation}/logs/application.log">
+  <PatternLayout>
+    <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+  </PatternLayout>
+</File>
+----
+
 [#LowerLookup]
 === Lower Lookup
 
-[cols="1h,4"]
+The LowerLookup converts the passed in argument to lower case. Presumably the value will be the
+result of a nested lookup.
+
+[source,xml]
+----
+<File name="Application" fileName="application.log">
+  <PatternLayout>
+    <pattern>%d %p %c{1.} [%t] $${lower:${spring:spring.application.name}} %m%n</pattern>
+  </PatternLayout>
+</File>
+----
+
+[#AppMainArgsLookup]
+=== Main Arguments Lookup (Application)
+
+This lookup requires that you manually provide the main arguments of the
+application to Log4j:
+
+[source,java]
+----
+import org.apache.logging.log4j.core.lookup.MainMapLookup;
+public class Main {
+    public static void main(String[] args) {
+      MainMapLookup.setMainArguments(args);
+      // ...
+    }
+}
+----
+
+If the main arguments have been set, this lookup allows applications to
+retrieve these main argument values from within the logging
+configuration. The key that follows the `main:` prefix can either be a
+0-based index into the argument list, or a string, where
+`${main:myString}` is substituted with the value that follows `myString`
+in the main argument list.
+
+Note: Many applications use leading dashes to identify command arguments. Specifying
+`${main:--file}` would result in the lookup failing because it would look for a variable
+named "main" with a default value of "-file". To avoid this the ":" separating the Lookup name from the
+key must be followed by a backslash as an escape character as in `${main:\--file}`.
+
+For example, suppose the static void main String[] arguments are:
+
+[source,text]
+----
+--file foo.txt --verbose -x bar
+----
+
+Then the following substitutions are possible:
+
+[cols="m,m"]
 |===
 | Context    | _global_
 
@@ -656,15 +798,43 @@ XML::
 include::example$manual/lookups/mainArgs.xml[lines=1;18..-1]
 ----
 
-JSON::
-+
-[source,json]
+[#MapLookup]
+=== Map Lookup
+
+The MapLookup serves several purposes.
+
+1.  Provide the base for Properties declared in the configuration file.
+2.  Retrieve values from MapMessages in LogEvents.
+3.  Retrieve values set with
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/MapLookup.html#setMainArguments%28java.lang.String%5B%5D%29[`MapLookup.setMainArguments(String[])`]
+
+The first item simply means that the MapLookup is used to substitute
+properties that are defined in the configuration file. These variables
+are specified without a prefix - e.g. `$\{name}`. The second usage allows
+a value from the current
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html[`MapMessage`],
+if one is part of the current log event, to be substituted. In the
+example below the RoutingAppender will use a different
+RollingFileAppender for each unique value of the key named "type" in the
+MapMessage. Note that when used this way a value for "type" should be
+declared in the properties declaration to provide a default value in
+case the message is not a MapMessage or the MapMessage does not contain
+the key. See the xref:manual/configuration.adoc#property-substitution[Property
+Substitution] section of the xref:manual/configuration.adoc[Configuration]
+page for information on how to set the default values.
+
+[source,xml]
 ----
 include::example$manual/lookups/mainArgs.json[]
 ----
 
-YAML::
-+
+[#marker-lookup]
+=== Marker Lookup
+
+The marker lookup allows you to use markers in interesting
+configurations like a routing appender. Consider the following YAML
+configuration and code that logs to different files based on markers:
+
 [source,yaml]
 ----
 include::example$manual/lookups/mainArgs.yaml[lines=17..-1]
@@ -752,8 +922,8 @@ See <<lookups-patterns>> for more information.
 | Syntax
 | `sd:<key>`
 
-where `<key>` is either one of the <<StructuredDataLookup-keys>> or any `String`
-|===
+[id=system-properties-lookup]
+=== [[SystemPropertiesLookup]] System Properties Lookup
 
 The Structured Data Lookup is very similar to <<MapLookup>> and retrieves the value assigned to the given key in a
 {log4j2-url}/manual/messages.html#StructuredDataMessage[`StructuredDataMessage`].
@@ -938,63 +1108,6 @@ Using the Web Lookup, you can, for example, place the log file in the applicatio
 </Appenders>
 ----
 
-Additional runtime dependencies are required for using web lookup:
-
-include::partial$features/servlet-support.adoc[]
-
-[#third-party]
-== Third-party lookups
-
-[IMPORTANT]
-====
-These lookups are provided by **third-party** vendors and are not maintained by the
-link:{logging-services-url}[Apache Logging Services]
-(Log4j, Log4cxx, Log4net) project.
-====
-
-[#KubernetesLookup]
-=== Kubernetes Lookup
-
-[cols="1h,4"]
-|===
-| Syntax | `k8s:<key>`
-| Dependency | {log4j-kubernetes-url}[Log4j Kubernetes of Fabric8]
-|===
-
-Kubernetes Lookup queries https://kubernetes.io/docs/concepts/overview/kubernetes-api/[the Kubernetes API] to retrieve certain information about the current container and its environment.
-Kubernetes Lookup is distributed as a part of Fabric8's Kubernetes Client, refer to {log4j-kubernetes-url}[its website] for details.
-
-[#SpringBootLookup3]
-=== Spring Boot 3 Lookup
-
-[cols="1h,4"]
-|===
-| Syntax  | `spring:<key>`
-| Dependency | _integrated in Spring Boot 3_
-|===
-
-Starting with Spring Boot 3 a `$+{spring:...}+` lookup is available out-of-the-box.
-https://docs.spring.io/spring-boot/reference/features/logging.html#features.logging.log4j2-extensions.environment-properties-lookup[Spring Boot documentation]
-for more details.
-
-[#TomcatLookup]
-=== Tomcat Lookup
-
-[cols="1h,4"]
-|===
-| Syntax
-|
-`tomcat:<key>`
-
-where `key` is one of the
-https://oss.copernik.eu/tomcat/3.x/components/log4j-tomcat#TomcatLookup-keys[supported Tomcat Lookup keys]
-| Dependency | https://oss.copernik.eu/tomcat/3.x/components/log4j-tomcat#installation[`eu.copernik:log4j-tomcat`]
-|===
-
-The Tomcat Lookup allows retrieving the names of the currently active Tomcat engine, host and application context.
-See
-https://oss.copernik.eu/tomcat/3.x/components/log4j-tomcat#TomcatLookup[Copernik.eu Tomcat Lookup documentation] for more details.
-
 [#extending]
 == Extending
 
@@ -1021,7 +1134,7 @@ While annotating your lookup with `@Plugin`, you need to make sure that
 * It has a unique `name` attribute across all available `StrLookup` plugins
 * The `category` attribute is set to link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrLookup.html#CATEGORY[`StrLookup.CATEGORY`]
 
-You can check out the following files for examples:
+You can check out following files for examples:
 
 * {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/lookup/DateLookup.java[`LowerLookup.java`] – <<LowerLookup>> lower-cases its input
 * {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/lookup/EventLookup.java[`EventLookup.java`] – <<EventLookup>> extracts specified fields from the effective `LogEvent` in the context

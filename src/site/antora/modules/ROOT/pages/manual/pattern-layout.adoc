@@ -432,8 +432,7 @@ You can also define custom date formats, see following examples:
 `%d\{UNIX}` outputs the epoch time in seconds, i.e., the difference in seconds between the current time and 1970-01-01 00:00:00 (UTC).
 `%d\{UNIX_MILLIS}` outputs the epoch time in milliseconds.
 
-Note that the granularity of the sub-second formatters depends on the platform.
-Users may revert to a millisecond-precision clock when running on Java 9 by setting xref:manual/systemproperties.adoc#log4j2.clock[the `log4j2.clock` system property] to `SystemMillisClock`.
+Users may revert to a millisecond-precision clock when running on Java 9 by setting xref:manual/systemproperties.adoc#log4j.configuration.clock[the `log4j.configuration.clock` system property] to `SystemMillisClock`.
 
 [WARNING]
 ====
@@ -1545,8 +1544,9 @@ If your terminal supports 24-bit colors, you can specify:
 [#ansi-windows]
 ==== ANSI styling on Windows
 
-ANSI escape sequences are supported natively on many platforms, but is disabled by default in `cmd.exe` on Windows.
-To enable ANSI escape sequences, create a registry key of name `HKEY_CURRENT_USER\Console\VirtualTerminalLevel` of type `DWORD` and set its value to `0x1`.
+ANSI escape sequences are supported natively on many platforms, but not by default on Windows.
+To enable ANSI support add the http://jansi.fusesource.org/[Jansi] dependency to your application, and set xref:manual/systemproperties.adoc#log4j.console.jansiEnabled[the `log4j.console.jansiEnabled` system property] to `false`.
+This allows Log4j to use Jansi to add ANSI escape codes when writing to the console.
 
 See
 https://devblogs.microsoft.com/commandline/understanding-windows-console-host-settings/[Understanding Windows Console Host Settings]
@@ -1565,35 +1565,33 @@ Format modifiers to control such things as field width, padding, left, and right
 |Pattern
 |Comment
 
-|xref:#converter-logger[%c\{precision} +
-%logger\{precision}]
+|<<converter-logger,%c\{precision} +
+%logger\{precision}>>
 |
 
-|xref:#converter-date[%d +
-%date]
-|
-The numeric formats (`UNIX` and `UNIX_MILLIS`) are garbage-free.
-The remaining formats are low-garbage and only generate temporary objects once per minute.
+|<<converter-date,%d +
+%date>>
+|Only the predefined date formats (`DEFAULT`, `ISO8601`, `UNIX`, `UNIX_MILLIS`, etc.) are garbage-free
 
-|xref:#converter-encode[%enc\{pattern} +
-%encode\{pattern}]
+|<<converter-encode,%enc\{pattern} +
+%encode\{pattern}>>
 |
 
-|xref:#converter-equals[%equals\{pattern}\{test}\{substitution} +
-%equalsIgnoreCase\{pattern}\{test}\{substitution}]
+|<<converter-equals,%equals\{pattern}\{test}\{substitution} +
+%equalsIgnoreCase\{pattern}\{test}\{substitution}>>
 |
 
 |<<converter-highlight,%highlight\{pattern}\{style}>>
 |Granted nested pattern is garbage-free
 
-|xref:#converter-map[%K\{key} +
+|<<converter-map,%K\{key} +
 %map\{key} +
-%MAP\{key}]
+%MAP\{key}>>
 |
 
-|xref:#converter-message[%m +
+|<<converter-message,%m +
 %msg +
-%message]
+%message>>
 |
 
 |<<converter-marker,%marker>>
@@ -1602,54 +1600,54 @@ The remaining formats are low-garbage and only generate temporary objects once p
 |<<converter-marker,%markerSimpleName>>
 |
 
-|xref:#converter-max-len[%maxLen +
-%maxLength]
+|<<converter-max-len,%maxLen +
+%maxLength>>
 |
 
 |%n
 |
 
-|xref:#converter-nano[%N +
-%nano]
+|<<converter-nano,%N +
+%nano>>
 |
 
-|xref:#converter-not-empty[%notEmpty\{pattern} +
+|<<converter-not-empty,%notEmpty\{pattern} +
 %varsNotEmpty\{pattern} +
-%variablesNotEmpty\{pattern}]
+%variablesNotEmpty\{pattern}>>
 |
 
-|xref:#converter-level[%p +
-%level]
+|<<converter-level,%p +
+%level>>
 |
 
-|xref:#converter-relative[%r +
-%relative]
+|<<converter-relative,%r +
+%relative>>
 |
 
-|xref:#converter-seq[%sn +
-%sequenceNumber]
+|<<converter-seq,%sn +
+%sequenceNumber>>
 |
 
 |<<converter-style,%style\{pattern}{ANSI style}>>
 |
 
-|xref:#converter-thread-id[%T +
+|<<converter-thread-id,%T +
 %tid +
-%threadId]
+%threadId>>
 |
 
-|xref:#converter-thread-name[%t +
+|<<converter-thread-name,%t +
 %tn +
 %thread +
-%threadName]
+%threadName>>
 |
 
 |<<converter-thread-priority,%tp>>
 |
 
-|<<converter-thread-context-map,%X{key,,key2...\>>} +
+|<<converter-thread-context-map[%X{key,,key2...\} +
 %mdc{key[,key2...\]} +
-%MDC{key[,key2...\]}]
+%MDC{key[,key2...\]}>>
 |
 
 |literal text
