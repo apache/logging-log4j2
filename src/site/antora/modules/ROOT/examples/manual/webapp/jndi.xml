@@ -15,33 +15,23 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="WARN" name="RollingCronTest" monitorInterval="1">
-
-  <Appenders>
-    <Console name="STDOUT">
-      <PatternLayout pattern="%m%n"/>
-    </Console>
-    <RollingFile name="RollingFile" filePattern="target/rolling-direct-cron/test1-%d{MM-dd-yy-HH-mm-ss}.log">
-      <PatternLayout>
-        <Pattern>%d{MM-dd-yy-HH-mm-ss} %p %C{1.} [%t] %m%n</Pattern>
-      </PatternLayout>
-      <CronTriggeringPolicy schedule="* * * * * ?"/>
-    </RollingFile>
-    <List name="List">
-      <Filters>
-        <ThresholdFilter level="error"/>
-      </Filters>
-    </List>
-  </Appenders>
-
-  <Loggers>
-    <Logger name="org.apache.logging.log4j.core.appender.rolling" level="debug" additivity="false">
-      <AppenderRef ref="RollingFile"/>
-    </Logger>
-
-    <Root level="error">
-      <AppenderRef ref="STDOUT"/>
-    </Root>
-  </Loggers>
-
-</Configuration>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
+         version="5.0">
+  <!-- tag::jndi[] -->
+  <context-param>
+    <param-name>isLog4jContextSelectorNamed</param-name>
+    <param-value>true</param-value>
+  </context-param>
+  <context-param>
+    <param-name>log4jContextName</param-name>
+    <param-value>your_application_name</param-value>
+  </context-param>
+  <env-entry>
+    <env-entry-name>log4j/context-name</env-entry-name>
+    <env-entry-value>your_application_name</env-entry-value>
+    <env-entry-type>java.lang.String</env-entry-type>
+  </env-entry>
+  <!-- end::jndi[] -->
+</web-app>
