@@ -23,7 +23,7 @@ Maven::
 [tabs]
 =====
 
-log4j2.xml::
+XML::
 +
 JPMS users need to add:
 +
@@ -36,11 +36,11 @@ module foo.bar {
 +
 to their `module-info.java` descriptor.
 
-log4j2.json::
+JSON::
 +
 No dependency required.
 
-log4j2.yaml::
+YAML::
 +
 [source,xml]
 ----
@@ -50,7 +50,7 @@ log4j2.yaml::
 </dependency>
 ----
 
-log4j2.properties::
+Properties::
 +
 [source,xml]
 ----
@@ -67,7 +67,7 @@ Gradle::
 [tabs]
 =====
 
-log4j2.xml::
+XML::
 +
 JPMS users need to add:
 +
@@ -80,18 +80,18 @@ module foo.bar {
 +
 to their `module-info.java` descriptor.
 
-log4j2.json::
+JSON::
 +
 No dependency required.
 
-log4j2.yaml::
+YAML::
 +
 [source,groovy]
 ----
 runtimeOnly 'org.apache.logging.log4j:log4j-config-yaml'
 ----
 
-log4j2.properties::
+Properties::
 +
 [source,groovy]
 ----

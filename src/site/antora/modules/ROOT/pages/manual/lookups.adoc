@@ -25,8 +25,14 @@ be found in the xref:manual/configuration.adoc#property-substitution[Property
 Substitution] section of the xref:manual/configuration.adoc[Configuration]
 page.
 
+[#collection]
+== Collection
+
+Log4j bundles several predefined lookups to assist in several common deployment use cases.
+Following sections explain all these in detail.
+
 [#ContextMapLookup]
-== Context Map Lookup
+=== Context Map Lookup
 
 The ContextMapLookup allows applications to store data in the Log4j
 ThreadContext Map and then retrieve the values in the Log4j
@@ -47,7 +53,7 @@ resolve the variable for each event. Note that the pattern
 ----
 
 [#DateLookup]
-== Date Lookup
+=== Date Lookup
 
 The DateLookup is somewhat unusual from the other lookups as it doesn't
 use the key to locate an item. Instead, the key can be used to specify a
@@ -67,7 +73,7 @@ be formatted as specified.
 ----
 
 [#DockerLookup]
-== Docker Lookup
+=== Docker Lookup
 
 The DockerLookup can be used to lookup attributes from the Docker container the application is running in.
 
@@ -107,7 +113,7 @@ Log4j Docker provides access to the following container attributes:
 This Lookup is subject to the requirements listed at xref:log4j-docker.adoc[Log4j Docker Support]
 
 [id=environment-lookup]
-== [[EnvironmentLookup]] Environment Lookup
+=== [[EnvironmentLookup]] Environment Lookup
 
 The EnvironmentLookup allows systems to configure environment variables,
 either in global files such as /etc/profile or in the startup scripts
@@ -136,8 +142,9 @@ when the `USER` environment variable is undefined, the default value
   </PatternLayout>
 </File>
 ----
+
 [#EventLookup]
-== Event Lookup
+=== Event Lookup
 
 The EventLookup provides access to fields within the log event from the configuration.
 
@@ -212,7 +219,7 @@ present in the log event.
 ----
 
 [#JavaLookup]
-== Java Lookup
+=== Java Lookup
 
 The JavaLookup allows Java environment information to be retrieved in
 convenient preformatted strings using the `java:` prefix.
@@ -265,7 +272,7 @@ For example:
 ----
 
 [#JndiLookup]
-== JNDI Lookup
+=== JNDI Lookup
 
 As of Log4j 2.15.1 JNDI operations require that `log4j2.enableJndi=true` be set as a system property or the
 corresponding environment variable for this lookup to function. See the
@@ -296,7 +303,7 @@ or ip address are supported along with any hosts or ip addresses listed in the
 *Java's JNDI module is not available on Android.*
 
 [#JmxRuntimeInputArgumentsLookup]
-== JVM Input Arguments Lookup (JMX)
+=== JVM Input Arguments Lookup (JMX)
 
 Maps JVM input arguments -- but not _main_ arguments -- using JMX to
 acquire the JVM arguments.
@@ -309,7 +316,7 @@ https://docs.oracle.com/javase/8/docs/api/java/lang/management/RuntimeMXBean.htm
 *Java's JMX module is not available on Android or on Google App Engine.*
 
 [#KubernetesLookup]
-== Kubernetes Lookup
+=== Kubernetes Lookup
 
 For retrieving attributes using Fabric8's Kubernetes Client, see their https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md[Kubernetes Log4j Lookup].
 
@@ -334,7 +341,7 @@ relative to the log4j configuration file.
 ----
 
 [#LowerLookup]
-== Lower Lookup
+=== Lower Lookup
 
 The LowerLookup converts the passed in argument to lower case. Presumably the value will be the
 result of a nested lookup.
@@ -349,7 +356,7 @@ result of a nested lookup.
 ----
 
 [#AppMainArgsLookup]
-== Main Arguments Lookup (Application)
+=== Main Arguments Lookup (Application)
 
 This lookup requires that you manually provide the main arguments of the
 application to Log4j:
@@ -379,9 +386,10 @@ key must be followed by a backslash as an escape character as in `${main:\--file
 
 For example, suppose the static void main String[] arguments are:
 
-....
+[source,text]
+----
 --file foo.txt --verbose -x bar
-....
+----
 
 Then the following substitutions are possible:
 
@@ -429,7 +437,7 @@ Example usage:
 ----
 
 [#MapLookup]
-== Map Lookup
+=== Map Lookup
 
 The MapLookup serves several purposes.
 
@@ -471,7 +479,7 @@ page for information on how to set the default values.
 ----
 
 [#marker-lookup]
-== Marker Lookup
+=== Marker Lookup
 
 The marker lookup allows you to use markers in interesting
 configurations like a routing appender. Consider the following YAML
@@ -541,7 +549,7 @@ check for the existence of a marker where `name` is the marker name. If
 the marker exists, the expression returns the name, otherwise `null`.
 
 [#StructuredDataLookup]
-== Structured Data Lookup
+=== Structured Data Lookup
 
 The StructuredDataLookup is very similar to the MapLookup in that it
 will retrieve values from StructuredDataMessages. In addition to the Map
@@ -570,7 +578,7 @@ while "type" would have to be an item in the Map in a MapMessage.
 ----
 
 [id=system-properties-lookup]
-== [[SystemPropertiesLookup]] System Properties Lookup
+=== [[SystemPropertiesLookup]] System Properties Lookup
 
 As it is quite common to define values inside and outside the
 application by using System Properties, it is only natural that they
@@ -597,7 +605,7 @@ when the `logPath` system property is undefined, the default value
 ----
 
 [#UpperLookup]
-== Upper Lookup
+=== Upper Lookup
 
 The LowerLookup converts the passed in argument to upper case. Presumably the value will be the
 result of a nested lookup.
@@ -612,7 +620,7 @@ result of a nested lookup.
 ----
 
 [#WebLookup]
-== Web Lookup
+=== Web Lookup
 
 The WebLookup allows applications to retrieve variables that are
 associated with the ServletContext. In addition to being able to
@@ -672,3 +680,34 @@ located then the corresponding value will be returned.
   <File name="ApplicationLog" fileName="${web:rootDir}/app.log"/>
 </Appenders>
 ----
+
+[#extending]
+== Extending
+
+Lookups are xref:manual/plugins.adoc[plugins] implementing link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrLookup.html[the `StrLookup` interface].
+This section will guide you on how to create custom ones.
+
+[NOTE]
+====
+While <<collection,the predefined lookup collection>> should address most common use cases, you might find yourself needing to implement a custom one.
+If this is the case, we really appreciate it if you can *share your use case in a {logging-services-url}/support.html[user support channel]*.
+====
+
+[#extending-plugins]
+=== Plugin preliminaries
+
+include::partial$manual/plugin-preliminaries.adoc[]
+
+[#extending-lookups]
+=== Extending lookups
+
+Lookups are xref:manual/plugins.adoc[plugins] implementing link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrLookup.html[the `StrLookup` interface].
+While annotating your lookup with `@Plugin`, you need to make sure that
+
+* It has a unique `name` attribute across all available `StrLookup` plugins
+* The `category` attribute is set to link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrLookup.html#CATEGORY[`StrLookup.CATEGORY`]
+
+You can check out following files for examples:
+
+* {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/lookup/DateLookup.java[`LowerLookup.java`] – <<LowerLookup>> lower-cases its input
+* {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/lookup/EventLookup.java[`EventLookup.java`] – <<EventLookup>> extracts specified fields from the effective `LogEvent` in the context
