@@ -1329,7 +1329,7 @@ you can use a simple Groovy script:
 .`scripts/local.groovy`
 [source,groovy]
 ----
-include::example$manual/filters/local.groovy[]
+include::example$manual/filters/local.groovy[lines=17..-1]
 ----
 
 You can then integrate the script in a Log4j configuration:
@@ -1376,7 +1376,7 @@ The script becomes:
 .`scripts/global.groovy`
 [source,groovy]
 ----
-include::example$manual/filters/global.groovy[]
+include::example$manual/filters/global.groovy[lines=17..-1]
 ----
 
 You can use it as a global filter:
