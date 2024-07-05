@@ -63,7 +63,7 @@ A level is composed of a case-sensitive name and a *priority* (of type `int`), w
 Priority can be used in several contexts to express a filtering capability, for instance:
 
 * `WARN` is _less severe_ than `ERROR`
-* `WARN` is _more specific_ than `ERROR`
+* `WARN` is _less specific_ than `ERROR`
 
 The entry point to log levels are through link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[`Level`].
 Predefined levels are available for Log4j API integrators through link:../javadoc/log4j-api/org/apache/logging/log4j/spi/StandardLevel.html[`StandardLevel`].

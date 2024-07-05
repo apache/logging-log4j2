@@ -1,0 +1,34 @@
+{
+  "Configuration": {
+    "Appenders": {
+      "Console": {
+        "name": "CONSOLE",
+        "JsonTemplateLayout": {}
+      }
+    },
+    "Loggers": {
+      // tag::local[]
+      "Root": {
+        "level": "ALL",
+        "ScriptFilter": {
+          "ScriptFile": {
+            "language": "groovy",
+            "path": "scripts/local.groovy"
+          }
+        },
+        "AppenderRef": {
+          "ref": "CONSOLE"
+        }
+      }
+      // end::local[]
+    }
+  },
+  // tag::global[]
+  "ScriptFilter": {
+    "ScriptFile": {
+      "language": "groovy",
+      "path": "scripts/global.groovy"
+    }
+  }
+  // end::global[]
+}

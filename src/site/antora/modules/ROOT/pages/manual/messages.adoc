@@ -106,7 +106,7 @@ Due to checks involved, `FormattedMessage` has an extra performance overhead com
 ====
 
 [#LocalizedMessage]
-==== LocalizedMessage
+==== `LocalizedMessage`
 
 link:../javadoc/log4j-api/org/apache/logging/log4j/message/LocalizedMessage.html[`LocalizedMessage`] incorporates a `ResourceBundle`, and allows the message pattern parameter to be the key to the message pattern in the bundle.
 If no bundle is specified, `LocalizedMessage` will attempt to locate a bundle with the name of the `Logger` used to log the event.

@@ -1,0 +1,1 @@
+return logEvent.throwable instanceof DataAccessException;
