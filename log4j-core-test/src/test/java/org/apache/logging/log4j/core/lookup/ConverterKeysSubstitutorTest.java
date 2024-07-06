@@ -83,4 +83,17 @@ class ConverterKeysSubstitutorTest {
 
   }
 
+  @Test
+  void test_missing_braces() {
+
+    final Map<String, String> map = new HashMap<>();
+    map.put("MSG", "%maxLen{%p: %C{1.} - %m%notEmpty{ =>%ex{short}}}{160}");
+    final StrLookup lookup = new Interpolator(map);
+    final StrSubstitutor subst = new StrSubstitutor(lookup);
+    assertEquals(
+        "% %p{{}}}",
+        subst.replace("${env:UNKNOWN:-% %p{{}}}}")
+    );
+  }
+
 }

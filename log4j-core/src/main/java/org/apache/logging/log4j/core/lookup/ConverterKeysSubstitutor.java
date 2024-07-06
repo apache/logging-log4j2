@@ -100,20 +100,23 @@ public class ConverterKeysSubstitutor {
 
     }
 
-    for (; endKeyPos > startKeyPos; endKeyPos--) {
+    if (openBraceCount == 0) {
+
+      return pos;
+    }
+
+    while (openBraceCount != 0 && endKeyPos > startKeyPos) {
 
       if (CLOSE_BRACE_SUFFIX.isMatch(chars, endKeyPos, startKeyPos, bufEnd) != 0) {
 
         openBraceCount--;
       }
 
-      if (openBraceCount == 0) {
-
-        return endKeyPos;
-      }
+      endKeyPos--;
     }
 
-    return pos;
+    // avoid close brace
+    return endKeyPos + 1;
   }
 
 }
