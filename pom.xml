@@ -341,7 +341,7 @@
     <maven.site.skip>true</maven.site.skip>
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
     <site-commons-csv.version>1.11.0</site-commons-csv.version>
-    <site-commons-logging.version>1.3.2</site-commons-logging.version>
+    <site-commons-logging.version>1.3.3</site-commons-logging.version>
     <site-log4j-core.version>3.0.0-beta2</site-log4j-core.version>
     <site-log4j-layout-template-json.version>3.0.0-beta2</site-log4j-layout-template-json.version>
     <site-logback.version>1.5.5</site-logback.version>
