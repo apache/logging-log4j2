@@ -74,11 +74,11 @@
     <commons-dbcp2.version>2.12.0</commons-dbcp2.version>
     <commons-io.version>2.16.1</commons-io.version>
     <commons-lang3.version>3.14.0</commons-lang3.version>
-    <commons-logging.version>1.3.2</commons-logging.version>
+    <commons-logging.version>1.3.3</commons-logging.version>
     <!-- `com.conversantmedia:disruptor` version 1.2.16 requires Java 9: -->
     <conversant.disruptor.version>1.2.15</conversant.disruptor.version>
     <disruptor.version>3.4.4</disruptor.version>
-    <elasticsearch-java.version>8.14.1</elasticsearch-java.version>
+    <elasticsearch-java.version>8.14.2</elasticsearch-java.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <felix.version>7.0.5</felix.version>
     <flapdoodle-embed.version>4.12.0</flapdoodle-embed.version>
