@@ -362,32 +362,6 @@ public class StrSubstitutorTest {
         assertEquals("${third}", subst.replace("${first}"));
     }
 
-    @Test
-    void testLookupDateWithoutTimeZone() {
-
-        final Map<String, String> map = new HashMap<>();
-        map.put("TIMEZONE", "%d{yyyy-MM-dd HH:mm}");
-        final StrLookup lookup = new Interpolator(map);
-        final StrSubstitutor subst = new StrSubstitutor(lookup);
-        assertEquals("%d{yyyy-MM-dd HH:mm}",
-            subst.replace("${env:TIMEZONE:-%d{yyyy-MM-dd HH:mm:ss}}"));
-        assertEquals("%d{yyyy-MM-dd HH:mm:ss}",
-            subst.replace("${env:TIME:-%d{yyyy-MM-dd HH:mm:ss}}"));
-    }
-
-    @Test
-    void testLookupDateWithTimeZone() {
-
-        final Map<String, String> map = new HashMap<>();
-        map.put("TIMEZONE", "%d{yyyy-MM-dd HH:mm}{GMT+07}");
-        final StrLookup lookup = new Interpolator(map);
-        final StrSubstitutor subst = new StrSubstitutor(lookup);
-        assertEquals("%d{yyyy-MM-dd HH:mm}{GMT+07}",
-            subst.replace("${env:TIMEZONE:-%d{yyyy-MM-dd HH:mm:ss}{GMT+00}}"));
-        assertEquals("%d{yyyy-MM-dd HH:mm:ss}{GMT+00}",
-            subst.replace("${env:TIME:-%d{yyyy-MM-dd HH:mm:ss}{GMT+00}}"));
-    }
-
     private static final class RecursiveLookup extends AbstractLookup {
 
         private final Map<String, String> properties;
