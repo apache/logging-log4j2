@@ -98,7 +98,7 @@ Nevertheless, there are some tips we recommend you to practice:
 
 * *For writing to console*, use a xref:manual/appenders.adoc#ConsoleAppender[Console Appender] and make sure to configure its `direct` attribute to `true` for the maximum efficiency.
 
-* *For writing to an external service*, use a xref:manual/appenders.adoc#SocketAppender[Socket Appender] and make sure to configure the null delimiter of the associated layout.
+* *For writing to an external service*, use a xref:manual/appenders.adoc#SocketAppender[Socket Appender] and make sure to set the protocol to TCP and configure the null delimiter of the associated layout.
 For instance, see xref:manual/json-template-layout.adoc#plugin-attr-nullEventDelimiterEnabled[the `nullEventDelimiterEnabled` configuration attribute of JSON Template Layout].
 
 [#file]
