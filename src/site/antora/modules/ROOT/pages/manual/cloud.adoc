@@ -43,7 +43,7 @@ Most of the time this is a <<proxy,proxy>> (a library, a sidecar container, etc.
 
 Platform stores logs differently::
 
-There is no longer `/var/log/tomcat/app.log` combining all logs of a monolith.
+There is no longer `/var/log/tomcat/catalina.out` combining all logs of a monolith.
 Instead, the software runs in multiple instances, each is implemented in a different language, and instances get scaled (i.e., new ones get started, old ones get stopped) on demand.
 To accommodate this, logs are persisted on a central storage system (Elasticsearch, Google Cloud Logging, etc.) that allows advanced navigation and filtering capabilities.
 
