@@ -127,31 +127,27 @@ This will allow you to
 How to implement this separation pretty much depends on your setup.
 We will share some recommended approaches to give you an idea:
 
-Ship configuration files along with the application, and choose a subset of them during deployment::
+Choosing configuration files during deployment::
++
+--
+Environment-specific xref:manual/configuration.adoc[Log4j configuration files] (`log4j2-common.xml`, `log4j2-local.xml`, `log4j2-test.xml`, `log4j2-prod.xml`, etc.) can be provided in one of following ways:
 
-You can ship environment-specific xref:manual/configuration.adoc[Log4j configuration files] (`log4j2-common.xml`, `log4j2-local.xml`, `log4j2-test.xml`, `log4j2-prod.xml`, etc.) and use xref:manual/systemproperties.adoc#log4j2.configurationFile[the `log4j2.configurationFile` configuration property] to selectively activate these configurations.
-For instance, while running locally, use
-+
-[source,properties]
-----
-log4j2.configurationFile=log4j2-common.xml,log4j2-local.xml
-----
-+
-while running on test environment, use
-+
-[source,properties]
-----
-log4j2.configurationFile=log4j2-common.xml,log4j2-test.xml
-----
-+
-and so on.
-+
+* Shipped with your software (i.e., accessible in the classpath)
+* Served from an HTTP server
+* A combination of the first two
+
+Depending on the deployment environment, you can selectively activate a subset of them using xref:manual/systemproperties.adoc#log4j2.configurationFile[the `log4j2.configurationFile` configuration property].
+
+[TIP]
+====
 Spring Boot allows you to https://docs.spring.io/spring-boot/reference/features/logging.html[configure the underlying logging system].
 Just like any other Spring Boot configuration, logging-related configuration also can be provided in multiple files split by profiles matching the environment: `application-common.yaml`, `application-local.yaml`, etc.
 https://docs.spring.io/spring-boot/reference/features/external-config.html[Spring Boot's Externalized Configuration System] will automatically load these files depending on the active profile(s).
+====
+--
 
 Mounting configuration files during deployment::
-
++
 Many service-oriented deployment architectures offer solutions for environment-specific configuration storage; Kubernetes' https://kubernetes.io/docs/concepts/configuration/configmap/[ConfigMap], HashiCorp's https://developer.hashicorp.com/consul/docs/dynamic-app-config/kv[Consul], etc.
 You can leverage these to store environment-specific Log4j configurations and mount them to the associated runtime (container, VM, etc.) at deployment.
 
