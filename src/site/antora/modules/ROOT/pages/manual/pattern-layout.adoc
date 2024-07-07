@@ -479,7 +479,7 @@ There is also limited support for timestamps more precise than milliseconds when
 Note that not all https://docs.oracle.com/javase/9/docs/api/java/time/format/DateTimeFormatter.html[`DateTimeFormatter`] formats are supported.
 Only timestamps in the formats mentioned in the table above may use the _nano-of-second_ pattern letter `n` instead of the _fraction-of-second_ pattern letter `S`.
 
-Users may revert to a millisecond-precision clock when running on Java 9 by setting xref:manual/systemproperties.adoc#log4j2.clock[the `log4j2.clock` system property] to `SystemMillisClock`.
+Users may revert to a millisecond-precision clock when running on Java 9 by setting xref:manual/systemproperties.adoc#log4j.configuration.clock[the `log4j.configuration.clock` system property] to `SystemMillisClock`.
 
 [WARNING]
 ====
@@ -1333,7 +1333,7 @@ uuid{RANDOM|TIME}
 
 The time-based UUID is a Type 1 UUID generated using the MAC address of each host
 To ensure uniqueness across multiple JVMs and/or class loaders on the same host, a random number between 0 and 16,384 will be associated with each instance of the UUID generator class, and included in each time-based UUID generated.
-See also xref:manual/systemproperties.adoc#log4j2.uuidSequence[`log4j2.uuidSequence`].
+See also xref:manual/systemproperties.adoc#log4j.uuid.sequence[`log4j.uuid.sequence`].
 Because time-based UUIDs contain the MAC address and timestamp, they should be used with care.
 
 [#format-modifiers]
@@ -1570,7 +1570,7 @@ If your terminal supports 24-bit colors, you can specify:
 ==== ANSI styling on Windows
 
 ANSI escape sequences are supported natively on many platforms, but not by default on Windows.
-To enable ANSI support add the http://jansi.fusesource.org/[Jansi] dependency to your application, and set xref:manual/systemproperties.adoc#log4j2.skipJansi[the `log4j2.skipJansi` system property] to `false`.
+To enable ANSI support add the http://jansi.fusesource.org/[Jansi] dependency to your application, and set xref:manual/systemproperties.adoc#log4j.console.jansiEnabled[the `log4j.console.jansiEnabled` system property] to `false`.
 This allows Log4j to use Jansi to add ANSI escape codes when writing to the console.
 
 [NOTE]
@@ -1592,33 +1592,33 @@ Format modifiers to control such things as field width, padding, left, and right
 |Pattern
 |Comment
 
-|xref:#converter-logger[%c\{precision} +
-%logger\{precision}]
+|<<converter-logger,%c\{precision} +
+%logger\{precision}>>
 |
 
-|xref:#converter-date[%d +
-%date]
+|<<converter-date,%d +
+%date>>
 |Only the predefined date formats (`DEFAULT`, `ISO8601`, `UNIX`, `UNIX_MILLIS`, etc.) are garbage-free
 
-|xref:#converter-encode[%enc\{pattern} +
-%encode\{pattern}]
+|<<converter-encode,%enc\{pattern} +
+%encode\{pattern}>>
 |
 
-|xref:#converter-equals[%equals\{pattern}\{test}\{substitution} +
-%equalsIgnoreCase\{pattern}\{test}\{substitution}]
+|<<converter-equals,%equals\{pattern}\{test}\{substitution} +
+%equalsIgnoreCase\{pattern}\{test}\{substitution}>>
 |
 
 |<<converter-highlight,%highlight\{pattern}\{style}>>
 |Granted nested pattern is garbage-free
 
-|xref:#converter-map[%K\{key} +
+|<<converter-map,%K\{key} +
 %map\{key} +
-%MAP\{key}]
+%MAP\{key}>>
 |
 
-|xref:#converter-message[%m +
+|<<converter-message,%m +
 %msg +
-%message]
+%message>>
 |
 
 |<<converter-marker,%marker>>
@@ -1627,54 +1627,54 @@ Format modifiers to control such things as field width, padding, left, and right
 |<<converter-marker,%markerSimpleName>>
 |
 
-|xref:#converter-max-len[%maxLen +
-%maxLength]
+|<<converter-max-len,%maxLen +
+%maxLength>>
 |
 
 |%n
 |
 
-|xref:#converter-nano[%N +
-%nano]
+|<<converter-nano,%N +
+%nano>>
 |
 
-|xref:#converter-not-empty[%notEmpty\{pattern} +
+|<<converter-not-empty,%notEmpty\{pattern} +
 %varsNotEmpty\{pattern} +
-%variablesNotEmpty\{pattern}]
+%variablesNotEmpty\{pattern}>>
 |
 
-|xref:#converter-level[%p +
-%level]
+|<<converter-level,%p +
+%level>>
 |
 
-|xref:#converter-relative[%r +
-%relative]
+|<<converter-relative,%r +
+%relative>>
 |
 
-|xref:#converter-seq[%sn +
-%sequenceNumber]
+|<<converter-seq,%sn +
+%sequenceNumber>>
 |
 
 |<<converter-style,%style\{pattern}{ANSI style}>>
 |
 
-|xref:#converter-thread-id[%T +
+|<<converter-thread-id,%T +
 %tid +
-%threadId]
+%threadId>>
 |
 
-|xref:#converter-thread-name[%t +
+|<<converter-thread-name,%t +
 %tn +
 %thread +
-%threadName]
+%threadName>>
 |
 
 |<<converter-thread-priority,%tp>>
 |
 
-|<<converter-thread-context-map[%X{key,,key2...\>>} +
+|<<converter-thread-context-map[%X{key,,key2...\} +
 %mdc{key[,key2...\]} +
-%MDC{key[,key2...\]}]
+%MDC{key[,key2...\]}>>
 |
 
 |literal text
@@ -1776,4 +1776,4 @@ To get the most out of it, mind the following checklist:
 
 * Enable xref:manual/garbagefree.adoc[garbage-free logging]
 * Mind <<garbage-free,the garbage footprint of features you use>>
-* Don't give too much slack to xref:manual/systemproperties.adoc#log4j2.layoutStringBuilderMaxSize[`log4j2.layoutStringBuilderMaxSize`] and try to keep it relatively tight
+* Don't give too much slack to xref:manual/systemproperties.adoc#log4j.gc.layoutStringBuilderMaxSize[`log4j.gc.layoutStringBuilderMaxSize`] and try to keep it relatively tight
