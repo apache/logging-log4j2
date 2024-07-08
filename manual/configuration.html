@@ -417,11 +417,14 @@ See <a href="#configuration-factories">Predefined <code>ConfigurationFactory</co
 </div>
 <div class="paragraph">
 <p>If no configuration file is found, Log4j Core uses the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/DefaultConfiguration.html"><code>DefaultConfiguration</code></a> and the <a href="status-logger.html" class="xref page">status logger</a> prints a warning.
-The default configuration prints all messages less specific than <a href="systemproperties.html#log4j2.level" class="xref page"><code>log4j2.level</code></a> to the console.</p>
+The default configuration prints all messages less severe than <a href="systemproperties.html#log4j2.level" class="xref page"><code>log4j2.level</code></a> to the console.</p>
 </div>
 <div class="paragraph">
-<p>You can override the location of the configuration file using the <a href="systemproperties.html#log4j2.configurationFile" class="xref page">the <code>log4j2.configurationFile</code> system property</a>.
-In such a case, Log4j Core will guess the configuration file format from the provided file name, or use the default configuration factory if the extension is unknown.</p>
+<p>You can override the location of the configuration file
+using the <a href="systemproperties.html#log4j2.configurationFile" class="xref page"><code>log4j2.configurationFile</code>
+system property</a>.
+In such a case, Log4j Core will guess the configuration file format from the provided file name,
+or use the default configuration factory if the extension is unknown.</p>
 </div>
 <div class="paragraph">
 <p>There are certain <strong>best-practices</strong> we strongly recommend you to adapt in your Log4j configuration:</p>
@@ -1142,7 +1145,7 @@ logger.0.appenderRef.0.ref = DEBUG_LOG</code></pre>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
 <td>Configures the root logger at level <code>INFO</code> and connects it to the <code>CONSOLE</code> and <code>MAIN</code> appenders.
-The <code>CONSOLE</code> appender will only log messages less specific than <code>WARN</code>.</td>
+The <code>CONSOLE</code> appender will only log messages at least as severe as <code>WARN</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
@@ -1219,6 +1222,10 @@ The logger is configured to forward messages to its parent (the root appender).<
 <p>See <a href="customloglevels.html" class="xref page">Custom log level configuration</a> for details.</p>
 </div>
 </dd>
+</dl>
+</div>
+<div id="global-filters" class="dlist">
+<dl>
 <dt class="hdlist1">Filters</dt>
 <dd>
 <div class="paragraph">
@@ -1673,8 +1680,8 @@ for <code>Logger</code> and <code>AsyncLogger</code>.</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Specifies the level threshold that a log event must have to be logged.
-Log events that are more specific than this setting will be filtered out.</p>
+<p>It specifies the level threshold that a log event must have to be logged.
+Log events that are less severe than this setting will be filtered out.</p>
 </div>
 <div class="paragraph">
 <p>See also <a href="filters.html#filters" class="xref page">Filters</a> if you require additional filtering.</p>
@@ -1930,8 +1937,8 @@ logger.1.property.value = Networking</code></pre>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Specifies the level threshold that a log event must have to be logged.
-Log events that are more specific than this setting will be filtered out.</p>
+<p>It specifies the level threshold that a log event must have to be logged.
+Log events that are less severe than this setting will be filtered out.</p>
 </div>
 </div>
 <div class="sect2">
