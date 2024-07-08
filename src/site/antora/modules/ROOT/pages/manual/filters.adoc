@@ -16,7 +16,6 @@
 ////
 [id=filters]
 = Filters
-:stem:
 
 Filters are Log4j plugins that evaluate the parameters of a logging call or a log event and return one of three results:
 
@@ -375,7 +374,7 @@ Timestamp filters use the timestamp of log events to decide whether to accept th
 [#BurstFilter]
 ==== `BurstFilter`
 
-The `BurstFilter` uses the _sliding window log_ algorithm to limit the rate of log events.
+The `BurstFilter` limits the rate of log events.
 The rate limit is only applied to log events less severe than a configured log level.
 
 Besides the common configuration attributes,
@@ -400,18 +399,23 @@ Events at least as severe as this level will always match.
 | maxBurst
 | `long`
 | `10 &times; rate`
-| The maximum number of events in a sliding window.
+| The maximum number of events that can be logged at once, without incurring in rate limiting.
 
 |===
 
-The sliding window can be easily computed as:
+[NOTE]
+====
+The `BurstFilter` uses the _sliding window log_ algorithm with a window `window` of `maxBurst / rate` seconds.
 
-[stem]
-++++
-wi\ndow = (m\axBurst) / (rate),
-++++
+The filter maintains a list of recently logged events.
+If in the interval of time of duration `window` preceding the current log event,
+more than `maxBurst` events have already been logged, rate limiting is applied.
 
-where `window` is the duration of the sliding window in seconds.
+To control the size of the log files only the `rate` attribute needs to be taken into account.
+The `maxBurst` attribute controls the temporal spacing between log events:
+lower values of `maxBurst` will give more evenly spaced log events,
+while higher values will allow for peaks of activity followed by an absence of log events.
+====
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-BurstFilter[📖 Plugin reference for `BurstFilter`]
 
