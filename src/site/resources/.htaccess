@@ -42,6 +42,7 @@ RewriteRule "^log4j(-jakarta)?-web(/index)?\.html$" "manual/webapp.html" [R=perm
 RewriteRule "^log4j-jcl(/index)?\.html$" "manual/installation.html#impl-core-bridge-jcl" [R=permanent,NE]
 RewriteRule "^log4j-jmx-gui(/index)?\.html$" "/log4j/jmx-gui/latest/index.html" [R=permanent]
 RewriteRule "^log4j-jpl(/index)?\.html$" "manual/installation.html#impl-core-bridge-jpl" [R=permanent,NE]
+RewriteRule "^log4j-kubernetes(/index)?\.html$" "https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md" [R=permanent]
 RewriteRule "^log4j-mongodb3(/index)?\.html$" "manual/appenders.html#NoSQLAppenderMongoDB" [R=permanent,NE]
 RewriteRule "^log4j-mongodb4(/index)?\.html$" "manual/appenders.html#log4j-mongodb4" [R=permanent,NE]
 RewriteRule "^log4j-slf4j2?-impl(/index)?\.html$" "manual/installation.html#impl-core-bridge-slf4j" [R=permanent,NE]

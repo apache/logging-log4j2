@@ -45,6 +45,7 @@ asciidoc:
     project-id: "log4j"
     java-target-version: "${maven.compiler.target}"
     java-compiler-version: "${minimalJavaBuildVersion}"
+    log4j-kubernetes-url: "https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md"
     logback-url: "https://logback.qos.ch"
     logging-services-url: "https://logging.apache.org"
     lmax-disruptor-url: "https://lmax-exchange.github.io/disruptor"

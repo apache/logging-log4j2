@@ -15,31 +15,39 @@ Licensed to the Apache Software Foundation (ASF) under one or more
     limitations under the License.
 ////
 
-= Log4j Docker Support
+= Log4j Docker
 
-Log4j supports Docker by providing a Lookup to retrieve container information.
+Log4j Docker module offers https://docker.com[Docker]-specific utilities.
 
-== Accessing Docker
+[#install]
+== Installation
 
-The Log4j Docker support requires access to the Docker REST interface.
-In practical terms this means the application either needs access to unix:///var/run/docker.sock through a volume mount (not recommended), bind Docker to another host/port or unix socket.
-or use a proxy application to provide access.
-The https://github.com/apache/logging-log4j2/tree/main/log4j-spring-cloud-config/log4j-spring-cloud-config-samples/log4j-spring-cloud-config-sample-application[Log4j Spring Cloud sample application] uses a socat proxy to access Docker.
+You need to add the following additional runtime dependency to your build to use Log4j Docker:
 
-== Lookup Attributes
+[tabs]
+====
+Maven::
++
+[source,xml,subs="+attributes"]
+----
+<dependency>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-docker</artifactId>
+  <version>{log4j-core-version}</version>
+  <scope>runtime</scope>
+</dependency>
+----
 
-Log4j Docker provides access to the following container attributes:
+Gradle::
++
+[source,groovy,subs="+attributes"]
+----
+runtimeOnly 'org.apache.logging.log4j:log4j-docker:{log4j-core-version}'
+----
+====
 
-* containerId - The full id assigned to the container.
-* containerName - The name assigned to the container.
-* imageId - The id assigned to the image.
-* imageName - The name assigned to the image.
-* shortContainerId - The first 12 characters of the container id.
-* shortImageId - The first 12 characters of the image id.
+[#features]
+== Features
 
-Attributes may be accessed by adding `${docker:containerId}` to the configuration.
-Note that docker variables are only resolved once during logging initialization so they shouldn't be referenced with more than one `$` character.
-
-== Requirements
-
-Log4j Docker requires Log4j Core, Log4j API and a minimum of Java 8.
+Log4j Docker provides xref:manual/lookups.adoc#DockerLookup[Docker Lookup] that queries https://docs.docker.com/engine/api/[the API of the Docker Engine] running your container.
+You can use it to inject Docker-environment specific values (container ID, image name, etc.) in xref:manual/configuration.adoc#property-substitution[property substitutions].
