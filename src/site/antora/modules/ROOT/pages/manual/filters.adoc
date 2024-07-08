@@ -98,6 +98,11 @@ Otherwise, a
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html[`LogEvent`] is created and processing continues.
 ACCEPT:: A `LogEvent` is created and processing continues in the next stage.
 
+[IMPORTANT]
+====
+This is the only stage, which differentiates between an `ACCEPT` and `NEUTRAL` filter result.
+====
+
 [TIP]
 ====
 Filtering logging calls at this stage provides the best performance:
@@ -188,7 +193,7 @@ of the appender reference.
 * the xref:manual/configuration.adoc#appenderrefs-elements-filters[appender reference filter] must return `ACCEPT` or `NEUTRAL`,
 
 [#appender-stage]
-=== 4. `Appender` stage
+=== 4. `Appender` stage (optional)
 
 [plantuml]
 ....
@@ -210,9 +215,14 @@ end group
 @enduml
 ....
 
-When log events reach an appender,
+If the appender implements
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/filter/Filterable.html[`Filterable`]
+an additional filtering stage is available.
+When log events reach such an appender,
 the filter attached to an appender is evaluated and if the result is `DENY`,
 the log event is discarded.
+
+All standard appenders implement `Filterable`.
 
 [NOTE]
 ====
@@ -231,7 +241,7 @@ Using the `level` property of appender references will give a better performance
 
 [WARNING]
 ====
-Configuring filters is a measure of last resort,
+Configuring filters at this stage is a measure of last resort,
 since it adds a large overhead to disabled log events.
 You should rather configure the filtering in one of the previous stages.
 ====
@@ -273,7 +283,7 @@ include::example$manual/filters/filters.properties[lines=17..-1]
 ====
 
 <1> Global filter
-<2> Logger `level` attribute (it is skipped if the event matches the global filter)
+<2> Logger `level` attribute. This setting is **ignored** unless the global filter returns `NEUTRAL`.
 <3> Filter of the `org.example` logger
 <4> Filter of the root logger (it is the parent of the `org.example` logger)
 <5> Appender reference `level` attribute
@@ -378,7 +388,7 @@ Timestamp filters use the timestamp of log events to decide whether to accept th
 The `BurstFilter` limits the rate of log events.
 The rate limit is only applied to log events less severe than a configured log level.
 
-Besides the common configuration attributes,
+Besides the <<common-configuration-attributes,common configuration attributes>>,
 the `BurstFilter` supports the following parameters:
 
 .`BurstFilter` -- configuration attributes
@@ -425,7 +435,7 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 
 The `TimeFilter` only matches log events emitted during a certain time of the day.
 
-Besides the common configuration attributes,
+Besides the <<common-configuration-attributes,common configuration attributes>>,
 the `TimeFilter` supports the following parameters:
 
 .`TimeFilter` -- configuration attributes
@@ -501,7 +511,8 @@ The following filters allow you to filter log events based on their xref:manual/
 
 The `LevelMatchFilter` matches log events that have exactly a certain log level.
 
-Besides the common configuration attributes, the `LevelMatchFilter` supports the following parameter:
+Besides the <<common-configuration-attributes,common configuration attributes>>,
+the `LevelMatchFilter` supports the following parameter:
 
 .`LevelMatchFilter` -- configuration attributes
 [cols="1m,1,1,4"]
@@ -517,9 +528,13 @@ Besides the common configuration attributes, the `LevelMatchFilter` supports the
 
 [TIP]
 ====
-If you wish to use a different log file for each log level, you can also use a
+If you wish to use a different log file for each log level, you should also use a
 xref:manual/appenders.adoc#RoutingAppender[`Routing` appender] together with the
 xref:manual/lookups.adoc#EventLookup[`${event:Level}` lookup].
+Such a solution will ensure that:
+
+* you don't forget any log level (Log4j supports xref:manual/customloglevels.adoc[custom levels]).
+* you don't need to configure an appender for each level separately.
 ====
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-LevelMatchFilter[📖 Plugin reference for `LevelMatchFilter`]
@@ -529,7 +544,8 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 
 The `LevelRangeFilter` matches log events with a log level within a configured range.
 
-Besides the common configuration attributes, the `LevelRangeFilter` supports the following parameter:
+Besides the <<common-configuration-attributes,common configuration attributes>>,
+the `LevelRangeFilter` supports the following parameter:
 
 .`LevelRangeFilter` -- configuration attributes
 [cols="1m,1,1,4"]
@@ -561,7 +577,8 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 
 The `ThresholdFilter` matches log events at least as severe as a configured level.
 
-Besides the common configuration attributes, the `ThresholdFilter` supports the following parameter:
+Besides the <<common-configuration-attributes,common configuration attributes>>,
+the `ThresholdFilter` supports the following parameter:
 
 .`ThresholdFilter`—configuration attributes
 [cols="1m,1,1,4"]
@@ -592,7 +609,8 @@ For each log event:
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-util-KeyValuePair[`KeyValuePair`]
 configuration elements to decide which level to apply.
 
-Besides the common configuration attributes, the `DynamicThresholdFilter` supports the following parameters:
+Besides the <<common-configuration-attributes,common configuration attributes>>,
+the `DynamicThresholdFilter` supports the following parameters:
 
 .`DynamicThresholdFilter`—configuration attributes
 [cols="1m,1,1,4"]
@@ -687,7 +705,8 @@ to filter log events.
 
 The `NoMarkerFilter` matches log events that do not have any markers.
 
-This filter does not have any additional configuration attribute, except the common attributes.
+This filter does not have any additional configuration attribute,
+except the <<common-configuration-attributes,common configuration attributes>>.
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-NoMarkerFilter[📖 Plugin reference for `NoMarkerFilter`]
 
@@ -696,7 +715,8 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 
 The `MarkerFilter` matches log events marked with a specific marker or **any** of its descendants.
 
-Besides the common configuration attributes, the `MarkerFilter` supports the following parameter:
+Besides the <<common-configuration-attributes,common configuration attributes>>,
+the `MarkerFilter` supports the following parameter:
 
 .`MarkerFilter`—configuration attributes
 [cols="1m,1,1,4"]
@@ -732,7 +752,8 @@ or
 link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html#getFormat()[`Message.getFormattedMessage()`].
 It can be used with all kinds of `Message` implementations.
 
-Besides the common configuration attributes, the `RegexFilter` supports the following parameters:
+Besides the <<common-configuration-attributes,common configuration attributes>>,
+the `RegexFilter` supports the following parameters:
 
 .`RegexFilter` -- configuration attributes
 [cols="1m,1,1,4"]
@@ -758,9 +779,11 @@ is used.
 
 |===
 
-[NOTE]
+[WARNING]
 ====
-This filter only matches if the **whole** log message matches the regular expression.
+* This filter only matches if the **whole** log message matches the regular expression.
+
+* Setting `useRawMsg` to `false` decreases performance, since it forces the formatting of all log messages, including the disabled ones.
 ====
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-RegexFilter[📖 Plugin reference for `RegexFilter`]
@@ -770,7 +793,8 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 
 The `StringMatchFilter` matches a log event, if its message contains the given string.
 
-Besides the common configuration attributes, the `StringMatchFilter` supports the following parameters:
+Besides the <<common-configuration-attributes,common configuration attributes>>,
+the `StringMatchFilter` supports the following parameters:
 
 .`StringMatchFilter`—configuration attributes
 [cols="1m,1,1,4"]
@@ -785,6 +809,11 @@ Besides the common configuration attributes, the `StringMatchFilter` supports th
 **Required**
 
 |===
+
+[WARNING]
+====
+This filter decreases performance, since it forces the formatting of all log messages, including the disabled ones.
+====
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-StringMatchFilter[📖 Plugin reference for `StringMatchFilter`]
 
@@ -853,7 +882,8 @@ xref:manual/messages.adoc#collection-structured[structured ``Message``s].
 This filter encodes the <<configuration-map>> introduced above as a list of
 `KeyValuePair` elements.
 
-Besides the common configuration attributes, the `MapFilter` supports the following parameters:
+Besides the <<common-configuration-attributes,common configuration attributes>>,
+the `MapFilter` supports the following parameters:
 
 .`MapFilter` -- configuration attributes
 [cols="1m,1,1,4"]
@@ -973,7 +1003,8 @@ link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html#getForma
 |===
 
 The `StructuredDataFilter` encodes the <<configuration-map>> introduced above as a list of
-`KeyValuePair` and supports the following parameters, besides the common configuration attributes:
+`KeyValuePair` and supports the following parameters,
+besides the <<common-configuration-attributes,common configuration attributes>>:
 
 .`StructuredDataFilter`—configuration attributes
 [cols="1m,1,1,4"]
@@ -1062,7 +1093,8 @@ of the log event instead of the log message.
 This filter also encodes the <<configuration-map>> introduced above as a list of
 `KeyValuePair` elements.
 
-Besides the common configuration attributes, the `ContextMapFilter` supports the following parameters:
+Besides the <<common-configuration-attributes,common configuration attributes>>,
+the `ContextMapFilter` supports the following parameters:
 
 .`ContextMapFilter` -- configuration attributes
 [cols="1m,1,1,4"]
@@ -1150,7 +1182,8 @@ to filter messages, but externalizes the <<configuration-map>>, so it can be kep
 This filter encodes the <<configuration-map>> as JSON.
 The configuration map must be stored in an **external** location and will be regularly polled for changes.
 
-Besides the common configuration attributes, the `MutableContextMapFilter` supports the following parameters:
+Besides the <<common-configuration-attributes,common configuration attributes>>,
+the `MutableContextMapFilter` supports the following parameters:
 
 .`MutableContextMapFilter` -- configuration attributes
 [cols="1m,1,1,4"]
@@ -1249,7 +1282,8 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 
 The `ScriptFilter` executes a script that must return `true` if the event matches and `false` otherwise.
 
-Besides the common configuration attributes, it accepts a single nested element:
+Besides the <<common-configuration-attributes,common configuration attributes>>,
+it accepts a single nested element:
 
 .`ScriptFilter` -- nested elements
 [cols="3,1,4"]
