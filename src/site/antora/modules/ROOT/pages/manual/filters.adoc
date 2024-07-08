@@ -121,7 +121,7 @@ start
 group LoggerConfig
 repeat
 
-:LoggerConfig.log();
+:LoggerConfig#log();
 
 if (Apply logger filter) then (DENY)
     #pink:Discard;
@@ -155,7 +155,7 @@ until it reaches the logger that references the chosen appender.
 start
 group AppenderControl
 
-:AppenderControl.callAppender();
+:AppenderControl#callAppender();
 
 if (Is less severe then appender reference level?) then (yes)
     #pink:Discard;
@@ -192,7 +192,7 @@ of the appender reference.
 start
 group Appender
 
-:Appender.append();
+:Appender#append();
 
 if (Apply appender filter) then (DENY)
     #pink:Discard;
@@ -235,7 +235,7 @@ You should rather configure the filtering in one of the previous stages.
 [#example-configuration-file]
 === Example configuration file
 
-The following example shows the order in which filters are evaluated:
+The following example configuration file employs filters at all possible stages to explain their evaluation order:
 
 [tabs]
 ====
@@ -270,8 +270,8 @@ include::example$manual/filters/filters.properties[lines=17..-1]
 
 <1> Global filter
 <2> Logger `level` attribute (it is skipped if the event matches the global filter)
-<3> Filter of the "org.example" logger
-<4> Filter of the root logger (it is the parent of the "org.example" logger)
+<3> Filter of the `org.example` logger
+<4> Filter of the root logger (it is the parent of the `org.example` logger)
 <5> Appender reference `level` attribute
 <6> Filter of the appender reference
 <7> Filter of the appender
@@ -366,7 +366,7 @@ Log4j Core provides the following filters out-of-the-box.
 [#timestamp-filters]
 === Timestamp filters
 
-Timestamp filters use the timestamp of log events to decide whether to log them or not.
+Timestamp filters use the timestamp of log events to decide whether to accept them or not.
 
 [#BurstFilter]
 ==== `BurstFilter`
@@ -485,7 +485,7 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 [#level-filters]
 === Level filters
 
-The following filters allow you to filter log events based on their level.
+The following filters allow you to filter log events based on their xref:manual/customloglevels.adoc[levels].
 
 [#LevelMatchFilter]
 ==== `LevelMatchFilter`
@@ -542,7 +542,7 @@ Besides the common configuration attributes, the `LevelRangeFilter` supports the
 [TIP]
 ====
 Make sure not to invert the bounds of the range.
-Starting from the smallest level, the Log4j API defines: `OFF`, `FATAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`, `TRACE` and `ALL`.
+Starting from the smallest level, xref:manual/customloglevels.adoc[the Log4j API defines]: `OFF`, `FATAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`, `TRACE` and `ALL`.
 ====
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-LevelRangeFilter[📖 Plugin reference for `LevelRangeFilter`]
@@ -1167,7 +1167,7 @@ If set to `0`, polling is disabled.
 
 |===
 
-[CAUTION]
+[WARNING]
 ====
 Unlike other map filters that have a configurable matching mode,
 this filter always uses the <<matching-mode-or,OR>> matching mode.
@@ -1314,7 +1314,7 @@ For the remaining filters, only these bindings are available:
 
 | logEvent
 | link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html[`LogEvent`]
-| The LogEvent being processed.
+| The log event being processed.
 
 | substitutor
 | link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrSubstitutor.html[`StrSubstitutor`]
