@@ -112,9 +112,6 @@ As explained in <<motivation>>, in a service-oriented architecture, log files ar
 
 In short, *we don't recommend writing logs to files*.
 
-A common excuse for writing logs to files is to use them as a buffer prior to ingesting them either to the logging system proxy or to the log storage system.
-Even in this case, most of the time it is sign of bad architecture design, and costs extra resources and efficiency degradation.
-
 [#separate-config]
 === Separate logging configuration from the application
 
