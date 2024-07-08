@@ -62,12 +62,12 @@
 
 .Resources
 * xref:faq.adoc[F.A.Q.]
-* xref:manual/migration.adoc[]
+* xref:migrate-from-log4j1.adoc[]
 * xref:migrate-from-logback.adoc[]
 * xref:migrate-from-slf4j.adoc[]
 * xref:hibernate.adoc[]
-* xref:manual/webapp.adoc[]
-* xref:manual/cloud.adoc[]
+* xref:jakarta.adoc[]
+* xref:soa.adoc[]
 * xref:development.adoc[]
 
 .Components
@@ -81,7 +81,6 @@
 * xref:log4j-spring-cloud-config-client.adoc[]
 * xref:log4j-jul.adoc[]
 * xref:log4j-to-jul.adoc[]
-
 
 .Related projects
 * {logging-services-url}/log4j/jakarta[Log4j Jakarta EE]

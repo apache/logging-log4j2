@@ -19,5 +19,5 @@
 ====
 http://logging.apache.org/log4j/1.x[Log4j 1] has https://blogs.apache.org/foundation/entry/apache_logging_services_project_announces[reached End of Life] in 2015, and is no longer supported.
 Vulnerabilities reported after August 2015 against Log4j 1 are not checked and will not be fixed.
-Users should xref:manual/migration.adoc[upgrade to Log4j 2] to obtain security fixes.
+Users should xref:migrate-from-log4j1.adoc[upgrade to Log4j 2] to obtain security fixes.
 ====

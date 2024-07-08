@@ -99,7 +99,7 @@ create a single LoggerContext using a single configuration that will be
 shared across all applications.
 2.  Place the logging jars in the container's classpath and use the
 default ClassLoaderContextSelector.
-See the instructions shared in xref:manual/webapp.adoc[Log4j Web].
+See the instructions shared in xref:jakarta.adoc[Log4j Web].
 Each application can be configured to share the same
 configuration used at the container or can be individually configured.
 If xref:manual/status-logger.adoc[status logging] is set to debug in the configuration there will be

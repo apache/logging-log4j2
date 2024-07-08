@@ -25,7 +25,7 @@
 |===
 
 When `true` the `JndiContextSelector` is enabled for the `java:` protocol.
-See xref:manual/webapp.adoc#use-jndi-context-selector[Web application] for more details.
+See xref:jakarta.adoc#use-jndi-context-selector[Web application] for more details.
 
 [id=log4j2.enableJndiJdbc]
 == `log4j2.enableJndiJdbc`

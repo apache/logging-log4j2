@@ -42,7 +42,7 @@ A name derived from the runtime environment:
 +
 * For standalone Java SE applications, it is a random identifier.
 * For web applications, it is an identifier derived from the application descriptor.
-See xref:manual/webapp.adoc#configuration[Log4j Web application configuration] for details.
+See xref:jakarta.adoc#configuration[Log4j Web application configuration] for details.
 
 <extension>::
 A file extension supported by a `ConfigurationFactory`.
@@ -100,7 +100,7 @@ Starting with Log4j 2, the configuration file syntax has been considered part of
 ====
 The syntax of the configuration file changed between Log4j{nbsp}1 and Log4j{nbsp}2.
 Files in the Log4j{nbsp}1 syntax are ignored by default.
-To enable partial support for old configuration syntax, see xref:manual/migration.adoc#ConfigurationCompatibility[configuration compatibility].
+To enable partial support for old configuration syntax, see xref:migrate-from-log4j1.adoc#ConfigurationCompatibility[configuration compatibility].
 ====
 
 The Log4j runtime is composed of xref:manual/plugins.adoc[plugins], which are like beans in the Spring Framework and Java EE.

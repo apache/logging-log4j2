@@ -52,4 +52,4 @@ https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/URI.html[
 If not `null`, Log4j 2 will try to retrieve a **Log4j 1** configuration file from the given location.
 The configuration file name must end in `.properties` (Log4j 1 properties format) or `.xml` (Log4j 1 XML format).
 See also
-xref:manual/migration.adoc#configuration-limitations[limitations of Log4j 1 configuration compatibility layer].
+xref:migrate-from-log4j1.adoc#configuration-limitations[limitations of Log4j 1 configuration compatibility layer].

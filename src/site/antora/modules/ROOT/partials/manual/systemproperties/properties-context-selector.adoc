@@ -51,4 +51,4 @@ link:../javadoc/log4j-core/org/apache/logging/log4j/core/osgi/BundleContextSelec
 Creates a separate logger context per OSGi bundle and synchronous loggers
 
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/JndiContextSelector.html[`org.apache.logging.log4j.core.selector.JndiContextSelector`]::
-Creates loggers contexts based on a JNDI lookup and synchronous loggers See xref:manual/webapp.adoc#use-jndi-context-selector[Web application] for details.
+Creates loggers contexts based on a JNDI lookup and synchronous loggers See xref:jakarta.adoc#use-jndi-context-selector[Web application] for details.

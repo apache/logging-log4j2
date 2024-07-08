@@ -19,4 +19,4 @@ Licensed to the Apache Software Foundation (ASF) under one or more
 
 == Compatibility with Log4j 1
 
-See the xref:manual/migration.adoc#Log4j12Bridge[Log4j 1.x bridge (log4j-1.2-api)] section of the Log4j 1.x Migration page.
+See the xref:migrate-from-log4j1.adoc#Log4j12Bridge[Log4j 1.x bridge (log4j-1.2-api)] section of the Log4j 1.x Migration page.

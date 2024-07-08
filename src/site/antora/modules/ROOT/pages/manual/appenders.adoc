@@ -3858,7 +3858,7 @@ Additional runtime dependencies are required for using the servlet appender:
 
 include::partial$manual/dependencies-log4j-jakarta-web.adoc[]
 
-See xref:manual/webapp.adoc[] for more information.
+See xref:jakarta.adoc[] for more information.
 
 [CAUTION]
 ====

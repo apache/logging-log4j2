@@ -15,7 +15,8 @@
     limitations under the License.
 ////
 [#jakarta-ee]
-= Using Log4j in a Jakarta EE environment
+= Integrating with Jakarta EE
+
 :jetty-latest-url: https://jetty.org/docs/jetty/12
 :tomcat-latest-url: https://tomcat.apache.org/tomcat-11.0-doc
 :wildfly-latest-url: https://docs.wildfly.org/32
