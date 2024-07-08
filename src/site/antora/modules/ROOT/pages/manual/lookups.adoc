@@ -69,42 +69,25 @@ be formatted as specified.
 [#DockerLookup]
 == Docker Lookup
 
-The DockerLookup can be used to lookup attributes from the Docker container the application is running in.
+[cols="1h,4"]
+|===
+|Lookup ID |`docker`
+|Dependency |xref:log4j-docker.adoc[]
+|===
 
-Log4j Docker provides access to the following container attributes:
-[cols="1m,4a"]
+Docker Lookup queries https://docs.docker.com/engine/api/[the API of the Docker Engine] running your container.
+It supports the retrieval of following container attributes:
+
+[%header,cols="1m,4"]
 |===
 |Key |Description
-
-|containerId
-|The full id assigned to the container.
-
-|containerName
-|The name assigned to the container.
-
-|imageId
-|The id assigned to the image.
-
-|imageName
-|The name assigned to the image.
-
-|shortContainerId
-|The first 12 characters of the container id.
-
-|shortImageId
-|The first 12 characters of the image id.
+|containerId |Container ID
+|containerName |Container name
+|imageId |Container image ID
+|imageName |Container image name
+|shortContainerId |The first 12 characters of the container ID
+|shortImageId |The first 12 characters of the container image ID
 |===
-
-[source,xml]
-----
-<JsonTemplateLayout>
-  <EventTemplateAdditionalField key="containerId" value="${docker:containerId}"/>
-  <EventTemplateAdditionalField key="containerName" value="${docker:containerName}"/>
-  <EventTemplateAdditionalField key="imageName" value="${docker:imageName}"/>
-</JsonTemplateLayout>
-----
-
-This Lookup is subject to the requirements listed at xref:log4j-docker.adoc[Log4j Docker Support]
 
 [id=environment-lookup]
 == [[EnvironmentLookup]] Environment Lookup
@@ -310,7 +293,14 @@ https://docs.oracle.com/javase/{java-target-version}/docs/api/java/lang/manageme
 [#KubernetesLookup]
 == Kubernetes Lookup
 
-For retrieving attributes using Fabric8's Kubernetes Client, see their https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md[Kubernetes Log4j Lookup].
+[cols="1h,4"]
+|===
+|Lookup ID |`k8s`
+|Dependency |{log4j-kubernetes-url}[Log4j Kubernetes of Fabric8]
+|===
+
+Kubernetes Lookup queries https://kubernetes.io/docs/concepts/overview/kubernetes-api/[the Kubernetes API] to retrieve certain information about the current container and its environment.
+Kubernetes Lookup is distributed as a part of Fabric8's Kubernetes Client, refer to {log4j-kubernetes-url}[its website] for details.
 
 [#Log4jConfigLookup]
 == Log4j Configuration Location Lookup

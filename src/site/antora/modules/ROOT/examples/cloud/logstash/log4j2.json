@@ -1,0 +1,24 @@
+{
+  "Configuration": {
+    "Appenders": {
+      // tag::socketAppender[]
+      "Socket": {
+        "name": "SOCKET",
+        "host": "localhost",
+        "port": 12345,
+        "JsonTemplateLayout": {
+          "nullEventDelimiterEnabled": true
+        }
+      }
+      // end::socketAppender[]
+    },
+    "Loggers": {
+      "Root": {
+        "level": "WARN",
+        "AppenderRef": {
+          "ref": "SOCKET"
+        }
+      }
+    }
+  }
+}
