@@ -43,6 +43,9 @@ See <<impl-core>>.
 Are you a Spring Boot application developer?::
 See <<impl-core-spring-boot>>.
 
+Are you migrating from...::
+xref:migrate-from-log4j1.adoc[Log4j 1], xref:migrate-from-logback.adoc[Logback], or xref:migrate-from-slf4j.adoc[SLF4J]?
+
 [#concepts]
 == Concepts (APIs, Implementations, and Bridges)
 
