@@ -3,13 +3,13 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Using Log4j in a Jakarta EE environment :: Apache Log4j</title>
-    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/webapp.html">
+    <title>Integrating with Jakarta EE :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/jakarta.html">
     <meta name="generator" content="Antora 3.2.0-alpha.4">
-<link rel="stylesheet" href="../_/css/site.css">
-<link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="./_/css/site.css">
+<link rel="icon" href="./_/../_images/favicon.ico" type="image/x-icon">
 <!-- `@asciidoctor/tabs` extension styles -->
-<link rel="stylesheet" href="../_/css/vendor/tabs.css">
+<link rel="stylesheet" href="./_/css/vendor/tabs.css">
 <style>
   /* Swap colors of `IMPORTANT` and `WARNING` blocks */ 
   .doc .admonitionblock.important .icon { background-color: #f70; }
@@ -45,7 +45,7 @@
   <nav class="navbar">
     <div class="navbar-brand">
       <div class="navbar-item">
-        <img src="../_/../_images/logo-small-white.png" alt="Apache Log4j"/>
+        <img src="./_/../_images/logo-small-white.png" alt="Apache Log4j"/>
       </div>
     </div>
     <div id="topbar-nav" class="navbar-menu">
@@ -62,16 +62,16 @@
 <div class="nav-panel-menu is-active" data-panel="menu">
   <nav class="nav-menu">
     <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
-    <h3 class="title"><a href="../index.html">Home</a></h3>
+    <h3 class="title"><a href="index.html">Home</a></h3>
 <ul class="nav-list">
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../download.html">Download</a>
+    <a class="nav-link" href="download.html">Download</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../release-notes.html">Release Notes</a>
+    <a class="nav-link" href="release-notes.html">Release Notes</a>
   </li>
 </ul>
   </li>
@@ -88,128 +88,128 @@
   </li>
   <li class="nav-item" data-depth="0">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="index.html">Manual</a>
+    <a class="nav-link" href="manual/index.html">Manual</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="getting-started.html">Getting started</a>
+    <a class="nav-link" href="manual/getting-started.html">Getting started</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="installation.html">Installation</a>
+    <a class="nav-link" href="manual/installation.html">Installation</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="architecture.html">Architecture</a>
+    <a class="nav-link" href="manual/architecture.html">Architecture</a>
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="api.html">API</a>
+    <a class="nav-link" href="manual/api.html">API</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="api.html#loggers">Loggers</a>
+    <a class="nav-link" href="manual/api.html#loggers">Loggers</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="eventlogging.html">Event Logger</a>
+    <a class="nav-link" href="manual/eventlogging.html">Event Logger</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="resource-logger.html">Resource Logger</a>
+    <a class="nav-link" href="manual/resource-logger.html">Resource Logger</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="simple-logger.html">Simple Logger</a>
+    <a class="nav-link" href="manual/simple-logger.html">Simple Logger</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="status-logger.html">Status Logger</a>
+    <a class="nav-link" href="manual/status-logger.html">Status Logger</a>
   </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="logbuilder.html">Fluent API</a>
+    <a class="nav-link" href="manual/logbuilder.html">Fluent API</a>
   </li>
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="api.html#fish-tagging">Fish tagging</a>
+    <a class="nav-link" href="manual/api.html#fish-tagging">Fish tagging</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="customloglevels.html">Levels</a>
+    <a class="nav-link" href="manual/customloglevels.html">Levels</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="markers.html">Markers</a>
+    <a class="nav-link" href="manual/markers.html">Markers</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="scoped-context.html">Scoped Context</a>
+    <a class="nav-link" href="manual/scoped-context.html">Scoped Context</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="thread-context.html">Thread Context</a>
+    <a class="nav-link" href="manual/thread-context.html">Thread Context</a>
   </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="messages.html">Messages</a>
+    <a class="nav-link" href="manual/messages.html">Messages</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="config-intro.html">Configuration</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="configuration.html">Configuration file</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="systemproperties.html">Configuration properties</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="customconfig.html">Programmatic configuration</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="appenders.html">Appenders</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="layouts.html">Layouts</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="pattern-layout.html">Pattern Layout</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lookups.html">Lookups</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="filters.html">Filters</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="scripts.html">Scripts</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="jmx.html">JMX</a>
+    <a class="nav-link" href="manual/flowtracing.html">Flow Tracing</a>
   </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="extending.html">Extending</a>
+    <a class="nav-link" href="manual/config-intro.html">Configuration</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="plugins.html">Plugins</a>
+    <a class="nav-link" href="manual/configuration.html">Configuration file</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/systemproperties.html">Configuration properties</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/customconfig.html">Programmatic configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/appenders.html">Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="manual/layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/json-template-layout.html">JSON Template Layout</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/pattern-layout.html">Pattern Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/filters.html">Filters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/scripts.html">Scripts</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/jmx.html">JMX</a>
   </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="performance.html">Performance</a>
+    <a class="nav-link" href="manual/extending.html">Extending</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="async.html">Asynchronous loggers</a>
+    <a class="nav-link" href="manual/plugins.html">Plugins</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="manual/performance.html">Performance</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/async.html">Asynchronous loggers</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="garbagefree.html">Garbage-free logging</a>
+    <a class="nav-link" href="manual/garbagefree.html">Garbage-free logging</a>
   </li>
 </ul>
   </li>
@@ -220,10 +220,10 @@
     <span class="nav-text">References</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../plugin-reference.html">Plugin reference</a>
+    <a class="nav-link" href="plugin-reference.html">Plugin reference</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../javadoc.html">Java API reference</a>
+    <a class="nav-link" href="javadoc.html">Java API reference</a>
   </li>
 </ul>
   </li>
@@ -232,28 +232,28 @@
     <span class="nav-text">Resources</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../faq.html">F.A.Q.</a>
+    <a class="nav-link" href="faq.html">F.A.Q.</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="migration.html">Migrating from Log4j 1</a>
+    <a class="nav-link" href="migrate-from-log4j1.html">Migrating from Log4j 1</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../migrate-from-logback.html">Migrating from Logback</a>
+    <a class="nav-link" href="migrate-from-logback.html">Migrating from Logback</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../migrate-from-slf4j.html">Migrating from SLF4J</a>
+    <a class="nav-link" href="migrate-from-slf4j.html">Migrating from SLF4J</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../hibernate.html">Integrating with Hibernate</a>
+    <a class="nav-link" href="hibernate.html">Integrating with Hibernate</a>
   </li>
   <li class="nav-item is-current-page" data-depth="1">
-    <a class="nav-link" href="webapp.html">Using Log4j in a Jakarta EE environment</a>
+    <a class="nav-link" href="jakarta.html">Integrating with Jakarta EE</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="cloud.html">Integrating with service-oriented architectures</a>
+    <a class="nav-link" href="soa.html">Integrating with service-oriented architectures</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../development.html">Development</a>
+    <a class="nav-link" href="development.html">Development</a>
   </li>
 </ul>
   </li>
@@ -262,34 +262,34 @@
     <span class="nav-text">Components</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-cassandra.html">Cassandra Appender</a>
+    <a class="nav-link" href="log4j-cassandra.html">Cassandra Appender</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-couchdb.html">CouchDB Appender</a>
+    <a class="nav-link" href="log4j-couchdb.html">CouchDB Appender</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-docker.html">Log4j Docker</a>
+    <a class="nav-link" href="log4j-docker.html">Log4j Docker</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-flume-ng.html">Flume Appender</a>
+    <a class="nav-link" href="log4j-flume-ng.html">Flume Appender</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
+    <a class="nav-link" href="log4j-iostreams.html">Log4j IOStreams</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-spring-boot.html">Log4j Spring Boot Support</a>
+    <a class="nav-link" href="log4j-spring-boot.html">Log4j Spring Boot Support</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-spring-cloud-config.html">Log4j Spring Cloud Config</a>
+    <a class="nav-link" href="log4j-spring-cloud-config.html">Log4j Spring Cloud Config</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
+    <a class="nav-link" href="log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-jul.html">JUL-to-Log4j bridge</a>
+    <a class="nav-link" href="log4j-jul.html">JUL-to-Log4j bridge</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-to-jul.html">Log4j-to-JUL bridge</a>
+    <a class="nav-link" href="log4j-to-jul.html">Log4j-to-JUL bridge</a>
   </li>
 </ul>
   </li>
@@ -326,22 +326,22 @@
 <main class="article">
 <div class="toolbar" role="navigation">
 <button class="nav-toggle"></button>
-  <a href="../index.html" class="home-link"></a>
+  <a href="index.html" class="home-link"></a>
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
-    <li><a href="../index.html">Home</a></li>
+    <li><a href="index.html">Home</a></li>
     <li>Resources</li>
-    <li><a href="webapp.html">Using Log4j in a Jakarta EE environment</a></li>
+    <li><a href="jakarta.html">Integrating with Jakarta EE</a></li>
   </ul>
 </nav>
-<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/manual/webapp.adoc">Edit this Page</a></div>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/jakarta.adoc">Edit this Page</a></div>
 </div>
   <div class="content">
 <aside class="toc sidebar" data-title="Contents" data-levels="4">
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Using Log4j in a Jakarta EE environment</h1>
+<h1 class="page">Integrating with Jakarta EE</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
@@ -371,7 +371,7 @@ To diagnose a problem with the application, you might need to look into multiple
 <dt class="hdlist1">Separate log files</dt>
 <dd>
 <p>Each application must use a <strong>different</strong> log file to prevent problems with concurrent access to the same file by multiple applications.
-Problems may arise, especially if <a href="appenders.html#rollingfileappender" class="xref page">rolling file appender</a> is used.</p>
+Problems may arise, especially if <a href="manual/appenders.html#rollingfileappender" class="xref page">rolling file appender</a> is used.</p>
 </dd>
 <dt class="hdlist1">Lifecycle</dt>
 <dd>
@@ -421,7 +421,7 @@ Most notably:</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>See <a href="systemproperties.html#log4j2.isWebapp" class="xref page"><code>log4j2.isWebapp</code></a> for more details.</p>
+<p>See <a href="manual/systemproperties.html#log4j2.isWebapp" class="xref page"><code>log4j2.isWebapp</code></a> for more details.</p>
 </div>
 </td>
 </tr>
@@ -531,7 +531,7 @@ that takes care of configuring the Log4j lifecycle for you. Under the hood this 
 <p>register a <code>Log4jServletContextListener</code> to automatically shut down Log4j Core, when the application shuts down.</p>
 </li>
 <li>
-<p>register a <code>Log4jServletFilter</code> to enable the <a href="lookups.html#WebLookup" class="xref page">web lookup</a>.</p>
+<p>register a <code>Log4jServletFilter</code> to enable the <a href="manual/lookups.html#WebLookup" class="xref page">web lookup</a>.</p>
 </li>
 </ul>
 </div>
@@ -814,7 +814,7 @@ If the provided value is not an <strong>absolute</strong> URI, Log4j interprets 
 <h3 id="async"><a class="anchor" href="#async"></a>Asynchronous requests and threads</h3>
 <div class="paragraph">
 <p>In order for the
-<a href="lookups.html#WebLookup" class="xref page">web lookup</a>
+<a href="manual/lookups.html#WebLookup" class="xref page">web lookup</a>
 to work correctly, Log4j must be able to always identify the <code>ServletContext</code> used by the current thread.
 When standard requests, forwards, inclusions, and error resources are processed,
 the <code>Log4jServletFilter</code> binds the <code>LoggerContext</code> to the thread handling the request,
@@ -1025,7 +1025,7 @@ See <a href="https://docs.wildfly.org/32/Admin_Guide.html#logging-attributes">Wi
 <h2 id="sharing"><a class="anchor" href="#sharing"></a>Sharing Log4j Core between Web Applications</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Since Log4j Core supports multiple <a href="architecture.html#LoggerContext" class="xref page">logger contexts</a>, it is possible to share a single instance of Log4j Core
+<p>Since Log4j Core supports multiple <a href="manual/architecture.html#LoggerContext" class="xref page">logger contexts</a>, it is possible to share a single instance of Log4j Core
 without losing the ability to configure logging for each application separately.</p>
 </div>
 <div class="paragraph">
@@ -1036,7 +1036,7 @@ without losing the ability to configure logging for each application separately.
 <li>
 <p>You can send log statements from multiple applications to the same log file.
 Under the hood, Log4j Core will use a single
-<a href="architecture.html#AbstractManager" class="xref page">manager</a>
+<a href="manual/architecture.html#AbstractManager" class="xref page">manager</a>
 per file, which will serialize concurrent access from multiple applications.</p>
 </li>
 <li>
@@ -1199,7 +1199,7 @@ you might be interested in identifying the application associated with a given l
 Log4j Core provides a mechanism to split all
 <a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html"><code>Logger</code></a>
 instances into logging domains called
-<a href="architecture.html#LoggerContext" class="xref page"><code>LoggerContext</code></a>s.
+<a href="manual/architecture.html#LoggerContext" class="xref page"><code>LoggerContext</code></a>s.
 You have therefore two ways to separate log events:</p>
 </div>
 <div class="olist arabic">
@@ -1210,7 +1210,7 @@ See <a href="#multiple-contexts">Multiple logger contexts</a> for more details.<
 </li>
 <li>
 <p>You can also use a <strong>single</strong> logger context for all log events, but use
-<a href="lookups.html" class="xref page">lookups</a> to add context data to your log events.
+<a href="manual/lookups.html" class="xref page">lookups</a> to add context data to your log events.
 See <a href="#single-context">Single logger context</a> for more details.</p>
 </li>
 </ol>
@@ -1261,7 +1261,7 @@ counterintuitively the <a href="#single-context">Single logger context</a> appro
 <div class="paragraph">
 <p>By default, Log4j Core creates a separate logger context per classloader.
 To use a single logger context, you need to set the
-<a href="systemproperties.html#log4j2.contextSelector" class="xref page"><code>log4j2.contextSelector</code></a>
+<a href="manual/systemproperties.html#log4j2.contextSelector" class="xref page"><code>log4j2.contextSelector</code></a>
 system property to:</p>
 </div>
 <div class="ulist">
@@ -1279,7 +1279,7 @@ to use asynchronous loggers.</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>In this approach, you must use <a href="lookups.html" class="xref page">lookups</a> to register the application that generated a log event.
+<p>In this approach, you must use <a href="manual/lookups.html" class="xref page">lookups</a> to register the application that generated a log event.
 The most useful lookups in this case are:</p>
 </div>
 <div class="dlist">
@@ -1288,12 +1288,12 @@ The most useful lookups in this case are:</p>
 <dd>
 <p>It does not require any setup, but it is available only after <code>Log4jServletFilter</code> has been executed.
 Some log events pertinent to a web application can be unmarked.
-See <a href="lookups.html#WebLookup" class="xref page">web lookup</a> for more information.</p>
+See <a href="manual/lookups.html#WebLookup" class="xref page">web lookup</a> for more information.</p>
 </dd>
 <dt class="hdlist1">JNDI lookup</dt>
 <dd>
 <p>It covers a larger part of the handling of a request, but it requires additional setup to export the name of the application via JNDI.
-See <a href="lookups.html#JndiLookup" class="xref page">JNDI lookup</a> for more information.</p>
+See <a href="manual/lookups.html#JndiLookup" class="xref page">JNDI lookup</a> for more information.</p>
 </dd>
 </dl>
 </div>
@@ -1304,7 +1304,7 @@ See <a href="lookups.html#JndiLookup" class="xref page">JNDI lookup</a> for more
 <ul>
 <li>
 <p>Logging all events to a single appender.
-We strongly recommend using a structured layout (e.g., <a href="json-template-layout.html" class="xref page">JSON Template Layout</a>) with an additional field capturing the Servlet context name.
+We strongly recommend using a structured layout (e.g., <a href="manual/json-template-layout.html" class="xref page">JSON Template Layout</a>) with an additional field capturing the Servlet context name.
 This would allow separation of application logs by filtering on the context name.
 The following example demonstrates this scheme using a Socket Appender writing to Elasticsearch:</p>
 <div id="_tabs_6" class="openblock tabs is-sync is-loading">
@@ -1385,10 +1385,10 @@ appender.0.layout.0.value = $${web:contextName}</code></pre>
 <li>
 <p>Logging events to a separate appender for each application.
 In this case, you can use
-<a href="appenders.html#RoutingAppender" class="xref page">routing appender</a>
+<a href="manual/appenders.html#RoutingAppender" class="xref page">routing appender</a>
 to separate the events.
 This kind of configuration might be used on the development server together with the
-<a href="pattern-layout.html" class="xref page">human-friendly Pattern Layout</a>:</p>
+<a href="manual/pattern-layout.html" class="xref page">human-friendly Pattern Layout</a>:</p>
 <div id="_tabs_7" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
@@ -1522,12 +1522,12 @@ To use this feature, you need to:</p>
 <ol class="arabic">
 <li>
 <p>Set the
-<a href="systemproperties.html#log4j2.contextSelector" class="xref page"><code>log4j2.contextSelector</code></a>
+<a href="manual/systemproperties.html#log4j2.contextSelector" class="xref page"><code>log4j2.contextSelector</code></a>
 Log4j configuration property to <code>org.apache.logging.log4j.core.selector.JndiContextSelector</code>,</p>
 </li>
 <li>
 <p>For security reasons you need to enable the selector, by setting the
-<a href="systemproperties.html#log4j2.enableJndiContextSelector" class="xref page"><code>log4j2.enableJndiContextSelector</code></a>
+<a href="manual/systemproperties.html#log4j2.enableJndiContextSelector" class="xref page"><code>log4j2.enableJndiContextSelector</code></a>
 Log4j configuration property to <code>true</code>,</p>
 </li>
 <li>
@@ -1602,7 +1602,7 @@ Assuming <code>$CATALINA_BASE</code> is the main directory of your Tomcat instan
 </div>
 </li>
 <li>
-<p>Add a Log4j Core <a href="configuration.html" class="xref page">configuration file</a> called either <code>log4j2.xml</code> or <code>log4j2-tomcat.xml</code> to the <code>$CATALINA_BASE/log4j</code> folder.</p>
+<p>Add a Log4j Core <a href="manual/configuration.html" class="xref page">configuration file</a> called either <code>log4j2.xml</code> or <code>log4j2-tomcat.xml</code> to the <code>$CATALINA_BASE/log4j</code> folder.</p>
 </li>
 <li>
 <p>Modify the system classloader classpath to include all the JAR files and the <code>$CATALINA_BASE/log4j</code> folder itself.
@@ -1684,9 +1684,9 @@ See <a href="https://jetty.org/docs/jetty/12/operations-guide/modules/index.html
     Other names may be trademarks of their respective owners.
   </p>
 </footer>
-<script id="site-script" src="../_/js/site.js" data-ui-root-path="../_"></script>
-<script async src="../_/js/vendor/highlight.js"></script>
+<script id="site-script" src="./_/js/site.js" data-ui-root-path="./_"></script>
+<script async src="./_/js/vendor/highlight.js"></script>
 <!-- `@asciidoctor/tabs` extension scripts -->
-<script async src="../_/js/vendor/tabs.js"></script>
+<script async src="./_/js/vendor/tabs.js"></script>
   </body>
 </html>

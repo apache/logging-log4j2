@@ -235,7 +235,7 @@
     <a class="nav-link" href="../faq.html">F.A.Q.</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="migration.html">Migrating from Log4j 1</a>
+    <a class="nav-link" href="../migrate-from-log4j1.html">Migrating from Log4j 1</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../migrate-from-logback.html">Migrating from Logback</a>
@@ -247,10 +247,10 @@
     <a class="nav-link" href="../hibernate.html">Integrating with Hibernate</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="webapp.html">Using Log4j in a Jakarta EE environment</a>
+    <a class="nav-link" href="../jakarta.html">Integrating with Jakarta EE</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="cloud.html">Integrating with service-oriented architectures</a>
+    <a class="nav-link" href="../soa.html">Integrating with service-oriented architectures</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../development.html">Development</a>
@@ -384,6 +384,10 @@ See <a href="#impl-core">Installing Log4j Core</a>.</p>
 <dt class="hdlist1">Are you a Spring Boot application developer?</dt>
 <dd>
 <p>See <a href="#impl-core-spring-boot">Installing Log4j Core for Spring Boot applications</a>.</p>
+</dd>
+<dt class="hdlist1">Are you migrating from&#8230;&#8203;</dt>
+<dd>
+<p><a href="../migrate-from-log4j1.html" class="xref page">Log4j 1</a>, <a href="../migrate-from-logback.html" class="xref page">Logback</a>, or <a href="../migrate-from-slf4j.html" class="xref page">SLF4J</a>?</p>
 </dd>
 </dl>
 </div>
@@ -1208,7 +1212,7 @@ rootLogger.appenderRef.0.ref = CONSOLE</code></pre>
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;
     &lt;artifactId&gt;jackson-databind&lt;/artifactId&gt;
-    &lt;version&gt;2.17.1&lt;/version&gt;
+    &lt;version&gt;2.17.2&lt;/version&gt;
     &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
@@ -1220,7 +1224,7 @@ rootLogger.appenderRef.0.ref = CONSOLE</code></pre>
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.fasterxml.jackson.dataformat&lt;/groupId&gt;
     &lt;artifactId&gt;jackson-dataformat-yaml&lt;/artifactId&gt;
-    &lt;version&gt;2.17.1&lt;/version&gt;
+    &lt;version&gt;2.17.2&lt;/version&gt;
     &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
@@ -1261,14 +1265,14 @@ rootLogger.appenderRef.0.ref = CONSOLE</code></pre>
 <div id="_tabs_13_json--panel" class="tabpanel" aria-labelledby="_tabs_13_json">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.core:jackson-databind:2.17.1'</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.core:jackson-databind:2.17.2'</code></pre>
 </div>
 </div>
 </div>
 <div id="_tabs_13_yaml--panel" class="tabpanel" aria-labelledby="_tabs_13_yaml">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.17.1'</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.17.2'</code></pre>
 </div>
 </div>
 </div>

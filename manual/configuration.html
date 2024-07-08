@@ -235,7 +235,7 @@
     <a class="nav-link" href="../faq.html">F.A.Q.</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="migration.html">Migrating from Log4j 1</a>
+    <a class="nav-link" href="../migrate-from-log4j1.html">Migrating from Log4j 1</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../migrate-from-logback.html">Migrating from Logback</a>
@@ -247,10 +247,10 @@
     <a class="nav-link" href="../hibernate.html">Integrating with Hibernate</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="webapp.html">Using Log4j in a Jakarta EE environment</a>
+    <a class="nav-link" href="../jakarta.html">Integrating with Jakarta EE</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="cloud.html">Integrating with service-oriented architectures</a>
+    <a class="nav-link" href="../soa.html">Integrating with service-oriented architectures</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../development.html">Development</a>
@@ -402,7 +402,7 @@ In this page we will examine the composition of a configuration file and how Log
 </li>
 <li>
 <p>For web applications, it is an identifier derived from the application descriptor.
-See <a href="webapp.html#configuration" class="xref page">Log4j Web application configuration</a> for details.</p>
+See <a href="../jakarta.html#configuration" class="xref page">Log4j Web application configuration</a> for details.</p>
 </li>
 </ul>
 </div>
@@ -535,7 +535,7 @@ That is, for instance, XML file format will be checked last, as a fallback.</p>
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;
     &lt;artifactId&gt;jackson-databind&lt;/artifactId&gt;
-    &lt;version&gt;2.17.1&lt;/version&gt;
+    &lt;version&gt;2.17.2&lt;/version&gt;
     &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
@@ -547,7 +547,7 @@ That is, for instance, XML file format will be checked last, as a fallback.</p>
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.fasterxml.jackson.dataformat&lt;/groupId&gt;
     &lt;artifactId&gt;jackson-dataformat-yaml&lt;/artifactId&gt;
-    &lt;version&gt;2.17.1&lt;/version&gt;
+    &lt;version&gt;2.17.2&lt;/version&gt;
     &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
@@ -588,14 +588,14 @@ That is, for instance, XML file format will be checked last, as a fallback.</p>
 <div id="_tabs_3_json--panel" class="tabpanel" aria-labelledby="_tabs_3_json">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.core:jackson-databind:2.17.1'</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.core:jackson-databind:2.17.2'</code></pre>
 </div>
 </div>
 </div>
 <div id="_tabs_3_yaml--panel" class="tabpanel" aria-labelledby="_tabs_3_yaml">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.17.1'</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.17.2'</code></pre>
 </div>
 </div>
 </div>
@@ -639,7 +639,7 @@ That is, for instance, XML file format will be checked last, as a fallback.</p>
 <div class="paragraph">
 <p>The syntax of the configuration file changed between Log4j&#160;1 and Log4j&#160;2.
 Files in the Log4j&#160;1 syntax are ignored by default.
-To enable partial support for old configuration syntax, see <a href="migration.html#ConfigurationCompatibility" class="xref page">configuration compatibility</a>.</p>
+To enable partial support for old configuration syntax, see <a href="../migrate-from-log4j1.html#ConfigurationCompatibility" class="xref page">configuration compatibility</a>.</p>
 </div>
 </td>
 </tr>

@@ -48,8 +48,11 @@ RewriteRule "^log4j-mongodb4(/index)?\.html$" "manual/appenders.html#log4j-mongo
 RewriteRule "^log4j-slf4j2?-impl(/index)?\.html$" "manual/installation.html#impl-core-bridge-slf4j" [R=permanent,NE]
 RewriteRule "^log4j-taglib(/index)?\.html$" "manual/webapp.html#log4j-taglib" [R=permanent,NE]
 RewriteRule "^manual/api-separation\.html$" "manual/api.html" [R=permanent]
+RewriteRule "^manual/cloud\.html$" "soa.html" [R=permanent]
+RewriteRule "^manual/migration\.html$" "migrate-from-log4j1.html" [R=permanent]
 RewriteRule "^manual/scala-api\.html$" "/log4j/scala/latest/index.html" [R=permanent]
 RewriteRule "^manual/usage\.html$" "manual/api.html" [R=permanent]
+RewriteRule "^manual/webapp\.html$" "jakarta.html" [R=permanent]
 RewriteRule "^runtime-dependencies\.html$" "manual/installation.html" [R=permanent]
 RewriteRule "^thanks\.html$" "/support.html#sponsors" [R=permanent,NE]
 

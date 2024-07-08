@@ -235,7 +235,7 @@
     <a class="nav-link" href="faq.html">F.A.Q.</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="manual/migration.html">Migrating from Log4j 1</a>
+    <a class="nav-link" href="migrate-from-log4j1.html">Migrating from Log4j 1</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="migrate-from-logback.html">Migrating from Logback</a>
@@ -247,10 +247,10 @@
     <a class="nav-link" href="hibernate.html">Integrating with Hibernate</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="manual/webapp.html">Using Log4j in a Jakarta EE environment</a>
+    <a class="nav-link" href="jakarta.html">Integrating with Jakarta EE</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="manual/cloud.html">Integrating with service-oriented architectures</a>
+    <a class="nav-link" href="soa.html">Integrating with service-oriented architectures</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="development.html">Development</a>
@@ -380,7 +380,7 @@ Log4j 2 and onwards use <code>log4j2.xml</code>.</p>
 </div>
 <div class="paragraph">
 <p>Web applications can specify the Log4j configuration file location with a servlet context parameter.
-See <a href="manual/webapp.html#ContextParams" class="xref page">the related page on web applications</a>.</p>
+See <a href="jakarta.html#ContextParams" class="xref page">the related page on web applications</a>.</p>
 </div>
 <div class="paragraph">
 <p>Refer to <a href="manual/configuration.html" class="xref page">the Configuration page</a> for further details.</p>
@@ -418,7 +418,7 @@ Configurator.reconfigure(configSourceUri);</code></pre>
 <div class="paragraph">
 <p>Normally there is no need to do this manually.
 Each <code>LoggerContext</code> registers a shutdown hook that takes care of releasing resources when the JVM exits, unless the <code>log4j.shutdownHookEnabled</code> system property is set to <code>false</code>.
-Likewise, <a href="manual/webapp.html" class="xref page">Web applications</a> replace the shutdown hook with their own resource management mechanisms.
+Likewise, <a href="jakarta.html" class="xref page">Web applications</a> replace the shutdown hook with their own resource management mechanisms.
 That is, they clean up necessary resources when the web application is stopped.
 However, if you need to manually shut down Log4j, you can use one of the <code>shutdown()</code> methods of <a href="../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#shutdown()"><code>LogManager</code></a>.</p>
 </div>
