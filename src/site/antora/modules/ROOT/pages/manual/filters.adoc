@@ -20,11 +20,13 @@
 
 Filters are Log4j plugins that evaluate the parameters of a logging call or a log event and return one of three results:
 
-ACCEPT:: The log event is accepted by the filter and goes to the next stage of the logging pipeline.
+ACCEPT:: The filter accepts the log event.
+Other filters in the same filtering stage are not evaluated.
 
-DENY:: The log event is unconditionally dropped.
+DENY:: The filter drops the log event.
 
 NEUTRAL:: Log4j behaves as if the filter was not present.
+It is evaluated by the next filter in the filter chain.
 
 Filters can be used at each level of the
 xref:manual/architecture.adoc#architecture-diagram[logging pipeline]:
@@ -117,6 +119,8 @@ xref:manual/appenders.adoc#AsyncAppender[asynchronous appenders].
 ....
 @startuml
 start
+:LogEvent;
+
 group LoggerConfig
 repeat
 
@@ -150,8 +154,9 @@ until it reaches the logger that references the chosen appender.
 [plantuml]
 ....
 @startuml
-!pragma useVerticalIf on
 start
+:LogEvent;
+
 group AppenderControl
 
 :AppenderControl#callAppender();
@@ -189,9 +194,9 @@ of the appender reference.
 ....
 @startuml
 start
-group Appender
+:LogEvent;
 
-:Appender#append();
+group Appender
 
 if (Apply appender filter) then (DENY)
     #pink:Discard;
@@ -201,7 +206,7 @@ else (not DENY)
     label a1
 endif
 end group
-#palegreen:Log message;
+#palegreen:Appender#append();
 @enduml
 ....
 
@@ -322,7 +327,7 @@ The `Filters` plugin sequentially evaluates each sub-filter and:
 * if the sub-filter return `NEUTRAL`, the `Filters` plugin evaluates the next sub-filter in the chain.
 * if the last sub-filter returns `NEUTRAL`, the `Filters` plugin returns `NEUTRAL`.
 
-The `Filters` plugin together with the ternary logic of filters, can be used to express all the boolean operators.
+The `Filters` plugin together with the ternary logic of filters, can be used to express most boolean operators.
 In the following examples `A` and `B` are two filters.
 
 `NOT A`::
