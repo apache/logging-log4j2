@@ -14,32 +14,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-appender.0.type = Console
-appender.0.name = CONSOLE
-# <7>
-appender.0.filter.type = ThresholdFilter
-appender.0.filter.level = FATAL
-
-rootLogger.level = OFF
-# <4>
-rootLogger.filter.type = ThresholdFilter
-rootLogger.filter.level = WARN
-rootLogger.appenderRef.0.ref = CONSOLE
-# <5>
-rootLogger.appenderRef.0.level = ERROR
-# <6>
-rootLogger.appenderRef.0.filter.type = MarkerFilter
-rootLogger.appenderRef.0.filter.marker = SECURITY_ALERT
-
-logger.0.name = org.example
-# <2>
-logger.0.level = DEBUG
-# <3>
-logger.0.filter.type = ThresholdFilter
-logger.0.filter.level = INFO
-
-# <1>
-filter.0.type = MarkerFilter
-filter.0.marker = ALERT
-filter.0.onMatch = ACCEPT
-filter.0.onMismatch = NEUTRAL
+Configuration:
+  monitorInterval: 10
+  Appenders:
+    Console:
+      name: "CONSOLE"
+      JsonTemplateLayout: {}
+    SMTP:
+      name: "SMTP"
+      to: "root@localhost"
+      JsonTemplateLayout: {}
+  Loggers:
+    Root:
+      level: "INFO"
+      # tag::filter[]
+      AppenderRef:
+        - ref: "CONSOLE"
+          TimeFilter:
+            start: "08:00:00"
+            end: "16:00:00"
+        - ref: "SMTP"
+          TimeFilter:
+            start: "16:00:00"
+            end: "08:00:00"
+      # end::filter[]

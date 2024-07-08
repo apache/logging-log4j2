@@ -1,0 +1,38 @@
+{
+  "Configuration": {
+    "monitorInterval": 10,
+    "Appenders": {
+      "Console": {
+        "name": "CONSOLE",
+        "JsonTemplateLayout": {}
+      }
+    },
+    "Loggers": {
+      "Root": {
+        "level": "ALL",
+        "AppenderRef": {
+          "ref": "CONSOLE"
+        }
+      }
+    },
+    // tag::filter[]
+    "ContextMapFilter": {
+      "operator": "AND",
+      "KeyValuePair": [
+        {
+          "key": "clientId",
+          "value": "1234"
+        },
+        {
+          "key": "userId",
+          "value": "alice"
+        },
+        {
+          "key": "userId",
+          "value": "bob"
+        }
+      ]
+    }
+    // end::filter[]
+  }
+}

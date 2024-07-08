@@ -1,0 +1,35 @@
+{
+  "Configuration": {
+    "monitorInterval": 10,
+    "Appenders": {
+      "Console": {
+        "name": "CONSOLE",
+        "JsonTemplateLayout": {}
+      }
+    },
+    "Loggers": {
+      "Root": {
+        "level": "ALL",
+        "AppenderRef": {
+          "ref": "CONSOLE"
+        }
+      }
+    },
+    // tag::filter[]
+    "DynamicThresholdFilter": {
+      "key": "loginId", // <3>
+      "defaultThreshold": "ERROR",
+      "KeyValuePair": [
+        { // <1>
+          "key": "alice",
+          "value": "DEBUG"
+        },
+        { // <2>
+          "key": "bob",
+          "value": "INFO"
+        }
+      ]
+    }
+    // end::filter[]
+  }
+}

@@ -15,28 +15,26 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration xmlns="https://logging.apache.org/xml/ns"
-               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<Configuration xmlns="https://logging.apache.org/xml/ns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xsi:schemaLocation="
                    https://logging.apache.org/xml/ns
-                   https://logging.apache.org/xml/ns/log4j-config-2.xsd">
+                   https://logging.apache.org/xml/ns/log4j-config-2.xsd"
+               monitorInterval="10">
   <Appenders>
     <Console name="CONSOLE">
-      <ThresholdFilter level="FATAL"/> <!--7-->
+      <JsonTemplateLayout/>
     </Console>
   </Appenders>
   <Loggers>
-    <Root level="OFF">
-      <ThresholdFilter level="WARN"/> <!--4-->
-      <AppenderRef ref="CONSOLE" level="ERROR"> <!--5-->
-        <MarkerFilter marker="SECURITY_ALERT"/> <!--6-->
-      </AppenderRef>
+    <Root level="ALL">
+      <AppenderRef ref="CONSOLE"/>
     </Root>
-    <Logger name="org.example" level="DEBUG"> <!--2-->
-      <ThresholdFilter level="INFO"/> <!--3-->
-    </Logger>
   </Loggers>
-  <MarkerFilter marker="ALERT"
-                onMatch="ACCEPT"
-                onMismatch="NEUTRAL"/> <!--1-->
+  <!-- tag::filter[] -->
+  <DynamicThresholdFilter key="loginId"
+                          defaultThreshold="ERROR"> <!--3-->
+    <KeyValuePair key="alice" value="DEBUG"/> <!--1-->
+    <KeyValuePair key="bob" value="INFO"/> <!--2-->
+  </DynamicThresholdFilter>
+  <!-- end::filter[] -->
 </Configuration>

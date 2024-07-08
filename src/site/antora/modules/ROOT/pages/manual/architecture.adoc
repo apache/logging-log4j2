@@ -42,7 +42,7 @@ package "Configuration" as c {
 
     class Configuration {
       Appender[] appenders
-      Filter[] filters
+      Filter filter
       LoggerConfig[] loggerConfigs
       LoggerConfig getLoggerConfig(String name)
       StrSubstitutor substitutor
@@ -198,7 +198,7 @@ LoggerContext --> "0..*" Logger
 
 class Configuration {
   Appender[] appenders
-  Filter[] filters
+  Filter filter
   LoggerConfig[] loggerConfigs
   LoggerConfig getLoggerConfig(String name)
   StrSubstitutor substitutor
@@ -237,7 +237,7 @@ LoggerContext --> Configuration
 
 class Configuration #line.bold {
   Appender[] appenders
-  Filter[] filters
+  Filter filter
   LoggerConfig[] loggerConfigs
   LoggerConfig getLoggerConfig(String name)
   StrSubstitutor substitutor
@@ -397,7 +397,7 @@ A `LoggerConfig` essentially contains
 
 class Configuration {
   Appender[] appenders
-  Filter[] filters
+  Filter filter
   LoggerConfig[] loggerConfigs
   LoggerConfig getLoggerConfig(String name)
   StrSubstitutor substitutor
@@ -541,13 +541,13 @@ In addition to <<LoggerConfig,the level-based filtering facilitated by `LoggerCo
 
 class Configuration {
   Appender[] appenders
-  Filter[] filters
+  Filter filter
   LoggerConfig[] loggerConfigs
   LoggerConfig getLoggerConfig(String name)
   StrSubstitutor substitutor
 }
 
-Configuration --> "0..*" Filter
+Configuration --> Filter
 
 Configuration --> "0..*" LoggerConfig
 
@@ -575,6 +575,10 @@ class AppenderRef {
   Filter filter
 }
 
+class AppenderControl {
+  Filter filter
+}
+
 AppenderRef --> Filter
 
 AppenderControl --> Filter
@@ -599,7 +603,7 @@ See xref:manual/appenders.adoc[] for the complete guide.
 
 class Configuration {
   Appender[] appenders
-  Filter[] filters
+  Filter filter
   LoggerConfig[] loggerConfigs
   LoggerConfig getLoggerConfig(String name)
   StrSubstitutor substitutor

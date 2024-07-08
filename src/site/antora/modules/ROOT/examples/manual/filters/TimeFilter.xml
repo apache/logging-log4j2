@@ -15,28 +15,28 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration xmlns="https://logging.apache.org/xml/ns"
-               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<Configuration xmlns="https://logging.apache.org/xml/ns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xsi:schemaLocation="
                    https://logging.apache.org/xml/ns
                    https://logging.apache.org/xml/ns/log4j-config-2.xsd">
   <Appenders>
     <Console name="CONSOLE">
-      <ThresholdFilter level="FATAL"/> <!--7-->
+      <JsonTemplateLayout/>
     </Console>
+    <SMTP name="SMTP" to="root@localhost">
+      <JsonTemplateLayout/>
+    </SMTP>
   </Appenders>
   <Loggers>
-    <Root level="OFF">
-      <ThresholdFilter level="WARN"/> <!--4-->
-      <AppenderRef ref="CONSOLE" level="ERROR"> <!--5-->
-        <MarkerFilter marker="SECURITY_ALERT"/> <!--6-->
+    <Root level="INFO">
+      <!-- tag::filter[] -->
+      <AppenderRef ref="CONSOLE">
+        <TimeFilter start="08:00:00" end="16:00:00"/>
       </AppenderRef>
+      <AppenderRef ref="SMTP">
+        <TimeFilter start="16:00:00" end="08:00:00"/>
+      </AppenderRef>
+      <!-- end::filter[] -->
     </Root>
-    <Logger name="org.example" level="DEBUG"> <!--2-->
-      <ThresholdFilter level="INFO"/> <!--3-->
-    </Logger>
   </Loggers>
-  <MarkerFilter marker="ALERT"
-                onMatch="ACCEPT"
-                onMismatch="NEUTRAL"/> <!--1-->
 </Configuration>

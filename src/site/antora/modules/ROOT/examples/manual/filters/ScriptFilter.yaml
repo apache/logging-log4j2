@@ -14,32 +14,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-appender.0.type = Console
-appender.0.name = CONSOLE
-# <7>
-appender.0.filter.type = ThresholdFilter
-appender.0.filter.level = FATAL
-
-rootLogger.level = OFF
-# <4>
-rootLogger.filter.type = ThresholdFilter
-rootLogger.filter.level = WARN
-rootLogger.appenderRef.0.ref = CONSOLE
-# <5>
-rootLogger.appenderRef.0.level = ERROR
-# <6>
-rootLogger.appenderRef.0.filter.type = MarkerFilter
-rootLogger.appenderRef.0.filter.marker = SECURITY_ALERT
-
-logger.0.name = org.example
-# <2>
-logger.0.level = DEBUG
-# <3>
-logger.0.filter.type = ThresholdFilter
-logger.0.filter.level = INFO
-
-# <1>
-filter.0.type = MarkerFilter
-filter.0.marker = ALERT
-filter.0.onMatch = ACCEPT
-filter.0.onMismatch = NEUTRAL
+Configuration:
+  Appenders:
+    Console:
+      name: "CONSOLE"
+      JsonTemplateLayout: {}
+  Loggers:
+    # tag::local[]
+    Root:
+      level: "ALL"
+      ScriptFilter:
+        ScriptFile:
+          language: "groovy"
+          path: "scripts/local.groovy"
+      AppenderRef:
+        ref: "CONSOLE"
+    # end::local[]
+  # tag::global[]
+  ScriptFilter:
+    ScriptFile:
+      language: "groovy"
+      path: "scripts/global.groovy"
+  # end::global[]
