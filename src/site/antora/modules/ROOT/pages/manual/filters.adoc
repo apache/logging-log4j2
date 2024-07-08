@@ -20,7 +20,7 @@
 Filters are Log4j plugins that evaluate the parameters of a logging call or a log event and return one of three results:
 
 ACCEPT:: The filter accepts the log event.
-Other filters in the same filtering stage are not evaluated.
+This effectively causes other filters in the same filtering stage to be skipped.
 
 DENY:: The filter drops the log event.
 
