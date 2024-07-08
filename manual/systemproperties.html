@@ -632,7 +632,7 @@ to use when the underlying async component cannot keep up with the logging rate 
 </table>
 <div class="paragraph">
 <p>Determines the threshold level used by a <code>Discard</code> queue full policy.
-Log events whose level is equal or less specific than the threshold level will be discarded during a queue full event.
+Log events whose level is not more severe than the threshold level will be discarded during a queue full event.
 See also <a href="#log4j.async.queueFullPolicy.type"><code>log4j.async.queueFullPolicy.type</code></a>.</p>
 </div>
 </div>

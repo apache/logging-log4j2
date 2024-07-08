@@ -280,39 +280,287 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Log4j supports filtering of log events at each level of the logging pipeline using two features:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>the <code>level</code> attributes that can be set on loggers and appender references,</p>
-</li>
-<li>
-<p>filter components that can be attached to loggers, appenders, appender references or the global configuration object.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Filters evaluate the parameters of a logging call (context-wide filter) or a log event and return one of three results:</p>
+<p>Filters are Log4j plugins that evaluate the parameters of a logging call or a log event and return one of three results:</p>
 </div>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">ACCEPT</dt>
 <dd>
-<p>The log event is accepted by the filter and goes to the next stage of the logging pipeline,</p>
+<p>The filter accepts the log event.
+This effectively causes other filters in the same filtering stage to be skipped.</p>
 </dd>
 <dt class="hdlist1">DENY</dt>
 <dd>
-<p>The log event is unconditionally dropped,</p>
+<p>The filter drops the log event.</p>
 </dd>
 <dt class="hdlist1">NEUTRAL</dt>
 <dd>
-<p>Log4j behaves as if the filter was not present.</p>
+<p>Log4j behaves as if the filter was not present.
+It is evaluated by the next filter in the filter chain.</p>
 </dd>
 </dl>
 </div>
 <div class="paragraph">
-<p>To decide whether a log event from a certain logger is delivered to a specific appender, the following procedure is followed:</p>
+<p>Filters can be used at each level of the
+<a href="architecture.html#architecture-diagram" class="xref page">logging pipeline</a>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the global configuration element can contain a <a href="configuration.html#global-filters" class="xref page">global filter</a>.</p>
+</li>
+<li>
+<p>each <a href="configuration.html#configuring-loggers" class="xref page">logger</a> configuration element can contain a <a href="configuration.html#logger-elements-filters" class="xref page">logger filter</a>.</p>
+</li>
+<li>
+<p>each <a href="configuration.html#configuring-appenderrefs" class="xref page">appender reference</a> configuration element can contain an <a href="configuration.html#appenderrefs-elements-filters" class="xref page">appender reference filter</a>.</p>
+</li>
+<li>
+<p>each <a href="appenders.html" class="xref page">appender</a> configuration element can contain an <a href="appenders.html" class="xref page">appender filter</a>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Additionally, the following configuration attributes take part in the filtering process:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the <a href="configuration.html#logger-attributes-level" class="xref page"><code>level</code> attribute</a> of logger configuration elements.</p>
+</li>
+<li>
+<p>the <a href="configuration.html#appenderref-attributes-level" class="xref page"><code>level</code> attribute</a> of appender reference configuration elements.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="filtering-process"><a class="anchor" href="#filtering-process"></a>Filtering process</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Due to the interaction of many elements,
+the filtering process in Log4j is quite complex and can be divided in four stages:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><a href="#logger-stage"><code>Logger</code> stage</a></p>
+</li>
+<li>
+<p><a href="#logger-config-stage"><code>LoggerConfig</code> stage</a></p>
+</li>
+<li>
+<p><a href="#appender-control-stage"><code>AppenderControl</code> stage</a></p>
+</li>
+<li>
+<p><a href="#appender-stage"><code>Appender</code> stage</a></p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>For performance reasons, log events should be filtered at the earliest possible stage.
+This reduces the cost of disabled log events:
+e.g., log event creation, population of context data, formatting, transfer through an asynchronous barrier.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="logger-stage"><a class="anchor" href="#logger-stage"></a>1. <code>Logger</code> stage</h3>
+<div class="imageblock kroki">
+<div class="content">
+<img src="../_images/diag-2158b7cc88b372c32a9592f8cdbc1cc926bb8b80.svg" alt="Diagram">
+</div>
+</div>
+<div class="paragraph">
+<p>The parameters of the logging call are passed to the global filter.
+If the global filter returns:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">DENY</dt>
+<dd>
+<p>The log message is immediately discarded.</p>
+</dd>
+<dt class="hdlist1">NEUTRAL</dt>
+<dd>
+<p>If the level of the log message is less severe than the configured logger threshold, the message is discarded.
+Otherwise, a
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html"><code>LogEvent</code></a> is created and processing continues.</p>
+</dd>
+<dt class="hdlist1">ACCEPT</dt>
+<dd>
+<p>A <code>LogEvent</code> is created and processing continues in the next stage.</p>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This is the only stage, which differentiates between an <code>ACCEPT</code> and <code>NEUTRAL</code> filter result.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Filtering logging calls at this stage provides the best performance:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>this stage precedes the creation of log events, therefore operations like the
+<a href="https://logging.apache.org/log4j/2.x/manual/thread-context.adoc">injection of context data</a>,
+<a href="layouts.html#LocationInformation" class="xref page">computation of location information</a>
+will not be performed for disabled log statements.</p>
+</li>
+<li>
+<p>this stage precedes the asynchronous calls performed by either
+<a href="async.html" class="xref page">asynchronous loggers</a>
+or
+<a href="appenders.html#AsyncAppender" class="xref page">asynchronous appenders</a>.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="logger-config-stage"><a class="anchor" href="#logger-config-stage"></a>2. <code>LoggerConfig</code> stage</h3>
+<div class="imageblock kroki">
+<div class="content">
+<img src="../_images/diag-4d55aeb99a0ae8707b4121b1f76e9544af16b3c4.svg" alt="Diagram">
+</div>
+</div>
+<div class="paragraph">
+<p>In this stage, log events are evaluated by all the
+<a href="configuration.html#logger-elements-filters" class="xref page">logger filters</a>
+that stand on the path from the logger to an appender.
+Due to the
+<a href="configuration.html#logger-attributes-additivity" class="xref page">additivity of logger configurations</a>,
+this means that a log event must also pass the filters of all the parent loggers,
+until it reaches the logger that references the chosen appender.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="appender-control-stage"><a class="anchor" href="#appender-control-stage"></a>3. <code>AppenderControl</code> stage</h3>
+<div class="imageblock kroki">
+<div class="content">
+<img src="../_images/diag-0c23746e246efa4a462049e2adc4b0349185aa77.svg" alt="Diagram">
+</div>
+</div>
+<div class="paragraph">
+<p>To pass this stage, log events must satisfy both conditions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the log event must be at least as severe as the
+<a href="configuration.html#appenderref-attributes-level" class="xref page"><code>level</code> attribute</a>
+of the appender reference.</p>
+</li>
+<li>
+<p>the <a href="configuration.html#appenderrefs-elements-filters" class="xref page">appender reference filter</a> must return <code>ACCEPT</code> or <code>NEUTRAL</code>,</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="appender-stage"><a class="anchor" href="#appender-stage"></a>4. <code>Appender</code> stage (optional)</h3>
+<div class="imageblock kroki">
+<div class="content">
+<img src="../_images/diag-a15d9b3aaacbf863f81fe0dcb0ed21346b6c46ed.svg" alt="Diagram">
+</div>
+</div>
+<div class="paragraph">
+<p>If the appender implements
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/filter/Filterable.html"><code>Filterable</code></a>
+an additional filtering stage is available.
+When log events reach such an appender,
+the filter attached to an appender is evaluated and if the result is <code>DENY</code>,
+the log event is discarded.</p>
+</div>
+<div class="paragraph">
+<p>All standard appenders implement <code>Filterable</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Some appenders like the
+<a href="appenders.html#AsyncAppender" class="xref page">asynchronous appender</a>
+use appender references to transfer log events to other appenders.
+In such a case, the filtering process goes back to the <a href="#appender-control-stage"><code>AppenderControl</code> stage</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Users migrating from Log4j 1 often replace the <code>threshold</code> property of a Log4j 1 appender with a <a href="#ThresholdFilter"><code>ThresholdFilter</code></a> on the equivalent Log4j 2 appender.</p>
+</div>
+<div class="paragraph">
+<p>Using the <code>level</code> property of appender references will give a better performance.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Configuring filters at this stage is a measure of last resort,
+since it adds a large overhead to disabled log events.
+You should rather configure the filtering in one of the previous stages.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="example-configuration-file"><a class="anchor" href="#example-configuration-file"></a>Example configuration file</h3>
+<div class="paragraph">
+<p>The following example configuration file employs filters at all possible stages to explain their evaluation order:</p>
 </div>
 <div id="_tabs_1" class="openblock tabs is-sync is-loading">
 <div class="content">
@@ -343,23 +591,23 @@
                    https://logging.apache.org/xml/ns/log4j-config-2.xsd"&gt;
   &lt;Appenders&gt;
     &lt;Console name="CONSOLE"&gt;
-      &lt;ThresholdFilter level="WARN"/&gt; <i class="conum" data-value="6"></i><b>(6)</b>
+      &lt;ThresholdFilter level="FATAL"/&gt; <i class="conum" data-value="7"></i><b>(7)</b>
     &lt;/Console&gt;
   &lt;/Appenders&gt;
   &lt;Loggers&gt;
-    &lt;Root level="INFO"&gt;
-      &lt;ThresholdFilter level="DEBUG"/&gt; <i class="conum" data-value="3"></i><b>(3)</b>
-      &lt;AppenderRef ref="CONSOLE" level="WARN"&gt; <i class="conum" data-value="5"></i><b>(5)</b>
-        &lt;MarkerFilter marker="ALERT"
-                      onMatch="NEUTRAL"
-                      onMismatch="DENY"/&gt; <i class="conum" data-value="4"></i><b>(4)</b>
+    &lt;Root level="OFF"&gt;
+      &lt;ThresholdFilter level="WARN"/&gt; <i class="conum" data-value="4"></i><b>(4)</b>
+      &lt;AppenderRef ref="CONSOLE" level="ERROR"&gt; <i class="conum" data-value="5"></i><b>(5)</b>
+        &lt;MarkerFilter marker="SECURITY_ALERT"/&gt; <i class="conum" data-value="6"></i><b>(6)</b>
       &lt;/AppenderRef&gt;
     &lt;/Root&gt;
-    &lt;Logger name="org.example" level="TRACE"&gt; <i class="conum" data-value="2"></i><b>(2)</b>
-      &lt;ThresholdFilter level="TRACE"/&gt; <i class="conum" data-value="3"></i><b>(3)</b>
+    &lt;Logger name="org.example" level="DEBUG"&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+      &lt;ThresholdFilter level="INFO"/&gt; <i class="conum" data-value="3"></i><b>(3)</b>
     &lt;/Logger&gt;
   &lt;/Loggers&gt;
-  &lt;MarkerFilter marker="PRIVATE"/&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;MarkerFilter marker="ALERT"
+                onMatch="ACCEPT"
+                onMismatch="NEUTRAL"/&gt; <i class="conum" data-value="1"></i><b>(1)</b>
 &lt;/Configuration&gt;</code></pre>
 </div>
 </div>
@@ -373,34 +621,37 @@
       "Console": {
         "name": "CONSOLE",
         "ThresholdFilter": {
-          "level": "WARN" <i class="conum" data-value="6"></i><b>(6)</b>
+          "level": "FATAL" <i class="conum" data-value="6"></i><b>(6)</b>
         }
       }
     },
     "Loggers": {
       "Root": {
-        "level": "INFO",
+        "level": "OFF",
         "ThresholdFilter": { <i class="conum" data-value="3"></i><b>(3)</b>
-          "level": "DEBUG"
+          "level": "WARN"
         },
         "AppenderRef": {
           "ref": "CONSOLE",
-          "level": "WARN", <i class="conum" data-value="5"></i><b>(5)</b>
-          "MarkerFilter": { <i class="conum" data-value="4"></i><b>(4)</b>
-            "marker": "ALERT",
-            "onMatch": "NEUTRAL",
-            "onMismatch": "DENY"
+          "level": "ERROR", <i class="conum" data-value="4"></i><b>(4)</b>
+          "MarkerFilter": { <i class="conum" data-value="5"></i><b>(5)</b>
+            "marker": "SECURITY_ALERT"
           }
         }
       },
       "Logger": {
         "name": "org.example",
-        "level": "TRACE" <i class="conum" data-value="2"></i><b>(2)</b>
+        "level": "DEBUG", <i class="conum" data-value="2"></i><b>(2)</b>
+        "ThresholdFilter": { <i class="conum" data-value="3"></i><b>(3)</b>
+          "level": "INFO"
+        }
       }
     }
   },
   "MarkerFilter": { <i class="conum" data-value="1"></i><b>(1)</b>
-    "marker": "PRIVATE"
+    "marker": "ALERT",
+    "onMatch": "ACCEPT",
+    "onMismatch": "NEUTRAL"
   }
 }</code></pre>
 </div>
@@ -413,27 +664,27 @@
   Appenders:
     Console:
       name: "CONSOLE"
-      ThresholdFilter: <i class="conum" data-value="6"></i><b>(6)</b>
-        level: "WARN"
+      ThresholdFilter: <i class="conum" data-value="7"></i><b>(7)</b>
+        level: "FATAL"
   Loggers:
     Root:
-      level: "INFO"
-      ThreadsholdFilter: <i class="conum" data-value="3"></i><b>(3)</b>
-        level: "DEBUG"
+      level: "OFF"
+      ThresholdFilter: <i class="conum" data-value="4"></i><b>(4)</b>
+        level: "WARN"
       AppenderRef:
         ref: "CONSOLE"
-        level: "WARN" <i class="conum" data-value="5"></i><b>(5)</b>
-        MarkerFilter: <i class="conum" data-value="4"></i><b>(4)</b>
-          marker: "ALERT"
-          onMatch: "NEUTRAL"
-          onMismatch: "DENY"
+        level: "ERROR" <i class="conum" data-value="5"></i><b>(5)</b>
+        MarkerFilter: <i class="conum" data-value="6"></i><b>(6)</b>
+          marker: "SECURITY_ALERT"
       Logger:
         name: "org.example"
-        level: "TRACE" <i class="conum" data-value="2"></i><b>(2)</b>
-        ThresholdFilter:
-          level: "TRACE" <i class="conum" data-value="3"></i><b>(3)</b>
+        level: "DEBUG" <i class="conum" data-value="2"></i><b>(2)</b>
+        ThresholdFilter: <i class="conum" data-value="3"></i><b>(3)</b>
+          level: "INFO"
   MarkerFilter: <i class="conum" data-value="1"></i><b>(1)</b>
-    marker: "PRIVATE"</code></pre>
+    marker: "ALERT"
+    onMatch: "ACCEPT"
+    onMismatch: "NEUTRAL"</code></pre>
 </div>
 </div>
 </div>
@@ -442,26 +693,33 @@
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = Console
 appender.0.name = CONSOLE
-appender.0.filter.type = ThresholdFilter <i class="conum" data-value="6"></i><b>(6)</b>
-appender.0.filter.level = WARN
+<i class="conum" data-value="7"></i><b>(7)</b>
+appender.0.filter.type = ThresholdFilter
+appender.0.filter.level = FATAL
 
-rootLogger.level = INFO
-rootLogger.filter.type = ThresholdFilter <i class="conum" data-value="3"></i><b>(3)</b>
-rootLogger.filter.level = DEBUG
+rootLogger.level = OFF
+<i class="conum" data-value="4"></i><b>(4)</b>
+rootLogger.filter.type = ThresholdFilter
+rootLogger.filter.level = WARN
 rootLogger.appenderRef.0.ref = CONSOLE
-rootLogger.appenderRef.0.level = WARN <i class="conum" data-value="5"></i><b>(5)</b>
-rootLogger.appenderRef.0.filter.type = MarkerFilter <i class="conum" data-value="4"></i><b>(4)</b>
-rootLogger.appenderRef.0.filter.marker = ALERT
-rootLogger.appenderRef.0.filter.onMatch = NEUTRAL
-rootLogger.appenderRef.0.filter.onMismatch = DENY
+<i class="conum" data-value="5"></i><b>(5)</b>
+rootLogger.appenderRef.0.level = ERROR
+<i class="conum" data-value="6"></i><b>(6)</b>
+rootLogger.appenderRef.0.filter.type = MarkerFilter
+rootLogger.appenderRef.0.filter.marker = SECURITY_ALERT
 
 logger.0.name = org.example
-logger.0.level = DEBUG <i class="conum" data-value="2"></i><b>(2)</b>
-logger.0.filter.type = ThresholdFilter <i class="conum" data-value="3"></i><b>(3)</b>
-logger.0.filter.level = TRACE
+<i class="conum" data-value="2"></i><b>(2)</b>
+logger.0.level = DEBUG
+<i class="conum" data-value="3"></i><b>(3)</b>
+logger.0.filter.type = ThresholdFilter
+logger.0.filter.level = INFO
 
-filter.type = MarkerFilter <i class="conum" data-value="1"></i><b>(1)</b>
-filter.marker = PRIVATE</code></pre>
+<i class="conum" data-value="1"></i><b>(1)</b>
+filter.0.type = MarkerFilter
+filter.0.marker = ALERT
+filter.0.onMatch = ACCEPT
+filter.0.onMismatch = NEUTRAL</code></pre>
 </div>
 </div>
 </div>
@@ -471,44 +729,742 @@ filter.marker = PRIVATE</code></pre>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>First the context-wide filter is consulted.
-If it returns <code>ACCEPT</code> the log message goes directly to point 3.</td>
+<td>Global filter</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Then Log4j checks the message against the configured logger level.</td>
+<td>Logger <code>level</code> attribute. This setting is <strong>ignored</strong> unless the global filter returns <code>NEUTRAL</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The filter configured on a logger is applied next.
-If the logger is additive, the filter on the parent logger is applied recursively until we end up on the logger that references the given appender.</td>
+<td>Filter of the <code>org.example</code> logger</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Next comes the turn of the filter configured on an appender reference,</td>
+<td>Filter of the root logger (it is the parent of the <code>org.example</code> logger)</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>followed by a level check against the configured level of the reference.</td>
+<td>Appender reference <code>level</code> attribute</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="6"></i><b>6</b></td>
-<td>The process ends with the filter attached to an appender.</td>
+<td>Filter of the appender reference</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>Filter of the appender</td>
 </tr>
 </table>
 </div>
-<div class="admonitionblock warning">
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="common-configuration"><a class="anchor" href="#common-configuration"></a>Common configuration</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="common-configuration-attributes"><a class="anchor" href="#common-configuration-attributes"></a>Common configuration attributes</h3>
+<div class="paragraph">
+<p>The default behavior of filters is in line with the <code>filter()</code> methods of functional interfaces, such as
+<a href="https://docs.oracle.com/javase/17/docs/api/java/util/Optional.html#filter-java.util.function.Predicate-"><code>Optional.filter()</code></a>
+or
+<a href="https://docs.oracle.com/javase/17/docs/api/java/util/stream/Stream.html#filter-java.util.function.Predicate-"><code>Stream.filter()</code></a>:
+filters pass matching events to the next filter and drop those that do not match.</p>
+</div>
+<div class="paragraph">
+<p>To allow for a larger spectrum of behaviors,
+all standard filters, except <code>CompositeFilter</code> and <code>DenyAllFilter</code>, accept the following configuration attributes:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Common filter configuration attributes</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 57.1429%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="onMatch"></a>onMatch</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Filter.Result.html"><code>Result</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Filter.Result.html#NEUTRAL"><code>NEUTRAL</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Result returned if the condition matches.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="onMismatch"></a>onMismatch</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Filter.Result.html"><code>Result</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Filter.Result.html#DENY"><code>DENY</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Result returned if the condition does not match.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="CompositeFilter"><a class="anchor" href="#CompositeFilter"></a>Composing filters</h3>
+<div class="paragraph">
+<p>Filters usually test for a single condition.
+To express a more complex filtering logic, Log4j provides a
+<a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-CompositeFilter" class="xref page"><code>Filters</code></a>
+plugin.
+This plugin can contain a sequence of filters and has no other configuration option.</p>
+</div>
+<div class="paragraph">
+<p>The <code>Filters</code> plugin sequentially evaluates each sub-filter and:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>if the sub-filter returns <code>ACCEPT</code> (resp. <code>DENY</code>), the <code>Filters</code> plugin returns <code>ACCEPT</code> (resp. <code>DENY</code>).</p>
+</li>
+<li>
+<p>if the sub-filter return <code>NEUTRAL</code>, the <code>Filters</code> plugin evaluates the next sub-filter in the chain.</p>
+</li>
+<li>
+<p>if the last sub-filter returns <code>NEUTRAL</code>, the <code>Filters</code> plugin returns <code>NEUTRAL</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The <code>Filters</code> plugin together with the ternary logic of filters, can be used to express most boolean operators.
+In the following examples <code>A</code> and <code>B</code> are two filters.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>NOT A</code></dt>
+<dd>
+<p>You can invert the functionality of filter <code>A</code> by swapping the <code>onMatch</code> and <code>onMismatch</code>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;A onMatch="DENY" onMismatch="NEUTRAL"/&gt;</code></pre>
+</div>
+</div>
+</dd>
+<dt class="hdlist1"><code>A AND B</code></dt>
+<dd>
+<p>To select the events that match both <code>A</code> and <code>B</code> you can use:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Filters&gt;
+  &lt;A/&gt;
+  &lt;B/&gt;
+&lt;/Filters&gt;</code></pre>
+</div>
+</div>
+</dd>
+<dt class="hdlist1"><code>A OR B</code></dt>
+<dd>
+<p>To select the events that match <code>A</code> or <code>B</code> we can replace <code>NEUTRAL</code> with <code>ACCEPT</code> in the <code>onMatch</code> attribute:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Filters&gt;
+  &lt;A onMatch="ACCEPT"/&gt;
+  &lt;B onMatch="ACCEPT"/&gt;
+&lt;/Filters&gt;</code></pre>
+</div>
+</div>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-CompositeFilter" class="xref page">📖 Plugin reference for <code>Filters</code></a></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="collection"><a class="anchor" href="#collection"></a>Collection</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Log4j Core provides the following filters out-of-the-box.</p>
+</div>
+<div class="sect2">
+<h3 id="timestamp-filters"><a class="anchor" href="#timestamp-filters"></a>Timestamp filters</h3>
+<div class="paragraph">
+<p>Timestamp filters use the timestamp of log events to decide whether to accept them or not.</p>
+</div>
+<div class="sect3">
+<h4 id="BurstFilter"><a class="anchor" href="#BurstFilter"></a><code>BurstFilter</code></h4>
+<div class="paragraph">
+<p>The <code>BurstFilter</code> limits the rate of log events.
+The rate limit is only applied to log events less severe than a configured log level.</p>
+</div>
+<div class="paragraph">
+<p>Besides the <a href="#common-configuration-attributes">common configuration attributes</a>,
+the <code>BurstFilter</code> supports the following parameters:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. <code>BurstFilter</code>&#8201;&#8212;&#8201;configuration attributes</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 57.1429%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>level</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html"><code>Level</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html#WARN"><code>WARN</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The rate limit only applies to log events less severe than this level.
+Events at least as severe as this level will always match.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>float</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The average number of events per second to allow.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>maxBurst</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>long</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10 &times; rate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of events that can be logged at once, without incurring in rate limiting.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
+<i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>For performance reasons, log events should be filtered as soon as possible in the logging pipeline.
-This reduces the costs (formatting, transfer through an asynchronous barrier) of disabled log events.</p>
+<p>The <code>BurstFilter</code> uses the <em>sliding window log</em> algorithm with a window <code>window</code> of <code>maxBurst / rate</code> seconds.</p>
+</div>
+<div class="paragraph">
+<p>The filter maintains a list of recently logged events.
+If in the interval of time of duration <code>window</code> preceding the current log event,
+more than <code>maxBurst</code> events have already been logged, rate limiting is applied.</p>
+</div>
+<div class="paragraph">
+<p>To control the size of the log files only the <code>rate</code> attribute needs to be taken into account.
+The <code>maxBurst</code> attribute controls the temporal spacing between log events:
+lower values of <code>maxBurst</code> will give more evenly spaced log events,
+while higher values will allow for peaks of activity followed by an absence of log events.</p>
 </div>
 </td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-BurstFilter" class="xref page">📖 Plugin reference for <code>BurstFilter</code></a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="TimeFilter"><a class="anchor" href="#TimeFilter"></a><code>TimeFilter</code></h4>
+<div class="paragraph">
+<p>The <code>TimeFilter</code> only matches log events emitted during a certain time of the day.</p>
+</div>
+<div class="paragraph">
+<p>Besides the <a href="#common-configuration-attributes">common configuration attributes</a>,
+the <code>TimeFilter</code> supports the following parameters:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. <code>TimeFilter</code>&#8201;&#8212;&#8201;configuration attributes</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 25%;">
+<col style="width: 12.5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>start</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/time/LocalTime.html"><code>LocalTime</code></a> in <code>HH:mm:ss</code> format</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/time/LocalTime.html#MIN"><code>LocalTime.MIN</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The beginning of the time slot.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>start</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/time/LocalTime.html"><code>LocalTime</code></a> in <code>HH:mm:ss</code> format</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/time/LocalTime.html#MAX"><code>LocalTime.MAX</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The end of the time slot.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>timezone</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/time/ZoneId.html"><code>ZoneId</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/time/ZoneId.html#systemDefault--"><code>ZoneId.systemDefault()</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The timezone to use when comparing <code>start</code> and <code>end</code> to the event timestamp.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>As a simple application of this filter,
+if you want to forward messages to your console during work hours and to your e-mail account after work hours,
+you can use a configuration snippet like:</p>
+</div>
+<div id="_tabs_2" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_2_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_2_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_2_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_2_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_2_xml--panel" class="tabpanel" aria-labelledby="_tabs_2_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/TimeFilter.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;AppenderRef ref="CONSOLE"&gt;
+  &lt;TimeFilter start="08:00:00" end="16:00:00"/&gt;
+&lt;/AppenderRef&gt;
+&lt;AppenderRef ref="SMTP"&gt;
+  &lt;TimeFilter start="16:00:00" end="08:00:00"/&gt;
+&lt;/AppenderRef&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_2_json--panel" class="tabpanel" aria-labelledby="_tabs_2_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/TimeFilter.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"AppenderRef": [
+  {
+    "ref": "CONSOLE",
+    "TimeFilter": {
+      "start": "08:00:00",
+      "end": "16:00:00"
+    }
+  },
+  {
+    "ref": "SMTP",
+    "TimeFilter": {
+      "start": "16:00:00",
+      "end": "08:00:00"
+    }
+  }
+]</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_2_yaml--panel" class="tabpanel" aria-labelledby="_tabs_2_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/TimeFilter.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">AppenderRef:
+  - ref: "CONSOLE"
+    TimeFilter:
+      start: "08:00:00"
+      end: "16:00:00"
+  - ref: "SMTP"
+    TimeFilter:
+      start: "16:00:00"
+      end: "08:00:00"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_2_properties--panel" class="tabpanel" aria-labelledby="_tabs_2_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/TimeFilter.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">rootLogger.appenderRef.0.ref = CONSOLE
+rootLogger.appenderRef.0.filter.0.type = TimeFilter
+rootLogger.appenderRef.0.filter.0.start = 08:00:00
+rootLogger.appenderRef.0.filter.0.end = 16:00:00
+
+rootLogger.appenderRef.1.ref = SMTP
+rootLogger.appenderRef.1.filter.0.type = TimeFilter
+rootLogger.appenderRef.1.filter.0.start = 16:00:00
+rootLogger.appenderRef.1.filter.0.end = 08:00:00</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-TimeFilter" class="xref page">📖 Plugin reference for <code>TimeFilter</code></a></p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="level-filters"><a class="anchor" href="#level-filters"></a>Level filters</h3>
+<div class="paragraph">
+<p>The following filters allow you to filter log events based on their <a href="#manual/customloglevels.adoc" class="xref unresolved">levels</a>.</p>
+</div>
+<div class="sect3">
+<h4 id="LevelMatchFilter"><a class="anchor" href="#LevelMatchFilter"></a><code>LevelMatchFilter</code></h4>
+<div class="paragraph">
+<p>The <code>LevelMatchFilter</code> matches log events that have exactly a certain log level.</p>
+</div>
+<div class="paragraph">
+<p>Besides the <a href="#common-configuration-attributes">common configuration attributes</a>,
+the <code>LevelMatchFilter</code> supports the following parameter:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. <code>LevelMatchFilter</code>&#8201;&#8212;&#8201;configuration attributes</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 57.1429%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>level</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html"><code>Level</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html#ERROR"><code>ERROR</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The filter only matches log events of this level.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you wish to use a different log file for each log level, you should also use a
+<a href="appenders.html#RoutingAppender" class="xref page"><code>Routing</code> appender</a> together with the
+<a href="lookups.html#EventLookup" class="xref page"><code>${event:Level}</code> lookup</a>.
+Such a solution will ensure that:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>you don&#8217;t forget any log level (Log4j supports <a href="#manual/customloglevels.adoc" class="xref unresolved">custom levels</a>).</p>
+</li>
+<li>
+<p>you don&#8217;t need to configure an appender for each level separately.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-LevelMatchFilter" class="xref page">📖 Plugin reference for <code>LevelMatchFilter</code></a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="LevelRangeFilter"><a class="anchor" href="#LevelRangeFilter"></a><code>LevelRangeFilter</code></h4>
+<div class="paragraph">
+<p>The <code>LevelRangeFilter</code> matches log events with a log level within a configured range.</p>
+</div>
+<div class="paragraph">
+<p>Besides the <a href="#common-configuration-attributes">common configuration attributes</a>,
+the <code>LevelRangeFilter</code> supports the following parameter:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 5. <code>LevelRangeFilter</code>&#8201;&#8212;&#8201;configuration attributes</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 57.1429%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>minLevel</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html"><code>Level</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html#OFF"><code>OFF</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The filter only matches log events at most as severe as this level.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>maxLevel</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html"><code>Level</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html#ALL"><code>ALL</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The filter only matches log events at least as severe as this level.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Make sure not to invert the bounds of the range.
+Starting from the smallest level,
+<a href="https://logging.apache.org/log4j/2.x/manual/customloglevels.adoc">the Log4j API defines</a>: <code>OFF</code>,
+<code>FATAL</code>, <code>ERROR</code>, <code>WARN</code>, <code>INFO</code>, <code>DEBUG</code>, <code>TRACE</code> and <code>ALL</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-LevelRangeFilter" class="xref page">📖 Plugin reference for <code>LevelRangeFilter</code></a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="ThresholdFilter"><a class="anchor" href="#ThresholdFilter"></a><code>ThresholdFilter</code></h4>
+<div class="paragraph">
+<p>The <code>ThresholdFilter</code> matches log events at least as severe as a configured level.</p>
+</div>
+<div class="paragraph">
+<p>Besides the <a href="#common-configuration-attributes">common configuration attributes</a>,
+the <code>ThresholdFilter</code> supports the following parameter:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 6. <code>ThresholdFilter</code>—configuration attributes</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 57.1429%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>level</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html"><code>Level</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html#OFF"><code>OFF</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The filter only matches log events at least as severe as this level.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-ThresholdFilter" class="xref page">📖 Plugin reference for <code>ThresholdFilter</code></a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="DynamicThresholdFilter"><a class="anchor" href="#DynamicThresholdFilter"></a><code>DynamicThresholdFilter</code></h4>
+<div class="paragraph">
+<p>The <code>DynamicThresholdFilter</code> is a variant of <a href="#ThresholdFilter"><code>ThresholdFilter</code></a>,
+which uses a different threshold for each log event.
+The effective threshold to use is determined by querying the
+<a href="https://logging.apache.org/log4j/2.x/manual/thread-context.adoc">context data</a>
+of the log event.
+For each log event:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The filter retrieves the value of <code>key</code> in the context data map.</p>
+</li>
+<li>
+<p>The filter checks the list of nested
+<a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-util-KeyValuePair" class="xref page"><code>KeyValuePair</code></a>
+configuration elements to decide which level to apply.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Besides the <a href="#common-configuration-attributes">common configuration attributes</a>,
+the <code>DynamicThresholdFilter</code> supports the following parameters:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 7. <code>DynamicThresholdFilter</code>—configuration attributes</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 57.1429%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>key</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The key to a value in the context map of the log event.</p>
+<p class="tableblock"><strong>Required</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>defaultThreshold</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html"><code>Level</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html#ERROR"><code>ERROR</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Threshold to apply to log events that don&#8217;t have a corresponding <code>KeyValuePair</code>.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 8. <code>DynamicThresholdFilter</code>—nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Multiplicity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-util-KeyValuePair" class="xref page"><code>KeyValuePair</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">One or more</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Associates a log level with the context map value associated with <code>key</code>.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>For example, if <code>loginId</code> contains the login of the current user,
+you can use this configuration to apply different thresholds to different users:</p>
+</div>
+<div id="_tabs_3" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_3_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_3_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_3_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_3_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_3_xml--panel" class="tabpanel" aria-labelledby="_tabs_3_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/DynamicThresholdFilter.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;DynamicThresholdFilter key="loginId"
+                        defaultThreshold="ERROR"&gt; <i class="conum" data-value="3"></i><b>(3)</b>
+  &lt;KeyValuePair key="alice" value="DEBUG"/&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;KeyValuePair key="bob" value="INFO"/&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+&lt;/DynamicThresholdFilter&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_3_json--panel" class="tabpanel" aria-labelledby="_tabs_3_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/DynamicThresholdFilter.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"DynamicThresholdFilter": {
+  "key": "loginId", <i class="conum" data-value="3"></i><b>(3)</b>
+  "defaultThreshold": "ERROR",
+  "KeyValuePair": [
+    { <i class="conum" data-value="1"></i><b>(1)</b>
+      "key": "alice",
+      "value": "DEBUG"
+    },
+    { <i class="conum" data-value="2"></i><b>(2)</b>
+      "key": "bob",
+      "value": "INFO"
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_3_yaml--panel" class="tabpanel" aria-labelledby="_tabs_3_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/DynamicThresholdFilter.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">DynamicThresholdFilter:
+  key: "loginId"
+  defaultThreshold: "ERROR" <i class="conum" data-value="3"></i><b>(3)</b>
+  KeyValuePair:
+    - key: "alice" <i class="conum" data-value="1"></i><b>(1)</b>
+      value: "DEBUG"
+    - key: "bob" <i class="conum" data-value="2"></i><b>(2)</b>
+      value: "INFO"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_3_properties--panel" class="tabpanel" aria-labelledby="_tabs_3_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/DynamicThresholdFilter.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">filter.0.type = DynamicThresholdFilter
+filter.0.key = loginId
+<i class="conum" data-value="3"></i><b>(3)</b>
+filter.0.defaultThreshold = ERROR
+<i class="conum" data-value="1"></i><b>(1)</b>
+filter.0.kv0.type = KeyValuePair
+filter.0.kv0.key = alice
+filter.0.kv0.value = DEBUG
+<i class="conum" data-value="2"></i><b>(2)</b>
+filter.0.kv1.type = KeyValuePair
+filter.0.kv1.key = bob
+filter.0.kv1.value = INFO</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>If the <code>loginId</code> is <code>alice</code> a threshold level of <code>DEBUG</code> will be used.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>If the <code>loginId</code> is <code>bob</code> a threshold level of <code>INFO</code> will be used.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>For all the other values of <code>loginId</code> a threshold level of <code>ERROR</code> will be used.</td>
 </tr>
 </table>
 </div>
@@ -520,783 +1476,664 @@ This reduces the costs (formatting, transfer through an asynchronous barrier) of
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Users migrating from Log4j 1 often replace the <code>threshold</code> property of a Log4j 1 appender with a <a href="#ThresholdFilter">ThresholdFilter</a> on the equivalent Log4j 2 appender.</p>
-</div>
-<div class="paragraph">
-<p>Using the <code>level</code> property of appender references will give a better performance.</p>
+<p>You can use Log4j Core&#8217;s
+<a href="configuration.html#configuration-attribute-monitorInterval" class="xref page">automatic reconfiguration feature</a>
+to modify the <code>KeyValuePair</code>s without restarting your application.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="BurstFilter"><a class="anchor" href="#BurstFilter"></a>BurstFilter</h2>
-<div class="sectionbody">
 <div class="paragraph">
-<p>The BurstFilter provides a mechanism to control the rate at which LogEvents are processed by silently discarding events after the maximum limit has been reached.</p>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-DynamicThresholdFilter" class="xref page">📖 Plugin reference for <code>DynamicThresholdFilter</code></a></p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="marker-filters"><a class="anchor" href="#marker-filters"></a>Marker filters</h3>
+<div class="paragraph">
+<p>The following filters use the
+<a href="https://logging.apache.org/log4j/2.x/manual/markers.adoc">log event marker</a>
+to filter log events.</p>
+</div>
+<div class="sect3">
+<h4 id="NoMarkerFilter"><a class="anchor" href="#NoMarkerFilter"></a><code>NoMarkerFilter</code></h4>
+<div class="paragraph">
+<p>The <code>NoMarkerFilter</code> matches log events that do not have any markers.</p>
+</div>
+<div class="paragraph">
+<p>This filter does not have any additional configuration attribute,
+except the <a href="#common-configuration-attributes">common configuration attributes</a>.</p>
+</div>
+<div class="paragraph">
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-NoMarkerFilter" class="xref page">📖 Plugin reference for <code>NoMarkerFilter</code></a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="MarkerFilter"><a class="anchor" href="#MarkerFilter"></a><code>MarkerFilter</code></h4>
+<div class="paragraph">
+<p>The <code>MarkerFilter</code> matches log events marked with a specific marker or <strong>any</strong> of its descendants.</p>
+</div>
+<div class="paragraph">
+<p>Besides the <a href="#common-configuration-attributes">common configuration attributes</a>,
+the <code>MarkerFilter</code> supports the following parameter:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. Burst Filter Parameters</caption>
+<caption class="title">Table 9. <code>MarkerFilter</code>—configuration attributes</caption>
 <colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 16.6666%;">
-<col style="width: 66.6668%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 57.1429%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
+<th class="tableblock halign-left valign-top">Attribute</th>
 <th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>level</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Level of messages to be filtered. Anything at or below
-this level will be filtered out if <code>maxBurst</code> has been exceeded. The
-default is WARN meaning any messages that are higher than warn will be
-logged regardless of the size of a burst.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rate</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">float</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The average number of events per second to allow.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>maxBurst</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of events that can occur before
-events are filtered for exceeding the average rate. The default is 10
-times the rate.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>onMatch</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Action to take when the filter matches. Can be ACCEPT,
-DENY or NEUTRAL. The default value is NEUTRAL.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>onMismatch</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Action to take when the filter does not match. Can
-be ACCEPT, DENY or NEUTRAL. The default value is DENY.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>A configuration containing the BurstFilter might look like:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz"&gt;
-      &lt;BurstFilter level="INFO" rate="16" maxBurst="100"/&gt;
-      &lt;PatternLayout&gt;
-        &lt;pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/pattern&gt;
-      &lt;/PatternLayout&gt;
-      &lt;TimeBasedTriggeringPolicy /&gt;
-    &lt;/RollingFile&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="RollingFile"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="CompositeFilter"><a class="anchor" href="#CompositeFilter"></a>CompositeFilter</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The CompositeFilter provides a way to specify more than one filter.
-It is added to the configuration as a filter element and contains other filters to be evaluated.
-The filter element accepts no parameters.</p>
-</div>
-<div class="paragraph">
-<p>A configuration containing the CompositeFilter might look like:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Filters&gt;
-    &lt;MarkerFilter marker="EVENT" onMatch="ACCEPT" onMismatch="NEUTRAL"/&gt;
-    &lt;DynamicThresholdFilter key="loginId" defaultThreshold="ERROR"
-                            onMatch="ACCEPT" onMismatch="NEUTRAL"&gt;
-      &lt;KeyValuePair key="User1" value="DEBUG"/&gt;
-    &lt;/DynamicThresholdFilter&gt;
-  &lt;/Filters&gt;
-  &lt;Appenders&gt;
-    &lt;File name="Audit" fileName="logs/audit.log"&gt;
-      &lt;PatternLayout&gt;
-        &lt;pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/pattern&gt;
-      &lt;/PatternLayout&gt;
-    &lt;/File&gt;
-    &lt;RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz"&gt;
-      &lt;BurstFilter level="INFO" rate="16" maxBurst="100"/&gt;
-      &lt;PatternLayout&gt;
-        &lt;pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/pattern&gt;
-      &lt;/PatternLayout&gt;
-      &lt;TimeBasedTriggeringPolicy /&gt;
-    &lt;/RollingFile&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Logger name="EventLogger" level="info"&gt;
-      &lt;AppenderRef ref="Audit"/&gt;
-    &lt;/Logger&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="RollingFile"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="DynamicThresholdFilter"><a class="anchor" href="#DynamicThresholdFilter"></a>DynamicThresholdFilter</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The DynamicThresholdFilter allows filtering by log level based on specific attributes.
-For example, if the user&#8217;s loginId is being captured in the ThreadContext Map then it is possible to enable debug logging for only that user.
-If the log event does not contain the specified ThreadContext item NEUTRAL will be returned.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. Dynamic Threshold Filter Parameters</caption>
-<colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 16.6666%;">
-<col style="width: 66.6668%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>key</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the item in the ThreadContext Map to compare.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>defaultThreshold</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Level of messages to be filtered. The default
-threshold only applies if the log event contains the specified
-ThreadContext Map item and its value do not match any key in the
-key/value pairs.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>keyValuePair</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">KeyValuePair[]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">One or more KeyValuePair elements that
-define the matching value for the key and the Level to evaluate when the
-key matches.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>onMatch</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Action to take when the filter matches. Can be ACCEPT,
-DENY or NEUTRAL. The default value is NEUTRAL.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>onMismatch</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Action to take when the filter does not match. Can
-be ACCEPT, DENY or NEUTRAL. The default value is DENY.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Here is a sample configuration containing the DynamicThresholdFilter:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;DynamicThresholdFilter key="loginId" defaultThreshold="ERROR"
-                          onMatch="ACCEPT" onMismatch="NEUTRAL"&gt;
-    &lt;KeyValuePair key="User1" value="DEBUG"/&gt;
-  &lt;/DynamicThresholdFilter&gt;
-  &lt;Appenders&gt;
-    &lt;RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz"&gt;
-      &lt;BurstFilter level="INFO" rate="16" maxBurst="100"/&gt;
-      &lt;PatternLayout&gt;
-        &lt;pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/pattern&gt;
-      &lt;/PatternLayout&gt;
-      &lt;TimeBasedTriggeringPolicy /&gt;
-    &lt;/RollingFile&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="RollingFile"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="LevelRangeFilter"><a class="anchor" href="#LevelRangeFilter"></a>LevelRangeFilter</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p><code>LevelRangeFilter</code> allows filtering against a level range, where levels get compared by their associated integral values; <code>OFF</code> has an integral value of 0, <code>FATAL</code> 100, <code>ERROR</code> 200, and so on.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. <code>LevelRangeFilter</code> parameters</caption>
-<colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 16.6666%;">
-<col style="width: 66.6668%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>minLevel</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Level</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the minimum level threshold (defaults to <code>OFF</code>, which has an integral value of 0)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>maxLevel</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Level</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the maximum level threshold (defaults to <code>ALL</code>, which has an integral value of <code>Integer.MAX_VALUE</code>)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>onMatch</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Filter.Result</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the result to return on a match, where allowed values are <code>ACCEPT</code>, <code>DENY</code>, or <code>NEUTRAL</code> (default)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>onMismatch</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Filter.Result</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the result to return on a mismatch, where allowed values are <code>ACCEPT</code>, <code>DENY</code> (default), or <code>NEUTRAL</code></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>In the following example configuration, a <code>LevelRangeFilter</code> is configured with <code>maxLevel</code> set to <code>INFO</code>.
-The filter will return <code>onMismatch</code> result (i.e., <code>DENY</code>, the default) for log events of level with higher integral values than <code>INFO</code>; i.e., <code>DEBUG</code>, <code>TRACE</code>, etc.</p>
-</div>
-<div class="listingblock">
-<div class="title">Example configuration using <code>LevelRangeFilter</code></div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="WARN" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;Console name="STDOUT"&gt;
-      &lt;LevelRangeFilter maxLevel="INFO"/&gt;
-      &lt;PatternLayout pattern="%d %p %c{1.} [%t] %m%n"/&gt;
-    &lt;/Console&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="ERROR"&gt;
-      &lt;AppenderRef ref="STDOUT"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="MapFilter"><a class="anchor" href="#MapFilter"></a>MapFilter</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The MapFilter allows filtering against data elements that are in a MapMessage.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. Map Filter Parameters</caption>
-<colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 16.6666%;">
-<col style="width: 66.6668%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>keyValuePair</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">KeyValuePair[]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">One or more KeyValuePair elements that
-define the key in the map and the value to match. If the same key is
-specified more than once then the check for that key will automatically
-be an "or" since a Map can only contain a single value.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>operator</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If the operator is "or" then a match by any one of
-the key/value pairs will be considered to be a match, otherwise all the
-key/value pairs must match.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>onMatch</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Action to take when the filter matches. Can be ACCEPT,
-DENY or NEUTRAL. The default value is NEUTRAL.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>onMismatch</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Action to take when the filter does not match. Can
-be ACCEPT, DENY or NEUTRAL. The default value is DENY.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>As in this configuration, the MapFilter can be used to log particular events:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;MapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or"&gt;
-    &lt;KeyValuePair key="eventId" value="Login"/&gt;
-    &lt;KeyValuePair key="eventId" value="Logout"/&gt;
-  &lt;/MapFilter&gt;
-  &lt;Appenders&gt;
-    &lt;RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz"&gt;
-      &lt;BurstFilter level="INFO" rate="16" maxBurst="100"/&gt;
-      &lt;PatternLayout&gt;
-        &lt;pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/pattern&gt;
-      &lt;/PatternLayout&gt;
-      &lt;TimeBasedTriggeringPolicy /&gt;
-    &lt;/RollingFile&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="RollingFile"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This sample configuration will exhibit the same behavior as the preceding example since the only logger configured is the root.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz"&gt;
-      &lt;BurstFilter level="INFO" rate="16" maxBurst="100"/&gt;
-      &lt;PatternLayout&gt;
-        &lt;pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/pattern&gt;
-      &lt;/PatternLayout&gt;
-      &lt;TimeBasedTriggeringPolicy /&gt;
-    &lt;/RollingFile&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;MapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or"&gt;
-        &lt;KeyValuePair key="eventId" value="Login"/&gt;
-        &lt;KeyValuePair key="eventId" value="Logout"/&gt;
-      &lt;/MapFilter&gt;
-      &lt;AppenderRef ref="RollingFile"&gt;
-      &lt;/AppenderRef&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This third sample configuration will exhibit the same behavior as the preceding examples since the only logger configured is the root and the root is only configured with a single appender reference.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz"&gt;
-      &lt;BurstFilter level="INFO" rate="16" maxBurst="100"/&gt;
-      &lt;PatternLayout&gt;
-        &lt;pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/pattern&gt;
-      &lt;/PatternLayout&gt;
-      &lt;TimeBasedTriggeringPolicy /&gt;
-    &lt;/RollingFile&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="RollingFile"&gt;
-        &lt;MapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or"&gt;
-          &lt;KeyValuePair key="eventId" value="Login"/&gt;
-          &lt;KeyValuePair key="eventId" value="Logout"/&gt;
-        &lt;/MapFilter&gt;
-      &lt;/AppenderRef&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="MarkerFilter"><a class="anchor" href="#MarkerFilter"></a>MarkerFilter</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The MarkerFilter compares the configured Marker value against the Marker that is included in the LogEvent.
-A match occurs when the Marker name matches either the Log Event&#8217;s Marker or one of its parents.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. Marker Filter Parameters</caption>
-<colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 16.6666%;">
-<col style="width: 66.6668%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>marker</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the Marker to compare.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>onMatch</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Action to take when the filter matches. Can be ACCEPT,
-DENY or NEUTRAL. The default value is NEUTRAL.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>onMismatch</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Action to take when the filter does not match. Can
-be ACCEPT, DENY or NEUTRAL. The default value is DENY.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Marker.html"><code>Marker</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The filter only matches log events of marker with the given marker or one of its descendants.</p>
+<p class="tableblock"><strong>Required</strong></p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>A sample configuration that only allows the event to be written by the appender if the Marker matches:</p>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-MarkerFilter" class="xref page">📖 Plugin reference for <code>MarkerFilter</code></a></p>
 </div>
-<div class="listingblock">
+</div>
+</div>
+<div class="sect2">
+<h3 id="message-filters"><a class="anchor" href="#message-filters"></a>Message filters</h3>
+<div class="paragraph">
+<p>Message filters allow filtering log events based on the
+<a href="https://logging.apache.org/log4j/2.x/manual/messages.adoc"><code>Message</code></a>
+contained in the log event.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Log messages</strong> are often used interchangeably with <strong>log events</strong>.
+While this simplification holds for several cases, it is not technically correct.
+A log event, capturing the logging context (level, logger name, instant, etc.) along with the log message, is generated by the logging implementation (e.g., Log4j Core) when a user issues a log using a <a href="api.html#loggers" class="xref page">logger</a>, e.g., <code>LOGGER.info("Hello, world!")</code>.
+Hence, <strong>log events are compound objects containing log messages</strong>.</p>
+</div>
+<details>
+<summary class="title">Click for an introduction to log event fields</summary>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz"&gt;
-      &lt;MarkerFilter marker="FLOW" onMatch="ACCEPT" onMismatch="DENY"/&gt;
-      &lt;PatternLayout&gt;
-        &lt;pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/pattern&gt;
-      &lt;/PatternLayout&gt;
-      &lt;TimeBasedTriggeringPolicy /&gt;
-    &lt;/RollingFile&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="RollingFile"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="MutableThreadContextMapFilter"><a class="anchor" href="#MutableThreadContextMapFilter"></a>MutableThreadContextMapFilter</h2>
-<div class="sectionbody">
 <div class="paragraph">
-<p>The MutableThreadContextMapFilter or MutableContextMapFilter allows filtering against data elements that are in the current context.
-By default, this is the ThreadContext Map.
-The values to compare are defined externally and can be periodically polled for changes.</p>
+<p>Log events contain fields that can be classified into three categories:</p>
 </div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. Mutable Context Map Filter Parameters</caption>
-<colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 16.6666%;">
-<col style="width: 66.6668%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>configLocation</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A file path or URI that points to the configuration. See below for a sample configuration.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>operator</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If the operator is "or" then a match by any one of
-the key/value pairs will be considered to be a match, otherwise all the
-key/value pairs must match.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pollInterval</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The number of seconds to wait before checking to see if the configuration has been modified. When using HTTP or HTTPS the server must support the If-Modified-Since header and return a Last-Modified header containing the date and time the file was last modified. Note that by default only the https, file, and jar protocols are allowed. Support for other protocols can be enabled by specifying them in the <code>log4j2.Configuration.allowedProtocols</code> system property</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>onMatch</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Action to take when the filter matches. Can be ACCEPT,
-DENY or NEUTRAL. The default value is NEUTRAL.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>onMismatch</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Action to take when the filter does not match. Can
-be ACCEPT, DENY or NEUTRAL. The default value is DENY.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>A sample configuration that only allows the event to be written by the appender if the Marker matches:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;MutableContextMapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or"
-    configLocation="http://localhost:8080/threadContextFilter.json" pollInterval="300"/&gt;
-  &lt;Appenders&gt;
-    &lt;RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz"&gt;
-      &lt;BurstFilter level="INFO" rate="16" maxBurst="100"/&gt;
-      &lt;PatternLayout&gt;
-        &lt;pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/pattern&gt;
-      &lt;/PatternLayout&gt;
-      &lt;TimeBasedTriggeringPolicy /&gt;
-    &lt;/RollingFile&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="RollingFile"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;</code></pre>
-</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Some fields are provided explicitly, in a <a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html"><code>Logger</code></a> method call.
+The most important are the log level and the log message, which is a description of what happened, and it is addressed to humans.</p>
+</li>
+<li>
+<p>Some fields are contextual (e.g., <a href="#manual/thread-context.adoc" class="xref unresolved">manual/thread-context.adoc</a>) and are either provided explicitly by developers of other parts of the application, or is injected by Java instrumentation.</p>
+</li>
+<li>
+<p>The last category of fields is those that are computed automatically by the logging implementation employed.</p>
+</li>
+</ol>
 </div>
 <div class="paragraph">
-<p>The configuration file supplied to the filter should look similar to:</p>
+<p>For clarity&#8217;s sake let us look at a log event formatted as JSON:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
-  "configs": {
-    "loginId": ["rgoers@apache.org", "logging@apache.org"],
-    "accountNumber": ["30510263"]
-  }
+  <i class="conum" data-value="1"></i><b>(1)</b>
+  "log.level": "INFO",
+  "message": "Unable to insert data into my_table.",
+  "error.type": "java.lang.RuntimeException",
+  "error.message": null,
+  "error.stack_trace": [
+    {
+      "class": "com.example.Main",
+      "method": "doQuery",
+      "file.name": "Main.java",
+      "file.line": 36
+    },
+    {
+      "class": "com.example.Main",
+      "method": "main",
+      "file.name": "Main.java",
+      "file.line": 25
+    }
+  ],
+  "marker": "SQL",
+  "log.logger": "com.example.Main",
+  <i class="conum" data-value="2"></i><b>(2)</b>
+  "tags": [
+    "SQL query"
+  ],
+  "labels": {
+    "span_id": "3df85580-f001-4fb2-9e6e-3066ed6ddbb1",
+    "trace_id": "1b1f8fc9-1a0c-47b0-a06f-af3c1dd1edf9"
+  },
+  <i class="conum" data-value="3"></i><b>(3)</b>
+  "@timestamp": "2024-05-23T09:32:24.163Z",
+  "log.origin.class": "com.example.Main",
+  "log.origin.method": "doQuery",
+  "log.origin.file.name": "Main.java",
+  "log.origin.file.line": 36,
+  "process.thread.id": 1,
+  "process.thread.name": "main",
+  "process.thread.priority": 5
 }</code></pre>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="NoMarkerFilter"><a class="anchor" href="#NoMarkerFilter"></a>NoMarkerFilter</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The NoMarkerFilter checks that there is no marker included in the LogEvent.
-A match occurs when there is no marker in the Log Event.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 7. No Marker Filter Parameters</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
+<div class="colist arabic">
+<table>
 <tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Explicitly supplied fields:
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>log.level</code></dt>
+<dd>
+<p>The <a href="#manual/customloglevels.adoc" class="xref unresolved">level</a> of the event, either explicitly provided as an argument to the logger call, or implied by the name of the logger method</p>
+</dd>
+<dt class="hdlist1"><code>message</code></dt>
+<dd>
+<p>The <strong>log message</strong> that describes what happened</p>
+</dd>
+<dt class="hdlist1"><code>error.*</code></dt>
+<dd>
+<p>An <em>optional</em> <code>Throwable</code> explicitly passed as an argument to the logger call</p>
+</dd>
+<dt class="hdlist1"><code>marker</code></dt>
+<dd>
+<p>An <em>optional</em> <a href="#manual/markers.adoc" class="xref unresolved">marker</a> explicitly passed as an argument to the logger call</p>
+</dd>
+<dt class="hdlist1"><code>log.logger</code></dt>
+<dd>
+<p>The <a href="api.html#logger-names" class="xref page">logger name</a> provided explicitly to <code>LogManager.getLogger()</code> or inferred by Log4j API</p>
+</dd>
+</dl>
+</div></td>
 </tr>
-</thead>
-<tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>onMatch</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Action to take when the filter matches. Can be ACCEPT,
-DENY or NEUTRAL. The default value is NEUTRAL.</p></td>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Contextual fields:
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>tags</code></dt>
+<dd>
+<p>The <a href="#manual/thread-context.adoc" class="xref unresolved">manual/thread-context.adoc</a> stack</p>
+</dd>
+<dt class="hdlist1"><code>labels</code></dt>
+<dd>
+<p>The <a href="#manual/thread-context.adoc" class="xref unresolved">manual/thread-context.adoc</a> map</p>
+</dd>
+</dl>
+</div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>onMismatch</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Action to take when the filter does not match. Can
-be ACCEPT, DENY or NEUTRAL. The default value is DENY.</p></td>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Logging backend specific fields.
+In case you are using Log4j Core, the following fields can be automatically generated:
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>@timestamp</code></dt>
+<dd>
+<p>The instant of the logger call</p>
+</dd>
+<dt class="hdlist1"><code>log.origin.*</code></dt>
+<dd>
+<p>The <a href="layouts.html#LocationInformation" class="xref page">location</a> of the logger call in the source code</p>
+</dd>
+<dt class="hdlist1"><code>process.thread.*</code></dt>
+<dd>
+<p>The name of the Java thread, where the logger is called</p>
+</dd>
+</dl>
+</div></td>
 </tr>
-</tbody>
 </table>
+</div>
+</div>
+</details>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="RegexFilter"><a class="anchor" href="#RegexFilter"></a><code>RegexFilter</code></h4>
 <div class="paragraph">
-<p>A sample configuration that only allows the event to be written by the appender if no marker is there:</p>
+<p>The <code>RegexFilter</code> matches a regular expression against either the result of
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html#getFormat()"><code>Message.getFormat()</code></a>
+or
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html#getFormat()"><code>Message.getFormattedMessage()</code></a>.
+It can be used with all kinds of <code>Message</code> implementations.</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz"&gt;
-      &lt;NoMarkerFilter onMatch="ACCEPT" onMismatch="DENY"/&gt;
-      &lt;PatternLayout&gt;
-        &lt;pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/pattern&gt;
-      &lt;/PatternLayout&gt;
-      &lt;TimeBasedTriggeringPolicy /&gt;
-    &lt;/RollingFile&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="RollingFile"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="RegexFilter"><a class="anchor" href="#RegexFilter"></a>RegexFilter</h2>
-<div class="sectionbody">
 <div class="paragraph">
-<p>The RegexFilter allows the formatted or unformatted message to be compared against a regular expression.</p>
+<p>Besides the <a href="#common-configuration-attributes">common configuration attributes</a>,
+the <code>RegexFilter</code> supports the following parameters:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 8. Regex Filter Parameters</caption>
+<caption class="title">Table 10. <code>RegexFilter</code>&#8201;&#8212;&#8201;configuration attributes</caption>
 <colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 16.6666%;">
-<col style="width: 66.6668%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 57.1429%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
+<th class="tableblock halign-left valign-top">Attribute</th>
 <th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>regex</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The regular expression.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/util/regex/Pattern.html"><code>Pattern</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The regular expression used to match log messages.</p>
+<p class="tableblock"><strong>Required</strong></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>useRawMsg</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If true the unformatted message will be used,
-otherwise, the formatted message will be used. The default value is
-false.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code> the result of
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html#getFormat()"><code>Message.getFormat()</code></a>
+will be used.
+Otherwise,
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html#getFormat()"><code>Message.getFormattedMessage()</code></a>
+is used.</p></td>
 </tr>
+</tbody>
+</table>
+<div class="admonitionblock warning">
+<table>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>onMatch</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Action to take when the filter matches. Can be ACCEPT,
-DENY or NEUTRAL. The default value is NEUTRAL.</p></td>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>This filter only matches if the <strong>whole</strong> log message matches the regular expression.</p>
+</li>
+<li>
+<p>Setting <code>useRawMsg</code> to <code>false</code> decreases performance, since it forces the formatting of all log messages, including the disabled ones.</p>
+</li>
+</ul>
+</div>
+</td>
 </tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-RegexFilter" class="xref page">📖 Plugin reference for <code>RegexFilter</code></a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="StringMatchFilter"><a class="anchor" href="#StringMatchFilter"></a><code>StringMatchFilter</code></h4>
+<div class="paragraph">
+<p>The <code>StringMatchFilter</code> matches a log event, if its message contains the given string.</p>
+</div>
+<div class="paragraph">
+<p>Besides the <a href="#common-configuration-attributes">common configuration attributes</a>,
+the <code>StringMatchFilter</code> supports the following parameters:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 11. <code>StringMatchFilter</code>—configuration attributes</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 57.1429%;">
+</colgroup>
+<thead>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>onMismatch</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Action to take when the filter does not match. Can
-be ACCEPT, DENY or NEUTRAL. The default value is DENY.</p></td>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>text</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The text to look for.</p>
+<p class="tableblock"><strong>Required</strong></p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This filter decreases performance, since it forces the formatting of all log messages, including the disabled ones.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-StringMatchFilter" class="xref page">📖 Plugin reference for <code>StringMatchFilter</code></a></p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="map-filters"><a class="anchor" href="#map-filters"></a>Map filters</h3>
+<div class="paragraph">
+<p>The following filters match log events based on the content of one of these map structures:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The map contained in a
+<a href="https://logging.apache.org/log4j/2.x/manual/messages.adoc#MapMessage"><code>MapMessage</code></a> object.
+See
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html#getData()"><code>MapMessage.getData()</code></a>
+for details.</p>
+</li>
+<li>
+<p>The context data map contained in a
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html"><code>LogEvent</code></a>.
+See
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getContextData()"><code>LogEvent.getContextData()</code></a>
+for details.</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="configuration-map"><a class="anchor" href="#configuration-map"></a>Configuration map</h4>
+<div class="paragraph">
+<p>These filters are configured with a configuration map of type <code>Map&lt;String, String[]&gt;</code>,
+which,
+depending on the filter,
+is encoded as either JSON:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "configs": {
+    "clientId": [
+      "1234"
+    ],
+    "userId": [
+      "alice",
+      "bob"
+    ]
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or as a sequence of
+<a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-util-KeyValuePair" class="xref page"><code>KeyValuePair</code></a>
+plugins:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;KeyValuePair key="clientId" value="1234"/&gt;
+&lt;KeyValuePair key="userId" value="alice"/&gt;
+&lt;KeyValuePair key="userId" value="bob"/&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The configuration map associates to each key a list of allowed values for that key.
+In the example above the allowed values for the <code>loginId</code> key are either <code>alice</code> or <code>bob</code>.
+The only allowed value for the <code>clientId</code> key is <code>1234</code>.</p>
+</div>
+<div class="paragraph">
+<p>The map filters can work in two matching modes:</p>
+</div>
+<div id="matching-mode-and" class="dlist">
+<dl>
+<dt class="hdlist1">AND</dt>
+<dd>
+<p>A map structure matches
+if the value associated with <strong>each</strong> key
+that appears in the configuration map is one of the allowed values.</p>
+</dd>
+</dl>
+</div>
+<div id="matching-mode-or" class="dlist">
+<dl>
+<dt class="hdlist1">OR</dt>
+<dd>
+<p>A map structure matches
+if the value associated with <strong>at least one</strong> key
+that appears in the configuration map is one of the allowed values.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect3">
+<h4 id="MapFilter"><a class="anchor" href="#MapFilter"></a><code>MapFilter</code></h4>
+<div class="paragraph">
+<p>The <code>MapFilter</code> allows filtering based on the contents of all
+<a href="https://logging.apache.org/log4j/2.x/manual/messages.adoc#collection-structured">structured <code>Message</code>s</a>.</p>
+</div>
+<div class="paragraph">
+<p>This filter encodes the <a href="#configuration-map">Configuration map</a> introduced above as a list of
+<code>KeyValuePair</code> elements.</p>
+</div>
+<div class="paragraph">
+<p>Besides the <a href="#common-configuration-attributes">common configuration attributes</a>,
+the <code>MapFilter</code> supports the following parameters:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 12. <code>MapFilter</code>&#8201;&#8212;&#8201;configuration attributes</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 57.1429%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>operator</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>enumeration</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>AND</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Determines the matching mode of the filter.
+Can be:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#matching-mode-and">AND</a></p>
+</li>
+<li>
+<p><a href="#matching-mode-or">OR</a></p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 13. <code>MapFilter</code>&#8201;&#8212;&#8201;nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Multiplicity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-util-KeyValuePair" class="xref page"><code>KeyValuePair</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">One or more</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Adds a value as allowed value for a key.
+See <a href="#configuration-map">Configuration map</a> for more details.</p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>A sample configuration that only allows the event to be written by the appender if it contains the word "test":</p>
+<p>For example,
+if you want to filter all <code>MapMessage</code>s
+that have an <code>eventType</code> key with value <code>authentication</code> <strong>and</strong> an <code>eventId</code> key with value either <code>login</code> <strong>or</strong> <code>logout</code>,
+you can use the following configuration:</p>
 </div>
-<div class="listingblock">
+<div id="_tabs_4" class="openblock tabs is-sync is-loading">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz"&gt;
-      &lt;RegexFilter regex=".* test .*" onMatch="ACCEPT" onMismatch="DENY"/&gt;
-      &lt;PatternLayout&gt;
-        &lt;pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/pattern&gt;
-      &lt;/PatternLayout&gt;
-      &lt;TimeBasedTriggeringPolicy /&gt;
-    &lt;/RollingFile&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="RollingFile"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_4_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_4_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_4_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_4_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_4_xml--panel" class="tabpanel" aria-labelledby="_tabs_4_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/MapFilter.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;MapFilter operator="AND"&gt;
+  &lt;KeyValuePair key="eventType" value="authentication"/&gt;
+  &lt;KeyValuePair key="eventId" value="login"/&gt;
+  &lt;KeyValuePair key="eventId" value="logout"/&gt;
+&lt;/MapFilter&gt;</code></pre>
 </div>
 </div>
-<div id="Script" class="paragraph">
-<p>The ScriptFilter executes a script that returns true or false.</p>
 </div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 9. Script Filter Parameters</caption>
-<colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 16.6666%;">
-<col style="width: 66.6668%;">
-</colgroup>
-<thead>
+<div id="_tabs_4_json--panel" class="tabpanel" aria-labelledby="_tabs_4_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/MapFilter.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"MapFilter": {
+  "operator": "AND",
+  "KeyValuePair": [
+    {
+      "key": "eventType",
+      "value": "authentication"
+    },
+    {
+      "key": "eventId",
+      "value": "login"
+    },
+    {
+      "key": "eventId",
+      "value": "logout"
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_4_yaml--panel" class="tabpanel" aria-labelledby="_tabs_4_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/MapFilter.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">MapFilter:
+  operator: "AND"
+  KeyValuePair:
+    - key: "eventType"
+      value: "authentication"
+    - key: "eventId"
+      value: "login"
+    - key: "eventId"
+      value: "logout"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_4_properties--panel" class="tabpanel" aria-labelledby="_tabs_4_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/MapFilter.yaml"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">filter.0.type = MapFilter
+filter.0.operator = AND
+
+filter.0.kv0.type = KeyValuePair
+filter.0.kv0.key = eventType
+filter.0.kv0.value = authentication
+
+filter.0.kv1.type = KeyValuePair
+filter.0.kv1.key = eventId
+filter.0.kv1.value = login
+
+filter.0.kv2.type = KeyValuePair
+filter.0.kv2.key = eventId
+filter.0.kv2.value = logout</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
 <tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You can use Log4j Core&#8217;s
+<a href="configuration.html#configuration-attribute-monitorInterval" class="xref page">automatic reconfiguration feature</a>
+to modify the <code>KeyValuePair</code>s without restarting your application.</p>
+</div>
+</td>
 </tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>script</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Script, ScriptFile or ScriptRef</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Script element that specifies the logic to be executed.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>onMatch</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Action to take when the script returns true. Can be
-ACCEPT, DENY or NEUTRAL. The default value is NEUTRAL.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>onMismatch</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Action to take when the filter returns false. Can
-be ACCEPT, DENY or NEUTRAL. The default value is DENY.</p></td>
-</tr>
-</tbody>
 </table>
+</div>
+<div class="paragraph">
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-MapFilter" class="xref page">📖 Plugin reference for <code>MapFilter</code></a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="StructuredDataFilter"><a class="anchor" href="#StructuredDataFilter"></a><code>StructuredDataFilter</code></h4>
+<div class="paragraph">
+<p>The <code>StructuredDataFilter</code> is a variant of <a href="#MapFilter"><code>MapFilter</code></a> that only matches
+<a href="https://logging.apache.org/log4j/2.x/manual/messages.adoc#StructuredDataMessage"><code>StructureDataMessage</code></a>s.</p>
+</div>
+<div class="paragraph">
+<p>In addition to matching the map structure contained in a <code>StructuredDataMessage</code>
+(which corresponds to <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.3.3">RFC 5424 <code>SD-PARAM</code> elements</a>)
+it provides the following virtual keys:</p>
+</div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. Script Parameters</caption>
+<caption class="title">Table 14. <code>StructuredDataFilter</code>&#8201;&#8212;&#8201;virtual keys</caption>
 <colgroup>
 <col style="width: 16.6666%;">
 <col style="width: 16.6666%;">
@@ -1304,119 +2141,716 @@ be ACCEPT, DENY or NEUTRAL. The default value is DENY.</p></td>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">RFC5424 field</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>configuration</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Configuration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Configuration that owns this
-ScriptFilter.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.3.2"><code>SD-ID</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html#getId()"><code>id</code> field</a>
+of the <code>StructuredDataMessage</code>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>level</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Level</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The logging Level associated with the event. Only present
-when configured as a global filter.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id.name</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataId.html#getName()"><code>name</code> field</a>
+of the <code>StructuredDataId</code> element.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>loggerName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the logger. Only present when
-configured as a global filter.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>logEvent</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LogEvent</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The LogEvent being processed. Not present when
-configured as a global filter.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>marker</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Marker</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Marker passed on the logging call, if any. Only
-present when configured as a global filter.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.2.7"><code>MSGID</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html#getType()"><code>type</code> field</a>
+of a <code>StructuredDataMessage</code>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Message</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Message associated with the logging call. Only
-present when configured as a global filter.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.4"><code>MSG</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The result of a
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html#getFormat()"><code>Message.getFormat()</code></a> method call.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The <code>StructuredDataFilter</code> encodes the <a href="#configuration-map">Configuration map</a> introduced above as a list of
+<code>KeyValuePair</code> and supports the following parameters,
+besides the <a href="#common-configuration-attributes">common configuration attributes</a>:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 15. <code>StructuredDataFilter</code>—configuration attributes</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 57.1429%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>operator</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>enumeration</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>AND</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Determines the matching mode of the filter.
+Can be:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#matching-mode-and">AND</a></p>
+</li>
+<li>
+<p><a href="#matching-mode-or">OR</a></p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 16. <code>StructuredDataFilter</code>&#8201;&#8212;&#8201;nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Multiplicity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-util-KeyValuePair" class="xref page"><code>KeyValuePair</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">One or more</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Adds a value as allowed value for a key.
+See <a href="#configuration-map">Configuration map</a> for more details.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>If you want
+to match all log messages with an <code>SD-ID</code> equal to <code>authentication</code> and the value of the <code>userId</code> <code>SD-PARAM</code> equal to either <code>alice</code> or <code>bob</code>,
+you can use the following configuration:</p>
+</div>
+<div id="_tabs_5" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_5_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_5_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_5_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_5_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_5_xml--panel" class="tabpanel" aria-labelledby="_tabs_5_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/StructuredDataFilter.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;StructuredDataFilter operator="AND"&gt;
+  &lt;KeyValuePair key="id" value="authentication"/&gt;
+  &lt;KeyValuePair key="userId" value="alice"/&gt;
+  &lt;KeyValuePair key="userId" value="bob"/&gt;
+&lt;/StructuredDataFilter&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_5_json--panel" class="tabpanel" aria-labelledby="_tabs_5_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/StructuredDataFilter.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"StructuredDataFilter": {
+  "operator": "AND",
+  "KeyValuePair": [
+    {
+      "key": "id",
+      "value": "authentication"
+    },
+    {
+      "key": "userId",
+      "value": "alice"
+    },
+    {
+      "key": "userId",
+      "value": "bob"
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_5_yaml--panel" class="tabpanel" aria-labelledby="_tabs_5_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/StructuredDataFilter.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">StructuredDataFilter:
+  operator: "AND"
+  KeyValuePair:
+    - key: "id"
+      value: "authentication"
+    - key: "userId"
+      value: "alice"
+    - key: "userId"
+      value: "bob"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_5_properties--panel" class="tabpanel" aria-labelledby="_tabs_5_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/StructuredDataFilter.yaml"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">filter.0.type = StructuredDataFilter
+filter.0.operator = AND
+
+filter.0.kv0.type = KeyValuePair
+filter.0.kv0.key = id
+filter.0.kv0.value = authentication
+
+filter.0.kv1.type = KeyValuePair
+filter.0.kv1.key = userId
+filter.0.kv1.value = alice
+
+filter.0.kv2.type = KeyValuePair
+filter.0.kv2.key = userId
+filter.0.kv2.value = bob</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You can use Log4j Core&#8217;s
+<a href="configuration.html#configuration-attribute-monitorInterval" class="xref page">automatic reconfiguration feature</a>
+to modify the <code>KeyValuePair</code>s without restarting your application.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-StructuredDataFilter" class="xref page">📖 Plugin reference for <code>StructuredDataFilter</code></a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="ContextMapFilter"><a class="anchor" href="#ContextMapFilter"></a><code>ContextMapFilter</code></h4>
+<div class="paragraph">
+<p>The <code>ContextMapFilter</code> works in the same way as the <a href="#MapFilter"><code>MapFilter</code></a> above,
+except it checks the
+<a href="https://logging.apache.org/log4j/2.x/manual/thread-context.adoc">context map data</a>
+of the log event instead of the log message.</p>
+</div>
+<div class="paragraph">
+<p>This filter also encodes the <a href="#configuration-map">Configuration map</a> introduced above as a list of
+<code>KeyValuePair</code> elements.</p>
+</div>
+<div class="paragraph">
+<p>Besides the <a href="#common-configuration-attributes">common configuration attributes</a>,
+the <code>ContextMapFilter</code> supports the following parameters:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 17. <code>ContextMapFilter</code>&#8201;&#8212;&#8201;configuration attributes</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 57.1429%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>operator</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>enumeration</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>AND</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Determines the matching mode of the filter.
+Can be:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#matching-mode-and">AND</a></p>
+</li>
+<li>
+<p><a href="#matching-mode-or">OR</a></p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 18. <code>ContextMapFilter</code>&#8201;&#8212;&#8201;nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Multiplicity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-util-KeyValuePair" class="xref page"><code>KeyValuePair</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">One or more</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Adds a value as allowed value for a key.
+See <a href="#configuration-map">Configuration map</a> for more details.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>For example,
+if the <code>clientId</code> and <code>userId</code> keys in the context data map identify your client and his end users,
+you can filter the log events generated by users <code>alice</code> and <code>bob</code> of client <code>1234</code> using this configuration:</p>
+</div>
+<div id="_tabs_6" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_6_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_6_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_6_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_6_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_6_xml--panel" class="tabpanel" aria-labelledby="_tabs_6_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/ContextMapFilter.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;ContextMapFilter operator="AND"&gt;
+  &lt;KeyValuePair key="clientId" value="1234"/&gt;
+  &lt;KeyValuePair key="userId" value="alice"/&gt;
+  &lt;KeyValuePair key="userId" value="bob"/&gt;
+&lt;/ContextMapFilter&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_6_json--panel" class="tabpanel" aria-labelledby="_tabs_6_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/ContextMapFilter.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"ContextMapFilter": {
+  "operator": "AND",
+  "KeyValuePair": [
+    {
+      "key": "clientId",
+      "value": "1234"
+    },
+    {
+      "key": "userId",
+      "value": "alice"
+    },
+    {
+      "key": "userId",
+      "value": "bob"
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_6_yaml--panel" class="tabpanel" aria-labelledby="_tabs_6_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/ContextMapFilter.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ContextMapFilter:
+  operator: "AND"
+  KeyValuePair:
+    - key: "clientId"
+      value: "1234"
+    - key: "userId"
+      value: "alice"
+    - key: "userId"
+      value: "bob"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_6_properties--panel" class="tabpanel" aria-labelledby="_tabs_6_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/ContextMapFilter.yaml"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">filter.0.type = ContextMapFilter
+filter.0.operator = AND
+
+filter.0.kv0.type = KeyValuePair
+filter.0.kv0.key = clientId
+filter.0.kv0.value = 1234
+
+filter.0.kv1.type = KeyValuePair
+filter.0.kv1.key = userId
+filter.0.kv1.value = alice
+
+filter.0.kv2.type = KeyValuePair
+filter.0.kv2.key = userId
+filter.0.kv2.value = bob</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You can use Log4j Core&#8217;s
+<a href="configuration.html#configuration-attribute-monitorInterval" class="xref page">automatic reconfiguration feature</a>
+to modify the <code>KeyValuePair</code>s without restarting your application.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-ThreadContextMapFilter" class="xref page">📖 Plugin reference for <code>ContextMapFilter</code></a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="MutableThreadContextMapFilter"><a class="anchor" href="#MutableThreadContextMapFilter"></a><code>MutableContextMapFilter</code></h4>
+<div class="paragraph">
+<p>The <code>MutableContextMapFilter</code> is an alternative version of <a href="#ContextMapFilter"><code>ContextMapFilter</code></a> that also uses the
+<a href="https://logging.apache.org/log4j/2.x/manual/thread-context.adoc">context data map</a>
+to filter messages, but externalizes the <a href="#configuration-map">Configuration map</a>, so it can be kept in a separate location.</p>
+</div>
+<div class="paragraph">
+<p>This filter encodes the <a href="#configuration-map">Configuration map</a> as JSON.
+The configuration map must be stored in an <strong>external</strong> location and will be regularly polled for changes.</p>
+</div>
+<div class="paragraph">
+<p>Besides the <a href="#common-configuration-attributes">common configuration attributes</a>,
+the <code>MutableContextMapFilter</code> supports the following parameters:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 19. <code>MutableContextMapFilter</code>&#8201;&#8212;&#8201;configuration attributes</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 57.1429%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>configLocation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/nio/file/Path.html"><code>Path</code></a>
+or
+<a href="https://docs.oracle.com/javase/17/docs/api/java/net/URI.html"><code>URI</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The location of the JSON <a href="#configuration-map">Configuration map</a>.</p>
+<p class="tableblock"><strong>Required</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pollInterval</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>long</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Determines the polling interval used by Log4j to check for changes to the configuration map.</p>
+<p class="tableblock">If set to <code>0</code>, polling is disabled.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Unlike other map filters that have a configurable matching mode,
+this filter always uses the <a href="#matching-mode-or">OR</a> matching mode.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To use this filter, you need to:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a JSON configuration map and place it at a known location (e.g. <code>https://server.example/configs.json</code>):</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "configs": {
+    "clientId": [
+      "1234" <i class="conum" data-value="1"></i><b>(1)</b>
+    ],
+    "userId": [
+      "root" <i class="conum" data-value="2"></i><b>(2)</b>
+    ]
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The filter will match all events for client <code>1234</code> regardless of the <code>userId</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The filter will match all events for the <code>root</code> account regardless of the <code>clientId</code>.</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Reference the configuration map location in your configuration file:</p>
+<div id="_tabs_7" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_7_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_7_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_7_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_7_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_7_xml--panel" class="tabpanel" aria-labelledby="_tabs_7_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/MutableContextMapFilter.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;MutableContextMapFilter
+    configLocation="https://server.example/configs.json"
+    pollInterval="10"/&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_7_json--panel" class="tabpanel" aria-labelledby="_tabs_7_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/MutableContextMapFilter.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"MutableContextMapFilter": {
+  "configLocation": "https://server.example/configs.json",
+  "pollInterval": 10
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_7_yaml--panel" class="tabpanel" aria-labelledby="_tabs_7_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/MutableContextMapFilter.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">MutableContextMapFilter:
+  configLocation: "https://server.example/configs.json"
+  pollInterval: 10</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_7_properties--panel" class="tabpanel" aria-labelledby="_tabs_7_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/MutableContextMapFilter.yaml"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">filter.0.type = MutableContextMapFilter
+filter.0.configLocation = https://server.example/configs.json
+filter.0.pollInterval = 10</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-MutableThreadContextMapFilter" class="xref page">📖 Plugin reference for <code>MutableContextMapFilter</code></a></p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="other-filters"><a class="anchor" href="#other-filters"></a>Other filters</h3>
+<div class="sect3">
+<h4 id="deny-filter"><a class="anchor" href="#deny-filter"></a><code>DenyFilter</code></h4>
+<div class="paragraph">
+<p>The <code>DenyFilter</code> always returns <code>DENY</code>.
+It does not support <strong>any</strong> configuration attribute, even the common configuration attributes.</p>
+</div>
+<div class="paragraph">
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-DenyAllFilter" class="xref page">📖 Plugin reference for <code>DenyAllFilter</code></a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Script"><a class="anchor" href="#Script"></a><code>ScriptFilter</code></h4>
+<div class="paragraph">
+<p>The <code>ScriptFilter</code> executes a script that must return <code>true</code> if the event matches and <code>false</code> otherwise.</p>
+</div>
+<div class="paragraph">
+<p>Besides the <a href="#common-configuration-attributes">common configuration attributes</a>,
+it accepts a single nested element:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 20. <code>ScriptFilter</code>&#8201;&#8212;&#8201;nested elements</caption>
+<colgroup>
+<col style="width: 37.5%;">
+<col style="width: 12.5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Multiplicity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="scripts.html#Script" class="xref page"><code>Script</code></a>,
+<a href="scripts.html#ScriptFile" class="xref page"><code>ScriptFile</code></a>
+or
+<a href="scripts.html#ScriptRef" class="xref page"><code>ScriptRef</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A reference to the script to execute.</p>
+<p class="tableblock">See <a href="scripts.html" class="xref page">Scripts</a> for more details about scripting.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The bindings available to the script depend
+on whether the <code>ScriptFilter</code> is used as a global filter in the <a href="#logger-stage">Logger stage</a> or in the remaining stages.
+For global filters, the following bindings are available:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 21. Script Bindings&#8201;&#8212;&#8201;global filter</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Binding name</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>logger</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Logger.html"><code>Logger</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The logger used in the log statement.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>level</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/manual/customloglevels.adoc"><code>Level</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The level used in the log statement.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>marker</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/manual/markers.adoc"><code>Marker</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The marker used in the log statement.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/manual/messages.adoc"><code>Message</code></a></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The message used in the log event if the user directly supplied one.
+Otherwise:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If the logging statement contained an <code>Object</code> argument, it is wrapped in a
+<a href="https://logging.apache.org/log4j/2.x/manual/messages.adoc#ObjectMessage"><code>ObjectMessage</code></a>.</p>
+</li>
+<li>
+<p>If the logging statement contained a format <code>String</code>, it is wrapped in a
+<a href="https://logging.apache.org/log4j/2.x/manual/messages.adoc#SimpleMessage"><code>SimpleMessage</code></a>.</p>
+</li>
+</ul>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>parameters</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Object[]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The parameters passed to the logging call. Only
-present when configured as a global filter. Some Messages include the
-parameters as part of the Message.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The parameters passed to the logging call.
+Some logging calls include the parameters as part of <code>message</code>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>throwable</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Throwable</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Throwable passed to the logging call, if any.
-Only present when configured as a global filter. Som Messages include
-Throwable as part of the Message.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Throwable</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <code>Throwable</code> passed to the logging call, if any.
+Some logging calls include the <code>Throwable</code> as part of <code>message</code>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>substitutor</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">StrSubstitutor</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The StrSubstitutor is used to replace lookup variables.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrSubstitutor.html"><code>StrSubstitutor</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <code>StrSubstitutor</code> used to replace lookup variables.</p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>The sample below shows how to declare script fields and then reference them in specific components.
-See
-<a href="appenders.html#ScriptCondition" class="xref page">ScriptCondition</a> for an example of how the <code>ScriptPlugin</code> element can be used to embed script code directly in the configuration.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="ERROR"&gt;
-  &lt;Scripts&gt;
-    &lt;ScriptFile name="filter.js" language="JavaScript" path="src/test/resources/scripts/filter.js" charset="UTF-8" /&gt;
-    &lt;ScriptFile name="filter.groovy" language="groovy" path="src/test/resources/scripts/filter.groovy" charset="UTF-8" /&gt;
-  &lt;/Scripts&gt;
-  &lt;Appenders&gt;
-    &lt;List name="List"&gt;
-      &lt;PatternLayout pattern="[%-5level] %c{1.} %msg%n"/&gt;
-    &lt;/List&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Logger name="TestJavaScriptFilter" level="trace" additivity="false"&gt;
-      &lt;AppenderRef ref="List"&gt;
-        &lt;ScriptFilter onMatch="ACCEPT" onMisMatch="DENY"&gt;
-          &lt;ScriptRef ref="filter.js" /&gt;
-        &lt;/ScriptFilter&gt;
-      &lt;/AppenderRef&gt;
-    &lt;/Logger&gt;
-    &lt;Logger name="TestGroovyFilter" level="trace" additivity="false"&gt;
-      &lt;AppenderRef ref="List"&gt;
-        &lt;ScriptFilter onMatch="ACCEPT" onMisMatch="DENY"&gt;
-          &lt;ScriptRef ref="filter.groovy" /&gt;
-        &lt;/ScriptFilter&gt;
-      &lt;/AppenderRef&gt;
-    &lt;/Logger&gt;
-    &lt;Root level="trace"&gt;
-      &lt;AppenderRef ref="List" /&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="StructuredDataFilter"><a class="anchor" href="#StructuredDataFilter"></a>StructuredDataFilter</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The StructuredDataFilter is a MapFilter that also allows filtering on the event id, type and message.</p>
+<p>For the remaining filters, only these bindings are available:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. StructuredData Filter Parameters</caption>
+<caption class="title">Table 22. Script Bindings&#8201;&#8212;&#8201;internal filter</caption>
 <colgroup>
 <col style="width: 16.6666%;">
 <col style="width: 16.6666%;">
@@ -1424,331 +2858,276 @@ See
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
+<th class="tableblock halign-left valign-top">Binding name</th>
 <th class="tableblock halign-left valign-top">Type</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>keyValuePair</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">KeyValuePair[]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">One or more KeyValuePair elements that
-define the key in the map and the value to match on. "id", "id.name",
-"type", and "message" should be used to match the StructuredDataId,
-the name portion of the StructuredDataId, the type, and the formatted
-message respectively. If the same key is specified more than once then
-the check for that key will automatically be an "or" since a Map can
-only contain a single value.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>logEvent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html"><code>LogEvent</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The log event being processed.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>operator</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If the operator is "or" then a match by any one of
-the key/value pairs will be considered to be a match, otherwise all the
-key/value pairs must match.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>onMatch</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Action to take when the filter matches. Can be ACCEPT,
-DENY or NEUTRAL. The default value is NEUTRAL.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>onMismatch</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Action to take when the filter does not match. Can
-be ACCEPT, DENY or NEUTRAL. The default value is DENY.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>substitutor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrSubstitutor.html"><code>StrSubstitutor</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <code>StrSubstitutor</code> used to replace lookup variables.</p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>As in this configuration, the StructuredDataFilter can be used to log particular events:</p>
+<p>As an example, if you wish to match only log events that contain a certain exception,
+you can use a simple Groovy script:</p>
 </div>
 <div class="listingblock">
+<div class="title"><code>scripts/local.groovy</code></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;StructuredDataFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or"&gt;
-    &lt;KeyValuePair key="id" value="Login"/&gt;
-    &lt;KeyValuePair key="id" value="Logout"/&gt;
-  &lt;/StructuredDataFilter&gt;
-  &lt;Appenders&gt;
-    &lt;RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz"&gt;
-      &lt;BurstFilter level="INFO" rate="16" maxBurst="100"/&gt;
-      &lt;PatternLayout&gt;
-        &lt;pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/pattern&gt;
-      &lt;/PatternLayout&gt;
-      &lt;TimeBasedTriggeringPolicy /&gt;
-    &lt;/RollingFile&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="RollingFile"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">return logEvent.throwable instanceof DataAccessException;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can then integrate the script in a Log4j configuration:</p>
+</div>
+<div id="_tabs_8" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_8_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_8_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_8_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_8_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_8_xml--panel" class="tabpanel" aria-labelledby="_tabs_8_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/ScriptFilter.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Root level="ALL"&gt;
+  &lt;ScriptFilter&gt;
+    &lt;ScriptFile language="groovy" path="scripts/local.groovy"/&gt;
+  &lt;/ScriptFilter&gt;
+  &lt;AppenderRef ref="CONSOLE"/&gt;
+&lt;/Root&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_8_json--panel" class="tabpanel" aria-labelledby="_tabs_8_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/ScriptFilter.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Root": {
+  "level": "ALL",
+  "ScriptFilter": {
+    "ScriptFile": {
+      "language": "groovy",
+      "path": "scripts/local.groovy"
+    }
+  },
+  "AppenderRef": {
+    "ref": "CONSOLE"
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_8_yaml--panel" class="tabpanel" aria-labelledby="_tabs_8_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/ScriptFilter.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Root:
+  level: "ALL"
+  ScriptFilter:
+    ScriptFile:
+      language: "groovy"
+      path: "scripts/local.groovy"
+  AppenderRef:
+    ref: "CONSOLE"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_8_properties--panel" class="tabpanel" aria-labelledby="_tabs_8_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/ScriptFilter.yaml"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">rootLogger.level = ALL
+
+rootLogger.filter.0.type = ScriptFilter
+rootLogger.filter.0.script.type = ScriptFile
+rootLogger.filter.0.script.language = groovy
+rootLogger.filter.0.script.path = scripts/local.groovy
+
+rootLogger.appenderRef.0.ref = CONSOLE</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Writing an equivalent <strong>global</strong> script is a little bit more complex,
+since you need to take into account all the places where a throwable can be passed as a parameter.
+The script becomes:</p>
+</div>
+<div class="listingblock">
+<div class="title"><code>scripts/global.groovy</code></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">Throwable lastParam = parameters?.last() instanceof Throwable ? parameters.last() : null
+Throwable actualThrowable = throwable ?: message?.throwable ?: lastParam
+return actualThrowable instanceof DataAccessException</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can use it as a global filter:</p>
+</div>
+<div id="_tabs_9" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_9_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_9_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_9_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_9_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_9_xml--panel" class="tabpanel" aria-labelledby="_tabs_9_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/ScriptFilter.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;ScriptFilter&gt;
+  &lt;ScriptFile language="groovy" path="scripts/global.groovy"/&gt;
+&lt;/ScriptFilter&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_9_json--panel" class="tabpanel" aria-labelledby="_tabs_9_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/ScriptFilter.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"ScriptFilter": {
+  "ScriptFile": {
+    "language": "groovy",
+    "path": "scripts/global.groovy"
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_9_yaml--panel" class="tabpanel" aria-labelledby="_tabs_9_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/ScriptFilter.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ScriptFilter:
+  ScriptFile:
+    language: "groovy"
+    path: "scripts/global.groovy"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_9_properties--panel" class="tabpanel" aria-labelledby="_tabs_9_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/filters/ScriptFilter.yaml"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">filter.0.type = ScriptFilter
+filter.0.script.type = ScriptFile
+filter.0.script.language = groovy
+filter.0.script.path = scripts/global.groovy</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-ScriptFilter" class="xref page">📖 Plugin reference for <code>ScriptFilter</code></a></p>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="ThreadContextMapFilter"><a class="anchor" href="#ThreadContextMapFilter"></a>ThreadContextMapFilter</h2>
+<h2 id="extending"><a class="anchor" href="#extending"></a>Extending</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The ThreadContextMapFilter or ContextMapFilter allows filtering against data elements that are in the current context.
-By default, this is the ThreadContext Map.</p>
+<p>Filters are <a href="plugins.html" class="xref page">plugins</a> implementing <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Filter.html">the <code>Filter</code> interface</a>.
+This section will guide you on how to create custom ones.</p>
 </div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. Context Map Filter Parameters</caption>
-<colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 16.6666%;">
-<col style="width: 66.6668%;">
-</colgroup>
-<thead>
+<div class="admonitionblock note">
+<table>
 <tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>While <a href="#collection">the predefined filter collection</a> should address most common use cases, you might find yourself needing to implement a custom one.
+If this is the case, we really appreciate it if you can <strong>share your use case in a <a href="https://logging.apache.org/support.html">user support channel</a></strong>.</p>
+</div>
+</td>
 </tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>keyValuePair</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">KeyValuePair[]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">One or more KeyValuePair elements that
-define the key in the map and the value to match. If the same key is
-specified more than once then the check for that key will automatically
-be an "or" since a Map can only contain a single value.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>operator</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If the operator is "or" then a match by any one of
-the key/value pairs will be considered to be a match, otherwise all the
-key/value pairs must match.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>onMatch</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Action to take when the filter matches. Can be ACCEPT,
-DENY or NEUTRAL. The default value is NEUTRAL.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>onMismatch</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Action to take when the filter does not match. Can
-be ACCEPT, DENY or NEUTRAL. The default value is DENY.</p></td>
-</tr>
-</tbody>
 </table>
+</div>
+<div class="sect2">
+<h3 id="extending-plugins"><a class="anchor" href="#extending-plugins"></a>Plugin preliminaries</h3>
 <div class="paragraph">
-<p>A configuration containing the ContextMapFilter might look like:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;ContextMapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or"&gt;
-    &lt;KeyValuePair key="User1" value="DEBUG"/&gt;
-    &lt;KeyValuePair key="User2" value="WARN"/&gt;
-  &lt;/ContextMapFilter&gt;
-  &lt;Appenders&gt;
-    &lt;RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz"&gt;
-      &lt;BurstFilter level="INFO" rate="16" maxBurst="100"/&gt;
-      &lt;PatternLayout&gt;
-        &lt;pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/pattern&gt;
-      &lt;/PatternLayout&gt;
-      &lt;TimeBasedTriggeringPolicy /&gt;
-    &lt;/RollingFile&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="RollingFile"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
+<p>Log4j plugin system is the de facto extension mechanism embraced by various Log4j components.
+Plugins make it possible for extensible components to <em>receive</em> feature implementations without any explicit links in between.
+It is analogous to a <a href="https://en.wikipedia.org/wiki/Dependency_injection">dependency injection</a> framework, but curated for Log4j-specific needs.</p>
 </div>
 <div class="paragraph">
-<p>The ContextMapFilter can also be applied to a logger for filtering:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz"&gt;
-      &lt;BurstFilter level="INFO" rate="16" maxBurst="100"/&gt;
-      &lt;PatternLayout&gt;
-        &lt;pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/pattern&gt;
-      &lt;/PatternLayout&gt;
-      &lt;TimeBasedTriggeringPolicy /&gt;
-    &lt;/RollingFile&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="RollingFile"/&gt;
-      &lt;ContextMapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or"&gt;
-        &lt;KeyValuePair key="foo" value="bar"/&gt;
-        &lt;KeyValuePair key="User2" value="WARN"/&gt;
-      &lt;/ContextMapFilter&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
+<p>In a nutshell, you annotate your classes with <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/Plugin.html"><code>@Plugin</code></a> and their (<code>static</code>) factory methods with <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/PluginFactory.html"><code>@PluginFactory</code></a>.
+Last, you inform the Log4j plugin system to discover these custom classes.
+This is done using running the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/processor/PluginProcessor.html"><code>PluginProcessor</code></a> annotation processor while building your project.
+Refer to <a href="plugins.html" class="xref page">Plugins</a> for details.</p>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="ThresholdFilter"><a class="anchor" href="#ThresholdFilter"></a>ThresholdFilter</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="extending-filters"><a class="anchor" href="#extending-filters"></a>Extending filters</h3>
 <div class="paragraph">
-<p>This filter returns the onMatch result if the level in the LogEvent is the same or more specific than the configured level and the <code>onMismatch</code>
-value otherwise.
-For example, if the ThresholdFilter is configured with Level ERROR and the LogEvent contains Level DEBUG then the <code>onMismatch</code>
-value will be returned since ERROR events are more specific than DEBUG.</p>
+<p>Filters are <a href="plugins.html" class="xref page">plugins</a>
+implementing <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Filter.html">the <code>Filter</code>
+interface</a>.
+We recommend users
+to extend from <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/filter/AbstractFilter.html"><code>AbstractFilter</code></a>,
+which provides implementation convenience.
+While annotating your filter with <code>@Plugin</code>, you need to make sure that</p>
 </div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. Threshold Filter Parameters</caption>
-<colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 16.6666%;">
-<col style="width: 66.6668%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>level</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A valid Level name to match.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>onMatch</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Action to take when the filter matches. Can be ACCEPT,
-DENY or NEUTRAL. The default value is NEUTRAL.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>onMismatch</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Action to take when the filter does not match. Can
-be ACCEPT, DENY or NEUTRAL. The default value is DENY.</p></td>
-</tr>
-</tbody>
-</table>
+<div class="ulist">
+<ul>
+<li>
+<p>It has a unique <code>name</code> attribute across all available <code>Filter</code> plugins</p>
+</li>
+<li>
+<p>The <code>category</code> attribute is set to <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Node.html#CATEGORY"><code>Node.CATEGORY</code></a></p>
+</li>
+</ul>
+</div>
 <div class="paragraph">
-<p>A sample configuration that only allows the event to be written by the appender if the level matches:</p>
+<p>You can check out the following files for examples:</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz"&gt;
-      &lt;ThresholdFilter level="TRACE" onMatch="ACCEPT" onMismatch="DENY"/&gt;
-      &lt;PatternLayout&gt;
-        &lt;pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/pattern&gt;
-      &lt;/PatternLayout&gt;
-      &lt;TimeBasedTriggeringPolicy /&gt;
-    &lt;/RollingFile&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="RollingFile"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="TimeFilter"><a class="anchor" href="#TimeFilter"></a>TimeFilter</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The time filter can be used to restrict the filter to only a certain portion of the day.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. Time Filter Parameters</caption>
-<colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 16.6666%;">
-<col style="width: 66.6668%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>start</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A time in HH:mm:ss format.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>end</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A time in HH:mm:ss format. Specifying an end time less
-than the start time will result in no log entries being written.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>timezone</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The timezone to use when comparing to the event
-timestamp.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>onMatch</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Action to take when the filter matches. Can be ACCEPT,
-DENY or NEUTRAL. The default value is NEUTRAL.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>onMismatch</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Action to take when the filter does not match. Can
-be ACCEPT, DENY or NEUTRAL. The default value is DENY.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>A sample configuration that only allows the event to be written by the appender from 5:00 to 5:30 am each day using the default timezone:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz"&gt;
-      &lt;TimeFilter start="05:00:00" end="05:30:00" onMatch="ACCEPT" onMismatch="DENY"/&gt;
-      &lt;PatternLayout&gt;
-        &lt;pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/pattern&gt;
-      &lt;/PatternLayout&gt;
-      &lt;TimeBasedTriggeringPolicy /&gt;
-    &lt;/RollingFile&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="RollingFile"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/apache/logging-log4j2/tree/main/log4j-core/src/main/java/org/apache/logging/log4j/core/filter/MarkerFilter.java"><code>MarkerFilter.java</code></a> – <a href="#MarkerFilter"><code>MarkerFilter</code></a> matching on markers associated with the effective <code>LogEvent</code> in the context</p>
+</li>
+<li>
+<p><a href="https://github.com/apache/logging-log4j2/tree/main/log4j-core/src/main/java/org/apache/logging/log4j/core/filter/RegexFilter.java"><code>RegexFilter.java</code></a> – <a href="#RegexFilter"><code>RegexFilter</code></a> matching on the message associated with the effective <code>LogEvent</code> in the context</p>
+</li>
+</ul>
 </div>
 </div>
 </div>

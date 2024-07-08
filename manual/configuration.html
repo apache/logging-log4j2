@@ -1057,7 +1057,7 @@ Loggers.Logger.AppenderRef.ref = DEBUG_LOG</code></pre>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
 <td>Configures the root logger at level <code>INFO</code> and connects it to the <code>CONSOLE</code> and <code>MAIN</code> appenders.
-The <code>CONSOLE</code> appender will only log messages less specific than <code>WARN</code>.</td>
+The <code>CONSOLE</code> appender will only log messages at least as severe as <code>WARN</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
@@ -1135,6 +1135,10 @@ The logger is configured to forward messages to its parent (the root appender).<
 <a href="https://logging.apache.org/log4j/2.x/manual/customloglevels.html#DefiningLevelsInConfiguration">Defining custom log levels in configuration</a> for details.</p>
 </div>
 </dd>
+</dl>
+</div>
+<div id="global-filters" class="dlist">
+<dl>
 <dt class="hdlist1">Filters</dt>
 <dd>
 <div class="paragraph">
@@ -1593,8 +1597,8 @@ for <code>Logger</code> and <code>AsyncLogger</code>.</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Specifies the level threshold that a log event must have to be logged.
-Log events that are more specific than this setting will be filtered out.</p>
+<p>It specifies the level threshold that a log event must have to be logged.
+Log events that are less severe than this setting will be filtered out.</p>
 </div>
 <div class="paragraph">
 <p>See also <a href="filters.html#filters" class="xref page">Filters</a> if you require additional filtering.</p>
@@ -1843,8 +1847,8 @@ Loggers.Logger[2].Property.value = Networking</code></pre>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Specifies the level threshold that a log event must have to be logged.
-Log events that are more specific than this setting will be filtered out.</p>
+<p>It specifies the level threshold that a log event must have to be logged.
+Log events that are less severe than this setting will be filtered out.</p>
 </div>
 </div>
 <div class="sect2">
