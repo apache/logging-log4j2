@@ -250,7 +250,7 @@
     <a class="nav-link" href="webapp.html">Using Log4j in a Jakarta EE environment</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
+    <a class="nav-link" href="cloud.html">Integrating with service-oriented architectures</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../development.html">Development</a>
@@ -268,7 +268,7 @@
     <a class="nav-link" href="../log4j-couchdb.html">CouchDB Appender</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-docker.html">Log4j Docker Support</a>
+    <a class="nav-link" href="../log4j-docker.html">Log4j Docker</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-flume-ng.html">Flume Appender</a>
@@ -407,11 +407,25 @@ be formatted as specified.</p>
 <div class="sect1">
 <h2 id="DockerLookup"><a class="anchor" href="#DockerLookup"></a>Docker Lookup</h2>
 <div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Lookup ID</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>docker</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Dependency</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../log4j-docker.html" class="xref page">Log4j Docker</a></p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
-<p>The DockerLookup can be used to lookup attributes from the Docker container the application is running in.</p>
-</div>
-<div class="paragraph">
-<p>Log4j Docker provides access to the following container attributes:</p>
+<p>Docker Lookup queries <a href="https://docs.docker.com/engine/api/">the API of the Docker Engine</a> running your container.
+It supports the retrieval of following container attributes:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -427,54 +441,30 @@ be formatted as specified.</p>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>containerId</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The full id assigned to the container.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Container ID</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>containerName</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The name assigned to the container.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Container name</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>imageId</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The id assigned to the image.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Container image ID</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>imageName</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The name assigned to the image.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Container image name</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>shortContainerId</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The first 12 characters of the container id.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The first 12 characters of the container ID</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>shortImageId</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The first 12 characters of the image id.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The first 12 characters of the container image ID</p></td>
 </tr>
 </tbody>
 </table>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;JsonTemplateLayout&gt;
-  &lt;EventTemplateAdditionalField key="containerId" value="${docker:containerId}"/&gt;
-  &lt;EventTemplateAdditionalField key="containerName" value="${docker:containerName}"/&gt;
-  &lt;EventTemplateAdditionalField key="imageName" value="${docker:imageName}"/&gt;
-&lt;/JsonTemplateLayout&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This Lookup is subject to the requirements listed at <a href="../log4j-docker.html" class="xref page">Log4j Docker Support</a></p>
-</div>
 </div>
 </div>
 <div class="sect1">
@@ -771,8 +761,25 @@ acquire the JVM arguments.</p>
 <div class="sect1">
 <h2 id="KubernetesLookup"><a class="anchor" href="#KubernetesLookup"></a>Kubernetes Lookup</h2>
 <div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Lookup ID</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>k8s</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Dependency</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md">Log4j Kubernetes of Fabric8</a></p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
-<p>For retrieving attributes using Fabric8&#8217;s Kubernetes Client, see their <a href="https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md">Kubernetes Log4j Lookup</a>.</p>
+<p>Kubernetes Lookup queries <a href="https://kubernetes.io/docs/concepts/overview/kubernetes-api/">the Kubernetes API</a> to retrieve certain information about the current container and its environment.
+Kubernetes Lookup is distributed as a part of Fabric8&#8217;s Kubernetes Client, refer to <a href="https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md">its website</a> for details.</p>
 </div>
 </div>
 </div>

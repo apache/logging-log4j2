@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Log4j Docker Support :: Apache Log4j</title>
+    <title>Log4j Docker :: Apache Log4j</title>
     <link rel="canonical" href="https://logging.apache.org/log4j/2.x/log4j-docker.html">
     <meta name="generator" content="Antora 3.2.0-alpha.4">
 <link rel="stylesheet" href="./_/css/site.css">
@@ -250,7 +250,7 @@
     <a class="nav-link" href="manual/webapp.html">Using Log4j in a Jakarta EE environment</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="manual/cloud.html">Using Log4j in Cloud Enabled Applications</a>
+    <a class="nav-link" href="manual/cloud.html">Integrating with service-oriented architectures</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="development.html">Development</a>
@@ -268,7 +268,7 @@
     <a class="nav-link" href="log4j-couchdb.html">CouchDB Appender</a>
   </li>
   <li class="nav-item is-current-page" data-depth="1">
-    <a class="nav-link" href="log4j-docker.html">Log4j Docker Support</a>
+    <a class="nav-link" href="log4j-docker.html">Log4j Docker</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="log4j-flume-ng.html">Flume Appender</a>
@@ -331,7 +331,7 @@
   <ul>
     <li><a href="index.html">Home</a></li>
     <li>Components</li>
-    <li><a href="log4j-docker.html">Log4j Docker Support</a></li>
+    <li><a href="log4j-docker.html">Log4j Docker</a></li>
   </ul>
 </nav>
 <div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/log4j-docker.adoc">Edit this Page</a></div>
@@ -341,64 +341,61 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Log4j Docker Support</h1>
+<h1 class="page">Log4j Docker</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Log4j supports Docker by providing a Lookup to retrieve container information.</p>
+<p>Log4j Docker module offers <a href="https://docker.com">Docker</a>-specific utilities.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_accessing_docker"><a class="anchor" href="#_accessing_docker"></a>Accessing Docker</h2>
+<h2 id="install"><a class="anchor" href="#install"></a>Installation</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The Log4j Docker support requires access to the Docker REST interface.
-In practical terms this means the application either needs access to unix:///var/run/docker.sock through a volume mount (not recommended), bind Docker to another host/port or unix socket.
-or use a proxy application to provide access.
-The <a href="https://github.com/apache/logging-log4j2/tree/main/log4j-spring-cloud-config/log4j-spring-cloud-config-samples/log4j-spring-cloud-config-sample-application">Log4j Spring Cloud sample application</a> uses a socat proxy to access Docker.</p>
+<p>You need to add the following additional runtime dependency to your build to use Log4j Docker:</p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_lookup_attributes"><a class="anchor" href="#_lookup_attributes"></a>Lookup Attributes</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Log4j Docker provides access to the following container attributes:</p>
-</div>
-<div class="ulist">
+<div id="_tabs_1" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
 <ul>
-<li>
-<p>containerId - The full id assigned to the container.</p>
+<li id="_tabs_1_maven" class="tab">
+<p>Maven</p>
 </li>
-<li>
-<p>containerName - The name assigned to the container.</p>
-</li>
-<li>
-<p>imageId - The id assigned to the image.</p>
-</li>
-<li>
-<p>imageName - The name assigned to the image.</p>
-</li>
-<li>
-<p>shortContainerId - The first 12 characters of the container id.</p>
-</li>
-<li>
-<p>shortImageId - The first 12 characters of the image id.</p>
+<li id="_tabs_1_gradle" class="tab">
+<p>Gradle</p>
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>Attributes may be accessed by adding <code>${docker:containerId}</code> to the configuration.
-Note that docker variables are only resolved once during logging initialization so they shouldn&#8217;t be referenced with more than one <code>$</code> character.</p>
+<div id="_tabs_1_maven--panel" class="tabpanel" aria-labelledby="_tabs_1_maven">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+  &lt;artifactId&gt;log4j-docker&lt;/artifactId&gt;
+  &lt;version&gt;2.23.1&lt;/version&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_gradle--panel" class="tabpanel" aria-labelledby="_tabs_1_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-docker:2.23.1'</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_requirements"><a class="anchor" href="#_requirements"></a>Requirements</h2>
+<h2 id="features"><a class="anchor" href="#features"></a>Features</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Log4j Docker requires Log4j Core, Log4j API and a minimum of Java 8.</p>
+<p>Log4j Docker provides <a href="manual/lookups.html#DockerLookup" class="xref page">Docker Lookup</a> that queries <a href="https://docs.docker.com/engine/api/">the API of the Docker Engine</a> running your container.
+You can use it to inject Docker-environment specific values (container ID, image name, etc.) in <a href="manual/configuration.html#property-substitution" class="xref page">property substitutions</a>.</p>
 </div>
 </div>
 </div>
