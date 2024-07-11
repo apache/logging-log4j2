@@ -36,7 +36,7 @@
     <!-- Dependency version -->
     <spring-boot.version>3.3.1</spring-boot.version>
     <spring-cloud.version>4.1.4</spring-cloud.version>
-    <spring-framework.version>6.1.10</spring-framework.version>
+    <spring-framework.version>6.1.11</spring-framework.version>
 
     <!--
       ~ OSGi and JPMS options
