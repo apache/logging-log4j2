@@ -51,6 +51,7 @@ asciidoc:
     lmax-disruptor-url: "https://lmax-exchange.github.io/disruptor/"
     slf4j-url: "https://www.slf4j.org"
     # Dependency versions
+    commons-compress-version: "${site-commons-compress.version}"
     commons-csv-version: "${site-commons-csv.version}"
     commons-logging-version: "${site-commons-logging.version}"
     disruptor-version: "${site-disruptor.version}"

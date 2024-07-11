@@ -43,6 +43,7 @@
 ** xref:manual/systemproperties.adoc[]
 ** xref:manual/customconfig.adoc[]
 ** xref:manual/appenders.adoc[]
+*** xref:manual/rolling-file.adoc[]
 ** xref:manual/layouts.adoc[]
 *** xref:manual/json-template-layout.adoc[]
 *** xref:manual/pattern-layout.adoc[]

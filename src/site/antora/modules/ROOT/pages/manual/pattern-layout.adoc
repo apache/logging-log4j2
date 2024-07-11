@@ -390,8 +390,8 @@ Outputs the date of the log event
 .link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/DatePatternConverter.html[`DatePatternConverter`] specifier grammar
 [source,text]
 ----
-d{pattern}
-date{pattern}
+d{pattern}[{timezone}]
+date{pattern}[{timezone}]
 ----
 
 The date conversion specifier may be followed by a set of braces containing a date and time pattern string per https://docs.oracle.com/javase/{java-target-version}/docs/api/java/text/SimpleDateFormat.html[`SimpleDateFormat`].
