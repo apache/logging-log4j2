@@ -19,8 +19,9 @@
 ====
 Maven::
 +
-[source,xml,subs="+attributes"]
+[source,xml]
 ----
+<!-- We assume you use `log4j-bom` for dependency management -->
 <dependency>
   <groupId>org.apache.logging.log4j</groupId>
   <artifactId>log4j-async-logger</artifactId>
@@ -30,8 +31,9 @@ Maven::
 
 Gradle::
 +
-[source,groovy,subs="+attributes"]
+[source,groovy]
 ----
+// We assume you use `log4j-bom` for dependency management
 runtimeOnly 'org.apache.logging.log4j:log4j-async-logger'
 ----
 ====

@@ -461,6 +461,7 @@ you can create an OrangeMessage that accepts an Orange instance and pass
 that to Log4j so that the Orange object can be formatted into an
 appropriate byte array when required.
 
+[#StrSubstitutor]
 === StrSubstitutor and StrLookup
 
 The

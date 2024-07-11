@@ -17,12 +17,13 @@
 [#configuration-file]
 = Configuration file
 
-Users can configure Log4j Core using different file formats.
-Log4j includes XML, JSON, YAML, and Java properties formats factories.
+Using a configuration file is the most popular and recommended approach for configuring Log4j Core.
+In this page we will examine the composition of a configuration file and how Log4j Core uses it.
 
-As detailed in the table below, some configuration formats require additional dependencies on the classpath.
-
-include::partial$configuration-file-format-deps.adoc[]
+[TIP]
+====
+If you are looking for a quick start on using Log4j in your application or library, please refer to xref:manual/getting-started.adoc[] instead.
+====
 
 [id=automatic-configuration]
 == [[AutomaticConfiguration]] Configuration file location
@@ -30,72 +31,72 @@ include::partial$configuration-file-format-deps.adoc[]
 Upon initialization of a new logger context, Log4j assigns it a context name and scans the following **classpath** locations for a configuration file:
 
 . Files named `log4j2-test<contextName>.<extension>`
-. Files named `log4j2-test.<extension>`,
+. Files named `log4j2-test.<extension>`
 . Files named `log4j2<contextName>.<extension>`
-. Files named `log4j2.<extension>`,
-. If no configuration file is found, Log4j uses the
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/DefaultConfiguration.html[`DefaultConfiguration`]
-and the
-{log4j2-url}/manual/status-logger.html[status logger]
-prints a warning.
-The default configuration prints all messages less specific than
-xref:manual/systemproperties.adoc#log4j.configuration.level[`log4j.configuration.level`]
-to the console.
-
-[WARNING]
-====
-The configuration files prefixed by `log4j2-test` should only be used on the test classpath.
-
-If multiple configuration files in the same category are found, Log4j uses a deterministic order to choose one of them (see
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Order.html[`@Order`]).
-
-Nevertheless:
-
-* If you're developing an app, don't use config files with different extensions.
-* If you're developing a library, only add config files to your test classpath.
-====
+. Files named `log4j2.<extension>`
 
 The `<contextName>` and `<extension>` placeholders above have the following meaning
 
-<contextName>:: depends on the runtime environment in which Log4j runs:
-
-* for standalone Java SE applications, it is a random identifier,
-* for web applications, it is derived from the application descriptor.
-See
-link:../../jakarta/log4j-jakarta-web.html#config[Log4j Jakarta
- Web application configuration] for more details.
-
-<extension>:: must be one of the file extensions assigned to a configuration file format:
+<contextName>::
+A name derived from the runtime environment:
 +
-[cols="1,1"]
+* For standalone Java SE applications, it is a random identifier.
+* For web applications, it is an identifier derived from the application descriptor.
+See xref:jakarta.adoc#configuration[Log4j Web application configuration] for details.
+
+<extension>::
+A file extension supported by a `ConfigurationFactory`.
+The order in which an extension will be searched for first depends on the order of the associated `ConfigurationFactory`.
+See <<configuration-factories>> for details.
+
+If no configuration file is found, Log4j Core uses the link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/DefaultConfiguration.html[`DefaultConfiguration`] and the xref:manual/status-logger.adoc[status logger] prints a warning.
+The default configuration prints all messages less severe than
+xref:manual/systemproperties.adoc#log4j.configuration.level[`log4j.configuration.level`]
+to the console.
+
+You can override the location of the configuration file
+using the xref:manual/systemproperties.adoc#log4j2.configurationFile[`log4j2.configurationFile`
+system property].
+In such a case, Log4j Core will guess the configuration file format from the provided file name,
+or use the default configuration factory if the extension is unknown.
+
+There are certain *best-practices* we strongly recommend you to adapt in your Log4j configuration:
+
+* Files prefixed by `log4j2-test` should only be used on the test classpath.
+* If you are developing an application, don't use multiple Log4j configuration files with same name, but different extensions.
+That is, don't provide both `log4j2.xml` and `log4j2.json` files.
+* If you are developing a library, only add configuration files to your test classpath.
+
+[#configuration-factories]
+=== Predefined ``ConfigurationFactory`` plugins
+
+Log4j Core uses plugins extending from link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html[`ConfigurationFactory`] to determine which configuration file extensions are supported, in which order, and how to read them.
+How this works under the hood and how you can introduce your custom implementations is explained in <<ConfigurationFactory>>.
+
+.Supported configuration file formats by predefined `ConfigurationFactory` plugins
+[%header,cols="1,1m,1"]
 |===
-| Configuration file format | Extension
-
-| XML
-| `xml`
-
-| JSON
-| `json` or `jsn`
-
-| YAML
-| `yaml` or `yml`
-
-|Java properties
-| `properties`
+| File format | Extension | Order
+| XML | xml | 5
+| JSON | json, jsn | 6
+| YAML | yaml, yml | 7
+| Properties | properties | 8
 |===
 
-[NOTE]
-====
-It is also possible to override the location of the configuration file using the
-xref:manual/systemproperties.adoc#log4j.configuration.location[`log4j.configuration.location`]
-configuration property.
-In this case, Log4j will guess the configuration file format from the provided configuration file extension or use the default configuration factory if the extension is unknown.
+Note that `ConfigurationFactory` plugins will be employed in descending order.
+That is, for instance, XML file format will be checked last, as a fallback.
 
-See xref:manual/systemproperties.adoc#log4j.configuration.location[`log4j.configuration.location`] for details.
-====
+Some `ConfigurationFactory` plugins require additional dependencies on the classpath:
+
+include::partial$configuration-file-format-deps.adoc[]
 
 [id=configuration-syntax]
 == [[ConfigurationSyntax]] Syntax
+
+[NOTE]
+====
+Starting with Log4j 2, the configuration file syntax has been considered part of the public API and has remained stable across significant version upgrades.
+====
 
 The Log4j runtime is composed of xref:manual/plugins.adoc[plugins], which are like beans in the Spring Framework and Java EE.
 Appenders, layouts, filters, configuration loaders, and similar components are all accessed as plugins.
@@ -257,6 +258,7 @@ A moderately complex configuration might look like this:
 ====
 XML::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/main-elements.xml[`log4j2.xml`]
 [source,xml]
 ----
 include::example$manual/configuration/main-elements.xml[lines=1;18..-1]
@@ -264,6 +266,7 @@ include::example$manual/configuration/main-elements.xml[lines=1;18..-1]
 
 JSON::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/main-elements.json[`log4j2.json`]
 [source,json]
 ----
 include::example$manual/configuration/main-elements.json[]
@@ -271,6 +274,7 @@ include::example$manual/configuration/main-elements.json[]
 
 YAML::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/main-elements.yaml[`log4j2.yaml`]
 [source,yaml]
 ----
 include::example$manual/configuration/main-elements.yaml[lines=17..-1]
@@ -278,6 +282,7 @@ include::example$manual/configuration/main-elements.yaml[lines=17..-1]
 
 Properties::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/main-elements.properties[`log4j2.properties`]
 [source,properties]
 ----
 include::example$manual/configuration/main-elements.properties[lines=17..-1]
@@ -343,6 +348,7 @@ Users can add Components to loggers, appender references, appenders, or the glob
 +
 See xref:manual/filters.adoc[Filter configuration] for details.
 
+[#global-properties]
 Properties::
 +
 Represent a set of reusable configuration values for property substitution.
@@ -377,16 +383,15 @@ If set to `0`, polling is disabled.
 
 [WARNING]
 ====
-Log4j Core is designed with reliability in mind, unlike other logging backends.
+Log4j Core is designed with reliability in mind, which implies that the reconfiguration process can not lose any log event.
+In order to achieve this Log4j does **not** stop any appender until the new `Configuration` is active and **reuses** resources that are present in both the old and the new `Configuration`.
 
-During a reconfiguration process, no messages are lost.
+In order to guarantee reliability, Log4j _may_ ignore the changes to some appender options, if they would cause log event loss.
+For example, changing the `append` option of a file appender, without changing the `fileName` option is not possible, since
+it would require closing the underlying file and reopening it with different options.
+Between the two operations log events might be lost.
 
-Unless the new configuration file removes an appender, the old ones work without interruption.
 
-Some changed appender options will be **ignored** during reconfiguration.
-For example, appenders that need to close resources, like the append mode used to open a file, will ignore such options.
-
-To modify these options during a reconfiguration, you also need to change the resource used by the appender (e.g., the file name used by a file appender).
 ====
 
 [id=configuration-attribute-status]
@@ -404,16 +409,12 @@ To modify these options during a reconfiguration, you also need to change the re
 | {log4j2-url}/manual/systemproperties.html#log4j.statusLoggerLevel[`log4j2.statusLoggerLevel`]
 |===
 
-Overrides the logging level of the status logger.
+Overrides the logging level of {log4j2-url}/manual/status-logger.adoc[Status Logger].
 
-WARNING: Since 2.24.0 this attribute is deprecated and should be replaced with the
-{log4j2-url}/manual/systemproperties.html#log4j.sta.statusLoggerLevel[`log4j2.statusLoggerLevel`]
-configuration property.
-
-[id=configuration-elements-filters]
-=== Filters
-
-See xref:manual/filters.adoc#filters[Filters] for additional filtering capabilities that can be applied to the global configuration object.
+[WARNING]
+====
+Since version `2.24.0`, this attribute is deprecated and should be replaced with the xref:manual/status-logger.adoc#log4j2.statusLoggerLevel[log4j2.statusLoggerLevel] configuration property instead.
+====
 
 [id=configuring-loggers]
 == [[Loggers]] Loggers
@@ -450,27 +451,31 @@ Let's start with an example of logger configuration:
 ====
 XML::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/loggers.xml[`log4j2.xml`]
 [source,xml]
 ----
-include::example$manual/configuration/loggers.xml[tag=loggers]
+include::example$manual/configuration/loggers.xml[tag=loggers,indent=0]
 ----
 
 JSON::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/loggers.json[`log4j2.json`]
 [source,json]
 ----
-include::example$manual/configuration/loggers.json[tag=loggers]
+include::example$manual/configuration/loggers.json[tag=loggers,indent=0]
 ----
 
 YAML::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/loggers.yaml[`log4j2.yaml`]
 [source,yaml]
 ----
-include::example$manual/configuration/loggers.yaml[tag=loggers]
+include::example$manual/configuration/loggers.yaml[tag=loggers,indent=0]
 ----
 
 Properties::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/loggers.properties[`log4j2.properties`]
 [source,properties]
 ----
 include::example$manual/configuration/loggers.properties[tags=loggers]
@@ -622,8 +627,8 @@ Loggers can emit additional context data that will be integrated with other cont
 ====
 The `value` of each property is subject to <<property-substitution,property substitution>> twice:
 
-* when the configuration is loaded,
-* each time a log event is generated.
+* when the configuration is loaded, it is evaluated in the xref:manual/lookups.adoc#global-context[global context].
+* each time a log event is generated, it is evaluated in the xref:manual/lookups.adoc#event-context[context of the event].
 
 Therefore, if you wish to insert a value that changes in time, you must double the `$` sign, as shown in the example below.
 ====
@@ -632,27 +637,31 @@ Therefore, if you wish to insert a value that changes in time, you must double t
 ====
 XML::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/logger-properties.xml[`log4j2.xml`]
 [source,xml]
 ----
-include::example$manual/configuration/logger-properties.xml[tag=loggers]
+include::example$manual/configuration/logger-properties.xml[tag=loggers,indent=0]
 ----
 
 JSON::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/logger-properties.json[`log4j2.json`]
 [source,json]
 ----
-include::example$manual/configuration/logger-properties.json[tag=loggers]
+include::example$manual/configuration/logger-properties.json[tag=loggers,indent=0]
 ----
 
 YAML::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/logger-properties.yaml[`log4j2.yaml`]
 [source,yaml]
 ----
-include::example$manual/configuration/logger-properties.yaml[tag=loggers]
+include::example$manual/configuration/logger-properties.yaml[tag=loggers,indent=0]
 ----
 
 Properties::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/logger-properties.properties[`log4j2.properties`]
 [source,properties]
 ----
 include::example$manual/configuration/logger-properties.properties[tag=loggers]
@@ -711,6 +720,7 @@ Reusable configuration values can be added directly to a configuration file by u
 ====
 XML::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/properties.xml[`log4j2.xml`]
 [source,xml]
 ----
 include::example$manual/configuration/properties.xml[lines=1;18..24;26]
@@ -718,23 +728,26 @@ include::example$manual/configuration/properties.xml[lines=1;18..24;26]
 
 JSON::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/properties.json[`log4j2.json`]
 [source,json]
 ----
-include::example$manual/configuration/properties.json[]
+include::example$manual/configuration/properties.json[lines=1..14]
 ----
 
 YAML::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/properties.yaml[`log4j2.yaml`]
 [source,yaml]
 ----
-include::example$manual/configuration/properties.yaml[lines=17..-1]
+include::example$manual/configuration/properties.yaml[lines=17..23]
 ----
 
 Properties::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/properties.properties[`log4j2.properties`]
 [source,properties]
 ----
-include::example$manual/configuration/properties.properties[lines=17..-1]
+include::example$manual/configuration/properties.properties[lines=17..18]
 ----
 ====
 
@@ -768,8 +781,8 @@ If `name` starts with a hyphen `-` (e.g. `-variable`), it must be escaped with a
 +
 The most common lookup prefixes are:
 +
-* `sys` for Java system properties (see xref:manual/lookups.adoc#system-properties-lookup[System Properties lookup]),
-* `env` for environment variables (see xref:manual/lookups.adoc#environment-lookup[Environment lookup]).
+* `sys` for Java system properties (see xref:manual/lookups.adoc#SystemPropertiesLookup[System Properties lookup]),
+* `env` for environment variables (see xref:manual/lookups.adoc#EnvironmentLookup[Environment lookup]).
 
 The above expansions have a version with an additional `default` value that is **expanded** if the lookup fails:
 
@@ -859,9 +872,8 @@ and the OS environment variable `FOO` has a value of `environment`, Log4j will e
 [WARNING]
 =====
 For security reasons, if the **expansion** of a `${...}` expression contains other expressions, these will **not** be expanded.
-The only exception to this rule is the expansion of properties in the `Properties` container.
 
-Properties defined in the `Properties` container can depend on each other.
+Properties defined in the `Properties` container, however, can depend on each other.
 If your configuration contains, for example:
 
 [tabs]
@@ -905,61 +917,83 @@ Therefore, the value of the `logging.file` property will be:
 =====
 
 [id=lazy-property-substitution]
-=== Lazy property substitution
+=== Runtime property substitution
 
-For most attributes, property substitution is performed only once at **configuration time**, but there are two categories of exceptions to this rule:
+For most attributes, property substitution is performed only once at **configuration time**,
+but there are exceptions to this rule: some attributes are **also** evaluated when a component-specific event occurs.
 
-* Some attributes are **also** evaluated when a component-specific event occurs.
-For example
-<<logger-elements-properties,additional context properties>>
-and the `pattern` attribute of the example below are evaluated at each log event, while the `filePattern` attribute of a
-xref:manual/appenders.adoc#rollingfileappender[rolling file appender]
-is evaluated at each rollover.
-+
 In this case:
 
-** If you want property substitution to happen only once, use one dollar sign, e.g., `${date:HH:mm:ss}`.
-** If you want property substitution to happen at each cyclic event, you use two dollar signs, e.g., `$${date:HH:mm:ss}`
+** If you want property substitution to happen at configuration time, use one dollar sign, e.g., `${date:HH:mm:ss}`.
+** If you want property substitution to happen at runtime, you use two dollar signs, e.g., `$${date:HH:mm:ss}`
 
-* Other components defer the evaluation of their child components.
-In this case, you only need one dollar `$` sign.
-+
-This case happens for the children of the `Route` element below:
+The list of attributes that support runtime property substitution is:
+
+* The `value` attribute of <<logger-elements-properties,nested `Property` elements>> of a logger configuration.
+* The
+xref:manual/pattern-layout.adoc#plugin-attr-pattern[`pattern`] attribute of the xref:manual/pattern-layout.adoc[].
+* Event template attributes of xref:manual/json-template-layout.adoc[].
+See xref:manual/json-template-layout.adoc#property-substitution-in-template[property substitution in JSON Template Layout]
+for more details.
+* The appender attributes listed in xref:manual/appenders.adoc#runtime-evaluation[runtime property substitution in appenders].
+
+[WARNING]
+====
+Certain lookups might behave differently when they are expanded at runtime.
+See xref:manual/lookups.adoc#evaluation-contexts[lookup evaluation contexts] for details.
+====
+
+[NOTE]
+====
+The
+xref:manual/appenders.adoc#Routes[`Route`] component of the
+xref:manual/appenders.adoc#RoutingAppender[`RoutingAppender`]
+is a different case altogether.
+The attributes of its children are expanded at runtime, but are not expanded at configuration time.
+
+Inside the `Route` component you **should not** use escaped `$$+{...}+` expressions, but only unescaped `$+{...}+` expressions.
+====
+
+The complete spectrum of behaviors concerning runtime property substitution is given by the routing appender example below:
 
 [tabs]
 ====
 XML::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/routing.xml[`log4j2.xml`]
 [source,xml]
 ----
-include::example$manual/configuration/routing.xml[tag=appender]
+include::example$manual/configuration/routing.xml[tag=appender,indent=0]
 ----
 
 JSON::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/routing.json[`log4j2.json`]
 [source,json]
 ----
-include::example$manual/configuration/routing.json[tag=appender]
+include::example$manual/configuration/routing.json[tag=appender,indent=0]
 ----
 
 YAML::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/routing.yaml[`log4j2.yaml`]
 [source,yaml]
 ----
-include::example$manual/configuration/routing.yaml[tag=appender]
+include::example$manual/configuration/routing.yaml[tag=appender,indent=0]
 ----
 
 Properties::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/routing.properties[`log4j2.properties`]
 [source,properties]
 ----
 include::example$manual/configuration/routing.properties[tag=appender]
 ----
 ====
 
-<1> The `pattern` attribute is evaluated at configuration time and also each time a log event is routed.
+<1> The `pattern` attribute is evaluated at configuration time, and also each time a log event is routed.
 Therefore, the dollar `$` sign needs to be escaped.
-<2> All the attributes inside the `File` element have a **deferred** evaluation, therefore they need only one `$` sign.
+<2> All the attributes of children of the `Route` element have a **deferred** evaluation. Therefore, they need only one `$` sign.
 
 [id=arbiters]
 == [[Arbiters]] Arbiters
@@ -986,23 +1020,26 @@ For example, you might want to use a different layout in a production and develo
 ====
 XML::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/arbiters.xml[`log4j2.xml`]
 [source,xml]
 ----
-include::example$manual/configuration/arbiters.xml[lines=1;18..-1]
+include::example$manual/configuration/arbiters.xml[lines=23..32,indent=0]
 ----
 
 JSON::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/arbiters.json[`log4j2.json`]
 [source,json]
 ----
-include::example$manual/configuration/arbiters.json[]
+include::example$manual/configuration/arbiters.json[lines=3..24,indent=0]
 ----
 
 YAML::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/arbiters.yaml[`log4j2.yaml`]
 [source,yaml]
 ----
-include::example$manual/configuration/arbiters.yaml[lines=17..-1]
+include::example$manual/configuration/arbiters.yaml[lines=18..29,indent=0]
 ----
 
 Properties::
@@ -1026,35 +1063,39 @@ If none of the arbiters match, the configuration from the `DefaultArbiter` eleme
 ====
 XML::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/arbiters-select.xml[`log4j2.xml`]
 [source,xml]
 ----
-include::example$manual/configuration/arbiters-select.xml[tag=select]
+include::example$manual/configuration/arbiters-select.xml[tag=select,indent=0]
 ----
 
 JSON::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/arbiters-select.json[`log4j2.json`]
 [source,json]
 ----
-include::example$manual/configuration/arbiters-select.json[tag=select]
+include::example$manual/configuration/arbiters-select.json[tag=select,indent=0]
 ----
 
 YAML::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/arbiters-select.yaml[`log4j2.yaml`]
 [source,yaml]
 ----
-include::example$manual/configuration/arbiters-select.yaml[tag=select]
+include::example$manual/configuration/arbiters-select.yaml[tag=select,indent=0]
 ----
 
 Properties::
 +
+.Snippet from an example {antora-examples-url}/manual/configuration/arbiters-select.properties[`log4j2.properties`]
 [source,properties]
 ----
 include::example$manual/configuration/arbiters-select.properties[tag=select]
 ----
 ====
 
-<1> If the Java system property `env` has a value of `dev`, a pattern layout will be used.
-<2> Otherwise, a JSON template layout will be used.
+<1> If the Java system property `env` has a value of `dev`, a Pattern Layout will be used.
+<2> Otherwise, a JSON Template Layout will be used.
 
 [#CompositeConfiguration]
 == Composite Configuration
@@ -1137,21 +1178,21 @@ https://www.w3.org/TR/xinclude/[XInclude].
 NOTE: The list of `XInclude` and `XPath` features supported depends upon your
 https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/xml/jaxp/index.html[JAXP implementation].
 
-Here is an example log4j2.xml file that includes two other files:
+Here is an example `log4j2.xml` file that includes two other files:
 
-.log4j2.xml
+.Snippet from an example {antora-examples-url}/manual/configuration/xinclude-main.xml[`log4j2.xml`]
 [source,xml]
 ----
 include::example$manual/configuration/xinclude-main.xml[lines=1;18..-1]
 ----
 
-.xinclude-appenders.xml
+.Snippet from an example {antora-examples-url}/manual/configuration/xinclude-appenders.xml[`xinclude-appenders.xml`]
 [source,xml]
 ----
 include::example$manual/configuration/xinclude-appenders.xml[lines=1;18..-1]
 ----
 
-.xinclude-loggers.xml
+.Snippet from an example {antora-examples-url}/manual/configuration/xinclude-loggers.xml[`xinclude-loggers.xml`]
 [source,xml]
 ----
 include::example$manual/configuration/xinclude-loggers.xml[lines=1;18..-1]

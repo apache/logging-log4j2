@@ -14,27 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.lookup;
+package example;
 
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-/**
- * Looks up keys from environment variables.
- */
-@Lookup
-@Plugin("env")
-public class EnvironmentLookup extends AbstractLookup {
+public final class MainArgsExample implements Runnable {
 
-    /**
-     * Looks up the value of the environment variable.
-     *
-     * @param key  the key to be looked up, may be null
-     * @return The value of the environment variable.
-     */
+    // tag::usage[]
+    private final Logger logger = LogManager.getLogger(); // <1>
+
+    public static void main(final String[] args) {
+        try { // <2>
+            Class.forName("org.apache.logging.log4j.core.lookup.MainMapLookup")
+                    .getDeclaredMethod("setMainArguments", String[].class)
+                    .invoke(null, (Object) args);
+        } catch (final ReflectiveOperationException e) {
+            // Log4j Core is not used.
+        }
+        new MainArgsExample().run();
+    }
+    // end::usage[]
+
     @Override
-    public String lookup(final LogEvent ignored, final String key) {
-        // getenv throws NullPointerException if <code>name</code> is <code>null</code>
-        return key != null ? System.getenv(key) : null;
+    public void run() {
+        logger.info("Hello `main` lookup!");
     }
 }

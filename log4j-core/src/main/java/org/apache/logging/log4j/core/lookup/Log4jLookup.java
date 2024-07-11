@@ -55,7 +55,7 @@ public class Log4jLookup extends AbstractConfigurationAwareLookup {
     }
 
     @Override
-    public String lookup(final LogEvent event, final String key) {
+    public String lookup(final LogEvent ignored, final String key) {
         if (configuration != null) {
             final ConfigurationSource configSrc = configuration.getConfigurationSource();
             final File file = configSrc.getFile();

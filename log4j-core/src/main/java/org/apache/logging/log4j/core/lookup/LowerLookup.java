@@ -26,26 +26,16 @@ import org.apache.logging.log4j.plugins.Plugin;
  */
 @Lookup
 @Plugin("lower")
-public class LowerLookup implements StrLookup {
+public class LowerLookup extends AbstractLookup {
 
     /**
      * Converts the "key" to lower case.
+     *
      * @param key  the key to be looked up, may be null
      * @return The value associated with the key.
      */
     @Override
-    public String lookup(final String key) {
+    public String lookup(final LogEvent ignored, final String key) {
         return key != null ? toRootLowerCase(key) : null;
-    }
-
-    /**
-     * Converts the "key" to lower case.
-     * @param event The current LogEvent.
-     * @param key  the key to be looked up, may be null
-     * @return The value associated with the key.
-     */
-    @Override
-    public String lookup(final LogEvent event, final String key) {
-        return lookup(key);
     }
 }

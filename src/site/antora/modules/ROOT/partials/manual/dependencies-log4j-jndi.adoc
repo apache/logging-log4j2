@@ -24,16 +24,16 @@ Maven::
 <!-- We assume you use `log4j-bom` for dependency management -->
 <dependency>
   <groupId>org.apache.logging.log4j</groupId>
-  <artifactId>log4j-1.2-api</artifactId>
+  <artifactId>log4j-jndi</artifactId>
   <scope>runtime</scope>
 </dependency>
 ----
 
 Gradle::
 +
-[source,groovy]
+[source,groovy,subs=+attributes]
 ----
 // We assume you use `log4j-bom` for dependency management
-runtimeOnly 'org.apache.logging.log4j:log4j-1.2-api'
+runtimeOnly 'org.apache.logging.log4j:log4j-jndi'
 ----
 ====
