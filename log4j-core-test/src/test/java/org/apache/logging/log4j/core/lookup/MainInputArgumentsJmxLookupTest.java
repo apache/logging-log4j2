@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.lookup;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Map;
-import org.junit.jupiter.api.Test;
 
 /**
  * Tests {@link JmxRuntimeInputArgumentsLookup} from the command line, not a JUnit test.
@@ -34,42 +33,13 @@ public class MainInputArgumentsJmxLookupTest {
         new MainInputArgumentsJmxLookupTest().callFromMain();
     }
 
-    @Test
-    public void testMap() {
-        final JmxRuntimeInputArgumentsLookup lookup = JmxRuntimeInputArgumentsLookup.JMX_SINGLETON;
-        String result2 = null;
-        if (null != null) {
-            final Map<String, String> map2 = lookup.getMap();
-            result2 = map2 == null ? null : map2.get(null);
-        }
-        assertNull(result2);
-        String result1 = null;
-        if ("X" != null) {
-            final Map<String, String> map1 = lookup.getMap();
-            result1 = map1 == null ? null : map1.get("X");
-        }
-        assertNull(result1);
-        String result = null;
-        if ("foo.txt" != null) {
-            final Map<String, String> map = lookup.getMap();
-            result = map == null ? null : map.get("foo.txt");
-        }
-        assertNull(result);
-    }
-
     public void callFromMain() {
         final JmxRuntimeInputArgumentsLookup lookup = JmxRuntimeInputArgumentsLookup.JMX_SINGLETON;
         String result1 = null;
-        if (null != null) {
-            final Map<String, String> map1 = lookup.getMap();
-            result1 = map1 == null ? null : map1.get(null);
-        }
         assertNull(result1);
         String result = null;
-        if ("X" != null) {
-            final Map<String, String> map = lookup.getMap();
-            result = map == null ? null : map.get("X");
-        }
+        final Map<String, String> map = lookup.getMap();
+        result = map == null ? null : map.get("X");
         assertNull(result);
         // Eclipse adds -Dfile.encoding=Cp1252
         // assertEquals("--file", lookup.lookup("0"));
