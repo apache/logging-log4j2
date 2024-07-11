@@ -1,0 +1,31 @@
+{
+  "Configuration": {
+    "Properties": {
+      "Property": [ // <1>
+        {
+          "name": "--logfile",
+          "value": "logs/app.log"
+        },
+        {
+          "name": "--loglevel",
+          "value": "INFO"
+        }
+      ]
+    },
+    "Appenders": {
+      "File": {
+        "fileName": "${main:\\--logfile}", // <2>
+        "name": "FILE",
+        "JsonTemplateLayout": {}
+      }
+    },
+    "Loggers": {
+      "Root": {
+        "level": "${main:\\--loglevel", // <2>
+        "AppenderRef": {
+          "ref": "FILE"
+        }
+      }
+    }
+  }
+}

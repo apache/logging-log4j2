@@ -39,13 +39,16 @@ Appenders always have a name so that they can be referenced from Loggers.
 In the tables below, the "Type" column corresponds to the Java type expected.
 For non-JDK classes, these should usually be in link:../javadoc/log4j-core/index.html[Log4j Core] unless otherwise noted.
 
+[#commons-concerns]
+== Common concerns
+
 [#common-properties]
-== Common properties
+=== Common properties
 
 These configuration attributes are shared by multiple appenders:
 
 [#immediateFlush]
-=== `immediateFlush`
+==== `immediateFlush`
 
 [cols="1h,5"]
 |===
@@ -68,6 +71,55 @@ Setting `immediateFlush` to `true` flushes these buffers at each event.
 This setting only guarantees that a byte representation of the log event is passed to the operating system.
 It does not ensure that the operating system writes the event to the underlying storage.
 ====
+
+[#runtime-evaluation]
+=== Runtime evaluation of attributes
+
+The following configuration attributes are also evaluated at runtime,
+so can contain escaped `$$+{...}+` expressions.
+
+.List of attributes evaluated at runtime
+[cols="1,1,1,1"]
+|===
+| Component | Parameter | Event type | Evaluation context
+
+| <<HttpAppender,`HttpAppender`>>
+| <<HttpAppender-element-headers,`Property/value`>>
+| Log event
+| xref:manual/lookups.adoc#global-context[_global_]
+
+| <<KafkaAppender,`KafkaAppender`>>
+| <<KafkaAppender-attr-key,`key`>>
+| Log event
+| xref:manual/lookups.adoc#event-context[_log event_]
+
+| <<NoSQLAppender,`NoSQLAppender`>>
+| <<NoSqlAppender-element-keyValuePairs,`KeyValuePair/value`>>
+| Log event
+| xref:manual/lookups.adoc#event-context[_log event_]
+
+| <<PropertiesRewritePolicy,`PropertiesRewritePolicy`>>
+| <<PropertiesRewritePolicy-element-properties,`Property/value`>>
+| Log event
+| xref:manual/lookups.adoc#global-context[_global_]
+
+| <<RollingFileAppender,`RollingFileAppender`>>
+| <<RollingFileAppender-attr-filePattern,`filePattern`>>
+| Rollover
+| xref:manual/lookups.adoc#global-context[_global_]
+
+| <<CustomDeleteOnRollover,All `Delete` actions>>
+| `basePath`
+| Rollover
+| xref:manual/lookups.adoc#global-context[_global_]
+
+|===
+
+The <<Routes,`Route`>> component of the <<RoutingAppender,`RoutingAppender`>> is special: its children are evaluated at runtime,
+but they are **not** evaluated at configuration time.
+Inside the `Route` component you **should not** use escaped `$$+{...}+` expressions, but only unescaped `$+{...}+` expressions.
+
+See xref:manual/configuration.adoc#lazy-property-substitution[runtime property substitution] for more details.
 
 [#collection]
 == Collection
@@ -1541,7 +1593,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         return this.id;
     }
 
-    public void setId(long id) {
+    public void setId(final long id) {
         this.id = id;
     }
 
@@ -1611,8 +1663,14 @@ Optional, default is 0 (infinite timeout).
 |readTimeoutMillis |integer |The socket read timeout in milliseconds.
 Optional, default is 0 (infinite timeout).
 
-|headers |Property[] |Additional HTTP headers to use. The values support
-xref:manual/lookups.adoc[lookups].
+| [[HttpAppender-element-headers]]headers
+| Property[]
+| Additional HTTP headers to use.
+
+The values support
+xref:manual/configuration.adoc#lazy-property-substitution[runtime property substitution]
+and are evaluated in a
+xref:manual/lookups.adoc#global-context[_global context_].
 
 |ignoreExceptions |boolean |The default is `true`, causing exceptions
 encountered while appending events to be internally logged and then
@@ -1648,7 +1706,7 @@ Here is a sample HttpAppender configuration snippet:
 The KafkaAppender logs events to an https://kafka.apache.org/[Apache Kafka] topic.
 Each log event is sent as a Kafka record.
 
-[width="100%",options="header"]
+[cols="1m,1m,5"]
 |===
 |Parameter Name |Type |Description
 
@@ -1656,9 +1714,14 @@ Each log event is sent as a Kafka record.
 |String
 |The Kafka topic to use. Required.
 
-|key
+|[[KafkaAppender-attr-key]]key
 |String
-|The key that will be sent to Kafka with every message. Optional value defaulting to `null`. Any of the xref:manual/lookups.adoc[Lookups] can be included.
+|The key that will be sent to Kafka with every message.
+
+Supports
+xref:manual/configuration.adoc#lazy-property-substitution[runtime property substitution]
+and is evaluated in the
+xref:manual/lookups.adoc#event-context[_context of the current event_].
 
 |filter
 |Filter
@@ -1851,6 +1914,22 @@ to buffer log events and flush whenever the buffer reaches this size.
 NoSQLObject<W>>> |_Required._ The NoSQL provider that provides
 connections to the chosen NoSQL database.
 |=======================================================================
+
+.`NoSqlAppender` -- nested elements
+[cols="1m,1,4",id=NoSqlAppender-element-keyValuePairs]
+|===
+| Type | Multiplicity | Description
+
+| xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-util-KeyValuePair[`KeyValuePair`]
+| Zero or more
+a| Adds a simple key/value field to the NoSQL object.
+
+The `value` attribute of the pair supports
+xref:manual/configuration.adoc#lazy-property-substitution[runtime property substitution]
+using the
+xref:manual/lookups.adoc#event-context[current event as context].
+
+|===
 
 You specify which NoSQL provider to use by specifying the appropriate configuration element within the `<NoSql>` element.
 The only type currently supported is `<MongoDb>`.
@@ -2391,6 +2470,7 @@ The following configuration shows a RewriteAppender configured to add a product 
 </Configuration>
 ----
 
+[#PropertiesRewritePolicy]
 ===== PropertiesRewritePolicy
 
 PropertiesRewritePolicy will add properties configured on the policy to the ThreadContext Map being logged.
@@ -2398,11 +2478,18 @@ The properties will not be added to the actual ThreadContext Map.
 The property values may contain variables that will be evaluated when the configuration is processed as well as when the event is logged.
 
 [cols="20%,20%,60%",options="header",]
-|=======================================================================
+|===
 |Parameter Name |Type |Description
-|properties |Property[] |One of more Property elements to define the
-keys and values to be added to the ThreadContext Map.
-|=======================================================================
+
+|[[PropertiesRewritePolicy-element-properties]]properties
+|Property[]
+|One of more Property elements to define the keys and values to be added to the ThreadContext Map.
+
+The `value` attribute of each `Property` element supports
+xref:manual/configuration.adoc#lazy-property-substitution[runtime property substitution]
+in the
+xref:manual/lookups.adoc#global-context[_global context_].
+|===
 
 The following configuration shows a RewriteAppender configured to add a product key and its value to the MapMessage:
 
@@ -2524,15 +2611,32 @@ CompositeFilter.
 |fileName |String |The name of the file to write to. If the file, or any
 of its parent directories, do not exist, they will be created.
 
-|filePattern |String |The pattern of the file name of the archived log
-file. The format of the pattern is dependent on the `RolloverPolicy` that
-is used. The DefaultRolloverPolicy will accept both a date/time pattern
+| [[RollingFileAppender-attr-filePattern]]filePattern
+| String
+a| The pattern of the archived log filename.
+
+The format of the pattern is dependent on the `RolloverStrategy` that is used.
+The standard rollover strategies accept:
+
+* xref:manual/configuration.adoc#lazy-property-substitution[runtime lookups],
+which are evaluated in
+xref:manual/lookups.adoc#global-context[a global context].
+* a `%d++{...}++` pattern, functionally identical to the
+xref:manual/pattern-layout.adoc#converter-date[homonymous `PatternLayout` pattern]
+except it uses the actual or inferred timestamp of the **previous** rollover.
+* a `%i` pattern that expands to the computed index for the archived file.
+
+All patterns accept also format specifiers, e.g. `%03i` prints the index as zero-padded number with 3 digits.
+
+will accept both a date/time pattern
 compatible with
 https://docs.oracle.com/javase/{java-target-version}/docs/api/java/text/SimpleDateFormat.html[`SimpleDateFormat`]
-and/or a %i which represents an integer counter. The integer counter
+and/or a %i which represents an integer counter.
+The integer counter
 allows specifying a padding, like %3i for space-padding the counter to
 3 digits or (usually more useful) %03i for zero-padding the counter to
-3 digits. The pattern also
+3 digits.
+The pattern also
 supports interpolation at runtime so any of the Lookups (such as the
 xref:manual/lookups.adoc#DateLookup[DateLookup]) can be included in the
 pattern.
@@ -3702,6 +3806,15 @@ Each `Route` must reference an `Appender`.
 If the `Route` contains a ref attribute then the `Route` will reference an `Appender` that was defined in the configuration.
 If the `Route` contains an `Appender` definition then an
 `Appender` will be created within the context of the `RoutingAppender` and will be reused each time a matching `Appender` name is referenced through a `Route`.
+
+[WARNING]
+====
+Lookups in the **children** of the `Route` component are **not** evaluated at configuration time.
+The substitution is delayed until the `Route` element is evaluated.
+This means that `$+{...}+` expression **should not** be escaped as `$$+{...}+`.
+
+See xref:manual/configuration.adoc#lazy-property-substitution[lazy property substitution] for more details.
+====
 
 This script is passed the following variables:
 

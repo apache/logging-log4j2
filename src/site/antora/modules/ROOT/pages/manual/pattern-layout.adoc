@@ -135,6 +135,11 @@ Pattern Layout plugin configuration accepts the following attributes:
 A composite pattern string of one or more <<converters>>.
 `pattern` and <<plugin-attr-patternSelector>> are mutually exclusive, that is, only one can be specified.
 
+This attribute supports
+xref:manual/configuration.adoc#lazy-property-substitution[runtime property substitution]
+using an
+xref:manual/lookups.adoc#event-context[event evaluation context].
+
 [WARNING]
 ====
 If the provided pattern does not contain an exception converter and <<plugin-attr-alwaysWriteExceptions>> is not disabled, an implicit <<converter-exception-extended,`%xEX`>> is appended to the pattern.

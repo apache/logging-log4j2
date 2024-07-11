@@ -48,12 +48,7 @@ public class JmxRuntimeInputArgumentsLookup extends MapLookup {
     }
 
     @Override
-    public String lookup(final LogEvent event, final String key) {
-        return lookup(key);
-    }
-
-    @Override
-    public String lookup(final String key) {
+    public String lookup(final LogEvent ignored, final String key) {
         if (key == null) {
             return null;
         }

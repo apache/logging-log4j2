@@ -14,34 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.lookup;
+package example;
 
-import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-/**
- * A default lookup for others to extend.
- *
- * @since 2.1
- */
-public abstract class AbstractLookup implements StrLookup {
+public final class MainArgsExample implements Runnable {
 
-    /**
-     * Calls {@code lookup(null, key)} in the implementation.
-     *
-     * @see StrLookup#lookup(LogEvent, String)
-     */
-    @Override
-    public String lookup(final String key) {
-        return lookup(null, key);
+    // tag::usage[]
+    private final Logger logger = LogManager.getLogger(); // <1>
+
+    public static void main(final String[] args) {
+        try { // <2>
+            Class.forName("org.apache.logging.log4j.core.lookup.MainMapLookup")
+                    .getDeclaredMethod("setMainArguments", String[].class)
+                    .invoke(null, (Object) args);
+        } catch (final ReflectiveOperationException e) {
+            // Log4j Core is not used.
+        }
+        new MainArgsExample().run();
     }
+    // end::usage[]
 
-    /**
-     * Calls {@code evaluate(null, key)} in the implementation.
-     *
-     * @see StrLookup#evaluate(LogEvent, String)
-     */
     @Override
-    public LookupResult evaluate(final String key) {
-        return evaluate(null, key);
+    public void run() {
+        logger.info("Hello `main` lookup!");
     }
 }
