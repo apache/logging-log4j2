@@ -28,14 +28,12 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 plugins that provide values for simple `$+{prefix:key}+` expressions.
 
 `StrLookup` is a simple map-like interface.
-The main difference between a map and `StrLookup` is
-that the latter can compute the value of a key programmatically in a global context or in the context of log event.
+The main difference between a map and `StrLookup` is that the latter can compute the value of a key programmatically in a global context or in the context of log event.
 
 [#evaluation-contexts]
 == Evaluation contexts
 
-Each lookup has an associated prefix,
-and Log4j can evaluate it in one of the following ways:
+Each lookup has an associated prefix, and Log4j can evaluate it in one of the following ways:
 
 [#global-context]
 Global context::
@@ -257,8 +255,7 @@ are not supported.
 ====
 
 Log event context::
-In the context of an event, the Context Map lookup uses the
-Log event
+In the context of an event, the Context Map lookup uses the Log event
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getContextData()[context map data]
 of a log event to resolve the key.
 xref:manual/thread-context.adoc#custom-ContextDataProvider[Custom context data providers] are therefore supported.
@@ -548,8 +545,7 @@ You can use this lookup to provide a primitive argument parsing mechanism to you
 include::example$manual/lookups/MainArgsExample.java[tag=usage]
 ----
 +
-<1> Use an **instance** logger field instead of a static one,
-to prevent Log4j Core initialization before `main()` is called.
+<1> Use an **instance** logger field instead of a static one, to prevent Log4j Core initialization before `main()` is called.
 <2> Call `MainMapLookup#setMainArguments` by reflection to allow your application to run with a different Log4j API implementation.
 
 * Now you can use `$+{main:...}+` lookups in your configuration file to support the usage of a `--logfile <file>` CLI argument to specify the log file and `--loglevel <level>` CLI argument to specify the log level.
@@ -686,8 +682,7 @@ Spring Boot 2 initializes Log4j Core at least **twice**:
 * Log4j Core is initialized the first time using
 xref:manual/configuration.adoc#automatic-configuration[its own automatic configuration procedure].
 At this point, the lookup will always return `null`.
-Configuration files that use the standard `log4j2.<extension>` naming convention,
-should provide default values for all Spring lookups.
+Configuration files that use the standard `log4j2.<extension>` naming convention, should provide default values for all Spring lookups.
 
 * As soon as Spring's `Environment` is ready, the lookup becomes **available** and a reconfiguration is triggered.
 If you want to provide a configuration file specifically for this phase, call it `log4j2-spring.<extension>`.
@@ -732,8 +727,7 @@ of a `StructuredDataMessage`.
 
 [TIP]
 ====
-Whenever conversion patterns are allowed and `key` is not one of the virtual keys,
-an `$$+{sd:key}+` lookup is equivalent to a
+Whenever conversion patterns are allowed and `key` is not one of the virtual keys, an `$$+{sd:key}+` lookup is equivalent to a
 xref:manual/pattern-layout.adoc#converter-map[`%K\{key}` pattern].
 ====
 
