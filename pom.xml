@@ -247,6 +247,7 @@
     <module>log4j-couchdb</module>
     <module>log4j-docker</module>
     <module>log4j-flume-ng</module>
+    <module>log4j-fuzz-test</module>
     <module>log4j-iostreams</module>
     <module>log4j-jakarta-smtp</module>
     <module>log4j-jakarta-web</module>
@@ -364,6 +365,10 @@
 
   <dependencyManagement>
     <dependencies>
+
+      <!-- List of managed dependencies (in alphabetical order) that are intended for public consumption.
+           Modules that are not used anywhere (e.g., `log4j-osgi-test`) should not be placed here.
+           Modules that are used only internally (e.g., `log4j-layout-template-json-test`) should be added to `dependencyManagement > dependencies` in `log4j-parent/pom.xml`. -->
 
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>

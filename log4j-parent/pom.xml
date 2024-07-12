@@ -107,6 +107,7 @@
     <javax-servlet-jsp.version>2.3.3</javax-servlet-jsp.version>
     <jansi.version>2.4.1</jansi.version>
     <java-allocation-instrumenter.version>3.3.4</java-allocation-instrumenter.version>
+    <jazzer.version>0.22.1</jazzer.version>
     <jconsole.version>1.7.0</jconsole.version>
     <jctools.version>4.0.5</jctools.version>
     <je.version>18.3.12</je.version>
@@ -164,13 +165,7 @@
   <dependencyManagement>
     <dependencies>
 
-      <!-- BEGIN: Modules that are not published (and hence missing in the BOM) -->
-
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-osgi-test</artifactId>
-        <version>${project.version}</version>
-      </dependency>
+      <!-- BEGIN: Modules that are consumed only internally -->
 
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -178,7 +173,7 @@
         <version>${project.version}</version>
       </dependency>
 
-      <!-- END: Modules that are not published (and hence missing in the BOM) -->
+      <!-- END: Modules that are consumed only internally -->
 
       <dependency>
         <groupId>org.codehaus.groovy</groupId>
@@ -280,6 +275,12 @@
         <groupId>org.awaitility</groupId>
         <artifactId>awaitility</artifactId>
         <version>${awaitility.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.code-intelligence</groupId>
+        <artifactId>jazzer-junit</artifactId>
+        <version>${jazzer.version}</version>
       </dependency>
 
       <dependency>
