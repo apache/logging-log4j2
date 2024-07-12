@@ -925,6 +925,19 @@
   <profiles>
 
     <profile>
+      <id>rerun-tests</id>
+      <activation>
+        <property>
+          <name>env.CI</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <properties>
+        <surefire.rerunFailingTestsCount>2</surefire.rerunFailingTestsCount>
+      </properties>
+    </profile>
+
+    <profile>
       <id>sequential-tests</id>
       <build>
         <plugins>
