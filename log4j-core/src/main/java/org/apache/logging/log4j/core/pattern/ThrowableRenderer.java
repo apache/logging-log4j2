@@ -20,12 +20,11 @@ import java.util.List;
 import org.apache.logging.log4j.core.util.internal.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 
-public class ThrowableRenderer<C> {
+class ThrowableRenderer<C extends ThrowableRenderer.Context> {
     protected final List<String> ignoredPackageNames;
     protected final String stackTraceElementSuffix;
     protected final String lineSeparator;
     protected final int maxLineCount;
-    private int ignoredCount;
 
     ThrowableRenderer(
             final List<String> ignoredPackageNames,
@@ -43,40 +42,42 @@ public class ThrowableRenderer<C> {
         renderThrowable(buffer, throwable, context);
     }
 
-    C createContext(final Throwable throwable) {
-        return null;
+    private C createContext(final Throwable throwable) {
+        return (C) new ThrowableRenderer.Context();
     }
 
-    void renderThrowable(final StringBuilder buffer, final Throwable throwable, final C context) {
+    private void renderThrowable(final StringBuilder buffer, final Throwable throwable, final C context) {
         renderThrowableMessage(buffer, throwable);
         appendSuffix(buffer, stackTraceElementSuffix);
         appendLineSeparator(buffer, lineSeparator);
 
-        ignoredCount = 0;
+        context.setIgnoredStackTraceElementCount(0);
         final StackTraceElement[] stackTraceElements = throwable.getStackTrace();
         for (final StackTraceElement element : stackTraceElements) {
             renderStackTraceElement(buffer, element, context);
         }
-        if (ignoredCount > 0) {
-            appendSuppressedCount(buffer, ignoredCount, stackTraceElementSuffix, lineSeparator);
+        if (context.getIgnoredStackTraceElementCount() > 0) {
+            appendSuppressedCount(
+                    buffer, context.getIgnoredStackTraceElementCount(), stackTraceElementSuffix, lineSeparator);
         }
         StringBuilders.truncateAfterDelimiter(buffer, lineSeparator, maxLineCount);
     }
 
-    void renderStackTraceElement(
+    private void renderStackTraceElement(
             final StringBuilder buffer, final StackTraceElement stackTraceElement, final C context) {
         if (!ignoreElement(stackTraceElement, ignoredPackageNames)) {
-            if (ignoredCount > 0) {
-                appendSuppressedCount(buffer, ignoredCount, stackTraceElementSuffix, lineSeparator);
-                ignoredCount = 0;
+            if (context.getIgnoredStackTraceElementCount() > 0) {
+                appendSuppressedCount(
+                        buffer, context.getIgnoredStackTraceElementCount(), stackTraceElementSuffix, lineSeparator);
+                context.setIgnoredStackTraceElementCount(0);
             }
             appendEntry(stackTraceElement, buffer, stackTraceElementSuffix, lineSeparator);
         } else {
-            ++ignoredCount;
+            context.setIgnoredStackTraceElementCount(context.getIgnoredStackTraceElementCount() + 1);
         }
     }
 
-    protected static void renderThrowableMessage(final StringBuilder buffer, final Throwable throwable) {
+    private static void renderThrowableMessage(final StringBuilder buffer, final Throwable throwable) {
         final String message = throwable.getMessage();
         buffer.append(throwable.getClass().getName());
         if (message != null) {
@@ -85,7 +86,7 @@ public class ThrowableRenderer<C> {
         }
     }
 
-    protected static boolean ignoreElement(final StackTraceElement element, final List<String> ignorePackages) {
+    private static boolean ignoreElement(final StackTraceElement element, final List<String> ignorePackages) {
         if (ignorePackages != null) {
             final String className = element.getClassName();
             for (final String pkg : ignorePackages) {
@@ -97,7 +98,7 @@ public class ThrowableRenderer<C> {
         return false;
     }
 
-    protected static void appendSuppressedCount(
+    private static void appendSuppressedCount(
             final StringBuilder buffer, final int count, final String suffix, final String lineSeparator) {
         if (count == 1) {
             buffer.append("\t... ");
@@ -110,7 +111,7 @@ public class ThrowableRenderer<C> {
         buffer.append(lineSeparator);
     }
 
-    protected static void appendEntry(
+    private static void appendEntry(
             final StackTraceElement stackTraceElement,
             final StringBuilder buffer,
             final String suffix,
@@ -120,14 +121,26 @@ public class ThrowableRenderer<C> {
         buffer.append(lineSeparator);
     }
 
-    protected static void appendSuffix(final StringBuilder buffer, final String suffix) {
+    private static void appendSuffix(final StringBuilder buffer, final String suffix) {
         if (Strings.isNotBlank(suffix)) {
             buffer.append(' ');
             buffer.append(suffix);
         }
     }
 
-    protected static void appendLineSeparator(final StringBuilder buffer, final String lineSeparator) {
+    private static void appendLineSeparator(final StringBuilder buffer, final String lineSeparator) {
         buffer.append(lineSeparator);
+    }
+
+    static class Context {
+        private int ignoredStackTraceElementCount;
+
+        public int getIgnoredStackTraceElementCount() {
+            return ignoredStackTraceElementCount;
+        }
+
+        public void setIgnoredStackTraceElementCount(int ignoredStackTraceElementCount) {
+            this.ignoredStackTraceElementCount = ignoredStackTraceElementCount;
+        }
     }
 }

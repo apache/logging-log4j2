@@ -19,8 +19,8 @@ package org.apache.logging.log4j.core.pattern;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -37,12 +37,7 @@ import org.apache.logging.log4j.util.Strings;
 @Plugin(name = "ThrowablePatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({"ex", "throwable", "exception"})
 public class ThrowablePatternConverter extends LogEventPatternConverter {
-
-    /**
-     * Lists {@link PatternFormatter}s for the suffix attribute.
-     */
-    protected final List<PatternFormatter> formatters;
-
+    private final Function<LogEvent, String> suffixProvider;
     private String rawOption;
     private final boolean subShortOption;
     private final boolean nonStandardLineSeparator;
@@ -78,30 +73,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         if (options != null && options.length > 0) {
             rawOption = options[0];
         }
-        if (this.options.getSuffix() != null) {
-            final PatternParser parser = PatternLayout.createPatternParser(config);
-            final List<PatternFormatter> parsedSuffixFormatters = parser.parse(this.options.getSuffix());
-            // filter out nested formatters that will handle throwable
-            boolean hasThrowableSuffixFormatter = false;
-            for (final PatternFormatter suffixFormatter : parsedSuffixFormatters) {
-                if (suffixFormatter.handlesThrowable()) {
-                    hasThrowableSuffixFormatter = true;
-                }
-            }
-            if (!hasThrowableSuffixFormatter) {
-                this.formatters = parsedSuffixFormatters;
-            } else {
-                final List<PatternFormatter> suffixFormatters = new ArrayList<>();
-                for (final PatternFormatter suffixFormatter : parsedSuffixFormatters) {
-                    if (!suffixFormatter.handlesThrowable()) {
-                        suffixFormatters.add(suffixFormatter);
-                    }
-                }
-                this.formatters = suffixFormatters;
-            }
-        } else {
-            this.formatters = Collections.emptyList();
-        }
+        this.suffixProvider = createSuffixProvider(this.options.getSuffix(), config);
         subShortOption = ThrowableFormatOptions.MESSAGE.equalsIgnoreCase(rawOption)
                 || ThrowableFormatOptions.LOCALIZED_MESSAGE.equalsIgnoreCase(rawOption)
                 || ThrowableFormatOptions.FILE_NAME.equalsIgnoreCase(rawOption)
@@ -188,7 +160,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
             buffer.append(' ');
         }
         if (requireAdditionalFormatting(suffix)) {
-            ThrowableRenderer<Void> renderer = new ThrowableRenderer<>(
+            ThrowableRenderer<ThrowableRenderer.Context> renderer = new ThrowableRenderer<>(
                     options.getIgnorePackages(), suffix, options.getSeparator(), options.getLines());
             renderer.renderThrowable(buffer, throwable);
         } else {
@@ -207,15 +179,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
     }
 
     protected String getSuffix(final LogEvent event) {
-        if (formatters.isEmpty()) {
-            return Strings.EMPTY;
-        }
-        //noinspection ForLoopReplaceableByForEach
-        final StringBuilder toAppendTo = new StringBuilder();
-        for (int i = 0, size = formatters.size(); i < size; i++) {
-            formatters.get(i).format(event, toAppendTo);
-        }
-        return toAppendTo.toString();
+        return suffixProvider.apply(event);
     }
 
     public ThrowableFormatOptions getOptions() {
@@ -224,5 +188,40 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
 
     private boolean requireAdditionalFormatting(final String suffix) {
         return !options.allLines() || nonStandardLineSeparator || Strings.isNotBlank(suffix) || options.hasPackages();
+    }
+
+    private static Function<LogEvent, String> createSuffixProvider(final String suffix, final Configuration config) {
+        if (suffix != null) {
+            final PatternParser parser = PatternLayout.createPatternParser(config);
+            final List<PatternFormatter> parsedSuffixFormatters = parser.parse(suffix);
+            // filter out nested formatters that will handle throwable
+            boolean hasThrowableSuffixFormatter = false;
+            for (final PatternFormatter suffixFormatter : parsedSuffixFormatters) {
+                if (suffixFormatter.handlesThrowable()) {
+                    hasThrowableSuffixFormatter = true;
+                }
+            }
+            List<PatternFormatter> finalFormatters;
+            if (!hasThrowableSuffixFormatter) {
+                finalFormatters = parsedSuffixFormatters;
+            } else {
+                final List<PatternFormatter> suffixFormatters = new ArrayList<>();
+                for (final PatternFormatter suffixFormatter : parsedSuffixFormatters) {
+                    if (!suffixFormatter.handlesThrowable()) {
+                        suffixFormatters.add(suffixFormatter);
+                    }
+                }
+                finalFormatters = suffixFormatters;
+            }
+            return logEvent -> {
+                final StringBuilder toAppendTo = new StringBuilder();
+                for (int i = 0, size = finalFormatters.size(); i < size; i++) {
+                    finalFormatters.get(i).format(logEvent, toAppendTo);
+                }
+                return toAppendTo.toString();
+            };
+        } else {
+            return logEvent -> Strings.EMPTY;
+        }
     }
 }
