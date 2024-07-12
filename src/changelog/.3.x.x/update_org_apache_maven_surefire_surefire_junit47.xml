@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="2671" link="https://github.com/apache/logging-log4j2/pull/2671"/>
-  <description format="asciidoc">Update `org.apache.maven.surefire:surefire-junit47` to version `3.3.0`</description>
+  <issue id="2735" link="https://github.com/apache/logging-log4j2/pull/2735"/>
+  <description format="asciidoc">Update `org.apache.maven.surefire:surefire-junit47` to version `3.3.1`</description>
 </entry>
