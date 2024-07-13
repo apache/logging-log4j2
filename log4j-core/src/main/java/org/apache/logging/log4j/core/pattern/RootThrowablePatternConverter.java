@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.pattern;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.impl.ThrowableProxy;
+import org.apache.logging.log4j.core.impl.ThrowableFormatOptions;
 
 /**
  * Outputs the Throwable portion of the LoggingEvent as a full stack trace
@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.impl.ThrowableProxy;
 @Plugin(name = "RootThrowablePatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({"rEx", "rThrowable", "rException"})
 public final class RootThrowablePatternConverter extends ThrowablePatternConverter {
+    private RootThrowableRenderer renderer;
 
     /**
      * Private constructor.
@@ -59,25 +60,17 @@ public final class RootThrowablePatternConverter extends ThrowablePatternConvert
      * {@inheritDoc}
      */
     @Override
-    public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        final ThrowableProxy proxy = event.getThrownProxy();
-        final Throwable throwable = event.getThrown();
-        if (throwable != null && options.anyLines()) {
-            if (proxy == null) {
-                super.format(event, toAppendTo);
-                return;
-            }
-            final int len = toAppendTo.length();
-            if (len > 0 && !Character.isWhitespace(toAppendTo.charAt(len - 1))) {
-                toAppendTo.append(' ');
-            }
-            proxy.formatCauseStackTraceTo(
-                    toAppendTo,
-                    options.getIgnorePackages(),
-                    options.getTextRenderer(),
-                    getSuffix(event),
-                    options.getSeparator(),
-                    options.getLines());
+    public void format(final LogEvent event, final StringBuilder buffer) {
+        final int len = buffer.length();
+        if (len > 0 && !Character.isWhitespace(buffer.charAt(len - 1))) {
+            buffer.append(' ');
         }
+        renderer.renderThrowable(buffer, event.getThrown(), getSuffix(event));
+    }
+
+    @Override
+    void createRenderer(final ThrowableFormatOptions options) {
+        this.renderer =
+                new RootThrowableRenderer(options.getIgnorePackages(), options.getSeparator(), options.getLines());
     }
 }

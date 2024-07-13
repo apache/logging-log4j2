@@ -38,11 +38,11 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
     }
 
     @SuppressWarnings("unchecked")
-    private C createContext(final Throwable throwable) {
+    C createContext(final Throwable throwable) {
         return (C) new ThrowableRenderer.Context();
     }
 
-    private void renderThrowable(
+    void renderThrowable(
             final StringBuilder buffer,
             final Throwable throwable,
             final C context,
@@ -62,7 +62,7 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
         StringBuilders.truncateAfterDelimiter(buffer, lineSeparator, maxLineCount);
     }
 
-    private void renderStackTraceElement(
+    void renderStackTraceElement(
             final StringBuilder buffer,
             final StackTraceElement stackTraceElement,
             final C context,
@@ -79,7 +79,7 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
         }
     }
 
-    private static void renderThrowableMessage(final StringBuilder buffer, final Throwable throwable) {
+    static void renderThrowableMessage(final StringBuilder buffer, final Throwable throwable) {
         final String message = throwable.getMessage();
         buffer.append(throwable.getClass().getName());
         if (message != null) {
@@ -100,7 +100,7 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
         return false;
     }
 
-    private static void appendSuppressedCount(
+    static void appendSuppressedCount(
             final StringBuilder buffer, final int count, final String suffix, final String lineSeparator) {
         if (count == 1) {
             buffer.append("\t... ");
@@ -118,19 +118,20 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
             final StringBuilder buffer,
             final String suffix,
             final String lineSeparator) {
+        buffer.append("\tat ");
         buffer.append(stackTraceElement.toString());
         appendSuffix(buffer, suffix);
         buffer.append(lineSeparator);
     }
 
-    private static void appendSuffix(final StringBuilder buffer, final String suffix) {
+    static void appendSuffix(final StringBuilder buffer, final String suffix) {
         if (Strings.isNotBlank(suffix)) {
             buffer.append(' ');
             buffer.append(suffix);
         }
     }
 
-    private static void appendLineSeparator(final StringBuilder buffer, final String lineSeparator) {
+    static void appendLineSeparator(final StringBuilder buffer, final String lineSeparator) {
         buffer.append(lineSeparator);
     }
 
