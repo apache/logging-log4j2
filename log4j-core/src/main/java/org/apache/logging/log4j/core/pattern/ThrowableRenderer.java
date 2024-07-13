@@ -22,58 +22,60 @@ import org.apache.logging.log4j.util.Strings;
 
 class ThrowableRenderer<C extends ThrowableRenderer.Context> {
     protected final List<String> ignoredPackageNames;
-    protected final String stackTraceElementSuffix;
     protected final String lineSeparator;
     protected final int maxLineCount;
 
-    ThrowableRenderer(
-            final List<String> ignoredPackageNames,
-            final String stackTraceElementSuffix,
-            final String lineSeparator,
-            final int maxLineCount) {
+    ThrowableRenderer(final List<String> ignoredPackageNames, final String lineSeparator, final int maxLineCount) {
         this.ignoredPackageNames = ignoredPackageNames;
-        this.stackTraceElementSuffix = stackTraceElementSuffix;
         this.lineSeparator = lineSeparator;
         this.maxLineCount = maxLineCount;
     }
 
-    final void renderThrowable(final StringBuilder buffer, final Throwable throwable) {
+    final void renderThrowable(
+            final StringBuilder buffer, final Throwable throwable, final String stackTraceElementSuffix) {
         C context = createContext(throwable);
-        renderThrowable(buffer, throwable, context);
+        renderThrowable(buffer, throwable, context, stackTraceElementSuffix);
     }
 
+    @SuppressWarnings("unchecked")
     private C createContext(final Throwable throwable) {
         return (C) new ThrowableRenderer.Context();
     }
 
-    private void renderThrowable(final StringBuilder buffer, final Throwable throwable, final C context) {
+    private void renderThrowable(
+            final StringBuilder buffer,
+            final Throwable throwable,
+            final C context,
+            final String stackTraceElementSuffix) {
         renderThrowableMessage(buffer, throwable);
         appendSuffix(buffer, stackTraceElementSuffix);
         appendLineSeparator(buffer, lineSeparator);
-
-        context.setIgnoredStackTraceElementCount(0);
+        context.ignoredStackTraceElementCount = 0;
         final StackTraceElement[] stackTraceElements = throwable.getStackTrace();
         for (final StackTraceElement element : stackTraceElements) {
-            renderStackTraceElement(buffer, element, context);
+            renderStackTraceElement(buffer, element, context, stackTraceElementSuffix);
         }
-        if (context.getIgnoredStackTraceElementCount() > 0) {
+        if (context.ignoredStackTraceElementCount > 0) {
             appendSuppressedCount(
-                    buffer, context.getIgnoredStackTraceElementCount(), stackTraceElementSuffix, lineSeparator);
+                    buffer, context.ignoredStackTraceElementCount, stackTraceElementSuffix, lineSeparator);
         }
         StringBuilders.truncateAfterDelimiter(buffer, lineSeparator, maxLineCount);
     }
 
     private void renderStackTraceElement(
-            final StringBuilder buffer, final StackTraceElement stackTraceElement, final C context) {
+            final StringBuilder buffer,
+            final StackTraceElement stackTraceElement,
+            final C context,
+            final String stackTraceElementSuffix) {
         if (!ignoreElement(stackTraceElement, ignoredPackageNames)) {
-            if (context.getIgnoredStackTraceElementCount() > 0) {
+            if (context.ignoredStackTraceElementCount > 0) {
                 appendSuppressedCount(
-                        buffer, context.getIgnoredStackTraceElementCount(), stackTraceElementSuffix, lineSeparator);
-                context.setIgnoredStackTraceElementCount(0);
+                        buffer, context.ignoredStackTraceElementCount, stackTraceElementSuffix, lineSeparator);
+                context.ignoredStackTraceElementCount = 0;
             }
             appendEntry(stackTraceElement, buffer, stackTraceElementSuffix, lineSeparator);
         } else {
-            context.setIgnoredStackTraceElementCount(context.getIgnoredStackTraceElementCount() + 1);
+            context.ignoredStackTraceElementCount += 1;
         }
     }
 
@@ -133,14 +135,6 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
     }
 
     static class Context {
-        private int ignoredStackTraceElementCount;
-
-        public int getIgnoredStackTraceElementCount() {
-            return ignoredStackTraceElementCount;
-        }
-
-        public void setIgnoredStackTraceElementCount(int ignoredStackTraceElementCount) {
-            this.ignoredStackTraceElementCount = ignoredStackTraceElementCount;
-        }
+        int ignoredStackTraceElementCount;
     }
 }

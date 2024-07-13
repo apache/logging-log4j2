@@ -94,7 +94,7 @@ public class ThrowableTest {
         if (filters != null) {
             buffer.append("{filters(");
             buffer.append(filters);
-            buffer.append(")})");
+            buffer.append(")}");
         }
 
         if (depth != null) {

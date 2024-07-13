@@ -41,6 +41,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
     private String rawOption;
     private final boolean subShortOption;
     private final boolean nonStandardLineSeparator;
+    private final ThrowableRenderer<ThrowableRenderer.Context> renderer;
 
     /**
      * Options.
@@ -81,6 +82,8 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
                 || ThrowableFormatOptions.METHOD_NAME.equalsIgnoreCase(rawOption)
                 || ThrowableFormatOptions.CLASS_NAME.equalsIgnoreCase(rawOption);
         nonStandardLineSeparator = !Strings.LINE_SEPARATOR.equals(this.options.getSeparator());
+        renderer = new ThrowableRenderer<>(
+                this.options.getIgnorePackages(), this.options.getSeparator(), this.options.getLines());
     }
 
     /**
@@ -160,9 +163,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
             buffer.append(' ');
         }
         if (requireAdditionalFormatting(suffix)) {
-            ThrowableRenderer<ThrowableRenderer.Context> renderer = new ThrowableRenderer<>(
-                    options.getIgnorePackages(), suffix, options.getSeparator(), options.getLines());
-            renderer.renderThrowable(buffer, throwable);
+            renderer.renderThrowable(buffer, throwable, suffix);
         } else {
             throwable.printStackTrace(new PrintWriter(new StringBuilderWriter(buffer)));
         }
