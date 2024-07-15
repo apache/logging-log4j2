@@ -262,8 +262,8 @@ xref:manual/thread-context.adoc#custom-ContextDataProvider[Custom context data p
 +
 [TIP]
 ====
-Whenever conversion patterns are allowed, a `$$+{ctx:key}+` lookup is equivalent to an
-xref:manual/pattern-layout.adoc#converter-thread-context-map[`%X\{key}` pattern].
+Don't use `$$+{ctx:key}+` in the xref:manual/pattern-layout.adoc[] conversion patterns!
+Use xref:manual/pattern-layout.adoc#converter-thread-context-map[the `%X\{key}` pattern converter] instead.
 ====
 
 [#DateLookup]
@@ -643,6 +643,7 @@ xref:manual/pattern-layout.adoc#converter-marker[`%markerSimpleName` pattern].
 | Lookup ID  | `spring`
 | Context    | _global_
 | Key format | _any_ `String`
+| Dependency | xref:log4j-spring-boot.adoc[]
 |===
 
 [IMPORTANT]
