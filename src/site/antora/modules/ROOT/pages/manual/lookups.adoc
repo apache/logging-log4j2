@@ -16,16 +16,58 @@
 ////
 = Lookups
 
-Log4j Core provides a flexible and extensible property substitution system loosely based on the
-https://commons.apache.org/proper/commons-text/javadocs/api-release/org/apache/commons/text/StringSubstitutor.html[Commons Text `StringSubstitutor`].
+Log4j Core provides a flexible and extensible property substitution system.
 
-The property substitution system is composed of two kinds of elements:
+[#StrSubstitutor-diagram]
+.Property substitution system
+[plantuml]
+....
+@startuml
+class StrSubstitutor #line.bold {
+  Interpolator interpolator
+  String replace(String input)
+  String replace(LogEvent event, String input)
+}
+
+StrSubstitutor --> Interpolator
+
+class Interpolator {
+  StrLookup[] lookups
+  String lookup(String key)
+  String lookup(LogEvent event, String key)
+}
+
+Interpolator --> "0..*" StrLookup
+
+class StrLookup {
+  String lookup(String input)
+  String lookup(LogEvent event, String key)
+}
+
+@enduml
+....
+
+The property substitution system is composed of these elements:
 
 * A string interpolation engine (xref:manual/architecture.adoc#StrSubstitutor[`StrSubstitutor`]) that evaluates `$+{...}+` expressions.
+These expressions can contain recursive expressions and default values.
++
 See xref:manual/configuration.adoc#property-substitution[property substitution] for more details.
+
+* The
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/Interpolator.html[`Interpolator`]
+that evaluates simple `$\{name}` expressions.
++
+The Interpolator has two functions:
+
+** If `name` does not contain a colon `:` character, the Interpolator uses the
+xref:manual/configuration.adoc#global-properties[`Properties` configuration element] to resolve its value.
+
+** If `name` is of the form `prefix:key`, the Interpolator delegates the lookup to a `StrLookup` associated with `prefix` and falls back to evaluating `$+{key}+` if the lookup was not successful.
+
 * A set of
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-StrLookup[`StrLookup`]
-plugins that provide values for simple `$+{prefix:key}+` expressions.
+plugins, each one associated with a prefix, which retrieve data from external sources.
 
 `StrLookup` is a simple map-like interface.
 The main difference between a map and `StrLookup` is that the latter can compute the value of a key programmatically in a global context or in the context of log event.
@@ -51,10 +93,12 @@ In the context of a log event `event`, Log4j evaluates `$+{prefix:key}+` express
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrLookup.html#lookup(org.apache.logging.log4j.core.LogEvent,java.lang.String)[`lookup(event, "key")`] on the lookup associated to `prefix`.
 The result of this call might take into account the contents of the log event, besides the global state of the system.
 
-The xref:manual/pattern-layout.adoc#plugin-attr-pattern[`pattern`] attribute of `PatternLayout` is an example of attribute that supports both evaluation contexts:
+Some configuration attributes (e.g., xref:manual/pattern-layout.adoc#plugin-attr-pattern[the `pattern` attribute of Pattern Layout]) supports both evaluation contexts:
 
 * During the configuration process the `$+{...}+` expressions are evaluated using a global context.
-* For each log event the `$$+{...}+` expressions are evaluated, using the log event as context.
+The same process converts escaped `$$+{...}+` expressions to `$+{...}+` expressions.
+
+* For each log event, the remaining expressions are evaluated, using the log event as context.
 
 An example of lookup that can be used in both a global and event context is the `$+{date:...}+` lookup:
 
@@ -66,9 +110,9 @@ link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getTimeMi
 [#collection]
 == Collection
 
-Log4j Core provides many lookups out-of-the-box, which can be categorized into three non-disjoint groups:
+Log4j Core provides many lookups out-of-the-box:
 
-* A large group of lookups is available in a global context and provides results, which do not vary in time.
+* A large group of lookups supports evaluation in a global context.
 These lookups can be safely used in eagerly evaluated properties of a
 xref:manual/configuration.adoc[configuration file]
 using the `${prefix:key}` syntax:
@@ -84,6 +128,14 @@ using the `${prefix:key}` syntax:
 | A Java
 https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/ResourceBundle.html[resource bundle]
 
+| <<ContextMapLookup,`ctx`>>
+|
+| xref:manual/thread-context.adoc[]
+
+| <<DateLookup,`date`>>
+|
+| Current timestamp
+
 | <<DockerLookup,`docker`>>
 | log4j-docker
 | Docker container
@@ -96,9 +148,18 @@ https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/Resource
 |
 | JVM characteristics
 
+| <<JndiLookup,`jndi`>>
+|
+| JNDI
+
 | <<Log4jLookup,`log4j`>>
 |
 | Location of Log4j configuration file
+
+| <<LowerLookup,`lower`>>
+|
+| It converts the supplied key to lowercase
+
 
 | <<MainMapLookup,`main`>>
 |
@@ -116,6 +177,10 @@ https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/Resource
 |
 | Java system properties
 
+| <<UpperLookup,`upper`>>
+|
+| It converts the supplied key to uppercase
+
 | <<WebLookup,`web`>>
 | log4j-jakarta-web
 | Jakarta
@@ -123,31 +188,7 @@ https://jakarta.ee/specifications/servlet/6.0/apidocs/jakarta.servlet/jakarta/se
 
 |===
 
-* A second group of lookups either gives results that vary in time or needs to be evaluated in the context of a log event.
-These lookups should be evaluated lazily using the `$$+{prefix:key}+` syntax.
-See
-xref:manual/configuration.adoc#lazy-property-substitution[lazy property substitution]
-for details.
-+
-[#global-context-mutable-list]
-.Mutable lookups available in the global context
-[cols="1,2m,5"]
-|===
-| Prefix | Dependency | Data source
-
-| <<ContextMapLookup,`ctx`>>
-|
-| xref:manual/thread-context.adoc[]
-
-| <<DateLookup,`date`>>
-|
-| Current timestamp
-
-| <<JndiLookup,`jndi`>>
-|
-| JNDI
-
-|===
+* The following lookups only support evaluation in the context of a log event or behave differently, when evaluated in such a context:
 +
 [#event-context-list]
 .Lookups available in the context of a log event
@@ -181,24 +222,6 @@ link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getMarker
 | <<StructuredDataLookup,`sd`>>
 |
 | xref:manual/messages.adoc#StructuredDataMessage[`StructuredDataMessage`]
-
-|===
-
-* Log4j Core also provides two lookups that can be used to modify the result of another lookup:
-+
-[#helper-lookups-list]
-.Helper lookups
-[cols="1,2m,5"]
-|===
-| Prefix | Dependency | Description
-
-| <<LowerLookup,`lower`>>
-|
-| It converts the supplied key to lowercase
-
-| <<UpperLookup,`upper`>>
-|
-| It converts the supplied key to uppercase
 
 |===
 

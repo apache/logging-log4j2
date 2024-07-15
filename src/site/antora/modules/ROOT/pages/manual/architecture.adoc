@@ -444,7 +444,7 @@ Logger -[#green,thickness=6]-> LoggerConfig : delegates `log()`
 @enduml
 ....
 
-[#logger-hiearchy]
+[#logger-hierarchy]
 === Logger hierarchy
 
 Log4j Core has a *hierarchical* model of ``LoggerConfig``s, and hence ``Logger``s.

@@ -345,6 +345,7 @@ Users can add Components to loggers, appender references, appenders, or the glob
 +
 See xref:manual/filters.adoc[Filter configuration] for details.
 
+[#global-properties]
 Properties::
 +
 Represent a set of reusable configuration values for property substitution.
