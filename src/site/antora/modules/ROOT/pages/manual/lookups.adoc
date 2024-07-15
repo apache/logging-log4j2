@@ -100,7 +100,8 @@ The same process converts escaped `$$+{...}+` expressions to `$+{...}+` expressi
 
 * For each log event, the remaining expressions are evaluated, using the log event as context.
 
-An example of lookup that can be used in both a global and event context is the `$+{date:...}+` lookup:
+Lookups can choose to react differently depending on the execution context.
+<<DateLookup>> is such an example:
 
 * When used in a global context, it formats the **current** timestamp obtained through
 https://docs.oracle.com/javase/{java-target-version}/docs/api/java/lang/System.html#currentTimeMillis--[`System.currentTimeMillis()`].
