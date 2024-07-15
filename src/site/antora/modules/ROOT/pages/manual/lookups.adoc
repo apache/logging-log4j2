@@ -72,8 +72,11 @@ plugins, each one associated with a prefix, which retrieve data from external so
 `StrLookup` is a simple map-like interface.
 The main difference between a map and `StrLookup` is that the latter can compute the value of a key programmatically in a global context or in the context of log event.
 
+[#common-concerns]
+== Common concerns
+
 [#evaluation-contexts]
-== Evaluation contexts
+=== Evaluation contexts
 
 Each lookup has an associated prefix, and Log4j can evaluate it in one of the following ways:
 
@@ -107,6 +110,23 @@ Lookups can choose to react differently depending on the execution context.
 https://docs.oracle.com/javase/{java-target-version}/docs/api/java/lang/System.html#currentTimeMillis--[`System.currentTimeMillis()`].
 * When used in the context of an event, it formats the **event** timestamp obtained through
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getTimeMillis()[`LogEvent.getTimeMillis()`].
+
+[#lookups-patterns]
+=== Lazy lookups and pattern converters
+
+For historical reasons, the
+xref:manual/pattern-layout.adoc#plugin-attr-pattern[`pattern` attribute of PatternLayout]
+supports two similar string replacement mechanisms:
+
+* `+${...}+` property expressions.
+* xref:manual/pattern-layout.adoc#converters[`%<name>` pattern converters].
+
+Both lazy `+$${...}+` property expressions and pattern converters have access to the value of the current `LogEvent` and can provide similar results.
+There is, however, an important difference between them:
+
+* Pattern converters can be garbage-free.
+See xref:manual/pattern-layout.adoc#garbage-free[Garbage-free pattern converters] for more details.
+* Lazy lookups are **not** garbage-free and always create temporary `String` objects.
 
 [#collection]
 == Collection
@@ -295,6 +315,8 @@ xref:manual/thread-context.adoc#custom-ContextDataProvider[Custom context data p
 ====
 Don't use `$$+{ctx:key}+` in the xref:manual/pattern-layout.adoc[] conversion patterns!
 Use xref:manual/pattern-layout.adoc#converter-thread-context-map[the `%X\{key}` pattern converter] instead.
+
+See <<lookups-patterns>> for more information.
 ====
 
 [#DateLookup]
@@ -326,6 +348,8 @@ When used in the context of a log event, the timestamp of the log event is used.
 ====
 Don't use `$$+{date:format}+` in the xref:manual/pattern-layout.adoc[] conversion patterns!
 Use xref:manual/pattern-layout.adoc#converter-date[the `%d\{key}` pattern converter] instead.
+
+See <<lookups-patterns>> for more information.
 ====
 
 [#DockerLookup]
@@ -423,6 +447,14 @@ It supports the retrieval of the following event attributes:
 |Timestamp
 |UNIX timestamp in milliseconds of the log event
 |===
+
+[TIP]
+====
+Don't use `$$+{event:key}+` in the xref:manual/pattern-layout.adoc[] conversion patterns!
+There is a xref:manual/pattern-layout.adoc#converters[specialized pattern converter replacement] for each of these lookups.
+
+See <<lookups-patterns>> for more information.
+====
 
 [#JavaLookup]
 === Java Lookup
@@ -662,6 +694,8 @@ xref:manual/messages.adoc#MapMessage[`MapMessage`].
 ====
 Don't use `$$+{map:key}+` in the xref:manual/pattern-layout.adoc[] conversion patterns!
 Use xref:manual/pattern-layout.adoc#converter-map[the `%K\{key}` pattern converter] instead.
+
+See <<lookups-patterns>> for more information.
 ====
 
 [#MarkerLookup]
@@ -697,6 +731,8 @@ link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html[log event
 ====
 Don't use `$$+{marker:}+` in the xref:manual/pattern-layout.adoc[] conversion patterns!
 Use xref:manual/pattern-layout.adoc#converter-marker[the `%markerSimpleName` pattern converter] instead.
+
+See <<lookups-patterns>> for more information.
 ====
 
 [#SpringBootLookup]
@@ -800,8 +836,10 @@ of a `StructuredDataMessage`.
 
 [TIP]
 ====
-Except `++$${sd:id}++` and `++$${sd:type}++`, don't use `++$${sd:key}++` in the xref:manual/pattern-layout.adoc[] conversion patterns!
+Except `++$${sd:id}++` and `++$${sd:type}++`, don't use other `++$${sd:key}++` expressions in the xref:manual/pattern-layout.adoc[] conversion patterns!
 Use xref:manual/pattern-layout.adoc#converter-map[the `%K\{key}` pattern converter] instead.
+
+See <<lookups-patterns>> for more information.
 ====
 
 [#SystemPropertiesLookup]
@@ -983,7 +1021,7 @@ While annotating your lookup with `@Plugin`, you need to make sure that
 * It has a unique `name` attribute across all available `StrLookup` plugins
 * The `category` attribute is set to link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrLookup.html#CATEGORY[`StrLookup.CATEGORY`]
 
-You can check out following files for examples:
+You can check out the following files for examples:
 
 * {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/lookup/DateLookup.java[`LowerLookup.java`] – <<LowerLookup>> lower-cases its input
 * {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/lookup/EventLookup.java[`EventLookup.java`] – <<EventLookup>> extracts specified fields from the effective `LogEvent` in the context
