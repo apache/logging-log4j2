@@ -231,21 +231,19 @@ link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getMarker
 
 [cols="1h,4"]
 |===
-| Lookup ID | `bundle`
-
 | Context | _global_
 
-| Key format
-a| `<baseName> ":" <key>`
+| Syntax
+a| `bundle:<baseName>:<key>`
 
 where:
 
 `baseName`::
 the base name of a resource bundle (see
-https://docs.oracle.com/javase/8/docs/api/java/util/ResourceBundle.html[`ResourceBundle`])
+https://docs.oracle.com/javase/8/docs/api/java/util/ResourceBundle.html[`ResourceBundle`]).
 
 `key`::
-the key for the resource string
+the key for the resource string.
 |===
 
 The Resource Bundle Lookup retrieves strings from Java Resource bundles, e.g.:
@@ -254,14 +252,23 @@ The Resource Bundle Lookup retrieves strings from Java Resource bundles, e.g.:
 ${bundle:org.example.Main:errorMessage}
 ----
 
+[TIP]
+====
+Do you want to use the values in Spring Boot's `application.properties` file?
+Use <<SpringBootLookup>> or <<SpringBootLookup3>> instead.
+====
+
 [#ContextMapLookup]
 === Context Map Lookup
 
 [cols="1h,4"]
 |===
-| Lookup ID | `ctx`
 | Context | _global_ and _log event_
-| Key format | _any_ `String`
+
+| Syntax
+| `ctx:<key>`
+
+where `<key>` is any `String`.
 |===
 
 The Context Map Lookup can be used in two different contexts:
@@ -295,12 +302,13 @@ Use xref:manual/pattern-layout.adoc#converter-thread-context-map[the `%X\{key}` 
 
 [cols="1h,4"]
 |===
-| Lookup ID | `date`
-
 | Context | _global_ and _log event_
 
-| Key format
-| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/text/SimpleDateFormat.html[`SimpleDateFormat`] pattern
+| Syntax
+| `date:<format>`
+
+where `<format>` is a
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/text/SimpleDateFormat.html[`SimpleDateFormat`] pattern
 
 |===
 
@@ -316,8 +324,8 @@ When used in the context of a log event, the timestamp of the log event is used.
 +
 [TIP]
 ====
-Whenever conversion patterns are allowed, a `$$+{date:format}+` lookup is equivalent to a
-xref:manual/pattern-layout.adoc#converter-date[`%d\{format}` pattern].
+Don't use `$$+{date:format}+` in the xref:manual/pattern-layout.adoc[] conversion patterns!
+Use xref:manual/pattern-layout.adoc#converter-date[the `%d\{key}` pattern converter] instead.
 ====
 
 [#DockerLookup]
@@ -325,16 +333,20 @@ xref:manual/pattern-layout.adoc#converter-date[`%d\{format}` pattern].
 
 [cols="1h,4"]
 |===
-| Lookup ID  | `docker`
-| Context    | _global_
-| Key format | _enumeration_
+| Context | _global_
+
+| Syntax
+| `docker:<key>`
+
+where `<key>` is one of the <<DockerLookup-keys>>.
 | Dependency | xref:log4j-docker.adoc[]
 |===
 
 Docker Lookup queries https://docs.docker.com/engine/api/[the API of the Docker Engine] running your container.
 It supports the retrieval of following container attributes:
 
-[%header,cols="1m,4"]
+.Docker Lookup supported keys
+[%header,cols="1m,4",id=DockerLookup-keys]
 |===
 |Key |Description
 |containerId |Container ID
@@ -354,9 +366,12 @@ include::partial$manual/dependencies-log4j-docker.adoc[]
 
 [cols="1h,4"]
 |===
-| Lookup ID  | `env`
-| Context    | _global_
-| Key format | _any_ `String`
+| Context | _global_
+
+| Syntax
+| `env:<key>`
+
+where `<key>` is any `String`
 |===
 
 The Environment Lookup retrieves the value of the
@@ -368,15 +383,19 @@ associated with the key.
 
 [cols="1h,4"]
 |===
-| Lookup ID  | `event`
-| Context    | _log event_
-| Key format | _enumeration_
+| Context | _log event_
+
+| Syntax
+| `event:<key>`
+
+where `<key>` is one of the <<EventLookup-keys>>.
 |===
 
 The Event Lookup provides access to fields of the current log event.
 It supports the retrieval of the following event attributes:
 
-[cols="1m,4a"]
+.Event Lookup supported keys
+[cols="1m,4a",id=EventLookup-keys]
 |===
 |Key |Description
 
@@ -410,15 +429,19 @@ It supports the retrieval of the following event attributes:
 
 [cols="1h,4"]
 |===
-| Lookup ID  | `java`
 | Context    | _global_
-| Key format | _enumeration_
+
+| Syntax
+| `java:<key>`
+
+where `<key>` is one of the <<JavaLookup-keys>>.
 |===
 
 The Java Lookup allows retrieving information about the Java environment the application is using.
 The following keys are supported
 
-[cols="1m,2,6m"]
+.Java Lookup supported keys
+[cols="1m,2,6m",id=JavaLookup-keys]
 |===
 |Key |Description |Example
 
@@ -453,11 +476,12 @@ The following keys are supported
 
 [cols="1h,4"]
 |===
-| Lookup ID  | `jndi`
 | Context    | _global_
 
-| Key format
-| JNDI https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Name.html[`Name`]
+| Syntax
+| `jndi:<name>`
+
+where `<name>` is a JNDI https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Name.html[`Name`].
 |===
 
 [IMPORTANT]
@@ -488,14 +512,18 @@ Android does not support JNDI.
 
 [cols="1h,4"]
 |===
-| Lookup ID  | `log4j`
 | Context    | _global_
-| Key format | _enumeration_
+
+| Syntax
+| `log4j:<key>`
+
+where `<key>` is one of the <<Log4jLookup-keys>>.
 |===
 
 The Configuration Location Lookup supports two keys:
 
-[cols="1m,4"]
+.Configuration Location Lookup supported keys
+[cols="1m,4",id=Log4jLookup-keys]
 |===
 |Key |Description
 
@@ -511,9 +539,12 @@ The Configuration Location Lookup supports two keys:
 
 [cols="1h,4"]
 |===
-| Lookup ID  | `lower`
 | Context    | _global_
-| Key format | _any_ `String`
+
+| Syntax
+| `lower:<key>`
+
+where `<key>` is any `String`.
 |===
 
 The Lower Lookup converts the passed in argument to lowercase.
@@ -530,9 +561,12 @@ ${lower:${sys:appname}}
 
 [cols="1h,4"]
 |===
-| Lookup ID  | `main`
 | Context    | _global_
-| Key format | either an `int` or a `String`
+
+| Syntax
+| `main:<key>`
+
+wherre `<key>` either a non-negative `int` or a `String`.
 |===
 
 [IMPORTANT]
@@ -613,9 +647,12 @@ include::example$manual/lookups/mainArgs.properties[lines=18..-1]
 
 [cols="1h,4"]
 |===
-| Lookup ID  | `map`
 | Context    | _log event_
-| Key format | _any_ `String`
+
+| Syntax
+| `map:<key>`
+
+where `<key>` is any `String`.
 |===
 
 The Map Lookup retrieves the value assigned to the given key in a
@@ -623,8 +660,8 @@ xref:manual/messages.adoc#MapMessage[`MapMessage`].
 
 [TIP]
 ====
-Whenever conversion patterns are allowed, a `$$+{map:key}+` lookup is equivalent to a
-xref:manual/pattern-layout.adoc#converter-map[`%K\{key}` pattern].
+Don't use `$$+{map:key}+` in the xref:manual/pattern-layout.adoc[] conversion patterns!
+Use xref:manual/pattern-layout.adoc#converter-map[the `%K\{key}` pattern converter] instead.
 ====
 
 [#MarkerLookup]
@@ -632,9 +669,12 @@ xref:manual/pattern-layout.adoc#converter-map[`%K\{key}` pattern].
 
 [cols="1h,4"]
 |===
-| Lookup ID  | `marker`
 | Context    | _global_ or _log event_
-| Key format | _any_ `String`
+
+| Syntax
+| `marker:<key>`
+
+where `<key>` is any `String`
 |===
 
 The Marker Lookup can be used in two different ways:
@@ -655,8 +695,8 @@ link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html[log event
 +
 [TIP]
 ====
-Whenever conversion patterns are allowed, a `$$+{marker:}+` lookup is equivalent to a
-xref:manual/pattern-layout.adoc#converter-marker[`%markerSimpleName` pattern].
+Don't use `$$+{marker:}+` in the xref:manual/pattern-layout.adoc[] conversion patterns!
+Use xref:manual/pattern-layout.adoc#converter-marker[the `%markerSimpleName` pattern converter] instead.
 ====
 
 [#SpringBootLookup]
@@ -664,9 +704,13 @@ xref:manual/pattern-layout.adoc#converter-marker[`%markerSimpleName` pattern].
 
 [cols="1h,4"]
 |===
-| Lookup ID  | `spring`
 | Context    | _global_
-| Key format | _any_ `String`
+
+| Syntax
+| `spring:<key>`
+
+where `<key>` is one of the <<SpringBootLookup-keys>>.
+
 | Dependency | xref:log4j-spring-boot.adoc[]
 |===
 
@@ -679,7 +723,8 @@ The Spring Boot 2 Lookup allows user to query Spring Boot's
 https://docs.spring.io/spring-boot/reference/features/external-config.html[externalized configuration files].
 It supports the following keys:
 
-[cols="1m,4"]
+.Spring Boot 2 Lookup supported keys
+[cols="1m,4",id=SpringBootLookup-keys]
 |===
 |Key |Description
 
@@ -722,17 +767,20 @@ include::partial$manual/dependencies-log4j-spring-boot.adoc[]
 
 [cols="1h,4"]
 |===
-| Lookup ID  | `sd`
 | Context    | _log event_
-| Key format | _any_ `String`
+
+| Syntax
+| `sd:<key>`
+
+where `<key>` is either one of the <<StructuredDataLookup-keys>> or any `String`
 |===
 
 The Structured Data Lookup is very similar to <<MapLookup>> and retrieves the value assigned to the given key in a
 xref:manual/messages.adoc#StructuredDataMessage[`StructuredDataMessage`].
 Additionally, the following virtual keys are supported:
 
-.Structured Data Lookup—virtual keys
-[cols="1m,1,4"]
+.Structured Data Lookup virtual keys
+[cols="1m,1,4",id=StructuredDataLookup-keys]
 |===
 | Key | RFC5424 field | Description
 
@@ -752,8 +800,8 @@ of a `StructuredDataMessage`.
 
 [TIP]
 ====
-Whenever conversion patterns are allowed and `key` is not one of the virtual keys, an `$$+{sd:key}+` lookup is equivalent to a
-xref:manual/pattern-layout.adoc#converter-map[`%K\{key}` pattern].
+Except `++$${sd:id}++` and `++$${sd:type}++`, don't use `++$${sd:key}++` in the xref:manual/pattern-layout.adoc[] conversion patterns!
+Use xref:manual/pattern-layout.adoc#converter-map[the `%K\{key}` pattern converter] instead.
 ====
 
 [#SystemPropertiesLookup]
@@ -761,9 +809,12 @@ xref:manual/pattern-layout.adoc#converter-map[`%K\{key}` pattern].
 
 [cols="1h,4"]
 |===
-| Lookup ID  | `sys`
 | Context    | _global_
-| Key format | _any_ `String`
+
+| Syntax
+| `sys:<prop>`
+
+where `<prop>` is any `String`
 |===
 
 The System Properties Lookup retrieves the value of the
@@ -775,9 +826,12 @@ associated with the key.
 
 [cols="1h,4"]
 |===
-| Lookup ID  | `upper`
 | Context    | _global_
-| Key format | _any_ `String`
+
+| Syntax
+| `upper:<key>`
+
+where `<key>` wi any `String`
 |===
 
 The Upper Lookup converts the passed in argument to uppercase.
@@ -794,9 +848,13 @@ ${upper:${sys:appname}}
 
 [cols="1h,4"]
 |===
-| Lookup ID  | `web`
 | Context    | _global_
-| Key format | _any_ `String`
+
+| Syntax
+| `web:<key>`
+
+where `<key>` is one of the <<WebLookup-keys>>.
+
 | Dependency | `log4j-jakarta-web`
 |===
 
@@ -806,7 +864,8 @@ of the web application.
 
 The following table lists various keys that can be retrieved:
 
-[cols="1m,4"]
+.Web Lookup supported keys
+[cols="1m,4",id=WebLookup-keys]
 |===
 |Key |Description
 
@@ -872,8 +931,8 @@ The following additional lookups are available from third-party vendors:
 
 [cols="1h,4"]
 |===
-|Lookup ID |`k8s`
-|Dependency |{log4j-kubernetes-url}[Log4j Kubernetes of Fabric8]
+| Syntax | `k8s:<key>`
+| Dependency | {log4j-kubernetes-url}[Log4j Kubernetes of Fabric8]
 |===
 
 Kubernetes Lookup queries https://kubernetes.io/docs/concepts/overview/kubernetes-api/[the Kubernetes API] to retrieve certain information about the current container and its environment.
@@ -884,8 +943,8 @@ Kubernetes Lookup is distributed as a part of Fabric8's Kubernetes Client, refer
 
 [cols="1h,4"]
 |===
-|Lookup ID  | `spring`
-|Dependency | _integrated in Spring Boot 3_
+| Syntax  | `spring:<key>`
+| Dependency | _integrated in Spring Boot 3_
 |===
 
 Starting with Spring Boot 3 a `$+{spring:...}+` lookup is available out-of-the-box.
