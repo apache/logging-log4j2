@@ -248,7 +248,7 @@ https://docs.oracle.com/javase/8/docs/api/java/util/ResourceBundle.html[`Resourc
 the key for the resource string
 |===
 
-The Resource Bundle lookup retrieves strings from Java Resource bundles, e.g.:
+The Resource Bundle Lookup retrieves strings from Java Resource bundles, e.g.:
 
 ----
 ${bundle:org.example.Main:errorMessage}
@@ -264,7 +264,7 @@ ${bundle:org.example.Main:errorMessage}
 | Key format | _any_ `String`
 |===
 
-The Context Map lookup can be used in two different contexts:
+The Context Map Lookup can be used in two different contexts:
 
 Global context::
 If used in the global context, it uses the
