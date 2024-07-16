@@ -133,13 +133,13 @@ See xref:manual/pattern-layout.adoc#garbage-free[Garbage-free pattern converters
 
 Log4j Core provides many lookups out-of-the-box:
 
-* A large group of lookups supports evaluation in a global context.
+Lookups operating on the global context:: A large group of lookups supports evaluation in a global context.
 These lookups can be safely used in eagerly evaluated properties of a
 xref:manual/configuration.adoc[configuration file]
 using the `${prefix:key}` syntax:
 +
-[#global-context-immutable-list]
-.Immutable lookups available in the global context
+[#global-context-list]
+.Lookups operating on the global context
 [cols="1,2m,5"]
 |===
 | Prefix | Dependency | Data source
@@ -209,10 +209,11 @@ https://jakarta.ee/specifications/servlet/6.0/apidocs/jakarta.servlet/jakarta/se
 
 |===
 
-* The following lookups only support evaluation in the context of a log event or behave differently, when evaluated in such a context:
+Lookups operating on the log event context::
+The following lookups only support evaluation in the context of a log event or behave differently, when evaluated in such a context:
 +
 [#event-context-list]
-.Lookups available in the context of a log event
+.Lookups operating on the log event context
 [cols="1,2m,5"]
 |===
 | Prefix | Dependency | Data source
