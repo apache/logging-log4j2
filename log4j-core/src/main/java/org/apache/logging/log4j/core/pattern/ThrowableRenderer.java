@@ -67,24 +67,6 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
         }
     }
 
-    void renderStackTraceElement(
-            final StringBuilder buffer,
-            final StackTraceElement stackTraceElement,
-            final C context,
-            final String stackTraceElementSuffix) {
-        final boolean stackTraceElementIgnored = isStackTraceElementIgnored(stackTraceElement, ignoredPackageNames);
-        if (!stackTraceElementIgnored) {
-            if (context.ignoredStackTraceElementCount > 0) {
-                renderSuppressedCount(
-                        buffer, context.ignoredStackTraceElementCount, stackTraceElementSuffix, lineSeparator);
-                context.ignoredStackTraceElementCount = 0;
-            }
-            renderStackTraceElement(stackTraceElement, buffer, stackTraceElementSuffix, lineSeparator);
-        } else {
-            context.ignoredStackTraceElementCount += 1;
-        }
-    }
-
     static void renderThrowableMessage(final StringBuilder buffer, final Throwable throwable) {
         final String message = throwable.getMessage();
         buffer.append(throwable.getClass().getName());
@@ -118,6 +100,35 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
         }
     }
 
+    void renderStackTraceElement(
+            final StringBuilder buffer,
+            final StackTraceElement stackTraceElement,
+            final C context,
+            final String stackTraceElementSuffix) {
+        final boolean stackTraceElementIgnored = isStackTraceElementIgnored(stackTraceElement, ignoredPackageNames);
+        if (!stackTraceElementIgnored) {
+            if (context.ignoredStackTraceElementCount > 0) {
+                renderSuppressedCount(
+                        buffer, context.ignoredStackTraceElementCount, stackTraceElementSuffix, lineSeparator);
+                context.ignoredStackTraceElementCount = 0;
+            }
+            renderStackTraceElement(stackTraceElement, buffer, stackTraceElementSuffix, lineSeparator);
+        } else {
+            context.ignoredStackTraceElementCount += 1;
+        }
+    }
+
+    private static void renderStackTraceElement(
+            final StackTraceElement stackTraceElement,
+            final StringBuilder buffer,
+            final String suffix,
+            final String lineSeparator) {
+        buffer.append("\tat ");
+        buffer.append(stackTraceElement.toString());
+        renderSuffix(buffer, suffix);
+        buffer.append(lineSeparator);
+    }
+
     private static boolean isStackTraceElementIgnored(final StackTraceElement element, final List<String> ignorePackages) {
         if (ignorePackages != null) {
             final String className = element.getClassName();
@@ -139,17 +150,6 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
             buffer.append(count);
             buffer.append(" lines");
         }
-        renderSuffix(buffer, suffix);
-        buffer.append(lineSeparator);
-    }
-
-    private static void renderStackTraceElement(
-            final StackTraceElement stackTraceElement,
-            final StringBuilder buffer,
-            final String suffix,
-            final String lineSeparator) {
-        buffer.append("\tat ");
-        buffer.append(stackTraceElement.toString());
         renderSuffix(buffer, suffix);
         buffer.append(lineSeparator);
     }
