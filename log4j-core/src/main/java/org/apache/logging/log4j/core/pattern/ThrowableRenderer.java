@@ -16,11 +16,13 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import java.util.List;
+import java.util.*;
+
 import org.apache.logging.log4j.core.util.internal.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 
 class ThrowableRenderer<C extends ThrowableRenderer.Context> {
+    static final String CAUSED_BY_LABEL = "Caused by: ";
     protected final List<String> ignoredPackageNames;
     protected final String lineSeparator;
     protected final int maxLineCount;
@@ -39,7 +41,10 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
 
     @SuppressWarnings("unchecked")
     C createContext(final Throwable throwable) {
-        return (C) new ThrowableRenderer.Context();
+        final Map<Throwable, Context.ThrowableMetadata> map = new HashMap<>();
+        final Set<Throwable> visited = new HashSet<>(1);
+        buildMap(null, throwable, map, visited);
+        return (C) new Context(map);
     }
 
     void renderThrowable(
@@ -47,18 +52,7 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
             final Throwable throwable,
             final C context,
             final String stackTraceElementSuffix) {
-        renderThrowableMessage(buffer, throwable);
-        appendSuffix(buffer, stackTraceElementSuffix);
-        appendLineSeparator(buffer, lineSeparator);
-        context.ignoredStackTraceElementCount = 0;
-        final StackTraceElement[] stackTraceElements = throwable.getStackTrace();
-        for (final StackTraceElement element : stackTraceElements) {
-            renderStackTraceElement(buffer, element, context, stackTraceElementSuffix);
-        }
-        if (context.ignoredStackTraceElementCount > 0) {
-            appendSuppressedCount(
-                    buffer, context.ignoredStackTraceElementCount, stackTraceElementSuffix, lineSeparator);
-        }
+        format(buffer, throwable, context, stackTraceElementSuffix);
         StringBuilders.truncateAfterDelimiter(buffer, lineSeparator, maxLineCount);
     }
 
@@ -85,6 +79,47 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
         if (message != null) {
             buffer.append(": ");
             buffer.append(message);
+        }
+    }
+
+    void format(
+            final StringBuilder buffer,
+            final Throwable throwable,
+            final C context,
+            final String stackTraceElementSuffix) {
+        renderThrowableMessage(buffer, throwable);
+        appendSuffix(buffer, stackTraceElementSuffix);
+        appendLineSeparator(buffer, lineSeparator);
+        formatElements(buffer, throwable, context, stackTraceElementSuffix);
+        final Throwable cause = throwable.getCause();
+        if (cause != null) {
+            buffer.append(CAUSED_BY_LABEL);
+            appendSuffix(buffer, stackTraceElementSuffix);
+            format(buffer, throwable.getCause(), context, stackTraceElementSuffix);
+        }
+    }
+
+    void formatElements(
+            final StringBuilder buffer,
+            final Throwable throwable,
+            final C context,
+            final String stackTraceElementSuffix) {
+        context.ignoredStackTraceElementCount = 0;
+        final Context.ThrowableMetadata metadata = context.throwableMetadataMap.get(throwable);
+        final StackTraceElement[] stackTraceElements = throwable.getStackTrace();
+        for (int i = 0; i < metadata.stackLength; i++) {
+            renderStackTraceElement(buffer, stackTraceElements[i], context, stackTraceElementSuffix);
+        }
+        if (context.ignoredStackTraceElementCount > 0) {
+            appendSuppressedCount(
+                    buffer, context.ignoredStackTraceElementCount, stackTraceElementSuffix, lineSeparator);
+        }
+        if (metadata.commonElementCount != 0) {
+            buffer.append("\t... ");
+            buffer.append(metadata.commonElementCount);
+            buffer.append(" more");
+            appendSuffix(buffer, stackTraceElementSuffix);
+            appendLineSeparator(buffer, lineSeparator);
         }
     }
 
@@ -135,7 +170,59 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
         buffer.append(lineSeparator);
     }
 
+    private void buildMap(
+            final Throwable rootThrowable,
+            final Throwable throwable,
+            final Map<Throwable, Context.ThrowableMetadata> map,
+            final Set<Throwable> visited) {
+        map.put(
+                throwable,
+                getMetadata(rootThrowable == null ? null : rootThrowable.getStackTrace(), throwable.getStackTrace()));
+
+        Throwable throwableCause = throwable.getCause();
+        if (throwableCause != null && !visited.contains(throwableCause)) {
+            visited.add(throwableCause);
+            buildMap(throwable, throwable.getCause(), map, visited);
+        }
+    }
+
+    private Context.ThrowableMetadata getMetadata(
+            final StackTraceElement[] rootTrace, final StackTraceElement[] currentTrace) {
+        int commonElementCount;
+        int stackLength;
+        if (rootTrace != null) {
+            int rootIndex = rootTrace.length - 1;
+            int stackIndex = currentTrace.length - 1;
+            while (rootIndex >= 0 && stackIndex >= 0 && rootTrace[rootIndex].equals(currentTrace[stackIndex])) {
+                --rootIndex;
+                --stackIndex;
+            }
+            commonElementCount = currentTrace.length - 1 - stackIndex;
+            stackLength = stackIndex + 1;
+        } else {
+            commonElementCount = 0;
+            stackLength = currentTrace.length;
+        }
+        return new Context.ThrowableMetadata(commonElementCount, stackLength);
+    }
+
     static class Context {
         int ignoredStackTraceElementCount;
+        Map<Throwable, ThrowableMetadata> throwableMetadataMap;
+
+        public Context(Map<Throwable, ThrowableMetadata> throwableMetadataMap) {
+            this.ignoredStackTraceElementCount = 0;
+            this.throwableMetadataMap = throwableMetadataMap;
+        }
+
+        static class ThrowableMetadata {
+            public ThrowableMetadata(int commonElementCount, int stackLength) {
+                this.commonElementCount = commonElementCount;
+                this.stackLength = stackLength;
+            }
+
+            int commonElementCount;
+            int stackLength;
+        }
     }
 }
