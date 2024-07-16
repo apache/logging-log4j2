@@ -29,16 +29,6 @@ class RootThrowableRenderer extends ThrowableRenderer<ThrowableRenderer.Context>
     }
 
     @Override
-    void renderThrowable(
-            final StringBuilder buffer,
-            final Throwable throwable,
-            final Context context,
-            final String stackTraceElementSuffix) {
-        format(buffer, throwable, context, stackTraceElementSuffix);
-        StringBuilders.truncateAfterDelimiter(buffer, lineSeparator, maxLineCount);
-    }
-
-    @Override
     void format(
             final StringBuilder buffer,
             final Throwable throwable,
