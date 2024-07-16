@@ -33,10 +33,11 @@ jobs:
     # Temporary use `develocity` branch
     uses: apache/logging-parent/.github/workflows/build-reusable.yaml@develocity
     secrets:
-      GE_ACCESS_TOKEN: ${{ ! startsWith(github.refname, 'release/') && secrets.GE_ACCESS_TOKEN }}
+      DV_ACCESS_TOKEN: ${{ ! startsWith(github.refname, 'release/') && secrets.GE_ACCESS_TOKEN }}
     with:
       site-enabled: true
       reproducibility-check-enabled: false
+      develocity-enabled: true
 
   deploy-snapshot:
     needs: build
