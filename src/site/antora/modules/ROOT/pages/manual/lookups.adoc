@@ -70,7 +70,7 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 plugins, each one associated with a prefix, which retrieve data from external sources.
 
 `StrLookup` is a simple map-like interface.
-The main difference between a map and `StrLookup` is that the latter can compute the value of a key programmatically in a global context or in the context of log event.
+The main difference between a map and `StrLookup` is that the latter can compute the value of a key dynamically in a global context or in the context of log event.
 
 [#common-concerns]
 == Common concerns
