@@ -18,11 +18,11 @@ package org.apache.logging.log4j.core.pattern;
 
 import java.util.List;
 
-class RootThrowableRenderer extends ThrowableRenderer<ThrowableRenderer.Context> {
+final class RootThrowableRenderer extends ThrowableRenderer<ThrowableRenderer.Context> {
 
-    static final String WRAPPED_BY_LABEL = "Wrapped by: ";
+    private static final String WRAPPED_BY_LABEL = "Wrapped by: ";
 
-    RootThrowableRenderer(List<String> ignoredPackageNames, String lineSeparator, int maxLineCount) {
+    RootThrowableRenderer(final List<String> ignoredPackageNames, final String lineSeparator, final int maxLineCount) {
         super(ignoredPackageNames, lineSeparator, maxLineCount);
     }
 
@@ -36,11 +36,11 @@ class RootThrowableRenderer extends ThrowableRenderer<ThrowableRenderer.Context>
         if (cause != null) {
             renderThrowable(buffer, throwable.getCause(), context, stackTraceElementSuffix);
             buffer.append(WRAPPED_BY_LABEL);
-            appendSuffix(buffer, stackTraceElementSuffix);
+            renderSuffix(buffer, stackTraceElementSuffix);
         }
         renderThrowableMessage(buffer, throwable);
-        appendSuffix(buffer, stackTraceElementSuffix);
-        appendLineSeparator(buffer, lineSeparator);
-        formatStackTraceElements(buffer, throwable, context, stackTraceElementSuffix);
+        renderSuffix(buffer, stackTraceElementSuffix);
+        buffer.append(lineSeparator);
+        renderStackTraceElements(buffer, throwable, context, stackTraceElementSuffix);
     }
 }
