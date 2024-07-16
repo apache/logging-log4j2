@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="2705" link="https://github.com/apache/logging-log4j2/pull/2705"/>
-  <description format="asciidoc">Update `net.javacrumbs.json-unit:json-unit` to version `2.40.0`</description>
+  <issue id="2747" link="https://github.com/apache/logging-log4j2/pull/2747"/>
+  <description format="asciidoc">Update `net.javacrumbs.json-unit:json-unit` to version `3.4.0`</description>
 </entry>
