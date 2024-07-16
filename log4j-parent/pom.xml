@@ -86,7 +86,7 @@
     <flume.version>1.11.0</flume.version>
     <groovy.version>3.0.22</groovy.version>
     <guava.version>33.2.1-jre</guava.version>
-    <h2.version>2.2.224</h2.version>
+    <h2.version>2.3.230</h2.version>
     <hadoop.version>1.2.1</hadoop.version>
     <hamcrest.version>2.2</hamcrest.version>
     <HdrHistogram.version>2.2.2</HdrHistogram.version>
