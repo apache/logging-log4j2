@@ -18,8 +18,6 @@ package org.apache.logging.log4j.core.pattern;
 
 import java.util.List;
 
-import org.apache.logging.log4j.core.util.internal.StringBuilders;
-
 class RootThrowableRenderer extends ThrowableRenderer<ThrowableRenderer.Context> {
 
     static final String WRAPPED_BY_LABEL = "Wrapped by: ";
@@ -29,20 +27,20 @@ class RootThrowableRenderer extends ThrowableRenderer<ThrowableRenderer.Context>
     }
 
     @Override
-    void format(
+    void renderThrowable(
             final StringBuilder buffer,
             final Throwable throwable,
             final Context context,
             final String stackTraceElementSuffix) {
         final Throwable cause = throwable.getCause();
         if (cause != null) {
-            format(buffer, throwable.getCause(), context, stackTraceElementSuffix);
+            renderThrowable(buffer, throwable.getCause(), context, stackTraceElementSuffix);
             buffer.append(WRAPPED_BY_LABEL);
             appendSuffix(buffer, stackTraceElementSuffix);
         }
         renderThrowableMessage(buffer, throwable);
         appendSuffix(buffer, stackTraceElementSuffix);
         appendLineSeparator(buffer, lineSeparator);
-        formatElements(buffer, throwable, context, stackTraceElementSuffix);
+        formatStackTraceElements(buffer, throwable, context, stackTraceElementSuffix);
     }
 }

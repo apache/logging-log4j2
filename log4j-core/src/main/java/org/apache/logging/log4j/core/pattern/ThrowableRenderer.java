@@ -37,6 +37,7 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
             final StringBuilder buffer, final Throwable throwable, final String stackTraceElementSuffix) {
         C context = createContext(throwable);
         renderThrowable(buffer, throwable, context, stackTraceElementSuffix);
+        StringBuilders.truncateAfterDelimiter(buffer, lineSeparator, maxLineCount);
     }
 
     @SuppressWarnings("unchecked")
@@ -52,8 +53,16 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
             final Throwable throwable,
             final C context,
             final String stackTraceElementSuffix) {
-        format(buffer, throwable, context, stackTraceElementSuffix);
-        StringBuilders.truncateAfterDelimiter(buffer, lineSeparator, maxLineCount);
+        renderThrowableMessage(buffer, throwable);
+        appendSuffix(buffer, stackTraceElementSuffix);
+        appendLineSeparator(buffer, lineSeparator);
+        formatStackTraceElements(buffer, throwable, context, stackTraceElementSuffix);
+        final Throwable cause = throwable.getCause();
+        if (cause != null) {
+            buffer.append(CAUSED_BY_LABEL);
+            appendSuffix(buffer, stackTraceElementSuffix);
+            renderThrowable(buffer, throwable.getCause(), context, stackTraceElementSuffix);
+        }
     }
 
     void renderStackTraceElement(
@@ -82,24 +91,7 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
         }
     }
 
-    void format(
-            final StringBuilder buffer,
-            final Throwable throwable,
-            final C context,
-            final String stackTraceElementSuffix) {
-        renderThrowableMessage(buffer, throwable);
-        appendSuffix(buffer, stackTraceElementSuffix);
-        appendLineSeparator(buffer, lineSeparator);
-        formatElements(buffer, throwable, context, stackTraceElementSuffix);
-        final Throwable cause = throwable.getCause();
-        if (cause != null) {
-            buffer.append(CAUSED_BY_LABEL);
-            appendSuffix(buffer, stackTraceElementSuffix);
-            format(buffer, throwable.getCause(), context, stackTraceElementSuffix);
-        }
-    }
-
-    void formatElements(
+    void formatStackTraceElements(
             final StringBuilder buffer,
             final Throwable throwable,
             final C context,
