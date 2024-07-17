@@ -19,7 +19,7 @@ Licensed to the Apache Software Foundation (ASF) under one or more
 
 Log4j supports Docker by providing a Lookup to retrieve container information.
 
-== Accessing Docker
+Log4j Docker module offers https://www.docker.com/[Docker]-specific utilities.
 
 The Log4j Docker support requires access to the Docker REST interface.
 In practical terms this means the application either needs access to unix:///var/run/docker.sock through a volume mount (not recommended), bind Docker to another host/port or unix socket.

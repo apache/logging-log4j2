@@ -457,7 +457,7 @@ The **default event template** modelling https://www.elastic.co/guide/en/ecs/cur
 Models https://github.com/logstash/log4j-jsonevent-layout[Logstash `json_event` pattern for Log4j]
 
 {project-github-url}/tree/2.x/log4j-layout-template-json/src/main/resources/GelfLayout.json[`GelfLayout.json`]::
-Models https://docs.graylog.org/en/3.1/pages/gelf.html#gelf-payload-specification[the Graylog Extended Log Format (GELF) payload specification] with additional `_thread` and `_logger` fields.
+Models https://go2docs.graylog.org/current/getting_in_log_data/gelf.html#GELFPayloadSpecification[the Graylog Extended Log Format (GELF) payload specification] with additional `_thread` and `_logger` fields.
 +
 [TIP]
 ====

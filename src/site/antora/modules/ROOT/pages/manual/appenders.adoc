@@ -4026,7 +4026,7 @@ If not specified, the default system Charset will be used.
 default is 0 (infinite timeout, like `Socket.connect()` methods).
 
 |enterpriseNumber |integer |The IANA enterprise number as described in
-http://tools.ietf.org/html/rfc5424#section-7.2.2[RFC 5424]
+https://datatracker.ietf.org/doc/html/rfc5424#section-7.2.2[RFC 5424]
 
 |filter |Filter |A Filter to determine if the event should be handled by
 this Appender. More than one Filter may be used by using a
