@@ -123,7 +123,7 @@ component specifies the strategy used by Log4j to create new logger contexts.
 The choice of `ContextSelector` determines in particular:
 
 * how loggers are divided among logger contexts.
-See xref:manual/logsep.adoc[Log Separation] for details.
+See xref:jakarta.adoc#log-separation[Log Separation] for details.
 
 * the `Logger` implementation used by Log4j Core.
 See xref:manual/async.adoc[Async Logging] as an example of this usage.

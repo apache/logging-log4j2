@@ -49,6 +49,7 @@ RewriteRule "^log4j-slf4j2?-impl(/index)?\.html$" "manual/installation.html#impl
 RewriteRule "^log4j-taglib(/index)?\.html$" "manual/webapp.html#log4j-taglib" [R=permanent,NE]
 RewriteRule "^manual/api-separation\.html$" "manual/api.html" [R=permanent]
 RewriteRule "^manual/cloud\.html$" "soa.html" [R=permanent]
+RewriteRule "^manual/logsep\.html$" "jakarta.html#log-separation" [R=permanent,NE]
 RewriteRule "^manual/migration\.html$" "migrate-from-log4j1.html" [R=permanent]
 RewriteRule "^manual/scala-api\.html$" "/log4j/scala/latest/index.html" [R=permanent]
 RewriteRule "^manual/usage\.html$" "manual/api.html" [R=permanent]

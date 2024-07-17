@@ -213,7 +213,7 @@ class Logger {
 
 In most cases, applications have a single global `LoggerContext`.
 Though in certain cases (e.g., Java EE applications), Log4j can be configured to accommodate multiple ``LoggerContext``s.
-Refer to xref:manual/logsep.adoc[] for details.
+Refer to xref:jakarta.adoc#log-separation[Log Separation] for details.
 
 [#Configuration]
 == `Configuration`
