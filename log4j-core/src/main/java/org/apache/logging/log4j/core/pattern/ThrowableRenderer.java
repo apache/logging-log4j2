@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.pattern;
 
 import java.util.*;
-
 import org.apache.logging.log4j.core.util.internal.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 
@@ -105,31 +104,27 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
             final StackTraceElement stackTraceElement,
             final C context,
             final String stackTraceElementSuffix) {
-        final boolean stackTraceElementIgnored = isStackTraceElementIgnored(stackTraceElement, ignoredPackageNames);
-        if (!stackTraceElementIgnored) {
-            if (context.ignoredStackTraceElementCount > 0) {
-                renderSuppressedCount(
-                        buffer, context.ignoredStackTraceElementCount, stackTraceElementSuffix, lineSeparator);
-                context.ignoredStackTraceElementCount = 0;
-            }
-            renderStackTraceElement(stackTraceElement, buffer, stackTraceElementSuffix, lineSeparator);
-        } else {
-            context.ignoredStackTraceElementCount += 1;
-        }
-    }
 
-    private static void renderStackTraceElement(
-            final StackTraceElement stackTraceElement,
-            final StringBuilder buffer,
-            final String suffix,
-            final String lineSeparator) {
+        // Short-circuit on ignored stack trace elements
+        final boolean stackTraceElementIgnored = isStackTraceElementIgnored(stackTraceElement, ignoredPackageNames);
+        if (stackTraceElementIgnored) {
+            context.ignoredStackTraceElementCount += 1;
+            return;
+        }
+
+        // Render the stack trace element
+        if (context.ignoredStackTraceElementCount > 0) {
+            renderSuppressedCount(
+                    buffer, context.ignoredStackTraceElementCount, stackTraceElementSuffix, lineSeparator);
+            context.ignoredStackTraceElementCount = 0;
+        }
         buffer.append("\tat ");
         buffer.append(stackTraceElement.toString());
-        renderSuffix(buffer, suffix);
+        renderSuffix(buffer, stackTraceElementSuffix);
         buffer.append(lineSeparator);
     }
 
-    private static boolean isStackTraceElementIgnored(final StackTraceElement element, final List<String> ignorePackages) {
+    static boolean isStackTraceElementIgnored(final StackTraceElement element, final List<String> ignorePackages) {
         if (ignorePackages != null) {
             final String className = element.getClassName();
             for (final String ignoredPackage : ignorePackages) {
@@ -141,7 +136,7 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
         return false;
     }
 
-    private static void renderSuppressedCount(
+    static void renderSuppressedCount(
             final StringBuilder buffer, final int count, final String suffix, final String lineSeparator) {
         if (count == 1) {
             buffer.append("\t... ");
@@ -187,7 +182,7 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
         /**
          * Invariants associated with a {@link Throwable}
          */
-        final static class Metadata {
+        static final class Metadata {
 
             /**
              * Number of stack trace elements shared with the parent {@link Throwable}'s stack
@@ -232,7 +227,9 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
                 if (parentTrace != null) {
                     int parentIndex = parentTrace.length - 1;
                     int currentIndex = currentTrace.length - 1;
-                    while (parentIndex >= 0 && currentIndex >= 0 && parentTrace[parentIndex].equals(currentTrace[currentIndex])) {
+                    while (parentIndex >= 0
+                            && currentIndex >= 0
+                            && parentTrace[parentIndex].equals(currentTrace[currentIndex])) {
                         --parentIndex;
                         --currentIndex;
                     }
