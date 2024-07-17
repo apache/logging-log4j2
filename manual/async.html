@@ -434,7 +434,8 @@ following dependency to your build tool:</p>
 <div id="_tabs_1_maven--panel" class="tabpanel" aria-labelledby="_tabs_1_maven">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;!-- We assume you use `log4j-bom` for dependency management --&gt;
+&lt;dependency&gt;
   &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
   &lt;artifactId&gt;log4j-async-logger&lt;/artifactId&gt;
   &lt;scope&gt;runtime&lt;/scope&gt;
@@ -445,7 +446,8 @@ following dependency to your build tool:</p>
 <div id="_tabs_1_gradle--panel" class="tabpanel" aria-labelledby="_tabs_1_gradle">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-async-logger'</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">// We assume you use `log4j-bom` for dependency management
+runtimeOnly 'org.apache.logging.log4j:log4j-async-logger'</code></pre>
 </div>
 </div>
 </div>

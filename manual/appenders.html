@@ -308,13 +308,15 @@ For non-JDK classes, these should usually be in <a href="../javadoc/log4j-core/i
 </div>
 </div>
 <div class="sect1">
-<h2 id="common-properties"><a class="anchor" href="#common-properties"></a>Common properties</h2>
+<h2 id="commons-concerns"><a class="anchor" href="#commons-concerns"></a>Common concerns</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="common-properties"><a class="anchor" href="#common-properties"></a>Common properties</h3>
 <div class="paragraph">
 <p>These configuration attributes are shared by multiple appenders:</p>
 </div>
-<div class="sect2">
-<h3 id="immediateFlush"><a class="anchor" href="#immediateFlush"></a><code>immediateFlush</code></h3>
+<div class="sect3">
+<h4 id="immediateFlush"><a class="anchor" href="#immediateFlush"></a><code>immediateFlush</code></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 16.6666%;">
@@ -368,10 +370,87 @@ It does not ensure that the operating system writes the event to the underlying 
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="runtime-evaluation"><a class="anchor" href="#runtime-evaluation"></a>Runtime evaluation of attributes</h3>
+<div class="paragraph">
+<p>The following configuration attributes are also evaluated at runtime,
+so can contain escaped <code>$${...}</code> expressions.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. List of attributes evaluated at runtime</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Component</th>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Event type</th>
+<th class="tableblock halign-left valign-top">Evaluation context</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#HttpAppender"><code>HttpAppender</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#HttpAppender-element-headers"><code>Property/value</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Log event</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="lookups.html#global-context" class="xref page"><em>global</em></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#KafkaAppender"><code>KafkaAppender</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#KafkaAppender-attr-key"><code>key</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Log event</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="lookups.html#event-context" class="xref page"><em>log event</em></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#NoSQLAppender"><code>NoSQLAppender</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#NoSqlAppender-element-keyValuePairs"><code>KeyValuePair/value</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Log event</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="lookups.html#event-context" class="xref page"><em>log event</em></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#PropertiesRewritePolicy"><code>PropertiesRewritePolicy</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#PropertiesRewritePolicy-element-properties"><code>Property/value</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Log event</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="lookups.html#global-context" class="xref page"><em>global</em></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#RollingFileAppender"><code>RollingFileAppender</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#RollingFileAppender-attr-filePattern"><code>filePattern</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rollover</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="lookups.html#global-context" class="xref page"><em>global</em></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#CustomDeleteOnRollover">All <code>Delete</code> actions</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>basePath</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rollover</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="lookups.html#global-context" class="xref page"><em>global</em></a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The <a href="#Routes"><code>Route</code></a> component of the <a href="#RoutingAppender"><code>RoutingAppender</code></a> is special: its children are evaluated at runtime,
+but they are <strong>not</strong> evaluated at configuration time.
+Inside the <code>Route</code> component you <strong>should not</strong> use escaped <code>$${...}</code> expressions, but only unescaped <code>${...}</code> expressions.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="configuration.html#lazy-property-substitution" class="xref page">runtime property substitution</a> for more details.</p>
+</div>
+</div>
+</div>
 </div>
 <div class="sect1">
-<h2 id="AsyncAppender"><a class="anchor" href="#AsyncAppender"></a><a id="asyncappender"></a> AsyncAppender</h2>
+<h2 id="collection"><a class="anchor" href="#collection"></a>Collection</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>Log4j bundles several predefined appenders to assist in several common deployment use cases.
+Following sections explain all these in detail.</p>
+</div>
+<div class="sect2">
+<h3 id="AsyncAppender"><a class="anchor" href="#AsyncAppender"></a><a id="asyncappender"></a> AsyncAppender</h3>
 <div class="paragraph">
 <p>The AsyncAppender accepts references to other Appenders and causes LogEvents to be written to them on a separate Thread.
 Note that exceptions while writing to those Appenders will be hidden from the application.
@@ -379,7 +458,7 @@ The AsyncAppender should be configured after the appenders it references to allo
 </div>
 <div class="paragraph">
 <p>By default, AsyncAppender uses
-<a href="https://docs.oracle.com/javase/17/docs/api/java/util/concurrent/ArrayBlockingQueue.html"><code>ArrayBlockingQueue</code></a>
+<a href="https://docs.oracle.com/javase/17/docs/api/java/util/concurrent/ArrayBlockingQueue.html"><code>java.util.concurrent.ArrayBlockingQueue</code></a>
 which does not require any external libraries.
 Note that multi-threaded applications should exercise care when using this appender as such: the blocking queue is susceptible to lock contention and our
 <a href="performance.html#async" class="xref page">tests showed</a> performance may become worse when more threads are logging concurrently.
@@ -427,7 +506,7 @@ or
 </table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. AsyncAppender Parameters</caption>
+<caption class="title">Table 2. AsyncAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -580,7 +659,7 @@ To override the default <code>BlockingQueueFactory</code>, specify the plugin in
 <p>Log4j ships with the following implementations:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. BlockingQueueFactory Implementations</caption>
+<caption class="title">Table 3. BlockingQueueFactory Implementations</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 75%;">
@@ -595,7 +674,7 @@ To override the default <code>BlockingQueueFactory</code>, specify the plugin in
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ArrayBlockingQueue</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">This is the default implementation that uses
-<a href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ArrayBlockingQueue.html"><code>ArrayBlockingQueue</code></a>.</p></td>
+<a href="https://docs.oracle.com/javase/17/docs/api/java/util/concurrent/ArrayBlockingQueue.html"><code>ArrayBlockingQueue</code></a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">DisruptorBlockingQueue</p></td>
@@ -614,7 +693,7 @@ This implementation is provided by the <code>log4j-jctools</code> artifact.</p><
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">LinkedTransferQueue</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">This uses the new Java 7 implementation
-<a href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/LinkedTransferQueue.html"><code>LinkedTransferQueue</code></a>.
+<a href="https://docs.oracle.com/javase/17/docs/api/java/util/concurrent/LinkedTransferQueue.html"><code>LinkedTransferQueue</code></a>.
 Note that this queue does not use the <code>bufferSize</code> configuration
 attribute from AsyncAppender as <code>LinkedTransferQueue</code> does not support a
 maximum capacity.</p></td>
@@ -622,17 +701,15 @@ maximum capacity.</p></td>
 </tbody>
 </table>
 </div>
-</div>
-<div class="sect1">
-<h2 id="consoleappender"><a class="anchor" href="#consoleappender"></a><a id="ConsoleAppender"></a> ConsoleAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="consoleappender"><a class="anchor" href="#consoleappender"></a><a id="ConsoleAppender"></a> ConsoleAppender</h3>
 <div class="paragraph">
 <p>As one might expect, the ConsoleAppender writes its output to either
 <code>System.out</code> or <code>System.err</code> with <code>System.out</code> being the default target.
 A Layout must be provided to format the LogEvent.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. ConsoleAppender Parameters</caption>
+<caption class="title">Table 4. ConsoleAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -722,16 +799,14 @@ Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="FailoverAppender"><a class="anchor" href="#FailoverAppender"></a>FailoverAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="FailoverAppender"><a class="anchor" href="#FailoverAppender"></a>FailoverAppender</h3>
 <div class="paragraph">
 <p>The FailoverAppender wraps a set of appenders.
 If the primary Appender fails the secondary appenders will be tried in order until one succeeds or there are no more secondaries to try.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. FailoverAppender Parameters</caption>
+<caption class="title">Table 5. FailoverAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -822,10 +897,8 @@ caller, instead.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="fileappender"><a class="anchor" href="#fileappender"></a><a id="FileAppender"></a> FileAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="fileappender"><a class="anchor" href="#fileappender"></a><a id="FileAppender"></a> FileAppender</h3>
 <div class="paragraph">
 <p>The FileAppender is an OutputStreamAppender that writes to the File defined in the <code>fileName</code> parameter.
 The FileAppender uses a FileManager (which extends OutputStreamManager) to perform the file I/O.
@@ -833,7 +906,7 @@ While FileAppenders from different Configurations cannot be shared, the FileMana
 For example, two web applications in a servlet container can have their configuration and safely write to the same file if Log4j is in a ClassLoader that is common to both of them.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. FileAppender Parameters</caption>
+<caption class="title">Table 6. FileAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -954,7 +1027,7 @@ created.</p>
 </div>
 <div class="paragraph">
 <p>The underlying files system shall support
-<a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html">POSIX</a>
+<a href="https://docs.oracle.com/javase/17/docs/api/java/nio/file/attribute/PosixFileAttributeView.html">POSIX</a>
 file attribute view.</p>
 </div>
 <div class="paragraph">
@@ -977,7 +1050,7 @@ is in effect for path.</p>
 </div>
 <div class="paragraph">
 <p>The underlying files system shall support file
-<a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html">owner</a>
+<a href="https://docs.oracle.com/javase/17/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html">owner</a>
 attribute view.</p>
 </div></div></td>
 </tr>
@@ -989,7 +1062,7 @@ attribute view.</p>
 </div>
 <div class="paragraph">
 <p>The underlying files system shall support
-<a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html">POSIX</a>
+<a href="https://docs.oracle.com/javase/17/docs/api/java/nio/file/attribute/PosixFileAttributeView.html">POSIX</a>
 file attribute view.</p>
 </div></div></td>
 </tr>
@@ -1018,10 +1091,8 @@ file attribute view.</p>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="FlumeAppender"><a class="anchor" href="#FlumeAppender"></a>FlumeAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="FlumeAppender"><a class="anchor" href="#FlumeAppender"></a>FlumeAppender</h3>
 <div class="paragraph">
 <p><em>This is an optional component supplied in a separate jar.</em></p>
 </div>
@@ -1052,7 +1123,7 @@ Setting the "type" attribute to "Embedded" will force the use of the embedded ag
 In addition, configuring agent properties in the appender configuration will also cause the embedded agent to be used.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. FlumeAppender Parameters</caption>
+<caption class="title">Table 7. FlumeAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -1351,10 +1422,8 @@ indicate which variation of the Appender is desired.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="JDBCAppender"><a class="anchor" href="#JDBCAppender"></a>JDBCAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="JDBCAppender"><a class="anchor" href="#JDBCAppender"></a>JDBCAppender</h3>
 <div class="paragraph">
 <p>As of Log4j 2.11.0, JDBC support has moved from the existing module
 <code>log4j-core</code> to the new module <code>log4j-jdbc</code>.</p>
@@ -1378,7 +1447,7 @@ This connection source uses a JDBC connection string, a username, and a password
 Optionally, you can also use properties.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 7. JDBCAppender Parameters</caption>
+<caption class="title">Table 8. JDBCAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -1504,7 +1573,7 @@ You must use exactly one of the following nested elements:</p>
 </ul>
 </div>
 <table id="JDBCDataSource" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 8. DataSource Parameters</caption>
+<caption class="title">Table 9. DataSource Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -1529,7 +1598,7 @@ by a connection pool; otherwise, logging will be very slow.</p></td>
 </tbody>
 </table>
 <table id="JDBCConnectionFactory" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 9. ConnectionFactory Parameters</caption>
+<caption class="title">Table 10. ConnectionFactory Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -1564,7 +1633,7 @@ be backed by a connection pool for the same reasons.</p></td>
 </tbody>
 </table>
 <table id="JDBCDriverManager" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. DriverManager Parameters</caption>
+<caption class="title">Table 11. DriverManager Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -1611,7 +1680,7 @@ properties and a username or password.</p></td>
 </tbody>
 </table>
 <table id="JDBCPoolingDriver" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. PoolingDriver Parameters (Apache Commons DBCP)</caption>
+<caption class="title">Table 12. PoolingDriver Parameters (Apache Commons DBCP)</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -1648,7 +1717,7 @@ a pooled connection elsewhere. For example:
 </tbody>
 </table>
 <table id="JDBCPoolableConnectionFactory" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. PoolableConnectionFactory Parameters (Apache Commons DBCP)</caption>
+<caption class="title">Table 13. PoolableConnectionFactory Parameters (Apache Commons DBCP)</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -1750,7 +1819,7 @@ The JDBCAppender uses this information to formulate a
 <code>PreparedStatement</code> to insert records without SQL injection vulnerability.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. Column Parameters</caption>
+<caption class="title">Table 14. Column Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -1838,7 +1907,7 @@ the value will be inserted as a VARCHAR or NVARCHAR (<code>setString</code> or
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. ColumnMapping Parameters</caption>
+<caption class="title">Table 15. ColumnMapping Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -2024,10 +2093,8 @@ table based on a Log4j `MapMessage</code> instead of values from <code>LogEvent<
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_jms_appender"><a class="anchor" href="#_jms_appender"></a>JMS Appender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="jms-appender"><a class="anchor" href="#jms-appender"></a><a id="JMSAppender"></a>JMS Appender</h3>
 <div class="paragraph">
 <p>The JMS Appender sends the formatted log event to a JMS Destination.</p>
 </div>
@@ -2041,7 +2108,7 @@ Starting in Log4j 2.1, these appenders were combined into the JMS Appender, whic
 However, configurations written for 2.0 that use the <code>&lt;JMSQueue/&gt;</code> or <code>&lt;JMSTopic/&gt;</code> elements will continue to work with the new <code>&lt;JMS/&gt;</code> configuration element.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. JMS Appender Parameters</caption>
+<caption class="title">Table 16. JMS Appender Parameters</caption>
 <colgroup>
 <col style="width: 16.6666%;">
 <col style="width: 16.6666%;">
@@ -2067,7 +2134,7 @@ However, configurations written for 2.0 that use the <code>&lt;JMSQueue/&gt;</co
 <td class="tableblock halign-left valign-top"><p class="tableblock">factoryName</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>Required</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The fully qualified class name that should be used to define the Initial Context Factory as defined in <a href="https://download.oracle.com/javase/17/docs/api/javax/naming/Context.html#INITIAL_CONTEXT_FACTORY"><code>INITIAL_CONTEXT_FACTORY</code></a>. If a <code>factoryName</code> is specified without a <code>providerURL</code>, a warning message will be logged as this is likely to cause problems.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The fully qualified class name that should be used to define the Initial Context Factory as defined in <a href="https://docs.oracle.com/javase/17/docs/api/javax/naming/Context.html#INITIAL_CONTEXT_FACTORY"><code>INITIAL_CONTEXT_FACTORY</code></a>. If a <code>factoryName</code> is specified without a <code>providerURL</code>, a warning message will be logged as this is likely to cause problems.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">filter</p></td>
@@ -2097,7 +2164,7 @@ However, configurations written for 2.0 that use the <code>&lt;JMSQueue/&gt;</co
 <td class="tableblock halign-left valign-top"><p class="tableblock">providerURL</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>Required</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The URL of the provider to use as defined by <a href="https://download.oracle.com/javase/17/docs/api/javax/naming/Context.html#PROVIDER_URL"><code>PROVIDER_URL</code></a>. From Log4j 2.17, only the <code>java:</code> protocol is supported.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The URL of the provider to use as defined by <a href="https://docs.oracle.com/javase/17/docs/api/javax/naming/Context.html#PROVIDER_URL">PROVIDER_URL</a>. From Log4j 2.17, only the <code>java:</code> protocol is supported.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">destinationBindingName</p></td>
@@ -2109,13 +2176,13 @@ However, configurations written for 2.0 that use the <code>&lt;JMSQueue/&gt;</co
 <td class="tableblock halign-left valign-top"><p class="tableblock">securityPrincipalName</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the identity of the Principal as specified by <a href="https://download.oracle.com/javase/17/docs/api/javax/naming/Context.html#SECURITY_PRINCIPAL"><code>SECURITY_PRINCIPAL</code></a>. If a securityPrincipalName is specified without <code>securityCredentials</code>, a warning message will be logged as this is likely to cause problems.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the identity of the Principal as specified by <a href="https://docs.oracle.com/javase/17/docs/api/javax/naming/Context.html#SECURITY_PRINCIPAL">SECURITY_PRINCIPAL</a>. If a securityPrincipalName is specified without <code>securityCredentials</code>, a warning message will be logged as this is likely to cause problems.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">securityCredentials</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The security credentials for the principal as specified by <a href="https://download.oracle.com/javase/17/docs/api/javax/naming/Context.html#SECURITY_CREDENTIALS"><code>SECURITY_CREDENTIALS</code></a>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The security credentials for the principal as specified by <a href="https://docs.oracle.com/javase/17/docs/api/javax/naming/Context.html#SECURITY_CREDENTIALS">SECURITY_CREDENTIALS</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ignoreExceptions</p></td>
@@ -2139,7 +2206,7 @@ However, configurations written for 2.0 that use the <code>&lt;JMSQueue/&gt;</co
 <td class="tableblock halign-left valign-top"><p class="tableblock">urlPkgPrefixes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A colon-separated list of package prefixes for the class name of the factory class that will create a URL context factory as defined by <a href="https://download.oracle.com/javase/17/docs/api/javax/naming/Context.html#URL_PKG_PREFIXES"><code>URL_PKG_PREFIXES</code></a>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A colon-separated list of package prefixes for the class name of the factory class that will create a URL context factory as defined by <a href="https://docs.oracle.com/javase/17/docs/api/javax/naming/Context.html#URL_PKG_PREFIXES">URL_PKG_PREFIXES</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">userName</p></td>
@@ -2192,10 +2259,8 @@ However, configurations written for 2.0 that use the <code>&lt;JMSQueue/&gt;</co
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="JPAAppender"><a class="anchor" href="#JPAAppender"></a>JPAAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="JPAAppender"><a class="anchor" href="#JPAAppender"></a>JPAAppender</h3>
 <div class="paragraph">
 <p>As of Log4j 2.11.0, JPA support has moved from the existing module <code>log4j-core</code> to the new module <code>log4j-jpa</code>.</p>
 </div>
@@ -2366,7 +2431,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         return this.id;
     }
 
-    public void setId(long id) {
+    public void setId(final long id) {
         this.id = id;
     }
 
@@ -2394,10 +2459,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="HttpAppender"><a class="anchor" href="#HttpAppender"></a>HttpAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="HttpAppender"><a class="anchor" href="#HttpAppender"></a>HttpAppender</h3>
 <div class="paragraph">
 <p>The HttpAppender sends log events over HTTP.
 A Layout must be provided to format the LogEvent.</p>
@@ -2414,7 +2477,7 @@ Additional headers can be specified with embedded Property elements.</p>
 <a href="https://docs.oracle.com/javase/17/docs/api/java/net/HttpURLConnection.html"><code>HttpURLConnection</code></a>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. HttpAppender Parameters</caption>
+<caption class="title">Table 17. HttpAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -2481,10 +2544,13 @@ Optional, default is 0 (infinite timeout).</p></td>
 Optional, default is 0 (infinite timeout).</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">headers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a id="HttpAppender-element-headers"></a>headers</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Property[]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Additional HTTP headers to use. The values support
-<a href="lookups.html" class="xref page">lookups</a>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Additional HTTP headers to use.</p>
+<p class="tableblock">The values support
+<a href="configuration.html#lazy-property-substitution" class="xref page">runtime property substitution</a>
+and are evaluated in a
+<a href="lookups.html#global-context" class="xref page"><em>global context</em></a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ignoreExceptions</p></td>
@@ -2520,19 +2586,17 @@ Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="KafkaAppender"><a class="anchor" href="#KafkaAppender"></a>KafkaAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="KafkaAppender"><a class="anchor" href="#KafkaAppender"></a>KafkaAppender</h3>
 <div class="paragraph">
 <p>The KafkaAppender logs events to an <a href="https://kafka.apache.org/">Apache Kafka</a> topic.
 Each log event is sent as a Kafka record.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 71.4286%;">
 </colgroup>
 <thead>
 <tr>
@@ -2543,45 +2607,49 @@ Each log event is sent as a Kafka record.</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">topic</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>topic</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The Kafka topic to use. Required.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">key</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The key that will be sent to Kafka with every message. Optional value defaulting to <code>null</code>. Any of the <a href="lookups.html" class="xref page">Lookups</a> can be included.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="KafkaAppender-attr-key"></a>key</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The key that will be sent to Kafka with every message.</p>
+<p class="tableblock">Supports
+<a href="configuration.html#lazy-property-substitution" class="xref page">runtime property substitution</a>
+and is evaluated in the
+<a href="lookups.html#event-context" class="xref page"><em>context of the current event</em></a>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">filter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Filter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>filter</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Filter</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">A Filter to determine if the event should be handled by this Appender. More than one Filter may be used by using a CompositeFilter.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">layout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Layout</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>layout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Layout</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The Layout to use to format the LogEvent. Required, there is no default. <em>New since 2.9, in previous versions <code>&lt;PatternLayout pattern="%m"/&gt;</code> was default.</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The name of the Appender. Required.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ignoreExceptions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ignoreExceptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The default is <code>true</code>, causing exceptions encountered while appending events to be internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the caller, instead. You must set this to <code>false</code> when wrapping this Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">syncSend</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>syncSend</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The default is <code>true</code>, causing sends to block until the record has been acknowledged by the Kafka server. When set to <code>false</code>, sends a return immediately, allowing for lower latency and significantly higher throughput. <em>New since 2.8. Be aware that this is a new addition, and it has not been extensively tested.
 Any failure sending to Kafka will be reported as an error to <a href="https://logging.apache.org/log4j/2.x/manual/status-logger.html">status logger</a> and the log event will be dropped (the ignoreExceptions parameter will not be effective).
 Log events may arrive out of order on the Kafka server.</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">properties</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Property[]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>properties</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Property[]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">You can set properties in <a href="https://kafka.apache.org/documentation.html#producerconfigs">Kafka producer properties</a>. You need to set the <code>bootstrap.servers</code> property, there are sensible default values for the others. Do not set the <code>value.serializer</code> nor <code>key.serializer</code> properties.</p></td>
 </tr>
 </tbody>
@@ -2631,10 +2699,8 @@ Note that you need to use a version of the Kafka client library matching the Kaf
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="MemoryMappedFileAppender"><a class="anchor" href="#MemoryMappedFileAppender"></a>MemoryMappedFileAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="MemoryMappedFileAppender"><a class="anchor" href="#MemoryMappedFileAppender"></a>MemoryMappedFileAppender</h3>
 <div class="paragraph">
 <p><em>New since 2.1. Be aware that this is a new addition, and although it has been tested on several platforms, it does not have as much track record as the other file appenders.</em></p>
 </div>
@@ -2654,7 +2720,7 @@ The default region size is 32 MB, which should strike a reasonable balance betwe
 For example, two web applications in a servlet container can have its own configuration and safely write to the same file if Log4j is in a ClassLoader that is common to both of them.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 17. MemoryMappedFileAppender Parameters</caption>
+<caption class="title">Table 18. MemoryMappedFileAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -2767,16 +2833,14 @@ Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="NoSQLAppender"><a class="anchor" href="#NoSQLAppender"></a>NoSQLAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="NoSQLAppender"><a class="anchor" href="#NoSQLAppender"></a>NoSQLAppender</h3>
 <div class="paragraph">
 <p>The NoSQLAppender writes log events to a NoSQL database using an internal lightweight provider interface.
 Provider implementations currently exist for MongoDB, and writing a custom provider is quite simple.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 18. NoSQLAppender Parameters</caption>
+<caption class="title">Table 19. NoSQLAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -2823,6 +2887,36 @@ to buffer log events and flush whenever the buffer reaches this size.</p></td>
 NoSQLObject&lt;W&gt;&gt;&gt;</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>Required.</em> The NoSQL provider that provides
 connections to the chosen NoSQL database.</p></td>
+</tr>
+</tbody>
+</table>
+<table id="NoSqlAppender-element-keyValuePairs" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 20. <code>NoSqlAppender</code>&#8201;&#8212;&#8201;nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Multiplicity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-util-KeyValuePair" class="xref page"><code>KeyValuePair</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Zero or more</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Adds a simple key/value field to the NoSQL object.</p>
+</div>
+<div class="paragraph">
+<p>The <code>value</code> attribute of the pair supports
+<a href="configuration.html#lazy-property-substitution" class="xref page">runtime property substitution</a>
+using the
+<a href="lookups.html#event-context" class="xref page">current event as context</a>.</p>
+</div></div></td>
 </tr>
 </tbody>
 </table>
@@ -2889,10 +2983,10 @@ We recommend you review the source code for the MongoDB providers as a guide for
 }</code></pre>
 </div>
 </div>
-<div class="sect2">
-<h3 id="NoSQLAppenderMongoDB"><a class="anchor" href="#NoSQLAppenderMongoDB"></a>NoSQL providers for MongoDB</h3>
 <div class="sect3">
-<h4 id="mongo-installation"><a class="anchor" href="#mongo-installation"></a>Installation</h4>
+<h4 id="NoSQLAppenderMongoDB"><a class="anchor" href="#NoSQLAppenderMongoDB"></a>NoSQL providers for MongoDB</h4>
+<div class="sect4">
+<h5 id="mongo-installation"><a class="anchor" href="#mongo-installation"></a>Installation</h5>
 <div class="paragraph">
 <p>Starting with version 2.11.0, Log4j supplies providers for the
 <a href="https://www.mongodb.com/">MongoDB</a>
@@ -2961,7 +3055,7 @@ for more information.</p>
 <p>In order to use a Log4j MongoDB appender you need to add the following dependencies to your application:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 19. MongoDB providers compatibility table</caption>
+<caption class="title">Table 21. MongoDB providers compatibility table</caption>
 <colgroup>
 <col style="width: 18.1818%;">
 <col style="width: 18.1818%;">
@@ -3021,15 +3115,15 @@ for more information.</p>
 </table>
 </div>
 </div>
-<div class="sect3">
-<h4 id="log4j-mongodb"><a class="anchor" href="#log4j-mongodb"></a>NoSQL provider for MongoDB (current)</h4>
+<div class="sect4">
+<h5 id="log4j-mongodb"><a class="anchor" href="#log4j-mongodb"></a>NoSQL provider for MongoDB (current)</h5>
 <div class="paragraph">
 <p>This section details specializations of the
 <a href="#NoSQLAppender">NoSQLAppender</a> provider for MongoDB using the current MongoDB driver (version 5).
 The NoSQLAppender Appender writes log events to a NoSQL database using an internal lightweight provider interface.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. MongoDB Provider Parameters</caption>
+<caption class="title">Table 22. MongoDB Provider Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -3137,10 +3231,8 @@ collection documentation linked above for more information.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="OutputStreamAppender"><a class="anchor" href="#OutputStreamAppender"></a>OutputStreamAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="OutputStreamAppender"><a class="anchor" href="#OutputStreamAppender"></a>OutputStreamAppender</h3>
 <div class="paragraph">
 <p>The OutputStreamAppender provides the base for many of the other Appenders such as the File and Socket appenders that write the event to an Output Stream.
 It cannot be directly configured.
@@ -3148,10 +3240,8 @@ Support for immediateFlush and buffering is provided by the OutputStreamAppender
 The OutputStreamAppender uses an OutputStreamManager to handle the actual I/O, allowing the stream to be shared by Appenders in multiple configurations.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="RandomAccessFileAppender"><a class="anchor" href="#RandomAccessFileAppender"></a>RandomAccessFileAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="RandomAccessFileAppender"><a class="anchor" href="#RandomAccessFileAppender"></a>RandomAccessFileAppender</h3>
 <div class="paragraph">
 <p>The RandomAccessFileAppender is similar to the standard
 <a href="#FileAppender">[FileAppender]</a> except it is always buffered (this cannot be switched off) and internally it uses a
@@ -3162,7 +3252,7 @@ Similar to the FileAppender, RandomAccessFileAppender uses a RandomAccessFileMan
 For example, two web applications in a servlet container can have their configuration and safely write to the same file if Log4j is in a ClassLoader that is common to both of them.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. RandomAccessFileAppender Parameters</caption>
+<caption class="title">Table 23. RandomAccessFileAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -3271,10 +3361,8 @@ Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="RewriteAppender"><a class="anchor" href="#RewriteAppender"></a>RewriteAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="RewriteAppender"><a class="anchor" href="#RewriteAppender"></a>RewriteAppender</h3>
 <div class="paragraph">
 <p>The RewriteAppender allows the LogEvent to be manipulated before it is processed by another Appender.
 This can be used to mask sensitive information such as passwords or to inject information into each event.
@@ -3282,7 +3370,7 @@ The RewriteAppender must be configured with a RewritePolicy.
 The RewriteAppender should be configured after any Appenders it references to allow it to shut down properly.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 22. RewriteAppender Parameters</caption>
+<caption class="title">Table 24. RewriteAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -3332,15 +3420,15 @@ Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
 </tr>
 </tbody>
 </table>
-<div class="sect2">
-<h3 id="RewritePolicy"><a class="anchor" href="#RewritePolicy"></a>RewritePolicy</h3>
+<div class="sect3">
+<h4 id="RewritePolicy"><a class="anchor" href="#RewritePolicy"></a>RewritePolicy</h4>
 <div class="paragraph">
 <p>RewritePolicy is an interface that allows implementations to inspect and possibly modify LogEvents before they are passed to Appender.
 RewritePolicy declares a single method named rewrite that must be implemented.
 The method is passed the LogEvent and can return the same event or create a new one.</p>
 </div>
-<div class="sect3">
-<h4 id="_maprewritepolicy"><a class="anchor" href="#_maprewritepolicy"></a>MapRewritePolicy</h4>
+<div class="sect4">
+<h5 id="_maprewritepolicy"><a class="anchor" href="#_maprewritepolicy"></a>MapRewritePolicy</h5>
 <div class="paragraph">
 <p>MapRewritePolicy will evaluate LogEvents that contain a MapMessage and will add or update elements of the Map.</p>
 </div>
@@ -3397,8 +3485,8 @@ The method is passed the LogEvent and can return the same event or create a new 
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_propertiesrewritepolicy"><a class="anchor" href="#_propertiesrewritepolicy"></a>PropertiesRewritePolicy</h4>
+<div class="sect4">
+<h5 id="PropertiesRewritePolicy"><a class="anchor" href="#PropertiesRewritePolicy"></a>PropertiesRewritePolicy</h5>
 <div class="paragraph">
 <p>PropertiesRewritePolicy will add properties configured on the policy to the ThreadContext Map being logged.
 The properties will not be added to the actual ThreadContext Map.
@@ -3419,10 +3507,13 @@ The property values may contain variables that will be evaluated when the config
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">properties</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a id="PropertiesRewritePolicy-element-properties"></a>properties</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Property[]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">One of more Property elements to define the
-keys and values to be added to the ThreadContext Map.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">One of more Property elements to define the keys and values to be added to the ThreadContext Map.</p>
+<p class="tableblock">The <code>value</code> attribute of each <code>Property</code> element supports
+<a href="configuration.html#lazy-property-substitution" class="xref page">runtime property substitution</a>
+in the
+<a href="lookups.html#global-context" class="xref page"><em>global context</em></a>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -3454,8 +3545,8 @@ keys and values to be added to the ThreadContext Map.</p></td>
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_loggernamelevelrewritepolicy"><a class="anchor" href="#_loggernamelevelrewritepolicy"></a>LoggerNameLevelRewritePolicy</h4>
+<div class="sect4">
+<h5 id="_loggernamelevelrewritepolicy"><a class="anchor" href="#_loggernamelevelrewritepolicy"></a>LoggerNameLevelRewritePolicy</h5>
 <div class="paragraph">
 <p>You can use this policy to make loggers in third-party code less chatty by changing event levels.
 The LoggerNameLevelRewritePolicy will rewrite log event levels for a given logger name prefix.
@@ -3519,10 +3610,8 @@ is a source level, each value a target level.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="rollingfileappender"><a class="anchor" href="#rollingfileappender"></a><a id="RollingFileAppender"></a> RollingFileAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="rollingfileappender"><a class="anchor" href="#rollingfileappender"></a><a id="RollingFileAppender"></a> RollingFileAppender</h3>
 <div class="paragraph">
 <p>The RollingFileAppender is an OutputStreamAppender that writes to the file named in the fileName parameter and rolls the file over according to the <code>TriggeringPolicy</code> and the <code>RolloverPolicy</code>.
 The <code>RollingFileAppender</code>
@@ -3547,7 +3636,7 @@ Since log4j-2.9, a
 <p>File locking is not supported by the RollingFileAppender.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 23. RollingFileAppender Parameters</caption>
+<caption class="title">Table 25. RollingFileAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -3605,20 +3694,49 @@ CompositeFilter.</p></td>
 of its parent directories, do not exist, they will be created.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">filePattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a id="RollingFileAppender-attr-filePattern"></a>filePattern</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The pattern of the file name of the archived log
-file. The format of the pattern is dependent on the <code>RolloverPolicy</code> that
-is used. The DefaultRolloverPolicy will accept both a date/time pattern
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The pattern of the archived log filename.</p>
+</div>
+<div class="paragraph">
+<p>The format of the pattern is dependent on the <code>RolloverStrategy</code> that is used.
+The standard rollover strategies accept:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="configuration.html#lazy-property-substitution" class="xref page">runtime lookups</a>,
+which are evaluated in
+<a href="lookups.html#global-context" class="xref page">a global context</a>.</p>
+</li>
+<li>
+<p>a <code>%d{...}</code> pattern, functionally identical to the
+<a href="pattern-layout.html#converter-date" class="xref page">homonymous <code>PatternLayout</code> pattern</a>
+except it uses the actual or inferred timestamp of the <strong>previous</strong> rollover.</p>
+</li>
+<li>
+<p>a <code>%i</code> pattern that expands to the computed index for the archived file.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>All patterns accept also format specifiers, e.g. <code>%03i</code> prints the index as zero-padded number with 3 digits.</p>
+</div>
+<div class="paragraph">
+<p>will accept both a date/time pattern
 compatible with
-<a href="https://download.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html"><code>SimpleDateFormat</code></a>
-and/or a %i which represents an integer counter. The integer counter
+<a href="https://docs.oracle.com/javase/17/docs/api/java/text/SimpleDateFormat.html"><code>SimpleDateFormat</code></a>
+and/or a %i which represents an integer counter.
+The integer counter
 allows specifying a padding, like %3i for space-padding the counter to
 3 digits or (usually more useful) %03i for zero-padding the counter to
-3 digits. The pattern also
+3 digits.
+The pattern also
 supports interpolation at runtime so any of the Lookups (such as the
 <a href="lookups.html#DateLookup" class="xref page">DateLookup</a>) can be included in the
-pattern.</p></td>
+pattern.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">immediateFlush</p></td>
@@ -3685,7 +3803,7 @@ created.</p>
 </div>
 <div class="paragraph">
 <p>The underlying files system shall support
-<a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html">POSIX</a>
+<a href="https://docs.oracle.com/javase/17/docs/api/java/nio/file/attribute/PosixFileAttributeView.html">POSIX</a>
 file attribute view.</p>
 </div>
 <div class="paragraph">
@@ -3708,7 +3826,7 @@ is in effect for path.</p>
 </div>
 <div class="paragraph">
 <p>The underlying files system shall support file
-<a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html">owner</a>
+<a href="https://docs.oracle.com/javase/17/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html">owner</a>
 attribute view.</p>
 </div></div></td>
 </tr>
@@ -3720,19 +3838,17 @@ attribute view.</p>
 </div>
 <div class="paragraph">
 <p>The underlying files system shall support
-<a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html">POSIX</a>
+<a href="https://docs.oracle.com/javase/17/docs/api/java/nio/file/attribute/PosixFileAttributeView.html">POSIX</a>
 file attribute view.</p>
 </div></div></td>
 </tr>
 </tbody>
 </table>
 </div>
-</div>
-<div class="sect1">
-<h2 id="TriggeringPolicies"><a class="anchor" href="#TriggeringPolicies"></a>TriggeringPolicies</h2>
-<div class="sectionbody">
 <div class="sect2">
-<h3 id="_composite_triggering_policy"><a class="anchor" href="#_composite_triggering_policy"></a>Composite Triggering Policy</h3>
+<h3 id="TriggeringPolicies"><a class="anchor" href="#TriggeringPolicies"></a>TriggeringPolicies</h3>
+<div class="sect3">
+<h4 id="_composite_triggering_policy"><a class="anchor" href="#_composite_triggering_policy"></a>Composite Triggering Policy</h4>
 <div class="paragraph">
 <p>The <code>CompositeTriggeringPolicy</code> combines multiple triggering policies and returns true if any of the configured policies return true.
 The
@@ -3751,15 +3867,15 @@ The
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_cron_triggering_policy"><a class="anchor" href="#_cron_triggering_policy"></a>Cron Triggering Policy</h3>
+<div class="sect3">
+<h4 id="_cron_triggering_policy"><a class="anchor" href="#_cron_triggering_policy"></a>Cron Triggering Policy</h4>
 <div class="paragraph">
 <p>The <code>CronTriggeringPolicy</code> triggers rollover based on a cron expression.
 This policy is controlled by a timer and is asynchronous in processing log events, so it is possible that log events from the previous or next period may appear at the beginning or end of the log file.
 The <code>filePattern</code> attribute of the Appender should contain a timestamp otherwise the target file will be overwritten on each rollover.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 24. CronTriggeringPolicy Parameters</caption>
+<caption class="title">Table 26. CronTriggeringPolicy Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -3792,13 +3908,13 @@ and the current time the file will be immediately rolled over.</p></td>
 </tbody>
 </table>
 </div>
-<div class="sect2">
-<h3 id="_onstartup_triggering_policy"><a class="anchor" href="#_onstartup_triggering_policy"></a>OnStartup Triggering Policy</h3>
+<div class="sect3">
+<h4 id="_onstartup_triggering_policy"><a class="anchor" href="#_onstartup_triggering_policy"></a>OnStartup Triggering Policy</h4>
 <div class="paragraph">
 <p>The <code>OnStartupTriggeringPolicy</code> policy causes a rollover if the log file is older than the current JVM&#8217;s start time and the minimum file size is met or exceeded.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 25. OnStartupTriggeringPolicy Parameters</caption>
+<caption class="title">Table 27. OnStartupTriggeringPolicy Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -3829,8 +3945,8 @@ When running in Google App Engine, the OnStartup policy causes a rollover if the
 and falls back to Log4J initialization time instead.)</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_sizebased_triggering_policy"><a class="anchor" href="#_sizebased_triggering_policy"></a>SizeBased Triggering Policy</h3>
+<div class="sect3">
+<h4 id="sizebased-triggering-policy"><a class="anchor" href="#sizebased-triggering-policy"></a>SizeBased Triggering Policy</h4>
 <div class="paragraph">
 <p>The <code>SizeBasedTriggeringPolicy</code> causes a rollover once the file has reached the specified size.
 The size can be specified in bytes, with the suffix KB, MB, GB, or TB for example <code>20MB</code>.
@@ -3842,15 +3958,15 @@ Otherwise, the target file will be overwritten on every rollover as the SizeBase
 When used without a time-based triggering policy the SizeBased Triggering Policy will cause the timestamp value to change.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_timebased_triggering_policy"><a class="anchor" href="#_timebased_triggering_policy"></a>TimeBased Triggering Policy</h3>
+<div class="sect3">
+<h4 id="timebased-triggering-policy"><a class="anchor" href="#timebased-triggering-policy"></a>TimeBased Triggering Policy</h4>
 <div class="paragraph">
 <p>The <code>TimeBasedTriggeringPolicy</code> causes a rollover once the date/time pattern no longer applies to the active file.
 This policy accepts an
 <code>interval</code> attribute which indicates how frequently the rollover should occur based on the time pattern and a <code>modulate</code> boolean attribute.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 26. TimeBasedTriggeringPolicy Parameters</caption>
+<caption class="title">Table 28. TimeBasedTriggeringPolicy Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -3894,12 +4010,10 @@ load of doing so across time.</p></td>
 </table>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="RolloverStrategies"><a class="anchor" href="#RolloverStrategies"></a>RolloverStrategies</h2>
-<div class="sectionbody">
 <div class="sect2">
-<h3 id="DefaultRolloverStrategy"><a class="anchor" href="#DefaultRolloverStrategy"></a>DefaultRolloverStrategy</h3>
+<h3 id="RolloverStrategies"><a class="anchor" href="#RolloverStrategies"></a>RolloverStrategies</h3>
+<div class="sect3">
+<h4 id="DefaultRolloverStrategy"><a class="anchor" href="#DefaultRolloverStrategy"></a>DefaultRolloverStrategy</h4>
 <div class="paragraph">
 <p>Default Rollover Strategy</p>
 </div>
@@ -4040,7 +4154,7 @@ foo-1.log. A new foo.log file is created and starts being written to.</p></td>
 then the min and max values will be ignored and file numbering will increment by 1 and each rollover will have an incrementally higher value with no maximum number of files.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 27. DefaultRolloverStrategy Parameters</caption>
+<caption class="title">Table 29. DefaultRolloverStrategy Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4090,8 +4204,8 @@ archived log file during compression.</p></td>
 </tbody>
 </table>
 </div>
-<div class="sect2">
-<h3 id="DirectWriteRolloverStrategy"><a class="anchor" href="#DirectWriteRolloverStrategy"></a>DirectWriteRolloverStrategy</h3>
+<div class="sect3">
+<h4 id="DirectWriteRolloverStrategy"><a class="anchor" href="#DirectWriteRolloverStrategy"></a>DirectWriteRolloverStrategy</h4>
 <div class="paragraph">
 <p>DirectWrite Rollover Strategy</p>
 </div>
@@ -4105,7 +4219,7 @@ If the size-based triggering policy causes multiple files to be written during t
 Furthermore, if the time changes such that the file pattern no longer matches the current file it will not be compressed at startup either.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 28. DirectWriteRolloverStrategy Parameters</caption>
+<caption class="title">Table 30. DirectWriteRolloverStrategy Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4280,8 +4394,8 @@ The cron trigger causes a rollover every hour while the file size is limited to 
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="CustomDeleteOnRollover"><a class="anchor" href="#CustomDeleteOnRollover"></a>CustomDeleteOnRollover</h3>
+<div class="sect3">
+<h4 id="CustomDeleteOnRollover"><a class="anchor" href="#CustomDeleteOnRollover"></a>CustomDeleteOnRollover</h4>
 <div class="paragraph">
 <p>Log Archive Retention Policy: Delete on Rollover</p>
 </div>
@@ -4294,7 +4408,7 @@ The Delete action lets users configure one or more conditions that select the fi
 With the <code>testMode</code> parameter you can test your configuration without accidentally deleting the wrong files.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 29. Delete Parameters</caption>
+<caption class="title">Table 31. Delete Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4371,9 +4485,9 @@ NOT by using the <code>IfAll</code>, <code>IfAny</code> and <code>IfNot</code> c
 <li>
 <p><a href="#DeleteIfFileName"><code>IfFileName</code></a> - accepts files whose path
 (relative to the base path) matches a
-<a href="https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html">regular
+<a href="https://docs.oracle.com/javase/17/docs/api/java/util/regex/Pattern.html">regular
 expression</a> or a
-<a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)">glob</a>.</p>
+<a href="https://docs.oracle.com/javase/17/docs/api/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)">glob</a>.</p>
 </li>
 <li>
 <p><a href="#DeleteIfLastModified"><code>IfLastModified</code></a> - accepts files that are as
@@ -4427,12 +4541,10 @@ and must return a list with the paths to delete.</p>
 </table>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="DeleteIfFileName"><a class="anchor" href="#DeleteIfFileName"></a>DeleteIfFileName</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="DeleteIfFileName"><a class="anchor" href="#DeleteIfFileName"></a>DeleteIfFileName</h3>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 30. IfFileName Condition Parameters</caption>
+<caption class="title">Table 32. IfFileName Condition Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4452,7 +4564,7 @@ and must return a list with the paths to delete.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>Required if regex is not specified.</em> Matches the relative
 path (relative to the base path) using a limited pattern language that
 resembles regular expressions but with a
-<a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)">simpler
+<a href="https://docs.oracle.com/javase/17/docs/api/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)">simpler
 syntax</a>.</p></td>
 </tr>
 <tr>
@@ -4461,7 +4573,7 @@ syntax</a>.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>Required if glob not specified.</em> Matches the relative
 path (relative to the base path) using a regular expression as defined
 by the
-<a href="https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html"><code>Pattern</code></a>
+<a href="https://docs.oracle.com/javase/17/docs/api/java/util/regex/Pattern.html"><code>Pattern</code></a>
 class.</p></td>
 </tr>
 <tr>
@@ -4476,12 +4588,10 @@ the path name matches).</p></td>
 </tbody>
 </table>
 </div>
-</div>
-<div class="sect1">
-<h2 id="DeleteIfLastModified"><a class="anchor" href="#DeleteIfLastModified"></a>DeleteIfLastModified</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="DeleteIfLastModified"><a class="anchor" href="#DeleteIfLastModified"></a>DeleteIfLastModified</h3>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 31. IfLastModified Condition Parameters</caption>
+<caption class="title">Table 33. IfLastModified Condition Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4515,12 +4625,10 @@ the file is old enough).</p></td>
 </tbody>
 </table>
 </div>
-</div>
-<div class="sect1">
-<h2 id="DeleteIfAccumulatedFileCount"><a class="anchor" href="#DeleteIfAccumulatedFileCount"></a>DeleteIfAccumulatedFileCount</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="DeleteIfAccumulatedFileCount"><a class="anchor" href="#DeleteIfAccumulatedFileCount"></a>DeleteIfAccumulatedFileCount</h3>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 32. IfAccumulatedFileCount Condition Parameters</caption>
+<caption class="title">Table 34. IfAccumulatedFileCount Condition Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4552,12 +4660,10 @@ the threshold count has been exceeded).</p></td>
 </tbody>
 </table>
 </div>
-</div>
-<div class="sect1">
-<h2 id="DeleteIfAccumulatedFileSize"><a class="anchor" href="#DeleteIfAccumulatedFileSize"></a>DeleteIfAccumulatedFileSize</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="DeleteIfAccumulatedFileSize"><a class="anchor" href="#DeleteIfAccumulatedFileSize"></a>DeleteIfAccumulatedFileSize</h3>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 33. IfAccumulatedFileSize Condition Parameters</caption>
+<caption class="title">Table 35. IfAccumulatedFileSize Condition Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4668,12 +4774,10 @@ During every rollover, this configuration will delete files that match "<strong>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="ScriptCondition"><a class="anchor" href="#ScriptCondition"></a>ScriptCondition</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="ScriptCondition"><a class="anchor" href="#ScriptCondition"></a>ScriptCondition</h3>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 34. ScriptCondition Parameters</caption>
+<caption class="title">Table 36. ScriptCondition Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4700,12 +4804,10 @@ how ScriptFiles and ScriptRefs can be configured.</p></td>
 </tbody>
 </table>
 </div>
-</div>
-<div class="sect1">
-<h2 id="ScriptParameters"><a class="anchor" href="#ScriptParameters"></a>ScriptParameters</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="ScriptParameters"><a class="anchor" href="#ScriptParameters"></a>ScriptParameters</h3>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 35. Script Parameters</caption>
+<caption class="title">Table 37. Script Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4823,10 +4925,8 @@ The Delete action will delete all files returned by the script.</p>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="CustomPosixViewAttributeOnRollover"><a class="anchor" href="#CustomPosixViewAttributeOnRollover"></a>CustomPosixViewAttributeOnRollover</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="CustomPosixViewAttributeOnRollover"><a class="anchor" href="#CustomPosixViewAttributeOnRollover"></a>CustomPosixViewAttributeOnRollover</h3>
 <div class="paragraph">
 <p>Log Archive File Attribute View Policy: Custom file attribute on Rollover</p>
 </div>
@@ -4835,7 +4935,7 @@ The Delete action will delete all files returned by the script.</p>
 The PosixViewAttribute action lets users configure one or more conditions that select the eligible files relative to a base directory.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 36. PosixViewAttribute Parameters</caption>
+<caption class="title">Table 38. PosixViewAttribute Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4884,7 +4984,7 @@ executed.</p>
 </div>
 <div class="paragraph">
 <p>The underlying files system shall support
-<a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html"><code>POSIX</code></a>
+<a href="https://docs.oracle.com/javase/17/docs/api/java/nio/file/attribute/PosixFileAttributeView.html"><code>POSIX</code></a>
 file attribute view.</p>
 </div>
 <div class="paragraph">
@@ -4907,7 +5007,7 @@ is in effect for path.</p>
 </div>
 <div class="paragraph">
 <p>The underlying files system shall support file
-<a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html"><code>owner</code></a>
+<a href="https://docs.oracle.com/javase/17/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html"><code>owner</code></a>
 attribute view.</p>
 </div></div></td>
 </tr>
@@ -4919,7 +5019,7 @@ attribute view.</p>
 </div>
 <div class="paragraph">
 <p>The underlying files system shall support
-<a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html"><code>POSIX</code></a>
+<a href="https://docs.oracle.com/javase/17/docs/api/java/nio/file/attribute/PosixFileAttributeView.html"><code>POSIX</code></a>
 file attribute view.</p>
 </div></div></td>
 </tr>
@@ -4959,10 +5059,8 @@ file attribute view.</p>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="RollingRandomAccessFileAppender"><a class="anchor" href="#RollingRandomAccessFileAppender"></a>RollingRandomAccessFileAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="RollingRandomAccessFileAppender"><a class="anchor" href="#RollingRandomAccessFileAppender"></a>RollingRandomAccessFileAppender</h3>
 <div class="paragraph">
 <p>The RollingRandomAccessFileAppender is similar to the standard
 <a href="#RollingFileAppender">[RollingFileAppender]</a> except it is always buffered (this cannot be switched off) and internally it uses a
@@ -4988,7 +5086,7 @@ Since log4j-2.5, a <a href="#CustomDeleteOnRollover">custom delete action</a> ca
 <p>File locking is not supported by the RollingRandomAccessFileAppender.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 37. RollingRandomAccessFileAppender Parameters</caption>
+<caption class="title">Table 39. RollingRandomAccessFileAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -5029,7 +5127,7 @@ of its parent directories, do not exist, they will be created.</p></td>
 file. The format of the pattern should is dependent on the
 RolloverPolicy that is used. The DefaultRolloverPolicy will accept both
 a date/time pattern compatible with
-<a href="https://download.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html"><code>SimpleDateFormat</code></a>
+<a href="https://docs.oracle.com/javase/17/docs/api/java/text/SimpleDateFormat.html"><code>SimpleDateFormat</code></a>
 and/or a %i which represents an integer counter. The pattern also
 supports interpolation at runtime so any of the Lookups (such as the
 <a href="lookups.html#DateLookup" class="xref page">DateLookup</a> can be included in the
@@ -5098,7 +5196,7 @@ created.</p>
 </div>
 <div class="paragraph">
 <p>The underlying files system shall support
-<a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html"><code>POSIX</code></a>
+<a href="https://docs.oracle.com/javase/17/docs/api/java/nio/file/attribute/PosixFileAttributeView.html"><code>POSIX</code></a>
 file attribute view.</p>
 </div>
 <div class="paragraph">
@@ -5121,7 +5219,7 @@ is in effect for path.</p>
 </div>
 <div class="paragraph">
 <p>The underlying file system shall support file
-<a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html"><code>owner</code></a>
+<a href="https://docs.oracle.com/javase/17/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html"><code>owner</code></a>
 attribute view.</p>
 </div></div></td>
 </tr>
@@ -5133,20 +5231,20 @@ attribute view.</p>
 </div>
 <div class="paragraph">
 <p>The underlying files system shall support
-<a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html"><code>POSIX</code></a>
+<a href="https://docs.oracle.com/javase/17/docs/api/java/nio/file/attribute/PosixFileAttributeView.html"><code>POSIX</code></a>
 file attribute view.</p>
 </div></div></td>
 </tr>
 </tbody>
 </table>
-<div class="sect2">
-<h3 id="_triggering_policies"><a class="anchor" href="#_triggering_policies"></a>Triggering Policies</h3>
+<div class="sect3">
+<h4 id="_triggering_policies"><a class="anchor" href="#_triggering_policies"></a>Triggering Policies</h4>
 <div class="paragraph">
 <p>See <a href="#TriggeringPolicies">RollingFileAppender Triggering Policies</a>.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_rollover_strategies"><a class="anchor" href="#_rollover_strategies"></a>Rollover Strategies</h3>
+<div class="sect3">
+<h4 id="_rollover_strategies"><a class="anchor" href="#_rollover_strategies"></a>Rollover Strategies</h4>
 <div class="paragraph">
 <p>See <a href="#RolloverStrategies"><code>RollingFileAppender</code> rollover strategies</a>.</p>
 </div>
@@ -5234,10 +5332,8 @@ file attribute view.</p>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="RoutingAppender"><a class="anchor" href="#RoutingAppender"></a>RoutingAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="RoutingAppender"><a class="anchor" href="#RoutingAppender"></a>RoutingAppender</h3>
 <div class="paragraph">
 <p>The <code>RoutingAppender</code> evaluates LogEvents and then routes them to a subordinate Appender.
 The target Appender may be an appender previously configured and may be referenced by its name or the Appender can be dynamically created as needed.
@@ -5247,7 +5343,7 @@ The <code>RoutingAppender</code> should be configured after any Appenders it ref
 <p>You can also configure a <code>RoutingAppender</code> with scripts: you can run a script when the appender starts and when a route is chosen for an log event.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 38. RoutingAppender Parameters</caption>
+<caption class="title">Table 40. RoutingAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -5354,8 +5450,8 @@ Note that the List Appender is one of our test appenders, any appender can be us
 &lt;/Configuration&gt;</code></pre>
 </div>
 </div>
-<div class="sect2">
-<h3 id="Routes"><a class="anchor" href="#Routes"></a>Routes</h3>
+<div class="sect3">
+<h4 id="Routes"><a class="anchor" href="#Routes"></a>Routes</h4>
 <div class="paragraph">
 <p>The <code>Routes</code> element accepts a single attribute named "pattern".
 The pattern is evaluated against all the registered Lookups and the result is used to select a <code>Route</code>.
@@ -5379,11 +5475,30 @@ If the <code>Route</code> contains a ref attribute then the <code>Route</code> w
 If the <code>Route</code> contains an <code>Appender</code> definition then an
 <code>Appender</code> will be created within the context of the <code>RoutingAppender</code> and will be reused each time a matching <code>Appender</code> name is referenced through a <code>Route</code>.</p>
 </div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Lookups in the <strong>children</strong> of the <code>Route</code> component are <strong>not</strong> evaluated at configuration time.
+The substitution is delayed until the <code>Route</code> element is evaluated.
+This means that <code>${...}</code> expression <strong>should not</strong> be escaped as <code>$${...}</code>.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="configuration.html#lazy-property-substitution" class="xref page">lazy property substitution</a> for more details.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>This script is passed the following variables:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 39. RoutingAppender Routes Script Parameters</caption>
+<caption class="title">Table 41. RoutingAppender Routes Script Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -5466,8 +5581,8 @@ Script.</p></td>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="Purge"><a class="anchor" href="#Purge"></a>Purge Policy</h3>
+<div class="sect3">
+<h4 id="Purge"><a class="anchor" href="#Purge"></a>Purge Policy</h4>
 <div class="paragraph">
 <p>The RoutingAppender can be configured with a PurgePolicy whose purpose is to stop and remove dormant Appenders that have been dynamically created by the RoutingAppender.
 Log4j currently provides the IdlePurgePolicy is the only PurgePolicy available for cleaning up the Appenders.
@@ -5513,10 +5628,8 @@ Note that the AuditAppender was predefined while the RollingFileAppenders are cr
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="SMTPAppender"><a class="anchor" href="#SMTPAppender"></a>SMTPAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="SMTPAppender"><a class="anchor" href="#SMTPAppender"></a>SMTPAppender</h3>
 <div class="paragraph">
 <p>Sends an e-mail when a specific logging event occurs, typically on errors or fatal errors.</p>
 </div>
@@ -5656,10 +5769,8 @@ As with other Appenders, the formatting can be controlled by specifying a Layout
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="ScriptAppenderSelector"><a class="anchor" href="#ScriptAppenderSelector"></a>ScriptAppenderSelector</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="ScriptAppenderSelector"><a class="anchor" href="#ScriptAppenderSelector"></a>ScriptAppenderSelector</h3>
 <div class="paragraph">
 <p>When the configuration is built, the <code>ScriptAppenderSelector</code> appender calls a <code>ScriptPlugin</code> to compute an appender name.
 Log4j then creates one of the appender named listed under <code>AppenderSet</code> using the name of the
@@ -5696,10 +5807,8 @@ The appender name is recorded under the name of the
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="SocketAppender"><a class="anchor" href="#SocketAppender"></a>SocketAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="SocketAppender"><a class="anchor" href="#SocketAppender"></a>SocketAppender</h3>
 <div class="paragraph">
 <p>The <code>SocketAppender</code> is an OutputStreamAppender that writes its output to a remote destination specified by a host and port.
 The data can be sent over either TCP or UDP and can be sent in any format.
@@ -5709,7 +5818,7 @@ Due to limitations in the TCP protocol that means that when the target server cl
 If guaranteed delivery is required a protocol that requires acknowledgments must be used.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 40. <code>SocketAppender</code> Parameters</caption>
+<caption class="title">Table 42. <code>SocketAppender</code> Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -5865,16 +5974,14 @@ Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="SSL"><a class="anchor" href="#SSL"></a>SSL</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="SSL"><a class="anchor" href="#SSL"></a>SSL</h3>
 <div class="paragraph">
 <p>Several appenders can be configured to use either a plain network connection or a Secure Socket Layer (SSL) connection.
 This section documents the parameters available for SSL configuration.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 41. SSL Configuration Parameters</caption>
+<caption class="title">Table 43. SSL Configuration Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -5911,13 +6018,13 @@ counterparty. Determines whether the remote authentication credentials
 </tr>
 </tbody>
 </table>
-<div class="sect2">
-<h3 id="KeyStore"><a class="anchor" href="#KeyStore"></a>KeyStore</h3>
+<div class="sect3">
+<h4 id="KeyStore"><a class="anchor" href="#KeyStore"></a>KeyStore</h4>
 <div class="paragraph">
 <p>The Keystore is meant to contain your private keys and certificates, and determines which authentication credentials to send to the remote host.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 42. KeyStore Configuration Parameters</caption>
+<caption class="title">Table 44. KeyStore Configuration Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -5975,8 +6082,8 @@ algorithms</a>.</p></td>
 </tbody>
 </table>
 </div>
-<div class="sect2">
-<h3 id="TrustStore"><a class="anchor" href="#TrustStore"></a>TrustStore</h3>
+<div class="sect3">
+<h4 id="TrustStore"><a class="anchor" href="#TrustStore"></a>TrustStore</h4>
 <div class="paragraph">
 <p>The trust store is meant to contain the CA certificates you are willing to trust when a remote party presents its certificate.
 Determines whether the remote authentication credentials (and thus the connection) should be trusted.</p>
@@ -5985,7 +6092,7 @@ Determines whether the remote authentication credentials (and thus the connectio
 <p>In some cases, they can be the same store, although it is often better practice to use distinct stores (especially when they are file-based).</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 43. TrustStore Configuration Parameters</caption>
+<caption class="title">Table 45. TrustStore Configuration Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -6043,8 +6150,8 @@ algorithms</a>.</p></td>
 </tbody>
 </table>
 </div>
-<div class="sect2">
-<h3 id="Example"><a class="anchor" href="#Example"></a>Example</h3>
+<div class="sect3">
+<h4 id="Example"><a class="anchor" href="#Example"></a>Example</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;SSL&gt;
@@ -6055,16 +6162,14 @@ algorithms</a>.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="SyslogAppender"><a class="anchor" href="#SyslogAppender"></a>SyslogAppender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="SyslogAppender"><a class="anchor" href="#SyslogAppender"></a>SyslogAppender</h3>
 <div class="paragraph">
 <p>The <code>SyslogAppender</code> is a <code>SocketAppender</code> that writes its output to a remote destination specified by a host and port in a format that conforms with either the BSD Syslog format or the RFC 5424 format.
 The data can be sent over either TCP or UDP.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 44. <code>SyslogAppender</code> Parameters</caption>
+<caption class="title">Table 46. <code>SyslogAppender</code> Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -6095,7 +6200,7 @@ syslog record.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The character set to use when converting the Syslog
 String to a byte array. The String must be a valid
-<a href="https://download.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html"><code>Charset</code></a>.
+<a href="https://docs.oracle.com/javase/17/docs/api/java/nio/charset/Charset.html"><code>Charset</code></a>.
 If not specified, the default system Charset will be used.</p></td>
 </tr>
 <tr>
@@ -6319,10 +6424,8 @@ application if <code>ignoreExceptions</code> is set to <code>false</code>).</p><
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="JeroMQAppender"><a class="anchor" href="#JeroMQAppender"></a>ZeroMQ/JeroMQ Appender</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="JeroMQAppender"><a class="anchor" href="#JeroMQAppender"></a>ZeroMQ/JeroMQ Appender</h3>
 <div class="paragraph">
 <p>The ZeroMQ appender uses the <a href="https://github.com/zeromq/jeromq">JeroMQ</a> library to send log events to one or more ZeroMQ endpoints.</p>
 </div>
@@ -6492,6 +6595,93 @@ Please consult the JeroMQ and ZeroMQ documentation for details.</p>
 </tr>
 </tbody>
 </table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="extending"><a class="anchor" href="#extending"></a>Extending</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Appenders are <a href="plugins.html" class="xref page">plugins</a> implementing <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Appender.html">the <code>Appender</code> interface</a>.
+This section will guide you on how to create custom ones.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Implementing a reliable and efficient appender is a difficult task!</strong>
+We strongly advise you to</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Use existing appenders and/or managers whenever appropriate</p>
+</li>
+<li>
+<p>Share your use case and ask for feedback in a <a href="https://logging.apache.org/support.html">user support channel</a></p>
+</li>
+</ol>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="extending-plugins"><a class="anchor" href="#extending-plugins"></a>Plugin preliminaries</h3>
+<div class="paragraph">
+<p>Log4j plugin system is the de facto extension mechanism embraced by various Log4j components.
+Plugins make it possible for extensible components to <em>receive</em> feature implementations without any explicit links in between.
+It is analogous to a <a href="https://en.wikipedia.org/wiki/Dependency_injection">dependency injection</a> framework, but curated for Log4j-specific needs.</p>
+</div>
+<div class="paragraph">
+<p>In a nutshell, you annotate your classes with <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/Plugin.html"><code>@Plugin</code></a> and their (<code>static</code>) factory methods with <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/PluginFactory.html"><code>@PluginFactory</code></a>.
+Last, you inform the Log4j plugin system to discover these custom classes.
+This is done using running the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/processor/PluginProcessor.html"><code>PluginProcessor</code></a> annotation processor while building your project.
+Refer to <a href="plugins.html" class="xref page">Plugins</a> for details.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="extending-appenders"><a class="anchor" href="#extending-appenders"></a>Extending appenders</h3>
+<div class="paragraph">
+<p>Appenders are <a href="plugins.html" class="xref page">plugins</a> implementing <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Appender.html">the <code>Appender</code> interface</a>.
+We recommend users to extend from <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/AbstractAppender.html"><code>AbstractAppender</code></a>, which provides implementation convenience.
+While annotating your appender with <code>@Plugin</code>, you need to make sure that</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>It has a unique <code>name</code> attribute across all available <code>Appender</code> plugins</p>
+</li>
+<li>
+<p>The <code>category</code> attribute is set to <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Node.html#CATEGORY"><code>Node.CATEGORY</code></a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Most appender implementation use <strong>managers</strong>, which model an abstraction owning the resources, such as an <code>OutputStream</code> or a socket.
+When a reconfiguration occurs a new appender will be created.
+However, if nothing significant in the previous manager has changed, the new appender will simply reference it instead of creating a new one.
+This ensures that events are not lost while a reconfiguration is taking place without requiring that logging pause while the reconfiguration takes place.
+You are strongly advised to study the manager concept in <a href="#collection">the predefined appenders</a>, and either use an existing manager, or create your own.</p>
+</div>
+<div class="paragraph">
+<p>You can check out following files for examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/apache/logging-log4j2/tree/main/log4j-core/src/main/java/org/apache/logging/log4j/core/appender/HttpAppender.java"><code>HttpAppender.java</code></a> – <a href="#HttpAppender">HttpAppender</a> sends log events over HTTP using <code>HttpURLConnectionManager</code></p>
+</li>
+<li>
+<p><a href="https://github.com/apache/logging-log4j2/tree/main/log4j-core/src/main/java/org/apache/logging/log4j/core/appender/ConsoleAppender.java"><code>ConsoleAppender.java</code></a> – <a href="#ConsoleAppender">[ConsoleAppender]</a> writes log events to either <code>System.out</code> or <code>System.err</code> using <code>OutputStreamManager</code></p>
+</li>
+</ul>
+</div>
+</div>
 </div>
 </div>
 </article>
