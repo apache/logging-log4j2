@@ -281,8 +281,8 @@
 <div class="sectionbody">
 <div class="paragraph">
 <p>Log4j provides support for
-<a href="https://docs.oracle.com/javase/6/docs/technotes/guides/scripting/">JSR
-223</a> scripting languages to be used in some of its components.</p>
+<a href="https://docs.oracle.com/en/java/javase/11/scripting/scripting-languages-and-java.html">JSR 223</a>
+scripting languages to be used in some of its components.</p>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -660,12 +660,12 @@ Scripts.ScriptFile.path = scripts/filter.groovy</code></pre>
 <div class="sectionbody">
 <div class="paragraph">
 <p>JSR 223 scripting engines are supposed to identify that they support the
-<a href="https://docs.oracle.com/javase/17/docs/api/javax/script/Compilable.html"><code>Compilable</code></a>
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.scripting/javax/script/Compilable.html"><code>Compilable</code></a>
 interface if they support compiling their scripts.</p>
 </div>
 <div class="paragraph">
 <p>Beanshell does extend the <code>Compilable</code> interface, but an attempt to compile a script ends up in an
-<a href="https://docs.oracle.com/javase/17/docs/api/java/lang/Error.html"><code>Error</code></a>
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Error.html"><code>Error</code></a>
 being thrown.
 Log4j catches the throwable, but issues a warning in the status logger.</p>
 </div>

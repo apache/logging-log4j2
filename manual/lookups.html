@@ -387,7 +387,7 @@ The same process converts escaped <code>$${...}</code> expressions to <code>${..
 <ul>
 <li>
 <p>When used in a global context, it formats the <strong>current</strong> timestamp obtained through
-<a href="https://docs.oracle.com/javase/17/docs/api/java/lang/System.html#currentTimeMillis--"><code>System.currentTimeMillis()</code></a>.</p>
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/System.html#currentTimeMillis()"><code>System.currentTimeMillis()</code></a>.</p>
 </li>
 <li>
 <p>When used in the context of an event, it formats the <strong>event</strong> timestamp obtained through
@@ -464,7 +464,7 @@ using the <code>${prefix:key}</code> syntax:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#ResourceBundleLookup"><code>bundle</code></a></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">A Java
-<a href="https://docs.oracle.com/javase/17/docs/api/java/util/ResourceBundle.html">resource bundle</a></p></td>
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/ResourceBundle.html">resource bundle</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#ContextMapLookup"><code>ctx</code></a></p></td>
@@ -618,7 +618,7 @@ using the <code>${prefix:key}</code> syntax:</p>
 <dt class="hdlist1"><code>baseName</code></dt>
 <dd>
 <p>the base name of a resource bundle (see
-<a href="https://docs.oracle.com/javase/8/docs/api/java/util/ResourceBundle.html"><code>ResourceBundle</code></a>).</p>
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/ResourceBundle.html"><code>ResourceBundle</code></a>).</p>
 </dd>
 <dt class="hdlist1"><code>key</code></dt>
 <dd>
@@ -747,7 +747,7 @@ Use <a href="pattern-layout.html#converter-thread-context-map" class="xref page"
 <th class="tableblock halign-left valign-top"><p class="tableblock">Syntax</p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>date:&lt;format&gt;</code></p>
 <p class="tableblock">where <code>&lt;format&gt;</code> is a
-<a href="https://docs.oracle.com/javase/17/docs/api/java/text/SimpleDateFormat.html"><code>SimpleDateFormat</code></a> pattern</p></td>
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/text/SimpleDateFormat.html"><code>SimpleDateFormat</code></a> pattern</p></td>
 </tr>
 </tbody>
 </table>
@@ -760,7 +760,7 @@ The timestamp used depends on the context:</p>
 <dt class="hdlist1">Global context</dt>
 <dd>
 <p>When used in a global context, the timestamp used is the current system timestamp as returned by
-<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/System.html#currentTimeMillis--"><code>System.currentTimeMillis()</code></a>.</p>
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/System.html#currentTimeMillis()"><code>System.currentTimeMillis()</code></a>.</p>
 </dd>
 <dt class="hdlist1">Log event context</dt>
 <dd>
@@ -916,7 +916,7 @@ runtimeOnly 'org.apache.logging.log4j:log4j-docker'</code></pre>
 </table>
 <div class="paragraph">
 <p>The Environment Lookup retrieves the value of the
-<a href="https://docs.oracle.com/javase/17/docs/api/java/lang/System.html#getenv-java.lang.String-">OS environment variable</a>
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/System.html#getenv(java.lang.String)">OS environment variable</a>
 associated with the key.</p>
 </div>
 </div>
@@ -1117,7 +1117,8 @@ The following keys are supported</p>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Syntax</p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>jndi:&lt;name&gt;</code></p>
-<p class="tableblock">where <code>&lt;name&gt;</code> is a JNDI <a href="https://docs.oracle.com/javase/17/docs/api/javax/naming/Name.html"><code>Name</code></a>.</p></td>
+<p class="tableblock">where <code>&lt;name&gt;</code> is a JNDI
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.naming/javax/naming/Name.html"><code>Name</code></a>.</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Dependency</p></th>
@@ -1758,7 +1759,7 @@ Use <a href="pattern-layout.html#converter-map" class="xref page">the <code>%K{k
 </table>
 <div class="paragraph">
 <p>The System Properties Lookup retrieves the value of the
-<a href="https://docs.oracle.com/javase/17/docs/api/java/lang/System.html#getProperties--">Java system property</a>
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/System.html#getProperties()">Java system property</a>
 associated with the key.</p>
 </div>
 </div>

@@ -767,9 +767,9 @@ filter.0.onMismatch = NEUTRAL</code></pre>
 <h3 id="common-configuration-attributes"><a class="anchor" href="#common-configuration-attributes"></a>Common configuration attributes</h3>
 <div class="paragraph">
 <p>The default behavior of filters is in line with the <code>filter()</code> methods of functional interfaces, such as
-<a href="https://docs.oracle.com/javase/17/docs/api/java/util/Optional.html#filter-java.util.function.Predicate-"><code>Optional.filter()</code></a>
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html#filter(java.util.function.Predicate)"><code>Optional.filter()</code></a>
 or
-<a href="https://docs.oracle.com/javase/17/docs/api/java/util/stream/Stream.html#filter-java.util.function.Predicate-"><code>Stream.filter()</code></a>:
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html#filter(java.util.function.Predicate)"><code>Stream.filter()</code></a>:
 filters pass matching events to the next filter and drop those that do not match.</p>
 </div>
 <div class="paragraph">
@@ -996,20 +996,20 @@ the <code>TimeFilter</code> supports the following parameters:</p>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>start</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/time/LocalTime.html"><code>LocalTime</code></a> in <code>HH:mm:ss</code> format</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/time/LocalTime.html#MIN"><code>LocalTime.MIN</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/LocalTime.html"><code>LocalTime</code></a> in <code>HH:mm:ss</code> format</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/LocalTime.html#MIN"><code>LocalTime.MIN</code></a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The beginning of the time slot.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>start</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/time/LocalTime.html"><code>LocalTime</code></a> in <code>HH:mm:ss</code> format</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/time/LocalTime.html#MAX"><code>LocalTime.MAX</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/LocalTime.html"><code>LocalTime</code></a> in <code>HH:mm:ss</code> format</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/LocalTime.html#MAX"><code>LocalTime.MAX</code></a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The end of the time slot.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>timezone</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/time/ZoneId.html"><code>ZoneId</code></a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/time/ZoneId.html#systemDefault--"><code>ZoneId.systemDefault()</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/ZoneId.html"><code>ZoneId</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/ZoneId.html#systemDefault()"><code>ZoneId.systemDefault()</code></a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The timezone to use when comparing <code>start</code> and <code>end</code> to the event timestamp.</p></td>
 </tr>
 </tbody>
@@ -1743,7 +1743,7 @@ the <code>RegexFilter</code> supports the following parameters:</p>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>regex</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/util/regex/Pattern.html"><code>Pattern</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/regex/Pattern.html"><code>Pattern</code></a></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The regular expression used to match log messages.</p>
 <p class="tableblock"><strong>Required</strong></p></td>
@@ -2589,9 +2589,9 @@ the <code>MutableContextMapFilter</code> supports the following parameters:</p>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>configLocation</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/nio/file/Path.html"><code>Path</code></a>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/Path.html"><code>Path</code></a>
 or
-<a href="https://docs.oracle.com/javase/17/docs/api/java/net/URI.html"><code>URI</code></a></p></td>
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html"><code>URI</code></a></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The location of the JSON <a href="#configuration-map">Configuration map</a>.</p>
 <p class="tableblock"><strong>Required</strong></p></td>

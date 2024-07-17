@@ -781,7 +781,8 @@ implementation.
 Integrators can use this to customize the shutdown order of the JVM.</p>
 </div>
 <div class="paragraph">
-<p>The default implementation executes all shutdown actions in a separate <code>Thread</code> registered through <a href="https://docs.oracle.com/javase/17/docs/api/java/lang/Runtime.html#addShutdownHook-java.lang.Thread-"><code>Runtime#addShutdownHook()</code></a>.</p>
+<p>The default implementation executes all shutdown actions in a separate <code>Thread</code> registered through
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Runtime.html#addShutdownHook(java.lang.Thread)"><code>Runtime#addShutdownHook()</code></a>.</p>
 </div>
 </div>
 <div class="sect3">
@@ -882,7 +883,7 @@ to use.</p>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Comma-separated list of <a href="https://docs.oracle.com/javase/17/docs/api/java/nio/file/Path.html"><code>Path</code></a>s or <a href="https://docs.oracle.com/javase/17/docs/api/java/net/URI.html"><code>URI</code></a>s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Comma-separated list of <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/Path.html"><code>Path</code></a>s or <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html"><code>URI</code></a>s</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -1145,7 +1146,9 @@ implementation to use to create log events.</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>If <code>true</code>, garbage-aware layouts will directly encode log events into <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html"><code>ByteBuffer</code></a>s provided by appenders.</p>
+<p>If <code>true</code>, garbage-aware layouts will directly encode log events into
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/ByteBuffer.html"><code>ByteBuffer</code></a>s
+provided by appenders.</p>
 </div>
 <div class="paragraph">
 <p>This prevents allocating temporary <code>String</code> and <code>char[]</code> instances.</p>
@@ -1175,7 +1178,7 @@ implementation to use to create log events.</p>
 </table>
 <div class="paragraph">
 <p>The size in bytes of the
-<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html"><code>ByteBuffer</code></a>s
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/ByteBuffer.html"><code>ByteBuffer</code></a>s
 stored in <code>ThreadLocal</code> fields by layouts and
 <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder.html"><code>StringBuilderEncoder</code></a>s.</p>
 </div>
@@ -1207,7 +1210,7 @@ stored in <code>ThreadLocal</code> fields by layouts and
 </table>
 <div class="paragraph">
 <p>The size in <code>char</code>s of the
-<a href="https://docs.oracle.com/javase/17/docs/api/java/nio/ByteBuffer.html"><code>ByteBuffer</code></a>s
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/ByteBuffer.html"><code>ByteBuffer</code></a>s
 stored in <code>ThreadLocal</code> fields
 <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder.html"><code>StringBuilderEncoder</code></a>s.</p>
 </div>
@@ -1751,7 +1754,7 @@ to use for the value of the <a href="#log4j.auth.basic.password"><code>log4j.aut
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Comma-separated list of <a href="https://docs.oracle.com/javase/17/docs/api/java/net/URL.html"><code>URL</code></a> protocols</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Comma-separated list of <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URL.html"><code>URL</code></a> protocols</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -1760,7 +1763,7 @@ to use for the value of the <a href="#log4j.auth.basic.password"><code>log4j.aut
 </tbody>
 </table>
 <div class="paragraph">
-<p>A comma separated list of <a href="https://docs.oracle.com/javase/17/docs/api/java/net/URL.html"><code>URL</code></a> protocols that may be used to load any kind of configuration source.</p>
+<p>A comma separated list of <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URL.html"><code>URL</code></a> protocols that may be used to load any kind of configuration source.</p>
 </div>
 <div class="paragraph">
 <p>To completely prevent accessing the configuration via the Java <code>URL</code> class specify a value of <code>_none</code>.</p>
@@ -1788,7 +1791,7 @@ to use for the value of the <a href="#log4j.auth.basic.password"><code>log4j.aut
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/nio/file/Path.html"><code>Path</code></a> or <a href="https://docs.oracle.com/javase/17/docs/api/java/net/URI.html"><code>URI</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/Path.html"><code>Path</code></a> or <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html"><code>URI</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -1840,7 +1843,7 @@ to use for the value of the <a href="#log4j.auth.basic.password"><code>log4j.aut
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/nio/file/Path.html"><code>Path</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/Path.html"><code>Path</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -1892,11 +1895,11 @@ to use for the value of the <a href="#log4j.auth.basic.password"><code>log4j.aut
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyStore"><code>KeyStore</code> type</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/en/java/javase/17/docs/specs/security/standard-names.html#keystore-types"><code>KeyStore</code> type</a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/security/KeyStore.html#getDefaultType--">Default Java <code>KeyStore</code> type</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/security/KeyStore.html#getDefaultType()">Default Java <code>KeyStore</code> type</a></p></td>
 </tr>
 </tbody>
 </table>
@@ -1918,16 +1921,16 @@ to use for the value of the <a href="#log4j.auth.basic.password"><code>log4j.aut
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory"><code>KeyManagerFactory</code> type</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/en/java/javase/17/docs/specs/security/standard-names.html#keymanagerfactory-algorithms"><code>KeyManagerFactory</code> type</a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/javax/net/ssl/KeyManagerFactory.html#getDefaultAlgorithm--">Default Java <code>KeyManagerFactory</code> algorithm</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/javax/net/ssl/KeyManagerFactory.html#getDefaultAlgorithm()">Default Java <code>KeyManagerFactory</code> algorithm</a></p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Name of the <a href="https://docs.oracle.com/javase/17/docs/api/javax/net/ssl/KeyManagerFactory.html"><code>KeyManagerFactory</code></a> implementation to use for the trust store.</p>
+<p>Name of the <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/javax/net/ssl/KeyManagerFactory.html"><code>KeyManagerFactory</code></a> implementation to use for the trust store.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1970,8 +1973,8 @@ to use for the value of the <a href="#log4j.auth.basic.password"><code>log4j.aut
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/nio/file/Path.html"><code>Path</code></a> or
-<a href="https://docs.oracle.com/javase/17/docs/api/java/net/URI.html"><code>URI</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/Path.html"><code>Path</code></a> or
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html"><code>URI</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -2023,7 +2026,7 @@ to use for the value of the <a href="#log4j.auth.basic.password"><code>log4j.aut
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/nio/file/Path.html"><code>Path</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/Path.html"><code>Path</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -2075,17 +2078,17 @@ to use for the value of the <a href="#log4j.auth.basic.password"><code>log4j.aut
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/technotes/guides/security/StandardNames.html#KeyStore"><code>KeyStore</code> type</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/en/java/javase/17/docs/specs/security/standard-names.html#keystore-types"><code>KeyStore</code> type</a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/java/security/KeyStore.html#getDefaultType--">Default Java <code>KeyStore</code> type</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/security/KeyStore.html#getDefaultType()">Default Java <code>KeyStore</code> type</a></p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
 <p>The type of private key store.
-See <a href="https://docs.oracle.com/javase/17/docs/technotes/guides/security/StandardNames.html#KeyStore"><code>KeyStore</code></a>.</p>
+<a href="https://docs.oracle.com/en/java/javase/17/docs/specs/security/standard-names.html#keystore-types"><code>KeyStore</code></a>.</p>
 </div>
 </div>
 <div class="sect3">
@@ -2102,17 +2105,17 @@ See <a href="https://docs.oracle.com/javase/17/docs/technotes/guides/security/St
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory"><code>KeyManagerFactory</code> type</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/en/java/javase/17/docs/specs/security/standard-names.html#keymanagerfactory-algorithms"><code>KeyManagerFactory</code> type</a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/17/docs/api/javax/net/ssl/KeyManagerFactory.html#getDefaultAlgorithm--">Default Java <code>KeyManagerFactory</code> algorithm</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/javax/net/ssl/KeyManagerFactory.html#getDefaultAlgorithm()">Default Java <code>KeyManagerFactory</code> algorithm</a></p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Name of the <a href="https://docs.oracle.com/javase/17/docs/api/javax/net/ssl/KeyManagerFactory.html"><code>KeyManagerFactory</code></a> implementation to use for the private key store.
-See <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory"><code>KeyManagerFactory</code> types</a>.</p>
+<p>Name of the <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/javax/net/ssl/KeyManagerFactory.html"><code>KeyManagerFactory</code></a> implementation to use for the private key store.
+See <a href="https://docs.oracle.com/en/java/javase/17/docs/specs/security/standard-names.html#keymanagerfactory-algorithms"><code>KeyManagerFactory</code> types</a>.</p>
 </div>
 </div>
 </div>
@@ -2153,7 +2156,7 @@ implementation used to timestamp log events.</p>
 <dt class="hdlist1">SystemClock</dt>
 <dd>
 <p>uses the best available system clock as time source.
-See <a href="https://docs.oracle.com/javase/17/docs/api/java/time/Clock.html#systemDefaultZone--"><code>Clock.systemDefaultZone()</code></a> for details.</p>
+See <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Clock.html#systemDefaultZone()"><code>Clock.systemDefaultZone()</code></a> for details.</p>
 </dd>
 <dt class="hdlist1">SystemMillisClock</dt>
 <dd>
@@ -2704,7 +2707,7 @@ for more details.</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>When <code>true</code>, a Log4j JDBC Appender can use JNDI to retrieve a <a href="https://docs.oracle.com/javase/17/docs/api/javax/sql/DataSource.html"><code>DataSource</code></a> using the <code>java:</code> protocol.</p>
+<p>When <code>true</code>, a Log4j JDBC Appender can use JNDI to retrieve a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/javax/sql/DataSource.html"><code>DataSource</code></a> using the <code>java:</code> protocol.</p>
 </div>
 </div>
 <div class="sect3">
@@ -2827,7 +2830,7 @@ for more details.</p>
 <dt class="hdlist1">org.apache.logging.log4j.jul.CoreLoggerAdapter</dt>
 <dd>
 <p>The default if <code>log4j-core</code> is found in the class path.
-It allows users to modify the Log4j Core configuration through the JUL <a href="https://docs.oracle.com/javase/17/docs/api/java/util/logging/Logger.html"><code>Logger</code></a> interface.</p>
+It allows users to modify the Log4j Core configuration through the JUL <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Logger.html"><code>Logger</code></a> interface.</p>
 </dd>
 <dt class="hdlist1">org.apache.logging.log4j.jul.ApiLoggerAdapter</dt>
 <dd>
@@ -2857,7 +2860,7 @@ It disables the level mutators in the JUL <code>Logger</code> interface.</p>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Comma-separated list of <a href="https://docs.oracle.com/javase/17/docs/api/javax/script/ScriptEngine.html"><code>ScriptEngine</code></a> names</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Comma-separated list of <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.scripting/javax/script/ScriptEngine.html"><code>ScriptEngine</code></a> names</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
@@ -2869,7 +2872,7 @@ It disables the level mutators in the JUL <code>Logger</code> interface.</p>
 <p>The list of script languages that are allowed to execute.</p>
 </div>
 <div class="paragraph">
-<p>The names specified must correspond to those returned by <a href="https://docs.oracle.com/javase/17/docs/api/javax/script/ScriptEngineFactory.html#getNames--"><code>ScriptEngineFactory.getNames()</code></a>.</p>
+<p>The names specified must correspond to those returned by <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.scripting/javax/script/ScriptEngineFactory.html#getNames()"><code>ScriptEngineFactory.getNames()</code></a>.</p>
 </div>
 </div>
 </div>

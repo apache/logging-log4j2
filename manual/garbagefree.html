@@ -492,7 +492,9 @@ Hence, to avoid causing memory leaks, <code>log4j2.enableThreadlocals</code> by 
 </tbody>
 </table>
 <div class="paragraph">
-<p>If <code>true</code>, garbage-aware layouts will directly encode log events into <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html"><code>ByteBuffer</code></a>s provided by appenders.</p>
+<p>If <code>true</code>, garbage-aware layouts will directly encode log events into
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/ByteBuffer.html"><code>ByteBuffer</code></a>s
+provided by appenders.</p>
 </div>
 <div class="paragraph">
 <p>This prevents allocating temporary <code>String</code> and <code>char[]</code> instances.</p>
@@ -522,7 +524,7 @@ Hence, to avoid causing memory leaks, <code>log4j2.enableThreadlocals</code> by 
 </table>
 <div class="paragraph">
 <p>The size in bytes of the
-<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html"><code>ByteBuffer</code></a>s
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/ByteBuffer.html"><code>ByteBuffer</code></a>s
 stored in <code>ThreadLocal</code> fields by layouts and
 <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder.html"><code>StringBuilderEncoder</code></a>s.</p>
 </div>
@@ -554,7 +556,7 @@ stored in <code>ThreadLocal</code> fields by layouts and
 </table>
 <div class="paragraph">
 <p>The size in <code>char</code>s of the
-<a href="https://docs.oracle.com/javase/17/docs/api/java/nio/ByteBuffer.html"><code>ByteBuffer</code></a>s
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/ByteBuffer.html"><code>ByteBuffer</code></a>s
 stored in <code>ThreadLocal</code> fields
 <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder.html"><code>StringBuilderEncoder</code></a>s.</p>
 </div>
@@ -1139,7 +1141,10 @@ Logging more than 10 parameters creates <a href="https://docs.oracle.com/javase/
 <div class="paragraph">
 <p>When a message parameter contains an unknown type by the layout, it will encode by calling <code>toString()</code> on these objects.
 Most objects don&#8217;t have garbage-free <code>toString()</code> methods.
-Objects themselves can implement their own garbage-free encoders by either extending from <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/CharSequence.html">Java&#8217;s <code>CharSequence</code></a> or <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/StringBuilderFormattable.html">Log4j&#8217;s <code>StringBuilderFormattable</code></a>.</p>
+Objects themselves can implement their own garbage-free encoders by either extending from
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/CharSequence.html">Java&#8217;s <code>CharSequence</code></a>
+or
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/StringBuilderFormattable.html">Log4j&#8217;s <code>StringBuilderFormattable</code></a>.</p>
 </div>
 </div>
 <div class="sect2">

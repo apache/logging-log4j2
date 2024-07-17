@@ -645,7 +645,9 @@ This performs a function similar to <a href="#converter-replace">the <code>repla
 <dl>
 <dt class="hdlist1"><code>regex</code></dt>
 <dd>
-<p>A <a href="https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html">Java-compliant regular expression</a> to match the resulting string</p>
+<p>A
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/regex/Pattern.html">Java-compliant regular expression</a>
+to match the resulting string</p>
 </dd>
 <dt class="hdlist1"><code>replacement</code></dt>
 <dd>
@@ -969,7 +971,8 @@ date{pattern}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The date conversion specifier may be followed by a set of braces containing a date and time pattern string per <a href="https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html"><code>SimpleDateFormat</code></a>.
+<p>The date conversion specifier may be followed by a set of braces containing a date and time pattern string per
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/text/SimpleDateFormat.html"><code>SimpleDateFormat</code></a>.
 The predefined <em>named</em> formats are:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -1047,7 +1050,8 @@ The predefined <em>named</em> formats are:</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>You can also use a set of braces containing a time zone id per <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)"><code>java.util.TimeZone#getTimeZone(String)</code></a>.
+<p>You can also use a set of braces containing a time zone id per
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/TimeZone.html#getTimeZone(java.lang.String)"><code>java.util.TimeZone#getTimeZone(String)</code></a>.
 If no date format specifier is given then the <code>DEFAULT</code> format is used.</p>
 </div>
 <div class="paragraph">
@@ -1096,7 +1100,9 @@ This is an efficient way to output the event time because only a conversion from
 </div>
 <div class="paragraph">
 <p>There is also limited support for timestamps more precise than milliseconds when running on Java 9 or later.
-Note that not all <a href="https://docs.oracle.com/javase/9/docs/api/java/time/format/DateTimeFormatter.html"><code>DateTimeFormatter</code></a> formats are supported.
+Note that not all
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/format/DateTimeFormatter.html"><code>DateTimeFormatter</code></a>
+formats are supported.
 Only timestamps in the formats mentioned in the table above may use the <em>nano-of-second</em> pattern letter <code>n</code> instead of the <em>fraction-of-second</em> pattern letter <code>S</code>.</p>
 </div>
 <div class="paragraph">

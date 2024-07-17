@@ -471,7 +471,7 @@ and empty <code>Map</code> instances.</p>
 <dd>
 <p>This annotation validates that a value corresponds to a valid
 hostname. This uses the same validation as
-<a href="http://docs.oracle.com/javase/8/docs/api/java/net/InetAddress.html#getByName-java.lang.String-"><code>InetAddress::getByName</code></a>.</p>
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/InetAddress.html#getByName(java.lang.String)"><code>InetAddress::getByName</code></a>.</p>
 </dd>
 <dt class="hdlist1"><code>ValidPort</code></dt>
 <dd>
@@ -587,8 +587,9 @@ If any extends from <code>Comparable&lt;TypeConverter&lt;?&gt;&gt;</code>, it wi
 <div class="sectionbody">
 <div class="paragraph">
 <p>If a plugin class implements
-<a href="http://docs.oracle.com/javase/6/docs/api/java/util/Collection.html"><code>Collection</code></a>
-or <a href="http://docs.oracle.com/javase/6/docs/api/java/util/Map.html"><code>Map</code></a>,
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Collection.html"><code>Collection</code></a>
+or
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html"><code>Map</code></a>,
 then no factory method is used. Instead, the class is instantiated using
 the default constructor, and all child configuration nodes are added to
 the <code>Collection</code> or <code>Map</code>.</p>

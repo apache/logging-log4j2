@@ -322,7 +322,9 @@ To create an end-to-end experience, it provides several <a href="https://logging
 <div class="sect2">
 <h3 id="charset"><a class="anchor" href="#charset"></a>Character encoding</h3>
 <div class="paragraph">
-<p>All <a href="#collection">predefined layouts</a> produce <code>String</code> that eventually get converted into a <code>byte</code> using the <a href="https://docs.oracle.com/javase/17/docs/api/java/nio/charset/Charset.html"><code>Charset</code></a> configured.
+<p>All <a href="#collection">predefined layouts</a> produce <code>String</code> that eventually get converted into a <code>byte</code> using the
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/charset/Charset.html"><code>Charset</code></a>
+configured.
 While doing so, unless an explicit encoding configuration is stated, they use <code>UTF-8</code> by default.
 If you want all your log events to be formatted in a certain character encoding that is different from what the employed layout defaults to, make sure to configure the layout&#8217;s character encoding as needed.</p>
 </div>
@@ -718,8 +720,11 @@ For other valid values, refer to <a href="pattern-layout.html#converter-date" cl
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>timezone</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The time zone ID of the log event.
-If not specified, this layout uses the <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html#getDefault()"><code>TimeZone.getDefault()</code></a> as the default.
-You can use time zone IDs supported by <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)"><code>TimeZone.getTimeZone(String)</code></a>.</p></td>
+If not specified, this layout uses the
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/TimeZone.html#getDefault()"><code>TimeZone.getDefault()</code></a>
+as the default.
+You can use time zone IDs supported by
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/TimeZone.html#getTimeZone(java.lang.String)"><code>TimeZone.getTimeZone(String)</code></a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>title</code></p></td>
