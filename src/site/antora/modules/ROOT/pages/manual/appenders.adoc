@@ -292,7 +292,8 @@ maximum capacity.
 [#CassandraAppender]
 === CassandraAppender
 
-The CassandraAppender writes its output to an https://cassandra.apache.org/[Apache Cassandra]
+The CassandraAppender writes its output to an
+https://cassandra.apache.org/_/index.html[Apache Cassandra]
 database.
 A keyspace and table must be configured ahead of time, and the columns of that table are mapped in a configuration file.
 Each column can specify either a xref:manual/pattern-layout.adoc[]https://logging.apache.org/log4j/2.x/manual/layouts.html#PatternLayout[StringLayout] (e.g., a PatternLayout) along with an optional conversion type, or only a conversion type for `org.apache.logging.log4j.spi.ThreadContextMap` or
@@ -2171,7 +2172,7 @@ http://mongodb.github.io/mongo-java-driver/4.0/apidocs/mongodb-driver-core/com/m
 in the format `mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database.collection][?options]]`.
 
 |capped |boolean |Enable support for
-https://docs.mongodb.com/manual/core/capped-collections/[capped
+https://www.mongodb.com/docs/manual/core/capped-collections/[capped
 collections]
 
 |collectionSize |long |Specify the size in bytes of the capped collection
@@ -4362,7 +4363,7 @@ If not specified, the default system Charset will be used.
 default is 0 (infinite timeout, like `Socket.connect()` methods).
 
 |enterpriseNumber |integer |The IANA enterprise number as described in
-http://tools.ietf.org/html/rfc5424#section-7.2.2[RFC 5424]
+https://datatracker.ietf.org/doc/html/rfc5424#section-7.2.2[RFC 5424]
 
 |filter |Filter |A Filter to determine if the event should be handled by
 this Appender. More than one Filter may be used by using a

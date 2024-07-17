@@ -56,7 +56,9 @@ Those errors should be reported to the tool vendor.
 During testing of the release it was found that one unit test fails when run on Windows.
 When building from source either use `mvn clean install -DskipTests` on Windows or run the build on a different operating system.
 The unit test failure is a problem in the test, not in Log4j.
-As always, pre-built distributions can be downloaded from http://www.apache.org/dist/logging/log4j/[] or the binaries JARs may be obtained from the Maven central repository.
+As always, pre-built distributions can be downloaded from
+https://downloads.apache.org/logging/log4j/[]
+or the binaries JARs may be obtained from the Maven central repository.
 
 Note that subsequent to the 2.9.0 release, for security reasons, `SerializedLayout` is deprecated and no longer used as default in the Socket and JMS appenders.
 `SerializedLayout` can still be used as before, but has to be specified explicitly.

@@ -21,7 +21,7 @@
 <#if release.date?has_content>Release date:: ${release.date}</#if>
 
 :cyclonedx-sbom-link: https://cyclonedx.org/capabilities/sbom/[CycloneDX Software Bill of Materials (SBOM)]
-:cyclonedx-vdr-link: https://cyclonedx.org/capabilities/vdr[CycloneDX Vulnerability Disclosure Report (VDR)]
+:cyclonedx-vdr-link: https://cyclonedx.org/capabilities/vdr/[CycloneDX Vulnerability Disclosure Report (VDR)]
 
 This releases provides a {cyclonedx-sbom-link} along with each artifact and contains bug fixes addressing issues in the JPMS & OSGi infrastructure overhauled in `2.21.0`, dependency updates, and some other minor fixes and improvements.
 

@@ -17,7 +17,7 @@ Licensed to the Apache Software Foundation (ASF) under one or more
 
 = Log4j Docker
 
-Log4j Docker module offers https://docker.com[Docker]-specific utilities.
+Log4j Docker module offers https://www.docker.com/[Docker]-specific utilities.
 
 [#install]
 == Installation

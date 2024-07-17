@@ -81,7 +81,8 @@ For example, https://12factor.net/logs[The Twelve-Factor App] and https://kubern
 
 * A *library* can act as proxy.
 It can tap into the logging API and forward it to an external service.
-For instance, https://docs.datadoghq.com/logs/log_collection/java[Datadog's Java Log Collector] uses this mechanism.
+For instance,
+https://docs.datadoghq.com/logs/log_collection/java/?tab=log4j2[Datadog's Java Log Collector] uses this mechanism.
 
 * An external *service* can act as a proxy, which applications can write logs to.
 For example, you can write to https://www.elastic.co/logstash[Logstash], a https://kubernetes.io/docs/concepts/cluster-administration/logging/#sidecar-container-with-a-logging-agent[Kubernetes logging agent sidecar], or a https://redis.io/glossary/redis-queue/[Redis queue] over a socket.
