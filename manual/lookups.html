@@ -346,76 +346,536 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Lookups provide a way to add values to the Log4j configuration at
-arbitrary places. They are a particular type of Plugin that implements
-the
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrLookup.html"><code>StrLookup</code></a>
-interface. Information on how to use Lookups in configuration files can
-be found in the <a href="configuration.html#PropertySubstitution" class="xref page">Property
-Substitution</a> section of the <a href="configuration.html" class="xref page">Configuration</a>
-page.</p>
+<p>Log4j Core provides a flexible and extensible property substitution system.</p>
+</div>
+<div id="StrSubstitutor-diagram" class="imageblock kroki">
+<div class="content">
+<img src="../_images/diag-5c97f284d82478c0499cab16fe90893de781b11f.svg" alt="Property substitution system">
+</div>
+<div class="title">Figure 1. Property substitution system</div>
+</div>
+<div class="paragraph">
+<p>The property substitution system is composed of these elements:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A string interpolation engine (<a href="architecture.html#StrSubstitutor" class="xref page"><code>StrSubstitutor</code></a>) that evaluates <code>${...}</code> expressions.
+These expressions can contain recursive expressions and default values.</p>
+<div class="paragraph">
+<p>See <a href="configuration.html#property-substitution" class="xref page">property substitution</a> for more details.</p>
+</div>
+</li>
+<li>
+<p>The
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/Interpolator.html"><code>Interpolator</code></a>
+that evaluates simple <code>${name}</code> expressions.</p>
+<div class="paragraph">
+<p>The Interpolator has two functions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If <code>name</code> does not contain a colon <code>:</code> character, the Interpolator uses the
+<a href="configuration.html#global-properties" class="xref page"><code>Properties</code> configuration element</a> to resolve its value.</p>
+</li>
+<li>
+<p>If <code>name</code> is of the form <code>prefix:key</code>, the Interpolator delegates the lookup to a <code>StrLookup</code> associated with <code>prefix</code> and falls back to evaluating <code>${key}</code> if the lookup was not successful.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>A set of
+<a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-StrLookup" class="xref page"><code>StrLookup</code></a>
+plugins, each one associated with a prefix, which retrieve data from external sources.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><code>StrLookup</code> is a simple map-like interface.
+The main difference between a map and <code>StrLookup</code> is that the latter can compute the value of a key dynamically in a global context or in the context of log event.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="ContextMapLookup"><a class="anchor" href="#ContextMapLookup"></a>Context Map Lookup</h2>
+<h2 id="common-concerns"><a class="anchor" href="#common-concerns"></a>Common concerns</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="evaluation-contexts"><a class="anchor" href="#evaluation-contexts"></a>Evaluation contexts</h3>
+<div class="paragraph">
+<p>Each lookup has an associated prefix, and Log4j can evaluate it in one of the following ways:</p>
+</div>
+<div id="global-context" class="dlist">
+<dl>
+<dt class="hdlist1">Global context</dt>
+<dd>
+<p>In a global context Log4j evaluates <code>${prefix:key}</code> expressions by calling
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrLookup.html#lookup(java.lang.String)"><code>lookup("key")</code></a>
+on the lookup associated to <code>prefix</code>.
+The result of this call only takes into account the global state of the system.</p>
+<div class="paragraph">
+<p>The global context is used to expand the attributes of a
+<a href="configuration.html" class="xref page">configuration file</a>.</p>
+</div>
+</dd>
+</dl>
+</div>
+<div id="event-context" class="dlist">
+<dl>
+<dt class="hdlist1">Log event context</dt>
+<dd>
+<p>In the context of a log event <code>event</code>, Log4j evaluates <code>${prefix:key}</code> expressions by calling
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrLookup.html#lookup(org.apache.logging.log4j.core.LogEvent,java.lang.String)"><code>lookup(event, "key")</code></a> on the lookup associated to <code>prefix</code>.
+The result of this call might take into account the contents of the log event, besides the global state of the system.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Some configuration attributes (e.g., <a href="pattern-layout.html#plugin-attr-pattern" class="xref page">the <code>pattern</code> attribute of Pattern Layout</a>) supports both evaluation contexts:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>During the configuration process the <code>${...}</code> expressions are evaluated using a global context.
+The same process converts escaped <code>$${...}</code> expressions to <code>${...}</code> expressions.</p>
+</li>
+<li>
+<p>For each log event, the remaining expressions are evaluated, using the log event as context.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Lookups can choose to react differently depending on the execution context.
+<a href="#DateLookup">Date Lookup</a> is such an example:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>When used in a global context, it formats the <strong>current</strong> timestamp obtained through
+<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/System.html#currentTimeMillis--"><code>System.currentTimeMillis()</code></a>.</p>
+</li>
+<li>
+<p>When used in the context of an event, it formats the <strong>event</strong> timestamp obtained through
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getTimeMillis()"><code>LogEvent.getTimeMillis()</code></a>.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="lookups-patterns"><a class="anchor" href="#lookups-patterns"></a>Lazy lookups and pattern converters</h3>
+<div class="paragraph">
+<p>For historical reasons, the
+<a href="pattern-layout.html#plugin-attr-pattern" class="xref page"><code>pattern</code> attribute of PatternLayout</a>
+supports two similar string replacement mechanisms:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>${...}</code> property expressions.</p>
+</li>
+<li>
+<p><a href="pattern-layout.html#converters" class="xref page"><code>%&lt;name&gt;</code> pattern converters</a>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Both lazy <code>$${...}</code> property expressions and pattern converters have access to the value of the current <code>LogEvent</code> and can provide similar results.
+There is, however, an important difference between them:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Pattern converters can be garbage-free.
+See <a href="pattern-layout.html#garbage-free" class="xref page">Garbage-free pattern converters</a> for more details.</p>
+</li>
+<li>
+<p>Lazy lookups are <strong>not</strong> garbage-free and always create temporary <code>String</code> objects.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="collection"><a class="anchor" href="#collection"></a>Collection</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The ContextMapLookup allows applications to store data in the Log4j
-ThreadContext Map and then retrieve the values in the Log4j
-configuration. In the example below, the application would store the
-current user&#8217;s login id in the ThreadContext Map with the key "loginId".
-During initial configuration processing the first '$' will be removed.
-The PatternLayout supports interpolation with Lookups and will then
-resolve the variable for each event. Note that the pattern
-"%X{loginId}" would achieve the same result.</p>
+<p>Log4j Core provides many lookups out-of-the-box:</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;File name="Application" fileName="application.log"&gt;
-  &lt;PatternLayout&gt;
-    &lt;pattern&gt;%d %p %c{1.} [%t] $${ctx:loginId} %m%n&lt;/pattern&gt;
-  &lt;/PatternLayout&gt;
-&lt;/File&gt;</code></pre>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Lookups operating on the global context</dt>
+<dd>
+<p>A large group of lookups supports evaluation in a global context.
+These lookups can be safely used in eagerly evaluated properties of a
+<a href="configuration.html" class="xref page">configuration file</a>
+using the <code>${prefix:key}</code> syntax:</p>
+<table id="global-context-list" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Lookups operating on the global context</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 25%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Prefix</th>
+<th class="tableblock halign-left valign-top">Dependency</th>
+<th class="tableblock halign-left valign-top">Data source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#ResourceBundleLookup"><code>bundle</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A Java
+<a href="https://docs.oracle.com/javase/8/docs/api/java/util/ResourceBundle.html">resource bundle</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#ContextMapLookup"><code>ctx</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="thread-context.html" class="xref page">Thread Context</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#DateLookup"><code>date</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Current timestamp</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#DockerLookup"><code>docker</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>log4j-docker</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Docker container</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#EnvironmentLookup"><code>env</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Environment variables</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#JavaLookup"><code>java</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JVM characteristics</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#JndiLookup"><code>jndi</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JNDI</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#Log4jLookup"><code>log4j</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Location of Log4j configuration file</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#LowerLookup"><code>lower</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It converts the supplied key to lowercase</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#MainMapLookup"><code>main</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JVM application arguments</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#MarkerLookup"><code>marker</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns <code>key</code> if a marker named <code>key</code> exists</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#SpringBootLookup"><code>spring</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>log4j-spring-boot</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Spring Boot 2.x environment.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#SystemPropertiesLookup"><code>sys</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Java system properties</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#UpperLookup"><code>upper</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It converts the supplied key to uppercase</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#WebLookup"><code>web</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>log4j-jakarta-web</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Jakarta
+<a href="https://jakarta.ee/specifications/servlet/6.0/apidocs/jakarta.servlet/jakarta/servlet/servletcontext"><code>ServletContext</code></a>.</p></td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt class="hdlist1">Lookups operating on the log event context</dt>
+<dd>
+<p>The following lookups only support evaluation in the context of a log event or behave differently, when evaluated in such a context:</p>
+<table id="event-context-list" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Lookups operating on the log event context</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 25%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Prefix</th>
+<th class="tableblock halign-left valign-top">Dependency</th>
+<th class="tableblock halign-left valign-top">Data source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#ContextMapLookup"><code>ctx</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Log event
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getContextData()">context data</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#DateLookup"><code>date</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Log event
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getTimeMillis()">timestamp</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#EventLookup"><code>event</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html">Log event</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#MapLookup"><code>map</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="messages.html#MapMessage" class="xref page"><code>MapMessage</code></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#MarkerLookup"><code>marker</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Log event
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getMarker()">marker</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#StructuredDataLookup"><code>sd</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="messages.html#StructuredDataMessage" class="xref page"><code>StructuredDataMessage</code></a></p></td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
 </div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="DateLookup"><a class="anchor" href="#DateLookup"></a>Date Lookup</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The DateLookup is somewhat unusual from the other lookups as it doesn&#8217;t
-use the key to locate an item. Instead, the key can be used to specify a
-date format string that is valid for
-<a href="https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html"><code>SimpleDateFormat</code></a>.
-The current date, or the date associated with the current log event will
-be formatted as specified.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;RollingFile name="Rolling-${map:type}" fileName="${filename}" filePattern="target/rolling1/test1-$${date:MM-dd-yyyy}.%i.log.gz"&gt;
-  &lt;PatternLayout&gt;
-    &lt;pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/pattern&gt;
-  &lt;/PatternLayout&gt;
-  &lt;SizeBasedTriggeringPolicy size="500" /&gt;
-&lt;/RollingFile&gt;</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="DockerLookup"><a class="anchor" href="#DockerLookup"></a>Docker Lookup</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="ResourceBundleLookup"><a class="anchor" href="#ResourceBundleLookup"></a>Resource Bundle Lookup</h3>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 80%;">
 </colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Context</th>
+<th class="tableblock halign-left valign-top"><em>global</em></th>
+</tr>
+</thead>
 <tbody>
 <tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Lookup ID</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>docker</code></p></td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Syntax</p></th>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>bundle:&lt;baseName&gt;:&lt;key&gt;</code></p>
+</div>
+<div class="paragraph">
+<p>where:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>baseName</code></dt>
+<dd>
+<p>the base name of a resource bundle (see
+<a href="https://docs.oracle.com/javase/8/docs/api/java/util/ResourceBundle.html"><code>ResourceBundle</code></a>).</p>
+</dd>
+<dt class="hdlist1"><code>key</code></dt>
+<dd>
+<p>the key for the resource string.</p>
+</dd>
+</dl>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The Resource Bundle Lookup retrieves strings from Java Resource bundles, e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>${bundle:org.example.Main:errorMessage}</pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Do you want to use the values in Spring Boot&#8217;s <code>application.properties</code> file?
+Use <a href="#SpringBootLookup">Spring Boot 2 Lookup</a> or <a href="#SpringBootLookup3">Spring Boot 3 Lookup</a> instead.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="ContextMapLookup"><a class="anchor" href="#ContextMapLookup"></a>Context Map Lookup</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Context</th>
+<th class="tableblock halign-left valign-top"><em>global</em> and <em>log event</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Syntax</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ctx:&lt;key&gt;</code></p>
+<p class="tableblock">where <code>&lt;key&gt;</code> is any <code>String</code>.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The Context Map Lookup can be used in two different contexts:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Global context</dt>
+<dd>
+<p>If used in the global context, it uses the
+<a href="thread-context.html" class="xref page">Thread Context</a>
+to retrieve data.</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>When used in this context
+<a href="thread-context.html#custom-ContextDataProvider" class="xref page">custom context data providers</a>
+are not supported.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</dd>
+<dt class="hdlist1">Log event context</dt>
+<dd>
+<p>In the context of an event, the Context Map lookup uses the Log event
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getContextData()">context map data</a>
+of a log event to resolve the key.
+<a href="thread-context.html#custom-ContextDataProvider" class="xref page">Custom context data providers</a> are therefore supported.</p>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Don&#8217;t use <code>$${ctx:key}</code> in the <a href="pattern-layout.html" class="xref page">Pattern Layout</a> conversion patterns!
+Use <a href="pattern-layout.html#converter-thread-context-map" class="xref page">the <code>%X{key}</code> pattern converter</a> instead.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="#lookups-patterns">Lazy lookups and pattern converters</a> for more information.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="DateLookup"><a class="anchor" href="#DateLookup"></a>Date Lookup</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Context</th>
+<th class="tableblock halign-left valign-top"><em>global</em> and <em>log event</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Syntax</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>date:&lt;format&gt;</code></p>
+<p class="tableblock">where <code>&lt;format&gt;</code> is a
+<a href="https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html"><code>SimpleDateFormat</code></a> pattern</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The Date Lookup formats a timestamp, using the supplied key as format.
+The timestamp used depends on the context:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Global context</dt>
+<dd>
+<p>When used in a global context, the timestamp used is the current system timestamp as returned by
+<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/System.html#currentTimeMillis--"><code>System.currentTimeMillis()</code></a>.</p>
+</dd>
+<dt class="hdlist1">Log event context</dt>
+<dd>
+<p>When used in the context of a log event, the timestamp of the log event is used.</p>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Don&#8217;t use <code>$${date:format}</code> in the <a href="pattern-layout.html" class="xref page">Pattern Layout</a> conversion patterns!
+Use <a href="pattern-layout.html#converter-date" class="xref page">the <code>%d{key}</code> pattern converter</a> instead.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="#lookups-patterns">Lazy lookups and pattern converters</a> for more information.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="DockerLookup"><a class="anchor" href="#DockerLookup"></a>Docker Lookup</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Context</th>
+<th class="tableblock halign-left valign-top"><em>global</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Syntax</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>docker:&lt;key&gt;</code></p>
+<p class="tableblock">where <code>&lt;key&gt;</code> is one of the <a href="#DockerLookup-keys">Docker Lookup supported keys</a>.</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Dependency</p></th>
@@ -427,7 +887,8 @@ be formatted as specified.</p>
 <p>Docker Lookup queries <a href="https://docs.docker.com/engine/api/">the API of the Docker Engine</a> running your container.
 It supports the retrieval of following container attributes:</p>
 </div>
-<table class="tableblock frame-all grid-all stretch">
+<table id="DockerLookup-keys" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. Docker Lookup supported keys</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 80%;">
@@ -465,50 +926,98 @@ It supports the retrieval of following container attributes:</p>
 </tr>
 </tbody>
 </table>
-</div>
-</div>
-<div class="sect1">
-<h2 id="environment-lookup"><a class="anchor" href="#environment-lookup"></a><a id="EnvironmentLookup"></a> Environment Lookup</h2>
-<div class="sectionbody">
 <div class="paragraph">
-<p>The EnvironmentLookup allows systems to configure environment variables,
-either in global files such as /etc/profile or in the startup scripts
-for applications, and then retrieve those variables from within the
-logging configuration. The example below includes the name of the
-currently logged in user in the application log.</p>
+<p>Additional runtime dependencies are required for using Docker Lookup:</p>
 </div>
+<div id="_tabs_1" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_1_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_1_maven--panel" class="tabpanel" aria-labelledby="_tabs_1_maven">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;File name="Application" fileName="application.log"&gt;
-  &lt;PatternLayout&gt;
-    &lt;pattern&gt;%d %p %c{1.} [%t] $${env:USER} %m%n&lt;/pattern&gt;
-  &lt;/PatternLayout&gt;
-&lt;/File&gt;</code></pre>
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;!-- We assume you use `log4j-bom` for dependency management --&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+  &lt;artifactId&gt;log4j-docker&lt;/artifactId&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>This lookup also supports default value syntax. In the sample below,
-when the <code>USER</code> environment variable is undefined, the default value
-<code>jdoe</code> is used:</p>
 </div>
+<div id="_tabs_1_gradle--panel" class="tabpanel" aria-labelledby="_tabs_1_gradle">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;File name="Application" fileName="application.log"&gt;
-  &lt;PatternLayout&gt;
-    &lt;pattern&gt;%d %p %c{1.} [%t] $${env:USER:-jdoe} %m%n&lt;/pattern&gt;
-  &lt;/PatternLayout&gt;
-&lt;/File&gt;</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">// We assume you use `log4j-bom` for dependency management
+runtimeOnly 'org.apache.logging.log4j:log4j-docker'</code></pre>
 </div>
 </div>
 </div>
 </div>
-<div class="sect1">
-<h2 id="EventLookup"><a class="anchor" href="#EventLookup"></a>Event Lookup</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The EventLookup provides access to fields within the log event from the configuration.</p>
 </div>
+</div>
+<div class="sect2">
+<h3 id="EnvironmentLookup"><a class="anchor" href="#EnvironmentLookup"></a>Environment Lookup</h3>
 <table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Context</th>
+<th class="tableblock halign-left valign-top"><em>global</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Syntax</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>env:&lt;key&gt;</code></p>
+<p class="tableblock">where <code>&lt;key&gt;</code> is any <code>String</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The Environment Lookup retrieves the value of the
+<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/System.html#getenv-java.lang.String-">OS environment variable</a>
+associated with the key.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="EventLookup"><a class="anchor" href="#EventLookup"></a>Event Lookup</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Context</th>
+<th class="tableblock halign-left valign-top"><em>log event</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Syntax</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>event:&lt;key&gt;</code></p>
+<p class="tableblock">where <code>&lt;key&gt;</code> is one of the <a href="#EventLookup-keys">Event Lookup supported keys</a>.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The Event Lookup provides access to fields of the current log event.
+It supports the retrieval of the following event attributes:</p>
+</div>
+<table id="EventLookup-keys" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. Event Lookup supported keys</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 80%;">
@@ -523,678 +1032,709 @@ when the <code>USER</code> environment variable is undefined, the default value
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Exception</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Returns the simple class name of the Exception, if one is included in the event.</p>
+<p>Simple class name of the exception, if one is present.</p>
 </div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Level</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Returns the logging Level of the event.</p>
+<p><a href="customloglevels.html" class="xref page">Logging level</a> of the event</p>
 </div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Logger</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Returns the name of the Logger.</p>
+<p>Name of the logger</p>
 </div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Marker</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Returns the name of the Marker associated with the log event, if one is present.</p>
+<p><a href="markers.html" class="xref page">Marker</a> associated with the log event, if one is present.</p>
 </div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Message</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Returns the formatted Message string.</p>
+<p>Formatted <a href="messages.html" class="xref page"><code>Message</code></a></p>
 </div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>ThreadId</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Returns the thread id associated with the log event.</p>
+<p>Thread id associated with the log event</p>
 </div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>ThreadName</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Returns the name of the thread associate with the log event.</p>
+<p>Name of the thread associated with the log event</p>
 </div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Timestamp</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Returns the time in milliseconds when the event occurred.</p>
+<p>UNIX timestamp in milliseconds of the log event</p>
 </div></div></td>
 </tr>
 </tbody>
 </table>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
 <div class="paragraph">
-<p>In this example the RoutingAppender picks a route based on the presence of a Marker named "AUDIT" being
-present in the log event.</p>
+<p>Don&#8217;t use <code>$${event:key}</code> in the <a href="pattern-layout.html" class="xref page">Pattern Layout</a> conversion patterns!
+There is a <a href="pattern-layout.html#converters" class="xref page">specialized pattern converter replacement</a> for each of these lookups.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="#lookups-patterns">Lazy lookups and pattern converters</a> for more information.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="JavaLookup"><a class="anchor" href="#JavaLookup"></a>Java Lookup</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Context</th>
+<th class="tableblock halign-left valign-top"><em>global</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Syntax</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>java:&lt;key&gt;</code></p>
+<p class="tableblock">where <code>&lt;key&gt;</code> is one of the <a href="#JavaLookup-keys">Java Lookup supported keys</a>.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The Java Lookup allows retrieving information about the Java environment the application is using.
+The following keys are supported</p>
+</div>
+<table id="JavaLookup-keys" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 5. Java Lookup supported keys</caption>
+<colgroup>
+<col style="width: 11.1111%;">
+<col style="width: 22.2222%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>version</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Short Java version</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Java version 21.0.3</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>runtime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Java runtime version</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>OpenJDK Runtime Environment (build 21.0.3+9-LTS) from Eclipse Adoptium</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>vm</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Java VM version</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>OpenJDK 64-Bit Server VM (build 21.0.3+9-LTS, mixed mode, sharing)</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>os</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OS version</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Linux 6.1.0-18-amd64, architecture: amd64-64</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>locale</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">System locale and file encoding</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>default locale: en_US, platform encoding: UTF-8</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hw</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Hardware information</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>processors: 32, architecture: amd64-64, instruction sets: amd64`</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="JndiLookup"><a class="anchor" href="#JndiLookup"></a>JNDI Lookup</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Context</th>
+<th class="tableblock halign-left valign-top"><em>global</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Syntax</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jndi:&lt;name&gt;</code></p>
+<p class="tableblock">where <code>&lt;name&gt;</code> is a JNDI <a href="https://docs.oracle.com/javase/8/docs/api/javax/naming/Name.html"><code>Name</code></a>.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>As of Log4j <code>2.17.0</code> you need to enable the JNDI lookup <strong>explicitly</strong> by setting the
+<a href="systemproperties.html#log4j2.enableJndiLookup" class="xref page"><code>log4j2.enableJndiLookup</code></a>
+configuration property to <code>true</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The JNDI Lookup retrieves the value of an environment entry from JNDI.
+Only the <code>java:</code> protocol is supported.
+If the key does not have a protocol, <code>java:comp/env</code> is prepended.</p>
+</div>
+<div class="paragraph">
+<p>As an example, to retrieve the value of <code>java:comp/env/app_name</code> you can use:</p>
 </div>
 <div class="listingblock">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$${jndi:app_name}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Android does not support JNDI.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="Log4jLookup"><a class="anchor" href="#Log4jLookup"></a>Configuration Location Lookup</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Context</th>
+<th class="tableblock halign-left valign-top"><em>global</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Syntax</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>log4j:&lt;key&gt;</code></p>
+<p class="tableblock">where <code>&lt;key&gt;</code> is one of the <a href="#Log4jLookup-keys">Configuration Location Lookup supported keys</a>.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The Configuration Location Lookup supports two keys:</p>
+</div>
+<table id="Log4jLookup-keys" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 6. Configuration Location Lookup supported keys</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>configLocation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns the location of the configuration file as an absolute file path or URI.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>configParentLocation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns the location of the folder containing the configuration file as an absolute file path or URI.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="LowerLookup"><a class="anchor" href="#LowerLookup"></a>Lower Lookup</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Context</th>
+<th class="tableblock halign-left valign-top"><em>global</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Syntax</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>lower:&lt;key&gt;</code></p>
+<p class="tableblock">where <code>&lt;key&gt;</code> is any <code>String</code>.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The Lower Lookup converts the passed in argument to lowercase.</p>
+</div>
+<div class="paragraph">
+<p>Presumably, the value will be the result of a nested lookup as in the example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">${lower:${sys:appname}}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="MainMapLookup"><a class="anchor" href="#MainMapLookup"></a>Main Arguments Lookup</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Context</th>
+<th class="tableblock halign-left valign-top"><em>global</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Syntax</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>main:&lt;key&gt;</code></p>
+<p class="tableblock">wherre <code>&lt;key&gt;</code> either a non-negative <code>int</code> or a <code>String</code>.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This lookup requires a setup step:
+your application needs to call
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/MainMapLookup.html#setMainArguments(java.lang.String&#8230;&#8203;)"><code>MainMapLookup#setMainArguments()</code></a>
+and pass as argument the arguments received by the application.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The Main Arguments Lookup provides a way to query the arguments received by your application.
+It supports two kinds of keys:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>if the key is an integer, e.g. <code>${main:0}</code>, it is interpreted as 0-based index in the argument array.</p>
+</li>
+<li>
+<p>if the key is a <code>String</code>, e.g. <code>${main:foo}</code>, the argument that follows <code>foo</code> in the argument array is returned.</p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 7. Lookup results for "foo bar baz" arguments</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Lookup</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Expansion</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>${main:0}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>foo</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>${main:1}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bar</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>${main:2}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>baz</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>${main:foo}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bar</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>${main:bar}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>baz</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>You can use this lookup to provide a primitive argument parsing mechanism to your application:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>First, you need to pass your application&#8217;s arguments to the <code>MainMapLookup#setMainArguments</code> method:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">private final Logger logger = LogManager.getLogger(); <i class="conum" data-value="1"></i><b>(1)</b>
+
+public static void main(final String[] args) {
+    try { <i class="conum" data-value="2"></i><b>(2)</b>
+        Class.forName("org.apache.logging.log4j.core.lookup.MainMapLookup")
+                .getDeclaredMethod("setMainArguments", String[].class)
+                .invoke(null, (Object) args);
+    } catch (final ReflectiveOperationException e) {
+        // Log4j Core is not used.
+    }
+    new MainArgsExample().run();
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Use an <strong>instance</strong> logger field instead of a static one, to prevent Log4j Core initialization before <code>main()</code> is called.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Call <code>MainMapLookup#setMainArguments</code> by reflection to allow your application to run with a different Log4j API implementation.</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Now you can use <code>${main:...}</code> lookups in your configuration file to support the usage of a <code>--logfile &lt;file&gt;</code> CLI argument to specify the log file and <code>--loglevel &lt;level&gt;</code> CLI argument to specify the log level.</p>
+<div id="_tabs_2" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_2_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_2_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_2_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_2_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_2_xml--panel" class="tabpanel" aria-labelledby="_tabs_2_xml">
+<div class="listingblock">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="WARN" name="RoutingTest"&gt;
+&lt;Configuration xmlns="https://logging.apache.org/xml/ns"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="
+                   https://logging.apache.org/xml/ns
+                   https://logging.apache.org/xml/ns/log4j-config-2.xsd"&gt;
+  &lt;Properties&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+    &lt;Property name="--logfile" value="logs/app.log"/&gt;
+    &lt;Property name="--loglevel" value="INFO"/&gt;
+  &lt;/Properties&gt;
   &lt;Appenders&gt;
-    &lt;Console name="STDOUT" target="SYSTEM_OUT" /&gt;
-    &lt;Flume name="AuditLogger" compress="true"&gt;
-      &lt;Agent host="192.168.10.101" port="8800"/&gt;
-      &lt;Agent host="192.168.10.102" port="8800"/&gt;
-      &lt;RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/&gt;
-    &lt;/Flume&gt;
-    &lt;Routing name="Routing"&gt;
-      &lt;Routes&gt;
-        &lt;Route pattern="$${event:Marker}"&gt;
-          &lt;RollingFile
-              name="Rolling-${mdc:UserId}"
-              fileName="${mdc:UserId}.log"
-              filePattern="${mdc:UserId}.%i.log.gz"&gt;
-            &lt;PatternLayout&gt;
-              &lt;pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/pattern&gt;
-            &lt;/PatternLayout&gt;
-            &lt;SizeBasedTriggeringPolicy size="500" /&gt;
-          &lt;/RollingFile&gt;
-        &lt;/Route&gt;
-        &lt;Route ref="AuditLogger" key="AUDIT"/&gt;
-        &lt;Route ref="STDOUT" key="STDOUT"/&gt;
-      &lt;/Routes&gt;
-      &lt;IdlePurgePolicy timeToLive="15" timeUnit="minutes"/&gt;
-    &lt;/Routing&gt;
+    &lt;File fileName="${main:\--logfile}"
+          name="FILE"/&gt; <i class="conum" data-value="2"></i><b>(2)</b>
   &lt;/Appenders&gt;
   &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="Routing" /&gt;
+    &lt;Root level="${main:\--loglevel}"&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+      &lt;AppenderRef ref="FILE"/&gt;
     &lt;/Root&gt;
   &lt;/Loggers&gt;
 &lt;/Configuration&gt;</code></pre>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="JavaLookup"><a class="anchor" href="#JavaLookup"></a>Java Lookup</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The JavaLookup allows Java environment information to be retrieved in
-convenient preformatted strings using the <code>java:</code> prefix.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 80%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Key</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>version</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The short Java version, like:</p>
-</div>
-<div class="paragraph">
-<p><code>Java version 1.7.0_67</code></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>runtime</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The Java runtime version, like:</p>
-</div>
-<div class="paragraph">
-<p><code>Java&#8482; SE Runtime Environment (build 1.7.0_67-b01) from Oracle Corporation</code></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>vm</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The Java VM version, like:</p>
-</div>
-<div class="paragraph">
-<p><code>Java HotSpot&#8482; 64-Bit Server VM (build 24.65-b04, mixed mode)</code></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>os</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The OS version, like:</p>
-</div>
-<div class="paragraph">
-<p><code>Windows 7 6.1 Service Pack 1, architecture: amd64-64</code></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>locale</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Hardware information, like:</p>
-</div>
-<div class="paragraph">
-<p><code>default locale: en_US, platform encoding: Cp1252</code></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hw</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>System locale and file encoding information, like:</p>
-</div>
-<div class="paragraph">
-<p><code>processors: 4, architecture: amd64-64, instruction sets: amd64</code></p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>For example:</p>
-</div>
+<div id="_tabs_2_json--panel" class="tabpanel" aria-labelledby="_tabs_2_json">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;File name="Application" fileName="application.log"&gt;
-  &lt;PatternLayout header="${java:runtime} - ${java:vm} - ${java:os}"&gt;
-    &lt;Pattern&gt;%d %m%n&lt;/Pattern&gt;
-  &lt;/PatternLayout&gt;
-&lt;/File&gt;</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="JndiLookup"><a class="anchor" href="#JndiLookup"></a>JNDI Lookup</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>As of Log4j 2.15.1 JNDI operations require that <code>log4j2.enableJndi=true</code> be set as a system property or the
-corresponding environment variable for this lookup to function. See the
-<a href="systemproperties.html#log4j2.enableJndiLookup" class="xref page"><code>log4j2.enableJndiLookup</code></a> system property.</p>
-</div>
-<div class="paragraph">
-<p>The JndiLookup allows variables to be retrieved via JNDI. By default the
-key will be prefixed with java:comp/env/, however if the key contains a
-":" no prefix will be added.</p>
-</div>
-<div class="paragraph">
-<p>By default the JNDI Lookup only supports the java, ldap, and ldaps protocols or no protocol. Additional
-protocols may be supported by specifying them on the <code>log4j2.allowedJndiProtocols</code> property.
-When using LDAP Java classes that implement the Referenceable interface are not supported for security
-reasons. Only the Java primative classes are supported by default as well as any classes specified by the
-<code>log4j2.allowedLdapClasses</code> property. When using LDAP only references to the local host name
-or ip address are supported along with any hosts or ip addresses listed in the
-<code>log4j2.allowedLdapHosts</code> property.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;File name="Application" fileName="application.log"&gt;
-  &lt;PatternLayout&gt;
-    &lt;pattern&gt;%d %p %c{1.} [%t] $${jndi:logging/context-name} %m%n&lt;/pattern&gt;
-  &lt;/PatternLayout&gt;
-&lt;/File&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><strong>Java&#8217;s JNDI module is not available on Android.</strong></p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="JmxRuntimeInputArgumentsLookup"><a class="anchor" href="#JmxRuntimeInputArgumentsLookup"></a>JVM Input Arguments Lookup (JMX)</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Maps JVM input arguments&#8201;&#8212;&#8201;but not <em>main</em> arguments&#8201;&#8212;&#8201;using JMX to
-acquire the JVM arguments.</p>
-</div>
-<div class="paragraph">
-<p>Use the prefix <code>jvmrunargs</code> to access JVM arguments.</p>
-</div>
-<div class="paragraph">
-<p>See the Javadocs for
-<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/management/RuntimeMXBean.html#getInputArguments--"><code>java.lang.management.RuntimeMXBean.getInputArguments()</code></a>.</p>
-</div>
-<div class="paragraph">
-<p><strong>Java&#8217;s JMX module is not available on Android or on Google App Engine.</strong></p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="KubernetesLookup"><a class="anchor" href="#KubernetesLookup"></a>Kubernetes Lookup</h2>
-<div class="sectionbody">
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 80%;">
-</colgroup>
-<tbody>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Lookup ID</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>k8s</code></p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Dependency</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md">Log4j Kubernetes of Fabric8</a></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Kubernetes Lookup queries <a href="https://kubernetes.io/docs/concepts/overview/kubernetes-api/">the Kubernetes API</a> to retrieve certain information about the current container and its environment.
-Kubernetes Lookup is distributed as a part of Fabric8&#8217;s Kubernetes Client, refer to <a href="https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md">its website</a> for details.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="Log4jConfigLookup"><a class="anchor" href="#Log4jConfigLookup"></a>Log4j Configuration Location Lookup</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Log4j configuration properties. The expressions
-<code>${log4j:configLocation}</code> and <code>${log4j:configParentLocation}</code>
-respectively provide the absolute path to the log4j configuration file
-and its parent folder.</p>
-</div>
-<div class="paragraph">
-<p>The example below uses this lookup to place log files in a directory
-relative to the log4j configuration file.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;File name="Application" fileName="${log4j:configParentLocation}/logs/application.log"&gt;
-  &lt;PatternLayout&gt;
-    &lt;pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/pattern&gt;
-  &lt;/PatternLayout&gt;
-&lt;/File&gt;</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="LowerLookup"><a class="anchor" href="#LowerLookup"></a>Lower Lookup</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The LowerLookup converts the passed in argument to lower case. Presumably the value will be the
-result of a nested lookup.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;File name="Application" fileName="application.log"&gt;
-  &lt;PatternLayout&gt;
-    &lt;pattern&gt;%d %p %c{1.} [%t] $${lower:${spring:spring.application.name}} %m%n&lt;/pattern&gt;
-  &lt;/PatternLayout&gt;
-&lt;/File&gt;</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="AppMainArgsLookup"><a class="anchor" href="#AppMainArgsLookup"></a>Main Arguments Lookup (Application)</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>This lookup requires that you manually provide the main arguments of the
-application to Log4j:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import org.apache.logging.log4j.core.lookup.MainMapLookup;
-public class Main {
-    public static void main(String[] args) {
-      MainMapLookup.setMainArguments(args);
-      // ...
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "Configuration": {
+    "Properties": {
+      "Property": [ <i class="conum" data-value="1"></i><b>(1)</b>
+        {
+          "name": "--logfile",
+          "value": "logs/app.log"
+        },
+        {
+          "name": "--loglevel",
+          "value": "INFO"
+        }
+      ]
+    },
+    "Appenders": {
+      "File": {
+        "fileName": "${main:\\--logfile}", <i class="conum" data-value="2"></i><b>(2)</b>
+        "name": "FILE",
+        "JsonTemplateLayout": {}
+      }
+    },
+    "Loggers": {
+      "Root": {
+        "level": "${main:\\--loglevel", <i class="conum" data-value="2"></i><b>(2)</b>
+        "AppenderRef": {
+          "ref": "FILE"
+        }
+      }
     }
+  }
 }</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>If the main arguments have been set, this lookup allows applications to
-retrieve these main argument values from within the logging
-configuration. The key that follows the <code>main:</code> prefix can either be a
-0-based index into the argument list, or a string, where
-<code>${main:myString}</code> is substituted with the value that follows <code>myString</code>
-in the main argument list.</p>
 </div>
-<div class="paragraph">
-<p>Note: Many applications use leading dashes to identify command arguments. Specifying
-<code>${main:--file}</code> would result in the lookup failing because it would look for a variable
-named "main" with a default value of "-file". To avoid this the ":" separating the Lookup name from the
-key must be followed by a backslash as an escape character as in <code>${main:\--file}</code>.</p>
-</div>
-<div class="paragraph">
-<p>For example, suppose the static void main String[] arguments are:</p>
-</div>
-<div class="literalblock">
+<div id="_tabs_2_yaml--panel" class="tabpanel" aria-labelledby="_tabs_2_yaml">
+<div class="listingblock">
 <div class="content">
-<pre>--file foo.txt --verbose -x bar</pre>
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Configuration:
+  Properties: <i class="conum" data-value="1"></i><b>(1)</b>
+    Property:
+      - name: "--logfile"
+        value: "logs/app.log"
+      - name: "--loglevel"
+        value: "INFO"
+  Appenders:
+    File:
+      fileName: "${main:\\--logfile}" <i class="conum" data-value="2"></i><b>(2)</b>
+      name: "FILE"
+      JsonTemplateLayout: {}
+  Loggers:
+    Root:
+      level: "${main:\\--loglevel}" <i class="conum" data-value="2"></i><b>(2)</b>
+      AppenderRef:
+        ref: "FILE"</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Then the following substitutions are possible:</p>
 </div>
+<div id="_tabs_2_properties--panel" class="tabpanel" aria-labelledby="_tabs_2_properties">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties"><i class="conum" data-value="1"></i><b>(1)</b>
+property.--logfile = logs/app.log
+property.--loglevel = INFO
+
+appender.0.type = File
+<i class="conum" data-value="2"></i><b>(2)</b>
+appender.0.fileName = ${main:\\--logfile}
+appender.0.name = FILE
+
+<i class="conum" data-value="2"></i><b>(2)</b>
+rootLogger.level = ${main:\\--loglevel}
+rootLogger.appenderRef.0.ref = FILE</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Provide default values for the CLI arguments if they are not specified.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Escape the special <code>:-</code> sequence using <code>:\-</code>.</td>
+</tr>
+</table>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="MapLookup"><a class="anchor" href="#MapLookup"></a>Map Lookup</h3>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 20%;">
+<col style="width: 80%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Expression</th>
-<th class="tableblock halign-left valign-top">Result</th>
+<th class="tableblock halign-left valign-top">Context</th>
+<th class="tableblock halign-left valign-top"><em>log event</em></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>${main:0}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--file</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>${main:1}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>foo.txt</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>${main:2}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--verbose</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>${main:3}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-x</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>${main:4}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bar</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>${main:\--file}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>foo.txt</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>${main:\-x}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bar</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>${main:bar}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>null</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>${main:\--quiet:-true}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Syntax</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>map:&lt;key&gt;</code></p>
+<p class="tableblock">where <code>&lt;key&gt;</code> is any <code>String</code>.</p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Example usage:</p>
+<p>The Map Lookup retrieves the value assigned to the given key in a
+<a href="messages.html#MapMessage" class="xref page"><code>MapMessage</code></a>.</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;File name="Application" fileName="application.log"&gt;
-  &lt;PatternLayout header="File: ${main:--file}"&gt;
-    &lt;Pattern&gt;%d %m%n&lt;/Pattern&gt;
-  &lt;/PatternLayout&gt;
-&lt;/File&gt;</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="MapLookup"><a class="anchor" href="#MapLookup"></a>Map Lookup</h2>
-<div class="sectionbody">
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
 <div class="paragraph">
-<p>The MapLookup serves several purposes.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Provide the base for Properties declared in the configuration file.</p>
-</li>
-<li>
-<p>Retrieve values from MapMessages in LogEvents.</p>
-</li>
-<li>
-<p>Retrieve values set with
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/MapLookup.html#setMainArguments%28java.lang.String%5B%5D%29"><code>MapLookup.setMainArguments(String[</a>)</code>]</p>
-</li>
-</ol>
+<p>Don&#8217;t use <code>$${map:key}</code> in the <a href="pattern-layout.html" class="xref page">Pattern Layout</a> conversion patterns!
+Use <a href="pattern-layout.html#converter-map" class="xref page">the <code>%K{key}</code> pattern converter</a> instead.</p>
 </div>
 <div class="paragraph">
-<p>The first item simply means that the MapLookup is used to substitute
-properties that are defined in the configuration file. These variables
-are specified without a prefix - e.g. <code>${name}</code>. The second usage allows
-a value from the current
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html"><code>MapMessage</code></a>,
-if one is part of the current log event, to be substituted. In the
-example below the RoutingAppender will use a different
-RollingFileAppender for each unique value of the key named "type" in the
-MapMessage. Note that when used this way a value for "type" should be
-declared in the properties declaration to provide a default value in
-case the message is not a MapMessage or the MapMessage does not contain
-the key. See the <a href="configuration.html#PropertySubstitution" class="xref page">Property
-Substitution</a> section of the <a href="configuration.html" class="xref page">Configuration</a>
-page for information on how to set the default values.</p>
+<p>See <a href="#lookups-patterns">Lazy lookups and pattern converters</a> for more information.</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Routing name="Routing"&gt;
-  &lt;Routes pattern="$${map:type}"&gt;
-    &lt;Route&gt;
-      &lt;RollingFile name="Rolling-${map:type}" fileName="${filename}"
-                   filePattern="target/rolling1/test1-${map:type}.%i.log.gz"&gt;
-        &lt;PatternLayout&gt;
-          &lt;pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/pattern&gt;
-        &lt;/PatternLayout&gt;
-        &lt;SizeBasedTriggeringPolicy size="500" /&gt;
-      &lt;/RollingFile&gt;
-    &lt;/Route&gt;
-  &lt;/Routes&gt;
-&lt;/Routing&gt;</code></pre>
+</td>
+</tr>
+</table>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="marker-lookup"><a class="anchor" href="#marker-lookup"></a>Marker Lookup</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The marker lookup allows you to use markers in interesting
-configurations like a routing appender. Consider the following YAML
-configuration and code that logs to different files based on markers:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Configuration:
-  status: debug
-
-  Appenders:
-    Console:
-    RandomAccessFile:
-      - name: SQL_APPENDER
-        fileName: logs/sql.log
-        PatternLayout:
-          Pattern: "%d{ISO8601_BASIC} %-5level %logger{1} %X %msg%n"
-      - name: PAYLOAD_APPENDER
-        fileName: logs/payload.log
-        PatternLayout:
-          Pattern: "%d{ISO8601_BASIC} %-5level %logger{1} %X %msg%n"
-      - name: PERFORMANCE_APPENDER
-        fileName: logs/performance.log
-        PatternLayout:
-          Pattern: "%d{ISO8601_BASIC} %-5level %logger{1} %X %msg%n"
-
-    Routing:
-      name: ROUTING_APPENDER
-      Routes:
-        pattern: "$${marker:}"
-        Route:
-        - key: PERFORMANCE
-          ref: PERFORMANCE_APPENDER
-        - key: PAYLOAD
-          ref: PAYLOAD_APPENDER
-        - key: SQL
-          ref: SQL_APPENDER
-
-  Loggers:
-    Root:
-      level: trace
-      AppenderRef:
-        - ref: ROUTING_APPENDER</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public static final Marker SQL = MarkerFactory.getMarker("SQL");
-public static final Marker PAYLOAD = MarkerFactory.getMarker("PAYLOAD");
-public static final Marker PERFORMANCE = MarkerFactory.getMarker("PERFORMANCE");
-
-final Logger logger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-
-logger.info(SQL, "Message in Sql.log");
-logger.info(PAYLOAD, "Message in Payload.log");
-logger.info(PERFORMANCE, "Message in Performance.log");</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Note the key part of the configuration is <code>pattern: "$${marker:}"</code>. This
-will produce three log files, each with a log event for a specific
-marker. Log4j will route the log event with the <code>SQL</code> marker to
-<code>sql.log</code>, the log event with the <code>PAYLOAD</code> marker to <code>payload.log</code>, and
-so on.</p>
-</div>
-<div class="paragraph">
-<p>You can use the notation <code>"${marker:name}"</code> and <code>"$${marker:name}"</code> to
-check for the existence of a marker where <code>name</code> is the marker name. If
-the marker exists, the expression returns the name, otherwise <code>null</code>.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_resource_bundle_lookup"><a class="anchor" href="#_resource_bundle_lookup"></a>Resource Bundle Lookup</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The resource bundle lookup retrieves values from Resource Bundles (see Java documentation). The format is <code>${bundle:BundleName:BundleKey}</code>. The bundle name follows package naming conventions, for example: <code>${bundle:com.domain.Messages:MyKey}</code>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;File name="Application" fileName="application-${spring:profiles.active[0]}.log"&gt;
-&lt;PatternLayout&gt;
-&lt;pattern&gt;%d %p %c{1.} [%t] $${bundle:MyBundle:MyKey} %m%n&lt;/pattern&gt;
-&lt;/PatternLayout&gt;
-&lt;/File&gt;</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_spring_boot_lookup"><a class="anchor" href="#_spring_boot_lookup"></a>Spring Boot Lookup</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The Spring Boot Lookup retrieves the values of Spring properties from the Spring configuration as well as values of the active and default profiles. Specifying a key of "profiles.active" will return the active profiles while a key of "profiles.default" will return the default profiles. The default and active profiles can be an array. If more than one profile is present they will be returned as a comma separated list. To retrieve a single item from the array append "[{index}]" to the key. For example, to return the first active profile in the list specify "profiles.active[0]".</p>
-</div>
-<div class="paragraph">
-<p>This Lookup will return null values until Spring Boot initializes application logging. The Spring Boot Lookup requires the log4j-spring-boot jar be included as a dependency.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;File name="Application" fileName="application-${spring:profiles.active[0]}.log"&gt;
-&lt;PatternLayout&gt;
-&lt;pattern&gt;%d %p %c{1.} [%t] $${spring:spring.application.name} %m%n&lt;/pattern&gt;
-&lt;/PatternLayout&gt;
-&lt;/File&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This Lookup requires log4j-spring-cloud-config-client be included in the application.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="StructuredDataLookup"><a class="anchor" href="#StructuredDataLookup"></a>Structured Data Lookup</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The StructuredDataLookup is very similar to the MapLookup in that it
-will retrieve values from StructuredDataMessages. In addition to the Map
-values it will also return the name portion of the id (not including the
-enterprise number) and the type field. The main difference between the
-example below and the example for MapMessage is that the "type" is an
-attribute of the
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html"><code>StructuredDataMessage</code></a>
-while "type" would have to be an item in the Map in a MapMessage.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Routing name="Routing"&gt;
-  &lt;Routes pattern="$${sd:type}"&gt;
-    &lt;Route&gt;
-      &lt;RollingFile name="Rolling-${sd:type}" fileName="${filename}"
-                   filePattern="target/rolling1/test1-${sd:type}.%i.log.gz"&gt;
-        &lt;PatternLayout&gt;
-          &lt;pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/pattern&gt;
-        &lt;/PatternLayout&gt;
-        &lt;SizeBasedTriggeringPolicy size="500" /&gt;
-      &lt;/RollingFile&gt;
-    &lt;/Route&gt;
-  &lt;/Routes&gt;
-&lt;/Routing&gt;</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="system-properties-lookup"><a class="anchor" href="#system-properties-lookup"></a><a id="SystemPropertiesLookup"></a> System Properties Lookup</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>As it is quite common to define values inside and outside the
-application by using System Properties, it is only natural that they
-should be accessible via a Lookup. As system properties are often
-defined outside the application it would be quite common to see
-something like:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Appenders&gt;
-  &lt;File name="ApplicationLog" fileName="${sys:logPath}/app.log"/&gt;
-&lt;/Appenders&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This lookup also supports default value syntax. In the sample below,
-when the <code>logPath</code> system property is undefined, the default value
-<code>/var/logs</code> is used:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Appenders&gt;
-  &lt;File name="ApplicationLog" fileName="${sys:logPath:-/var/logs}/app.log"/&gt;
-&lt;/Appenders&gt;</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="UpperLookup"><a class="anchor" href="#UpperLookup"></a>Upper Lookup</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The LowerLookup converts the passed in argument to upper case. Presumably the value will be the
-result of a nested lookup.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;File name="Application" fileName="application.log"&gt;
-  &lt;PatternLayout&gt;
-    &lt;pattern&gt;%d %p %c{1.} [%t] $${upper:{${spring:spring.application.name}} %m%n&lt;/pattern&gt;
-  &lt;/PatternLayout&gt;
-&lt;/File&gt;</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="WebLookup"><a class="anchor" href="#WebLookup"></a>Web Lookup</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The WebLookup allows applications to retrieve variables that are
-associated with the ServletContext. In addition to being able to
-retrieve various fields in the ServletContext, WebLookup supports
-looking up values stored as attributes or configured as initialization
-parameters. The following table lists various keys that can be
-retrieved:</p>
-</div>
+<div class="sect2">
+<h3 id="MarkerLookup"><a class="anchor" href="#MarkerLookup"></a>Marker Lookup</h3>
 <table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Context</th>
+<th class="tableblock halign-left valign-top"><em>global</em> or <em>log event</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Syntax</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>marker:&lt;key&gt;</code></p>
+<p class="tableblock">where <code>&lt;key&gt;</code> is any <code>String</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The Marker Lookup can be used in two different ways:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Global context</dt>
+<dd>
+<p>When used in a global context, it returns <code>key</code> if there is a marker named <code>key</code> or <code>null</code> otherwise.
+For example:</p>
+<div class="listingblock">
+<div class="content">
+<pre>${marker:AUDIT:-NO_AUDIT}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>will expand to <code>AUDIT</code> if a marker with that name exists or <code>NO_AUDIT</code> otherwise.</p>
+</div>
+</dd>
+<dt class="hdlist1">Log event context</dt>
+<dd>
+<p>When used in the context of a log event, it returns the
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html">log event marker</a> if it exists.</p>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Don&#8217;t use <code>$${marker:}</code> in the <a href="pattern-layout.html" class="xref page">Pattern Layout</a> conversion patterns!
+Use <a href="pattern-layout.html#converter-marker" class="xref page">the <code>%markerSimpleName</code> pattern converter</a> instead.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="#lookups-patterns">Lazy lookups and pattern converters</a> for more information.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="SpringBootLookup"><a class="anchor" href="#SpringBootLookup"></a>Spring Boot 2 Lookup</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Context</th>
+<th class="tableblock halign-left valign-top"><em>global</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Syntax</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring:&lt;key&gt;</code></p>
+<p class="tableblock">where <code>&lt;key&gt;</code> is one of the <a href="#SpringBootLookup-keys">Spring Boot 2 Lookup supported keys</a>.</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Dependency</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../log4j-spring-boot.html" class="xref page">Log4j Spring Boot Support</a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you are using Spring Boot 2, you should use the third party <a href="#SpringBootLookup3">Spring Boot 3 Lookup</a> instead.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The Spring Boot 2 Lookup allows user to query Spring Boot&#8217;s
+<a href="https://docs.spring.io/spring-boot/reference/features/external-config.html">externalized configuration files</a>.
+It supports the following keys:</p>
+</div>
+<table id="SpringBootLookup-keys" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 8. Spring Boot 2 Lookup supported keys</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 80%;">
@@ -1207,8 +1747,279 @@ retrieved:</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>attr.<em>name</em></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Returns the ServletContext attribute with the specified name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profiles.active</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Comma-separated list of active profiles.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profiles.active[&lt;n&gt;]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The active profile with 0-based index <code>&lt;n&gt;</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profiles.default</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Comma-separated list of default profiles.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profiles.default[&lt;n&gt;]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The default profile with 0-based index <code>&lt;n&gt;</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;key&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The value associated with <code>&lt;key&gt;</code> in Spring&#8217;s
+<a href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/core/env/Environment.html"><code>Environment</code></a>.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Spring Boot 2 initializes Log4j Core at least <strong>twice</strong>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Log4j Core is initialized the first time using
+<a href="configuration.html#automatic-configuration" class="xref page">its own automatic configuration procedure</a>.
+At this point, the lookup will always return <code>null</code>.
+Configuration files that use the standard <code>log4j2.&lt;extension&gt;</code> naming convention, should provide default values for all Spring lookups.</p>
+</li>
+<li>
+<p>As soon as Spring&#8217;s <code>Environment</code> is ready, the lookup becomes <strong>available</strong> and a reconfiguration is triggered.
+If you want to provide a configuration file specifically for this phase, call it <code>log4j2-spring.&lt;extension&gt;</code>.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Additional runtime dependencies are required for using Spring Boot Lookup:</p>
+</div>
+<div id="_tabs_3" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_3_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_3_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_3_maven--panel" class="tabpanel" aria-labelledby="_tabs_3_maven">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;!-- We assume you use `log4j-bom` for dependency management --&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+  &lt;artifactId&gt;log4j-spring-boot&lt;/artifactId&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_3_gradle--panel" class="tabpanel" aria-labelledby="_tabs_3_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">// We assume you use `log4j-bom` for dependency management
+runtimeOnly 'org.apache.logging.log4j:log4j-spring-boot'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="StructuredDataLookup"><a class="anchor" href="#StructuredDataLookup"></a>Structured Data Lookup</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Context</th>
+<th class="tableblock halign-left valign-top"><em>log event</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Syntax</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>sd:&lt;key&gt;</code></p>
+<p class="tableblock">where <code>&lt;key&gt;</code> is either one of the <a href="#StructuredDataLookup-keys">Structured Data Lookup virtual keys</a> or any <code>String</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The Structured Data Lookup is very similar to <a href="#MapLookup">Map Lookup</a> and retrieves the value assigned to the given key in a
+<a href="messages.html#StructuredDataMessage" class="xref page"><code>StructuredDataMessage</code></a>.
+Additionally, the following virtual keys are supported:</p>
+</div>
+<table id="StructuredDataLookup-keys" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 9. Structured Data Lookup virtual keys</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">RFC5424 field</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.3.2"><code>SD-ID</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html#getId()"><code>id</code> field</a>
+of the <code>StructuredDataMessage</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.2.7"><code>MSGID</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html#getType()"><code>type</code> field</a>
+of a <code>StructuredDataMessage</code>.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Except <code>$${sd:id}</code> and <code>$${sd:type}</code>, don&#8217;t use other <code>$${sd:key}</code> expressions in the <a href="pattern-layout.html" class="xref page">Pattern Layout</a> conversion patterns!
+Use <a href="pattern-layout.html#converter-map" class="xref page">the <code>%K{key}</code> pattern converter</a> instead.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="#lookups-patterns">Lazy lookups and pattern converters</a> for more information.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="SystemPropertiesLookup"><a class="anchor" href="#SystemPropertiesLookup"></a>System Properties Lookup</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Context</th>
+<th class="tableblock halign-left valign-top"><em>global</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Syntax</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>sys:&lt;prop&gt;</code></p>
+<p class="tableblock">where <code>&lt;prop&gt;</code> is any <code>String</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The System Properties Lookup retrieves the value of the
+<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/System.html#getProperties--">Java system property</a>
+associated with the key.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="UpperLookup"><a class="anchor" href="#UpperLookup"></a>Upper Lookup</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Context</th>
+<th class="tableblock halign-left valign-top"><em>global</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Syntax</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>upper:&lt;key&gt;</code></p>
+<p class="tableblock">where <code>&lt;key&gt;</code> wi any <code>String</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The Upper Lookup converts the passed in argument to uppercase.</p>
+</div>
+<div class="paragraph">
+<p>Presumably, the value will be the result of a nested lookup as in the example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">${upper:${sys:appname}}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="WebLookup"><a class="anchor" href="#WebLookup"></a>Web Lookup</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Context</th>
+<th class="tableblock halign-left valign-top"><em>global</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Syntax</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>web:&lt;key&gt;</code></p>
+<p class="tableblock">where <code>&lt;key&gt;</code> is one of the <a href="#WebLookup-keys">Web Lookup supported keys</a>.</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Dependency</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>log4j-jakarta-web</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The Web Lookup allows applications to retrieve variables that are associated with the Jakarta
+<a href="https://jakarta.ee/specifications/servlet/5.0/apidocs/jakarta/servlet/servletcontext"><code>ServletContext</code></a>
+of the web application.</p>
+</div>
+<div class="paragraph">
+<p>The following table lists various keys that can be retrieved:</p>
+</div>
+<table id="WebLookup-keys" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 10. Web Lookup supported keys</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>attr.&lt;name&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns the <code>ServletContext</code> attribute with the specified <code>&lt;name&gt;</code>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>contextPath</code></p></td>
@@ -1229,8 +2040,8 @@ represented by this ServletContext is based on.</p></td>
 represented by this ServletContext is based on.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>initParam.<em>name</em></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Returns the ServletContext initialization parameter with the specified name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>initParam.&lt;name&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns the ServletContext initialization parameter with the specified <code>&lt;name&gt;</code>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>majorVersion</code></p></td>
@@ -1252,13 +2063,14 @@ represented by this ServletContext is based on.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>servletContextName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Returns the name of the web application as defined in the display-name element of the deployment descriptor</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;name&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Return the first of <code>attr.&lt;name&gt;</code> and <code>initParam.&lt;name&gt;</code> that is defined.</p></td>
+</tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Any other key names specified will first be checked to see if a
-ServletContext attribute exists with that name and then will be checked
-to see if an initialization parameter of that name exists. If the key is
-located then the corresponding value will be returned.</p>
+<p>Using the Web Lookup, you can, for example, place the log file in the application&#8217;s root directory:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1270,19 +2082,19 @@ located then the corresponding value will be returned.</p>
 <div class="paragraph">
 <p>Additional runtime dependencies are required for using web lookup:</p>
 </div>
-<div id="_tabs_1" class="openblock tabs is-sync is-loading">
+<div id="_tabs_4" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_1_maven" class="tab">
+<li id="_tabs_4_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_1_gradle" class="tab">
+<li id="_tabs_4_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_1_maven--panel" class="tabpanel" aria-labelledby="_tabs_1_maven">
+<div id="_tabs_4_maven--panel" class="tabpanel" aria-labelledby="_tabs_4_maven">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;!-- We assume you use `log4j-bom` for dependency management --&gt;
@@ -1294,7 +2106,7 @@ located then the corresponding value will be returned.</p>
 </div>
 </div>
 </div>
-<div id="_tabs_1_gradle--panel" class="tabpanel" aria-labelledby="_tabs_1_gradle">
+<div id="_tabs_4_gradle--panel" class="tabpanel" aria-labelledby="_tabs_4_gradle">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">// We assume you use `log4j-bom` for dependency management
@@ -1311,19 +2123,19 @@ runtimeOnly 'org.apache.logging.log4j:log4j-jakarta-web'</code></pre>
 <p>Jakarta EE 8 and all Java EE applications servers use the legacy <code>javax</code> package prefix instead of <code>jakarta</code>.
 If you are using those application servers, you should replace the dependencies above with:</p>
 </div>
-<div id="_tabs_2" class="openblock tabs is-sync is-loading">
+<div id="_tabs_5" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_2_maven" class="tab">
+<li id="_tabs_5_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_2_gradle" class="tab">
+<li id="_tabs_5_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_2_maven--panel" class="tabpanel" aria-labelledby="_tabs_2_maven">
+<div id="_tabs_5_maven--panel" class="tabpanel" aria-labelledby="_tabs_5_maven">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;!-- We assume you use `log4j-bom` for dependency management --&gt;
@@ -1335,7 +2147,7 @@ If you are using those application servers, you should replace the dependencies 
 </div>
 </div>
 </div>
-<div id="_tabs_2_gradle--panel" class="tabpanel" aria-labelledby="_tabs_2_gradle">
+<div id="_tabs_5_gradle--panel" class="tabpanel" aria-labelledby="_tabs_5_gradle">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">// We assume you use `log4j-bom` for dependency management
@@ -1347,6 +2159,77 @@ runtimeOnly 'org.apache.logging.log4j:log4j-web'</code></pre>
 </div>
 </div>
 </details>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="third-party"><a class="anchor" href="#third-party"></a>Third-party lookups</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following additional lookups are available from third-party vendors:</p>
+</div>
+<div class="sect2">
+<h3 id="KubernetesLookup"><a class="anchor" href="#KubernetesLookup"></a>Kubernetes Lookup</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Syntax</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>k8s:&lt;key&gt;</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Dependency</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md">Log4j Kubernetes of Fabric8</a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Kubernetes Lookup queries <a href="https://kubernetes.io/docs/concepts/overview/kubernetes-api/">the Kubernetes API</a> to retrieve certain information about the current container and its environment.
+Kubernetes Lookup is distributed as a part of Fabric8&#8217;s Kubernetes Client, refer to <a href="https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md">its website</a> for details.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="SpringBootLookup3"><a class="anchor" href="#SpringBootLookup3"></a>Spring Boot 3 Lookup</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Syntax</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring:&lt;key&gt;</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Dependency</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>integrated in Spring Boot 3</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Starting with Spring Boot 3 a <code>${spring:...}</code> lookup is available out-of-the-box.
+<a href="https://docs.spring.io/spring-boot/reference/features/logging.html#features.logging.log4j2-extensions.environment-properties-lookup">Spring Boot documentation</a>
+for more details.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The Spring Boot 3 Lookup conflicts with the <a href="#SpringBootLookup">Spring Boot 2 Lookup</a>.
+If you are upgrading to Spring Boot 3, make sure to remove the latter from your classpath.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1402,7 +2285,7 @@ While annotating your lookup with <code>@Plugin</code>, you need to make sure th
 </ul>
 </div>
 <div class="paragraph">
-<p>You can check out following files for examples:</p>
+<p>You can check out the following files for examples:</p>
 </div>
 <div class="ulist">
 <ul>

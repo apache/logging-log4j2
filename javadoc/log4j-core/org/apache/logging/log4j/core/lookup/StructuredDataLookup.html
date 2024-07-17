@@ -73,7 +73,9 @@ loadScripts(document, 'script');</script>
 <h1 title="Class StructuredDataLookup" class="title">Class StructuredDataLookup</h1>
 </div>
 <div class="inheritance" title="Inheritance Tree"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">java.lang.Object</a>
+<div class="inheritance"><a href="AbstractLookup.html" title="class in org.apache.logging.log4j.core.lookup">org.apache.logging.log4j.core.lookup.AbstractLookup</a>
 <div class="inheritance">org.apache.logging.log4j.core.lookup.StructuredDataLookup</div>
+</div>
 </div>
 <section class="class-description" id="class-description">
 <dl class="notes">
@@ -84,8 +86,7 @@ loadScripts(document, 'script');</script>
 <div class="type-signature"><span class="annotations"><a href="../config/plugins/Plugin.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@Plugin</a>(<a href="../config/plugins/Plugin.html#name()">name</a>="sd",
         <a href="../config/plugins/Plugin.html#category()">category</a>="Lookup")
 </span><span class="modifiers">public class </span><span class="element-name type-name-label">StructuredDataLookup</span>
-<span class="extends-implements">extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
-implements <a href="StrLookup.html" title="interface in org.apache.logging.log4j.core.lookup">StrLookup</a></span></div>
+<span class="extends-implements">extends <a href="AbstractLookup.html" title="class in org.apache.logging.log4j.core.lookup">AbstractLookup</a></span></div>
 <div class="block">Looks up keys from <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/message/StructuredDataMessage.html" title="class or interface in org.apache.logging.log4j.message" class="external-link"><code>StructuredDataMessage</code></a> log messages.</div>
 </section>
 <section class="summary">
@@ -134,31 +135,29 @@ implements <a href="StrLookup.html" title="interface in org.apache.logging.log4j
 <h2>Method Summary</h2>
 <div id="method-summary-table">
 <div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
-<div id="method-summary-table.tabpanel" role="tabpanel">
-<div class="summary-table three-column-summary" aria-labelledby="method-summary-table-tab0">
+<div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
+<div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#lookup(java.lang.String)" class="member-name-link">lookup</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Returns <code>null</code>.</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#lookup(org.apache.logging.log4j.core.LogEvent,java.lang.String)" class="member-name-link">lookup</a><wbr>(<a href="../LogEvent.html" title="interface in org.apache.logging.log4j.core">LogEvent</a>&nbsp;event,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#lookup(org.apache.logging.log4j.core.LogEvent,java.lang.String)" class="member-name-link">lookup</a><wbr>(<a href="../LogEvent.html" title="interface in org.apache.logging.log4j.core">LogEvent</a>&nbsp;event,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Looks up the value for the key using the data in the LogEvent.</div>
 </div>
 </div>
 </div>
 </div>
 <div class="inherited-list">
+<h3 id="methods-inherited-from-class-org.apache.logging.log4j.core.lookup.AbstractLookup">Methods inherited from class&nbsp;org.apache.logging.log4j.core.lookup.<a href="AbstractLookup.html" title="class in org.apache.logging.log4j.core.lookup">AbstractLookup</a></h3>
+<code><a href="AbstractLookup.html#evaluate(java.lang.String)">evaluate</a>, <a href="AbstractLookup.html#lookup(java.lang.String)">lookup</a></code></div>
+<div class="inherited-list">
 <h3 id="methods-inherited-from-class-java.lang.Object">Methods inherited from class&nbsp;java.lang.<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></h3>
 <code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#clone--" title="class or interface in java.lang" class="external-link">clone</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#equals-java.lang.Object-" title="class or interface in java.lang" class="external-link">equals</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#finalize--" title="class or interface in java.lang" class="external-link">finalize</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#getClass--" title="class or interface in java.lang" class="external-link">getClass</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#hashCode--" title="class or interface in java.lang" class="external-link">hashCode</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#notify--" title="class or interface in java.lang" class="external-link">notify</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#notifyAll--" title="class or interface in java.lang" class="external-link">notifyAll</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#toString--" title="class or interface in java.lang" class="external-link">toString</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#wait--" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#wait-long-" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#wait-long-int-" title="class or interface in java.lang" class="external-link">wait</a></code></div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-org.apache.logging.log4j.core.lookup.StrLookup">Methods inherited from interface&nbsp;org.apache.logging.log4j.core.lookup.<a href="StrLookup.html" title="interface in org.apache.logging.log4j.core.lookup">StrLookup</a></h3>
-<code><a href="StrLookup.html#evaluate(java.lang.String)">evaluate</a>, <a href="StrLookup.html#evaluate(org.apache.logging.log4j.core.LogEvent,java.lang.String)">evaluate</a></code></div>
+<code><a href="StrLookup.html#evaluate(org.apache.logging.log4j.core.LogEvent,java.lang.String)">evaluate</a></code></div>
 </section>
 </li>
 </ul>
@@ -223,29 +222,12 @@ implements <a href="StrLookup.html" title="interface in org.apache.logging.log4j
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="lookup(java.lang.String)">
-<h3>lookup</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">lookup</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key)</span></div>
-<div class="block">Returns <code>null</code>. This Lookup plugin does not make sense outside the context of a LogEvent.</div>
-<dl class="notes">
-<dt>Specified by:</dt>
-<dd><code><a href="StrLookup.html#lookup(java.lang.String)">lookup</a></code>&nbsp;in interface&nbsp;<code><a href="StrLookup.html" title="interface in org.apache.logging.log4j.core.lookup">StrLookup</a></code></dd>
-<dt>Parameters:</dt>
-<dd><code>key</code> - The key to be looked up, may be null.</dd>
-<dt>Returns:</dt>
-<dd><code>null</code></dd>
-</dl>
-</section>
-</li>
-<li>
 <section class="detail" id="lookup(org.apache.logging.log4j.core.LogEvent,java.lang.String)">
 <h3>lookup</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">lookup</span><wbr><span class="parameters">(<a href="../LogEvent.html" title="interface in org.apache.logging.log4j.core">LogEvent</a>&nbsp;event,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key)</span></div>
 <div class="block">Looks up the value for the key using the data in the LogEvent.</div>
 <dl class="notes">
-<dt>Specified by:</dt>
-<dd><code><a href="StrLookup.html#lookup(org.apache.logging.log4j.core.LogEvent,java.lang.String)">lookup</a></code>&nbsp;in interface&nbsp;<code><a href="StrLookup.html" title="interface in org.apache.logging.log4j.core.lookup">StrLookup</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>event</code> - The current LogEvent.</dd>
 <dd><code>key</code> - The key to be looked up, may be null.</dd>

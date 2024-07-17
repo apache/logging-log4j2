@@ -1235,6 +1235,10 @@ The logger is configured to forward messages to its parent (the root appender).<
 <p>See <a href="filters.html" class="xref page">Filter configuration</a> for details.</p>
 </div>
 </dd>
+</dl>
+</div>
+<div id="global-properties" class="dlist">
+<dl>
 <dt class="hdlist1">Properties</dt>
 <dd>
 <div class="paragraph">
@@ -1766,10 +1770,10 @@ methods.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>when the configuration is loaded,</p>
+<p>when the configuration is loaded, it is evaluated in the <a href="lookups.html#global-context" class="xref page">global context</a>.</p>
 </li>
 <li>
-<p>each time a log event is generated.</p>
+<p>each time a log event is generated, it is evaluated in the <a href="lookups.html#event-context" class="xref page">context of the event</a>.</p>
 </li>
 </ul>
 </div>
@@ -2098,10 +2102,10 @@ Otherwise, the expansion of <code>${name}</code> is substituted.</p>
 <div class="ulist">
 <ul>
 <li>
-<p><code>sys</code> for Java system properties (see <a href="lookups.html#system-properties-lookup" class="xref page">System Properties lookup</a>),</p>
+<p><code>sys</code> for Java system properties (see <a href="lookups.html#SystemPropertiesLookup" class="xref page">System Properties lookup</a>),</p>
 </li>
 <li>
-<p><code>env</code> for environment variables (see <a href="lookups.html#environment-lookup" class="xref page">Environment lookup</a>).</p>
+<p><code>env</code> for environment variables (see <a href="lookups.html#EnvironmentLookup" class="xref page">Environment lookup</a>).</p>
 </li>
 </ul>
 </div>
@@ -2316,11 +2320,10 @@ property.BAR = bar</code></pre>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>For security reasons, if the <strong>expansion</strong> of a <code>${&#8230;&#8203;}</code> expression contains other expressions, these will <strong>not</strong> be expanded.
-The only exception to this rule is the expansion of properties in the <code>Properties</code> container.</p>
+<p>For security reasons, if the <strong>expansion</strong> of a <code>${&#8230;&#8203;}</code> expression contains other expressions, these will <strong>not</strong> be expanded.</p>
 </div>
 <div class="paragraph">
-<p>Properties defined in the <code>Properties</code> container can depend on each other.
+<p>Properties defined in the <code>Properties</code> container, however, can depend on each other.
 If your configuration contains, for example:</p>
 </div>
 <div id="_tabs_10" class="openblock tabs is-sync is-loading">
@@ -2420,41 +2423,84 @@ Therefore, the value of the <code>logging.file</code> property will be:</p>
 </table>
 </div>
 <div class="sect2">
-<h3 id="lazy-property-substitution"><a class="anchor" href="#lazy-property-substitution"></a>Lazy property substitution</h3>
+<h3 id="lazy-property-substitution"><a class="anchor" href="#lazy-property-substitution"></a>Runtime property substitution</h3>
 <div class="paragraph">
-<p>For most attributes, property substitution is performed only once at <strong>configuration time</strong>, but there are two categories of exceptions to this rule:</p>
+<p>For most attributes, property substitution is performed only once at <strong>configuration time</strong>,
+but there are exceptions to this rule: some attributes are <strong>also</strong> evaluated when a component-specific event occurs.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>Some attributes are <strong>also</strong> evaluated when a component-specific event occurs.
-For example
-<a href="#logger-elements-properties">additional context properties</a>
-and the <code>pattern</code> attribute of the example below are evaluated at each log event, while the <code>filePattern</code> attribute of a
-<a href="appenders.html#rollingfileappender" class="xref page">rolling file appender</a>
-is evaluated at each rollover.</p>
 <div class="paragraph">
 <p>In this case:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>If you want property substitution to happen only once, use one dollar sign, e.g., <code>${date:HH:mm:ss}</code>.</p>
+<p>If you want property substitution to happen at configuration time, use one dollar sign, e.g., <code>${date:HH:mm:ss}</code>.</p>
 </li>
 <li>
-<p>If you want property substitution to happen at each cyclic event, you use two dollar signs, e.g., <code>$${date:HH:mm:ss}</code></p>
+<p>If you want property substitution to happen at runtime, you use two dollar signs, e.g., <code>$${date:HH:mm:ss}</code></p>
 </li>
 </ul>
 </div>
-</li>
-<li>
-<p>Other components defer the evaluation of their child components.
-In this case, you only need one dollar <code>$</code> sign.</p>
 <div class="paragraph">
-<p>This case happens for the children of the <code>Route</code> element below:</p>
+<p>The list of attributes that support runtime property substitution is:</p>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>value</code> attribute of <a href="#logger-elements-properties">nested <code>Property</code> elements</a> of a logger configuration.</p>
+</li>
+<li>
+<p>The
+<a href="pattern-layout.html#plugin-attr-pattern" class="xref page"><code>pattern</code></a> attribute of the <a href="pattern-layout.html" class="xref page">Pattern Layout</a>.</p>
+</li>
+<li>
+<p>Event template attributes of <a href="json-template-layout.html" class="xref page">JSON Template Layout</a>.
+See <a href="json-template-layout.html#property-substitution-in-template" class="xref page">property substitution in JSON Template Layout</a>
+for more details.</p>
+</li>
+<li>
+<p>The appender attributes listed in <a href="appenders.html#runtime-evaluation" class="xref page">runtime property substitution in appenders</a>.</p>
 </li>
 </ul>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Certain lookups might behave differently when they are expanded at runtime.
+See <a href="lookups.html#evaluation-contexts" class="xref page">lookup evaluation contexts</a> for details.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The
+<a href="appenders.html#Routes" class="xref page"><code>Route</code></a> component of the
+<a href="appenders.html#RoutingAppender" class="xref page"><code>RoutingAppender</code></a>
+is a different case altogether.
+The attributes of its children are expanded at runtime, but are not expanded at configuration time.</p>
+</div>
+<div class="paragraph">
+<p>Inside the <code>Route</code> component you <strong>should not</strong> use escaped <code>$${...}</code> expressions, but only unescaped <code>${...}</code> expressions.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The complete spectrum of behaviors concerning runtime property substitution is given by the routing appender example below:</p>
 </div>
 <div id="_tabs_11" class="openblock tabs is-sync is-loading">
 <div class="content">
@@ -2566,12 +2612,12 @@ appender.0.routes.route.file.layout.field.value = ${sd:type} <i class="conum" da
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>pattern</code> attribute is evaluated at configuration time and also each time a log event is routed.
+<td>The <code>pattern</code> attribute is evaluated at configuration time, and also each time a log event is routed.
 Therefore, the dollar <code>$</code> sign needs to be escaped.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>All the attributes inside the <code>File</code> element have a <strong>deferred</strong> evaluation, therefore they need only one <code>$</code> sign.</td>
+<td>All the attributes of children of the <code>Route</code> element have a <strong>deferred</strong> evaluation. Therefore, they need only one <code>$</code> sign.</td>
 </tr>
 </table>
 </div>
