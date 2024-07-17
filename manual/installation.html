@@ -406,7 +406,7 @@ See <a href="#impl-core">Installing Log4j Core</a>.</p>
 <p>A logging API is an interface your code or your dependencies directly logs against.
 It is required at compile-time.
 It is implementation agnostic to ensure that your application can write logs, but is not tied to a specific logging implementation.
-Log4j API, <a href="https://www.slf4j.org">SLF4J</a>, <a href="https://docs.oracle.com/en/java/javase/8/core/java-logging-overview.html">JUL (Java Logging)</a>, <a href="https://commons.apache.org/proper/commons-logging/">JCL (Apache Commons Logging)</a>, <a href="https://openjdk.org/jeps/264">JPL (Java Platform Logging)</a> and <a href="https://github.com/jboss-logging/jboss-logging">JBoss Logging</a> are major logging APIs.</p>
+Log4j API, <a href="https://www.slf4j.org">SLF4J</a>, <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/logging/overview.html">JUL (Java Logging)</a>, <a href="https://commons.apache.org/proper/commons-logging/">JCL (Apache Commons Logging)</a>, <a href="https://openjdk.org/jeps/264">JPL (Java Platform Logging)</a> and <a href="https://github.com/jboss-logging/jboss-logging">JBoss Logging</a> are major logging APIs.</p>
 </dd>
 </dl>
 </div>
@@ -415,7 +415,7 @@ Log4j API, <a href="https://www.slf4j.org">SLF4J</a>, <a href="https://docs.orac
 <dt class="hdlist1">Logging implementation</dt>
 <dd>
 <p>A logging implementation is only required at runtime and can be changed without the need to recompile your software.
-Log4j Core, <a href="https://docs.oracle.com/en/java/javase/8/core/java-logging-overview.html">JUL (Java Logging)</a>, <a href="https://logback.qos.ch">Logback</a> are the most well-known logging implementations.</p>
+Log4j Core, <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/logging/overview.html">JUL (Java Logging)</a>, <a href="https://logback.qos.ch">Logback</a> are the most well-known logging implementations.</p>
 </dd>
 </dl>
 </div>
@@ -650,7 +650,7 @@ Refer to <a href="#impl-core">Installing Log4j Core</a> for the installation ins
 </dd>
 <dt class="hdlist1"><code>log4j-to-jul</code></dt>
 <dd>
-<p>The bridge that translates Log4j API calls to <a href="https://docs.oracle.com/en/java/javase/8/core/java-logging-overview.html">JUL (Java Logging)</a>.
+<p>The bridge that translates Log4j API calls to <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/logging/overview.html">JUL (Java Logging)</a>.
 See <a href="#impl-jul">Installing JUL</a> for the installation instructions.</p>
 </dd>
 <dt class="hdlist1"><code>log4j-to-slf4j</code></dt>
@@ -844,7 +844,7 @@ And if so, which ones?</strong></p>
 <div class="sect4">
 <h5 id="impl-core-bridge-jul"><a class="anchor" href="#impl-core-bridge-jul"></a>Installing JUL-to-Log4j bridge</h5>
 <div class="paragraph">
-<p>You can translate <a href="https://docs.oracle.com/en/java/javase/8/core/java-logging-overview.html">JUL (Java Logging)</a> calls to Log4j API using the <code>log4j-jul</code> artifact:</p>
+<p>You can translate <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/logging/overview.html">JUL (Java Logging)</a> calls to Log4j API using the <code>log4j-jul</code> artifact:</p>
 </div>
 <div id="_tabs_6" class="openblock tabs is-sync is-loading">
 <div class="content">
@@ -1306,7 +1306,7 @@ You can skip this section and use the <a href="https://github.com/jboss-logging/
 </table>
 </div>
 <div class="paragraph">
-<p>Java Platform contains a very simple logging API and its implementation called <a href="https://docs.oracle.com/en/java/javase/8/core/java-logging-overview.html">JUL (Java Logging)</a>.
+<p>Java Platform contains a very simple logging API and its implementation called <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/logging/overview.html">JUL (Java Logging)</a>.
 Since it is embedded in the platform, it only requires the addition of bridges from Log4j API and SLF4J:</p>
 </div>
 <div id="_tabs_14" class="openblock tabs is-sync is-loading">

@@ -514,12 +514,20 @@ Intended for simple plugins that receive less than a handful of values.</p>
 <p>See <a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-core/src/main/java/org/apache/logging/log4j/core/layout/CsvParameterLayout.java"><code>CsvParameterLayout.java</code></a> for an example on <code>@PluginFactory</code> usage.</p>
 </div>
 </dd>
-<dt class="hdlist1">a <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/PluginBuilderFactory.html"><code>@PluginBuilderFactory</code></a>-annotated static method of return type <a href="../javadoc/log4j-core/src/main/java/org/apache/logging/log4j/core/util/Builder.java"><code>Builder&lt;T&gt;</code></a></dt>
-<dd>
-<p>What is expected to be received is modelled as fields of a builder class.
+</dl>
+</div>
+<div class="paragraph">
+<p>a <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/PluginBuilderFactory.html"><code>@PluginBuilderFactory</code></a>-annotated static method of return type
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/Builder.html"><code>Builder&lt;T&gt;</code></a>::
+What is expected to be received is modelled as fields of a builder class.
 Intended for more sophisticated wiring needs.</p>
+</div>
+<div class="paragraph">
+<p>+
+.Click for advantages of builder class over factory method</p>
+</div>
 <details>
-<summary class="title">Click for advantages of builder class over factory method</summary>
+<summary class="title">Details</summary>
 <div class="content">
 <div class="ulist">
 <ul>
@@ -544,10 +552,8 @@ This also allows a runtime-calculated default value, which isn&#8217;t allowed i
 </div>
 </details>
 <div class="paragraph">
-<p>See <a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-layout-template-json/src/main/java/org/apache/logging/log4j/layout/template/json/JsonTemplateLayout.java"><code>JsonTemplateLayout.java</code></a> for an example on <code>@PluginBuilderFactory</code> usage.</p>
-</div>
-</dd>
-</dl>
+<p>+
+See <a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-layout-template-json/src/main/java/org/apache/logging/log4j/layout/template/json/JsonTemplateLayout.java"><code>JsonTemplateLayout.java</code></a> for an example on <code>@PluginBuilderFactory</code> usage.</p>
 </div>
 <div class="paragraph">
 <p>If a plugin class implements <code>Collection</code> or <code>Map</code>, then no factory method is used.
@@ -771,7 +777,9 @@ You can do this as follows:</p>
 See <code>@PluginElement("EventTemplateAdditionalField")</code> usage in <a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-layout-template-json/src/main/java/org/apache/logging/log4j/layout/template/json/JsonTemplateLayout.java"><code>JsonTemplateLayout.java</code></a> for an example.</p>
 </li>
 <li>
-<p>Otherwise, you can use <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/util/PluginUtl.html"><code>PluginUtil</code></a>, which is a convenient wrapper around <a href="#plugin-discovery"><code>PluginManager</code></a>, to discover and load plugins.
+<p>Otherwise, you can use
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/util/PluginUtil.html"><code>PluginUtil</code></a>,
+which is a convenient wrapper around <a href="#plugin-discovery"><code>PluginManager</code></a>, to discover and load plugins.
 See <a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-layout-template-json/src/main/java/org/apache/logging/log4j/layout/template/json/resolver/TemplateResolverFactories.java"><code>TemplateResolverFactories.java</code></a> for example usages.</p>
 </li>
 </ul>

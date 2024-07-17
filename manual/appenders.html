@@ -768,7 +768,8 @@ maximum capacity.</p></td>
 <div class="sect2">
 <h3 id="CassandraAppender"><a class="anchor" href="#CassandraAppender"></a>CassandraAppender</h3>
 <div class="paragraph">
-<p>The CassandraAppender writes its output to an <a href="https://cassandra.apache.org/">Apache Cassandra</a>
+<p>The CassandraAppender writes its output to an
+<a href="https://cassandra.apache.org/_/index.html">Apache Cassandra</a>
 database.
 A keyspace and table must be configured ahead of time, and the columns of that table are mapped in a configuration file.
 Each column can specify either a <a href="pattern-layout.html" class="xref page">Pattern Layout</a><a href="https://logging.apache.org/log4j/2.x/manual/layouts.html#PatternLayout">StringLayout</a> (e.g., a PatternLayout) along with an optional conversion type, or only a conversion type for <code>org.apache.logging.log4j.spi.ThreadContextMap</code> or
@@ -1329,7 +1330,7 @@ file attribute view.</p>
 <p><em>This is an optional component supplied in a separate jar.</em></p>
 </div>
 <div class="paragraph">
-<p><a href="http://flume.apache.org/index.html">Apache Flume</a> is a distributed, reliable, and available system for efficiently collecting, aggregating, and moving large amounts of log data from many different sources to a centralized data store.
+<p><a href="https://flume.apache.org/index.html">Apache Flume</a> is a distributed, reliable, and available system for efficiently collecting, aggregating, and moving large amounts of log data from many different sources to a centralized data store.
 The FlumeAppender takes LogEvents and sends them to a Flume agent as serialized Avro events for consumption.</p>
 </div>
 <div class="paragraph">
@@ -2937,7 +2938,7 @@ Note that you need to use a version of the Kafka client library matching the Kaf
 The main benefit of using memory-mapped files is I/O performance.
 Instead of making system calls to write to disk, this appender can simply change the program&#8217;s local memory, which is orders of magnitude faster.
 Also, in most operating systems the memory region mapped is the kernel&#8217;s
-<a href="http://en.wikipedia.org/wiki/Page_cache">page cache</a> (file cache), meaning that no copies need to be created in user space.</p>
+<a href="https://en.wikipedia.org/wiki/Page_cache">page cache</a> (file cache), meaning that no copies need to be created in user space.</p>
 </div>
 <div class="paragraph">
 <p>There is some overhead with mapping a file region into memory, especially very large regions (half a gigabyte or more).
@@ -3491,7 +3492,7 @@ in the format <code>mongodb://[username:password@]host1[:port1][,host2[:port2],&
 <td class="tableblock halign-left valign-top"><p class="tableblock">capped</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Enable support for
-<a href="https://docs.mongodb.com/manual/core/capped-collections/">capped
+<a href="https://www.mongodb.com/docs/manual/core/capped-collections/">capped
 collections</a></p></td>
 </tr>
 <tr>
@@ -6822,7 +6823,7 @@ default is 0 (infinite timeout, like <code>Socket.connect()</code> methods).</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">enterpriseNumber</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">integer</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The IANA enterprise number as described in
-<a href="http://tools.ietf.org/html/rfc5424#section-7.2.2">RFC 5424</a></p></td>
+<a href="https://datatracker.ietf.org/doc/html/rfc5424#section-7.2.2">RFC 5424</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">filter</p></td>
