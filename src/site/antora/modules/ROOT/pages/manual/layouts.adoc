@@ -824,7 +824,9 @@ This attribute only applies to RFC 5424 Syslog records.
 |mdcRequired
 |String
 |A comma-separated list of xref:manual/thread-context.adoc[] map (aka, MDC) keys that must be present.
-If a key is not present, a link:../javadoc/log4j-core/org/apache/logging/log4j/LoggingException.html[`LoggingException`] will be thrown.
+If a key is not present, a
+link:../javadoc/log4j-api/org/apache/logging/log4j/LoggingException.html[`LoggingException`]
+will be thrown.
 This attribute only applies to RFC 5424 Syslog records.
 
 |messageId

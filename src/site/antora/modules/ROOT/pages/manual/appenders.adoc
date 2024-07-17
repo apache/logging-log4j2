@@ -687,7 +687,7 @@ Here is a sample File configuration:
 
 _This is an optional component supplied in a separate jar._
 
-http://flume.apache.org/index.html[Apache Flume] is a distributed, reliable, and available system for efficiently collecting, aggregating, and moving large amounts of log data from many different sources to a centralized data store.
+https://flume.apache.org/index.html[Apache Flume] is a distributed, reliable, and available system for efficiently collecting, aggregating, and moving large amounts of log data from many different sources to a centralized data store.
 The FlumeAppender takes LogEvents and sends them to a Flume agent as serialized Avro events for consumption.
 
 The Flume Appender supports three modes of operation.
@@ -1799,7 +1799,7 @@ The MemoryMappedFileAppender maps a part of the specified file into memory and w
 The main benefit of using memory-mapped files is I/O performance.
 Instead of making system calls to write to disk, this appender can simply change the program's local memory, which is orders of magnitude faster.
 Also, in most operating systems the memory region mapped is the kernel's
-http://en.wikipedia.org/wiki/Page_cache[page cache] (file cache), meaning that no copies need to be created in user space.
+https://en.wikipedia.org/wiki/Page_cache[page cache] (file cache), meaning that no copies need to be created in user space.
 
 // TODO:
 // performance tests that compare performance of this appender to
