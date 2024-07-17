@@ -18,43 +18,27 @@ package org.apache.logging.log4j.fuzz;
 
 import static org.apache.logging.log4j.fuzz.FuzzingUtil.createLayoutFuzzingLoggerContext;
 import static org.apache.logging.log4j.fuzz.FuzzingUtil.logWithParams;
-import static org.apache.logging.log4j.fuzz.FuzzingUtil.logWithoutParams;
 
 import com.code_intelligence.jazzer.api.FuzzedDataProvider;
-import com.code_intelligence.jazzer.junit.FuzzTest;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 
-class PatternLayoutFuzzTest {
+public final class PatternLayoutWithParamFuzzer {
 
-    private static LoggerContext LOGGER_CONTEXT;
+    private static final LoggerContext LOGGER_CONTEXT;
 
-    private static Logger LOGGER;
+    private static final Logger LOGGER;
 
-    @BeforeAll
-    static void initLoggerContext() {
+    static {
         LOGGER_CONTEXT =
                 createLayoutFuzzingLoggerContext(LayoutTesterAppender.PLUGIN_NAME, configBuilder -> configBuilder
                         .newLayout("PatternLayout")
                         // Enforce using a single message-based converter, i.e., `MessagePatternConverter`
                         .addAttribute("pattern", "%m"));
-        LOGGER = LOGGER_CONTEXT.getLogger(PatternLayoutFuzzTest.class);
+        LOGGER = LOGGER_CONTEXT.getLogger(PatternLayoutWithParamFuzzer.class);
     }
 
-    @AfterAll
-    static void stopLoggerContext() {
-        LOGGER_CONTEXT.terminate();
-    }
-
-    @FuzzTest
-    void fuzz_no_params(final FuzzedDataProvider dataProvider) {
-        logWithoutParams(LOGGER, dataProvider);
-    }
-
-    @FuzzTest
-    void fuzz_with_params(final FuzzedDataProvider dataProvider) {
+    public static void fuzzerTestOneInput(final FuzzedDataProvider dataProvider) {
         logWithParams(LOGGER, dataProvider);
     }
 }

@@ -17,31 +17,33 @@
 package org.apache.logging.log4j.fuzz;
 
 import com.code_intelligence.jazzer.api.FuzzedDataProvider;
-import com.code_intelligence.jazzer.junit.DictionaryFile;
-import com.code_intelligence.jazzer.junit.FuzzTest;
+import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
 import org.apache.logging.log4j.layout.template.json.util.JsonReader;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 
-class JsonCodecTest {
+public final class JsonTemplateLayoutCodecFuzzer {
 
-    @FuzzTest
-    @DictionaryFile(resourcePath = "/json.dict")
-    void fuzz(final FuzzedDataProvider dataProvider) {
-        System.out.println("FOO");
+    public static void fuzzerTestOneInput(final FuzzedDataProvider dataProvider) {
+        final Object object = decodeJson(dataProvider);
+        encodeJson(object);
+    }
 
-        // Decode the input
+    private static Object decodeJson(final FuzzedDataProvider dataProvider) {
         final String expectedJson = dataProvider.consumeRemainingAsString();
-        final Object object;
         try {
-            object = JsonReader.read(expectedJson);
+            return JsonReader.read(expectedJson);
         } catch (final Exception ignored) {
             // We are inspecting unexpected access.
             // Hence, event decoding failures are not of interest.
-            return;
+            return null;
         }
+    }
 
-        // Encode the decoder output
-        final JsonWriter jsonWriter = JsonWriter.newBuilder().build();
+    private static void encodeJson(final Object object) {
+        final JsonWriter jsonWriter = JsonWriter.newBuilder()
+                .setMaxStringLength(JsonTemplateLayoutDefaults.getMaxStringLength())
+                .setTruncatedStringSuffix(JsonTemplateLayoutDefaults.getTruncatedStringSuffix())
+                .build();
         jsonWriter.writeValue(object);
         final String actualJson = jsonWriter.getStringBuilder().toString();
         FuzzingUtil.assertValidJson(actualJson);

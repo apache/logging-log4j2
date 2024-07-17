@@ -279,7 +279,7 @@
 
       <dependency>
         <groupId>com.code-intelligence</groupId>
-        <artifactId>jazzer-junit</artifactId>
+        <artifactId>jazzer</artifactId>
         <version>${jazzer.version}</version>
       </dependency>
 
