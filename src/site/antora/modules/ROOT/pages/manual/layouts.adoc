@@ -480,8 +480,10 @@ This attribute only applies to RFC 5424 Syslog records.
 
 |mdcRequired
 |String
-|A comma-separated list of {log4j2-url}/manual/thread-context.html[] map (aka, MDC) keys that must be present.
-If a key is not present, a link:../javadoc/log4j-core/org/apache/logging/log4j/LoggingException.html[`LoggingException`] will be thrown.
+|A comma-separated list of {log4j2-url}/manual/thread-context.html[`ThreadContext`] map (aka, MDC) keys that must be present.
+If a key is not present, a
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/LoggingException.html[`LoggingException`]
+will be thrown.
 This attribute only applies to RFC 5424 Syslog records.
 
 |messageId

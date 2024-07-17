@@ -861,7 +861,7 @@ See xref:manual/layouts.adoc#LocationInformation[this section of the layouts pag
 
 Outputs location information of the caller which generates the logging event
 
-.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/LocationPatternConverter.html[`LocationPatternConverter`] specifier grammar
+.`LocationPatternConverter` specifier grammar
 [source,text]
 ----
 l
@@ -998,7 +998,7 @@ If no additional sub-option is specified, then all map entries are output using 
 
 Outputs the result of evaluating the given pattern and truncating the result
 
-.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/MaxLegthConverter.html[`MaxLengthConverter`] specifier grammar
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/MaxLengthConverter.html[`MaxLengthConverter`] specifier grammar
 [source,text]
 ----
 maxLen{pattern}{length}
@@ -1335,7 +1335,7 @@ threadPriority
 
 Includes either a random or a time-based UUID
 
-.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/UuidConverter.html[`UuidConverter`] specifier grammar
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/UuidPatternConverter.html[`UuidPatternConverter`] specifier grammar
 [source,text]
 ----
 u{RANDOM|TIME}
@@ -1581,7 +1581,9 @@ If your terminal supports 24-bit colors, you can specify:
 ==== ANSI styling on Windows
 
 ANSI escape sequences are supported natively on many platforms, but not by default on Windows.
-To enable ANSI support add the http://jansi.fusesource.org/[Jansi] dependency to your application, and set xref:manual/systemproperties.adoc#log4j2.skipJansi[the `log4j2.skipJansi` system property] to `false`.
+To enable ANSI support add the
+http://fusesource.github.io/jansi/[Jansi]
+dependency to your application, and set xref:manual/systemproperties.adoc#log4j2.skipJansi[the `log4j2.skipJansi` system property] to `false`.
 This allows Log4j to use Jansi to add ANSI escape codes when writing to the console.
 
 [NOTE]
