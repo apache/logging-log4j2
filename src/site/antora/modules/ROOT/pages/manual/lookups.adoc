@@ -753,7 +753,7 @@ where `<key>` is one of the <<SpringBootLookup-keys>>.
 
 [IMPORTANT]
 ====
-If you are using Spring Boot 2, you should use the third party <<SpringBootLookup3>> instead.
+If you are using Spring Boot 3, you should use the third party <<SpringBootLookup3>> instead.
 ====
 
 The Spring Boot 2 Lookup allows user to query Spring Boot's
