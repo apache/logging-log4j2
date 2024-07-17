@@ -39,7 +39,7 @@ for more details.
 | Default value | `false`
 |===
 
-When `true`, a Log4j JDBC Appender can use JNDI to retrieve a https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/sql/DataSource.html[`DataSource`] using the `java:` protocol.
+When `true`, a Log4j JDBC Appender can use JNDI to retrieve a https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.sql/javax/sql/DataSource.html[`DataSource`] using the `java:` protocol.
 
 [id=log4j.jndi.enableJms]
 == `log4j.jndi.enableJms`

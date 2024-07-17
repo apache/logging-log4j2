@@ -158,7 +158,7 @@ can be created as well.
 `ValidHost`::
   This annotation validates that a value corresponds to a valid
   hostname. This uses the same validation as
-  http://docs.oracle.com/javase/8/docs/api/java/net/InetAddress.html#getByName-java.lang.String-[`InetAddress::getByName`].
+  https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/net/InetAddress.html#getByName(java.lang.String)[`InetAddress::getByName`].
 `ValidPort`::
   This annotation validates that a value corresponds to a valid port
   number between 0 and 65535.
@@ -250,8 +250,9 @@ If any extends from `Comparable<TypeConverter<?>>`, it will be used for determin
 == Developer Notes
 
 If a plugin class implements
-http://docs.oracle.com/javase/6/docs/api/java/util/Collection.html[`Collection`]
-or http://docs.oracle.com/javase/6/docs/api/java/util/Map.html[`Map`],
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/util/Collection.html[`Collection`]
+or
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/util/Map.html[`Map`],
 then no factory method is used. Instead, the class is instantiated using
 the default constructor, and all child configuration nodes are added to
 the `Collection` or `Map`.

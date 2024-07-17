@@ -43,7 +43,7 @@ asciidoc:
     project-github-url: "${scm.url}/tree/${scm.tag}"
     project-name: "Log4j"
     project-id: "log4j"
-    java-target-version: "${maven.compiler.target}"
+    java-target-version: "${maven.compiler.release}"
     java-compiler-version: "${minimalJavaBuildVersion}"
     log4j-kubernetes-url: "https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md"
     logback-url: "https://logback.qos.ch"

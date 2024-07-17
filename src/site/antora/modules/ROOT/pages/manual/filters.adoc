@@ -296,9 +296,9 @@ include::example$manual/filters/filters.properties[lines=17..-1]
 === Common configuration attributes
 
 The default behavior of filters is in line with the `filter()` methods of functional interfaces, such as
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/Optional.html#filter-java.util.function.Predicate-[`Optional.filter()`]
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/util/Optional.html#filter(java.util.function.Predicate)[`Optional.filter()`]
 or
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/stream/Stream.html#filter-java.util.function.Predicate-[`Stream.filter()`]:
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/util/stream/Stream.html#filter(java.util.function.Predicate)[`Stream.filter()`]:
 filters pass matching events to the next filter and drop those that do not match.
 
 To allow for a larger spectrum of behaviors,
@@ -443,18 +443,18 @@ the `TimeFilter` supports the following parameters:
 | Attribute | Type | Default value | Description
 
 | start
-| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/LocalTime.html[`LocalTime`] in `HH:mm:ss` format
-| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/LocalTime.html#MIN[`LocalTime.MIN`]
+| https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/time/LocalTime.html[`LocalTime`] in `HH:mm:ss` format
+| https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/time/LocalTime.html#MIN[`LocalTime.MIN`]
 | The beginning of the time slot.
 
 | start
-| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/LocalTime.html[`LocalTime`] in `HH:mm:ss` format
-| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/LocalTime.html#MAX[`LocalTime.MAX`]
+| https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/time/LocalTime.html[`LocalTime`] in `HH:mm:ss` format
+| https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/time/LocalTime.html#MAX[`LocalTime.MAX`]
 | The end of the time slot.
 
 | timezone
-| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/ZoneId.html[`ZoneId`]
-| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/ZoneId.html#systemDefault--[`ZoneId.systemDefault()`]
+| https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/time/ZoneId.html[`ZoneId`]
+| https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/time/ZoneId.html#systemDefault()[`ZoneId.systemDefault()`]
 | The timezone to use when comparing `start` and `end` to the event timestamp.
 
 |===
@@ -762,7 +762,7 @@ the `RegexFilter` supports the following parameters:
 |Attribute | Type | Default value | Description
 
 | regex
-| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/regex/Pattern.html[`Pattern`]
+| https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/util/regex/Pattern.html[`Pattern`]
 |
 | The regular expression used to match log messages.
 
@@ -1192,9 +1192,9 @@ the `MutableContextMapFilter` supports the following parameters:
 | Attribute | Type | Default value | Description
 
 | configLocation
-| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[`Path`]
+| https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/nio/file/Path.html[`Path`]
 or
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/URI.html[`URI`]
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/net/URI.html[`URI`]
 |
 | The location of the JSON <<configuration-map>>.
 

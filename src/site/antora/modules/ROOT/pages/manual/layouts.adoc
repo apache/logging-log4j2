@@ -42,7 +42,9 @@ We recommend xref:manual/json-template-layout.adoc[] for structured logging purp
 [#charset]
 === Character encoding
 
-All <<collection,predefined layouts>> produce `String` that eventually get converted into a `byte` using the https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/charset/Charset.html[`Charset`] configured.
+All <<collection,predefined layouts>> produce `String` that eventually get converted into a `byte` using the
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/nio/charset/Charset.html[`Charset`]
+configured.
 While doing so, unless an explicit encoding configuration is stated, they use `UTF-8` by default.
 If you want all your log events to be formatted in a certain character encoding that is different from what the employed layout defaults to, make sure to configure the layout's character encoding as needed.
 
@@ -269,8 +271,11 @@ For other valid values, refer to xref:manual/pattern-layout.adoc#converter-date[
 |timezone
 |String
 |The time zone ID of the log event.
-If not specified, this layout uses the https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html#getDefault()[`TimeZone.getDefault()`] as the default.
-You can use time zone IDs supported by https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)[`TimeZone.getTimeZone(String)`].
+If not specified, this layout uses the
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/util/TimeZone.html#getDefault()[`TimeZone.getDefault()`]
+as the default.
+You can use time zone IDs supported by
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/util/TimeZone.html#getTimeZone(java.lang.String)[`TimeZone.getTimeZone(String)`].
 
 |title
 |String

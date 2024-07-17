@@ -59,12 +59,12 @@ These configuration attributes are shared by multiple appenders:
 If set to `true`, Log4j will flush all Java buffers at the end of each event:
 
 * for appenders based on Java's
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/io/OutputStream.html[`OutputStream`]
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/io/OutputStream.html[`OutputStream`]
 a call to the `OutputStream.flush()` method is performed.
 * if
 xref:manual/systemproperties.adoc#log4j.gc.enableDirectEncoders[`log4j.gc.enableDirectEncoders`]
 is set to `true`, many Log4j appenders use a
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/ByteBuffer.html[`ByteBuffer`]
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/nio/ByteBuffer.html[`ByteBuffer`]
 to format log events before sending them to the underlying resource.
 Setting `immediateFlush` to `true` flushes these buffers at each event.
 
@@ -137,7 +137,7 @@ Note that exceptions while writing to those Appenders will be hidden from the ap
 The AsyncAppender should be configured after the appenders it references to allow it to shut down properly.
 
 By default, AsyncAppender uses
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/concurrent/ArrayBlockingQueue.html[`java.util.concurrent.ArrayBlockingQueue`]
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/util/concurrent/ArrayBlockingQueue.html[`java.util.concurrent.ArrayBlockingQueue`]
 which does not require any external libraries.
 Note that multi-threaded applications should exercise care when using this appender as such: the blocking queue is susceptible to lock contention and our
 xref:manual/performance.adoc#async[tests showed] performance may become worse when more threads are logging concurrently.
@@ -272,7 +272,7 @@ Log4j ships with the following implementations:
 |=======================================================================
 |Plugin Name |Description
 |ArrayBlockingQueue |This is the default implementation that uses
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/concurrent/ArrayBlockingQueue.html[`ArrayBlockingQueue`].
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/util/concurrent/ArrayBlockingQueue.html[`ArrayBlockingQueue`].
 
 |DisruptorBlockingQueue |This uses the
 https://github.com/conversant/disruptor[Conversant Disruptor]
@@ -285,7 +285,7 @@ bounded lock-free queue.
 This implementation is provided by the `log4j-jctools` artifact.
 
 |LinkedTransferQueue |This uses the new Java 7 implementation
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/concurrent/LinkedTransferQueue.html[`LinkedTransferQueue`].
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/util/concurrent/LinkedTransferQueue.html[`LinkedTransferQueue`].
 Note that this queue does not use the `bufferSize` configuration
 attribute from AsyncAppender as `LinkedTransferQueue` does not support a
 maximum capacity.
@@ -496,7 +496,7 @@ File attribute permissions in POSIX format to apply whenever the file is
 created.
 
 The underlying files system shall support
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[POSIX]
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/nio/file/attribute/PosixFileAttributeView.html[POSIX]
 file attribute view.
 
 Examples: `rw-------` or `rw-rw-rw-` etc...
@@ -512,14 +512,14 @@ http://www.gnu.org/software/libc/manual/html_node/Options-for-Files.html[_POSIX_
 is in effect for path.
 
 The underlying files system shall support file
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html[owner]
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/nio/file/attribute/FileOwnerAttributeView.html[owner]
 attribute view.
 
 |fileGroup |String a|
 File group to define whenever the file is created.
 
 The underlying files system shall support
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[POSIX]
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/nio/file/attribute/PosixFileAttributeView.html[POSIX]
 file attribute view.
 
 |=======================================================================
@@ -1197,7 +1197,9 @@ However, configurations written for 2.0 that use the `<JMSQueue/>` or `<JMSTopic
 | factoryName
 | String
 | _Required_
-| The fully qualified class name that should be used to define the Initial Context Factory as defined in https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Context.html#INITIAL_CONTEXT_FACTORY[`INITIAL_CONTEXT_FACTORY`]. If a `factoryName` is specified without a `providerURL`, a warning message will be logged as this is likely to cause problems.
+| The fully qualified class name that should be used to define the Initial Context Factory as defined in
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.naming/javax/naming/Context.html#INITIAL_CONTEXT_FACTORY[`INITIAL_CONTEXT_FACTORY`].
+If a `factoryName` is specified without a `providerURL`, a warning message will be logged as this is likely to cause problems.
 
 | filter
 | Filter
@@ -1222,7 +1224,9 @@ However, configurations written for 2.0 that use the `<JMSQueue/>` or `<JMSTopic
 | providerURL
 | String
 | _Required_
-| The URL of the provider to use as defined by https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Context.html#PROVIDER_URL[PROVIDER_URL]. From Log4j 2.17, only the `java:` protocol is supported.
+| The URL of the provider to use as defined by
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.naming/javax/naming/Context.html#PROVIDER_URL[PROVIDER_URL].
+From Log4j 2.17, only the `java:` protocol is supported.
 
 | destinationBindingName
 | String
@@ -1232,12 +1236,15 @@ However, configurations written for 2.0 that use the `<JMSQueue/>` or `<JMSTopic
 | securityPrincipalName
 | String
 | null
-| The name of the identity of the Principal as specified by https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Context.html#SECURITY_PRINCIPAL[SECURITY_PRINCIPAL]. If a securityPrincipalName is specified without `securityCredentials`, a warning message will be logged as this is likely to cause problems.
+| The name of the identity of the Principal as specified by
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.naming/javax/naming/Context.html#SECURITY_PRINCIPAL[SECURITY_PRINCIPAL].
+If a securityPrincipalName is specified without `securityCredentials`, a warning message will be logged as this is likely to cause problems.
 
 | securityCredentials
 | String
 | null
-| The security credentials for the principal as specified by https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Context.html#SECURITY_CREDENTIALS[SECURITY_CREDENTIALS].
+| The security credentials for the principal as specified by
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.naming/javax/naming/Context.html#SECURITY_CREDENTIALS[SECURITY_CREDENTIALS].
 
 | ignoreExceptions
 | boolean
@@ -1257,7 +1264,8 @@ However, configurations written for 2.0 that use the `<JMSQueue/>` or `<JMSTopic
 | urlPkgPrefixes
 | String
 | null
-| A colon-separated list of package prefixes for the class name of the factory class that will create a URL context factory as defined by https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Context.html#URL_PKG_PREFIXES[URL_PKG_PREFIXES].
+| A colon-separated list of package prefixes for the class name of the factory class that will create a URL context factory as defined by
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.naming/javax/naming/Context.html#URL_PKG_PREFIXES[URL_PKG_PREFIXES].
 
 | userName
 | String
@@ -1495,7 +1503,7 @@ Additional headers can be specified with embedded Property elements.
 It will also wait for a response from the server, and throw an error if no 2xx response is received.
 
 Implemented with
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/HttpURLConnection.html[`HttpURLConnection`].
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/net/HttpURLConnection.html[`HttpURLConnection`].
 
 .HttpAppender Parameters
 [cols="20%,20%,60%",options="header",]
@@ -1693,7 +1701,7 @@ CompositeFilter.
 
 |immediateFlush |boolean a|
 When set to true, each write will be followed by a call to
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/MappedByteBuffer.html#force()[`MappedByteBuffer#force()`].
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/nio/MappedByteBuffer.html#force()[`MappedByteBuffer#force()`].
 This will guarantee the data is written to the storage device.
 
 The default for this parameter is `false`. This means that the data is
@@ -2342,7 +2350,7 @@ All patterns accept also format specifiers, e.g. `%03i` prints the index as zero
 
 will accept both a date/time pattern
 compatible with
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/text/SimpleDateFormat.html[`SimpleDateFormat`]
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/text/SimpleDateFormat.html[`SimpleDateFormat`]
 and/or a %i which represents an integer counter.
 The integer counter
 allows specifying a padding, like %3i for space-padding the counter to
@@ -2393,7 +2401,7 @@ File attribute permissions in POSIX format to apply whenever the file is
 created.
 
 The underlying files system shall support
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[POSIX]
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/nio/file/attribute/PosixFileAttributeView.html[POSIX]
 file attribute view.
 
 Examples: rw------- or rw-rw-rw- etc...
@@ -2409,14 +2417,14 @@ http://www.gnu.org/software/libc/manual/html_node/Options-for-Files.html[_POSIX_
 is in effect for path.
 
 The underlying files system shall support file
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html[owner]
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/nio/file/attribute/FileOwnerAttributeView.html[owner]
 attribute view.
 
 |fileGroup |String a|
 File group to define whenever the file is created.
 
 The underlying files system shall support
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[POSIX]
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/nio/file/attribute/PosixFileAttributeView.html[POSIX]
 file attribute view.
 
 |=======================================================================
@@ -2834,9 +2842,9 @@ Users can create custom conditions or use the built-in conditions:
 
 * <<DeleteIfFileName,`IfFileName`>> - accepts files whose path
 (relative to the base path) matches a
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/regex/Pattern.html[regular
-expression] or a
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)[glob].
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/util/regex/Pattern.html[regular expression]
+or a
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)[glob].
 * <<DeleteIfLastModified,`IfLastModified`>> - accepts files that are as
 old as or older than the specified
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/Duration.html#parse(CharSequence)[duration].
@@ -2877,13 +2885,12 @@ and must return a list with the paths to delete.
 |glob |String |_Required if regex is not specified._ Matches the relative
 path (relative to the base path) using a limited pattern language that
 resembles regular expressions but with a
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)[simpler
-syntax].
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)[simpler syntax].
 
 |regex |String |_Required if glob not specified._ Matches the relative
 path (relative to the base path) using a regular expression as defined
 by the
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/regex/Pattern.html[`Pattern`]
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/util/regex/Pattern.html[`Pattern`]
 class.
 
 |nestedConditions |PathCondition[] |An optional set of nested
@@ -3159,7 +3166,7 @@ File attribute permissions in POSIX format to apply when action is
 executed.
 
 The underlying files system shall support
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[`POSIX`]
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/nio/file/attribute/PosixFileAttributeView.html[`POSIX`]
 file attribute view.
 
 Examples: rw------- or rw-rw-rw- etc...
@@ -3175,14 +3182,14 @@ http://www.gnu.org/software/libc/manual/html_node/Options-for-Files.html[_POSIX_
 is in effect for path.
 
 The underlying files system shall support file
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html[`owner`]
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/nio/file/attribute/FileOwnerAttributeView.html[`owner`]
 attribute view.
 
 |fileGroup |String a|
 File group to define when action is executed.
 
 The underlying files system shall support
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[`POSIX`]
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/nio/file/attribute/PosixFileAttributeView.html[`POSIX`]
 file attribute view.
 
 |=======================================================================
@@ -3262,7 +3269,7 @@ of its parent directories, do not exist, they will be created.
 file. The format of the pattern should is dependent on the
 RolloverPolicy that is used. The DefaultRolloverPolicy will accept both
 a date/time pattern compatible with
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/text/SimpleDateFormat.html[`SimpleDateFormat`]
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/text/SimpleDateFormat.html[`SimpleDateFormat`]
 and/or a %i which represents an integer counter. The pattern also
 supports interpolation at runtime so any of the Lookups (such as the
 xref:manual/lookups.adoc#DateLookup[DateLookup] can be included in the
@@ -3304,7 +3311,7 @@ File attribute permissions in POSIX format to apply whenever the file is
 created.
 
 The underlying files system shall support
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[`POSIX`]
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/nio/file/attribute/PosixFileAttributeView.html[`POSIX`]
 file attribute view.
 
 Examples: `rw-------` or `rw-rw-rw-` etc...
@@ -3320,14 +3327,14 @@ http://www.gnu.org/software/libc/manual/html_node/Options-for-Files.html[_POSIX_
 is in effect for path.
 
 The underlying file system shall support file
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html[`owner`]
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/nio/file/attribute/FileOwnerAttributeView.html[`owner`]
 attribute view.
 
 |fileGroup |String a|
 File group to define whenever the file is created.
 
 The underlying files system shall support
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[`POSIX`]
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/nio/file/attribute/PosixFileAttributeView.html[`POSIX`]
 file attribute view.
 
 |=======================================================================
@@ -4012,7 +4019,7 @@ syslog record.
 
 |charset |String |The character set to use when converting the Syslog
 String to a byte array. The String must be a valid
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/charset/Charset.html[`Charset`].
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/nio/charset/Charset.html[`Charset`].
 If not specified, the default system Charset will be used.
 
 |connectTimeoutMillis |integer |The connect timeout in milliseconds. The

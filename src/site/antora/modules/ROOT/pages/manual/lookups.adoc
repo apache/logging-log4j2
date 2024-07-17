@@ -107,7 +107,7 @@ Lookups can choose to react differently depending on the execution context.
 <<DateLookup>> is such an example:
 
 * When used in a global context, it formats the **current** timestamp obtained through
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/lang/System.html#currentTimeMillis--[`System.currentTimeMillis()`].
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/lang/System.html#currentTimeMillis()[`System.currentTimeMillis()`].
 * When used in the context of an event, it formats the **event** timestamp obtained through
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getTimeMillis()[`LogEvent.getTimeMillis()`].
 
@@ -147,7 +147,7 @@ using the `${prefix:key}` syntax:
 | <<ResourceBundleLookup,`bundle`>>
 |
 | A Java
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/ResourceBundle.html[resource bundle]
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/util/ResourceBundle.html[resource bundle]
 
 | <<ContextMapLookup,`ctx`>>
 |
@@ -257,7 +257,7 @@ where:
 
 `baseName`::
 the base name of a resource bundle (see
-https://docs.oracle.com/javase/8/docs/api/java/util/ResourceBundle.html[`ResourceBundle`]).
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/util/ResourceBundle.html[`ResourceBundle`]).
 
 `key`::
 the key for the resource string.
@@ -327,7 +327,7 @@ See <<lookups-patterns>> for more information.
 | `date:<format>`
 
 where `<format>` is a
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/text/SimpleDateFormat.html[`SimpleDateFormat`] pattern
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/text/SimpleDateFormat.html[`SimpleDateFormat`] pattern
 
 |===
 
@@ -336,7 +336,7 @@ The timestamp used depends on the context:
 
 Global context::
 When used in a global context, the timestamp used is the current system timestamp as returned by
-https://docs.oracle.com/javase/8/docs/api/java/lang/System.html#currentTimeMillis--[`System.currentTimeMillis()`].
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/lang/System.html#currentTimeMillis()[`System.currentTimeMillis()`].
 
 Log event context::
 When used in the context of a log event, the timestamp of the log event is used.
@@ -396,7 +396,7 @@ where `<key>` is any `String`
 |===
 
 The Environment Lookup retrieves the value of the
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/lang/System.html#getenv-java.lang.String-[OS environment variable]
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/lang/System.html#getenv(java.lang.String)[OS environment variable]
 associated with the key.
 
 [#EventLookup]
@@ -510,7 +510,8 @@ The following keys are supported
 | Syntax
 | `jndi:<name>`
 
-where `<name>` is a JNDI https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Name.html[`Name`].
+where `<name>` is a JNDI
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.naming/javax/naming/Name.html[`Name`].
 
 | Dependency | `log4j-jndi`
 |===
@@ -796,7 +797,7 @@ where `<prop>` is any `String`
 |===
 
 The System Properties Lookup retrieves the value of the
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/lang/System.html#getProperties--[Java system property]
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/lang/System.html#getProperties()[Java system property]
 associated with the key.
 
 [#UpperLookup]
