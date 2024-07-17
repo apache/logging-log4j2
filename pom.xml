@@ -319,9 +319,6 @@
          Hence, *DO NOT MANUALLY EDIT THIS VALUE*! -->
     <project.build.outputTimestamp>2024-03-06T09:31:11Z</project.build.outputTimestamp>
 
-    <!-- Enables Predictive Test Selection for the project -->
-    <predictive.test.selection.enabled>false</predictive.test.selection.enabled>
-
     <!-- ========================
          Site-specific properties
          ======================== -->
@@ -943,6 +940,19 @@
     </profile>
 
     <profile>
+      <id>rerun-tests</id>
+      <activation>
+        <property>
+          <name>env.CI</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <properties>
+        <surefire.rerunFailingTestsCount>2</surefire.rerunFailingTestsCount>
+      </properties>
+    </profile>
+
+    <profile>
       <id>sequential-tests</id>
       <build>
         <plugins>
@@ -993,40 +1003,6 @@
       </build>
     </profile>
 
-    <profile>
-      <!-- These settings cause a build failure if the Develocity extension is absent.
-
-           Due to a bug in Develocity, we disable Develocity by removing the `.mvn/extensions.xml` file
-           in the `deploy-site` run.
-           The removal of the file will also disable this profile.
-      -->
-      <id>predictive-test-selection</id>
-
-      <activation>
-        <file>
-          <exists>${maven.multiModuleProjectDirectory}/.mvn/extensions.xml</exists>
-        </file>
-      </activation>
-
-      <build>
-        <plugins>
-
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <properties>
-                <predictiveSelection>
-                  <enabled>${predictive.test.selection.enabled}</enabled>
-                </predictiveSelection>
-              </properties>
-            </configuration>
-          </plugin>
-
-        </plugins>
-      </build>
-
-    </profile>
   </profiles>
 
 </project>

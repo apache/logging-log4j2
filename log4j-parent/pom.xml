@@ -55,7 +55,7 @@
     <exam-maven-plugin.version>4.13.5</exam-maven-plugin.version>
     <maven-taglib-plugin.version>2.4</maven-taglib-plugin.version>
     <!-- `surefire.version` property used in `apache.org:apache`: -->
-    <surefire.version>3.3.0</surefire.version>
+    <surefire.version>3.3.1</surefire.version>
 
     <!-- =====================================================
          Direct dependency version properties (in alphabetical order)
@@ -68,7 +68,7 @@
     <bsh.version>2.0b6</bsh.version>
     <cassandra.version>3.11.17</cassandra.version>
     <cassandra-driver.version>3.11.5</cassandra-driver.version>
-    <commons-codec.version>1.17.0</commons-codec.version>
+    <commons-codec.version>1.17.1</commons-codec.version>
     <commons-compress.version>1.26.2</commons-compress.version>
     <commons-csv.version>1.11.0</commons-csv.version>
     <commons-dbcp2.version>2.12.0</commons-dbcp2.version>
@@ -78,10 +78,10 @@
     <!-- `com.conversantmedia:disruptor` version 1.2.16 requires Java 9: -->
     <conversant.disruptor.version>1.2.15</conversant.disruptor.version>
     <disruptor.version>3.4.4</disruptor.version>
-    <elasticsearch-java.version>8.14.2</elasticsearch-java.version>
+    <elasticsearch-java.version>8.14.3</elasticsearch-java.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <felix.version>7.0.5</felix.version>
-    <flapdoodle-embed.version>4.12.0</flapdoodle-embed.version>
+    <flapdoodle-embed.version>4.13.0</flapdoodle-embed.version>
     <flapdoodle-reverse.version>1.7.2</flapdoodle-reverse.version>
     <flume.version>1.11.0</flume.version>
     <groovy.version>3.0.22</groovy.version>

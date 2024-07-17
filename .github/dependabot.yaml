@@ -81,16 +81,16 @@ updates:
         update-types: [ "version-update:semver-major" ]
       # Apache Cassandra: keep version 3.x
       - dependency-name: "org.apache.cassandra:*"
-        versions: [ "[4.0.0,)" ]
+        versions: [ "[4,)" ]
       # Kubernetes: keep version 5.x
       - dependency-name: "io.fabric8:*"
-        versions: [ "[6.0.0,)" ]
+        versions: [ "[6,)" ]
       # `com.conversantmedia:disruptor` 1.2.16 requires Java 9
       - dependency-name: "com.conversantmedia:disruptor"
         versions: [ "[1.2.16,)" ]
       # Keep Jakarta EE at version 9.0
       - dependency-name: "jakarta.platform:*"
-        versions: [ "[10.0.0,)" ]
+        versions: [ "[10,)" ]
       # OpenRewrite is quite noisy. Let us skip patch and minor updates:
       - dependency-name: "org.openrewrite:*"
         update-types: [ "version-update:semver-minor", "version-update:semver-patch" ]
@@ -100,25 +100,28 @@ updates:
         update-types: [ "version-update:semver-minor", "version-update:semver-patch" ]
       # Json Unit 3.x requires Java 17
       - dependency-name: "net.javacrumbs.json-unit:*"
-        versions: [ "[3.0.0,)" ]
+        versions: [ "[3,)" ]
       # Update both `disruptor.version` to latest 3.x version
       # and `disruptor4.version` to latest 4.x version
       - dependency-name: "com.lmax:disruptor"
         update-types: [ "version-update:semver-major" ]
       # WebCompere System Stubs requires Java 11
       - dependency-name: "uk.org.webcompere:*"
-        versions: [ "2.1.0,)" ]
+        versions: [ "[2.1,)" ]
       # SLF4J 1.7.x should only upgrade to 1.7.x and
       # SLF4J 2.x should only upgrade to 2.x.
       - dependency-name: "org.slf4j:slf4j-api"
         update-types: [ "version-update:semver-major" ]
       # Plexus Utils 4.x are for Maven 4.x
       - dependency-name: "org.codehaus.plexus:plexus-utils"
-        versions: [ "4,)" ]
+        versions: [ "[4,)" ]
       # MongoDB 3.x should only upgrade to 3.x and
       # MongoDB 4.x should only upgrade to 4.x
       - dependency-name: "org.mongodb:*"
         update-types: [ "version-update:semver-major" ]
+      # H2 version 2.3.x requires Java 11
+      - dependency-name: "com.h2database:h2"
+        versions: [ "[2.3,)" ]
 
   - package-ecosystem: github-actions
     directory: "/"
@@ -141,33 +144,9 @@ updates:
     registries:
       - maven-central
     ignore:
-      # Jetty 10.x does not have an internal logging API
-      - dependency-name: "org.eclipse.jetty:*"
-        update-types: [ "version-update:semver-major" ]
-      # EclipseLink 3.x is Jakarta EE 9
-      - dependency-name: "org.eclipse.persistence:*"
-        update-types: [ "version-update:semver-major" ]
-      # Spring 6.x is Jakarta EE 9
-      - dependency-name: "org.springframework:*"
-        update-types: [ "version-update:semver-major" ]
-      # Spring Boot 3.x is Jakarta EE 9
-      - dependency-name: "org.springframework.boot:*"
-        update-types: [ "version-update:semver-major" ]
-      # Spring Cloud 2022.x is Jakarta EE 9
-      - dependency-name: "org.springframework.cloud:*"
-        update-types: [ "version-update:semver-major" ]
-      # Keep Logback version 1.2.x
-      - dependency-name: "ch.qos.logback:*"
-        update-types: [ "version-update:semver-major", "version-update:semver-minor" ]
-      # Apache Cassandra: keep version 3.x
-      - dependency-name: "org.apache.cassandra:*"
-        versions: [ "[4.0.0,)" ]
-      # Kubernetes: keep version 5.x
-      - dependency-name: "io.fabric8:*"
-        versions: [ "[6.0.0,)" ]
       # Keep Jakarta EE at version 9.0
       - dependency-name: "jakarta.platform:*"
-        versions: [ "[10.0.0,)" ]
+        versions: [ "[10,)" ]
       # OpenRewrite is quite noisy. Let us skip patch and minor updates:
       - dependency-name: "org.openrewrite:*"
         update-types: [ "version-update:semver-minor", "version-update:semver-patch" ]
@@ -175,9 +154,6 @@ updates:
         update-types: [ "version-update:semver-minor", "version-update:semver-patch" ]
       - dependency-name: "org.openrewrite.recipe:*"
         update-types: [ "version-update:semver-minor", "version-update:semver-patch" ]
-      # Json Unit 3.x requires Java 17
-      - dependency-name: "net.javacrumbs.json-unit:*"
-        versions: [ "[3.0.0,)" ]
       # SLF4J 1.7.x should only upgrade to 1.7.x and
       # SLF4J 2.x should only upgrade to 2.x.
       - dependency-name: "org.slf4j:slf4j-api"
