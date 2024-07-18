@@ -481,7 +481,9 @@ While the time unit is milliseconds, the granularity depends on the platform.
 This is an efficient way to output the event time because only a conversion from `long` to `String` takes place, there is no `Date` formatting involved.
 
 There is also limited support for timestamps more precise than milliseconds when running on Java 9 or later.
-Note that not all https://docs.oracle.com/javase/9/docs/api/java/time/format/DateTimeFormatter.html[`DateTimeFormatter`] formats are supported.
+Note that not all
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/format/DateTimeFormatter.html[`DateTimeFormatter`]
+formats are supported.
 Only timestamps in the formats mentioned in the table above may use the _nano-of-second_ pattern letter `n` instead of the _fraction-of-second_ pattern letter `S`.
 
 Users may revert to a millisecond-precision clock when running on Java 9 by setting xref:manual/systemproperties.adoc#log4j2.clock[the `log4j2.clock` system property] to `SystemMillisClock`.

@@ -21,7 +21,7 @@ Licensed to the Apache Software Foundation (ASF) under one or more
 
 {log4j1-url}/index.html[Log4j 1]
 has reached **End of Life** in 2015 (see
-https://blogs.apache.org/foundation/entry/apache_logging_services_project_announces[announcement])
+https://news.apache.org/foundation/entry/apache_logging_services_project_announces[announcement])
 and is no longer supported.
 
 Since Log4j 2 has been rewritten from scratch, it introduces many breaking changes to its predecessor.

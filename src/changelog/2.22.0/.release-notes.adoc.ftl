@@ -33,6 +33,8 @@ Generated SBOMs are attached as artifacts with `cyclonedx` classifier and XML ex
 They contain `vulnerability-assertion` references to a {cyclonedx-vdr-link} that Apache Logging Services uses for all projects it maintains.
 This VDR is accessible through the following URL: https://logging.apache.org/cyclonedx/vdr.xml[]
 
-SBOM generation is streamlined by `logging-parent`, see https://logging.apache.org/logging-parent/latest/#cyclonedx-sbom[its website] for details.
+SBOM generation is streamlined by `logging-parent`, see
+https://logging.apache.org/logging-parent/features.html#cyclonedx-sbom[its website]
+for details.
 
 <#include "../.changelog.adoc.ftl">

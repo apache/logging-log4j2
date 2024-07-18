@@ -3,7 +3,7 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="1591" link="https://github.com/apache/logging-log4j2/issues/1591"/>
+  <issue id="1591" link="https://github.com/apache/logging-log4j2/pull/1591"/>
   <description format="asciidoc">
     Update Spring Framework to version https://github.com/spring-projects/spring-framework/releases/tag/v5.3.29[5.3.29]
   </description>

@@ -1330,7 +1330,9 @@ However, configurations written for 2.0 that use the `<JMSQueue/>` or `<JMSTopic
 | factoryBindingName
 | String
 | _Required_
-| The name to locate in the Context that provides the https://download.oracle.com/javaee/5/api/javax/jms/ConnectionFactory.html[ConnectionFactory]. This can be any subinterface of `ConnectionFactory` as well.
+| The name to locate in the Context that provides the
+https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/connectionfactory[ConnectionFactory].
+This can be any subinterface of `ConnectionFactory` as well.
 
 | factoryName
 | String
@@ -1365,7 +1367,9 @@ However, configurations written for 2.0 that use the `<JMSQueue/>` or `<JMSTopic
 | destinationBindingName
 | String
 | _Required_
-| The name to use to locate the https://download.oracle.com/javaee/5/api/javax/jms/Destination.html[Destination]. This can be a `Queue` or `Topic`, and as such, the attribute names `queueBindingName` and `topicBindingName` are aliases to maintain compatibility with the Log4j 2.0 JMS appenders.
+| The name to use to locate the
+https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/destination[Destination].
+This can be a `Queue` or `Topic`, and as such, the attribute names `queueBindingName` and `topicBindingName` are aliases to maintain compatibility with the Log4j 2.0 JMS appenders.
 
 | securityPrincipalName
 | String

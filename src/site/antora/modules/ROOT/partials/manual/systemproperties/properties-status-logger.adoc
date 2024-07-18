@@ -58,7 +58,7 @@ Can be overridden by <<log4j2.debug>>.
 [cols="1h,5"]
 |===
 | Env. variable | `LOG4J_STATUS_LOGGER_DATE_FORMAT`
-| Type          | https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/format/DateTimeFormatter[`DateTimeFormatter`] pattern
+| Type          | https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/format/DateTimeFormatter.html[`DateTimeFormatter`] pattern
 | Default value | https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/format/DateTimeFormatter.html#ISO_INSTANT[`DateTimeFormatter.ISO_INSTANT`]
 |===
 

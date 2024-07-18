@@ -225,7 +225,9 @@ link:../javadoc/log4j-api/org/apache/logging/log4j/util/PropertySource.html[`Pro
 
 Additional property source classes can be added through:
 
-* the standard Java SE https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/util/ServiceLoader.html[`ServiceLoader`] mechanism,
+* the standard Java SE
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/ServiceLoader.html[`ServiceLoader`]
+mechanism,
 * programmatically using `addPropertySource()` and `removePropertySource()` static methods of `PropertiesUtil`.
 
 Each property source can define its own naming convention for property names, although most of them support the standard:

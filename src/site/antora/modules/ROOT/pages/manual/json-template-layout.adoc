@@ -167,7 +167,8 @@ JSON Template Layout generates JSON as follows:
 <1> JSON pretty-printing is not supported for performance reasons.
 
 Good news is *JSON Template Layout is perfectly production-ready without any configuration!*
-The event template defaults to `EcsLayout.json`, bundled in the classpath, modelling https://www.elastic.co/guide/en/ecs/current/ecs-reference.html[the Elastic Common Schema (ECS) specification].
+The event template defaults to `EcsLayout.json`, bundled in the classpath, modelling
+https://www.elastic.co/guide/en/ecs/current/ecs-reference.html[the Elastic Common Schema (ECS) specification].
 JSON Template Layout bundles several more <<event-templates,predefined event templates>> modeling popular JSON-based log formats.
 
 [#config]
@@ -202,7 +203,8 @@ JSON Template Layout plugin configuration accepts the following attributes:
 
 [WARNING]
 ====
-While https://datatracker.ietf.org/doc/html/rfc4627#section-3[RFC 4627, the JSON specification, supports multiple Unicode encodings], we strongly advise you to stick to the layout default, and use UTF-8 for https://stackoverflow.com/a/594881/1278899[several practical reasons].
+While https://datatracker.ietf.org/doc/html/rfc4627#section-3[RFC 4627, the JSON specification, supports multiple Unicode encodings], we strongly advise you to stick to the layout default, and use UTF-8 for
+https://stackoverflow.com/questions/583562/json-character-encoding-is-utf-8-well-supported-by-browsers-or-should-i-use-nu/594881#594881[several practical reasons].
 ====
 
 [#plugin-attr-locationInfoEnabled]
@@ -465,7 +467,8 @@ Templates are configured by means of the following JSON Template Layout plugin a
 JSON Template Layout contains the following predefined event templates:
 
 {project-github-url}/tree/2.x/log4j-layout-template-json/src/main/resources/EcsLayout.json[`EcsLayout.json`]::
-The **default event template** modelling https://www.elastic.co/guide/en/ecs/current/ecs-reference.html[the Elastic Common Schema (ECS) specification]
+The **default event template** modelling
+https://www.elastic.co/guide/en/ecs/current/ecs-reference.html[the Elastic Common Schema (ECS) specification]
 
 {project-github-url}/tree/2.x/log4j-layout-template-json/src/main/resources/LogstashJsonEventLayoutV1.json[`LogstashJsonEventLayoutV1.json`]::
 Models https://github.com/logstash/log4j-jsonevent-layout[Logstash `json_event` pattern for Log4j]
@@ -1082,7 +1085,9 @@ Resolve the message such that if it is an `ObjectMessage` or a `MultiformatMessa
 ----
 
 Given the above configuration, a `SimpleMessage` will generate a `"sample log message"`, whereas a `MapMessage` will generate a `{"action": "login", "sessionId": "87asd97a"}`.
-Certain indexed log storage systems (e.g., https://www.elastic.co/elasticsearch/[Elasticsearch]) will not allow both values to coexist due to type mismatch: one is a `string` while the other is an `object`.
+Certain indexed log storage systems (e.g.,
+https://www.elastic.co/elasticsearch[Elasticsearch])
+will not allow both values to coexist due to type mismatch: one is a `string` while the other is an `object`.
 Here one can use a `fallbackKey` to work around this problem:
 
 [source,json]

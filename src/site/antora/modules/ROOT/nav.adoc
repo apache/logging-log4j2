@@ -17,8 +17,8 @@
 
 * xref:download.adoc[Download]
 ** xref:release-notes.adoc[]
-* link:{logging-services-url}/support[Support]
-** link:{logging-services-url}/security[Security]
+* link:{logging-services-url}/support.html[Support]
+** link:{logging-services-url}/security.html[Security]
 
 .xref:manual/index.adoc[]
 * xref:manual/getting-started.adoc[]
@@ -83,9 +83,9 @@
 * xref:log4j-to-jul.adoc[]
 
 .Related projects
-* {logging-services-url}/log4j/jakarta[Log4j Jakarta EE]
-* {logging-services-url}/log4j/jmx-gui[Log4j JMX GUI]
-* {logging-services-url}/log4j/kotlin[Log4j Kotlin]
-* {logging-services-url}/log4j/scala[Log4j Scala]
-* {logging-services-url}/log4j/tools[Log4j Tools]
-* {logging-services-url}/log4j/transform[Log4j Transformation Tools]
+* {logging-services-url}/log4j/jakarta/index.html[Log4j Jakarta EE]
+* {logging-services-url}/log4j/jmx-gui/index.html[Log4j JMX GUI]
+* {logging-services-url}/log4j/kotlin/index.html[Log4j Kotlin]
+* {logging-services-url}/log4j/scala/index.html[Log4j Scala]
+* {logging-services-url}/log4j/tools/index.html[Log4j Tools]
+* {logging-services-url}/log4j/transform/index.html[Log4j Transformation Tools]
