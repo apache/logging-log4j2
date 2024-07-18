@@ -48,6 +48,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.instrumentation.InstrumentationService;
 import org.apache.logging.log4j.spi.AbstractLogger;
 
 /**
@@ -121,7 +122,9 @@ public final class AsyncAppender extends AbstractAppender {
         } else if (errorRef == null) {
             throw new ConfigurationException("No appenders are available for AsyncAppender " + getName());
         }
-        asyncQueueFullPolicy = AsyncQueueFullPolicyFactory.create();
+        asyncQueueFullPolicy = InstrumentationService.getInstance()
+                .instrumentQueueFullPolicy(
+                        InstrumentationService.ASYNC_APPENDER, getName(), AsyncQueueFullPolicyFactory.create());
 
         dispatcher.start();
         super.start();

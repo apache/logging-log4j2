@@ -41,12 +41,14 @@ import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.instrumentation.InstrumentationService;
 import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.ExecutorServices;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
@@ -800,6 +802,12 @@ public class LoggerContext extends AbstractLifeCycle
 
     // LOG4J2-151: changed visibility from private to protected
     protected Logger newInstance(final LoggerContext ctx, final String name, final MessageFactory messageFactory) {
-        return new Logger(ctx, name, messageFactory);
+        // TODO: Adapt after
+        //           https://github.com/apache/logging-log4j2/issues/2379
+        //       is fixed.
+        final MessageFactory actualMessageFactory = InstrumentationService.getInstance()
+                .instrumentMessageFactory(
+                        name, messageFactory != null ? messageFactory : ParameterizedMessageFactory.INSTANCE);
+        return new Logger(ctx, name, actualMessageFactory);
     }
 }
