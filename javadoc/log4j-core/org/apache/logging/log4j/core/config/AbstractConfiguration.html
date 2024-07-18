@@ -123,12 +123,12 @@ implements <a href="Configuration.html" title="interface in org.apache.logging.l
 <div class="col-last even-row-color">
 <div class="block">The configuration processor for transforming a node tree into plugin instances.</div>
 </div>
-<div class="col-first odd-row-color"><code>protected <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/model/PluginNamespace.html" title="class or interface in org.apache.logging.log4j.plugins.model" class="external-link">PluginNamespace</a></code></div>
+<div class="col-first odd-row-color"><code>protected <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/model/PluginNamespace.html" title="class or interface in org.apache.logging.log4j.plugins.model" class="external-link">PluginNamespace</a></code></div>
 <div class="col-second odd-row-color"><code><a href="#corePlugins" class="member-name-link">corePlugins</a></code></div>
 <div class="col-last odd-row-color">
 <div class="block">Core plugins.</div>
 </div>
-<div class="col-first even-row-color"><code>protected final <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/di/ConfigurableInstanceFactory.html" title="class or interface in org.apache.logging.log4j.plugins.di" class="external-link">ConfigurableInstanceFactory</a></code></div>
+<div class="col-first even-row-color"><code>protected final <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/di/ConfigurableInstanceFactory.html" title="class or interface in org.apache.logging.log4j.plugins.di" class="external-link">ConfigurableInstanceFactory</a></code></div>
 <div class="col-second even-row-color"><code><a href="#instanceFactory" class="member-name-link">instanceFactory</a></code></div>
 <div class="col-last even-row-color">
 <div class="block">The instance factory for this configuration.</div>
@@ -143,7 +143,7 @@ implements <a href="Configuration.html" title="interface in org.apache.logging.l
 <div class="col-last even-row-color">
 <div class="block">Listeners for configuration changes.</div>
 </div>
-<div class="col-first odd-row-color"><code>protected <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a></code></div>
+<div class="col-first odd-row-color"><code>protected <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a></code></div>
 <div class="col-second odd-row-color"><code><a href="#rootNode" class="member-name-link">rootNode</a></code></div>
 <div class="col-last odd-row-color">
 <div class="block">The root node of the configuration.</div>
@@ -179,8 +179,8 @@ implements <a href="Configuration.html" title="interface in org.apache.logging.l
 <div class="col-first even-row-color"><code>protected </code></div>
 <div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.apache.logging.log4j.core.LoggerContext,org.apache.logging.log4j.core.config.ConfigurationSource,org.apache.logging.log4j.kit.env.PropertyEnvironment,org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory)" class="member-name-link">AbstractConfiguration</a><wbr>(@Nullable <a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a>&nbsp;loggerContext,
  <a href="ConfigurationSource.html" title="class in org.apache.logging.log4j.core.config">ConfigurationSource</a>&nbsp;configurationSource,
- <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/kit/env/PropertyEnvironment.html" title="class or interface in org.apache.logging.log4j.kit.env" class="external-link">PropertyEnvironment</a>&nbsp;environment,
- <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/di/ConfigurableInstanceFactory.html" title="class or interface in org.apache.logging.log4j.plugins.di" class="external-link">ConfigurableInstanceFactory</a>&nbsp;parentInstanceFactory)</code></div>
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-kit/org/apache/logging/log4j/kit/env/PropertyEnvironment.html" title="class or interface in org.apache.logging.log4j.kit.env" class="external-link">PropertyEnvironment</a>&nbsp;environment,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/di/ConfigurableInstanceFactory.html" title="class or interface in org.apache.logging.log4j.plugins.di" class="external-link">ConfigurableInstanceFactory</a>&nbsp;parentInstanceFactory)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code>protected </code></div>
 <div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(org.apache.logging.log4j.core.LoggerContext,org.apache.logging.log4j.core.config.ConfigurationSource)" class="member-name-link">AbstractConfiguration</a><wbr>(<a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a>&nbsp;loggerContext,
@@ -247,11 +247,11 @@ implements <a href="Configuration.html" title="interface in org.apache.logging.l
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;contentType)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createConfiguration(org.apache.logging.log4j.plugins.Node,org.apache.logging.log4j.core.LogEvent)" class="member-name-link">createConfiguration</a><wbr>(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a>&nbsp;node,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createConfiguration(org.apache.logging.log4j.plugins.Node,org.apache.logging.log4j.core.LogEvent)" class="member-name-link">createConfiguration</a><wbr>(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a>&nbsp;node,
  <a href="../LogEvent.html" title="interface in org.apache.logging.log4j.core">LogEvent</a>&nbsp;event)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createPluginObject(org.apache.logging.log4j.plugins.Node)" class="member-name-link">createPluginObject</a><wbr>(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a>&nbsp;node)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createPluginObject(org.apache.logging.log4j.plugins.Node)" class="member-name-link">createPluginObject</a><wbr>(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a>&nbsp;node)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">This method is used by Arbiters to create specific children.</div>
 </div>
@@ -282,7 +282,7 @@ implements <a href="Configuration.html" title="interface in org.apache.logging.l
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../lookup/StrSubstitutor.html" title="class in org.apache.logging.log4j.core.lookup">StrSubstitutor</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getConfigurationStrSubstitutor()" class="member-name-link">getConfigurationStrSubstitutor</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/model/PluginNamespace.html" title="class or interface in org.apache.logging.log4j.plugins.model" class="external-link">PluginNamespace</a></code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/model/PluginNamespace.html" title="class or interface in org.apache.logging.log4j.plugins.model" class="external-link">PluginNamespace</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getCorePlugins()" class="member-name-link">getCorePlugins</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="CustomLevelConfig.html" title="class in org.apache.logging.log4j.core.config">CustomLevelConfig</a>&gt;</code></div>
@@ -294,7 +294,7 @@ implements <a href="Configuration.html" title="interface in org.apache.logging.l
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected org.apache.logging.log4j.Level</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getDefaultStatus()" class="member-name-link">getDefaultStatus</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/kit/env/PropertyEnvironment.html" title="class or interface in org.apache.logging.log4j.kit.env" class="external-link">PropertyEnvironment</a></code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-kit/org/apache/logging/log4j/kit/env/PropertyEnvironment.html" title="class or interface in org.apache.logging.log4j.kit.env" class="external-link">PropertyEnvironment</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getEnvironment()" class="member-name-link">getEnvironment</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns the <a href="../LoggerContext.html#getEnvironment()">context properties</a>
@@ -306,9 +306,9 @@ implements <a href="Configuration.html" title="interface in org.apache.logging.l
 <div class="block">Returns an extension of the given type.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;T&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getFactory(org.apache.logging.log4j.plugins.di.Key)" class="member-name-link">getFactory</a><wbr>(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/di/Key.html" title="class or interface in org.apache.logging.log4j.plugins.di" class="external-link">Key</a>&lt;T&gt;&nbsp;key)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getFactory(org.apache.logging.log4j.plugins.di.Key)" class="member-name-link">getFactory</a><wbr>(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/di/Key.html" title="class or interface in org.apache.logging.log4j.plugins.di" class="external-link">Key</a>&lt;T&gt;&nbsp;key)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/di/ConfigurableInstanceFactory.html" title="class or interface in org.apache.logging.log4j.plugins.di" class="external-link">ConfigurableInstanceFactory</a></code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/di/ConfigurableInstanceFactory.html" title="class or interface in org.apache.logging.log4j.plugins.di" class="external-link">ConfigurableInstanceFactory</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getInstanceFactory()" class="member-name-link">getInstanceFactory</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="LoggerConfig.html" title="class in org.apache.logging.log4j.core.config">LoggerConfig</a></code></div>
@@ -354,7 +354,7 @@ implements <a href="Configuration.html" title="interface in org.apache.logging.l
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns the root Logger.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a></code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getRootNode()" class="member-name-link">getRootNode</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="ConfigurationScheduler.html" title="class in org.apache.logging.log4j.core.config">ConfigurationScheduler</a></code></div>
@@ -388,17 +388,17 @@ implements <a href="Configuration.html" title="interface in org.apache.logging.l
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isShutdownHookEnabled()" class="member-name-link">isShutdownHookEnabled</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#preConfigure(org.apache.logging.log4j.plugins.Node)" class="member-name-link">preConfigure</a><wbr>(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a>&nbsp;node)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#preConfigure(org.apache.logging.log4j.plugins.Node)" class="member-name-link">preConfigure</a><wbr>(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a>&nbsp;node)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#processConditionals(org.apache.logging.log4j.plugins.Node)" class="member-name-link">processConditionals</a><wbr>(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a>&nbsp;node)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#processConditionals(org.apache.logging.log4j.plugins.Node)" class="member-name-link">processConditionals</a><wbr>(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a>&nbsp;node)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Process conditions by evaluating them and including the children of conditions that are true
  and discarding those that are not.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#processSelect(org.apache.logging.log4j.plugins.Node,org.apache.logging.log4j.plugins.model.PluginType)" class="member-name-link">processSelect</a><wbr>(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a>&nbsp;selectNode,
- <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/model/PluginType.html" title="class or interface in org.apache.logging.log4j.plugins.model" class="external-link">PluginType</a>&lt;?&gt;&nbsp;type)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#processSelect(org.apache.logging.log4j.plugins.Node,org.apache.logging.log4j.plugins.model.PluginType)" class="member-name-link">processSelect</a><wbr>(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a>&nbsp;selectNode,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/model/PluginType.html" title="class or interface in org.apache.logging.log4j.plugins.model" class="external-link">PluginType</a>&lt;?&gt;&nbsp;type)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Handle Select nodes.</div>
 </div>
@@ -421,11 +421,11 @@ implements <a href="Configuration.html" title="interface in org.apache.logging.l
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAdvertiser(org.apache.logging.log4j.core.net.Advertiser)" class="member-name-link">setAdvertiser</a><wbr>(<a href="../net/Advertiser.html" title="interface in org.apache.logging.log4j.core.net">Advertiser</a>&nbsp;advertiser)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T&gt;&nbsp;void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setComponent(org.apache.logging.log4j.plugins.di.Key,java.util.function.Supplier)" class="member-name-link">setComponent</a><wbr>(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/di/Key.html" title="class or interface in org.apache.logging.log4j.plugins.di" class="external-link">Key</a>&lt;T&gt;&nbsp;key,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setComponent(org.apache.logging.log4j.plugins.di.Key,java.util.function.Supplier)" class="member-name-link">setComponent</a><wbr>(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/di/Key.html" title="class or interface in org.apache.logging.log4j.plugins.di" class="external-link">Key</a>&lt;T&gt;&nbsp;key,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;? extends T&gt;&nbsp;supplier)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setCorePlugins(org.apache.logging.log4j.plugins.model.PluginNamespace)" class="member-name-link">setCorePlugins</a><wbr>(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Namespace.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@Namespace</a>("Core") <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/model/PluginNamespace.html" title="class or interface in org.apache.logging.log4j.plugins.model" class="external-link">PluginNamespace</a>&nbsp;corePlugins)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setCorePlugins(org.apache.logging.log4j.plugins.model.PluginNamespace)" class="member-name-link">setCorePlugins</a><wbr>(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Namespace.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@Namespace</a>("Core") <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/model/PluginNamespace.html" title="class or interface in org.apache.logging.log4j.plugins.model" class="external-link">PluginNamespace</a>&nbsp;corePlugins)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setLoggerAdditive(org.apache.logging.log4j.core.Logger,boolean)" class="member-name-link">setLoggerAdditive</a><wbr>(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
@@ -498,7 +498,7 @@ implements <a href="Configuration.html" title="interface in org.apache.logging.l
 <li>
 <section class="detail" id="instanceFactory">
 <h3>instanceFactory</h3>
-<div class="member-signature"><span class="modifiers">protected final</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/di/ConfigurableInstanceFactory.html" title="class or interface in org.apache.logging.log4j.plugins.di" class="external-link">ConfigurableInstanceFactory</a></span>&nbsp;<span class="element-name">instanceFactory</span></div>
+<div class="member-signature"><span class="modifiers">protected final</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/di/ConfigurableInstanceFactory.html" title="class or interface in org.apache.logging.log4j.plugins.di" class="external-link">ConfigurableInstanceFactory</a></span>&nbsp;<span class="element-name">instanceFactory</span></div>
 <div class="block">The instance factory for this configuration. This may be a child factory to a LoggerContext
  in most cases, though this might be a root level factory for null configurations.</div>
 </section>
@@ -513,7 +513,7 @@ implements <a href="Configuration.html" title="interface in org.apache.logging.l
 <li>
 <section class="detail" id="rootNode">
 <h3>rootNode</h3>
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a></span>&nbsp;<span class="element-name">rootNode</span></div>
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a></span>&nbsp;<span class="element-name">rootNode</span></div>
 <div class="block">The root node of the configuration.</div>
 </section>
 </li>
@@ -527,7 +527,7 @@ implements <a href="Configuration.html" title="interface in org.apache.logging.l
 <li>
 <section class="detail" id="corePlugins">
 <h3>corePlugins</h3>
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/model/PluginNamespace.html" title="class or interface in org.apache.logging.log4j.plugins.model" class="external-link">PluginNamespace</a></span>&nbsp;<span class="element-name">corePlugins</span></div>
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/model/PluginNamespace.html" title="class or interface in org.apache.logging.log4j.plugins.model" class="external-link">PluginNamespace</a></span>&nbsp;<span class="element-name">corePlugins</span></div>
 <div class="block">Core plugins.</div>
 </section>
 </li>
@@ -573,8 +573,8 @@ implements <a href="Configuration.html" title="interface in org.apache.logging.l
 <h3>AbstractConfiguration</h3>
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="element-name">AbstractConfiguration</span><wbr><span class="parameters">(@Nullable <a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a>&nbsp;loggerContext,
  <a href="ConfigurationSource.html" title="class in org.apache.logging.log4j.core.config">ConfigurationSource</a>&nbsp;configurationSource,
- <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/kit/env/PropertyEnvironment.html" title="class or interface in org.apache.logging.log4j.kit.env" class="external-link">PropertyEnvironment</a>&nbsp;environment,
- <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/di/ConfigurableInstanceFactory.html" title="class or interface in org.apache.logging.log4j.plugins.di" class="external-link">ConfigurableInstanceFactory</a>&nbsp;parentInstanceFactory)</span></div>
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-kit/org/apache/logging/log4j/kit/env/PropertyEnvironment.html" title="class or interface in org.apache.logging.log4j.kit.env" class="external-link">PropertyEnvironment</a>&nbsp;environment,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/di/ConfigurableInstanceFactory.html" title="class or interface in org.apache.logging.log4j.plugins.di" class="external-link">ConfigurableInstanceFactory</a>&nbsp;parentInstanceFactory)</span></div>
 </section>
 </li>
 </ul>
@@ -620,13 +620,13 @@ implements <a href="Configuration.html" title="interface in org.apache.logging.l
 <li>
 <section class="detail" id="getInstanceFactory()">
 <h3>getInstanceFactory</h3>
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/di/ConfigurableInstanceFactory.html" title="class or interface in org.apache.logging.log4j.plugins.di" class="external-link">ConfigurableInstanceFactory</a></span>&nbsp;<span class="element-name">getInstanceFactory</span>()</div>
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/di/ConfigurableInstanceFactory.html" title="class or interface in org.apache.logging.log4j.plugins.di" class="external-link">ConfigurableInstanceFactory</a></span>&nbsp;<span class="element-name">getInstanceFactory</span>()</div>
 </section>
 </li>
 <li>
 <section class="detail" id="getEnvironment()">
 <h3>getEnvironment</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/kit/env/PropertyEnvironment.html" title="class or interface in org.apache.logging.log4j.kit.env" class="external-link">PropertyEnvironment</a></span>&nbsp;<span class="element-name">getEnvironment</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-kit/org/apache/logging/log4j/kit/env/PropertyEnvironment.html" title="class or interface in org.apache.logging.log4j.kit.env" class="external-link">PropertyEnvironment</a></span>&nbsp;<span class="element-name">getEnvironment</span>()</div>
 <div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="Configuration.html#getEnvironment()">Configuration</a></code></span></div>
 <div class="block">Returns the <a href="../LoggerContext.html#getEnvironment()">context properties</a>
  associated with the logger context for this configuration.</div>
@@ -651,22 +651,22 @@ implements <a href="Configuration.html" title="interface in org.apache.logging.l
 <li>
 <section class="detail" id="setScriptManager(org.apache.logging.log4j.core.script.ScriptManager)">
 <h3>setScriptManager</h3>
-<div class="member-signature"><span class="annotations"><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Inject.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@Inject</a>
+<div class="member-signature"><span class="annotations"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Inject.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@Inject</a>
 </span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setScriptManager</span><wbr><span class="parameters">(<a href="../script/ScriptManager.html" title="interface in org.apache.logging.log4j.core.script">ScriptManager</a>&nbsp;scriptManager)</span></div>
 </section>
 </li>
 <li>
 <section class="detail" id="getCorePlugins()">
 <h3>getCorePlugins</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/model/PluginNamespace.html" title="class or interface in org.apache.logging.log4j.plugins.model" class="external-link">PluginNamespace</a></span>&nbsp;<span class="element-name">getCorePlugins</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/model/PluginNamespace.html" title="class or interface in org.apache.logging.log4j.plugins.model" class="external-link">PluginNamespace</a></span>&nbsp;<span class="element-name">getCorePlugins</span>()</div>
 </section>
 </li>
 <li>
 <section class="detail" id="setCorePlugins(org.apache.logging.log4j.plugins.model.PluginNamespace)">
 <h3>setCorePlugins</h3>
-<div class="member-signature"><span class="annotations"><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Inject.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@Inject</a>
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setCorePlugins</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Namespace.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@Namespace</a>("Core")
- <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Namespace.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@Namespace</a>("Core") <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/model/PluginNamespace.html" title="class or interface in org.apache.logging.log4j.plugins.model" class="external-link">PluginNamespace</a>&nbsp;corePlugins)</span></div>
+<div class="member-signature"><span class="annotations"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Inject.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@Inject</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setCorePlugins</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Namespace.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@Namespace</a>("Core")
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Namespace.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@Namespace</a>("Core") <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/model/PluginNamespace.html" title="class or interface in org.apache.logging.log4j.plugins.model" class="external-link">PluginNamespace</a>&nbsp;corePlugins)</span></div>
 </section>
 </li>
 <li>
@@ -696,7 +696,7 @@ implements <a href="Configuration.html" title="interface in org.apache.logging.l
 <li>
 <section class="detail" id="getRootNode()">
 <h3>getRootNode</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a></span>&nbsp;<span class="element-name">getRootNode</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a></span>&nbsp;<span class="element-name">getRootNode</span>()</div>
 </section>
 </li>
 <li>
@@ -806,7 +806,7 @@ implements <a href="Configuration.html" title="interface in org.apache.logging.l
 <li>
 <section class="detail" id="getFactory(org.apache.logging.log4j.plugins.di.Key)">
 <h3>getFactory</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;T&gt;</span>&nbsp;<span class="element-name">getFactory</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/di/Key.html" title="class or interface in org.apache.logging.log4j.plugins.di" class="external-link">Key</a>&lt;T&gt;&nbsp;key)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;T&gt;</span>&nbsp;<span class="element-name">getFactory</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/di/Key.html" title="class or interface in org.apache.logging.log4j.plugins.di" class="external-link">Key</a>&lt;T&gt;&nbsp;key)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
 <dd><code><a href="Configuration.html#getFactory(org.apache.logging.log4j.plugins.di.Key)">getFactory</a></code>&nbsp;in interface&nbsp;<code><a href="Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a></code></dd>
@@ -816,7 +816,7 @@ implements <a href="Configuration.html" title="interface in org.apache.logging.l
 <li>
 <section class="detail" id="setComponent(org.apache.logging.log4j.plugins.di.Key,java.util.function.Supplier)">
 <h3>setComponent</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setComponent</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/di/Key.html" title="class or interface in org.apache.logging.log4j.plugins.di" class="external-link">Key</a>&lt;T&gt;&nbsp;key,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setComponent</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/di/Key.html" title="class or interface in org.apache.logging.log4j.plugins.di" class="external-link">Key</a>&lt;T&gt;&nbsp;key,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;? extends T&gt;&nbsp;supplier)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
@@ -838,13 +838,13 @@ implements <a href="Configuration.html" title="interface in org.apache.logging.l
 <li>
 <section class="detail" id="preConfigure(org.apache.logging.log4j.plugins.Node)">
 <h3>preConfigure</h3>
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">preConfigure</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a>&nbsp;node)</span></div>
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">preConfigure</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a>&nbsp;node)</span></div>
 </section>
 </li>
 <li>
 <section class="detail" id="processConditionals(org.apache.logging.log4j.plugins.Node)">
 <h3>processConditionals</h3>
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">processConditionals</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a>&nbsp;node)</span></div>
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">processConditionals</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a>&nbsp;node)</span></div>
 <div class="block">Process conditions by evaluating them and including the children of conditions that are true
  and discarding those that are not.</div>
 <dl class="notes">
@@ -856,8 +856,8 @@ implements <a href="Configuration.html" title="interface in org.apache.logging.l
 <li>
 <section class="detail" id="processSelect(org.apache.logging.log4j.plugins.Node,org.apache.logging.log4j.plugins.model.PluginType)">
 <h3>processSelect</h3>
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a>&gt;</span>&nbsp;<span class="element-name">processSelect</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a>&nbsp;selectNode,
- <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/model/PluginType.html" title="class or interface in org.apache.logging.log4j.plugins.model" class="external-link">PluginType</a>&lt;?&gt;&nbsp;type)</span></div>
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a>&gt;</span>&nbsp;<span class="element-name">processSelect</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a>&nbsp;selectNode,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/model/PluginType.html" title="class or interface in org.apache.logging.log4j.plugins.model" class="external-link">PluginType</a>&lt;?&gt;&nbsp;type)</span></div>
 <div class="block">Handle Select nodes. This finds the first child condition that returns true and attaches its children
  to the parent of the Select Node. Other Nodes are discarded.</div>
 <dl class="notes">
@@ -1217,7 +1217,7 @@ implements <a href="Configuration.html" title="interface in org.apache.logging.l
 <li>
 <section class="detail" id="createConfiguration(org.apache.logging.log4j.plugins.Node,org.apache.logging.log4j.core.LogEvent)">
 <h3>createConfiguration</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">createConfiguration</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a>&nbsp;node,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">createConfiguration</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a>&nbsp;node,
  <a href="../LogEvent.html" title="interface in org.apache.logging.log4j.core">LogEvent</a>&nbsp;event)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
@@ -1228,7 +1228,7 @@ implements <a href="Configuration.html" title="interface in org.apache.logging.l
 <li>
 <section class="detail" id="createPluginObject(org.apache.logging.log4j.plugins.Node)">
 <h3>createPluginObject</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span>&nbsp;<span class="element-name">createPluginObject</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a>&nbsp;node)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span>&nbsp;<span class="element-name">createPluginObject</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Node.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">Node</a>&nbsp;node)</span></div>
 <div class="block">This method is used by Arbiters to create specific children.</div>
 <dl class="notes">
 <dt>Parameters:</dt>

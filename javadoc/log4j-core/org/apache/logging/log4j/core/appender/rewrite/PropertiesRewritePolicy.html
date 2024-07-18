@@ -81,9 +81,9 @@ loadScripts(document, 'script');</script>
 <dd><code><a href="RewritePolicy.html" title="interface in org.apache.logging.log4j.core.appender.rewrite">RewritePolicy</a></code></dd>
 </dl>
 <hr>
-<div class="type-signature"><span class="annotations"><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Configurable.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@Configurable</a>(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Configurable.html#elementType()" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">elementType</a>="rewritePolicy",
-              <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Configurable.html#printObject()" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">printObject</a>=true)
-<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Plugin.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@Plugin</a>
+<div class="type-signature"><span class="annotations"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Configurable.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@Configurable</a>(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Configurable.html#elementType()" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">elementType</a>="rewritePolicy",
+              <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Configurable.html#printObject()" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">printObject</a>=true)
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Plugin.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@Plugin</a>
 </span><span class="modifiers">public final class </span><span class="element-name type-name-label">PropertiesRewritePolicy</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
 implements <a href="RewritePolicy.html" title="interface in org.apache.logging.log4j.core.appender.rewrite">RewritePolicy</a></span></div>
@@ -121,7 +121,7 @@ implements <a href="RewritePolicy.html" title="interface in org.apache.logging.l
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="PropertiesRewritePolicy.html" title="class in org.apache.logging.log4j.core.appender.rewrite">PropertiesRewritePolicy</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createPolicy(org.apache.logging.log4j.core.config.Configuration,org.apache.logging.log4j.core.config.Property%5B%5D)" class="member-name-link">createPolicy</a><wbr>(<a href="../../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config,
- <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginElement.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginElement</a>("Properties") <a href="../../config/Property.html" title="class in org.apache.logging.log4j.core.config">Property</a>[]&nbsp;props)</code></div>
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/PluginElement.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginElement</a>("Properties") <a href="../../config/Property.html" title="class in org.apache.logging.log4j.core.config">Property</a>[]&nbsp;props)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Creates a PropertiesRewritePolicy.</div>
 </div>
@@ -194,11 +194,11 @@ implements <a href="RewritePolicy.html" title="interface in org.apache.logging.l
 <li>
 <section class="detail" id="createPolicy(org.apache.logging.log4j.core.config.Configuration,org.apache.logging.log4j.core.config.Property[])">
 <h3>createPolicy</h3>
-<div class="member-signature"><span class="annotations"><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginFactory.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginFactory</a>
+<div class="member-signature"><span class="annotations"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/PluginFactory.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginFactory</a>
 </span><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="PropertiesRewritePolicy.html" title="class in org.apache.logging.log4j.core.appender.rewrite">PropertiesRewritePolicy</a></span>&nbsp;<span class="element-name">createPolicy</span><wbr><span class="parameters">(<a href="../../config/plugins/PluginConfiguration.html" title="annotation interface in org.apache.logging.log4j.core.config.plugins">@PluginConfiguration</a>
  <a href="../../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config,
- <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginElement.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginElement</a>("Properties")
- <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginElement.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginElement</a>("Properties") <a href="../../config/Property.html" title="class in org.apache.logging.log4j.core.config">Property</a>[]&nbsp;props)</span></div>
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/PluginElement.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginElement</a>("Properties")
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/PluginElement.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginElement</a>("Properties") <a href="../../config/Property.html" title="class in org.apache.logging.log4j.core.config">Property</a>[]&nbsp;props)</span></div>
 <div class="block">Creates a PropertiesRewritePolicy.</div>
 <dl class="notes">
 <dt>Parameters:</dt>

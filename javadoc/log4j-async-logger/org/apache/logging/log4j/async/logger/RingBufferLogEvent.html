@@ -77,12 +77,12 @@ loadScripts(document, 'script');</script>
 <section class="class-description" id="class-description">
 <dl class="notes">
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></code>, <code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/CharSequence.html" title="class or interface in java.lang" class="external-link">CharSequence</a></code>, <code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code>, <code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code>, <code>org.apache.logging.log4j.message.Message</code>, <code>org.apache.logging.log4j.message.ParameterVisitable</code>, <code>org.apache.logging.log4j.message.ReusableMessage</code>, <code>org.apache.logging.log4j.util.StringBuilderFormattable</code></dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></code>, <code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/CharSequence.html" title="class or interface in java.lang" class="external-link">CharSequence</a></code>, <code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code>, <code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code>, <code>org.apache.logging.log4j.message.Message</code>, <code>org.apache.logging.log4j.message.ParameterVisitable</code>, <code>org.apache.logging.log4j.message.ReusableMessage</code>, <code>org.apache.logging.log4j.util.StringBuilderFormattable</code></dd>
 </dl>
 <hr>
 <div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">RingBufferLogEvent</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
-implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a>, org.apache.logging.log4j.message.ReusableMessage, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/CharSequence.html" title="class or interface in java.lang" class="external-link">CharSequence</a>, org.apache.logging.log4j.message.ParameterVisitable</span></div>
+implements <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a>, org.apache.logging.log4j.message.ReusableMessage, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/CharSequence.html" title="class or interface in java.lang" class="external-link">CharSequence</a>, org.apache.logging.log4j.message.ParameterVisitable</span></div>
 <div class="block">When the Disruptor is started, the RingBuffer is populated with event objects. These objects are then re-used during
  the life of the RingBuffer.</div>
 <dl class="notes">
@@ -169,7 +169,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getFormattedMessage()" class="member-name-link">getFormattedMessage</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/time/Instant.html" title="class or interface in org.apache.logging.log4j.core.time" class="external-link">Instant</a></code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/time/Instant.html" title="class or interface in org.apache.logging.log4j.core.time" class="external-link">Instant</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getInstant()" class="member-name-link">getInstant</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.apache.logging.log4j.Level</code></div>
@@ -214,14 +214,14 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link">Throwable</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getThrown()" class="member-name-link">getThrown</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/impl/ThrowableProxy.html" title="class or interface in org.apache.logging.log4j.core.impl" class="external-link">ThrowableProxy</a></code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/impl/ThrowableProxy.html" title="class or interface in org.apache.logging.log4j.core.impl" class="external-link">ThrowableProxy</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getThrownProxy()" class="member-name-link">getThrownProxy</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>long</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTimeMillis()" class="member-name-link">getTimeMillis</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#initializeBuilder(org.apache.logging.log4j.core.impl.Log4jLogEvent.Builder)" class="member-name-link">initializeBuilder</a><wbr>(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/impl/Log4jLogEvent.Builder.html" title="class or interface in org.apache.logging.log4j.core.impl" class="external-link">Log4jLogEvent.Builder</a>&nbsp;builder)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#initializeBuilder(org.apache.logging.log4j.core.impl.Log4jLogEvent.Builder)" class="member-name-link">initializeBuilder</a><wbr>(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/impl/Log4jLogEvent.Builder.html" title="class or interface in org.apache.logging.log4j.core.impl" class="external-link">Log4jLogEvent.Builder</a>&nbsp;builder)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Initializes the specified <code>Log4jLogEvent.Builder</code> from this <code>RingBufferLogEvent</code>.</div>
 </div>
@@ -258,7 +258,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setIncludeLocation(boolean)" class="member-name-link">setIncludeLocation</a><wbr>(boolean&nbsp;includeLocation)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setInstant(org.apache.logging.log4j.core.time.Instant)" class="member-name-link">setInstant</a><wbr>(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/time/Instant.html" title="class or interface in org.apache.logging.log4j.core.time" class="external-link">Instant</a>&nbsp;instant)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setInstant(org.apache.logging.log4j.core.time.Instant)" class="member-name-link">setInstant</a><wbr>(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/time/Instant.html" title="class or interface in org.apache.logging.log4j.core.time" class="external-link">Instant</a>&nbsp;instant)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setLevel(org.apache.logging.log4j.Level)" class="member-name-link">setLevel</a><wbr>(org.apache.logging.log4j.Level&nbsp;level)</code></div>
@@ -310,8 +310,8 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;threadName,
  int&nbsp;threadPriority,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StackTraceElement.html" title="class or interface in java.lang" class="external-link">StackTraceElement</a>&nbsp;aLocation,
- <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/time/Clock.html" title="class or interface in org.apache.logging.log4j.core.time" class="external-link">Clock</a>&nbsp;clock,
- <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/time/NanoClock.html" title="class or interface in org.apache.logging.log4j.core.time" class="external-link">NanoClock</a>&nbsp;nanoClock)</code></div>
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/time/Clock.html" title="class or interface in org.apache.logging.log4j.core.time" class="external-link">Clock</a>&nbsp;clock,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/time/NanoClock.html" title="class or interface in org.apache.logging.log4j.core.time" class="external-link">NanoClock</a>&nbsp;nanoClock)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/CharSequence.html" title="class or interface in java.lang" class="external-link">CharSequence</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#subSequence(int,int)" class="member-name-link">subSequence</a><wbr>(int&nbsp;start,
@@ -322,7 +322,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Replaces this ReusableMessage's parameter array with the specified value and return the original array</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toImmutable()" class="member-name-link">toImmutable</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
@@ -335,8 +335,8 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <h3 id="methods-inherited-from-class-java.lang.CharSequence">Methods inherited from interface&nbsp;java.lang.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/CharSequence.html" title="class or interface in java.lang" class="external-link">CharSequence</a></h3>
 <code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/CharSequence.html#chars()" title="class or interface in java.lang" class="external-link">chars</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/CharSequence.html#codePoints()" title="class or interface in java.lang" class="external-link">codePoints</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/CharSequence.html#isEmpty()" title="class or interface in java.lang" class="external-link">isEmpty</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/CharSequence.html#toString()" title="class or interface in java.lang" class="external-link">toString</a></code></div>
 <div class="inherited-list">
-<h3 id="methods-inherited-from-class-org.apache.logging.log4j.core.LogEvent">Methods inherited from interface&nbsp;org.apache.logging.log4j.core.<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></h3>
-<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html#toMemento()" title="class or interface in org.apache.logging.log4j.core" class="external-link">toMemento</a></code></div>
+<h3 id="methods-inherited-from-class-org.apache.logging.log4j.core.LogEvent">Methods inherited from interface&nbsp;org.apache.logging.log4j.core.<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></h3>
+<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#toMemento()" title="class or interface in org.apache.logging.log4j.core" class="external-link">toMemento</a></code></div>
 </section>
 </li>
 </ul>
@@ -393,17 +393,17 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;threadName,
  int&nbsp;threadPriority,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StackTraceElement.html" title="class or interface in java.lang" class="external-link">StackTraceElement</a>&nbsp;aLocation,
- <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/time/Clock.html" title="class or interface in org.apache.logging.log4j.core.time" class="external-link">Clock</a>&nbsp;clock,
- <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/time/NanoClock.html" title="class or interface in org.apache.logging.log4j.core.time" class="external-link">NanoClock</a>&nbsp;nanoClock)</span></div>
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/time/Clock.html" title="class or interface in org.apache.logging.log4j.core.time" class="external-link">Clock</a>&nbsp;clock,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/time/NanoClock.html" title="class or interface in org.apache.logging.log4j.core.time" class="external-link">NanoClock</a>&nbsp;nanoClock)</span></div>
 </section>
 </li>
 <li>
 <section class="detail" id="toImmutable()">
 <h3>toImmutable</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></span>&nbsp;<span class="element-name">toImmutable</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></span>&nbsp;<span class="element-name">toImmutable</span>()</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html#toImmutable()" title="class or interface in org.apache.logging.log4j.core" class="external-link">toImmutable</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#toImmutable()" title="class or interface in org.apache.logging.log4j.core" class="external-link">toImmutable</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -413,7 +413,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setMessage</span><wbr><span class="parameters">(org.apache.logging.log4j.message.Message&nbsp;msg)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html#setMessage(org.apache.logging.log4j.message.Message)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setMessage</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html#setMessage(org.apache.logging.log4j.message.Message)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setMessage</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -445,7 +445,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="block">Returns <code>true</code> if this event is the end of a batch, <code>false</code> otherwise.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html#isEndOfBatch()" title="class or interface in org.apache.logging.log4j.core" class="external-link">isEndOfBatch</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#isEndOfBatch()" title="class or interface in org.apache.logging.log4j.core" class="external-link">isEndOfBatch</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
 <dt>Returns:</dt>
 <dd><code>true</code> if this event is the end of a batch, <code>false</code> otherwise</dd>
 </dl>
@@ -457,7 +457,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setEndOfBatch</span><wbr><span class="parameters">(boolean&nbsp;endOfBatch)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html#setEndOfBatch(boolean)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setEndOfBatch</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#setEndOfBatch(boolean)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setEndOfBatch</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -467,7 +467,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isIncludeLocation</span>()</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html#isIncludeLocation()" title="class or interface in org.apache.logging.log4j.core" class="external-link">isIncludeLocation</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#isIncludeLocation()" title="class or interface in org.apache.logging.log4j.core" class="external-link">isIncludeLocation</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -477,7 +477,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setIncludeLocation</span><wbr><span class="parameters">(boolean&nbsp;includeLocation)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html#setIncludeLocation(boolean)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setIncludeLocation</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#setIncludeLocation(boolean)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setIncludeLocation</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -487,7 +487,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getLoggerName</span>()</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html#getLoggerName()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getLoggerName</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getLoggerName()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getLoggerName</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -497,7 +497,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setLoggerName</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;loggerName)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html#setLoggerName(java.lang.String)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setLoggerName</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html#setLoggerName(java.lang.String)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setLoggerName</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -507,7 +507,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">org.apache.logging.log4j.Marker</span>&nbsp;<span class="element-name">getMarker</span>()</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html#getMarker()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getMarker</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getMarker()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getMarker</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -517,7 +517,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setMarker</span><wbr><span class="parameters">(org.apache.logging.log4j.Marker&nbsp;marker)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html#setMarker(org.apache.logging.log4j.Marker)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setMarker</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html#setMarker(org.apache.logging.log4j.Marker)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setMarker</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -527,7 +527,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getLoggerFqcn</span>()</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html#getLoggerFqcn()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getLoggerFqcn</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getLoggerFqcn()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getLoggerFqcn</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -537,7 +537,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setLoggerFqcn</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;loggerFqcn)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html#setLoggerFqcn(java.lang.String)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setLoggerFqcn</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html#setLoggerFqcn(java.lang.String)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setLoggerFqcn</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -547,7 +547,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">org.apache.logging.log4j.Level</span>&nbsp;<span class="element-name">getLevel</span>()</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html#getLevel()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getLevel</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getLevel()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getLevel</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -557,7 +557,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setLevel</span><wbr><span class="parameters">(org.apache.logging.log4j.Level&nbsp;level)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html#setLevel(org.apache.logging.log4j.Level)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setLevel</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html#setLevel(org.apache.logging.log4j.Level)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setLevel</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -567,7 +567,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">org.apache.logging.log4j.message.Message</span>&nbsp;<span class="element-name">getMessage</span>()</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html#getMessage()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getMessage</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getMessage()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getMessage</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -740,7 +740,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link">Throwable</a></span>&nbsp;<span class="element-name">getThrown</span>()</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html#getThrown()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getThrown</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getThrown()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getThrown</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -750,17 +750,17 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setThrown</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link">Throwable</a>&nbsp;thrown)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html#setThrown(java.lang.Throwable)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setThrown</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html#setThrown(java.lang.Throwable)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setThrown</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
 </dl>
 </section>
 </li>
 <li>
 <section class="detail" id="getThrownProxy()">
 <h3>getThrownProxy</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/impl/ThrowableProxy.html" title="class or interface in org.apache.logging.log4j.core.impl" class="external-link">ThrowableProxy</a></span>&nbsp;<span class="element-name">getThrownProxy</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/impl/ThrowableProxy.html" title="class or interface in org.apache.logging.log4j.core.impl" class="external-link">ThrowableProxy</a></span>&nbsp;<span class="element-name">getThrownProxy</span>()</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html#getThrownProxy()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getThrownProxy</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getThrownProxy()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getThrownProxy</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -770,9 +770,9 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">org.apache.logging.log4j.util.StringMap</span>&nbsp;<span class="element-name">getContextData</span>()</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html#getContextData()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getContextData</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getContextData()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getContextData</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html#getContextData()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getContextData</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html#getContextData()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getContextData</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -782,7 +782,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setContextData</span><wbr><span class="parameters">(org.apache.logging.log4j.util.StringMap&nbsp;contextData)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html#setContextData(org.apache.logging.log4j.util.StringMap)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setContextData</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html#setContextData(org.apache.logging.log4j.util.StringMap)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setContextData</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -792,7 +792,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">org.apache.logging.log4j.ThreadContext.ContextStack</span>&nbsp;<span class="element-name">getContextStack</span>()</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html#getContextStack()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getContextStack</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getContextStack()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getContextStack</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -802,7 +802,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setContextStack</span><wbr><span class="parameters">(org.apache.logging.log4j.ThreadContext.ContextStack&nbsp;contextStack)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html#setContextStack(org.apache.logging.log4j.ThreadContext.ContextStack)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setContextStack</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html#setContextStack(org.apache.logging.log4j.ThreadContext.ContextStack)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setContextStack</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -812,7 +812,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">long</span>&nbsp;<span class="element-name">getThreadId</span>()</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html#getThreadId()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getThreadId</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getThreadId()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getThreadId</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -822,7 +822,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setThreadId</span><wbr><span class="parameters">(long&nbsp;threadId)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html#setThreadId(long)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setThreadId</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html#setThreadId(long)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setThreadId</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -832,7 +832,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getThreadName</span>()</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html#getThreadName()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getThreadName</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getThreadName()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getThreadName</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -842,7 +842,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setThreadName</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;threadName)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html#setThreadName(java.lang.String)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setThreadName</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html#setThreadName(java.lang.String)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setThreadName</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -852,7 +852,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">getThreadPriority</span>()</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html#getThreadPriority()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getThreadPriority</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getThreadPriority()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getThreadPriority</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -862,7 +862,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setThreadPriority</span><wbr><span class="parameters">(int&nbsp;threadPriority)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html#setThreadPriority(int)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setThreadPriority</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html#setThreadPriority(int)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setThreadPriority</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -872,7 +872,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StackTraceElement.html" title="class or interface in java.lang" class="external-link">StackTraceElement</a></span>&nbsp;<span class="element-name">getSource</span>()</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html#getSource()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getSource</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getSource()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getSource</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -882,7 +882,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">@Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StackTraceElement.html" title="class or interface in java.lang" class="external-link">StackTraceElement</a></span>&nbsp;<span class="element-name">peekSource</span>()</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html#peekSource()" title="class or interface in org.apache.logging.log4j.core" class="external-link">peekSource</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#peekSource()" title="class or interface in org.apache.logging.log4j.core" class="external-link">peekSource</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -892,7 +892,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setSource</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StackTraceElement.html" title="class or interface in java.lang" class="external-link">StackTraceElement</a>&nbsp;source)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html#setSource(java.lang.StackTraceElement)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setSource</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html#setSource(java.lang.StackTraceElement)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setSource</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -902,7 +902,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">long</span>&nbsp;<span class="element-name">getTimeMillis</span>()</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html#getTimeMillis()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getTimeMillis</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getTimeMillis()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getTimeMillis</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -912,27 +912,27 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setTimeMillis</span><wbr><span class="parameters">(long&nbsp;timeMillis)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html#setTimeMillis(long)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setTimeMillis</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html#setTimeMillis(long)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setTimeMillis</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
 </dl>
 </section>
 </li>
 <li>
 <section class="detail" id="getInstant()">
 <h3>getInstant</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/time/Instant.html" title="class or interface in org.apache.logging.log4j.core.time" class="external-link">Instant</a></span>&nbsp;<span class="element-name">getInstant</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/time/Instant.html" title="class or interface in org.apache.logging.log4j.core.time" class="external-link">Instant</a></span>&nbsp;<span class="element-name">getInstant</span>()</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html#getInstant()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getInstant</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getInstant()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getInstant</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
 </dl>
 </section>
 </li>
 <li>
 <section class="detail" id="setInstant(org.apache.logging.log4j.core.time.Instant)">
 <h3>setInstant</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setInstant</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/time/Instant.html" title="class or interface in org.apache.logging.log4j.core.time" class="external-link">Instant</a>&nbsp;instant)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setInstant</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/time/Instant.html" title="class or interface in org.apache.logging.log4j.core.time" class="external-link">Instant</a>&nbsp;instant)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html#setInstant(org.apache.logging.log4j.core.time.Instant)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setInstant</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html#setInstant(org.apache.logging.log4j.core.time.Instant)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setInstant</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -942,7 +942,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">long</span>&nbsp;<span class="element-name">getNanoTime</span>()</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html#getNanoTime()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getNanoTime</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getNanoTime()" title="class or interface in org.apache.logging.log4j.core" class="external-link">getNanoTime</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">LogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -952,7 +952,7 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setNanoTime</span><wbr><span class="parameters">(long&nbsp;nanoTime)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html#setNanoTime(long)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setNanoTime</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html#setNanoTime(long)" title="class or interface in org.apache.logging.log4j.core" class="external-link">setNanoTime</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
 </dl>
 </section>
 </li>
@@ -963,18 +963,18 @@ implements <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logg
 <div class="block">Release references held by ring buffer to allow objects to be garbage-collected.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html#clear()" title="class or interface in org.apache.logging.log4j.core" class="external-link">clear</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html#clear()" title="class or interface in org.apache.logging.log4j.core" class="external-link">clear</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
 </dl>
 </section>
 </li>
 <li>
 <section class="detail" id="initializeBuilder(org.apache.logging.log4j.core.impl.Log4jLogEvent.Builder)">
 <h3>initializeBuilder</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">initializeBuilder</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/impl/Log4jLogEvent.Builder.html" title="class or interface in org.apache.logging.log4j.core.impl" class="external-link">Log4jLogEvent.Builder</a>&nbsp;builder)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">initializeBuilder</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/impl/Log4jLogEvent.Builder.html" title="class or interface in org.apache.logging.log4j.core.impl" class="external-link">Log4jLogEvent.Builder</a>&nbsp;builder)</span></div>
 <div class="block">Initializes the specified <code>Log4jLogEvent.Builder</code> from this <code>RingBufferLogEvent</code>.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html#initializeBuilder(org.apache.logging.log4j.core.impl.Log4jLogEvent.Builder)" title="class or interface in org.apache.logging.log4j.core" class="external-link">initializeBuilder</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html#initializeBuilder(org.apache.logging.log4j.core.impl.Log4jLogEvent.Builder)" title="class or interface in org.apache.logging.log4j.core" class="external-link">initializeBuilder</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ReusableLogEvent.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ReusableLogEvent</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>builder</code> - the builder whose fields to populate</dd>
 </dl>

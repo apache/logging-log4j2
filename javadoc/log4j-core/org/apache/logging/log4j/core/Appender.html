@@ -88,8 +88,8 @@ extends <a href="LifeCycle.html" title="interface in org.apache.logging.log4j.co
  as an <a href="ErrorHandler.html" title="interface in org.apache.logging.log4j.core"><code>ErrorHandler</code></a>. Typical Appender implementations coordinate with an
  implementation of <a href="appender/AbstractManager.html" title="class in org.apache.logging.log4j.core.appender"><code>AbstractManager</code></a> to handle external resources
  such as streams, connections, and other shared state. As Appenders are plugins, concrete implementations need to
- be annotated with <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Plugin.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link"><code>Plugin</code></a> and need to provide a static
- factory method annotated with <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/PluginFactory.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link"><code>PluginFactory</code></a>.
+ be annotated with <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Plugin.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link"><code>Plugin</code></a> and need to provide a static
+ factory method annotated with <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/PluginFactory.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link"><code>PluginFactory</code></a>.
 
  <p>Most core plugins are written using a related Manager class that handle the actual task of serializing a
  <a href="LogEvent.html" title="interface in org.apache.logging.log4j.core"><code>LogEvent</code></a> to some output location. For instance, many Appenders can take
@@ -122,7 +122,7 @@ extends <a href="LifeCycle.html" title="interface in org.apache.logging.log4j.co
 <div class="col-first even-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color"><code><a href="#ELEMENT_TYPE" class="member-name-link">ELEMENT_TYPE</a></code></div>
 <div class="col-last even-row-color">
-<div class="block">Main <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Configurable.html#elementType()" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">plugin element type</a> for
+<div class="block">Main <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Configurable.html#elementType()" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">plugin element type</a> for
  Appender plugins.</div>
 </div>
 <div class="col-first odd-row-color"><code>static final <a href="Appender.html" title="interface in org.apache.logging.log4j.core">Appender</a>[]</code></div>
@@ -200,7 +200,7 @@ extends <a href="LifeCycle.html" title="interface in org.apache.logging.log4j.co
 <section class="detail" id="ELEMENT_TYPE">
 <h3>ELEMENT_TYPE</h3>
 <div class="member-signature"><span class="modifiers">static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">ELEMENT_TYPE</span></div>
-<div class="block">Main <a href="https://logging.apache.org/log4j/3.x/apidocs/org/apache/logging/log4j/plugins/Configurable.html#elementType()" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">plugin element type</a> for
+<div class="block">Main <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Configurable.html#elementType()" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">plugin element type</a> for
  Appender plugins.</div>
 <dl class="notes">
 <dt>Since:</dt>
