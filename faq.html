@@ -392,7 +392,7 @@ See <a href="jakarta.html#ContextParams" class="xref page">the related page on w
 <div class="sectionbody">
 <div class="paragraph">
 <p>Starting with version <code>2.4</code>, Log4j provides <a href="manual/customconfig.html" class="xref page">an API for programmatic configuration</a>.
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/builder/api/ConfigurationBuilder.html">The new <code>ConfigurationBuilder</code> API</a> allows you to create <code>Configuration</code>s in code by constructing component definitions without requiring you to know about the internals of actual configuration objects like loggers and appenders.</p>
+<a href="javadoc/log4j-core/org/apache/logging/log4j/core/config/builder/api/ConfigurationBuilder.html">The new <code>ConfigurationBuilder</code> API</a> allows you to create <code>Configuration</code>s in code by constructing component definitions without requiring you to know about the internals of actual configuration objects like loggers and appenders.</p>
 </div>
 </div>
 </div>
@@ -400,7 +400,7 @@ See <a href="jakarta.html#ContextParams" class="xref page">the related page on w
 <h2 id="reconfig_from_code"><a class="anchor" href="#reconfig_from_code"></a>How do I reconfigure Log4j programmatically?</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You can reconfigure Log4j programmatically using <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configurator.html">the <code>Configurator</code> API</a> as follows:</p>
+<p>You can reconfigure Log4j programmatically using <a href="javadoc/log4j-core/org/apache/logging/log4j/core/config/Configurator.html">the <code>Configurator</code> API</a> as follows:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -420,7 +420,7 @@ Configurator.reconfigure(configSourceUri);</code></pre>
 Each <code>LoggerContext</code> registers a shutdown hook that takes care of releasing resources when the JVM exits, unless the <code>log4j.shutdownHookEnabled</code> system property is set to <code>false</code>.
 Likewise, <a href="jakarta.html" class="xref page">Web applications</a> replace the shutdown hook with their own resource management mechanisms.
 That is, they clean up necessary resources when the web application is stopped.
-However, if you need to manually shut down Log4j, you can use one of the <code>shutdown()</code> methods of <a href="../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#shutdown()"><code>LogManager</code></a>.</p>
+However, if you need to manually shut down Log4j, you can use one of the <code>shutdown()</code> methods of <a href="javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#shutdown()"><code>LogManager</code></a>.</p>
 </div>
 </div>
 </div>
@@ -428,7 +428,7 @@ However, if you need to manually shut down Log4j, you can use one of the <code>s
 <h2 id="reconfig_level_from_code"><a class="anchor" href="#reconfig_level_from_code"></a>How do I set a logger level programmatically?</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You can set the level of a logger using <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configurator.html"><code>Configurator</code></a> from Log4j Core:</p>
+<p>You can set the level of a logger using <a href="javadoc/log4j-core/org/apache/logging/log4j/core/config/Configurator.html"><code>Configurator</code></a> from Log4j Core:</p>
 </div>
 <div class="listingblock">
 <div class="content">

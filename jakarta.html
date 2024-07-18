@@ -410,7 +410,7 @@ Most notably:</p>
 </li>
 <li>
 <p>a web-safe implementation of
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html"><code>ThreadContextMap</code></a> is used.</p>
+<a href="javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html"><code>ThreadContextMap</code></a> is used.</p>
 </li>
 <li>
 <p>JMX notifications are sent synchronously.</p>
@@ -828,7 +828,7 @@ method.</p>
 </div>
 <div class="paragraph">
 <p>To successfully propagate the logger context along asynchronous calls, the
-<a href="../javadoc/log4j-jakarta-web/org/apache/logging/log4j/web/WebLoggerContextUtils.html"><code>WebLoggerContextUtils</code></a>
+<a href="javadoc/log4j-jakarta-web/org/apache/logging/log4j/web/WebLoggerContextUtils.html"><code>WebLoggerContextUtils</code></a>
 helper class is made available.
 Using this class you can either decorate a <code>Runnable</code> with method calls that bind the appropriate logger context to the thread:</p>
 </div>
@@ -843,7 +843,7 @@ asyncContext.start(WebLoggerContextUtils.wrapExecutionContext(getServletContext(
 </div>
 <div class="paragraph">
 <p>or, if more flexibility is required, you can apply the same logic by using
-<a href="../javadoc/log4j-jakarta-web/org/apache/logging/log4j/web/Log4jWebSupport.html"><code>Log4jWebSupport</code></a>:</p>
+<a href="javadoc/log4j-jakarta-web/org/apache/logging/log4j/web/Log4jWebSupport.html"><code>Log4jWebSupport</code></a>:</p>
 </div>
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/webapp/AsyncServlet.java"><code>AsyncServlet.java</code></a></div>
@@ -930,7 +930,7 @@ and no version compatible with Jakarta Server Pages 3.0 is available.</p>
 </div>
 <div class="paragraph">
 <p>The Log4j Taglib library defines a tag for most
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html"><code>Logger</code></a>
+<a href="javadoc/log4j-api/org/apache/logging/log4j/Logger.html"><code>Logger</code></a>
 methods, including:</p>
 </div>
 <div class="ulist">
@@ -1197,7 +1197,7 @@ See the <a href="https://docs.gradle.org/current/userguide/war_plugin.html#sec:w
 <p>When using a shared instance of Log4j Core,
 you might be interested in identifying the application associated with a given log event.
 Log4j Core provides a mechanism to split all
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html"><code>Logger</code></a>
+<a href="javadoc/log4j-api/org/apache/logging/log4j/Logger.html"><code>Logger</code></a>
 instances into logging domains called
 <a href="manual/architecture.html#LoggerContext" class="xref page"><code>LoggerContext</code></a>s.
 You have therefore two ways to separate log events:</p>
@@ -1268,12 +1268,12 @@ system property to:</p>
 <ul>
 <li>
 <p>either
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/selector/BasicContextSelector.html"><code>org.apache.logging.log4j.core.selector.BasicContextSelector</code></a>
+<a href="javadoc/log4j-core/org/apache/logging/log4j/core/selector/BasicContextSelector.html"><code>org.apache.logging.log4j.core.selector.BasicContextSelector</code></a>
 to use synchronous loggers,</p>
 </li>
 <li>
 <p>or
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/BasicAsyncLoggerContextSelector.html"><code>org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector</code></a>
+<a href="javadoc/log4j-core/org/apache/logging/log4j/core/async/BasicAsyncLoggerContextSelector.html"><code>org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector</code></a>
 to use asynchronous loggers.</p>
 </li>
 </ul>
@@ -1485,7 +1485,7 @@ appender.1.route.0.appender.layout.pattern = %d [%t] %-5p %c - %m%n</code></pre>
 <h4 id="multiple-contexts"><a class="anchor" href="#multiple-contexts"></a>Multiple logger contexts</h4>
 <div class="paragraph">
 <p>Since Log4j Core uses
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ClassLoaderContextSelector.html"><code>ClassLoaderContextSelector</code></a>
+<a href="javadoc/log4j-core/org/apache/logging/log4j/core/selector/ClassLoaderContextSelector.html"><code>ClassLoaderContextSelector</code></a>
 by default, no configuration is needed to achieve multiple logger contexts in your application server:
 the classes of each classloader will use the logger context associated with the classloader.</p>
 </div>
