@@ -86,7 +86,7 @@ loadScripts(document, 'script');</script>
 <div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">DiscardingAsyncQueueFullPolicy</span>
 <span class="extends-implements">extends <a href="DefaultAsyncQueueFullPolicy.html" title="class in org.apache.logging.log4j.core.async">DefaultAsyncQueueFullPolicy</a></span></div>
 <div class="block">Discarding router extends the DefaultAsyncQueueFullPolicy by first verifying if the queue is fuller than the specified
- threshold ratio; if this is the case, log events <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html#isMoreSpecificThan(org.apache.logging.log4j.Level)" title="class or interface in org.apache.logging.log4j" class="external-link">more specific</a> than
+ threshold ratio; if this is the case, log events <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html#isMoreSpecificThan(org.apache.logging.log4j.Level)" title="class or interface in org.apache.logging.log4j" class="external-link">more specific</a> than
  the specified threshold level are dropped. If this is not the case, the <a href="DefaultAsyncQueueFullPolicy.html" title="class in org.apache.logging.log4j.core.async">default routing</a> rules hold.</div>
 </section>
 <section class="summary">
@@ -99,9 +99,9 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.apache.logging.log4j.Level)" class="member-name-link">DiscardingAsyncQueueFullPolicy</a><wbr>(<a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;thresholdLevel)</code></div>
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.apache.logging.log4j.Level)" class="member-name-link">DiscardingAsyncQueueFullPolicy</a><wbr>(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;thresholdLevel)</code></div>
 <div class="col-last even-row-color">
-<div class="block">Constructs a router that will discard events <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html#isLessSpecificThan(org.apache.logging.log4j.Level)" title="class or interface in org.apache.logging.log4j" class="external-link">equal or less specific</a>
+<div class="block">Constructs a router that will discard events <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html#isLessSpecificThan(org.apache.logging.log4j.Level)" title="class or interface in org.apache.logging.log4j" class="external-link">equal or less specific</a>
  than the specified threshold level when the queue is full.</div>
 </div>
 </div>
@@ -123,11 +123,11 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="EventRoute.html" title="enum in org.apache.logging.log4j.core.async">EventRoute</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getRoute(long,org.apache.logging.log4j.Level)" class="member-name-link">getRoute</a><wbr>(long&nbsp;backgroundThreadId,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level)</code></div>
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns the appropriate route for the current log event, given the specified parameters.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a></code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getThresholdLevel()" class="member-name-link">getThresholdLevel</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
@@ -150,8 +150,8 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="&lt;init&gt;(org.apache.logging.log4j.Level)">
 <h3>DiscardingAsyncQueueFullPolicy</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">DiscardingAsyncQueueFullPolicy</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;thresholdLevel)</span></div>
-<div class="block">Constructs a router that will discard events <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html#isLessSpecificThan(org.apache.logging.log4j.Level)" title="class or interface in org.apache.logging.log4j" class="external-link">equal or less specific</a>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">DiscardingAsyncQueueFullPolicy</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;thresholdLevel)</span></div>
+<div class="block">Constructs a router that will discard events <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html#isLessSpecificThan(org.apache.logging.log4j.Level)" title="class or interface in org.apache.logging.log4j" class="external-link">equal or less specific</a>
  than the specified threshold level when the queue is full.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -171,7 +171,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getRoute(long,org.apache.logging.log4j.Level)">
 <h3>getRoute</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="EventRoute.html" title="enum in org.apache.logging.log4j.core.async">EventRoute</a></span>&nbsp;<span class="element-name">getRoute</span><wbr><span class="parameters">(long&nbsp;backgroundThreadId,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level)</span></div>
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level)</span></div>
 <div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="AsyncQueueFullPolicy.html#getRoute(long,org.apache.logging.log4j.Level)">AsyncQueueFullPolicy</a></code></span></div>
 <div class="block">Returns the appropriate route for the current log event, given the specified parameters.</div>
 <dl class="notes">
@@ -196,7 +196,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="getThresholdLevel()">
 <h3>getThresholdLevel</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a></span>&nbsp;<span class="element-name">getThresholdLevel</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a></span>&nbsp;<span class="element-name">getThresholdLevel</span>()</div>
 </section>
 </li>
 </ul>

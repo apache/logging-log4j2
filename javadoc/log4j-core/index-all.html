@@ -3711,7 +3711,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/appender/DefaultErrorHandler.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender">DefaultErrorHandler</a> - Class in <a href="org/apache/logging/log4j/core/appender/package-summary.html">org.apache.logging.log4j.core.appender</a></dt>
 <dd>
-<div class="block">The default <a href="org/apache/logging/log4j/core/ErrorHandler.html" title="interface in org.apache.logging.log4j.core"><code>ErrorHandler</code></a> implementation falling back to <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/status/StatusLogger.html" title="class or interface in org.apache.logging.log4j.status" class="external-link"><code>StatusLogger</code></a>.</div>
+<div class="block">The default <a href="org/apache/logging/log4j/core/ErrorHandler.html" title="interface in org.apache.logging.log4j.core"><code>ErrorHandler</code></a> implementation falling back to <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/status/StatusLogger.html" title="class or interface in org.apache.logging.log4j.status" class="external-link"><code>StatusLogger</code></a>.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/appender/DefaultErrorHandler.html#%3Cinit%3E(org.apache.logging.log4j.core.Appender)" class="member-name-link">DefaultErrorHandler(Appender)</a> - Constructor for class org.apache.logging.log4j.core.appender.<a href="org/apache/logging/log4j/core/appender/DefaultErrorHandler.html" title="class in org.apache.logging.log4j.core.appender">DefaultErrorHandler</a></dt>
 <dd>&nbsp;</dd>
@@ -3899,12 +3899,12 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/core/async/DiscardingAsyncQueueFullPolicy.html" class="type-name-link" title="class in org.apache.logging.log4j.core.async">DiscardingAsyncQueueFullPolicy</a> - Class in <a href="org/apache/logging/log4j/core/async/package-summary.html">org.apache.logging.log4j.core.async</a></dt>
 <dd>
 <div class="block">Discarding router extends the DefaultAsyncQueueFullPolicy by first verifying if the queue is fuller than the specified
- threshold ratio; if this is the case, log events <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html#isMoreSpecificThan(org.apache.logging.log4j.Level)" title="class or interface in org.apache.logging.log4j" class="external-link">more specific</a> than
+ threshold ratio; if this is the case, log events <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html#isMoreSpecificThan(org.apache.logging.log4j.Level)" title="class or interface in org.apache.logging.log4j" class="external-link">more specific</a> than
  the specified threshold level are dropped.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/async/DiscardingAsyncQueueFullPolicy.html#%3Cinit%3E(org.apache.logging.log4j.Level)" class="member-name-link">DiscardingAsyncQueueFullPolicy(Level)</a> - Constructor for class org.apache.logging.log4j.core.async.<a href="org/apache/logging/log4j/core/async/DiscardingAsyncQueueFullPolicy.html" title="class in org.apache.logging.log4j.core.async">DiscardingAsyncQueueFullPolicy</a></dt>
 <dd>
-<div class="block">Constructs a router that will discard events <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html#isLessSpecificThan(org.apache.logging.log4j.Level)" title="class or interface in org.apache.logging.log4j" class="external-link">equal or less specific</a>
+<div class="block">Constructs a router that will discard events <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html#isLessSpecificThan(org.apache.logging.log4j.Level)" title="class or interface in org.apache.logging.log4j" class="external-link">equal or less specific</a>
  than the specified threshold level when the queue is full.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/async/DisruptorBlockingQueueFactory.html" class="type-name-link" title="class in org.apache.logging.log4j.core.async">DisruptorBlockingQueueFactory</a>&lt;<a href="org/apache/logging/log4j/core/async/DisruptorBlockingQueueFactory.html" title="type parameter in DisruptorBlockingQueueFactory">E</a>&gt; - Class in <a href="org/apache/logging/log4j/core/async/package-summary.html">org.apache.logging.log4j.core.async</a></dt>
@@ -4334,7 +4334,7 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/core/config/status/StatusConfiguration.html#error(java.lang.String)" class="member-name-link">error(String)</a> - Method in class org.apache.logging.log4j.core.config.status.<a href="org/apache/logging/log4j/core/config/status/StatusConfiguration.html" title="class in org.apache.logging.log4j.core.config.status">StatusConfiguration</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/status/StatusLogger.html#getLogger()" title="class or interface in org.apache.logging.log4j.status" class="external-link"><code>StatusLogger.getLogger()</code></a> and then <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/AbstractLogger.html#error(java.lang.String)" title="class or interface in org.apache.logging.log4j.spi" class="external-link"><code>AbstractLogger.error(String)</code></a> instead.</div>
+<div class="deprecation-comment">Use <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/status/StatusLogger.html#getLogger()" title="class or interface in org.apache.logging.log4j.status" class="external-link"><code>StatusLogger.getLogger()</code></a> and then <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/AbstractLogger.html#error(java.lang.String)" title="class or interface in org.apache.logging.log4j.spi" class="external-link"><code>AbstractLogger.error(String)</code></a> instead.</div>
 </div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/ErrorHandler.html#error(java.lang.String)" class="member-name-link">error(String)</a> - Method in interface org.apache.logging.log4j.core.<a href="org/apache/logging/log4j/core/ErrorHandler.html" title="interface in org.apache.logging.log4j.core">ErrorHandler</a></dt>
@@ -10535,7 +10535,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/impl/JdkMapAdapterStringMap.html#%3Cinit%3E(java.util.Map,boolean)" class="member-name-link">JdkMapAdapterStringMap(Map&lt;String, String&gt;, boolean)</a> - Constructor for class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/JdkMapAdapterStringMap.html" title="class in org.apache.logging.log4j.core.impl">JdkMapAdapterStringMap</a></dt>
 <dd>
-<div class="block">Constructs a new <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/util/StringMap.html" title="class or interface in org.apache.logging.log4j.util" class="external-link"><code>StringMap</code></a>, based on a JDK map.</div>
+<div class="block">Constructs a new <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html" title="class or interface in org.apache.logging.log4j.util" class="external-link"><code>StringMap</code></a>, based on a JDK map.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/util/ExtensionLanguageMapping.html#JELLY" class="member-name-link">JELLY</a> - Enum constant in enum org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/ExtensionLanguageMapping.html" title="enum in org.apache.logging.log4j.core.util">ExtensionLanguageMapping</a></dt>
 <dd>&nbsp;</dd>
@@ -11042,7 +11042,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
 <div class="deprecation-comment">since 2.24.0 use
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/status/StatusLogger.html#DEFAULT_STATUS_LISTENER_LEVEL" title="class or interface in org.apache.logging.log4j.status" class="external-link"><code>StatusLogger.DEFAULT_STATUS_LISTENER_LEVEL</code></a> instead.</div>
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/status/StatusLogger.html#DEFAULT_STATUS_LISTENER_LEVEL" title="class or interface in org.apache.logging.log4j.status" class="external-link"><code>StatusLogger.DEFAULT_STATUS_LISTENER_LEVEL</code></a> instead.</div>
 </div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/util/Constants.html#LOG4J_LOG_EVENT_FACTORY" class="member-name-link">LOG4J_LOG_EVENT_FACTORY</a> - Static variable in class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/Constants.html" title="class in org.apache.logging.log4j.core.util">Constants</a></dt>
@@ -11241,11 +11241,11 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/Logger.html" class="type-name-link" title="class in org.apache.logging.log4j.core">Logger</a> - Class in <a href="org/apache/logging/log4j/core/package-summary.html">org.apache.logging.log4j.core</a></dt>
 <dd>
-<div class="block">The core implementation of the <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Logger.html" title="class or interface in org.apache.logging.log4j" class="external-link"><code>Logger</code></a> interface.</div>
+<div class="block">The core implementation of the <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Logger.html" title="class or interface in org.apache.logging.log4j" class="external-link"><code>Logger</code></a> interface.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/Logger.html#%3Cinit%3E(org.apache.logging.log4j.core.LoggerContext,java.lang.String,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">Logger(LoggerContext, String, MessageFactory)</a> - Constructor for class org.apache.logging.log4j.core.<a href="org/apache/logging/log4j/core/Logger.html" title="class in org.apache.logging.log4j.core">Logger</a></dt>
 <dd>
-<div class="block">Constructs an instance using the given <a href="org/apache/logging/log4j/core/LoggerContext.html" title="class in org.apache.logging.log4j.core"><code>LoggerContext</code></a>, logger name, and <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/message/MessageFactory.html" title="class or interface in org.apache.logging.log4j.message" class="external-link"><code>MessageFactory</code></a>.</div>
+<div class="block">Constructs an instance using the given <a href="org/apache/logging/log4j/core/LoggerContext.html" title="class in org.apache.logging.log4j.core"><code>LoggerContext</code></a>, logger name, and <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory.html" title="class or interface in org.apache.logging.log4j.message" class="external-link"><code>MessageFactory</code></a>.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/Logger.html#%3Cinit%3E(org.apache.logging.log4j.core.LoggerContext,java.lang.String,org.apache.logging.log4j.message.MessageFactory,org.apache.logging.log4j.message.FlowMessageFactory)" class="member-name-link">Logger(LoggerContext, String, MessageFactory, FlowMessageFactory)</a> - Constructor for class org.apache.logging.log4j.core.<a href="org/apache/logging/log4j/core/Logger.html" title="class in org.apache.logging.log4j.core">Logger</a></dt>
 <dd>
@@ -11467,7 +11467,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/async/AsyncQueueFullMessageUtil.html#logWarningToStatusLogger()" class="member-name-link">logWarningToStatusLogger()</a> - Static method in class org.apache.logging.log4j.core.async.<a href="org/apache/logging/log4j/core/async/AsyncQueueFullMessageUtil.html" title="class in org.apache.logging.log4j.core.async">AsyncQueueFullMessageUtil</a></dt>
 <dd>
-<div class="block">Logs a warning to the <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/status/StatusLogger.html" title="class or interface in org.apache.logging.log4j.status" class="external-link"><code>StatusLogger</code></a> explaining why a message appears out of order in the appender.</div>
+<div class="block">Logs a warning to the <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/status/StatusLogger.html" title="class or interface in org.apache.logging.log4j.status" class="external-link"><code>StatusLogger</code></a> explaining why a message appears out of order in the appender.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#LONG" class="member-name-link">LONG</a> - Static variable in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
 <dd>
@@ -11679,7 +11679,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Returns the specified message, with its content frozen unless system property
  <code>log4j.format.msg.async</code> is true or the message class is annotated with
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/message/AsynchronouslyFormattable.html" title="class or interface in org.apache.logging.log4j.message" class="external-link"><code>AsynchronouslyFormattable</code></a>.</div>
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/AsynchronouslyFormattable.html" title="class or interface in org.apache.logging.log4j.message" class="external-link"><code>AsynchronouslyFormattable</code></a>.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/util/FileUtils.html#makeParentDirs(java.io.File)" class="member-name-link">makeParentDirs(File)</a> - Static method in class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/FileUtils.html" title="class in org.apache.logging.log4j.core.util">FileUtils</a></dt>
 <dd>
@@ -11819,8 +11819,8 @@ loadScripts(document, 'script');</script>
 <div class="block"><em>Consider this class private.</em>
 
  <a href="org/apache/logging/log4j/core/impl/MementoMessage.html" title="class in org.apache.logging.log4j.core.impl"><code>MementoMessage</code></a> is intended to be used when we need to make an
- immutable copy of a <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/message/Message.html" title="class or interface in org.apache.logging.log4j.message" class="external-link"><code>Message</code></a> without forgetting the original
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/message/Message.html#getFormat()" title="class or interface in org.apache.logging.log4j.message" class="external-link"><code>Message.getFormat()</code></a> and <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/message/Message.html#getParameters()" title="class or interface in org.apache.logging.log4j.message" class="external-link"><code>Message.getParameters()</code></a> values.</div>
+ immutable copy of a <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/Message.html" title="class or interface in org.apache.logging.log4j.message" class="external-link"><code>Message</code></a> without forgetting the original
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/Message.html#getFormat()" title="class or interface in org.apache.logging.log4j.message" class="external-link"><code>Message.getFormat()</code></a> and <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/Message.html#getParameters()" title="class or interface in org.apache.logging.log4j.message" class="external-link"><code>Message.getParameters()</code></a> values.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/impl/MementoMessage.html#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.Object%5B%5D)" class="member-name-link">MementoMessage(String, String, Object[])</a> - Constructor for class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/MementoMessage.html" title="class in org.apache.logging.log4j.core.impl">MementoMessage</a></dt>
 <dd>&nbsp;</dd>
@@ -11887,7 +11887,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/layout/MessageLayout.html" class="type-name-link" title="class in org.apache.logging.log4j.core.layout">MessageLayout</a> - Class in <a href="org/apache/logging/log4j/core/layout/package-summary.html">org.apache.logging.log4j.core.layout</a></dt>
 <dd>
-<div class="block">Formats a <a href="org/apache/logging/log4j/core/LogEvent.html" title="interface in org.apache.logging.log4j.core"><code>LogEvent</code></a> in its <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/message/Message.html" title="class or interface in org.apache.logging.log4j.message" class="external-link"><code>Message</code></a> form.</div>
+<div class="block">Formats a <a href="org/apache/logging/log4j/core/LogEvent.html" title="interface in org.apache.logging.log4j.core"><code>LogEvent</code></a> in its <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/Message.html" title="class or interface in org.apache.logging.log4j.message" class="external-link"><code>Message</code></a> form.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/layout/MessageLayout.html#%3Cinit%3E()" class="member-name-link">MessageLayout()</a> - Constructor for class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/MessageLayout.html" title="class in org.apache.logging.log4j.core.layout">MessageLayout</a></dt>
 <dd>&nbsp;</dd>
@@ -13029,7 +13029,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/config/status/package-summary.html">org.apache.logging.log4j.core.config.status</a> - package org.apache.logging.log4j.core.config.status</dt>
 <dd>
-<div class="block">Configuration classes for the <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/status/StatusLogger.html" title="class or interface in org.apache.logging.log4j.status" class="external-link"><code>StatusLogger</code></a> API.</div>
+<div class="block">Configuration classes for the <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/status/StatusLogger.html" title="class or interface in org.apache.logging.log4j.status" class="external-link"><code>StatusLogger</code></a> API.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/config/xml/package-summary.html">org.apache.logging.log4j.core.config.xml</a> - package org.apache.logging.log4j.core.config.xml</dt>
 <dd>
@@ -16381,7 +16381,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/config/status/StatusConfiguration.html" class="type-name-link" title="class in org.apache.logging.log4j.core.config.status">StatusConfiguration</a> - Class in <a href="org/apache/logging/log4j/core/config/status/package-summary.html">org.apache.logging.log4j.core.config.status</a></dt>
 <dd>
-<div class="block">Configuration for setting up the <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/status/StatusLogger.html" title="class or interface in org.apache.logging.log4j.status" class="external-link"><code>StatusLogger</code></a> fallback listener.</div>
+<div class="block">Configuration for setting up the <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/status/StatusLogger.html" title="class or interface in org.apache.logging.log4j.status" class="external-link"><code>StatusLogger</code></a> fallback listener.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/config/status/StatusConfiguration.html#%3Cinit%3E()" class="member-name-link">StatusConfiguration()</a> - Constructor for class org.apache.logging.log4j.core.config.status.<a href="org/apache/logging/log4j/core/config/status/StatusConfiguration.html" title="class in org.apache.logging.log4j.core.config.status">StatusConfiguration</a></dt>
 <dd>&nbsp;</dd>
@@ -16653,7 +16653,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/lookup/StructuredDataLookup.html" class="type-name-link" title="class in org.apache.logging.log4j.core.lookup">StructuredDataLookup</a> - Class in <a href="org/apache/logging/log4j/core/lookup/package-summary.html">org.apache.logging.log4j.core.lookup</a></dt>
 <dd>
-<div class="block">Looks up keys from <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/message/StructuredDataMessage.html" title="class or interface in org.apache.logging.log4j.message" class="external-link"><code>StructuredDataMessage</code></a> log messages.</div>
+<div class="block">Looks up keys from <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html" title="class or interface in org.apache.logging.log4j.message" class="external-link"><code>StructuredDataMessage</code></a> log messages.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/lookup/StructuredDataLookup.html#%3Cinit%3E()" class="member-name-link">StructuredDataLookup()</a> - Constructor for class org.apache.logging.log4j.core.lookup.<a href="org/apache/logging/log4j/core/lookup/StructuredDataLookup.html" title="class in org.apache.logging.log4j.core.lookup">StructuredDataLookup</a></dt>
 <dd>&nbsp;</dd>
@@ -17554,7 +17554,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/config/plugins/convert/TypeConverters.LevelConverter.html" class="type-name-link" title="class in org.apache.logging.log4j.core.config.plugins.convert">TypeConverters.LevelConverter</a> - Class in <a href="org/apache/logging/log4j/core/config/plugins/convert/package-summary.html">org.apache.logging.log4j.core.config.plugins.convert</a></dt>
 <dd>
-<div class="block">Converts a <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link"><code>String</code></a> into a Log4j <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link"><code>Level</code></a>.</div>
+<div class="block">Converts a <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link"><code>String</code></a> into a Log4j <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link"><code>Level</code></a>.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/config/plugins/convert/TypeConverters.LongConverter.html" class="type-name-link" title="class in org.apache.logging.log4j.core.config.plugins.convert">TypeConverters.LongConverter</a> - Class in <a href="org/apache/logging/log4j/core/config/plugins/convert/package-summary.html">org.apache.logging.log4j.core.config.plugins.convert</a></dt>
 <dd>
@@ -18227,7 +18227,7 @@ the order they are declared.</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/config/status/StatusConfiguration.html#withDestination(java.lang.String)" class="member-name-link">withDestination(String)</a> - Method in class org.apache.logging.log4j.core.config.status.<a href="org/apache/logging/log4j/core/config/status/StatusConfiguration.html" title="class in org.apache.logging.log4j.core.config.status">StatusConfiguration</a></dt>
 <dd>
-<div class="block">Sets the output of the <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/status/StatusLogger.html" title="class or interface in org.apache.logging.log4j.status" class="external-link"><code>StatusLogger</code></a> fallback listener.</div>
+<div class="block">Sets the output of the <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/status/StatusLogger.html" title="class or interface in org.apache.logging.log4j.status" class="external-link"><code>StatusLogger</code></a> fallback listener.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/layout/PatternLayout.Builder.html#withDisableAnsi(boolean)" class="member-name-link">withDisableAnsi(boolean)</a> - Method in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></dt>
 <dd>&nbsp;</dd>
@@ -18447,11 +18447,11 @@ the order they are declared.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/config/status/StatusConfiguration.html#withStatus(java.lang.String)" class="member-name-link">withStatus(String)</a> - Method in class org.apache.logging.log4j.core.config.status.<a href="org/apache/logging/log4j/core/config/status/StatusConfiguration.html" title="class in org.apache.logging.log4j.core.config.status">StatusConfiguration</a></dt>
 <dd>
-<div class="block">Sets the level of the <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/status/StatusLogger.html" title="class or interface in org.apache.logging.log4j.status" class="external-link"><code>StatusLogger</code></a> fallback listener.</div>
+<div class="block">Sets the level of the <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/status/StatusLogger.html" title="class or interface in org.apache.logging.log4j.status" class="external-link"><code>StatusLogger</code></a> fallback listener.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/config/status/StatusConfiguration.html#withStatus(org.apache.logging.log4j.Level)" class="member-name-link">withStatus(Level)</a> - Method in class org.apache.logging.log4j.core.config.status.<a href="org/apache/logging/log4j/core/config/status/StatusConfiguration.html" title="class in org.apache.logging.log4j.core.config.status">StatusConfiguration</a></dt>
 <dd>
-<div class="block">Sets the level of the <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/status/StatusLogger.html" title="class or interface in org.apache.logging.log4j.status" class="external-link"><code>StatusLogger</code></a> fallback listener.</div>
+<div class="block">Sets the level of the <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/status/StatusLogger.html" title="class or interface in org.apache.logging.log4j.status" class="external-link"><code>StatusLogger</code></a> fallback listener.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/DefaultRolloverStrategy.Builder.html#withStopCustomActionsOnError(boolean)" class="member-name-link">withStopCustomActionsOnError(boolean)</a> - Method in class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/DefaultRolloverStrategy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">DefaultRolloverStrategy.Builder</a></dt>
 <dd>

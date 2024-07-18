@@ -80,7 +80,7 @@ loadScripts(document, 'script');</script>
 <section class="class-description" id="class-description">
 <dl class="notes">
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/AutoCloseable.html" title="class or interface in java.lang" class="external-link">AutoCloseable</a></code>, <code><a href="config/ConfigurationListener.html" title="interface in org.apache.logging.log4j.core.config">ConfigurationListener</a></code>, <code><a href="LifeCycle.html" title="interface in org.apache.logging.log4j.core">LifeCycle</a></code>, <code><a href="LifeCycle2.html" title="interface in org.apache.logging.log4j.core">LifeCycle2</a></code>, <code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a></code>, <code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContextShutdownEnabled.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextShutdownEnabled</a></code>, <code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/Terminable.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">Terminable</a></code></dd>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/AutoCloseable.html" title="class or interface in java.lang" class="external-link">AutoCloseable</a></code>, <code><a href="config/ConfigurationListener.html" title="interface in org.apache.logging.log4j.core.config">ConfigurationListener</a></code>, <code><a href="LifeCycle.html" title="interface in org.apache.logging.log4j.core">LifeCycle</a></code>, <code><a href="LifeCycle2.html" title="interface in org.apache.logging.log4j.core">LifeCycle2</a></code>, <code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a></code>, <code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextShutdownEnabled.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextShutdownEnabled</a></code>, <code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/Terminable.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">Terminable</a></code></dd>
 </dl>
 <dl class="notes">
 <dt>Direct Known Subclasses:</dt>
@@ -89,7 +89,7 @@ loadScripts(document, 'script');</script>
 <hr>
 <div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">LoggerContext</span>
 <span class="extends-implements">extends <a href="AbstractLifeCycle.html" title="class in org.apache.logging.log4j.core">AbstractLifeCycle</a>
-implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/AutoCloseable.html" title="class or interface in java.lang" class="external-link">AutoCloseable</a>, <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/Terminable.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">Terminable</a>, <a href="config/ConfigurationListener.html" title="interface in org.apache.logging.log4j.core.config">ConfigurationListener</a>, <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContextShutdownEnabled.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextShutdownEnabled</a></span></div>
+implements <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/AutoCloseable.html" title="class or interface in java.lang" class="external-link">AutoCloseable</a>, <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/Terminable.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">Terminable</a>, <a href="config/ConfigurationListener.html" title="interface in org.apache.logging.log4j.core.config">ConfigurationListener</a>, <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextShutdownEnabled.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextShutdownEnabled</a></span></div>
 <div class="block">The LoggerContext is the anchor for the logging system. It maintains a list of all the loggers requested by
  applications and a reference to the Configuration. The Configuration will contain the configured loggers, appenders,
  filters, etc and will be atomically updated whenever a reconfigure occurs.</div>
@@ -124,8 +124,8 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
 <h3 id="fields-inherited-from-class-org.apache.logging.log4j.core.AbstractLifeCycle">Fields inherited from class&nbsp;org.apache.logging.log4j.core.<a href="AbstractLifeCycle.html" title="class in org.apache.logging.log4j.core">AbstractLifeCycle</a></h3>
 <code><a href="AbstractLifeCycle.html#DEFAULT_STOP_TIMEOUT">DEFAULT_STOP_TIMEOUT</a>, <a href="AbstractLifeCycle.html#DEFAULT_STOP_TIMEUNIT">DEFAULT_STOP_TIMEUNIT</a>, <a href="AbstractLifeCycle.html#LOGGER">LOGGER</a></code></div>
 <div class="inherited-list">
-<h3 id="fields-inherited-from-class-org.apache.logging.log4j.spi.LoggerContext">Fields inherited from interface&nbsp;org.apache.logging.log4j.spi.<a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a></h3>
-<code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html#EMPTY_ARRAY" title="class or interface in org.apache.logging.log4j.spi" class="external-link">EMPTY_ARRAY</a></code></div>
+<h3 id="fields-inherited-from-class-org.apache.logging.log4j.spi.LoggerContext">Fields inherited from interface&nbsp;org.apache.logging.log4j.spi.<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a></h3>
+<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html#EMPTY_ARRAY" title="class or interface in org.apache.logging.log4j.spi" class="external-link">EMPTY_ARRAY</a></code></div>
 </section>
 </li>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
@@ -180,7 +180,7 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#addPropertyChangeListener(java.beans.PropertyChangeListener)" class="member-name-link">addPropertyChangeListener</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/beans/PropertyChangeListener.html" title="class or interface in java.beans" class="external-link">PropertyChangeListener</a>&nbsp;listener)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#addShutdownListener(org.apache.logging.log4j.spi.LoggerContextShutdownAware)" class="member-name-link">addShutdownListener</a><wbr>(<a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContextShutdownAware.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextShutdownAware</a>&nbsp;listener)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#addShutdownListener(org.apache.logging.log4j.spi.LoggerContextShutdownAware)" class="member-name-link">addShutdownListener</a><wbr>(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextShutdownAware.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextShutdownAware</a>&nbsp;listener)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#close()" class="member-name-link">close</a>()</code></div>
@@ -217,7 +217,7 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns the external context.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContextShutdownAware.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextShutdownAware</a>&gt;</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextShutdownAware.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextShutdownAware</a>&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getListeners()" class="member-name-link">getListeners</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="Logger.html" title="class in org.apache.logging.log4j.core">Logger</a></code></div>
@@ -227,11 +227,11 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="Logger.html" title="class in org.apache.logging.log4j.core">Logger</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">getLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/message/MessageFactory.html" title="class or interface in org.apache.logging.log4j.message" class="external-link">MessageFactory</a>&nbsp;messageFactory)</code></div>
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory.html" title="class or interface in org.apache.logging.log4j.message" class="external-link">MessageFactory</a>&nbsp;messageFactory)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Obtains a Logger from the Context.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerRegistry.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerRegistry</a>&lt;<a href="Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&gt;</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerRegistry.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerRegistry</a>&lt;<a href="Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getLoggerRegistry()" class="member-name-link">getLoggerRegistry</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Gets the LoggerRegistry.</div>
@@ -261,20 +261,20 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#hasLogger(java.lang.String,java.lang.Class)" class="member-name-link">hasLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/message/MessageFactory.html" title="class or interface in org.apache.logging.log4j.message" class="external-link">MessageFactory</a>&gt;&nbsp;messageFactoryClass)</code></div>
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory.html" title="class or interface in org.apache.logging.log4j.message" class="external-link">MessageFactory</a>&gt;&nbsp;messageFactoryClass)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Determines if the specified Logger exists.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#hasLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">hasLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/message/MessageFactory.html" title="class or interface in org.apache.logging.log4j.message" class="external-link">MessageFactory</a>&nbsp;messageFactory)</code></div>
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory.html" title="class or interface in org.apache.logging.log4j.message" class="external-link">MessageFactory</a>&nbsp;messageFactory)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Determines if the specified Logger exists.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="Logger.html" title="class in org.apache.logging.log4j.core">Logger</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#newInstance(org.apache.logging.log4j.core.LoggerContext,java.lang.String,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">newInstance</a><wbr>(<a href="LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a>&nbsp;ctx,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/message/MessageFactory.html" title="class or interface in org.apache.logging.log4j.message" class="external-link">MessageFactory</a>&nbsp;messageFactory)</code></div>
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory.html" title="class or interface in org.apache.logging.log4j.message" class="external-link">MessageFactory</a>&nbsp;messageFactory)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onChange(org.apache.logging.log4j.core.config.Reconfigurable)" class="member-name-link">onChange</a><wbr>(<a href="config/Reconfigurable.html" title="interface in org.apache.logging.log4j.core.config">Reconfigurable</a>&nbsp;reconfigurable)</code></div>
@@ -370,8 +370,8 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
 <h3 id="methods-inherited-from-class-java.lang.Object">Methods inherited from class&nbsp;java.lang.<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></h3>
 <code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#clone--" title="class or interface in java.lang" class="external-link">clone</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#equals-java.lang.Object-" title="class or interface in java.lang" class="external-link">equals</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#finalize--" title="class or interface in java.lang" class="external-link">finalize</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#getClass--" title="class or interface in java.lang" class="external-link">getClass</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#hashCode--" title="class or interface in java.lang" class="external-link">hashCode</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#notify--" title="class or interface in java.lang" class="external-link">notify</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#notifyAll--" title="class or interface in java.lang" class="external-link">notifyAll</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#toString--" title="class or interface in java.lang" class="external-link">toString</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#wait--" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#wait-long-" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#wait-long-int-" title="class or interface in java.lang" class="external-link">wait</a></code></div>
 <div class="inherited-list">
-<h3 id="methods-inherited-from-class-org.apache.logging.log4j.spi.LoggerContext">Methods inherited from interface&nbsp;org.apache.logging.log4j.spi.<a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a></h3>
-<code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html#getLogger(java.lang.Class)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">getLogger</a>, <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html#getLogger(java.lang.Class,org.apache.logging.log4j.message.MessageFactory)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">getLogger</a></code></div>
+<h3 id="methods-inherited-from-class-org.apache.logging.log4j.spi.LoggerContext">Methods inherited from interface&nbsp;org.apache.logging.log4j.spi.<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a></h3>
+<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html#getLogger(java.lang.Class)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">getLogger</a>, <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html#getLogger(java.lang.Class,org.apache.logging.log4j.message.MessageFactory)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">getLogger</a></code></div>
 </section>
 </li>
 </ul>
@@ -472,20 +472,20 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
 <li>
 <section class="detail" id="addShutdownListener(org.apache.logging.log4j.spi.LoggerContextShutdownAware)">
 <h3>addShutdownListener</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">addShutdownListener</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContextShutdownAware.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextShutdownAware</a>&nbsp;listener)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">addShutdownListener</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextShutdownAware.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextShutdownAware</a>&nbsp;listener)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContextShutdownEnabled.html#addShutdownListener(org.apache.logging.log4j.spi.LoggerContextShutdownAware)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">addShutdownListener</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContextShutdownEnabled.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextShutdownEnabled</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextShutdownEnabled.html#addShutdownListener(org.apache.logging.log4j.spi.LoggerContextShutdownAware)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">addShutdownListener</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextShutdownEnabled.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextShutdownEnabled</a></code></dd>
 </dl>
 </section>
 </li>
 <li>
 <section class="detail" id="getListeners()">
 <h3>getListeners</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContextShutdownAware.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextShutdownAware</a>&gt;</span>&nbsp;<span class="element-name">getListeners</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextShutdownAware.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextShutdownAware</a>&gt;</span>&nbsp;<span class="element-name">getListeners</span>()</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContextShutdownEnabled.html#getListeners()" title="class or interface in org.apache.logging.log4j.spi" class="external-link">getListeners</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContextShutdownEnabled.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextShutdownEnabled</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextShutdownEnabled.html#getListeners()" title="class or interface in org.apache.logging.log4j.spi" class="external-link">getListeners</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextShutdownEnabled.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextShutdownEnabled</a></code></dd>
 </dl>
 </section>
 </li>
@@ -512,7 +512,7 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
 <dt>See Also:</dt>
 <dd>
 <ul class="see-list">
-<li><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/LogManager.html#getContext()" title="class or interface in org.apache.logging.log4j" class="external-link"><code>LogManager.getContext()</code></a></li>
+<li><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#getContext()" title="class or interface in org.apache.logging.log4j" class="external-link"><code>LogManager.getContext()</code></a></li>
 </ul>
 </dd>
 </dl>
@@ -541,7 +541,7 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
 <dt>See Also:</dt>
 <dd>
 <ul class="see-list">
-<li><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/LogManager.html#getContext(boolean)" title="class or interface in org.apache.logging.log4j" class="external-link"><code>LogManager.getContext(boolean)</code></a></li>
+<li><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#getContext(boolean)" title="class or interface in org.apache.logging.log4j" class="external-link"><code>LogManager.getContext(boolean)</code></a></li>
 </ul>
 </dd>
 </dl>
@@ -575,7 +575,7 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
 <dt>See Also:</dt>
 <dd>
 <ul class="see-list-long">
-<li><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/LogManager.html#getContext(java.lang.ClassLoader,boolean,java.net.URI)" title="class or interface in org.apache.logging.log4j" class="external-link"><code>LogManager.getContext(ClassLoader, boolean, URI)</code></a></li>
+<li><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#getContext(java.lang.ClassLoader,boolean,java.net.URI)" title="class or interface in org.apache.logging.log4j" class="external-link"><code>LogManager.getContext(ClassLoader, boolean, URI)</code></a></li>
 </ul>
 </dd>
 </dl>
@@ -620,7 +620,7 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">terminate</span>()</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/Terminable.html#terminate()" title="class or interface in org.apache.logging.log4j.spi" class="external-link">terminate</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/Terminable.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">Terminable</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/Terminable.html#terminate()" title="class or interface in org.apache.logging.log4j.spi" class="external-link">terminate</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/Terminable.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">Terminable</a></code></dd>
 </dl>
 </section>
 </li>
@@ -696,7 +696,7 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span>&nbsp;<span class="element-name">getObject</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html#getObject(java.lang.String)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">getObject</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html#getObject(java.lang.String)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">getObject</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a></code></dd>
 </dl>
 </section>
 </li>
@@ -707,7 +707,7 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;value)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html#putObject(java.lang.String,java.lang.Object)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">putObject</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html#putObject(java.lang.String,java.lang.Object)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">putObject</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a></code></dd>
 </dl>
 </section>
 </li>
@@ -718,7 +718,7 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;value)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html#putObjectIfAbsent(java.lang.String,java.lang.Object)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">putObjectIfAbsent</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html#putObjectIfAbsent(java.lang.String,java.lang.Object)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">putObjectIfAbsent</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a></code></dd>
 </dl>
 </section>
 </li>
@@ -728,7 +728,7 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span>&nbsp;<span class="element-name">removeObject</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html#removeObject(java.lang.String)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">removeObject</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html#removeObject(java.lang.String)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">removeObject</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a></code></dd>
 </dl>
 </section>
 </li>
@@ -739,7 +739,7 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;value)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html#removeObject(java.lang.String,java.lang.Object)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">removeObject</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html#removeObject(java.lang.String,java.lang.Object)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">removeObject</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a></code></dd>
 </dl>
 </section>
 </li>
@@ -761,7 +761,7 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
 <div class="block">Returns the external context.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html#getExternalContext()" title="class or interface in org.apache.logging.log4j.spi" class="external-link">getExternalContext</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html#getExternalContext()" title="class or interface in org.apache.logging.log4j.spi" class="external-link">getExternalContext</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a></code></dd>
 <dt>Returns:</dt>
 <dd>The external context.</dd>
 </dl>
@@ -774,7 +774,7 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
 <div class="block">Gets a Logger from the Context.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html#getLogger(java.lang.String)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">getLogger</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html#getLogger(java.lang.String)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">getLogger</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>name</code> - The name of the Logger to return.</dd>
 <dt>Returns:</dt>
@@ -801,11 +801,11 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
 <section class="detail" id="getLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)">
 <h3>getLogger</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="Logger.html" title="class in org.apache.logging.log4j.core">Logger</a></span>&nbsp;<span class="element-name">getLogger</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/message/MessageFactory.html" title="class or interface in org.apache.logging.log4j.message" class="external-link">MessageFactory</a>&nbsp;messageFactory)</span></div>
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory.html" title="class or interface in org.apache.logging.log4j.message" class="external-link">MessageFactory</a>&nbsp;messageFactory)</span></div>
 <div class="block">Obtains a Logger from the Context.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html#getLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">getLogger</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html#getLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">getLogger</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>name</code> - The name of the Logger to return.</dd>
 <dd><code>messageFactory</code> - The message factory is used only when creating a logger, subsequent use does not change the
@@ -818,11 +818,11 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
 <li>
 <section class="detail" id="getLoggerRegistry()">
 <h3>getLoggerRegistry</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerRegistry.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerRegistry</a>&lt;<a href="Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&gt;</span>&nbsp;<span class="element-name">getLoggerRegistry</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerRegistry.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerRegistry</a>&lt;<a href="Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&gt;</span>&nbsp;<span class="element-name">getLoggerRegistry</span>()</div>
 <div class="block">Gets the LoggerRegistry.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html#getLoggerRegistry()" title="class or interface in org.apache.logging.log4j.spi" class="external-link">getLoggerRegistry</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html#getLoggerRegistry()" title="class or interface in org.apache.logging.log4j.spi" class="external-link">getLoggerRegistry</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a></code></dd>
 <dt>Returns:</dt>
 <dd>the LoggerRegistry.</dd>
 <dt>Since:</dt>
@@ -837,7 +837,7 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
 <div class="block">Determines if the specified Logger exists.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html#hasLogger(java.lang.String)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">hasLogger</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html#hasLogger(java.lang.String)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">hasLogger</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>name</code> - The Logger name to search for.</dd>
 <dt>Returns:</dt>
@@ -849,11 +849,11 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
 <section class="detail" id="hasLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)">
 <h3>hasLogger</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">hasLogger</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/message/MessageFactory.html" title="class or interface in org.apache.logging.log4j.message" class="external-link">MessageFactory</a>&nbsp;messageFactory)</span></div>
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory.html" title="class or interface in org.apache.logging.log4j.message" class="external-link">MessageFactory</a>&nbsp;messageFactory)</span></div>
 <div class="block">Determines if the specified Logger exists.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html#hasLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">hasLogger</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html#hasLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">hasLogger</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>name</code> - The Logger name to search for.</dd>
 <dt>Returns:</dt>
@@ -865,11 +865,11 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
 <section class="detail" id="hasLogger(java.lang.String,java.lang.Class)">
 <h3>hasLogger</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">hasLogger</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/message/MessageFactory.html" title="class or interface in org.apache.logging.log4j.message" class="external-link">MessageFactory</a>&gt;&nbsp;messageFactoryClass)</span></div>
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory.html" title="class or interface in org.apache.logging.log4j.message" class="external-link">MessageFactory</a>&gt;&nbsp;messageFactoryClass)</span></div>
 <div class="block">Determines if the specified Logger exists.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html#hasLogger(java.lang.String,java.lang.Class)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">hasLogger</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html#hasLogger(java.lang.String,java.lang.Class)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">hasLogger</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>name</code> - The Logger name to search for.</dd>
 <dt>Returns:</dt>
@@ -1012,7 +1012,7 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
 <h3>newInstance</h3>
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="Logger.html" title="class in org.apache.logging.log4j.core">Logger</a></span>&nbsp;<span class="element-name">newInstance</span><wbr><span class="parameters">(<a href="LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a>&nbsp;ctx,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/message/MessageFactory.html" title="class or interface in org.apache.logging.log4j.message" class="external-link">MessageFactory</a>&nbsp;messageFactory)</span></div>
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory.html" title="class or interface in org.apache.logging.log4j.message" class="external-link">MessageFactory</a>&nbsp;messageFactory)</span></div>
 </section>
 </li>
 </ul>

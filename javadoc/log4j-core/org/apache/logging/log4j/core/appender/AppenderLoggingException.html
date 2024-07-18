@@ -72,7 +72,7 @@ loadScripts(document, 'script');</script>
 <div class="inheritance"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link">java.lang.Throwable</a>
 <div class="inheritance"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Exception.html" title="class or interface in java.lang" class="external-link">java.lang.Exception</a>
 <div class="inheritance"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/RuntimeException.html" title="class or interface in java.lang" class="external-link">java.lang.RuntimeException</a>
-<div class="inheritance"><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/LoggingException.html" title="class or interface in org.apache.logging.log4j" class="external-link">org.apache.logging.log4j.LoggingException</a>
+<div class="inheritance"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/LoggingException.html" title="class or interface in org.apache.logging.log4j" class="external-link">org.apache.logging.log4j.LoggingException</a>
 <div class="inheritance">org.apache.logging.log4j.core.appender.AppenderLoggingException</div>
 </div>
 </div>
@@ -90,10 +90,10 @@ loadScripts(document, 'script');</script>
 </dl>
 <hr>
 <div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">AppenderLoggingException</span>
-<span class="extends-implements">extends <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/LoggingException.html" title="class or interface in org.apache.logging.log4j" class="external-link">LoggingException</a></span></div>
+<span class="extends-implements">extends <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/LoggingException.html" title="class or interface in org.apache.logging.log4j" class="external-link">LoggingException</a></span></div>
 <div class="block">Thrown from an appender when a log event could not be written. Appenders should not thrown an exception if an error
  occurs that does <em>not</em> stop the event from being successfully written. Those types of errors should be logged
- using the <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/status/StatusLogger.html" title="class or interface in org.apache.logging.log4j.status" class="external-link"><code>StatusLogger</code></a>. Appenders should only throw exceptions when an error
+ using the <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/status/StatusLogger.html" title="class or interface in org.apache.logging.log4j.status" class="external-link"><code>StatusLogger</code></a>. Appenders should only throw exceptions when an error
  prevents an event from being written. Appenders <em>must</em> throw an exception in this case so that error-handling
  features like the <a href="FailoverAppender.html" title="class in org.apache.logging.log4j.core.appender"><code>FailoverAppender</code></a> work properly.
  <p>

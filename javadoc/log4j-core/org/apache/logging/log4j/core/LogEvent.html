@@ -87,10 +87,10 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.
 <div class="block">Provides contextual information about a logged message. A LogEvent must be <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html" title="class or interface in java.io" class="external-link"><code>Serializable</code></a> so that it
  may be transmitted over a network connection, output in a
  <a href="layout/SerializedLayout.html" title="class in org.apache.logging.log4j.core.layout"><code>SerializedLayout</code></a>, and many other uses. Besides containing a
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/message/Message.html" title="class or interface in org.apache.logging.log4j.message" class="external-link"><code>Message</code></a>, a LogEvent has a corresponding
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link"><code>Level</code></a> that the message was logged at. If a
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link"><code>Marker</code></a> was used, then it is included here. The contents of the
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/ThreadContext.html" title="class or interface in org.apache.logging.log4j" class="external-link"><code>ThreadContext</code></a> at the time of the log call are provided via
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/Message.html" title="class or interface in org.apache.logging.log4j.message" class="external-link"><code>Message</code></a>, a LogEvent has a corresponding
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link"><code>Level</code></a> that the message was logged at. If a
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link"><code>Marker</code></a> was used, then it is included here. The contents of the
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html" title="class or interface in org.apache.logging.log4j" class="external-link"><code>ThreadContext</code></a> at the time of the log call are provided via
  <a href="#getContextMap()"><code>getContextMap()</code></a> and <a href="#getContextStack()"><code>getContextStack()</code></a>. If a <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link"><code>Throwable</code></a> was included in the log
  call, then it is provided via <a href="#getThrown()"><code>getThrown()</code></a>. When this class is serialized, the attached Throwable will
  be wrapped into a <a href="impl/ThrowableProxy.html" title="class in org.apache.logging.log4j.core.impl"><code>ThrowableProxy</code></a> so that it may be safely serialized
@@ -115,7 +115,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/util/ReadOnlyStringMap.html" title="class or interface in org.apache.logging.log4j.util" class="external-link">ReadOnlyStringMap</a></code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/ReadOnlyStringMap.html" title="class or interface in org.apache.logging.log4j.util" class="external-link">ReadOnlyStringMap</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getContextData()" class="member-name-link">getContextData</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Returns the <code>ReadOnlyStringMap</code> object holding context data key-value pairs.</div>
@@ -127,7 +127,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.
 <div class="deprecation-comment">use <a href="#getContextData()"><code>getContextData()</code></a> instead</div>
 </div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/ThreadContext.ContextStack.html" title="class or interface in org.apache.logging.log4j" class="external-link">ThreadContext.ContextStack</a></code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.ContextStack.html" title="class or interface in org.apache.logging.log4j" class="external-link">ThreadContext.ContextStack</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getContextStack()" class="member-name-link">getContextStack</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Gets the context stack (also known as Nested Diagnostic Context or NDC).</div>
@@ -137,7 +137,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Returns the Instant when the message was logged.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a></code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getLevel()" class="member-name-link">getLevel</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Gets the level.</div>
@@ -152,12 +152,12 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Gets the logger name.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a></code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getMarker()" class="member-name-link">getMarker</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Gets the Marker associated with the event.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/message/Message.html" title="class or interface in org.apache.logging.log4j.message" class="external-link">Message</a></code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/Message.html" title="class or interface in org.apache.logging.log4j.message" class="external-link">Message</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getMessage()" class="member-name-link">getMessage</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Gets the message associated with the event.</div>
@@ -271,11 +271,11 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.
 <li>
 <section class="detail" id="getContextData()">
 <h3>getContextData</h3>
-<div class="member-signature"><span class="return-type"><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/util/ReadOnlyStringMap.html" title="class or interface in org.apache.logging.log4j.util" class="external-link">ReadOnlyStringMap</a></span>&nbsp;<span class="element-name">getContextData</span>()</div>
+<div class="member-signature"><span class="return-type"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/ReadOnlyStringMap.html" title="class or interface in org.apache.logging.log4j.util" class="external-link">ReadOnlyStringMap</a></span>&nbsp;<span class="element-name">getContextData</span>()</div>
 <div class="block">Returns the <code>ReadOnlyStringMap</code> object holding context data key-value pairs.
  <p>
  Context data (also known as Mapped Diagnostic Context or MDC) is data that is set by the application to be
- included in all subsequent log events. The default source for context data is the <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/ThreadContext.html" title="class or interface in org.apache.logging.log4j" class="external-link"><code>ThreadContext</code></a> (and
+ included in all subsequent log events. The default source for context data is the <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html" title="class or interface in org.apache.logging.log4j" class="external-link"><code>ThreadContext</code></a> (and
  <a href="https://logging.apache.org/log4j/2.x/manual/configuration.html#PropertySubstitution">properties</a>
  configured on the Logger that logged the event), but users can configure a custom <a href="ContextDataInjector.html" title="interface in org.apache.logging.log4j.core"><code>ContextDataInjector</code></a>
  to inject key-value pairs from any arbitrary source.</div>
@@ -288,7 +288,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.
 <dd>
 <ul class="see-list">
 <li><a href="ContextDataInjector.html" title="interface in org.apache.logging.log4j.core"><code>ContextDataInjector</code></a></li>
-<li><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/ThreadContext.html" title="class or interface in org.apache.logging.log4j" class="external-link"><code>ThreadContext</code></a></li>
+<li><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html" title="class or interface in org.apache.logging.log4j" class="external-link"><code>ThreadContext</code></a></li>
 </ul>
 </dd>
 </dl>
@@ -297,7 +297,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.
 <li>
 <section class="detail" id="getContextStack()">
 <h3>getContextStack</h3>
-<div class="member-signature"><span class="return-type"><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/ThreadContext.ContextStack.html" title="class or interface in org.apache.logging.log4j" class="external-link">ThreadContext.ContextStack</a></span>&nbsp;<span class="element-name">getContextStack</span>()</div>
+<div class="member-signature"><span class="return-type"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.ContextStack.html" title="class or interface in org.apache.logging.log4j" class="external-link">ThreadContext.ContextStack</a></span>&nbsp;<span class="element-name">getContextStack</span>()</div>
 <div class="block">Gets the context stack (also known as Nested Diagnostic Context or NDC).</div>
 <dl class="notes">
 <dt>Returns:</dt>
@@ -319,7 +319,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.
 <li>
 <section class="detail" id="getLevel()">
 <h3>getLevel</h3>
-<div class="member-signature"><span class="return-type"><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a></span>&nbsp;<span class="element-name">getLevel</span>()</div>
+<div class="member-signature"><span class="return-type"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a></span>&nbsp;<span class="element-name">getLevel</span>()</div>
 <div class="block">Gets the level.</div>
 <dl class="notes">
 <dt>Returns:</dt>
@@ -341,7 +341,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.
 <li>
 <section class="detail" id="getMarker()">
 <h3>getMarker</h3>
-<div class="member-signature"><span class="return-type"><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a></span>&nbsp;<span class="element-name">getMarker</span>()</div>
+<div class="member-signature"><span class="return-type"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a></span>&nbsp;<span class="element-name">getMarker</span>()</div>
 <div class="block">Gets the Marker associated with the event.</div>
 <dl class="notes">
 <dt>Returns:</dt>
@@ -352,7 +352,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.
 <li>
 <section class="detail" id="getMessage()">
 <h3>getMessage</h3>
-<div class="member-signature"><span class="return-type"><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/message/Message.html" title="class or interface in org.apache.logging.log4j.message" class="external-link">Message</a></span>&nbsp;<span class="element-name">getMessage</span>()</div>
+<div class="member-signature"><span class="return-type"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/Message.html" title="class or interface in org.apache.logging.log4j.message" class="external-link">Message</a></span>&nbsp;<span class="element-name">getMessage</span>()</div>
 <div class="block">Gets the message associated with the event.</div>
 <dl class="notes">
 <dt>Returns:</dt>

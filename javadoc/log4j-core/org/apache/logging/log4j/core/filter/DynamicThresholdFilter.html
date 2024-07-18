@@ -92,7 +92,7 @@ loadScripts(document, 'script');</script>
 </span><span class="modifiers">public final class </span><span class="element-name type-name-label">DynamicThresholdFilter</span>
 <span class="extends-implements">extends <a href="AbstractFilter.html" title="class in org.apache.logging.log4j.core.filter">AbstractFilter</a></span></div>
 <div class="block">Compares against a log level that is associated with a context value. By default the context is the
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/ThreadContext.html" title="class or interface in org.apache.logging.log4j" class="external-link"><code>ThreadContext</code></a> and/or the <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/ScopedContext.html" title="class or interface in org.apache.logging.log4j" class="external-link"><code>ScopedContext</code></a>, but users may add a custom
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html" title="class or interface in org.apache.logging.log4j" class="external-link"><code>ThreadContext</code></a> and/or the <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/ScopedContext.html" title="class or interface in org.apache.logging.log4j" class="external-link"><code>ScopedContext</code></a>, but users may add a custom
  <a href="../util/ContextDataProvider.html" title="interface in org.apache.logging.log4j.core.util"><code>ContextDataProvider</code></a> which obtains context data from some other source.</div>
 </section>
 <section class="summary">
@@ -141,7 +141,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="DynamicThresholdFilter.html" title="class in org.apache.logging.log4j.core.filter">DynamicThresholdFilter</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createFilter(java.lang.String,org.apache.logging.log4j.core.util.KeyValuePair%5B%5D,org.apache.logging.log4j.Level,org.apache.logging.log4j.core.Filter.Result,org.apache.logging.log4j.core.Filter.Result)" class="member-name-link">createFilter</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
  <a href="../util/KeyValuePair.html" title="class in org.apache.logging.log4j.core.util">KeyValuePair</a>[]&nbsp;pairs,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;defaultThreshold,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;defaultThreshold,
  <a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;onMatch,
  <a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;onMismatch)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
@@ -157,8 +157,8 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.Object,java.lang.Throwable)" class="member-name-link">filter</a><wbr>(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;msg,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link">Throwable</a>&nbsp;t)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
@@ -166,8 +166,8 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,java.lang.Object)" class="member-name-link">filter</a><wbr>(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;msg,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p0)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
@@ -175,8 +175,8 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,java.lang.Object...)" class="member-name-link">filter</a><wbr>(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;msg,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>...&nbsp;params)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
@@ -184,8 +184,8 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,java.lang.Object,java.lang.Object)" class="member-name-link">filter</a><wbr>(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;msg,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p0,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p1)</code></div>
@@ -194,8 +194,8 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,java.lang.Object,java.lang.Object,java.lang.Object)" class="member-name-link">filter</a><wbr>(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;msg,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p0,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p1,
@@ -205,8 +205,8 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object)" class="member-name-link">filter</a><wbr>(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;msg,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p0,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p1,
@@ -217,8 +217,8 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object)" class="member-name-link">filter</a><wbr>(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;msg,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p0,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p1,
@@ -230,8 +230,8 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object)" class="member-name-link">filter</a><wbr>(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;msg,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p0,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p1,
@@ -244,8 +244,8 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object)" class="member-name-link">filter</a><wbr>(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;msg,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p0,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p1,
@@ -259,8 +259,8 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object)" class="member-name-link">filter</a><wbr>(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;msg,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p0,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p1,
@@ -275,8 +275,8 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object)" class="member-name-link">filter</a><wbr>(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;msg,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p0,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p1,
@@ -292,8 +292,8 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object)" class="member-name-link">filter</a><wbr>(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;msg,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p0,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p1,
@@ -310,9 +310,9 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message,java.lang.Throwable)" class="member-name-link">filter</a><wbr>(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/message/Message.html" title="class or interface in org.apache.logging.log4j.message" class="external-link">Message</a>&nbsp;msg,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/Message.html" title="class or interface in org.apache.logging.log4j.message" class="external-link">Message</a>&nbsp;msg,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link">Throwable</a>&nbsp;t)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Appender Filter method.</div>
@@ -320,7 +320,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getKey()" class="member-name-link">getKey</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&gt;</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getLevelMap()" class="member-name-link">getLevelMap</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
@@ -367,7 +367,7 @@ loadScripts(document, 'script');</script>
  <a href="../config/plugins/PluginElement.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginElement</a>("Pairs")
  <a href="../util/KeyValuePair.html" title="class in org.apache.logging.log4j.core.util">KeyValuePair</a>[]&nbsp;pairs,
  <a href="../config/plugins/PluginAttribute.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginAttribute</a>("defaultThreshold")
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;defaultThreshold,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;defaultThreshold,
  <a href="../config/plugins/PluginAttribute.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginAttribute</a>("onMatch")
  <a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;onMatch,
  <a href="../config/plugins/PluginAttribute.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginAttribute</a>("onMismatch")
@@ -417,9 +417,9 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message,java.lang.Throwable)">
 <h3>filter</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></span>&nbsp;<span class="element-name">filter</span><wbr><span class="parameters">(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/message/Message.html" title="class or interface in org.apache.logging.log4j.message" class="external-link">Message</a>&nbsp;msg,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/Message.html" title="class or interface in org.apache.logging.log4j.message" class="external-link">Message</a>&nbsp;msg,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link">Throwable</a>&nbsp;t)</span></div>
 <div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="AbstractFilter.html#filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message,java.lang.Throwable)">AbstractFilter</a></code></span></div>
 <div class="block">Appender Filter method. The default returns NEUTRAL.</div>
@@ -443,8 +443,8 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.Object,java.lang.Throwable)">
 <h3>filter</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></span>&nbsp;<span class="element-name">filter</span><wbr><span class="parameters">(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;msg,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link">Throwable</a>&nbsp;t)</span></div>
 <div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="AbstractFilter.html#filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.Object,java.lang.Throwable)">AbstractFilter</a></code></span></div>
@@ -469,8 +469,8 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,java.lang.Object...)">
 <h3>filter</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></span>&nbsp;<span class="element-name">filter</span><wbr><span class="parameters">(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;msg,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>...&nbsp;params)</span></div>
 <div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="AbstractFilter.html#filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,java.lang.Object...)">AbstractFilter</a></code></span></div>
@@ -495,8 +495,8 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,java.lang.Object)">
 <h3>filter</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></span>&nbsp;<span class="element-name">filter</span><wbr><span class="parameters">(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;msg,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p0)</span></div>
 <div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="AbstractFilter.html#filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,java.lang.Object)">AbstractFilter</a></code></span></div>
@@ -521,8 +521,8 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,java.lang.Object,java.lang.Object)">
 <h3>filter</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></span>&nbsp;<span class="element-name">filter</span><wbr><span class="parameters">(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;msg,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p0,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p1)</span></div>
@@ -549,8 +549,8 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,java.lang.Object,java.lang.Object,java.lang.Object)">
 <h3>filter</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></span>&nbsp;<span class="element-name">filter</span><wbr><span class="parameters">(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;msg,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p0,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p1,
@@ -579,8 +579,8 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object)">
 <h3>filter</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></span>&nbsp;<span class="element-name">filter</span><wbr><span class="parameters">(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;msg,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p0,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p1,
@@ -611,8 +611,8 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object)">
 <h3>filter</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></span>&nbsp;<span class="element-name">filter</span><wbr><span class="parameters">(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;msg,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p0,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p1,
@@ -645,8 +645,8 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object)">
 <h3>filter</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></span>&nbsp;<span class="element-name">filter</span><wbr><span class="parameters">(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;msg,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p0,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p1,
@@ -681,8 +681,8 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object)">
 <h3>filter</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></span>&nbsp;<span class="element-name">filter</span><wbr><span class="parameters">(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;msg,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p0,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p1,
@@ -719,8 +719,8 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object)">
 <h3>filter</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></span>&nbsp;<span class="element-name">filter</span><wbr><span class="parameters">(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;msg,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p0,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p1,
@@ -759,8 +759,8 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object)">
 <h3>filter</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></span>&nbsp;<span class="element-name">filter</span><wbr><span class="parameters">(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;msg,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p0,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p1,
@@ -801,8 +801,8 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object)">
 <h3>filter</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></span>&nbsp;<span class="element-name">filter</span><wbr><span class="parameters">(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;msg,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p0,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p1,
@@ -850,7 +850,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="getLevelMap()">
 <h3>getLevelMap</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&gt;</span>&nbsp;<span class="element-name">getLevelMap</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&gt;</span>&nbsp;<span class="element-name">getLevelMap</span>()</div>
 </section>
 </li>
 <li>
