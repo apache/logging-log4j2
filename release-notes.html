@@ -362,7 +362,7 @@
 <p>Add a faster <code>ThreadContextMap</code> for web app users: <code>org.apache.logging.log4j.internal.map.StringArrayThreadContextMap</code>. (<a href="https://github.com/apache/logging-log4j2/pull/2330">2330</a>)</p>
 </li>
 <li>
-<p>Add Logback throwable-consuming semantics as an option in <code>log4j-slf4j-impl</code> and <code>log4j-slf4j2-impl</code>. Users can enable it by setting the property <code>log4j2.messageFactory</code> to <code>org.apache.logging.slf4j.message.ThrowableConsumingMessageFactory</code>. (<a href="https://github.com/apache/logging-log4j2/pull/2363">2363</a>)</p>
+<p>Add Logback throwable-consuming semantics as an option in <code>log4j-slf4j-impl</code> and <code>log4j-slf4j2-impl</code>. Users can enable it by setting the property <code>log4j2.messageFactory</code> to <code>org.apache.logging.slf4j.message.ThrowableConsumingMessageFactory</code>. (<a href="https://github.com/apache/logging-log4j2/issues/2363">2363</a>)</p>
 </li>
 <li>
 <p>Add trace context fields to <code>GcpLayout.json</code> (<a href="https://github.com/apache/logging-log4j2/pull/2498">2498</a>)</p>
@@ -384,10 +384,10 @@
 <div class="ulist">
 <ul>
 <li>
-<p>Fix usage of <code>log4j-api</code> in GraalVM without additional reachability data. (<a href="https://github.com/apache/logging-log4j2/pull/1539">1539</a>)</p>
+<p>Fix usage of <code>log4j-api</code> in GraalVM without additional reachability data. (<a href="https://github.com/apache/logging-log4j2/issues/1539">1539</a>)</p>
 </li>
 <li>
-<p>Add logging to <code>PropertiesUtil</code> and fix <code>Duration</code> parser. (<a href="https://github.com/apache/logging-log4j2/pull/1936">1936</a>)</p>
+<p>Add logging to <code>PropertiesUtil</code> and fix <code>Duration</code> parser. (<a href="https://github.com/apache/logging-log4j2/issues/1936">1936</a>)</p>
 </li>
 <li>
 <p>Centralize initialization in the <code>Provider</code> class and deprecate <code>log4j2.loggerContextFactory</code> property. (<a href="https://github.com/apache/logging-log4j2/pull/2374">2374</a>)</p>
@@ -446,7 +446,7 @@
 <p>Fix empty string handling for <code>TruncatingBufferedWriter</code> (<a href="https://github.com/apache/logging-log4j2/pull/2609">2609</a>)</p>
 </li>
 <li>
-<p>Fix that parameterized message formatting throws an exception when there are insufficient number of parameters. It previously simply didn&#8217;t replace the '{}' sequence. The behavior changed in 2.21.0 and should be restored for backward compatibility. (<a href="https://github.com/apache/logging-log4j2/pull/2380">2380</a>)</p>
+<p>Fix that parameterized message formatting throws an exception when there are insufficient number of parameters. It previously simply didn&#8217;t replace the '{}' sequence. The behavior changed in 2.21.0 and should be restored for backward compatibility. (<a href="https://github.com/apache/logging-log4j2/issues/2380">2380</a>)</p>
 </li>
 <li>
 <p>Website is migrated to Antora with several formatting and link fixes (<a href="https://github.com/apache/logging-log4j2/pull/2427">2427</a>)</p>
@@ -602,10 +602,10 @@
 <div class="ulist">
 <ul>
 <li>
-<p>Fix handling of <code>LoggerContextAware</code> lookups (<a href="https://github.com/apache/logging-log4j2/pull/2309">2309</a>)</p>
+<p>Fix handling of <code>LoggerContextAware</code> lookups (<a href="https://github.com/apache/logging-log4j2/issues/2309">2309</a>)</p>
 </li>
 <li>
-<p>Fix NPE in <code>PatternProcessor</code> for a <code>UNIX_MILLIS</code> pattern (<a href="https://github.com/apache/logging-log4j2/pull/2346">2346</a>)</p>
+<p>Fix NPE in <code>PatternProcessor</code> for a <code>UNIX_MILLIS</code> pattern (<a href="https://github.com/apache/logging-log4j2/issues/2346">2346</a>)</p>
 </li>
 <li>
 <p>Improve performance of <code>CloseableThreadContext#closeMap()</code> (<a href="https://github.com/apache/logging-log4j2/pull/2296">2296</a>)</p>
@@ -744,7 +744,7 @@
 <p>Fixed use of <code>SecurityManager</code> in <code>LoaderUtil</code> where <code>AccessController::doPrivileged</code> should only be invoked when a <code>SecurityManager</code> is installed. Some runtimes do not seem to have this method available. (<a href="https://github.com/apache/logging-log4j2/issues/2129">2129</a>)</p>
 </li>
 <li>
-<p>Fix <code>log4j-spring-cloud-config-client</code> dependencies to include only those required. (<a href="https://github.com/apache/logging-log4j2/pull/2157">2157</a>)</p>
+<p>Fix <code>log4j-spring-cloud-config-client</code> dependencies to include only those required. (<a href="https://github.com/apache/logging-log4j2/issues/2157">2157</a>)</p>
 </li>
 <li>
 <p>Fix typo in Kubernetes <code>clientKeyData</code> configuration property.</p>
@@ -810,19 +810,19 @@
 <p>Mark <code>JdkMapAdapterStringMap</code> as frozen if map is immutable. (<a href="https://github.com/apache/logging-log4j2/issues/2098">2098</a>)</p>
 </li>
 <li>
-<p>Fix NPE in <code>CloseableThreadContext</code>. (<a href="https://github.com/apache/logging-log4j2/pull/1426">1426</a>)</p>
+<p>Fix NPE in <code>CloseableThreadContext</code>. (<a href="https://github.com/apache/logging-log4j2/issues/1426">1426</a>)</p>
 </li>
 <li>
 <p>Use the module name of Conversant Media Disruptor from version <code>1.2.16+</code> of the library.</p>
 </li>
 <li>
-<p>Fix NPE in <code>RollingFileManager</code>. (<a href="https://github.com/apache/logging-log4j2/pull/1645">1645</a>)</p>
+<p>Fix NPE in <code>RollingFileManager</code>. (<a href="https://github.com/apache/logging-log4j2/issues/1645">1645</a>)</p>
 </li>
 <li>
-<p>Fix <code>log4j-to-slf4j</code> JPMS and OSGi descriptors. (<a href="https://github.com/apache/logging-log4j2/pull/1983">1983</a>)</p>
+<p>Fix <code>log4j-to-slf4j</code> JPMS and OSGi descriptors. (<a href="https://github.com/apache/logging-log4j2/issues/1983">1983</a>)</p>
 </li>
 <li>
-<p>Workaround a Coursier/Ivy dependency resolution bug affecting <code>log4j-slf4j-impl</code> and <code>log4j-mongodb3</code>. (<a href="https://github.com/apache/logging-log4j2/pull/2065">2065</a>)</p>
+<p>Workaround a Coursier/Ivy dependency resolution bug affecting <code>log4j-slf4j-impl</code> and <code>log4j-mongodb3</code>. (<a href="https://github.com/apache/logging-log4j2/issues/2065">2065</a>)</p>
 </li>
 </ul>
 </div>
@@ -1120,7 +1120,7 @@ All packages marked as private in the Javadoc are not exported.</p>
 <p>Set the default <code>minLevel</code> and <code>maxLevel</code> of <code>LevelRangeFilter</code> to <code>OFF</code> and <code>ALL</code>, respectively (<a href="https://github.com/apache/logging-log4j2/pull/1503">1503</a>)</p>
 </li>
 <li>
-<p>Removed additional <code>isFiltered</code> checks in <code>AsyncLoggerConfig</code> (<a href="https://github.com/apache/logging-log4j2/pull/1550">1550</a>)</p>
+<p>Removed additional <code>isFiltered</code> checks in <code>AsyncLoggerConfig</code> (<a href="https://github.com/apache/logging-log4j2/issues/1550">1550</a>)</p>
 </li>
 <li>
 <p>Use Java version-specific warnings in <code>StackLocator</code> (<a href="https://github.com/apache/logging-log4j2/pull/1760">1760</a>)</p>
@@ -1148,22 +1148,22 @@ All packages marked as private in the Javadoc are not exported.</p>
 <p>Fixed Javadoc failures (<a href="https://github.com/apache/logging-log4j2/issues/1275">1275</a>, <a href="https://github.com/apache/logging-log4j2/pull/1753">1753</a>)</p>
 </li>
 <li>
-<p>Removed locale-dependent <code>toLowerCase/toUpperCase</code> calls (<a href="https://github.com/apache/logging-log4j2/pull/1281">1281</a>)</p>
+<p>Removed locale-dependent <code>toLowerCase/toUpperCase</code> calls (<a href="https://github.com/apache/logging-log4j2/issues/1281">1281</a>)</p>
 </li>
 <li>
-<p>Redirected old <code>/&lt;module&gt;/apidocs</code> URLs (broken in 2.20.0) to <code>/javadoc/&lt;module&gt;</code> (<a href="https://github.com/apache/logging-log4j2/pull/1284">1284</a>)</p>
+<p>Redirected old <code>/&lt;module&gt;/apidocs</code> URLs (broken in 2.20.0) to <code>/javadoc/&lt;module&gt;</code> (<a href="https://github.com/apache/logging-log4j2/issues/1284">1284</a>)</p>
 </li>
 <li>
 <p>Added environment variable arbiter (<a href="https://github.com/apache/logging-log4j2/pull/1312">1312</a>)</p>
 </li>
 <li>
-<p>Fixed logging of <code>java.sql.Date</code> objects by appending it before Log4J tries to call <code>java.util.Date.toInstant()</code> on it (<a href="https://github.com/apache/logging-log4j2/pull/1366">1366</a>)</p>
+<p>Fixed logging of <code>java.sql.Date</code> objects by appending it before Log4J tries to call <code>java.util.Date.toInstant()</code> on it (<a href="https://github.com/apache/logging-log4j2/issues/1366">1366</a>)</p>
 </li>
 <li>
 <p>Adapted the OSGi metadata of <code>log4j-api</code>, <code>log4j-core</code>, <code>log4j-slf4j-impl</code> and <code>log4j-slf4j2-impl</code> to activate the bundle when it is accessed. To achieve that set the <code>Bundle-ActivationPolicy</code> to <code>lazy</code> for the log4j bundles. (<a href="https://github.com/apache/logging-log4j2/issues/1367">1367</a>)</p>
 </li>
 <li>
-<p>Avoided using released objects in <code>StackTraceStringResolver</code> of <code>JsonTemplateLayout</code> (<a href="https://github.com/apache/logging-log4j2/pull/1380">1380</a>)</p>
+<p>Avoided using released objects in <code>StackTraceStringResolver</code> of <code>JsonTemplateLayout</code> (<a href="https://github.com/apache/logging-log4j2/issues/1380">1380</a>)</p>
 </li>
 <li>
 <p>Added missing setter for <code>connectionStringSource</code> in <code>MongoDb4Provider</code> builder (<a href="https://github.com/apache/logging-log4j2/issues/1389">1389</a>)</p>
@@ -1178,7 +1178,7 @@ All packages marked as private in the Javadoc are not exported.</p>
 <p>Restored <code>Log4jMarker</code> visibility in SLF4J adapters (<a href="https://github.com/apache/logging-log4j2/issues/1414">1414</a>)</p>
 </li>
 <li>
-<p>Fixed buffer size in <code>Log4jFixedFormatter</code> date time formatter (<a href="https://github.com/apache/logging-log4j2/pull/1418">1418</a>)</p>
+<p>Fixed buffer size in <code>Log4jFixedFormatter</code> date time formatter (<a href="https://github.com/apache/logging-log4j2/issues/1418">1418</a>)</p>
 </li>
 <li>
 <p>Fixed the propagation of synchronous action failures in <code>RollingFileManager</code> and <code>FileRenameAction</code> (<a href="https://github.com/apache/logging-log4j2/issues/1445">1445</a>, <a href="https://github.com/apache/logging-log4j2/pull/1549">1549</a>)</p>
@@ -1196,7 +1196,7 @@ All packages marked as private in the Javadoc are not exported.</p>
 <p>Fixed runtime dependencies documentation (<a href="https://github.com/apache/logging-log4j2/pull/1530">1530</a>)</p>
 </li>
 <li>
-<p>Allowed to override FQCN in <code>Log4jEventBuilder</code> by implementing <code>CallerBoundaryAware</code> (<a href="https://github.com/apache/logging-log4j2/pull/1533">1533</a>)</p>
+<p>Allowed to override FQCN in <code>Log4jEventBuilder</code> by implementing <code>CallerBoundaryAware</code> (<a href="https://github.com/apache/logging-log4j2/issues/1533">1533</a>)</p>
 </li>
 <li>
 <p>Migrated MongoDB tests to JUnit 5 and Flapdoodle Embedded MongoDB 4 (<a href="https://github.com/apache/logging-log4j2/issues/1589">1589</a>)</p>
@@ -1432,10 +1432,10 @@ Java 6 and Java 7 are no longer supported by the Log4j team.</p>
 <p>Copy programmatically supplied location even if <code>includeLocation="false"</code>. (<a href="https://github.com/apache/logging-log4j2/pull/1197">1197</a>)</p>
 </li>
 <li>
-<p>Eliminate status logger warning, when <code>disableAnsi</code> or <code>noConsoleNoAnsi</code> is used the style and highlight patterns. (<a href="https://github.com/apache/logging-log4j2/pull/1202">1202</a>)</p>
+<p>Eliminate status logger warning, when <code>disableAnsi</code> or <code>noConsoleNoAnsi</code> is used the style and highlight patterns. (<a href="https://github.com/apache/logging-log4j2/issues/1202">1202</a>)</p>
 </li>
 <li>
-<p>Fix detection of location requirements in <code>RewriteAppender</code>. (<a href="https://github.com/apache/logging-log4j2/pull/1274">1274</a>)</p>
+<p>Fix detection of location requirements in <code>RewriteAppender</code>. (<a href="https://github.com/apache/logging-log4j2/issues/1274">1274</a>)</p>
 </li>
 <li>
 <p>Replace regex with manual code to escape characters in Rfc5424Layout. (<a href="https://github.com/apache/logging-log4j2/pull/1277">1277</a>)</p>

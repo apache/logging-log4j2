@@ -280,9 +280,10 @@ loadScripts(document, 'script');</script>
 <dd><code>maxDepth</code> - The maxDepth parameter is the maximum number of levels of directories to visit. A value of 0
             means that only the starting file is visited, unless denied by the security manager. A value of
             MAX_VALUE may be used to indicate that all levels should be visited.</dd>
-<dd><code>testMode</code> - if true, files are not deleted but instead a message is printed to the <a href="http://logging.apache.org/log4j/2.x/manual/configuration.html#StatusMessages">status logger</a>
-            at INFO level. Users can use this to do a dry run to test if their configuration works as expected.
-            Default is false.</dd>
+<dd><code>testMode</code> - if true, files are not deleted but instead a message is printed to the
+                 <a href="https://logging.apache.org/log4j/2.x/manual/status-logger.html">status logger</a>
+                 at INFO level. Users can use this to do a dry run to test if their configuration works as expected.
+                 Default is false.</dd>
 <dd><code>sorterParameter</code> - a plugin implementing the <a href="PathSorter.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action"><code>PathSorter</code></a> interface</dd>
 <dd><code>pathConditions</code> - an array of path conditions (if more than one, they all need to accept a path before it is
             deleted).</dd>
