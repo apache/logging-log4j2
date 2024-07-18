@@ -1622,7 +1622,7 @@ See <a href="layouts.html#LocationInformation" class="xref page">this section of
 <p>Outputs location information of the caller which generates the logging event</p>
 </div>
 <div class="listingblock">
-<div class="title"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/LocationPatternConverter.html"><code>LocationPatternConverter</code></a> specifier grammar</div>
+<div class="title"><code>LocationPatternConverter</code> specifier grammar</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">l
 location</code></pre>
@@ -1809,7 +1809,7 @@ If no additional sub-option is specified, then all map entries are output using 
 <p>Outputs the result of evaluating the given pattern and truncating the result</p>
 </div>
 <div class="listingblock">
-<div class="title"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/MaxLegthConverter.html"><code>MaxLengthConverter</code></a> specifier grammar</div>
+<div class="title"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/MaxLengthConverter.html"><code>MaxLengthConverter</code></a> specifier grammar</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">maxLen{pattern}{length}
 maxLength{pattern}{length}</code></pre>
@@ -2198,7 +2198,7 @@ threadPriority</code></pre>
 <p>Includes either a random or a time-based UUID</p>
 </div>
 <div class="listingblock">
-<div class="title"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/UuidConverter.html"><code>UuidConverter</code></a> specifier grammar</div>
+<div class="title"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/UuidPatternConverter.html"><code>UuidPatternConverter</code></a> specifier grammar</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">u{RANDOM|TIME}
 uuid{RANDOM|TIME}</code></pre>
@@ -2522,7 +2522,9 @@ characters, then truncate from the end.</p></td>
 <h4 id="jansi"><a class="anchor" href="#jansi"></a>ANSI styling on Windows</h4>
 <div class="paragraph">
 <p>ANSI escape sequences are supported natively on many platforms, but not by default on Windows.
-To enable ANSI support add the <a href="http://jansi.fusesource.org/">Jansi</a> dependency to your application, and set <a href="systemproperties.html#log4j2.skipJansi" class="xref page">the <code>log4j2.skipJansi</code> system property</a> to <code>false</code>.
+To enable ANSI support add the
+<a href="http://fusesource.github.io/jansi/">Jansi</a>
+dependency to your application, and set <a href="systemproperties.html#log4j2.skipJansi" class="xref page">the <code>log4j2.skipJansi</code> system property</a> to <code>false</code>.
 This allows Log4j to use Jansi to add ANSI escape codes when writing to the console.</p>
 </div>
 <div class="admonitionblock note">

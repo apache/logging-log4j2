@@ -1023,8 +1023,10 @@ This attribute only applies to RFC 5424 Syslog records.</p></td>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdcRequired</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A comma-separated list of <a href="https://logging.apache.org/log4j/2.x/manual/thread-context.html" class="bare">https://logging.apache.org/log4j/2.x/manual/thread-context.html</a> map (aka, MDC) keys that must be present.
-If a key is not present, a <a href="../javadoc/log4j-core/org/apache/logging/log4j/LoggingException.html"><code>LoggingException</code></a> will be thrown.
+<td class="tableblock halign-left valign-top"><p class="tableblock">A comma-separated list of <a href="https://logging.apache.org/log4j/2.x/manual/thread-context.html"><code>ThreadContext</code></a> map (aka, MDC) keys that must be present.
+If a key is not present, a
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/LoggingException.html"><code>LoggingException</code></a>
+will be thrown.
 This attribute only applies to RFC 5424 Syslog records.</p></td>
 </tr>
 <tr>
