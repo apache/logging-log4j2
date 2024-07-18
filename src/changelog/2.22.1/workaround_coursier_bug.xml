@@ -3,7 +3,7 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
-  <issue id="2065" link="https://github.com/apache/logging-log4j2/pull/2065"/>
+  <issue id="2065" link="https://github.com/apache/logging-log4j2/issues/2065"/>
   <description format="asciidoc">
     Workaround a Coursier/Ivy dependency resolution bug affecting `log4j-slf4j-impl` and `log4j-mongodb3`.
   </description>

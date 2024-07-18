@@ -48,7 +48,7 @@ asciidoc:
     log4j-kubernetes-url: "https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md"
     logback-url: "https://logback.qos.ch"
     logging-services-url: "https://logging.apache.org"
-    lmax-disruptor-url: "https://lmax-exchange.github.io/disruptor"
+    lmax-disruptor-url: "https://lmax-exchange.github.io/disruptor/"
     slf4j-url: "https://www.slf4j.org"
     # Dependency versions
     commons-csv-version: "1.2.3-commons-csv"

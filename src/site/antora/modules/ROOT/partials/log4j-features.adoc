@@ -39,7 +39,11 @@ Powerful API::
 Log4j is a logging system where the API (called Log4j API) and its implementation (called Log4j Core) is distinctly separate from each other.
 xref:manual/api.adoc[Log4j API] provides the most feature-rich logging facade in the market; support for various `Message` types (such as `Object` or `Map`) besides plain `String`, lambda expressions, parameterized logging, markers, levels, diagnostic contexts (aka. MDC/NDC), etc.
 Log4j team takes backward compatibility very seriously and makes sure people relying on Log4j API gets a logging facade that is straightforward to use in a correct and future-proof way.
-Check out the xref:manual/api.adoc[Java API], {logging-services-url}/log4j/kotlin[Kotlin API], and {logging-services-url}/log4j/scala[Scala API] pages for further information.
+Check out the xref:manual/api.adoc[Java API],
+{logging-services-url}/log4j/kotlin/index.html[Kotlin API]
+and
+{logging-services-url}/log4j/scala/index.html[Scala API]
+pages for further information.
 
 No vendor lock-in::
 Log4j API is a generic logging facade for various logging frameworks.

@@ -43,7 +43,11 @@ This page tries to cover the most prominent Log4j API features.
 [TIP]
 ====
 Did you know that Log4j provides specialized APIs for Kotlin and Scala?
-Check out {logging-services-url}/log4j/kotlin[Log4j Kotlin] and {logging-services-url}/log4j/scala[Log4j Scala] projects for details.
+Check out
+{logging-services-url}/log4j/kotlin/index.html[Log4j Kotlin]
+and
+{logging-services-url}/log4j/scala/index.html[Log4j Scala]
+projects for details.
 ====
 
 [#intro]

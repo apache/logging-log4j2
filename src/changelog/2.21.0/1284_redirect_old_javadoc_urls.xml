@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
-  <issue id="1284" link="https://github.com/apache/logging-log4j2/pull/1284"/>
+  <issue id="1284" link="https://github.com/apache/logging-log4j2/issues/1284"/>
   <description format="asciidoc"><![CDATA[Redirected old `/<module>/apidocs` URLs (broken in 2.20.0) to `/javadoc/<module>`]]></description>
 </entry>
