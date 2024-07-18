@@ -43,6 +43,9 @@
     <bnd-module-name>org.apache.logging.log4j.fuzz</bnd-module-name>
     <Fragment-Host>org.apache.logging.log4j.fuzz</Fragment-Host>
 
+    <!-- dependency versions -->
+    <json.version>20240303</json.version>
+
   </properties>
 
   <dependencies>
@@ -63,8 +66,9 @@
     </dependency>
 
     <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>${json.version}</version>
     </dependency>
 
   </dependencies>

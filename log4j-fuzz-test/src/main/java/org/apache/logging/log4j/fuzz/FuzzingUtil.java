@@ -18,8 +18,6 @@ package org.apache.logging.log4j.fuzz;
 
 import com.code_intelligence.jazzer.api.FuzzedDataProvider;
 import com.code_intelligence.jazzer.api.FuzzerSecurityIssueCritical;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Function;
@@ -38,11 +36,10 @@ import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.util.Strings;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 final class FuzzingUtil {
-
-    private static final ObjectMapper OBJECT_MAPPER =
-            new ObjectMapper().enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
 
     private static final int MAX_STRING_LENGTH = 30;
 
@@ -54,8 +51,13 @@ final class FuzzingUtil {
     static void assertValidJson(final byte[] jsonBytes) {
         // We deliberately use an external library instead of using `JsonReader` from Log4j.
         // This is to fuzz Log4j components in isolation.
+        // We are not using Jackson or Gson, since they have token limitations due to performance reasons.
+        // That is, for instance, Jackson supports numbers up to 1000 digits, which the fuzzer quickly bumps into.
         try {
-            OBJECT_MAPPER.readTree(jsonBytes);
+            // `JSONObject` requires the input to be a JSON object, hence we are ensuring it to be so:
+            final String json = "{\"x\":" + new String(jsonBytes, StandardCharsets.UTF_8) + "}";
+            final JSONTokener jsonTokener = new JSONTokener(json);
+            new JSONObject(jsonTokener);
         } catch (final Exception error) {
             throw new FuzzerSecurityIssueCritical("malformed JSON output", error);
         }
