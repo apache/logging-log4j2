@@ -77,10 +77,10 @@
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="https://logging.apache.org/support">Support</a>
+    <a class="nav-link" href="https://logging.apache.org/support.html">Support</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="https://logging.apache.org/security">Security</a>
+    <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
   </li>
 </ul>
   </li>
@@ -298,22 +298,22 @@
     <span class="nav-text">Related projects</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="https://logging.apache.org/log4j/jakarta">Log4j Jakarta EE</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/jakarta/index.html">Log4j Jakarta EE</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="https://logging.apache.org/log4j/jmx-gui">Log4j JMX GUI</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/jmx-gui/index.html">Log4j JMX GUI</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="https://logging.apache.org/log4j/kotlin">Log4j Kotlin</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/kotlin/index.html">Log4j Kotlin</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="https://logging.apache.org/log4j/scala">Log4j Scala</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/scala/index.html">Log4j Scala</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="https://logging.apache.org/log4j/tools">Log4j Tools</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/tools/index.html">Log4j Tools</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="https://logging.apache.org/log4j/transform">Log4j Transformation Tools</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/transform/index.html">Log4j Transformation Tools</a>
   </li>
 </ul>
   </li>
@@ -2357,7 +2357,9 @@ However, configurations written for 2.0 that use the <code>&lt;JMSQueue/&gt;</co
 <td class="tableblock halign-left valign-top"><p class="tableblock">factoryBindingName</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>Required</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name to locate in the Context that provides the <a href="https://download.oracle.com/javaee/5/api/javax/jms/ConnectionFactory.html">ConnectionFactory</a>. This can be any subinterface of <code>ConnectionFactory</code> as well.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name to locate in the Context that provides the
+<a href="https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/connectionfactory">ConnectionFactory</a>.
+This can be any subinterface of <code>ConnectionFactory</code> as well.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">factoryName</p></td>
@@ -2399,7 +2401,9 @@ However, configurations written for 2.0 that use the <code>&lt;JMSQueue/&gt;</co
 <td class="tableblock halign-left valign-top"><p class="tableblock">destinationBindingName</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>Required</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name to use to locate the <a href="https://download.oracle.com/javaee/5/api/javax/jms/Destination.html">Destination</a>. This can be a <code>Queue</code> or <code>Topic</code>, and as such, the attribute names <code>queueBindingName</code> and <code>topicBindingName</code> are aliases to maintain compatibility with the Log4j 2.0 JMS appenders.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name to use to locate the
+<a href="https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/destination">Destination</a>.
+This can be a <code>Queue</code> or <code>Topic</code>, and as such, the attribute names <code>queueBindingName</code> and <code>topicBindingName</code> are aliases to maintain compatibility with the Log4j 2.0 JMS appenders.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">securityPrincipalName</p></td>

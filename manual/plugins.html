@@ -77,10 +77,10 @@
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="https://logging.apache.org/support">Support</a>
+    <a class="nav-link" href="https://logging.apache.org/support.html">Support</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="https://logging.apache.org/security">Security</a>
+    <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
   </li>
 </ul>
   </li>
@@ -298,22 +298,22 @@
     <span class="nav-text">Related projects</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="https://logging.apache.org/log4j/jakarta">Log4j Jakarta EE</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/jakarta/index.html">Log4j Jakarta EE</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="https://logging.apache.org/log4j/jmx-gui">Log4j JMX GUI</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/jmx-gui/index.html">Log4j JMX GUI</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="https://logging.apache.org/log4j/kotlin">Log4j Kotlin</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/kotlin/index.html">Log4j Kotlin</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="https://logging.apache.org/log4j/scala">Log4j Scala</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/scala/index.html">Log4j Scala</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="https://logging.apache.org/log4j/tools">Log4j Tools</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/tools/index.html">Log4j Tools</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="https://logging.apache.org/log4j/transform">Log4j Transformation Tools</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/transform/index.html">Log4j Transformation Tools</a>
   </li>
 </ul>
   </li>
@@ -440,7 +440,10 @@ Existing usages are kept for backward compatibility reasons with the legacy conf
 <p>The <code>name</code> attribute of plugins of a certain <code>category</code> is recommended to be distinct and this matching is case-insensitive.
 In case of a name collision, a warning will be emitted, and the plugin <a href="#plugin-discovery">discovery order</a> will determine the effective plugin.
 For example, to override the <code>File</code> plugin which is provided by the built-in <a href="appenders.html#FileAppender" class="xref page">File Appender</a>, you would need to place your plugin in a JAR file in the classpath ahead of Log4j Core JAR.
-In an OSGi environment, the order that bundles are scanned for plugins generally follows the same order that bundles were installed into the framework; see <a href="https://www.osgi.org/javadoc/r5/core/org/osgi/framework/BundleContext.html#getBundles()"><code>getBundles()</code></a> and <a href="https://www.osgi.org/javadoc/r5/core/org/osgi/framework/SynchronousBundleListener.html"><code>SynchronousBundleListener</code></a>.
+In an OSGi environment, the order that bundles are scanned for plugins generally follows the same order that bundles were installed into the framework; see
+<a href="https://docs.osgi.org/javadoc/r6/core/org/osgi/framework/BundleContext.html#getBundles()"><code>getBundles()</code></a>
+and
+<a href="https://docs.osgi.org/javadoc/r6/core/org/osgi/framework/SynchronousBundleListener.html"><code>SynchronousBundleListener</code></a>.
 In short, name collisions are even more unpredictable in an OSGi environment.</p>
 </div>
 </div>

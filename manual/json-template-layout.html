@@ -77,10 +77,10 @@
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="https://logging.apache.org/support">Support</a>
+    <a class="nav-link" href="https://logging.apache.org/support.html">Support</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="https://logging.apache.org/security">Security</a>
+    <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
   </li>
 </ul>
   </li>
@@ -298,22 +298,22 @@
     <span class="nav-text">Related projects</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="https://logging.apache.org/log4j/jakarta">Log4j Jakarta EE</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/jakarta/index.html">Log4j Jakarta EE</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="https://logging.apache.org/log4j/jmx-gui">Log4j JMX GUI</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/jmx-gui/index.html">Log4j JMX GUI</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="https://logging.apache.org/log4j/kotlin">Log4j Kotlin</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/kotlin/index.html">Log4j Kotlin</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="https://logging.apache.org/log4j/scala">Log4j Scala</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/scala/index.html">Log4j Scala</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="https://logging.apache.org/log4j/tools">Log4j Tools</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/tools/index.html">Log4j Tools</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="https://logging.apache.org/log4j/transform">Log4j Transformation Tools</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/transform/index.html">Log4j Transformation Tools</a>
   </li>
 </ul>
   </li>
@@ -597,7 +597,8 @@ appender.0.layout.eventTemplateUri = classpath:MyLayout.json</code></pre>
 </div>
 <div class="paragraph">
 <p>Good news is <strong>JSON Template Layout is perfectly production-ready without any configuration!</strong>
-The event template defaults to <code>EcsLayout.json</code>, bundled in the classpath, modelling <a href="https://www.elastic.co/guide/en/ecs/current/ecs-reference.html">the Elastic Common Schema (ECS) specification</a>.
+The event template defaults to <code>EcsLayout.json</code>, bundled in the classpath, modelling
+<a href="https://www.elastic.co/guide/en/ecs/current/ecs-reference.html">the Elastic Common Schema (ECS) specification</a>.
 JSON Template Layout bundles several more <a href="#event-templates">predefined event templates</a> modeling popular JSON-based log formats.</p>
 </div>
 </div>
@@ -664,7 +665,8 @@ Please refer to <a href="#template-config">Template configuration</a> instead.</
 </td>
 <td class="content">
 <div class="paragraph">
-<p>While <a href="https://datatracker.ietf.org/doc/html/rfc4627#section-3">RFC 4627, the JSON specification, supports multiple Unicode encodings</a>, we strongly advise you to stick to the layout default, and use UTF-8 for <a href="https://stackoverflow.com/a/594881/1278899">several practical reasons</a>.</p>
+<p>While <a href="https://datatracker.ietf.org/doc/html/rfc4627#section-3">RFC 4627, the JSON specification, supports multiple Unicode encodings</a>, we strongly advise you to stick to the layout default, and use UTF-8 for
+<a href="https://stackoverflow.com/questions/583562/json-character-encoding-is-utf-8-well-supported-by-browsers-or-should-i-use-nu/594881#594881">several practical reasons</a>.</p>
 </div>
 </td>
 </tr>
@@ -1252,7 +1254,8 @@ JSON Template Layout contains the following predefined event templates:</p>
 <dl>
 <dt class="hdlist1"><a href="https://github.com/apache/logging-log4j2/tree/2.x/tree/2.x/log4j-layout-template-json/src/main/resources/EcsLayout.json"><code>EcsLayout.json</code></a></dt>
 <dd>
-<p>The <strong>default event template</strong> modelling <a href="https://www.elastic.co/guide/en/ecs/current/ecs-reference.html">the Elastic Common Schema (ECS) specification</a></p>
+<p>The <strong>default event template</strong> modelling
+<a href="https://www.elastic.co/guide/en/ecs/current/ecs-reference.html">the Elastic Common Schema (ECS) specification</a></p>
 </dd>
 <dt class="hdlist1"><a href="https://github.com/apache/logging-log4j2/tree/2.x/tree/2.x/log4j-layout-template-json/src/main/resources/LogstashJsonEventLayoutV1.json"><code>LogstashJsonEventLayoutV1.json</code></a></dt>
 <dd>
@@ -2010,7 +2013,9 @@ For <code>ObjectMessage</code>s and <code>MultiformatMessage</code>s, it depends
 </div>
 <div class="paragraph">
 <p>Given the above configuration, a <code>SimpleMessage</code> will generate a <code>"sample log message"</code>, whereas a <code>MapMessage</code> will generate a <code>{"action": "login", "sessionId": "87asd97a"}</code>.
-Certain indexed log storage systems (e.g., <a href="https://www.elastic.co/elasticsearch/">Elasticsearch</a>) will not allow both values to coexist due to type mismatch: one is a <code>string</code> while the other is an <code>object</code>.
+Certain indexed log storage systems (e.g.,
+<a href="https://www.elastic.co/elasticsearch">Elasticsearch</a>)
+will not allow both values to coexist due to type mismatch: one is a <code>string</code> while the other is an <code>object</code>.
 Here one can use a <code>fallbackKey</code> to work around this problem:</p>
 </div>
 <div class="listingblock">

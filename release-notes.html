@@ -77,10 +77,10 @@
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="https://logging.apache.org/support">Support</a>
+    <a class="nav-link" href="https://logging.apache.org/support.html">Support</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="https://logging.apache.org/security">Security</a>
+    <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
   </li>
 </ul>
   </li>
@@ -298,22 +298,22 @@
     <span class="nav-text">Related projects</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="https://logging.apache.org/log4j/jakarta">Log4j Jakarta EE</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/jakarta/index.html">Log4j Jakarta EE</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="https://logging.apache.org/log4j/jmx-gui">Log4j JMX GUI</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/jmx-gui/index.html">Log4j JMX GUI</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="https://logging.apache.org/log4j/kotlin">Log4j Kotlin</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/kotlin/index.html">Log4j Kotlin</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="https://logging.apache.org/log4j/scala">Log4j Scala</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/scala/index.html">Log4j Scala</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="https://logging.apache.org/log4j/tools">Log4j Tools</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/tools/index.html">Log4j Tools</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="https://logging.apache.org/log4j/transform">Log4j Transformation Tools</a>
+    <a class="nav-link" href="https://logging.apache.org/log4j/transform/index.html">Log4j Transformation Tools</a>
   </li>
 </ul>
   </li>
@@ -437,7 +437,7 @@
 <p>Discard blank keys in <code>PropertiesUtil</code> (<a href="https://github.com/apache/logging-log4j2/issues/2414">2414</a>)</p>
 </li>
 <li>
-<p>Fix handling of <code>log4j2.debug</code>. (<a href="https://github.com/apache/logging-log4j2/issue/2703">2703</a>)</p>
+<p>Fix handling of <code>log4j2.debug</code>. (<a href="https://github.com/apache/logging-log4j2/issues/2703">2703</a>)</p>
 </li>
 <li>
 <p>Fix handling of <code>Message#getFormat()</code> in <code>MessageResolver</code> of <code>JsonTemplateLayout</code></p>
@@ -520,6 +520,9 @@
 </li>
 <li>
 <p>Update <code>org.apache.commons:commons-csv</code> to version <code>1.11.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/2565">2565</a>)</p>
+</li>
+<li>
+<p>Update <code>org.apache.commons:commons-lang3</code> to version <code>3.15.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/2756">2756</a>)</p>
 </li>
 <li>
 <p>Update <code>org.apache.kafka:kafka-clients</code> to version <code>3.7.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/2697">2697</a>)</p>
@@ -684,7 +687,7 @@
 <div class="ulist">
 <ul>
 <li>
-<p>Added support for LMAX Disruptor 4.x (<a href="https://github.com/apache/logging-log4j2/issues/1821">1821</a>)</p>
+<p>Added support for LMAX Disruptor 4.x (<a href="https://github.com/apache/logging-log4j2/pull/1821">1821</a>)</p>
 </li>
 </ul>
 </div>
@@ -720,10 +723,10 @@
 <p>Fix regression in <code>JdkMapAdapterStringMap</code> performance. (<a href="https://github.com/apache/logging-log4j2/issues/2238">2238</a>)</p>
 </li>
 <li>
-<p>Fix the behavior of <code>Logger#setLevel</code> and <code>Logger#getLevel</code> in the Log4j 1.2 bridge. (<a href="https://github.com/apache/logging-log4j2/issues/2282">2282</a>)</p>
+<p>Fix the behavior of <code>Logger#setLevel</code> and <code>Logger#getLevel</code> in the Log4j 1.2 bridge. (<a href="https://github.com/apache/logging-log4j2/pull/2282">2282</a>)</p>
 </li>
 <li>
-<p>Fix the behavior of <code>CoreLogger#getLevel</code> and <code>CoreLogger#setLevel</code> in the <code>log4j-jul</code> module. (<a href="https://github.com/apache/logging-log4j2/issues/2282">2282</a>)</p>
+<p>Fix the behavior of <code>CoreLogger#getLevel</code> and <code>CoreLogger#setLevel</code> in the <code>log4j-jul</code> module. (<a href="https://github.com/apache/logging-log4j2/pull/2282">2282</a>)</p>
 </li>
 <li>
 <p>Allow deserialization of all arrays of allowed classes. (<a href="https://issues.apache.org/jira/browse/LOG4J2-3680">LOG4J2-3680</a>)</p>
@@ -829,7 +832,7 @@
 <div class="ulist">
 <ul>
 <li>
-<p>Bumped the minimum Java version required for the build to Java 17. Runtime requirements remain unchanged. (<a href="https://github.com/apache/logging-log4j2/issues/2021">2021</a>)</p>
+<p>Bumped the minimum Java version required for the build to Java 17. Runtime requirements remain unchanged. (<a href="https://github.com/apache/logging-log4j2/pull/2021">2021</a>)</p>
 </li>
 <li>
 <p>Update <code>com.github.luben:zstd-jni</code> to version <code>1.5.5-11</code> (<a href="https://github.com/apache/logging-log4j2/pull/2030">2030</a>)</p>
@@ -904,7 +907,9 @@ They contain <code>vulnerability-assertion</code> references to a <a href="https
 This VDR is accessible through the following URL: <a href="https://logging.apache.org/cyclonedx/vdr.xml" class="bare">https://logging.apache.org/cyclonedx/vdr.xml</a></p>
 </div>
 <div class="paragraph">
-<p>SBOM generation is streamlined by <code>logging-parent</code>, see <a href="https://logging.apache.org/logging-parent/latest/#cyclonedx-sbom">its website</a> for details.</p>
+<p>SBOM generation is streamlined by <code>logging-parent</code>, see
+<a href="https://logging.apache.org/logging-parent/features.html#cyclonedx-sbom">its website</a>
+for details.</p>
 </div>
 </div>
 <div class="sect2">
@@ -915,7 +920,7 @@ This VDR is accessible through the following URL: <a href="https://logging.apach
 <p>Change the order of evaluation of <code>FormattedMessage</code> formatters. Messages are evaluated using <code>java.util.Format</code> only if they don&#8217;t comply to the <code>java.text.MessageFormat</code> or <code>ParameterizedMessage</code> format. (<a href="https://github.com/apache/logging-log4j2/issues/1223">1223</a>)</p>
 </li>
 <li>
-<p>Change default encoding of HTTP Basic Authentication to UTF-8 and add <code>log4j2.configurationAuthorizationEncoding</code> property to overwrite it. (<a href="https://github.com/apache/logging-log4j2/issues/1970">1970</a>)</p>
+<p>Change default encoding of HTTP Basic Authentication to UTF-8 and add <code>log4j2.configurationAuthorizationEncoding</code> property to overwrite it. (<a href="https://github.com/apache/logging-log4j2/pull/1970">1970</a>)</p>
 </li>
 </ul>
 </div>
@@ -1050,7 +1055,10 @@ The build requires JDK 11 and generates reproducible binaries.</p>
 </div>
 <div class="paragraph">
 <p>This release primarily focuses on enhancements to our OSGi and JPMS support and contains several bug fixes.
-It will be the first release built and signed by the CI using the <a href="https://keyserver.ubuntu.com/pks/lookup?search=077E8893A6DCC33DD4A4D5B256E73BA9A0B592D0&amp;op=index">ASF Logging Services Release Manager GPG key</a>, which is shared in <a href="https://www.apache.org/dist/logging/KEYS">KEYS</a>.</p>
+It will be the first release built and signed by the CI using the
+<a href="https://keyserver.ubuntu.com/pks/lookup?search=077E8893A6DCC33DD4A4D5B256E73BA9A0B592D0&amp;op=index">ASF Logging Services Release Manager GPG key</a>,
+which is shared in
+<a href="https://downloads.apache.org/logging/KEYS">KEYS</a>.</p>
 </div>
 <div class="paragraph">
 <p>The Log4j 2.21.0 API, as well as the other artifacts, maintains binary compatibility with the previous release.</p>
@@ -1106,7 +1114,7 @@ All packages marked as private in the Javadoc are not exported.</p>
 <p>Open <code>FileExtension</code> methods to allow their usage in custom <code>RolloverStrategy</code>s (<a href="https://github.com/apache/logging-log4j2/issues/1365">1365</a>, <a href="https://github.com/apache/logging-log4j2/pull/1683">1683</a>)</p>
 </li>
 <li>
-<p>Bumped the minimum Java version required for the build to JDK 11. Runtime requirements remain unchanged. (<a href="https://github.com/apache/logging-log4j2/issues/1369">1369</a>)</p>
+<p>Bumped the minimum Java version required for the build to JDK 11. Runtime requirements remain unchanged. (<a href="https://github.com/apache/logging-log4j2/pull/1369">1369</a>)</p>
 </li>
 <li>
 <p>Set the default <code>minLevel</code> and <code>maxLevel</code> of <code>LevelRangeFilter</code> to <code>OFF</code> and <code>ALL</code>, respectively (<a href="https://github.com/apache/logging-log4j2/pull/1503">1503</a>)</p>
@@ -1146,7 +1154,7 @@ All packages marked as private in the Javadoc are not exported.</p>
 <p>Redirected old <code>/&lt;module&gt;/apidocs</code> URLs (broken in 2.20.0) to <code>/javadoc/&lt;module&gt;</code> (<a href="https://github.com/apache/logging-log4j2/pull/1284">1284</a>)</p>
 </li>
 <li>
-<p>Added environment variable arbiter (<a href="https://github.com/apache/logging-log4j2/issues/1312">1312</a>)</p>
+<p>Added environment variable arbiter (<a href="https://github.com/apache/logging-log4j2/pull/1312">1312</a>)</p>
 </li>
 <li>
 <p>Fixed logging of <code>java.sql.Date</code> objects by appending it before Log4J tries to call <code>java.util.Date.toInstant()</code> on it (<a href="https://github.com/apache/logging-log4j2/pull/1366">1366</a>)</p>
@@ -1182,7 +1190,7 @@ All packages marked as private in the Javadoc are not exported.</p>
 <p>Replaced the usage of <code>System.out</code> in <code>StackLocator</code> for warnings with <code>System.err</code> (<a href="https://github.com/apache/logging-log4j2/issues/1484">1484</a>)</p>
 </li>
 <li>
-<p>Fixed concurrent date-time formatting issue in <code>PatternLayout</code> (<a href="https://github.com/apache/logging-log4j2/issues/1485">1485</a>)</p>
+<p>Fixed concurrent date-time formatting issue in <code>PatternLayout</code> (<a href="https://github.com/apache/logging-log4j2/pull/1485">1485</a>)</p>
 </li>
 <li>
 <p>Fixed runtime dependencies documentation (<a href="https://github.com/apache/logging-log4j2/pull/1530">1530</a>)</p>
@@ -1206,7 +1214,7 @@ All packages marked as private in the Javadoc are not exported.</p>
 <p>Fixed rollover strategy in the Log4j 1.x compatibility layer (<a href="https://github.com/apache/logging-log4j2/issues/1650">1650</a>)</p>
 </li>
 <li>
-<p>Removed incorrect mention of <code>base64</code> lookup and improve the rest of the lookup manual (<a href="https://github.com/apache/logging-log4j2/issues/1681">1681</a>, <a href="https://issues.apache.org/jira/browse/LOG4J2-3504">LOG4J2-3504</a>)</p>
+<p>Removed incorrect mention of <code>base64</code> lookup and improve the rest of the lookup manual (<a href="https://github.com/apache/logging-log4j2/pull/1681">1681</a>, <a href="https://issues.apache.org/jira/browse/LOG4J2-3504">LOG4J2-3504</a>)</p>
 </li>
 <li>
 <p>Implemented <code>LocationAware</code> for <code>JsonTemplateLayout</code>, since this was causing location not being passed to underlying appenders (<a href="https://github.com/apache/logging-log4j2/issues/1692">1692</a>)</p>
@@ -1262,58 +1270,58 @@ All packages marked as private in the Javadoc are not exported.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Update Eclipse Angus Activation to version <a href="https://github.com/eclipse-ee4j/angus-activation/releases/tag/2.0.1">2.0.1</a> (<a href="https://github.com/apache/logging-log4j2/issues/1591">1591</a>)</p>
+<p>Update Eclipse Angus Activation to version <a href="https://github.com/eclipse-ee4j/angus-activation/releases/tag/2.0.1">2.0.1</a> (<a href="https://github.com/apache/logging-log4j2/pull/1591">1591</a>)</p>
 </li>
 <li>
-<p>Update Eclipse Angus Mail to version <a href="https://github.com/eclipse-ee4j/angus-mail/releases/tag/2.0.2">2.0.2</a> (<a href="https://github.com/apache/logging-log4j2/issues/1591">1591</a>)</p>
+<p>Update Eclipse Angus Mail to version <a href="https://github.com/eclipse-ee4j/angus-mail/releases/tag/2.0.2">2.0.2</a> (<a href="https://github.com/apache/logging-log4j2/pull/1591">1591</a>)</p>
 </li>
 <li>
-<p>Update <code>com.datastax.cassandra:cassandra-driver-core</code> to version <code>3.11.5</code> (<a href="https://github.com/apache/logging-log4j2/issues/1591">1591</a>)</p>
+<p>Update <code>com.datastax.cassandra:cassandra-driver-core</code> to version <code>3.11.5</code> (<a href="https://github.com/apache/logging-log4j2/pull/1591">1591</a>)</p>
 </li>
 <li>
-<p>Update Apache Cassandra to version <a href="https://github.com/apache/cassandra/blob/cassandra-3.11/CHANGES.txt">3.11.16</a> (<a href="https://github.com/apache/logging-log4j2/issues/1591">1591</a>)</p>
+<p>Update Apache Cassandra to version <a href="https://github.com/apache/cassandra/blob/cassandra-3.11/CHANGES.txt">3.11.16</a> (<a href="https://github.com/apache/logging-log4j2/pull/1591">1591</a>)</p>
 </li>
 <li>
-<p>Update Apache Commons Compress to version <a href="https://commons.apache.org/proper/commons-compress/changes-report.html#a1.24.0">1.24.0</a> (<a href="https://github.com/apache/logging-log4j2/issues/1591">1591</a>)</p>
+<p>Update Apache Commons Compress to version <a href="https://commons.apache.org/proper/commons-compress/changes-report.html#a1.24.0">1.24.0</a> (<a href="https://github.com/apache/logging-log4j2/pull/1591">1591</a>)</p>
 </li>
 <li>
-<p>Update Apache Commons CSV to version <a href="https://commons.apache.org/proper/commons-csv/changes-report.html#a1.10.0">1.10.0</a> (<a href="https://github.com/apache/logging-log4j2/issues/1591">1591</a>)</p>
+<p>Update Apache Commons CSV to version <a href="https://commons.apache.org/proper/commons-csv/changes-report.html#a1.10.0">1.10.0</a> (<a href="https://github.com/apache/logging-log4j2/pull/1591">1591</a>)</p>
 </li>
 <li>
-<p>Update Jackson to version <a href="https://github.com/FasterXML/jackson/wiki/Jackson-Release-2.15.2">2.15.2</a> (<a href="https://github.com/apache/logging-log4j2/issues/1591">1591</a>)</p>
+<p>Update Jackson to version <a href="https://github.com/FasterXML/jackson/wiki/Jackson-Release-2.15.2">2.15.2</a> (<a href="https://github.com/apache/logging-log4j2/pull/1591">1591</a>)</p>
 </li>
 <li>
-<p>Update Jakarta Activation API to version <a href="https://jakarta.ee/specifications/activation/2.1/changelog/">2.1.2</a> (<a href="https://github.com/apache/logging-log4j2/issues/1591">1591</a>)</p>
+<p>Update Jakarta Activation API to version <a href="https://jakarta.ee/specifications/activation/2.1/changelog/">2.1.2</a> (<a href="https://github.com/apache/logging-log4j2/pull/1591">1591</a>)</p>
 </li>
 <li>
-<p>Update Jakarta Mail API to version <a href="https://jakarta.ee/specifications/mail/2.1/changelog/">2.1.2</a> (<a href="https://github.com/apache/logging-log4j2/issues/1591">1591</a>)</p>
+<p>Update Jakarta Mail API to version <a href="https://jakarta.ee/specifications/mail/2.1/changelog/">2.1.2</a> (<a href="https://github.com/apache/logging-log4j2/pull/1591">1591</a>)</p>
 </li>
 <li>
-<p>Update JCTools to version <a href="https://github.com/JCTools/JCTools/blob/master/RELEASE-NOTES.md">4.0.1</a> (<a href="https://github.com/apache/logging-log4j2/issues/1591">1591</a>)</p>
+<p>Update JCTools to version <a href="https://github.com/JCTools/JCTools/blob/master/RELEASE-NOTES.md">4.0.1</a> (<a href="https://github.com/apache/logging-log4j2/pull/1591">1591</a>)</p>
 </li>
 <li>
-<p>Update Apache Kafka to version <a href="https://archive.apache.org/dist/kafka/3.4.0/RELEASE_NOTES.html">3.4.0</a> (<a href="https://github.com/apache/logging-log4j2/issues/1591">1591</a>)</p>
+<p>Update Apache Kafka to version <a href="https://archive.apache.org/dist/kafka/3.4.0/RELEASE_NOTES.html">3.4.0</a> (<a href="https://github.com/apache/logging-log4j2/pull/1591">1591</a>)</p>
 </li>
 <li>
-<p>Update Kubernetes client to version <a href="https://github.com/fabric8io/kubernetes-client/releases?q=5.12.4">5.12.4</a> (<a href="https://github.com/apache/logging-log4j2/issues/1591">1591</a>)</p>
+<p>Update Kubernetes client to version <a href="https://github.com/fabric8io/kubernetes-client/releases?q=5.12.4">5.12.4</a> (<a href="https://github.com/apache/logging-log4j2/pull/1591">1591</a>)</p>
 </li>
 <li>
-<p>Update <code>org.mongodb:mongodb-driver-core</code> to version <code>4.10.2</code> (<a href="https://github.com/apache/logging-log4j2/issues/1591">1591</a>)</p>
+<p>Update <code>org.mongodb:mongodb-driver-core</code> to version <code>4.10.2</code> (<a href="https://github.com/apache/logging-log4j2/pull/1591">1591</a>)</p>
 </li>
 <li>
-<p>Update <code>io.netty:netty-bom</code> to version <code>4.1.97</code> (<a href="https://github.com/apache/logging-log4j2/issues/1591">1591</a>)</p>
+<p>Update <code>io.netty:netty-bom</code> to version <code>4.1.97</code> (<a href="https://github.com/apache/logging-log4j2/pull/1591">1591</a>)</p>
 </li>
 <li>
-<p>Update Spring Boot to version <a href="https://github.com/spring-projects/spring-boot/releases/tag/v2.7.15">2.7.15</a> (<a href="https://github.com/apache/logging-log4j2/issues/1591">1591</a>)</p>
+<p>Update Spring Boot to version <a href="https://github.com/spring-projects/spring-boot/releases/tag/v2.7.15">2.7.15</a> (<a href="https://github.com/apache/logging-log4j2/pull/1591">1591</a>)</p>
 </li>
 <li>
-<p>Update Spring Framework to version <a href="https://github.com/spring-projects/spring-framework/releases/tag/v5.3.29">5.3.29</a> (<a href="https://github.com/apache/logging-log4j2/issues/1591">1591</a>)</p>
+<p>Update Spring Framework to version <a href="https://github.com/spring-projects/spring-framework/releases/tag/v5.3.29">5.3.29</a> (<a href="https://github.com/apache/logging-log4j2/pull/1591">1591</a>)</p>
 </li>
 <li>
-<p>Update Tomcat JULI to version <code>10.0.27</code> (<a href="https://github.com/apache/logging-log4j2/issues/1591">1591</a>)</p>
+<p>Update Tomcat JULI to version <code>10.0.27</code> (<a href="https://github.com/apache/logging-log4j2/pull/1591">1591</a>)</p>
 </li>
 <li>
-<p>Update Woodstox to version <a href="https://github.com/FasterXML/woodstox/blob/master/release-notes/VERSION">6.5.1</a> (<a href="https://github.com/apache/logging-log4j2/issues/1591">1591</a>)</p>
+<p>Update Woodstox to version <a href="https://github.com/FasterXML/woodstox/blob/master/release-notes/VERSION">6.5.1</a> (<a href="https://github.com/apache/logging-log4j2/pull/1591">1591</a>)</p>
 </li>
 </ul>
 </div>
