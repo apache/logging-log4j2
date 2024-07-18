@@ -709,6 +709,24 @@
               Oracle and Java are registered trademarks of Oracle and/or its affiliates.
               Other names may be trademarks of their respective owners.
             </p>]]></bottom>
+              <offlineLinks>
+                <link>
+                  <url>https://logging.apache.org/log4j/2.x/javadoc/log4j-api</url>
+                  <location>${maven.multiModuleProjectDirectory}/log4j-api/target/site/apidocs/</location>
+                </link>
+                <link>
+                  <url>https://logging.apache.org/log4j/2.x/javadoc/log4j-core</url>
+                  <location>${maven.multiModuleProjectDirectory}/log4j-core/target/site/apidocs/</location>
+                </link>
+                <link>
+                  <url>https://logging.apache.org/log4j/2.x/javadoc/log4j-kit</url>
+                  <location>${maven.multiModuleProjectDirectory}/log4j-kit/target/site/apidocs/</location>
+                </link>
+                <link>
+                  <url>https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins</url>
+                  <location>${maven.multiModuleProjectDirectory}/log4j-plugins/target/site/apidocs/</location>
+                </link>
+              </offlineLinks>
             </configuration>
           </execution>
         </executions>
