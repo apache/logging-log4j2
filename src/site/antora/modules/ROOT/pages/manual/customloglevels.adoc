@@ -27,28 +27,28 @@ Log4j contains following predefined levels:
 |===
 | Name | Priority
 
-| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#OFF[`OFF`]<<dont-use-in-code,[see note]>>
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html#OFF[`OFF`]<<dont-use-in-code,[see note]>>
 | 0
 
-| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#FATAL[`FATAL`]
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html#FATAL[`FATAL`]
 | 100
 
-| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#ERROR[`ERROR`]
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html#ERROR[`ERROR`]
 | 200
 
-| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#WARN[`WARN`]
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html#WARN[`WARN`]
 | 300
 
-| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#INFO[`INFO`]
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html#INFO[`INFO`]
 | 400
 
-| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#DEBUG[`DEBUG`]
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html#DEBUG[`DEBUG`]
 | 500
 
-| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#TRACE[`TRACE`]
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html#TRACE[`TRACE`]
 | 600
 
-| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#ALL[`ALL`]<<dont-use-in-code,[see note]>>
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html#ALL[`ALL`]<<dont-use-in-code,[see note]>>
 | Integer.MAX_VALUE
 |===
 
