@@ -43,7 +43,7 @@ public class SslConfiguration {
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
     private final KeyStoreConfiguration keyStoreConfig;
     private final TrustStoreConfiguration trustStoreConfig;
-    private final SSLContext sslContext;
+    private SSLContext sslContext;
     private final String protocol;
     private final boolean verifyHostName;
 
@@ -69,6 +69,17 @@ public class SslConfiguration {
         if (this.trustStoreConfig != null) {
             this.trustStoreConfig.clearSecrets();
         }
+    }
+
+    public SSLSocketFactory createSslSocketFactory() {
+        try {
+            keyStoreConfig.reload();
+            trustStoreConfig.reload();
+        } catch (StoreConfigurationException e) {
+            LOGGER.debug("Exception occurred reloading SSL configuration. Previously read data will be used", e);
+        }
+        sslContext = createSslContext();
+        return sslContext.getSocketFactory();
     }
 
     public SSLSocketFactory getSslSocketFactory() {

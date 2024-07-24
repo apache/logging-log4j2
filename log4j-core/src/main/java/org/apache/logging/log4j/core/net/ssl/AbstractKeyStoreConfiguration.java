@@ -33,7 +33,7 @@ import org.apache.logging.log4j.core.util.NetUtils;
  */
 public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> {
 
-    private final KeyStore keyStore;
+    private KeyStore keyStore;
     private final String keyStoreType;
 
     public AbstractKeyStoreConfiguration(
@@ -41,6 +41,10 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
             throws StoreConfigurationException {
         super(location, passwordProvider);
         this.keyStoreType = keyStoreType == null ? SslConfigurationDefaults.KEYSTORE_TYPE : keyStoreType;
+        this.keyStore = this.load();
+    }
+
+    public void reload() throws StoreConfigurationException {
         this.keyStore = this.load();
     }
 
