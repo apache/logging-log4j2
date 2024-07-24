@@ -234,7 +234,7 @@ public class SslSocketManager extends TcpSocketManager {
         SSLSocketFactory socketFactory;
 
         if (sslConf != null) {
-            socketFactory = sslConf.getSslSocketFactory();
+            socketFactory = sslConf.createSslSocketFactory();
         } else {
             socketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
         }

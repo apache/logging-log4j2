@@ -58,6 +58,11 @@ class SslConfigurationTest {
     }
 
     @Test
+    void testCreateSslSocketFactory() throws StoreConfigurationException {
+        assertNotNull(createTestSslConfigurationFiles().createSslSocketFactory());
+    }
+
+    @Test
     void testGettersFromScratchFiles() throws StoreConfigurationException {
         assertNotNull(createTestSslConfigurationFiles().getProtocol());
         assertNotNull(createTestSslConfigurationFiles().getKeyStoreConfig());
