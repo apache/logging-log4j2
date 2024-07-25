@@ -55,7 +55,7 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
         if (DisruptorUtil.DISRUPTOR_MAJOR_VERSION == 3) {
             try {
                 return LoaderUtil.newInstanceOf("org.apache.logging.log4j.core.async.RingBufferLogEventHandler");
-            } catch (final ReflectiveOperationException | LinkageError e) {
+            } catch (final ClassCastException | ReflectiveOperationException | LinkageError e) {
                 LOGGER.warn("Failed to create event handler for LMAX Disruptor 3.x, trying version 4.x.", e);
             }
         }
