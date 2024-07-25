@@ -932,6 +932,7 @@ The list of attributes that support runtime property substitution is:
 * The `value` attribute of <<logger-elements-properties,nested `Property` elements>> of a logger configuration.
 * The
 xref:manual/pattern-layout.adoc#plugin-attr-pattern[`pattern`] attribute of the xref:manual/pattern-layout.adoc[].
+This attribute evaluates lookups in the xref:manual/lookups.adoc#event-context[context of the current log event].
 * Event template attributes of xref:manual/json-template-layout.adoc[].
 See xref:manual/json-template-layout.adoc#property-substitution-in-template[property substitution in JSON Template Layout]
 for more details.

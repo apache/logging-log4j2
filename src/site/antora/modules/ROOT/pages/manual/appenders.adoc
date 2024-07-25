@@ -93,17 +93,22 @@ so can contain escaped `$$+{...}+` expressions.
 | <<KafkaAppender,`KafkaAppender`>>
 | <<KafkaAppender-attr-key,`key`>>
 | Log event
-| xref:manual/lookups.adoc#event-context[_log event_]
+| xref:manual/lookups.adoc#global-context[_global_]
 
 | <<NoSQLAppender,`NoSQLAppender`>>
 | <<NoSqlAppender-element-keyValuePairs,`KeyValuePair/value`>>
 | Log event
-| xref:manual/lookups.adoc#event-context[_log event_]
+| xref:manual/lookups.adoc#global-context[_global_]
 
 | <<PropertiesRewritePolicy,`PropertiesRewritePolicy`>>
 | <<PropertiesRewritePolicy-element-properties,`Property/value`>>
 | Log event
 | xref:manual/lookups.adoc#global-context[_global_]
+
+| <<Routes,`Routes`>>
+| `pattern`
+| Log event
+| xref:manual/lookups.adoc#event-context[_log event_]
 
 | <<RollingFileAppender,`RollingFileAppender`>>
 | <<RollingFileAppender-attr-filePattern,`filePattern`>>
