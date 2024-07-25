@@ -1,0 +1,40 @@
+{
+  "Configuration": {
+    "Appenders": {
+      "Console": {
+        "name": "CONSOLE",
+        "JsonTemplateLayout": {}
+      },
+      // tag::appender[]
+      "Rewrite": {
+        "name": "REWRITE",
+        "LoggerNameLevelRewritePolicy": { // <1>
+          "logger": "org.example",
+          "KeyValuePair": [
+            {
+              "key": "WARN",
+              "value": "INFO"
+            },
+            {
+              "key": "INFO",
+              "value": "DEBUG"
+            }
+          ]
+        },
+        "AppenderRef": {
+          "level": "INFO", // <2>
+          "ref": "CONSOLE"
+        }
+      }
+      // end::appender[]
+    },
+    "Loggers": {
+      "Root": {
+        "level": "INFO",
+        "AppenderRef": {
+          "ref": "REWRITE"
+        }
+      }
+    }
+  }
+}

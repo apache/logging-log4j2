@@ -1,0 +1,1202 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Delegating Appenders
+:open-book: &#x1F4D6;
+
+Log4j Core supplies multiple appenders that do not perform any work themselves, but modify the way other appenders work.
+The following behaviors can be modified:
+
+* If you want to perform all I/O from a dedicated thread, see <<AsyncAppender>>.
+* If you want to provide a backup appender in case an appender fails, see <<FailoverAppender>>.
+* If you want to modify the log event, before it is sent to the target destination, see <<RewriteAppender>>.
+* If you want to create appenders dynamically or choose a different appender for each log event, see <<RoutingAppender>>.
+
+[#AsyncAppender]
+== `Async` Appender
+
+The `Async` Appender stores log events in a blocking queue and forwards them to other appenders on a separate thread.
+Due to the asynchronous barrier, exceptions occurring in those appenders will not be forwarded to the caller of the log statement.
+
+The `Async` should be configured after the appenders it references to allow it to shut down properly.
+
+[TIP]
+====
+The blocking queue is susceptible to lock contention, and performance may become worse when more threads are logging concurrently.
+Consider using
+xref:manual/async.adoc[lock-free asynchronous loggers] instead, for optimal performance.
+====
+
+[NOTE]
+====
+Log4j 2 brought the following enhancements to the Log4j 1 async appender:
+
+* all appenders referenced by `AsyncAppender` flush their buffers to the OS at the end of a batch, when the queue becomes empty.
+This guarantees that the batch of log events is passed to the OS and is a more performant version of the xref:manual/appenders.adoc#immediateFlush[`immediateFlush`] attribute.
++
+WARNING: Similarly to what happens with the `immediateFlush` attribute, this does not guarantee that the OS stores the data on the underlying device.
+
+* the type of queue is configurable to allow users to use faster and more performant queues, such as those from the
+https://github.com/JCTools/JCTools?tab=readme-ov-file#jctools[JCTools]
+or
+https://github.com/conversant/disruptor[Conversant Disruptor] projects.
+====
+
+[#AsyncAppender-configuration]
+=== `Async` configuration
+
+The `Async` Appender supports the following configuration options:
+
+[#AsyncAppender-attributes]
+.`Async` Appender configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+4+h| Required
+
+| [[AsyncAppender-attr-name]]name
+| `String`
+|
+| The name of the appender.
+
+4+h| Optional
+
+| [[AsyncAppender-attr-blocking]]blocking
+| `boolean`
+| `true`
+|
+If `true`, the Appender will wait until there are free slots in the queue.
+
+If false, the event will be written to the error
+appender if the queue is full. The default is true.
+
+| [[AsyncAppender-attr-bufferSize]]bufferSize
+| `int`
+| 1024
+|
+Specifies the maximum number of events that can be queued.
+
+When using a disruptor-style `BlockingQueue`, this
+buffer size must be a power of 2.
+
+When the application is logging faster than the underlying appender can
+keep up with for a long enough time to fill up the queue, the behavior
+is determined by the <<AsyncQueueFullPolicy>>.
+
+| [[AsyncAppender-attr-errorRef]]errorRef
+| String
+|
+| The name of the appender to invoke if none of the appenders can be called, either due to exceptions in the appenders or because the queue is full.
+
+If not specified then errors will be ignored.
+
+| [[AsyncAppender-attr-includeLocation]]includeLocation
+| boolean
+| `false`
+|
+If set to `false`, location information will not be available to layouts of the downstream appenders.
+
+See xref:manual/layouts.adoc#LocationInformation[location information] for more information.
+
+| [[AsyncAppender-attr-ignoreExceptions]]ignoreExceptions
+| `boolean`
+| `true`
+a| If `false`, logging exceptions will be forwarded to the caller of the log statement.
+Otherwise, they will be ignored.
+
+Logging exceptions are always also logged to xref:manual/status-logger.adoc[]
+
+[NOTE]
+====
+This setting only applies to logging exceptions that occur on the caller thread.
+Exceptions that occur on the asynchronous thread will always be logged.
+====
+
+| [[AsyncAppender-attr-shutdownTimeout]]shutdownTimeout
+| `int`
+| `0`
+|
+Timeout in milliseconds to wait before stopping the asynchronous thread.
+
+A value of `0` will wait until the queue is empty.
+
+|===
+
+[#AsyncAppender-elements]
+.`Async` Appender nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[AsyncAppender-element-Filter]]xref:manual/filters.adoc[`Filter`]
+| zero or one
+|
+Allows filtering log events just before they are appended to the blocking queue.
+
+See also xref:manual/filters.adoc#appender-stage[appender filtering stage].
+
+| [[AsyncAppender-element-AppenderRef]]xref:manual/configuration.adoc#configuring-appenderrefs[`AppenderRef`]
+| one or more
+|
+A list of appenders to invoke asynchronously.
+
+See xref:manual/configuration.adoc#configuring-appenderrefs[appender references] for more information.
+
+| [[AsyncAppender-element-BlockingQueueFactory]]<<BlockingQueueFactory,`BlockingQueueFactory`>>
+| zero or one
+|
+The blocking queue factory implementation to use.
+
+If not provided, <<ArrayBlockingQueueFactory,`ArrayBlockingQueueFactory`>> will be used.
+
+See <<BlockingQueueFactory>> below.
+
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-AsyncAppender[{open-book} Plugin reference for `Async`]
+
+As an example, you can instrument a xref:manual/appenders/file.adoc#FileAppender[`File` appender] to perform asynchronous I/O, by using the following appender configurations:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/delegating/async.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/delegating/async.xml[tag=appenders]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/delegating/async.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/delegating/async.json[tag=appenders]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/delegating/async.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/delegating/async.yaml[tag=appenders]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/delegating/async.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/delegating/async.properties[tag=appenders]
+----
+====
+
+[#AsyncQueueFullPolicy]
+=== Queue full policy
+
+When the queue is full the `Async` Appender uses an
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[`AsyncQueueFullPolicy`]
+to decide whether to:
+
+* drop the log event.
+* busy wait until the log event can be added to the queue.
+* log the event on the current thread.
+
+The queue full policy can only be configured through
+xref:manual/systemproperties.adoc[configuration properties].
+See xref:manual/systemproperties.adoc#properties-async[Async components] for more details.
+
+[#BlockingQueueFactory]
+=== Blocking Queue Factories
+
+The `Async` appender allows you to customize the blocking queue used by specifying a nested
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/BlockingQueueFactory.html[`BlockingQueueFactory`]
+element.
+
+You can specify the size of the queue using the <<AsyncAppender-attr-bufferSize,`bufferSize`>> configuration attribute.
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-BlockingQueueFactory[{open-book} Plugin reference for `BlockingQueueFactory`]
+
+[#ArrayBlockingQueueFactory]
+`ArrayBlockingQueue`::
++
+This is the default implementation that produces
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/concurrent/ArrayBlockingQueue.html[`ArrayBlockingQueue`]s.
++
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-ArrayBlockingQueueFactory[{open-book} Plugin reference for `ArrayBlockingQueue`]
+
+[#DisruptorBlockingQueueFactory]
+`DisruptorBlockingQueue`::
++
+This queue factory uses the
+https://github.com/conversant/disruptor[Conversant Disruptor]
+implementation of `BlockingQueue`.
++
+[#DisruptorBlockingQueueFactory-attributes]
+.`DisruptorBlockingQueue` Factory configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| spinPolicy
+| https://javadoc.io/doc/com.conversantmedia/disruptor/latest/com.conversantmedia.disruptor/com/conversantmedia/util/concurrent/SpinPolicy.html[`SpinPolicy`]
+| https://javadoc.io/doc/com.conversantmedia/disruptor/latest/com.conversantmedia.disruptor/com/conversantmedia/util/concurrent/SpinPolicy.html#WAITING[`WAITING`]
+|
+The `SpinPolicy` to apply, when adding elements to the queue.
+
+|===
++
+.Additional dependencies are required to use `DisruptorBlockingQueue`
+[%collapsible]
+=====
+[tabs]
+====
+Maven::
++
+[source,xml,subs="+attributes"]
+----
+<dependency>
+  <groupId>com.conversantmedia</groupId>
+  <artifactId>disruptor</artifactId>
+  <version>{conversant-version}</version>
+  <scope>runtime</scope>
+</dependency>
+----
+
+Gradle::
++
+[source,groovy,subs="+attributes"]
+----
+runtimeOnly 'com.conversantmedia:disruptor:{conversant-version}'
+----
+
+====
+=====
++
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-DisruptorBlockingQueueFactory[{open-book} Plugin reference for `DisruptorBlockingQueue`]
+
+[#JCToolsBlockingQueueFactory]
+`JCToolsBlockingQueue`::
++
+This queue factory uses
+https://jctools.github.io/JCTools/[JCTools], specifically the MPSC bounded lock-free queue.
++
+.Additional dependencies are required to use `JCToolsBlockingQueue`
+[%collapsible]
+=====
+
+[tabs]
+====
+
+Maven::
++
+[source,xml,subs="+attributes"]
+----
+<dependency>
+  <groupId>org.jctools</groupId>
+  <artifactId>jctools-core</artifactId>
+  <version>{jctools-version}</version>
+  <scope>runtime</scope>
+</dependency>
+----
+
+Gradle::
++
+[source,groovy,subs="+attributes"]
+----
+runtimeOnly 'org.jctools:jctools-core:{jctools-version}'
+----
+
+====
+=====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-JCToolsBlockingQueueFactory[{open-book} Plugin reference for `JCToolsBlockingQueue`]
+
+[#LinkedTransferQueueFactory]
+`LinkedTransferQueue`::
++
+This queue factory produces
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/concurrent/LinkedTransferQueue.html[`LinkedTransferQueue`]s.
+Note that this queue does not have a maximum capacity and ignores the <<AsyncAppender-attr-bufferSize,`bufferSize`>> attribute.
++
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-LinkedTransferQueueFactory[{open-book} Plugin reference for `LinkedTransferQueue`]
+
+[#FailoverAppender]
+== `Failover` Appender
+
+The `Failover` Appender can protect your logging pipeline against I/O exceptions in other appenders.
+
+During normal operations the `Failover` Appender forwards all log events to a primary appender.
+However, if the primary appender fails, a set of secondary appenders will be checked until one succeeds.
+
+[#FailoverAppender-configuration]
+=== `Failover` configuration
+
+The `Failover` Appender supports the following configuration options:
+
+[#FailoverAppender-attributes]
+.`Failover` Appender configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+4+h| Required
+
+| [[FailoverAppender-attr-name]]name
+| `String`
+|
+|
+The name of this appender.
+
+| [[FailoverAppender-attr-primary]]primary
+| `String`
+|
+|
+The name of the primary appender to use.
+
+4+h| Optional
+
+| [[FailoverAppender-attr-retryIntervalSeconds]]retryIntervalSeconds
+| `int`
+| `60`
+|
+It specifies how many seconds to wait after a failure of the primary appender before the primary appender can be used again.
+
+| [[FailoverAppender-attr-ignoreExceptions]]ignoreExceptions
+| `boolean`
+| `true`
+| If `false` and **all** the fallback appenders fail to handle the log event, the logging exception will be forwarded to the caller.
+Otherwise, it will be ignored.
+
+Logging exceptions are always also logged to xref:manual/status-logger.adoc[]
+
+|===
+
+[#FailoverAppender-elements]
+.`Failover` Appender nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[FailoverAppender-element-Filter]]xref:manual/filters.adoc[`Filter`]
+| zero or one
+|
+Allows filtering log events just before they are appended to the blocking queue.
+
+See also xref:manual/filters.adoc#appender-stage[appender filtering stage].
+
+| [[FailoverAppender-element-Failovers]]xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-FailoversPlugin[`Failovers`]
+| **one**
+|
+A container element for a list of
+xref:manual/configuration.adoc#configuring-appenderrefs[`AppenderRef`]s
+that specifies the names of the secondary appenders
+|===
+
+[IMPORTANT]
+====
+The primary appender must be configured to forward exceptions to the caller, by setting the
+xref:manual/appenders.adoc#ignoreExceptions[`ignoreExceptions`]
+configuration attribute to `false`.
+====
+
+The following example shows how to configure `Failover` to use an appender named `FILE` as primary and fall back to `CONSOLE` if an error occurs:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/delegating/failover.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/delegating/failover.xml[tag=appenders]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/delegating/failover.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/delegating/failover.json[tag=appenders]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/delegating/failover.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/delegating/failover.yaml[tag=appenders]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/delegating/failover.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/delegating/failover.properties[tag=appenders]
+----
+====
+
+<1> The primary appender must set `ignoreExceptions` to `false`.
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-FailoverAppender[{open-book} Plugin reference for `Failover`]
+
+[#RewriteAppender]
+== `Rewrite` Appender
+
+The `Rewrite` allows the log events to be manipulated before they are processed by another Appender.
+This can be used to inject additional information into each event.
+
+[NOTE]
+====
+Although this appender can be used to mask sensitive information contained in log events, we strongly discourage such practice.
+Sensitive data like passwords and credit card numbers can appear in log files in many formats, and it is challenging to detect them all.
+
+A better approach to sensitive data is not to log them at all.
+Third-party frameworks like
+https://github.com/palantir/safe-logging[Palantir `safe-logging`]
+can ensure that objects marked as sensitive are not passed as parameters to log statements.
+====
+
+[#RewriteAppender-configuration]
+=== `Rewrite` Configuration
+
+[#RewriteAppender-attributes]
+.`Rewrite` Appender configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+4+h| Required
+
+| [[RewriteAppender-attr-name]]name
+| `String`
+|
+|
+The name of this appender.
+
+4+h| Optional
+
+| [[RewriteAppender-attr-ignoreExceptions]]ignoreExceptions
+| `boolean`
+| `true`
+| If `false` and the downstream appender fails with an exception, the exception will be propagated to the caller.
+Otherwise, it will be ignored.
+
+Logging exceptions are always also logged to xref:manual/status-logger.adoc[]
+
+|===
+
+[#RewriteAppender-elements]
+.`Rewrite` Appender nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[RewriteAppender-element-AppenderRef]]xref:manual/configuration.adoc#configuring-appenderrefs[`AppenderRef`]
+| **one**
+|
+The
+xref:manual/configuration.adoc#configuring-appenderrefs[reference to an appender]
+that will perform the actual logging.
+
+| [[RewriteAppender-element-Filter]]xref:manual/filters.adoc[`Filter`]
+| zero or one
+|
+Allows filtering log events just before they are appended to the blocking queue.
+
+See also xref:manual/filters.adoc#appender-stage[appender filtering stage].
+
+| [[RewriteAppender-element-RewritePolicy]]<<RewritePolicy,`RewritePolicy`>>
+| **one**
+|
+The <<RewritePolicy,rewrite policy>> to apply to all logged events.
+
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-RewriteAppender[{open-book} Plugin reference for `Rewrite`]
+
+[#RewritePolicy]
+=== Rewrite Policies
+
+A rewrite policy is a Log4j plugin that implements the
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rewrite/RewritePolicy.html[`RewritePolicy`]
+interface.
+Rewrite policies allow to apply arbitrary modifications to log events.
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-RewritePolicy[{open-book} Plugin reference for `RewritePolicy`]
+
+Log4j Core provides three rewrite policies out-of-the-box:
+
+[#MapRewritePolicy]
+`MapRewritePolicy`::
++
+The `MapRewritePolicy` only modifies events that contain a
+xref:manual/messages.adoc#MapMessage[`MapMessage`].
+It allows adding or updating the keys of the `MapMessage`.
++
+[#MapRewritePolicy-attributes]
+.`MapRewritePolicy` configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[MapRewritePolicy-attr-mode]]mode
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rewrite/MapRewritePolicy.Mode.html[`MapRewritePolicy.Mode`]
+| link:../https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/appender/rewrite/MapRewritePolicy.Mode.html#Add[`Add`]
+a|
+It determines which map entries to modify:
+
+Add::
+All the configured map entries will be added to the `MapMessage`, modifying the existing ones.
+
+Update::
+The rewrite policy will add to the `MapMessage` only entries corresponding to existing keys.
+
+|===
++
+[#MapRewritePolicy-elements]
+.`MapRewritePolicy` nested elements
+[cols="1m,1,4"]
+|===
+
+| Type | Multiplicity | Description
+
+| [[MapRewritePolicy-element-KeyValuePair]]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-util-KeyValuePair[`KeyValuePair`]
+| one or more
+|
+A list of map entries to add to the `MapMessage`.
+
+|===
++
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-MapRewritePolicy[{open-book} Plugin reference for `MapRewritePolicy`]
+
+[#PropertiesRewritePolicy]
+`PropertiesRewritePolicy`::
++
+The `PropertiesRewritePolicy` will add properties to the context data of the log event.
++
+[NOTE]
+====
+Only the context data of the log event will be modified.
+The contents of the xref:manual/thread-context.adoc[] will remain unchanged.
+====
++
+[#PropertiesRewritePolicy-elements]
+.`PropertiesRewritePolicy` nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[PropertiesRewritePolicy-element-Property]]xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property[`Property`]
+| one or more
+|
+A list of map entries to add to the context data of the log event.
+
+The `value` attribute of each `Property` element supports
+xref:manual/configuration.adoc#lazy-property-substitution[runtime property substitution]
+in the
+xref:manual/lookups.adoc#global-context[_global context_].
+|===
++
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-PropertiesRewritePolicy[{open-book} Plugin reference for `PropertiesRewritePolicy`]
+
+[#LoggerNameLevelRewritePolicy]
+LoggerNameLevelRewritePolicy::
++
+You can use this policy to change the log level of loggers from third-party libraries.
+The `LoggerNameLevelRewritePolicy` will rewrite the level of log event for a given logger name prefix.
++
+[WARNING]
+====
+The new log levels will only be used by the filter attached to the `Rewrite` appender and those downstream of the appender.
+Filters configured on loggers will use the previous levels.
+See xref:manual/filters.adoc[] for more details on filtering
+====
++
+[#LoggerNameLevelRewritePolicy-attributes]
+.`LoggerNameLevelRewritePolicy` configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[LoggerNameLevelRewritePolicy-attr-mode]]logger
+| `String`
+|
+|
+The rewrite policy will only be applied to loggers with this logger name and their children.
+
+|===
++
+[#LoggerNameLevelRewritePolicy-elements]
+.`LoggerNameLevelRewritePolicy` nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[LoggerNameLevelRewritePolicy-element-KeyValuePair]]xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-util-KeyValuePair[`KeyValuePair`]
+| one or more
+|
+Provides a mapping between old level names and new level names.
+
+|===
++
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-LoggerNameLevelRewritePolicy[{open-book} Plugin reference for `LoggerNameLevelRewritePolicy`]
+
+[#RewriteAppender-examples]
+=== Configuration example
+
+If a library `org.example` over-evaluates the severity of its log events, you decrease their severity with the following configuration:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/delegating/rewrite.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/delegating/rewrite.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/delegating/rewrite.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/delegating/rewrite.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/delegating/rewrite.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/delegating/rewrite.yaml[tag=appender]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/delegating/rewrite.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/delegating/rewrite.properties[tag=appender]
+----
+====
+
+<1> Decreases the severity of `WARN` and `INFO` messages, so they appear with the new severity in your log viewer.
+<2> If additionally you don't want to log `DEBUG` log events, you must apply a filter.
+
+[#RoutingAppender]
+== `Routing` Appender
+
+The `Routing` Appender evaluates log events and then routes them to one of its subordinate appenders.
+The target appender may be:
+
+* an existing appender referenced by its name.
+* a new appender obtained by evaluating a configuration snippet.
+
+The `Routing` Appender should be configured after any appenders it references to allow it to shut down properly.
+
+[#RoutingAppender-configuration]
+=== `Routing` Configuration
+
+[#RoutingAppender-attributes]
+.`Routing` Appender configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+4+h| Required
+
+| [[RoutingAppender-attr-name]]name
+| `String`
+|
+|
+The name of this appender.
+
+4+h| Optional
+
+| [[RoutingAppender-attr-ignoreExceptions]]ignoreExceptions
+| `boolean`
+| `true`
+| If `false` and the downstream appender fails with an exception, the exception will be propagated to the caller.
+Otherwise, it will be ignored.
+
+Logging exceptions are always also logged to xref:manual/status-logger.adoc[]
+
+|===
+
+[#RoutingAppender-elements]
+.`Routing` Appender nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[RoutingAppender-element-AbstractScript]]xref:manual/scripts.adoc[`AbstractScript`]
+| zero or one
+a|
+This script has two purposes:
+
+. It initializes a shared `Map<String, Object>` bound to the `staticVariables` identifier.
+The values of this map can be used later by the <<Routes-element-AbstractScript,`Routes` script>>.
+. It returns the name of the default route.
+
+The script has the following bindings:
+
+`staticVariables`::
+A `Map<String, Object>` that is reused between script calls.
+This is the same map, which is passed to the <<RoutingAppender-element-AbstractScript,`AbstractScript` of `Routing`>>.
+
+`configuration`::
+The current xref:manual/configuration.adoc[`Configuration` object].
+
+`statusLogger`::
+The xref:manual/status-logger.adoc[] to use to print diagnostic messages in the script.
+
+See also xref:manual/scripts.adoc[] for more details on scripting in Log4j Core.
+
+| [[RoutingAppender-element-Filter]]xref:manual/filters.adoc[`Filter`]
+| zero or one
+|
+Allows filtering log events before routing them to a subordinate appender.
+
+See also xref:manual/filters.adoc#appender-stage[appender filtering stage].
+
+| [[RoutingAppender-element-PurgePolicy]]<<PurgePolicy,`PurgePolicy`>>
+| zero or one
+|
+The <<PurgePolicy,purge policy>> to apply to handle the lifecycle of automatically instantiated appenders.
+
+See <<PurgePolicy>> for more details.
+
+| [[RoutingAppender-element-RewritePolicy]]<<RewritePolicy,`RewritePolicy`>>
+| zero or one
+|
+The <<RewritePolicy,rewrite policy>> to apply to all logged events.
+
+If set, the `Routing` appender will rewrite a log event before routing it.
+See also <<RewriteAppender>>.
+
+| [[RoutingApender-element-Routes]]<<Routes,`Routes`>>
+| **one**
+|
+Determines the routing configuration of the appender.
+
+See <<Routes,`Routes`>> for more details.
+
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-RoutingAppender[{open-book} Plugin reference for `Routing`]
+
+[#route-selection]
+=== Route selection
+
+At the base of route selection there are two configuration elements:
+
+[#Routes]
+`Routes`::
++
+The `Routes` element is a container for <<Route,`Route`>> definitions.
+It provides two additional properties, which are used to determine the appropriate route for each log event:
++
+[#Routes-attributes]
+.`Routes` configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[Routes-attr-pattern]]pattern
+| `String`
+|
+|
+If present, this pattern is evaluated at each log event to determine the key of the route to use.
+
+This attribute supports
+xref:manual/configuration.adoc#lazy-property-substitution[runtime property substitution]
+using the
+xref:manual/lookups.adoc#event-context[current event as context].
+
+**Required**, unless a nested <<Routes-element-AbstractScript,`AbstractScript`>> is provided.
+|===
++
+[#Routes-elements]
+.`Routes` nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[Routes-element-AbstractScript]]xref:manual/scripts.adoc[`AbstractScript`]
+| zero or one
+a|
+If present, this script is evaluated at each log event to determine the key of the route to use.
+The script has the following bindings:
+
+`staticVariables`::
+A `Map<String, Object>` that is reused between script calls.
+This is the same map, which is passed to the <<RoutingAppender-element-AbstractScript,`AbstractScript` of `Routing`>>.
+
+`logEvent`::
+The
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html[`LogEvent`]
+being processed.
+
+`configuration`::
+The current xref:manual/configuration.adoc[`Configuration` object].
+
+`statusLogger`::
+The xref:manual/status-logger.adoc[] to use to print diagnostic messages in the script.
+
+See also xref:manual/scripts.adoc[] for more details on scripting in Log4j Core.
+
+**Required**, unless the <<Routes-attr-pattern,`pattern`>> attribute is provided.
+
+| <<Route,`Route`>>
+| one or more
+|
+|===
++
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-Routes[{open-book} Plugin reference for `Routes`]
+
+[#Route]
+`Route`::
+The `Route` element determines the appender to use if the route is selected.
+The appender can be:
++
+--
+* A previously declared appender, from the xref:manual/configuration.adoc#main-configuration-elements[`Appenders` section] of the configuration file.
+* A new appender that is instantiated based on a nested appender definition, when the route becomes active.
+See also <<PurgePolicy>> to learn more about the lifecycle of such an appender.
+--
++
+[#Route-attributes]
+.`Route` configuration attributes
+[cols="1m,1,1,5"]
+|===
+
+| Attribute | Type | Default value | Description
+
+| [[Route-attr-key]]
+key
+| `String`
+| `null`
+|
+A key that is compared with the evaluation of either the <<Routes-attr-pattern,`pattern`>> attribute or <<Routes-element-AbstractScript,nested script>> of the `Routes element.
+
+| [[Route-attr-ref]]
+ref
+| `String`
+|
+|
+The reference to an existing appender to use.
+
+You cannot specify both this attribute and a <<Route-element-Appender,nested `Appender definition>>.
+
+|===
++
+[#Route-elements]
+.`Route` nested elements
+[cols="1m,1,4"]
+|===
+
+| Type | Multiplicity | Description
+
+| [[Route-element-Appender]]
+xref:manual/appenders.adoc[`Appender`]
+| zero or one
+|
+The definition of an `Appender` to create, when this route is used for the first time.
+
+You cannot specify both this nested element and the <<Route-attr-ref,`ref` configuration attribute>>.
+
+|===
++
+[WARNING]
+====
+Lookups in the **children** of the `Route` component are **not** evaluated at configuration time.
+The substitution is delayed until the `Route` element is evaluated.
+This means that `$+{...}+` expression **should not** be escaped as `$$+{...}+`.
+
+The appender definition is evaluated in the xref:manual/lookups.adoc#event-context[context of the current event], instead of the global context.
+
+See xref:manual/configuration.adoc#lazy-property-substitution[lazy property substitution] for more details.
+====
++
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-Route[{open-book} Plugin reference for `Route`]
+
+For each log event, the appropriate route is selected as follows:
+
+. First the <<Routes-attr-pattern,`pattern` attribute>> or <<Routes-element-AbstractScript,`Routes` script>> are evaluated to obtain a **key**.
+. The key is compared with the <<Route-attr-key,`key` attribute>> of each `Route` element.
+. If there is a `Route` for that key, it is selected.
+. Otherwise, the **default** `Route` is selected. The key of the default `Route` is determined by the <<RoutingAppender-element-AbstractScript,`Routing` script>> or is `null` (lack of <<Route-attr-key,`key` attribute>>) if the script is absent.
+
+[NOTE]
+====
+If the `Route` element contains an appender definition, the appender will be instantiated:
+
+* once if the `Route` has a non-default key.
+* once for each value of the key, if the `Route` has the default key.
+====
+
+[#PurgePolicy]
+=== Purge Policy
+
+If your default <<Route,`Route` element>> contains an <<Route-element-Appender,appender definition>>, the `Routing` Appender can instantiate a large number of appenders, one for each value of the routing key.
+These appenders might be useful only for a short period of time, but will consume system resources unless they are stopped.
+
+The purge policy is a Log4j plugin that implements the
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/routing/PurgePolicy.html[`PurgePolicy`]
+interface and handles the lifecycle of automatically instantiated appenders.
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-PurgePolicy[{open-book} Plugin reference for `PurgePolicy`]
+
+[NOTE]
+====
+If an appender has been destroyed, it can be created again when the `Route` is selected again.
+====
+
+Log4j Core provides one implementation of `PurgePolicy`:
+
+[#IdlePurgePolicy]
+`IdlePurgePolicy`::
++
+This policy destroys appenders if they have not been used for a certain amount of time.
+It supports the following configuration attributes:
++
+[#IdlePurgePolicy-attributes]
+.`IdlePurgePolicy` configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[IdlePurgePolicy-attr-timeToLive]]timeToLive
+| `long`
+|
+|
+It specifies the number of <<IdlePurgePolicy-attr-timeUnit,time units>> that an appender can be idle, before it is destroyed.
+
+**Required**
+
+| [[IdlePurgePolicy-attr-checkInterval]]checkInterval
+| `long`
+| <<IdlePurgePolicy-attr-timeToLive,`timeToLive`>>
+|
+It specifies the number of <<IdlePurgePolicy-attr-timeUnit,time units>> between two runs of this purge policy.
+
+| [[IdlePurgePolicy-attr-timeUnit]]timeUnit
+| https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/TimeUnit.html[`TimeUnit`]
+| https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/TimeUnit.html#MINUTES[`MINUTES`]
+|
+It specifies the time unit to use for the other attributes.
+
+|===
++
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-IdlePurgePolicy[{open-book} Plugin reference for `IdlePurgePolicy`]
+
+[#RoutingAppender-examples]
+=== Configuration examples
+
+[#RoutingAppender-example-ref]
+==== Using appender references
+
+You can deliver log events for different xref:manual/markers.adoc[] into separate log files, using the following configuration:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/delegating/routing-ref.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/delegating/routing-ref.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/delegating/routing-ref.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/delegating/routing-ref.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/delegating/routing-ref.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/delegating/routing-ref.yaml[tag=appender]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/delegating/routing-ref.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/delegating/routing-ref.properties[tag=appender]
+----
+====
+
+<1> This route is selected if the log event is marked with an `AUDIT` marker.
+<2> This route is selected if the log event has no marker.
+In this case the expression `+${event:Marker}+` evaluates to itself.
+See xref:manual/configuration.adoc#property-substitution[Property evaluation] for more details.
+<3> This is the **default** route.
+It is selected if the log event has a marker, but it is not the `AUDIT` marker.
+
+[#RoutingAppender-example-definition]
+==== Using appender definitions
+
+If the number of appenders is high or unknown, you might want to use appender definitions instead of appender references.
+In the example below, a different log file is created for each xref:manual/markers.adoc[marker].
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/delegating/routing-definition.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/delegating/routing-definition.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/delegating/routing-definition.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/delegating/routing-definition.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/delegating/routing-definition.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/delegating/routing-definition.yaml[tag=appender]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/delegating/routing-definition.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/delegating/routing-definition.properties[tag=appender]
+----
+====
+
+<1> The `pattern` attribute is evaluated at configuration time, so the `+${event:Marker}+` lookup needs to be escaped.
+<2> The appender definition is **not** evaluated at configuration time, so no escaping is necessary.
+<3> To prevent resource leaks, consider using a <<PurgePolicy>>.
+
+[#RoutingAppender-example-script]
+==== Using scripts
+
+If the flexibility of xref:manual/lookups.adoc[] is not enough to express your routing logic, you can also resort to scripts.
+In the example below, we route messages in a round-robin fashion to three different Syslog servers:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/delegating/routing-script.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/delegating/routing-script.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/delegating/routing-script.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/delegating/routing-script.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/delegating/routing-script.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/delegating/routing-script.yaml[tag=appender]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/delegating/routing-script.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/delegating/routing-script.properties[tag=appender]
+----
+====
+
+<1> The <<RoutingAppender-element-AbstractScript,`Routing` script>> performs the initialization of state variables.
+<2> The <<Routes-element-AbstractScript,`Routes` script>> returns the name of the server to use.
+It also exports the value as `server` entry in
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html#getProperties()[`Configuration.getProperties()`].
+<3> The exported value can be used as `+${server}+` in the appender definition.
+
+[#ScriptAppenderSelector]
+== `ScriptAppenderSelector`
+
+The `ScriptAppenderSelector` plugin allows using different appender definitions based on the output of a script.
+At **configuration time**:
+
+. The nested script element is evaluated to obtain the name of an appender.
+. The plugin looks for the appropriate appender definition inside the `<AppenderSet>` container.
+
+[IMPORTANT]
+====
+The functionality of `ScriptAppenderSelector` has been replaced by the more general
+xref:manual/configuration.adoc#arbiters[`Arbiter` mechanism].
+====
+
+[#ScriptAppenderSelector-attributes]
+.`ScriptAppenderSelector` Appender configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+| [[ScriptAppenderSelector-attr-name]]name
+| `String`
+|
+|
+The name of this appender.
+
+**Required**
+|===
+
+[#ScriptAppenderSelector-elements]
+.`ScriptAppenderSelector` Appender nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[ScriptAppenderSelector-element-AbstractScript]]xref:manual/scripts.adoc[`AbstractScript`]
+| **one**
+|
+The script to determine the appender name.
+
+| [[RoutingAppender-element-AppenderSet]]`AppenderSet`
+| **one**
+|
+A lazy container for appender definitions.
+
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-ScriptAppenderSelector[{open-book} Plugin reference for `ScriptAppenderSelector`]

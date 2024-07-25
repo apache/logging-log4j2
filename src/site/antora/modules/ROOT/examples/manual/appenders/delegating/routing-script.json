@@ -1,0 +1,40 @@
+{
+  "Configuration": {
+    "Appenders": {
+      // tag::appender[]
+      "Routing": {
+        "name": "ROUTING",
+        "Script": {
+          "language": "groovy",
+          // <1>
+          "scriptText": "staticVariables.servers = ['server1', 'server2', 'server3']; staticVariables.count = 0;"
+        },
+        "Routes": {
+          "Script": {
+            "language": "groovy",
+            // <2>
+            "scriptText": "int count = staticVariables.count++; String server = staticVariables.servers[count % 3]; return configuration.properties['server'] = server;"
+          },
+          "Route": {
+            "Socket": { // <3>
+              "name": "${server}",
+              "protocol": "TCP",
+              "host": "${server}",
+              "port": "500",
+              "Rfc5425Layout": {}
+            }
+          }
+        }
+      }
+      // end::appender[]
+    },
+    "Loggers": {
+      "Root": {
+        "level": "INFO",
+        "AppenderRef": {
+          "ref": "ROUTING"
+        }
+      }
+    }
+  }
+}

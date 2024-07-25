@@ -17,27 +17,25 @@
 
 = Appenders
 
-Appenders are responsible for delivering LogEvents to their destination.
+Appenders are responsible for delivering log events to their destination.
 Every Appender must implement the
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/Appender.html[`Appender`]
 interface.
-Most Appenders will extend
+
+While not strictly required by the Log4j Core architecture, most appenders inherit from
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/AbstractAppender.html[`AbstractAppender`]
-which adds
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/LifeCycle.html[`Lifecycle`]
-and
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/filter/Filterable.html[`Filterable`]
-support. `Lifecycle` allows components to finish initialization after configuration has been completed and to perform cleanup during shutdown.
-`Filterable` allows the component to have `Filter` attached to it which are evaluated during event processing.
+and:
 
-Appenders usually are only responsible for writing the event data to the target destination.
-In most cases, they delegate responsibility for formatting the event to a xref:manual/layouts.adoc[layout].
-Some appenders wrap other appenders so that they can modify the `LogEvent`, handle a failure in an `Appender`, route the event to a subordinate `Appender` based on advanced `Filter` criteria or provide similar functionality that does not directly format the event for viewing.
+* delegate the filtering of log events to an implementation of
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/Filter.html[`Filter`].
+See xref:manual/filters.adoc[] for more information.
+* delegate the formatting of log events to an implementation of
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html[`Layout`].
+See xref:manual/layouts.adoc[] for more information.
+* only directly handle the writing of log event data to the target destination.
 
-Appenders always have a name so that they can be referenced from Loggers.
-
-In the tables below, the "Type" column corresponds to the Java type expected.
-For non-JDK classes, these should usually be in link:../javadoc/log4j-core/index.html[Log4j Core] unless otherwise noted.
+Appenders always have a name so that they can be referenced from a
+xref:manual/configuration.adoc#configuring-loggers[logger configuration].
 
 [#commons-concerns]
 == Common concerns
@@ -61,7 +59,7 @@ The buffer is flushed to the underlying resource on three occasions:
 * at the end of each log event batch, if
 xref:manual/async.adoc[asynchronous loggers]
 or
-<<AsyncAppender,appenders>>
+xref:manual/appenders/delegating.adoc#AsyncAppender[appenders]
 are used.
 * at the end of each log event, if the
 <<immediateFlush,`immediateFlush`>>
@@ -120,59 +118,91 @@ It does not ensure that the operating system writes the event to the underlying 
 
 [TIP]
 ====
-If you are using xref:manual/async.adoc[asynchronous loggers] or <<AsyncAppender,appenders>>, you can set this attribute to `false`.
+If you are using
+xref:manual/async.adoc[asynchronous loggers]
+or
+xref:manual/appenders/delegating.adoc#AsyncAppender[appenders], you can set this attribute to `false`.
 Log4j Core will still flush the internal buffer, whenever the log event queue becomes empty.
+====
+
+[#exception-handling]
+=== Exception handling
+
+By default, Log4j Core uses xref:manual/status-logger.adoc[] to report exceptions that occur in appenders.
+This behavior can be changed using the following configuration property:
+
+[#ignoreExceptions]
+==== `ignoreExceptions`
+
+[cols="1h,5"]
+|===
+| Type          | `boolean`
+| Default value | `true`
+|===
+
+If `false` logging exceptions will be forwarded to the caller.
+Otherwise, they will be logged using xref:manual/status-logger.adoc[].
+
+[TIP]
+====
+If logging is important for your business, consider using a
+xref:manual/appenders/delegating.adoc#FailoverAppender[`Failover` Appender]
+to redirect log events to a different appender in case of exceptions.
 ====
 
 [#runtime-evaluation]
 === Runtime evaluation of attributes
 
-The following configuration attributes are also evaluated at runtime, so can contain escaped `$$+{...}+` expressions.
+The following configuration attributes are also evaluated at runtime, so can contain escaped `$$+{...}+` property substitution expressions.
 
 .List of attributes evaluated at runtime
 [cols="1,1,1,1"]
 |===
 | Component | Parameter | Event type | Evaluation context
 
-| <<HttpAppender,`HttpAppender`>>
+| <<HttpAppender,HTTP Appender>>
 | <<HttpAppender-element-headers,`Property/value`>>
 | Log event
 | xref:manual/lookups.adoc#global-context[_global_]
 
-| <<KafkaAppender,`KafkaAppender`>>
+| <<KafkaAppender,Kafka Appender>>
 | <<KafkaAppender-attr-key,`key`>>
 | Log event
 | xref:manual/lookups.adoc#global-context[_global_]
 
-| <<NoSQLAppender,`NoSQLAppender`>>
+| <<NoSQLAppender,NoSQL Appender>>
 | <<NoSqlAppender-element-keyValuePairs,`KeyValuePair/value`>>
 | Log event
 | xref:manual/lookups.adoc#global-context[_global_]
 
-| <<PropertiesRewritePolicy,`PropertiesRewritePolicy`>>
-| <<PropertiesRewritePolicy-element-properties,`Property/value`>>
+| xref:manual/appenders/delegating.adoc#PropertiesRewritePolicy[PropertiesRewrite Policy]
+| xref:manual/appenders/delegating.adoc#PropertiesRewritePolicy-element-Property[`Property/value`]
 | Log event
 | xref:manual/lookups.adoc#global-context[_global_]
 
-| <<Routes,`Routes`>>
-| `pattern`
+| xref:manual/appenders/delegating.adoc#Routes[Routes Container]
+| xref:manual/appenders/delegating.adoc#Routes-attr-pattern[`pattern`]
 | Log event
 | xref:manual/lookups.adoc#event-context[_log event_]
 
-| xref:manual/rolling-file.adoc[`RollingFileAppender`]
-| xref:manual/rolling-file.adoc#attr-filePattern[`filePattern`]
+| xref:manual/appenders/rolling-file.adoc[Rolling File Appenders]
+| xref:manual/appenders/rolling-file.adoc#attr-filePattern[`filePattern`]
 | Rollover
 | xref:manual/lookups.adoc#global-context[_global_]
 
-| xref:manual/rolling-file.adoc#AbstractPathAction[Optional actions]
-| `basePath`
+| xref:manual/appenders/rolling-file.adoc#AbstractPathAction[Optional Rollover Actions]
+| xref:manual/appenders/rolling-file.adoc#AbstractPathAction-attr-basePath[`basePath`]
 | Rollover
 | xref:manual/lookups.adoc#global-context[_global_]
 
 |===
 
-The <<Routes,`Route`>> component of the <<RoutingAppender,`RoutingAppender`>> is special: its children are evaluated at runtime, but they are **not** evaluated at configuration time.
-Inside the `Route` component you **should not** use escaped `$$+{...}+` expressions, but only unescaped `$+{...}+` expressions.
+The
+xref:manual/appenders/delegating.adoc#Route[`Route`]
+component of the
+xref:manual/appenders/delegating.adoc#RoutingAppender[Routing Appender]
+is special: its children are evaluated at runtime, but they are **not** evaluated at configuration time.
+Inside the `Route` component you **should not** use escaped `$$+{...}+` property substitution expressions, but only unescaped `$+{...}+` property substitution expressions.
 
 See xref:manual/configuration.adoc#lazy-property-substitution[runtime property substitution] for more details.
 
@@ -180,169 +210,38 @@ See xref:manual/configuration.adoc#lazy-property-substitution[runtime property s
 == Collection
 
 Log4j bundles several predefined appenders to assist in several common deployment use cases.
-Following sections explain all these in detail.
+They are documented in separate pages based on their target resource:
 
-[id=AsyncAppender]
-=== [[asyncappender]] AsyncAppender
+[#file-appenders]
+=== File appenders
 
-The AsyncAppender accepts references to other Appenders and causes LogEvents to be written to them on a separate Thread.
-Note that exceptions while writing to those Appenders will be hidden from the application.
-The AsyncAppender should be configured after the appenders it references to allow it to shut down properly.
+File appenders write logs to the filesystem.
+They can be further split into:
 
-By default, AsyncAppender uses
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/concurrent/ArrayBlockingQueue.html[`java.util.concurrent.ArrayBlockingQueue`]
-which does not require any external libraries.
-Note that multi-threaded applications should exercise care when using this appender as such: the blocking queue is susceptible to lock contention and our
-xref:manual/performance.adoc#async[tests showed] performance may become worse when more threads are logging concurrently.
-Consider using
-xref:manual/async.adoc[lock-free Async Loggers] for optimal performance.
+Single file appenders:::
+See xref:manual/appenders/file.adoc[] for details.
 
-[NOTE]
-====
-Log4j 2 brought the following enhancements to the Log4j 1 async appender:
+Rolling file appenders:::
+See xref:manual/appenders/rolling-file.adoc[] for details.
 
-* all appenders referenced by `AsyncAppender` flush their buffers to the OS at the end of a batch, when the queue becomes empty.
-This guarantees that the batch of log events is passed to the OS and is a more performant version of the <<immediateFlush>> attribute.
-+
-WARNING: Similarly to what happens with the `immediateFlush` attribute, this does not guarantee that the OS stores the data on the underlying device.
+[#delegating-appenders]
+=== Delegating appenders
 
-* the type of queue is configurable to allow users to use faster and more performant queues, such as those from the
-https://github.com/JCTools/JCTools?tab=readme-ov-file#jctools[JCTools]
-or
-https://github.com/conversant/disruptor[Conversant Disruptor] projects.
-====
+Delegating appenders are intended to decorate other appenders:
 
-.AsyncAppender Parameters
-[width="100%",cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|AppenderRef |String |The name of the Appenders to invoke
-asynchronously. Multiple AppenderRef elements can be configured.
+xref:manual/appenders/delegating.adoc#AsyncAppender[Asynchronous appender]::
+Perform all I/O on a dedicated thread
 
-|blocking |boolean |If true, the appender will wait until there are free
-slots in the queue. If false, the event will be written to the error
-appender if the queue is full. The default is true.
+xref:manual/appenders/delegating.adoc#FailoverAppender[Failover appender]::
+Provide a backup appender in case an appender fails
 
-|shutdownTimeout |integer |How many milliseconds the Appender should
-wait to flush outstanding log events in the queue on shutdown? The
-default is zero which means to wait forever.
+xref:manual/appenders/delegating.adoc#RewriteAppender[Rewrite appender]::
+Modify log events prior to delivering them to the target
 
-|bufferSize |integer a|
-Specifies the maximum number of events that can be queued. The default
-is 1024. Note that when using a disruptor-style `BlockingQueue`, this
-buffer size must be a power of 2.
+xref:manual/appenders/delegating.adoc#RoutingAppender[Routing appender]::
+Dynamically choose a different appender for each log event
 
-When the application is logging faster than the underlying appender can
-keep up with for a long enough time to fill up the queue, the behavior
-is determined by the
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[`AsyncQueueFullPolicy`].
-
-|errorRef |String |The name of the Appender to invoke if none of the
-appenders can be called, either due to errors in the appenders or
-because the queue is full. If not specified then errors will be ignored.
-
-|filter |Filter |A Filter to determine if the event should be handled by
-this Appender. More than one Filter may be used by using a
-CompositeFilter.
-
-|name |String |The name of the Appender.
-
-|ignoreExceptions |boolean |The default is `true`, causing exceptions
-encountered while appending events to be internally logged and then
-ignored. When set to `false` exceptions will be propagated to the
-caller, instead. You must set this to `false` when wrapping this
-Appender in a <FailoverAppender>>.
-
-|includeLocation |boolean |Extracting location is an expensive operation
-(it can make logging 5 - 20 times slower). To improve performance,
-location is not included by default when adding a log event to the
-queue. You can change this by setting includeLocation="true".
-
-|BlockingQueueFactory
-|BlockingQueueFactory
-|This element overrides what type of `BlockingQueue` to use.
-See <<BlockingQueueFactory,below documentation>> for more details.
-|=======================================================================
-
-There are also a few system properties that can be used to maintain application throughput even when the underlying appender cannot keep up with the logging rate and the queue is filling up.
-See the details for system properties
-xref:manual/systemproperties.adoc#log4j2.asyncQueueFullPolicy[`log4j2.asyncQueueFullPolicy`]
-and
-xref:manual/systemproperties.adoc#log4j2.discardThreshold[`log4j2.DiscardThreshold`].
-
-A typical AsyncAppender configuration might look like this:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <File name="MyFile" fileName="logs/app.log">
-      <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
-      </PatternLayout>
-    </File>
-    <Async name="Async">
-      <AppenderRef ref="MyFile"/>
-    </Async>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="Async"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-[[BlockingQueueFactory]]
-Starting in Log4j 2.7, a custom implementation of `BlockingQueue` or `TransferQueue` can be specified using a
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/BlockingQueueFactory.html[`BlockingQueueFactory`]
-plugin.
-To override the default `BlockingQueueFactory`, specify the plugin inside an `<Async/>` element like so:
-
-[source,xml]
-----
-<Configuration name="LinkedTransferQueueExample">
-  <Appenders>
-    <List name="List"/>
-    <Async name="Async" bufferSize="262144">
-      <AppenderRef ref="List"/>
-      <LinkedTransferQueue/>
-    </Async>
-  </Appenders>
-  <Loggers>
-    <Root>
-      <AppenderRef ref="Async"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-Log4j ships with the following implementations:
-
-.BlockingQueueFactory Implementations
-[cols="25%,75%",options="header",]
-|=======================================================================
-|Plugin Name |Description
-|ArrayBlockingQueue |This is the default implementation that uses
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/concurrent/ArrayBlockingQueue.html[`ArrayBlockingQueue`].
-
-|DisruptorBlockingQueue |This uses the
-https://github.com/conversant/disruptor[Conversant Disruptor]
-implementation of `BlockingQueue`. This plugin takes a single optional
-attribute, `spinPolicy`, which corresponds to the `SpinPolicy` enum.
-
-|JCToolsBlockingQueue |This uses
-https://jctools.github.io/JCTools/[JCTools], specifically the MPSC
-bounded lock-free queue.
-This implementation is provided by the `log4j-jctools` artifact.
-
-|LinkedTransferQueue |This uses the new Java 7 implementation
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/concurrent/LinkedTransferQueue.html[`LinkedTransferQueue`].
-Note that this queue does not use the `bufferSize` configuration
-attribute from AsyncAppender as `LinkedTransferQueue` does not support a
-maximum capacity.
-|=======================================================================
+See xref:manual/appenders/delegating.adoc[] for details.
 
 [#CassandraAppender]
 === CassandraAppender
@@ -547,206 +446,6 @@ A typical Console configuration might look like:
 </Configuration>
 ----
 
-[#FailoverAppender]
-=== FailoverAppender
-
-The FailoverAppender wraps a set of appenders.
-If the primary Appender fails the secondary appenders will be tried in order until one succeeds or there are no more secondaries to try.
-
-.FailoverAppender Parameters
-[cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|filter |Filter |A Filter to determine if the event should be handled by
-this Appender. More than one Filter may be used by using a
-CompositeFilter.
-
-|primary |String |The name of the primary Appender to use.
-
-|failovers |String[] |The names of the secondary Appenders to use.
-
-|name |String |The name of the Appender.
-
-|retryIntervalSeconds |integer |The number of seconds that should pass
-before retrying the primary Appender. The default is 60.
-
-|ignoreExceptions |boolean |The default is `true`, causing exceptions
-encountered while appending events to be internally logged and then
-ignored. When set to `false` exceptions will be propagated to the
-caller, instead.
-
-|target |String |Either "SYSTEM_OUT" or "SYSTEM_ERR". The default is
-"SYSTEM_ERR".
-|=======================================================================
-
-A Failover configuration might look like:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log" filePattern="logs/app-%d{MM-dd-yyyy}.log.gz"
-                 ignoreExceptions="false">
-      <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
-      </PatternLayout>
-      <TimeBasedTriggeringPolicy />
-    </RollingFile>
-    <Console name="STDOUT" target="SYSTEM_OUT" ignoreExceptions="false">
-      <PatternLayout pattern="%m%n"/>
-    </Console>
-    <Failover name="Failover" primary="RollingFile">
-      <Failovers>
-        <AppenderRef ref="Console"/>
-      </Failovers>
-    </Failover>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="Failover"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-[id=fileappender]
-=== [[FileAppender]] FileAppender
-
-The FileAppender is an OutputStreamAppender that writes to the File defined in the `fileName` parameter.
-The FileAppender uses a FileManager (which extends OutputStreamManager) to perform the file I/O.
-While FileAppenders from different Configurations cannot be shared, the FileManagers can be if the Manager is accessible.
-For example, two web applications in a servlet container can have their configuration and safely write to the same file if Log4j is in a ClassLoader that is common to both of them.
-
-[NOTE]
-====
-The xref:manual/appenders.adoc#FileAppender[FileAppender] does not offer a mechanism for external applications to force it to reopen the log file.
-External tools such as
-https://github.com/logrotate/logrotate[`logrotate`]
-cannot rotate log files without losing log events.
-
-If you want to rotate your log files, use xref:manual/rolling-file.adoc[a rolling file appender].
-====
-
-.FileAppender Parameters
-[width="100%",cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|append |boolean |When true - the default, records will be appended to
-the end of the file. When set to false, the file will be cleared before
-new records are written.
-
-|bufferedIO |boolean |When true - the default, records will be written
-to a buffer and the data will be written to disk when the buffer is full
-or, if immediateFlush is set, when the record is written. File locking
-cannot be used with `bufferedIO`. Performance tests have shown that using
-buffered I/O significantly improves performance, even if `immediateFlush`
-is enabled.
-
-|bufferSize |int |When `bufferedIO` is true, this is the buffer size, the
-default is 8192 bytes.
-
-|createOnDemand |boolean |The appender creates the file on-demand. The
-appender only creates the file when a log event passes all filters and
-is routed to this appender. Defaults to false.
-
-|filter |Filter |A Filter to determine if the event should be handled by
-this Appender. More than one Filter may be used by using a
-CompositeFilter.
-
-|fileName |String |The name of the file to write to. If the file, or any
-of its parent directories, do not exist, they will be created.
-
-|immediateFlush |boolean a|
-When set to true - the default, each write will be followed by a flush.
-This will guarantee that the data is passed to the operating system for writing;
-it does not guarantee that the data is written to a physical device
-such as a disk drive.
-
-Note that if this flag is set to false, and the logging activity is sparse,
-there may be an indefinite delay in the data eventually making it to the
-operating system, because it is held up in a buffer.
-This can cause surprising effects such as the logs not
-appearing in the tail output of a file immediately after writing to the log.
-
-Flushing after every write is only useful when using this appender with
-synchronous loggers. Asynchronous loggers and appenders will
-automatically flush at the end of a batch of events, even if
-immediateFlush is set to false. This also guarantees the data is passed
-to the operating system but is more efficient.
-
-|layout |Layout |The Layout to use to format the LogEvent. If no layout
-is supplied the default pattern layout of "%m%n" will be used.
-
-|locking |boolean |When set to true, I/O operations will occur only
-while the file lock is held allowing FileAppenders in multiple JVMs and
-potentially multiple hosts to write to the same file simultaneously.
-This will significantly impact performance so should be used carefully.
-Furthermore, on many systems, the file lock is "advisory" meaning that
-other applications can perform operations on the file without acquiring
-a lock. The default value is false.
-
-|name |String |The name of the Appender.
-
-|ignoreExceptions |boolean |The default is `true`, causing exceptions
-encountered while appending events to be internally logged and then
-ignored. When set to `false` exceptions will be propagated to the
-caller, instead. You must set this to `false` when wrapping this
-Appender in a <<FailoverAppender>>.
-
-|filePermissions |String a|
-File attribute permissions in POSIX format to apply whenever the file is
-created.
-
-The underlying files system shall support
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[POSIX]
-file attribute view.
-
-Examples: `rw-------` or `rw-rw-rw-` etc...
-
-|fileOwner |String a|
-File owner to define whenever the file is created.
-
-Changing the file's owner may be restricted for security reasons and
-Operation not permitted IOException thrown. Only processes with an
-effective user ID equal to the user ID of the file or with appropriate
-privileges may change the ownership of a file if
-http://www.gnu.org/software/libc/manual/html_node/Options-for-Files.html[_POSIX_CHOWN_RESTRICTED]
-is in effect for path.
-
-The underlying files system shall support file
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html[owner]
-attribute view.
-
-|fileGroup |String a|
-File group to define whenever the file is created.
-
-The underlying files system shall support
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[POSIX]
-file attribute view.
-
-|=======================================================================
-
-Here is a sample File configuration:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <File name="MyFile" fileName="logs/app.log">
-      <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
-      </PatternLayout>
-    </File>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="MyFile"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
 
 [#FlumeAppender]
 === FlumeAppender
@@ -1630,7 +1329,7 @@ public class JpaLogEntity extends BasicLogEventEntity {
         return this.id;
     }
 
-    public void setId(long id) {
+    public void setId(final long id) {
         this.id = id;
     }
 
@@ -1652,7 +1351,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     public TestEntity() {
         super(null);
     }
-    public TestEntity(LogEvent wrappedEvent) {
+    public TestEntity(final LogEvent wrappedEvent) {
         super(wrappedEvent);
     }
 
@@ -1857,101 +1556,6 @@ _Note:_ Make sure to not let `org.apache.kafka` log to a Kafka appender on DEBUG
     <Logger name="org.apache.kafka" level="INFO" /> <!-- avoid recursive logging -->
   </Loggers>
   <!-- ... -->
-</Configuration>
-----
-
-[#MemoryMappedFileAppender]
-=== MemoryMappedFileAppender
-
-_New since 2.1. Be aware that this is a new addition, and although it has been tested on several platforms, it does not have as much track record as the other file appenders._
-
-The MemoryMappedFileAppender maps a part of the specified file into memory and writes log events to this memory, relying on the operating system's virtual memory manager to synchronize the changes to the storage device.
-The main benefit of using memory-mapped files is I/O performance.
-Instead of making system calls to write to disk, this appender can simply change the program's local memory, which is orders of magnitude faster.
-Also, in most operating systems the memory region mapped is the kernel's
-https://en.wikipedia.org/wiki/Page_cache[page cache] (file cache), meaning that no copies need to be created in user space.
-
-// TODO:
-// performance tests that compare performance of this appender to
-// RandomAccessFileAppender and FileAppender.)
-
-There is some overhead with mapping a file region into memory, especially very large regions (half a gigabyte or more).
-The default region size is 32 MB, which should strike a reasonable balance between the frequency and the duration of remap operations.
-
-// (TODO: performance test remapping various sizes.)
-
-Similar to the FileAppender and the RandomAccessFileAppender, MemoryMappedFileAppender uses a MemoryMappedFileManager to actually perform the file I/O. While MemoryMappedFileAppender from different Configurations cannot be shared, the MemoryMappedFileManagers can be if the manager is accessible.
-For example, two web applications in a servlet container can have its own configuration and safely write to the same file if Log4j is in a ClassLoader that is common to both of them.
-
-.MemoryMappedFileAppender Parameters
-[width="100%",cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|append |boolean |When true - the default, records will be appended to
-the end of the file. When set to false, the file will be cleared before
-new records are written.
-
-|fileName |String |The name of the file to write to. If the file, or any
-of its parent directories, do not exist, they will be created.
-
-|filters |Filter |A Filter to determine if the event should be handled
-by this Appender. More than one Filter may be used by using a
-CompositeFilter.
-
-|immediateFlush |boolean a|
-When set to true, each write will be followed by a call to
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/MappedByteBuffer.html#force()[`MappedByteBuffer#force()`].
-This will guarantee the data is written to the storage device.
-
-The default for this parameter is `false`. This means that the data is
-written to the storage device even if the Java process crashes, but
-there may be data loss if the operating system crashes.
-
-Note that manually forcing a sync on every log event loses most of the
-performance benefits of using a memory-mapped file.
-
-Flushing after every write is only useful when using this appender with
-synchronous loggers. Asynchronous loggers and appenders will
-automatically flush at the end of a batch of events, even if
-immediateFlush is set to false. This also guarantees the data is written
-to disk but is more efficient.
-
-|regionLength |int |The length of the mapped region, defaults to 32 MB
-(32 * 1024 * 1024 bytes). This parameter must be a value between 256 and
-1,073,741,824 (1 GB or 2^30); values outside this range will be adjusted
-to the closest valid value. Log4j will round the specified value up to
-the nearest power of two.
-
-|layout |Layout |The Layout to use to format the LogEvent. If no layout
-is supplied the default pattern layout of "%m%n" will be used.
-
-|name |String |The name of the Appender.
-
-|ignoreExceptions |boolean |The default is `true`, causing exceptions
-encountered while appending events to be internally logged and then
-ignored. When set to `false` exceptions will be propagated to the
-caller, instead. You must set this to `false` when wrapping this
-Appender in a <<FailoverAppender>>.
-|=======================================================================
-
-Here is a sample MemoryMappedFile configuration:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <MemoryMappedFile name="MyFile" fileName="logs/app.log">
-      <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
-      </PatternLayout>
-    </MemoryMappedFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="MyFile"/>
-    </Root>
-  </Loggers>
 </Configuration>
 ----
 
@@ -2377,474 +1981,6 @@ Here are a few sample configurations for the NoSQLAppender and CouchDB provider:
 </Configuration>
 ----
 
-[#OutputStreamAppender]
-=== OutputStreamAppender
-
-The OutputStreamAppender provides the base for many of the other Appenders such as the File and Socket appenders that write the event to an Output Stream.
-It cannot be directly configured.
-Support for immediateFlush and buffering is provided by the OutputStreamAppender.
-The OutputStreamAppender uses an OutputStreamManager to handle the actual I/O, allowing the stream to be shared by Appenders in multiple configurations.
-
-[#RandomAccessFileAppender]
-=== RandomAccessFileAppender
-
-The RandomAccessFileAppender is similar to the standard
-<<FileAppender>> except it is always buffered (this cannot be switched off) and internally it uses a
-`ByteBuffer + RandomAccessFile` instead of a `BufferedOutputStream`.
-We saw a 20-200% performance improvement compared to FileAppender with "bufferedIO=true" in our measurements.
-Similar to the FileAppender, RandomAccessFileAppender uses a RandomAccessFileManager to perform the file I/O. While RandomAccessFileAppender from different Configurations cannot be shared, the RandomAccessFileManagers can be if the Manager is accessible.
-For example, two web applications in a servlet container can have their configuration and safely write to the same file if Log4j is in a ClassLoader that is common to both of them.
-
-.RandomAccessFileAppender Parameters
-[width="100%",cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|append |boolean |When true - the default, records will be appended to
-the end of the file. When set to false, the file will be cleared before
-new records are written.
-
-|fileName |String |The name of the file to write to. If the file, or any
-of its parent directories, do not exist, they will be created.
-
-|filters |Filter |A Filter to determine if the event should be handled
-by this Appender. More than one Filter may be used by using a
-CompositeFilter.
-
-|immediateFlush |boolean a|
-When set to true - the default, each write will be followed by a flush.
-This will guarantee that the data is passed to the operating system for writing;
-it does not guarantee that the data is written to a physical device
-such as a disk drive.
-
-Note that if this flag is set to false, and the logging activity is sparse,
-there may be an indefinite delay in the data eventually making it to the
-operating system, because it is held up in a buffer.
-This can cause surprising effects such as the logs not
-appearing in the tail output of a file immediately after writing to the log.
-
-Flushing after every write is only useful when using this appender with
-synchronous loggers. Asynchronous loggers and appenders will
-automatically flush at the end of a batch of events, even if
-immediateFlush is set to false. This also guarantees the data is passed
-to the operating system but is more efficient.
-
-|bufferSize |int |The buffer size, defaults to 262,144 bytes (256 *
-1024).
-
-|layout |Layout |The Layout to use to format the LogEvent. If no layout
-is supplied the default pattern layout of "%m%n" will be used.
-
-|name |String |The name of the Appender.
-
-|ignoreExceptions |boolean |The default is `true`, causing exceptions
-encountered while appending events to be internally logged and then
-ignored. When set to `false` exceptions will be propagated to the
-caller, instead. You must set this to `false` when wrapping this
-Appender in a <<FailoverAppender>>.
-|=======================================================================
-
-Here is a sample RandomAccessFile configuration:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <RandomAccessFile name="MyFile" fileName="logs/app.log">
-      <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
-      </PatternLayout>
-    </RandomAccessFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="MyFile"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-[#RewriteAppender]
-=== RewriteAppender
-
-The RewriteAppender allows the LogEvent to be manipulated before it is processed by another Appender.
-This can be used to mask sensitive information such as passwords or to inject information into each event.
-The RewriteAppender must be configured with a RewritePolicy.
-The RewriteAppender should be configured after any Appenders it references to allow it to shut down properly.
-
-.RewriteAppender Parameters
-[cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|AppenderRef |String |The name of the Appenders to call after the
-LogEvent has been manipulated. Multiple AppenderRef elements can be
-configured.
-
-|filter |Filter |A Filter to determine if the event should be handled by
-this Appender. More than one Filter may be used by using a
-CompositeFilter.
-
-|name |String |The name of the Appender.
-
-|rewritePolicy |RewritePolicy |The RewritePolicy that will manipulate
-the LogEvent.
-
-|ignoreExceptions |boolean |The default is `true`, causing exceptions
-encountered while appending events to be internally logged and then
-ignored. When set to `false` exceptions will be propagated to the
-caller, instead. You must set this to `false` when wrapping this
-Appender in a <<FailoverAppender>>.
-|=======================================================================
-
-[#RewritePolicy]
-==== RewritePolicy
-
-RewritePolicy is an interface that allows implementations to inspect and possibly modify LogEvents before they are passed to Appender.
-RewritePolicy declares a single method named rewrite that must be implemented.
-The method is passed the LogEvent and can return the same event or create a new one.
-
-===== MapRewritePolicy
-
-MapRewritePolicy will evaluate LogEvents that contain a MapMessage and will add or update elements of the Map.
-
-[cols="20%,20%,60%",options="header",]
-|================================================================
-|Parameter Name |Type |Description
-|mode |String |"Add" or "Update"
-|keyValuePair |KeyValuePair[] |An array of keys and their values.
-|================================================================
-
-The following configuration shows a RewriteAppender configured to add a product key and its value to the MapMessage.:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <Console name="STDOUT" target="SYSTEM_OUT">
-      <PatternLayout pattern="%m%n"/>
-    </Console>
-    <Rewrite name="rewrite">
-      <AppenderRef ref="STDOUT"/>
-      <MapRewritePolicy mode="Add">
-        <KeyValuePair key="product" value="TestProduct"/>
-      </MapRewritePolicy>
-    </Rewrite>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="Rewrite"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-[#PropertiesRewritePolicy]
-===== PropertiesRewritePolicy
-
-PropertiesRewritePolicy will add properties configured on the policy to the ThreadContext Map being logged.
-The properties will not be added to the actual ThreadContext Map.
-The property values may contain variables that will be evaluated when the configuration is processed as well as when the event is logged.
-
-[cols="20%,20%,60%",options="header",]
-|===
-|Parameter Name |Type |Description
-
-|[[PropertiesRewritePolicy-element-properties]]properties
-|Property[]
-|One of more Property elements to define the keys and values to be added to the ThreadContext Map.
-
-The `value` attribute of each `Property` element supports
-xref:manual/configuration.adoc#lazy-property-substitution[runtime property substitution]
-in the
-xref:manual/lookups.adoc#global-context[_global context_].
-|===
-
-The following configuration shows a RewriteAppender configured to add a product key and its value to the MapMessage:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <Console name="STDOUT" target="SYSTEM_OUT">
-      <PatternLayout pattern="%m%n"/>
-    </Console>
-    <Rewrite name="rewrite">
-      <AppenderRef ref="STDOUT"/>
-      <PropertiesRewritePolicy>
-        <Property name="user">${sys:user.name}</Property>
-        <Property name="env">${sys:environment}</Property>
-      </PropertiesRewritePolicy>
-    </Rewrite>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="Rewrite"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-===== LoggerNameLevelRewritePolicy
-
-You can use this policy to make loggers in third-party code less chatty by changing event levels.
-The LoggerNameLevelRewritePolicy will rewrite log event levels for a given logger name prefix.
-You configure a LoggerNameLevelRewritePolicy with a logger name prefix and a pair of levels, where a pair defines a source level and a target level.
-
-[cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|logger |String |A logger name used as a prefix to test each event's
-logger name.
-
-|LevelPair |KeyValuePair[] |An array of keys and their values, each key
-is a source level, each value a target level.
-|=======================================================================
-
-The following configuration shows a RewriteAppender configured to map level INFO to DEBUG and level WARN to INFO for all loggers that start with `com.foo.bar`.
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <Console name="STDOUT" target="SYSTEM_OUT">
-      <PatternLayout pattern="%m%n"/>
-    </Console>
-    <Rewrite name="rewrite">
-      <AppenderRef ref="STDOUT"/>
-      <LoggerNameLevelRewritePolicy logger="com.foo.bar">
-        <KeyValuePair key="INFO" value="DEBUG"/>
-        <KeyValuePair key="WARN" value="INFO"/>
-      </LoggerNameLevelRewritePolicy>
-    </Rewrite>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="Rewrite"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-[#RoutingAppender]
-=== RoutingAppender
-
-The `RoutingAppender` evaluates LogEvents and then routes them to a subordinate Appender.
-The target Appender may be an appender previously configured and may be referenced by its name or the Appender can be dynamically created as needed.
-The `RoutingAppender` should be configured after any Appenders it references to allow it to shut down properly.
-
-You can also configure a `RoutingAppender` with scripts: you can run a script when the appender starts and when a route is chosen for an log event.
-
-.RoutingAppender Parameters
-[width="100%",cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|Filter |Filter |A Filter to determine if the event should be handled by
-this Appender. More than one Filter may be used by using a
-CompositeFilter.
-
-|name |String |The name of the Appender.
-
-|RewritePolicy |RewritePolicy |The RewritePolicy that will manipulate
-the LogEvent.
-
-|Routes |Routes |Contains one or more Route declarations to identify the
-criteria for choosing Appenders.
-
-|Script |Script a|
-This Script runs when Log4j starts the RoutingAppender and returns a
-String Route key to determine the default Route.
-
-This script is passed the following variables:
-
-.RoutingAppender Script Parameters
-[cols="20%,20%,60%",options="header",]
-|=======================================================================
-
-|Parameter Name |Type |Description |configuration |Configuration |The active Configuration.
-
-|staticVariables |Map |A Map shared between all script invocations for this appender instance.
-This is the same map passed to the Routes Script.
-
-|=======================================================================
-
-|ignoreExceptions |boolean |The default is `true`, causing exceptions
-encountered while appending events to be internally logged and then
-ignored. When set to `false` exceptions will be propagated to the
-caller, instead. You must set this to `false` when wrapping this
-Appender in a <<FailoverAppender>>.
-|=======================================================================
-
-In this example, the script causes the "ServiceWindows" route to be the default route on Windows and "ServiceOther" on all other operating systems.
-Note that the List Appender is one of our test appenders, any appender can be used, it is only used as a shorthand.
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN" name="RoutingTest">
-  <Appenders>
-    <Routing name="Routing">
-      <Script name="RoutingInit" language="JavaScript"><![CDATA[
-        java.lang.System.getProperty("os.name").search("Windows") > -1 ? "ServiceWindows" : "ServiceOther";]]>
-      </Script>
-      <Routes>
-        <Route key="ServiceOther">
-          <List name="List1" />
-        </Route>
-        <Route key="ServiceWindows">
-          <List name="List2" />
-        </Route>
-      </Routes>
-    </Routing>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="Routing" />
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-[#Routes]
-==== Routes
-
-The `Routes` element accepts a single attribute named "pattern".
-The pattern is evaluated against all the registered Lookups and the result is used to select a `Route`.
-Each `Route` may be configured with a key.
-If the key matches the result of evaluating the pattern then that `Route`
-will be selected.
-If no key is specified on a `Route` then that `Route` is the default.
-Only one `Route` can be configured as the default.
-
-The `Routes` element may contain a `Script` child element.
-If specified, the
-`Script` is run for each log event and returns the String Route key to use.
-
-You must specify either the pattern attribute or the `Script` element, but not both.
-
-Each `Route` must reference an `Appender`.
-If the `Route` contains a ref attribute then the `Route` will reference an `Appender` that was defined in the configuration.
-If the `Route` contains an `Appender` definition then an
-`Appender` will be created within the context of the `RoutingAppender` and will be reused each time a matching `Appender` name is referenced through a `Route`.
-
-[WARNING]
-====
-Lookups in the **children** of the `Route` component are **not** evaluated at configuration time.
-The substitution is delayed until the `Route` element is evaluated.
-This means that `$+{...}+` expression **should not** be escaped as `$$+{...}+`.
-
-See xref:manual/configuration.adoc#lazy-property-substitution[lazy property substitution] for more details.
-====
-
-This script is passed the following variables:
-
-.RoutingAppender Routes Script Parameters
-[cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|configuration |Configuration |The active Configuration.
-
-|staticVariables |Map |A Map shared between all script invocations for
-this appender instance. This is the same map passed to the Routes
-Script.
-
-|logEvent |LogEvent |The log event.
-|=======================================================================
-
-In this example, the script runs for each log event and picks a route based on the presence of a Marker named "AUDIT".
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN" name="RoutingTest">
-  <Appenders>
-    <Console name="STDOUT" target="SYSTEM_OUT" />
-    <Flume name="AuditLogger" compress="true">
-      <Agent host="192.168.10.101" port="8800"/>
-      <Agent host="192.168.10.102" port="8800"/>
-      <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
-    </Flume>
-    <Routing name="Routing">
-      <Routes>
-        <Script name="RoutingInit" language="JavaScript"><![CDATA[
-          if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf("AUDIT")) {
-                return "AUDIT";
-            } else if (logEvent.getContextMap().containsKey("UserId")) {
-                return logEvent.getContextMap().get("UserId");
-            }
-            return "STDOUT";]]>
-        </Script>
-        <Route>
-          <RollingFile
-              name="Rolling-${mdc:UserId}"
-              fileName="${mdc:UserId}.log"
-              filePattern="${mdc:UserId}.%i.log.gz">
-            <PatternLayout>
-              <pattern>%d %p %c{1.} [%t] %m%n</pattern>
-            </PatternLayout>
-            <SizeBasedTriggeringPolicy size="500" />
-          </RollingFile>
-        </Route>
-        <Route ref="AuditLogger" key="AUDIT"/>
-        <Route ref="STDOUT" key="STDOUT"/>
-      </Routes>
-      <IdlePurgePolicy timeToLive="15" timeUnit="minutes"/>
-    </Routing>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="Routing" />
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-[#Purge]
-==== Purge Policy
-
-The RoutingAppender can be configured with a PurgePolicy whose purpose is to stop and remove dormant Appenders that have been dynamically created by the RoutingAppender.
-Log4j currently provides the IdlePurgePolicy is the only PurgePolicy available for cleaning up the Appenders.
-The IdlePurgePolicy accepts 2 attributes; timeToLive, which is the number of timeUnits the Appender should survive without having any events sent to it, and timeUnit, the String representation of java.util.concurrent.TimeUnit which is used with the timeToLive attribute.
-
-Below is a sample configuration that uses a RoutingAppender to route all Audit events to a FlumeAppender and all other events will be routed to a RollingFileAppender captures only the specific event type.
-Note that the AuditAppender was predefined while the RollingFileAppenders are created as needed.
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <Flume name="AuditLogger" compress="true">
-      <Agent host="192.168.10.101" port="8800"/>
-      <Agent host="192.168.10.102" port="8800"/>
-      <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
-    </Flume>
-    <Routing name="Routing">
-      <Routes pattern="$${sd:type}">
-        <Route>
-          <RollingFile name="Rolling-${sd:type}" fileName="${sd:type}.log"
-                       filePattern="${sd:type}.%i.log.gz">
-            <PatternLayout>
-              <pattern>%d %p %c{1.} [%t] %m%n</pattern>
-            </PatternLayout>
-            <SizeBasedTriggeringPolicy size="500" />
-          </RollingFile>
-        </Route>
-        <Route ref="AuditLogger" key="Audit"/>
-      </Routes>
-      <IdlePurgePolicy timeToLive="15" timeUnit="minutes"/>
-    </Routing>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="Routing"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
 [#servlet-appender]
 === Servlet appender
 
@@ -3010,42 +2146,6 @@ As with other Appenders, the formatting can be controlled by specifying a Layout
 </Configuration>
 ----
 
-[#ScriptAppenderSelector]
-=== ScriptAppenderSelector
-
-When the configuration is built, the `ScriptAppenderSelector` appender calls a `ScriptPlugin` to compute an appender name.
-Log4j then creates one of the appender named listed under `AppenderSet` using the name of the
-`ScriptAppenderSelector`.
-After configuration, Log4j ignores the
-`ScriptAppenderSelector`.
-Log4j only builds the one selected appender from the configuration tree and ignores other `AppenderSet` child nodes.
-
-In the following example, the script returns the name "List2".
-The appender name is recorded under the name of the
-`ScriptAppenderSelector`, not the name of the selected appender, in this example, "SelectIt".
-
-[source,xml]
-----
-<Configuration status="WARN" name="ScriptAppenderSelectorExample">
-  <Appenders>
-    <ScriptAppenderSelector name="SelectIt">
-      <Script language="JavaScript"><![CDATA[
-        java.lang.System.getProperty("os.name").search("Windows") > -1 ? "MyCustomWindowsAppender" : "MySyslogAppender";]]>
-      </Script>
-      <AppenderSet>
-        <MyCustomWindowsAppender name="MyAppender" ... />
-        <SyslogAppender name="MySyslog" ... />
-      </AppenderSet>
-    </ScriptAppenderSelector>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="SelectIt" />
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
 [#SocketAppender]
 === SocketAppender
 
@@ -3157,7 +2257,7 @@ This is a secured <<SSL>> configuration:
 ----
 
 [#SSL]
-=== SSL
+==== SSL
 
 Several appenders can be configured to use either a plain network connection or a Secure Socket Layer (SSL) connection.
 This section documents the parameters available for SSL configuration.
