@@ -19,7 +19,7 @@
 
 Log4j plugin system is the de facto extension mechanism embraced by various Log4j Core components.
 Plugins make it possible for extensible components to _receive_ feature implementations without any explicit links in between.
-It is analogous to a https://en.wikipedia.org/wiki/Dependency_injection[dependency injection] framework, but curated for Log4j-specific needs.
+It is analogous to a https://en.wikipedia.org/wiki/Dependency_injection[dependency injection] framework, but curated for xref:manual/dependencyinjection.adoc[Log4j-specific needs].
 
 [NOTE]
 ====

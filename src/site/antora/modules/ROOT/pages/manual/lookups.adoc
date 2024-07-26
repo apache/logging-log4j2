@@ -702,10 +702,9 @@ include::partial$manual/plugin-preliminaries.adoc[]
 === Extending lookups
 
 Lookups are xref:manual/plugins.adoc[plugins] implementing link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrLookup.html[the `StrLookup` interface].
-While annotating your lookup with `@Plugin`, you need to make sure that
+While annotating your lookup with `@Plugin` and `@Lookup`, you need to make sure that
 
-* It has a unique `name` attribute across all available `StrLookup` plugins
-* The `category` attribute is set to link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrLookup.html#CATEGORY[`StrLookup.CATEGORY`]
+* The plugin name in `@Plugin::value` or the simple class name of the plugin if no custom name is given must be unique across all available `StrLookup` plugins.
 
 You can check out following files for examples:
 

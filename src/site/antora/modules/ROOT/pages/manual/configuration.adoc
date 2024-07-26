@@ -1149,8 +1149,8 @@ include::partial$manual/plugin-preliminaries.adoc[]
 Under the hood, Log4j Core uses plugins extending from link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html[`ConfigurationFactory`] to load configuration files.
 This procedure can be summarized as follows:
 
-. Load plugins which extend from link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html[`ConfigurationFactory`] and whose plugin `category` is set to link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html#CATEGORY[`ConfigurationFactory.CATEGORY`]
-. Sort them by link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Order.html[`@Order`] annotation (in decreasing value order), if present
+. Load plugins which extend from link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html[`ConfigurationFactory`] and whose plugin `@Namespace` is set to link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html#NAMESPACE[`ConfigurationFactory.NAMESPACE`]
+. Sort them by link:../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Ordered.html[`@Ordered`] annotation (in natural integer order), if present
 . Feed <<automatic-configuration,found configuration files>> to `ConfigurationFactory` instances in order, if the file extension is contained by `String[]` returned from link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html#getSupportedTypes()[`ConfigurationFactory#getSupportedTypes()`]
 
 If xref:manual/systemproperties.adoc#log4j.configuration.factory[the `log4j.configuration.factory` system property] is defined, it will be used before any other factory implementations.
