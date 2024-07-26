@@ -55,6 +55,7 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
         if (DisruptorUtil.DISRUPTOR_MAJOR_VERSION == 3) {
             try {
                 return (EventHandler<RingBufferLogEvent>)
+                    // Avoid using `LoaderUtil`, which might choose an incorrect class loader – see #2768.
                     Class.forName("org.apache.logging.log4j.core.async.RingBufferLogEventHandler")
                         .getConstructor()
                         .newInstance();
