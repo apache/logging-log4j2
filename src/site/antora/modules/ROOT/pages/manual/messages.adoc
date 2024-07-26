@@ -288,11 +288,9 @@ include::example$manual/messages/CustomMessageExample.java[tag=loginFailure]
 [#format-type]
 === Format type
 
-The link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html[`Message`] interface supports the notion of _format_ (e.g., JSON, XML) through its `getFormat()` method of return type `String`.
+You can extend from <<MultiformatMessage>> (and optionally from <<MultiFormatStringBuilderFormattable>>) to implement messages that can format themselves in one or more encodings; JSON, XML, etc.
 Layouts leverage this mechanism to encode a message in a particular format.
-For instance, when xref:manual/json-template-layout.adoc[] figures out that `getFormat()` of a `Message` returns `JSON`, it injects the `Message#getFormattedMessage()` output as is without quoting it.
-This way a message implementation can communicate its support for a particular encoding.
-If you want to support multiple formats, extend from <<MultiformatMessage>>, and optionally from <<MultiFormatStringBuilderFormattable>>, instead.
+For instance, when xref:manual/json-template-layout.adoc[] figures out that the array returned by `getFormats()` of a `MultiformatMessage` contains `JSON`, it injects the `MultiformatMessage#getFormattedMessage({"JSON"})` output as is without quoting it.
 
 [#marker-interfaces]
 === Marker interfaces

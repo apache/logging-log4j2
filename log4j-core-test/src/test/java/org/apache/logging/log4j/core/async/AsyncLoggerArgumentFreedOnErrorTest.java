@@ -84,11 +84,6 @@ public class AsyncLoggerArgumentFreedOnErrorTest {
         }
 
         @Override
-        public String getFormat() {
-            return Strings.EMPTY;
-        }
-
-        @Override
         public Object[] getParameters() {
             return org.apache.logging.log4j.util.Constants.EMPTY_OBJECT_ARRAY;
         }
