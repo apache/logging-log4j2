@@ -36,7 +36,6 @@ import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
  * Helper class for async loggers: AsyncLoggerDisruptor handles the mechanics of working with the LMAX Disruptor, and
@@ -55,10 +54,10 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
         if (DisruptorUtil.DISRUPTOR_MAJOR_VERSION == 3) {
             try {
                 return (EventHandler<RingBufferLogEvent>)
-                    // Avoid using `LoaderUtil`, which might choose an incorrect class loader – see #2768.
-                    Class.forName("org.apache.logging.log4j.core.async.RingBufferLogEventHandler")
-                        .getConstructor()
-                        .newInstance();
+                        // Avoid using `LoaderUtil`, which might choose an incorrect class loader – see #2768.
+                        Class.forName("org.apache.logging.log4j.core.async.RingBufferLogEventHandler")
+                            .getConstructor()
+                            .newInstance();
             } catch (final ReflectiveOperationException | LinkageError e) {
                 LOGGER.warn("Failed to create event handler for LMAX Disruptor 3.x, trying version 4.x.", e);
             }
