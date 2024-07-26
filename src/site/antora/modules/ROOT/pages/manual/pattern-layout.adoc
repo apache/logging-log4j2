@@ -1760,7 +1760,7 @@ Furthermore, the converter must also specify the `@ConverterKeys` annotation to 
 ====
 Unlike most other plugins, **pattern converters do not use a `@PluginFactory`**.
 Instead, each converter is required to provide a static `newInstance(String[])` factory method.
-The `String[]` argument denots the the values that are specified within the curly braces that following the conversion specifier.
+The `String[]` argument denotes the values that are specified within the curly braces that following the conversion specifier.
 ====
 
 Refer to following sources for simple examples:
