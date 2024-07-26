@@ -164,7 +164,13 @@
     <a class="nav-link" href="customconfig.html">Programmatic configuration</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
     <a class="nav-link" href="appenders.html">Appenders</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="rolling-file.html">Rolling file appenders</a>
+  </li>
+</ul>
   </li>
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
@@ -1030,8 +1036,8 @@ See <a href="layouts.html#LocationInformation" class="xref page">this section of
 <div class="listingblock">
 <div class="title"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/DatePatternConverter.html"><code>DatePatternConverter</code></a> specifier grammar</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">d{pattern}
-date{pattern}</code></pre>
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">d{pattern}[{timezone}]
+date{pattern}[{timezone}]</code></pre>
 </div>
 </div>
 <div class="paragraph">

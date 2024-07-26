@@ -164,7 +164,13 @@
     <a class="nav-link" href="customconfig.html">Programmatic configuration</a>
   </li>
   <li class="nav-item is-current-page" data-depth="2">
+    <button class="nav-item-toggle"></button>
     <a class="nav-link" href="appenders.html">Appenders</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="rolling-file.html">Rolling file appenders</a>
+  </li>
+</ul>
   </li>
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
@@ -377,9 +383,96 @@ For non-JDK classes, these should usually be in <a href="../javadoc/log4j-core/i
 <h2 id="commons-concerns"><a class="anchor" href="#commons-concerns"></a>Common concerns</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="common-properties"><a class="anchor" href="#common-properties"></a>Common properties</h3>
+<h3 id="buffering"><a class="anchor" href="#buffering"></a>Buffering</h3>
+<div class="paragraph">
+<p>Appenders that use stream-like resources (such as files, TCP connections) have an internal
+<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html"><code>ByteBuffer</code></a>
+that can be used to format each log event, before sending it to the underlying resource.
+The buffer is used if:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the
+<a href="systemproperties.html#log4j2.enableDirectEncoders" class="xref page"><code>log4j2.enableDirectEncoders</code></a>
+configuration property is enabled,</p>
+</li>
+<li>
+<p>or the <a href="#bufferedIo"><code>bufferedIo</code></a> configuration attribute is enabled.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The buffer is flushed to the underlying resource on three occasions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>if the buffer is full.</p>
+</li>
+<li>
+<p>at the end of each log event batch, if
+<a href="async.html" class="xref page">asynchronous loggers</a>
+or
+<a href="#AsyncAppender">appenders</a>
+are used.</p>
+</li>
+<li>
+<p>at the end of each log event, if the
+<a href="#immediateFlush"><code>immediateFlush</code></a>
+configuration attribute is <code>true</code>.</p>
+</li>
+</ul>
+</div>
 <div class="paragraph">
 <p>These configuration attributes are shared by multiple appenders:</p>
+</div>
+<div class="sect3">
+<h4 id="bufferSize"><a class="anchor" href="#bufferSize"></a><code>bufferSize</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="systemproperties.html#log4j2.encoderByteBufferSize" class="xref page"><code>log4j2.encoderByteBufferSize</code></a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>This configuration attribute specifies the size of the <code>ByteBuffer</code> used by the appender.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="bufferedIo"><a class="anchor" href="#bufferedIo"></a><code>bufferedIo</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>If set to <code>true</code>, Log4j Core will use an internal <code>ByteBuffer</code> to store log events before sending them.</p>
+</div>
+<div class="paragraph">
+<p>If the <a href="systemproperties.html#log4j2.enableDirectEncoders" class="xref page"><code>log4j2.enableDirectEncoders</code></a> configuration property is set to <code>true</code>, the internal <code>ByteBuffer</code> will always be used.</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="immediateFlush"><a class="anchor" href="#immediateFlush"></a><code>immediateFlush</code></h4>
@@ -400,20 +493,17 @@ For non-JDK classes, these should usually be in <a href="../javadoc/log4j-core/i
 </tbody>
 </table>
 <div class="paragraph">
-<p>If set to <code>true</code>, Log4j will flush all Java buffers at the end of each event:</p>
+<p>If set to <code>true</code>, Log4j will flush Log4j Core and Java buffers at the end of each event:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>for appenders based on Java&#8217;s
-<a href="https://docs.oracle.com/javase/8/docs/api/java/io/OutputStream.html"><code>OutputStream</code></a>
-a call to the <code>OutputStream.flush()</code> method is performed.</p>
+<p>the internal <code>ByteBuffer</code> of the appender will be flushed.</p>
 </li>
 <li>
-<p>if <a href="systemproperties.html#log4j2.enableDirectEncoders" class="xref page"><code>log4j2.enableDirectEncoders</code></a> is set to <code>true</code>, many Log4j appenders use a
-<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html"><code>ByteBuffer</code></a>
-to format log events before sending them to the underlying resource.
-Setting <code>immediateFlush</code> to <code>true</code> flushes these buffers at each event.</p>
+<p>for appenders based on Java&#8217;s
+<a href="https://docs.oracle.com/javase/8/docs/api/java/io/OutputStream.html"><code>OutputStream</code></a>
+a call to the <code>OutputStream.flush()</code> method will be performed.</p>
 </li>
 </ul>
 </div>
@@ -432,13 +522,27 @@ It does not ensure that the operating system writes the event to the underlying 
 </tr>
 </table>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you are using <a href="async.html" class="xref page">asynchronous loggers</a> or <a href="#AsyncAppender">appenders</a>, you can set this attribute to <code>false</code>.
+Log4j Core will still flush the internal buffer, whenever the log event queue becomes empty.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="runtime-evaluation"><a class="anchor" href="#runtime-evaluation"></a>Runtime evaluation of attributes</h3>
 <div class="paragraph">
-<p>The following configuration attributes are also evaluated at runtime,
-so can contain escaped <code>$${...}</code> expressions.</p>
+<p>The following configuration attributes are also evaluated at runtime, so can contain escaped <code>$${...}</code> expressions.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. List of attributes evaluated at runtime</caption>
@@ -488,13 +592,13 @@ so can contain escaped <code>$${...}</code> expressions.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="lookups.html#event-context" class="xref page"><em>log event</em></a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#RollingFileAppender"><code>RollingFileAppender</code></a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#RollingFileAppender-attr-filePattern"><code>filePattern</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="rolling-file.html" class="xref page"><code>RollingFileAppender</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="rolling-file.html#attr-filePattern" class="xref page"><code>filePattern</code></a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Rollover</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="lookups.html#global-context" class="xref page"><em>global</em></a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#CustomDeleteOnRollover">All <code>Delete</code> actions</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="rolling-file.html#AbstractPathAction" class="xref page">Optional actions</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>basePath</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Rollover</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="lookups.html#global-context" class="xref page"><em>global</em></a></p></td>
@@ -502,8 +606,7 @@ so can contain escaped <code>$${...}</code> expressions.</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>The <a href="#Routes"><code>Route</code></a> component of the <a href="#RoutingAppender"><code>RoutingAppender</code></a> is special: its children are evaluated at runtime,
-but they are <strong>not</strong> evaluated at configuration time.
+<p>The <a href="#Routes"><code>Route</code></a> component of the <a href="#RoutingAppender"><code>RoutingAppender</code></a> is special: its children are evaluated at runtime, but they are <strong>not</strong> evaluated at configuration time.
 Inside the <code>Route</code> component you <strong>should not</strong> use escaped <code>$${...}</code> expressions, but only unescaped <code>${...}</code> expressions.</p>
 </div>
 <div class="paragraph">
@@ -1143,6 +1246,26 @@ caller, instead.</p></td>
 The FileAppender uses a FileManager (which extends OutputStreamManager) to perform the file I/O.
 While FileAppenders from different Configurations cannot be shared, the FileManagers can be if the Manager is accessible.
 For example, two web applications in a servlet container can have their configuration and safely write to the same file if Log4j is in a ClassLoader that is common to both of them.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The <a href="#FileAppender">FileAppender</a> does not offer a mechanism for external applications to force it to reopen the log file.
+External tools such as
+<a href="https://github.com/logrotate/logrotate"><code>logrotate</code></a>
+cannot rotate log files without losing log events.</p>
+</div>
+<div class="paragraph">
+<p>If you want to rotate your log files, use <a href="rolling-file.html" class="xref page">a rolling file appender</a>.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 7. FileAppender Parameters</caption>
@@ -3684,8 +3807,7 @@ The OutputStreamAppender uses an OutputStreamManager to handle the actual I/O, a
 <p>The RandomAccessFileAppender is similar to the standard
 <a href="#FileAppender">[FileAppender]</a> except it is always buffered (this cannot be switched off) and internally it uses a
 <code>ByteBuffer + RandomAccessFile</code> instead of a <code>BufferedOutputStream</code>.
-We saw a 20-200% performance improvement compared to FileAppender with "bufferedIO=true" in our
-measurements.
+We saw a 20-200% performance improvement compared to FileAppender with "bufferedIO=true" in our measurements.
 Similar to the FileAppender, RandomAccessFileAppender uses a RandomAccessFileManager to perform the file I/O. While RandomAccessFileAppender from different Configurations cannot be shared, the RandomAccessFileManagers can be if the Manager is accessible.
 For example, two web applications in a servlet container can have their configuration and safely write to the same file if Log4j is in a ClassLoader that is common to both of them.</p>
 </div>
@@ -4049,1727 +4171,6 @@ is a source level, each value a target level.</p></td>
 </div>
 </div>
 <div class="sect2">
-<h3 id="rollingfileappender"><a class="anchor" href="#rollingfileappender"></a><a id="RollingFileAppender"></a> RollingFileAppender</h3>
-<div class="paragraph">
-<p>The RollingFileAppender is an OutputStreamAppender that writes to the file named in the fileName parameter and rolls the file over according to the <code>TriggeringPolicy</code> and the <code>RolloverPolicy</code>.
-The <code>RollingFileAppender</code>
-uses a <code>RollingFileManager</code> (which extends <code>OutputStreamManager</code>) to perform the file I/O and perform the rollover.
-While <code>RolloverFileAppenders</code> from different Configurations cannot be shared, the <code>RollingFileManagers</code> can be if the Manager is accessible.
-For example, two web applications in a servlet container can have their configuration and safely write to the same file if Log4j is in a
-<code>ClassLoader</code> that is common to both of them.</p>
-</div>
-<div class="paragraph">
-<p>A RollingFileAppender requires a <a href="#TriggeringPolicy">[TriggeringPolicy]</a> and a <a href="#RolloverStrategies">RolloverStrategies</a>.
-The triggering policy determines if a rollover should be performed while the <code>RolloverStrategy</code>
-defines how the rollover should be done.
-If no <code>RolloverStrategy</code> is configured, <code>RollingFileAppender</code> will use the
-<a href="#DefaultRolloverStrategy">DefaultRolloverStrategy</a>.
-Since log4j-2.5, a <a href="#CustomDeleteOnRollover">custom delete action</a> can be configured in the DefaultRolloverStrategy to run at rollover.
-Since 2.8 if no file name is configured then
-<a href="#DirectWriteRolloverStrategy">DirectWriteRolloverStrategy</a> will be used instead of DefaultRolloverStrategy.
-Since log4j-2.9, a
-<a href="#CustomPosixViewAttributeOnRollover">custom POSIX file attribute view action</a> can be configured in the DefaultRolloverStrategy to run at rollover, if not defined, the inherited POSIX file attribute view from the RollingFileAppender will be applied.</p>
-</div>
-<div class="paragraph">
-<p>File locking is not supported by the RollingFileAppender.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 27. RollingFileAppender Parameters</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">append</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">When true - the default, records will be appended to
-the end of the file. When set to false, the file will be cleared before
-new records are written.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">bufferedIO</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">When true - the default, records will be written
-to a buffer and the data will be written to disk when the buffer is full
-or, if immediateFlush is set, when the record is written. File locking
-cannot be used with bufferedIO. Performance tests have shown that using
-buffered I/O significantly improves performance, even if immediateFlush
-is enabled.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">bufferSize</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">When bufferedIO is true, this is the buffer size, the
-default is 8192 bytes.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">createOnDemand</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The appender creates the file on-demand. The
-appender only creates the file when a log event passes all filters and
-is routed to this appender. Defaults to false.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">filter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Filter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A Filter to determine if the event should be handled by
-this Appender. More than one Filter may be used by using a
-CompositeFilter.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">fileName</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the file to write to. If the file, or any
-of its parent directories, do not exist, they will be created.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a id="RollingFileAppender-attr-filePattern"></a>filePattern</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The pattern of the archived log filename.</p>
-</div>
-<div class="paragraph">
-<p>The format of the pattern is dependent on the <code>RolloverStrategy</code> that is used.
-The standard rollover strategies accept:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="configuration.html#lazy-property-substitution" class="xref page">runtime lookups</a>,
-which are evaluated in
-<a href="lookups.html#global-context" class="xref page">a global context</a>.</p>
-</li>
-<li>
-<p>a <code>%d{...}</code> pattern, functionally identical to the
-<a href="pattern-layout.html#converter-date" class="xref page">homonymous <code>PatternLayout</code> pattern</a>
-except it uses the actual or inferred timestamp of the <strong>previous</strong> rollover.</p>
-</li>
-<li>
-<p>a <code>%i</code> pattern that expands to the computed index for the archived file.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>All patterns accept also format specifiers, e.g. <code>%03i</code> prints the index as zero-padded number with 3 digits.</p>
-</div>
-<div class="paragraph">
-<p>will accept both a date/time pattern
-compatible with
-<a href="https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html"><code>SimpleDateFormat</code></a>
-and/or a %i which represents an integer counter.
-The integer counter
-allows specifying a padding, like %3i for space-padding the counter to
-3 digits or (usually more useful) %03i for zero-padding the counter to
-3 digits.
-The pattern also
-supports interpolation at runtime so any of the Lookups (such as the
-<a href="lookups.html#DateLookup" class="xref page">DateLookup</a>) can be included in the
-pattern.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">immediateFlush</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>When set to true - the default, each write will be followed by a flush.
-This will guarantee that the data is passed to the operating system for writing;
-it does not guarantee that the data is written to a physical device
-such as a disk drive.</p>
-</div>
-<div class="paragraph">
-<p>Note that if this flag is set to false, and the logging activity is sparse,
-there may be an indefinite delay in the data eventually making it to the
-operating system, because it is held up in a buffer.
-This can cause surprising effects such as the logs not
-appearing in the tail output of a file immediately after writing to the log.</p>
-</div>
-<div class="paragraph">
-<p>Flushing after every write is only useful when using this appender with
-synchronous loggers. Asynchronous loggers and appenders will
-automatically flush at the end of a batch of events, even if
-immediateFlush is set to false. This also guarantees the data is passed
-to the operating system but is more efficient.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">layout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Layout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Layout to use to format the LogEvent. If no layout
-is supplied the default pattern layout of "%m%n" will be used.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the Appender.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">policy</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">TriggeringPolicy</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The policy to use to determine if a rollover
-should occur.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">strategy</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">RolloverStrategy</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The strategy to use to determine the name
-and the location of the archive file.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ignoreExceptions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The default is <code>true</code>, causing exceptions
-encountered while appending events to be internally logged and then
-ignored. When set to <code>false</code> exceptions will be propagated to the
-caller, instead. You must set this to <code>false</code> when wrapping this
-Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">filePermissions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>File attribute permissions in POSIX format to apply whenever the file is
-created.</p>
-</div>
-<div class="paragraph">
-<p>The underlying files system shall support
-<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/attribute/PosixFileAttributeView.html">POSIX</a>
-file attribute view.</p>
-</div>
-<div class="paragraph">
-<p>Examples: rw------- or rw-rw-rw- etc&#8230;&#8203;</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">fileOwner</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>File owner to define whenever the file is created.</p>
-</div>
-<div class="paragraph">
-<p>Changing the file&#8217;s owner may be restricted for security reasons and
-Operation not permitted IOException thrown. Only processes with an
-effective user ID equal to the user ID of the file or with appropriate
-privileges may change the ownership of a file if
-<a href="http://www.gnu.org/software/libc/manual/html_node/Options-for-Files.html">_POSIX_CHOWN_RESTRICTED</a>
-is in effect for path.</p>
-</div>
-<div class="paragraph">
-<p>The underlying files system shall support file
-<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html">owner</a>
-attribute view.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">fileGroup</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>File group to define whenever the file is created.</p>
-</div>
-<div class="paragraph">
-<p>The underlying files system shall support
-<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/attribute/PosixFileAttributeView.html">POSIX</a>
-file attribute view.</p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect2">
-<h3 id="TriggeringPolicies"><a class="anchor" href="#TriggeringPolicies"></a>TriggeringPolicies</h3>
-<div class="sect3">
-<h4 id="_composite_triggering_policy"><a class="anchor" href="#_composite_triggering_policy"></a>Composite Triggering Policy</h4>
-<div class="paragraph">
-<p>The <code>CompositeTriggeringPolicy</code> combines multiple triggering policies and returns true if any of the configured policies return true.
-The
-<code>CompositeTriggeringPolicy</code> is configured simply by wrapping other policies in a <code>Policies</code> element.</p>
-</div>
-<div class="paragraph">
-<p>For example, the following XML fragment defines policies that rollover the log when the JVM starts when the log size reaches twenty megabytes, and when the current date no longer matches the log&#8217;s start date.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Policies&gt;
-  &lt;OnStartupTriggeringPolicy /&gt;
-  &lt;SizeBasedTriggeringPolicy size="20 MB" /&gt;
-  &lt;TimeBasedTriggeringPolicy /&gt;
-&lt;/Policies&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_cron_triggering_policy"><a class="anchor" href="#_cron_triggering_policy"></a>Cron Triggering Policy</h4>
-<div class="paragraph">
-<p>The <code>CronTriggeringPolicy</code> triggers rollover based on a cron expression.
-This policy is controlled by a timer and is asynchronous in processing log events, so it is possible that log events from the previous or next period may appear at the beginning or end of the log file.
-The <code>filePattern</code> attribute of the Appender should contain a timestamp otherwise the target file will be overwritten on each rollover.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 28. CronTriggeringPolicy Parameters</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">schedule</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The cron expression. The expression is the same as
-what is allowed in the Quartz scheduler. See
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/CronExpression.html"><code>CronExpression</code></a>
-for a full description of the expression.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">evaluateOnStartup</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">On startup the cron expression will be
-evaluated against the file&#8217;s last modification timestamp. If the cron
-expression indicates a rollover should have occurred between that time
-and the current time the file will be immediately rolled over.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_onstartup_triggering_policy"><a class="anchor" href="#_onstartup_triggering_policy"></a>OnStartup Triggering Policy</h4>
-<div class="paragraph">
-<p>The <code>OnStartupTriggeringPolicy</code> policy causes a rollover if the log file is older than the current JVM&#8217;s start time and the minimum file size is met or exceeded.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 29. OnStartupTriggeringPolicy Parameters</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">minSize</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The minimum size the file must have to roll over. A size
-of zero will cause a rollover no matter what the file size is. The
-default value is 1, which will prevent rolling over an empty file.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><em>Google App Engine note:</em><br>
-When running in Google App Engine, the OnStartup policy causes a rollover if the log file is older than <em>the time when Log4J initialized</em>.
-(Google App Engine restricts access to certain classes so Log4J cannot determine JVM start time with
-<code>java.lang.management.ManagementFactory.getRuntimeMXBean().getStartTime()</code>
-and falls back to Log4J initialization time instead.)</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="sizebased-triggering-policy"><a class="anchor" href="#sizebased-triggering-policy"></a>SizeBased Triggering Policy</h4>
-<div class="paragraph">
-<p>The <code>SizeBasedTriggeringPolicy</code> causes a rollover once the file has reached the specified size.
-The size can be specified in bytes, with the suffix KB, MB, GB, or TB for example <code>20MB</code>.
-size.
-The size may also contain a fractional value such as <code>1.5 MB</code>.
-The size is evaluated using the Java root Locale so a period must always be used for the fractional unit.
-When combined with a time-based triggering policy the file pattern must contain a <code>%i</code>.
-Otherwise, the target file will be overwritten on every rollover as the SizeBased Triggering Policy will not cause the timestamp value in the file name to change.
-When used without a time-based triggering policy the SizeBased Triggering Policy will cause the timestamp value to change.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="timebased-triggering-policy"><a class="anchor" href="#timebased-triggering-policy"></a>TimeBased Triggering Policy</h4>
-<div class="paragraph">
-<p>The <code>TimeBasedTriggeringPolicy</code> causes a rollover once the date/time pattern no longer applies to the active file.
-This policy accepts an
-<code>interval</code> attribute which indicates how frequently the rollover should occur based on the time pattern and a <code>modulate</code> boolean attribute.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 30. TimeBasedTriggeringPolicy Parameters</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">interval</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">How often a rollover should occur based on the most
-specific time unit in the date pattern. For example, with a date pattern
-with hours as the most specific item, an increment of 4 rollovers
-would occur every 4 hours. The default value is 1.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">modulate</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Indicates whether the interval should be adjusted to
-cause the next rollover to occur on the interval boundary. For example,
-if the item is hours, the current hour is 3 am and the interval is 4
-then the first rollover will occur at 4 am and then the next ones will occur
-at 8 am, noon, 4 pm, etc. The default value is false.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">maxRandomDelay</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Indicates the maximum number of seconds to
-randomly delay a rollover. By default, this is 0 which indicates no
-delay. This setting is useful on servers where multiple applications are
-configured to roll over logfiles at the same time and can spread the
-load of doing so across time.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="RolloverStrategies"><a class="anchor" href="#RolloverStrategies"></a>RolloverStrategies</h3>
-<div class="sect3">
-<h4 id="DefaultRolloverStrategy"><a class="anchor" href="#DefaultRolloverStrategy"></a>DefaultRolloverStrategy</h4>
-<div class="paragraph">
-<p>Default Rollover Strategy</p>
-</div>
-<div class="paragraph">
-<p>The default rollover strategy accepts both a date/time pattern and an integer from the <code>filePattern</code> attribute specified on the RollingFileAppender itself.
-If the date/time pattern is present it will be replaced with the current date and time values.
-If the pattern contains an integer it will be incremented on each rollover.
-If the pattern contains both a date/time and integer in the pattern the integer will be incremented until the result of the date/time pattern changes.
-If the file pattern ends with ".gz", ".zip", ".bz2", ".deflate", ".pack200", or ".xz" the resulting archive will be compressed using the compression scheme that matches the suffix.
-The formats bzip2, Deflate, Pack200 and XZ require
-<a href="https://commons.apache.org/proper/commons-compress/index.html">Apache Commons Compress</a>.
-In addition, XZ requires
-<a href="https://www.tukaani.org/xz/java.html">XZ for Java</a>.
-The pattern may also contain lookup references that can be resolved at runtime such as shown in the example below.</p>
-</div>
-<div class="paragraph">
-<p>The default rollover strategy supports three variations for incrementing the counter.
-To illustrate how it works, suppose that the min attribute is set to 1, the max attribute is set to 3, the file name is "foo.log", and the file name pattern is "foo-%i.log".</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 15%;">
-<col style="width: 15%;">
-<col style="width: 15%;">
-<col style="width: 55%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Number of rollovers</th>
-<th class="tableblock halign-left valign-top">Active output target</th>
-<th class="tableblock halign-left valign-top">Archived log files</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">foo.log</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">All logging is going to the initial file.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">foo.log</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">foo-1.log</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">During the first rollover foo.log is renamed to
-foo-1.log. A new foo.log file is created and starts being written to.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">foo.log</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">foo-2.log, foo-1.log</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">During the second rollover foo.log is
-renamed to foo-2.log. A new foo.log file is created and starts being
-written to.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">foo.log</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">foo-3.log, foo-2.log, foo-1.log</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">During the third rollover
-foo.log is renamed to foo-3.log. A new foo.log file is created and
-starts being written to.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">foo.log</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">foo-3.log, foo-2.log, foo-1.log</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">In the fourth and
-subsequent rollovers, foo-1.log is deleted, foo-2.log is renamed to
-foo-1.log, foo-3.log is renamed to foo-2.log and foo.log is renamed to
-foo-3.log. A new foo.log file is created and starts being written to.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>By way of contrast, when the <code>fileIndex</code> attribute is set to "min" all the other settings are the same the "fixed window" strategy will be performed.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 15%;">
-<col style="width: 15%;">
-<col style="width: 15%;">
-<col style="width: 55%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Number of rollovers</th>
-<th class="tableblock halign-left valign-top">Active output target</th>
-<th class="tableblock halign-left valign-top">Archived log files</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">foo.log</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">All logging is going to the initial file.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">foo.log</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">foo-1.log</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">During the first rollover foo.log is renamed to
-foo-1.log. A new foo.log file is created and starts being written to.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">foo.log</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">foo-1.log, foo-2.log</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">During the second rollover foo-1.log
-is renamed to foo-2.log and foo.log is renamed to foo-1.log. A new
-foo.log file is created and starts being written to.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">foo.log</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">foo-1.log, foo-2.log, foo-3.log</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">During the third rollover
-foo-2.log is renamed to foo-3.log, foo-1.log is renamed to foo-2.log and
-foo.log is renamed to foo-1.log. A new foo.log file is created and
-starts being written to.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">foo.log</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">foo-1.log, foo-2.log, foo-3.log</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">In the fourth and
-subsequent rollovers, foo-3.log is deleted, foo-2.log is renamed to
-foo-3.log, foo-1.log is renamed to foo-2.log and foo.log is renamed to
-foo-1.log. A new foo.log file is created and starts being written to.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Finally, as of release 2.8, if the <code>fileIndex</code> attribute is set to <code>nomax</code>
-then the min and max values will be ignored and file numbering will increment by 1 and each rollover will have an incrementally higher value with no maximum number of files.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 31. DefaultRolloverStrategy Parameters</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">fileIndex</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If set to "max" (the default), files with a higher
-index will be newer than files with a smaller index. If set to "min",
-file renaming and the counter will follow the Fixed Window strategy
-described above.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">min</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The minimum value of the counter. The default value is 1.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">max</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum value of the counter. Once this value is
-reached older archives will be deleted on subsequent rollovers. The
-default value is 7.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">compressionLevel</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the compression level, 0-9, where 0 =
-none, 1 = best speed, through 9 = best compression. Only implemented for
-ZIP files.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">tempCompressedFilePattern</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The pattern of the file name of the
-archived log file during compression.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="DirectWriteRolloverStrategy"><a class="anchor" href="#DirectWriteRolloverStrategy"></a>DirectWriteRolloverStrategy</h4>
-<div class="paragraph">
-<p>DirectWrite Rollover Strategy</p>
-</div>
-<div class="paragraph">
-<p>The DirectWriteRolloverStrategy causes log events to be written directly to files represented by the file pattern.
-With this strategy file renames are not performed.
-If the size-based triggering policy causes multiple files to be written during the specified period they will be numbered starting at one and continually incremented until a time-based rollover occurs.</p>
-</div>
-<div class="paragraph">
-<p>Warning: If the file pattern has a suffix indicating compression should take place the current file will not be compressed when the application is shut down.
-Furthermore, if the time changes such that the file pattern no longer matches the current file it will not be compressed at startup either.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 32. DirectWriteRolloverStrategy Parameters</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">maxFiles</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of files to allow in the period matching
-the file pattern. If the number of files is exceeded the
-oldest file will be deleted. If specified, the value must be greater
-than 1. If the value is less than zero or omitted then the number of
-files will not be limited.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">compressionLevel</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the compression level, 0-9, where 0 =
-none, 1 = best speed, through 9 = best compression. Only implemented for
-ZIP files.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">tempCompressedFilePattern</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The pattern of the file name of the
-archived log file during compression.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Below is a sample configuration that uses a RollingFileAppender with both the time and size-based triggering policies will create up to 7 archives on the same day (1-7) that are stored in a directory based on the current year and month, and will compress each archive using gzip:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz"&gt;
-      &lt;PatternLayout&gt;
-        &lt;Pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/Pattern&gt;
-      &lt;/PatternLayout&gt;
-      &lt;Policies&gt;
-        &lt;TimeBasedTriggeringPolicy /&gt;
-        &lt;SizeBasedTriggeringPolicy size="250 MB"/&gt;
-      &lt;/Policies&gt;
-    &lt;/RollingFile&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="RollingFile"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This second example shows a rollover strategy that will keep up to 20 files before removing them.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz"&gt;
-      &lt;PatternLayout&gt;
-        &lt;Pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/Pattern&gt;
-      &lt;/PatternLayout&gt;
-      &lt;Policies&gt;
-        &lt;TimeBasedTriggeringPolicy /&gt;
-        &lt;SizeBasedTriggeringPolicy size="250 MB"/&gt;
-      &lt;/Policies&gt;
-      &lt;DefaultRolloverStrategy max="20"/&gt;
-    &lt;/RollingFile&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="RollingFile"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Below is a sample configuration that uses a RollingFileAppender with both the time and size-based triggering policies will create up to 7 archives on the same day (1-7) that are stored in a directory based on the current year and month, and will compress each archive using gzip and will roll every 6 hours when the hour is divisible by 6:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz"&gt;
-      &lt;PatternLayout&gt;
-        &lt;Pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/Pattern&gt;
-      &lt;/PatternLayout&gt;
-      &lt;Policies&gt;
-        &lt;TimeBasedTriggeringPolicy interval="6" modulate="true"/&gt;
-        &lt;SizeBasedTriggeringPolicy size="250 MB"/&gt;
-      &lt;/Policies&gt;
-    &lt;/RollingFile&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="RollingFile"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This sample configuration uses a RollingFileAppender with both the cron and size-based triggering policies, and writes directly to an unlimited number of archive files.
-The cron trigger causes a rollover every hour while the file size is limited to 250MB:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;RollingFile name="RollingFile" filePattern="logs/app-%d{yyyy-MM-dd-HH}-%i.log.gz"&gt;
-      &lt;PatternLayout&gt;
-        &lt;Pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/Pattern&gt;
-      &lt;/PatternLayout&gt;
-      &lt;Policies&gt;
-        &lt;CronTriggeringPolicy schedule="0 0 * * * ?"/&gt;
-        &lt;SizeBasedTriggeringPolicy size="250 MB"/&gt;
-      &lt;/Policies&gt;
-    &lt;/RollingFile&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="RollingFile"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This sample configuration is the same as the previous one but limits the number of files saved each hour to 10:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;RollingFile name="RollingFile" filePattern="logs/app-%d{yyyy-MM-dd-HH}-%i.log.gz"&gt;
-      &lt;PatternLayout&gt;
-        &lt;Pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/Pattern&gt;
-      &lt;/PatternLayout&gt;
-      &lt;Policies&gt;
-        &lt;CronTriggeringPolicy schedule="0 0 * * * ?"/&gt;
-        &lt;SizeBasedTriggeringPolicy size="250 MB"/&gt;
-      &lt;/Policies&gt;
-      &lt;DirectWriteRolloverStrategy maxFiles="10"/&gt;
-    &lt;/RollingFile&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="RollingFile"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="CustomDeleteOnRollover"><a class="anchor" href="#CustomDeleteOnRollover"></a>CustomDeleteOnRollover</h4>
-<div class="paragraph">
-<p>Log Archive Retention Policy: Delete on Rollover</p>
-</div>
-<div class="paragraph">
-<p>Log4j-2.5 introduces a <code>Delete</code> action that gives users more control over what files are deleted at rollover time than what was possible with the DefaultRolloverStrategy <code>max</code> attribute.
-The Delete action lets users configure one or more conditions that select the files to delete relative to a base directory.</p>
-</div>
-<div class="paragraph">
-<p>Note that it is possible to delete any file, not just rolled-over log files, so use this action with care!
-With the <code>testMode</code> parameter you can test your configuration without accidentally deleting the wrong files.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 33. Delete Parameters</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">basePath</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Required.</em> Base path from where to start scanning
-for files to delete.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">maxDepth</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of levels of directories to visit. A
-value of 0 means that only the starting file (the base path itself) is
-visited unless denied by the security manager. A value of
-Integer.MAX_VALUE indicates that all levels should be visited. The
-default is 1, meaning only the files in the specified base directory.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">followLinks</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to follow symbolic links. Default is
-false.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">testMode</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If true, files are not deleted but instead a message
-is printed to the <a href="status-logger.html" class="xref page">Status Logger</a>
-at INFO level. Use this to do a dry run to test if the configuration
-works as expected. The default is false.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pathSorter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">PathSorter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A plugin implementing the
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathSorter.html"><code>PathSorter</code></a>
-interface to sort the files before selecting the files to delete. The
-default is to sort the most recently modified files first.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pathConditions <a id="DeletePathCondition"></a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">PathCondition[]</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><em>Required if no ScriptCondition is specified.</em> One or more PathCondition
-elements.</p>
-</div>
-<div class="paragraph">
-<p>If more than one condition is specified, they all need to accept a path
-before it is deleted. Conditions can be nested, in which case the inner
-condition(s) are evaluated only if the outer condition accepts the path.
-If conditions are not nested they may be evaluated in any order.</p>
-</div>
-<div class="paragraph">
-<p>Conditions can also be combined with the logical operators AND, OR and
-NOT by using the <code>IfAll</code>, <code>IfAny</code> and <code>IfNot</code> composite conditions.</p>
-</div>
-<div class="paragraph">
-<p>Users can create custom conditions or use the built-in conditions:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="#DeleteIfFileName"><code>IfFileName</code></a> - accepts files whose path
-(relative to the base path) matches a
-<a href="https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html">regular
-expression</a> or a
-<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)">glob</a>.</p>
-</li>
-<li>
-<p><a href="#DeleteIfLastModified"><code>IfLastModified</code></a> - accepts files that are as
-old as or older than the specified
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/Duration.html#parse(CharSequence)">duration</a>.</p>
-</li>
-<li>
-<p><a href="#DeleteIfAccumulatedFileCount"><code>IfAccumulatedFileCount</code></a> - accepts
-paths after some count threshold is exceeded during the file tree walk.</p>
-</li>
-<li>
-<p><a href="#DeleteIfAccumulatedFileSize"><code>IfAccumulatedFileSize</code></a> - accepts
-paths after the accumulated file size threshold is exceeded during the
-file tree walk.</p>
-</li>
-<li>
-<p>IfAll - accepts a path if all nested conditions accept it (logical
-AND). Nested conditions may be evaluated in any order.</p>
-</li>
-<li>
-<p>IfAny - accepts a path if one of the nested conditions accepts it
-(logical OR). Nested conditions may be evaluated in any order.</p>
-</li>
-<li>
-<p>IfNot - accepts a path if the nested condition does not accept it
-(logical NOT).</p>
-</li>
-</ul>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">scriptCondition <a id="DeleteScriptCondition"></a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ScriptCondition</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><em>Required if no PathConditions are specified.</em> A ScriptCondition element
-specifying a script.</p>
-</div>
-<div class="paragraph">
-<p>The ScriptCondition should contain a <a href="#ScriptCondition"><code>Script</code>, <code>ScriptRef</code>, or <code>ScriptFile</code></a> element that specifies the logic to be
-executed. (See also the <a href="filters.html#Script" class="xref page">ScriptFilter</a>
-documentation for more examples of configuring ScriptFiles and
-ScriptRefs.)</p>
-</div>
-<div class="paragraph">
-<p>The script is passed several <a href="#ScriptParameters">parameters</a>,
-including a list of paths found under the base path (up to <code>maxDepth</code>)
-and must return a list with the paths to delete.</p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="DeleteIfFileName"><a class="anchor" href="#DeleteIfFileName"></a>DeleteIfFileName</h3>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 34. IfFileName Condition Parameters</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">glob</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Required if regex is not specified.</em> Matches the relative
-path (relative to the base path) using a limited pattern language that
-resembles regular expressions but with a
-<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)">simpler
-syntax</a>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">regex</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Required if glob not specified.</em> Matches the relative
-path (relative to the base path) using a regular expression as defined
-by the
-<a href="https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html"><code>Pattern</code></a>
-class.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">nestedConditions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">PathCondition[]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">An optional set of nested
-<a href="#DeletePathCondition"><code>PathCondition</code></a>s. If any nested conditions
-exist they all need to accept the file before it is deleted. Nested
-conditions are only evaluated if the outer condition accepts a file (if
-the path name matches).</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect2">
-<h3 id="DeleteIfLastModified"><a class="anchor" href="#DeleteIfLastModified"></a>DeleteIfLastModified</h3>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 35. IfLastModified Condition Parameters</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">age</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Required.</em> Specifies a
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/Duration.html#parse(CharSequence)"><code>duration</code></a>.
-The condition accepts files that are as old or older than the specified
-duration.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">nestedConditions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">PathCondition[]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">An optional set of nested
-<a href="#DeletePathCondition"><code>PathCondition</code></a>s. If any nested conditions
-exist they all need to accept the file before it is deleted. Nested
-conditions are only evaluated if the outer condition accepts a file (if
-the file is old enough).</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect2">
-<h3 id="DeleteIfAccumulatedFileCount"><a class="anchor" href="#DeleteIfAccumulatedFileCount"></a>DeleteIfAccumulatedFileCount</h3>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 36. IfAccumulatedFileCount Condition Parameters</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">exceeds</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Required.</em> The threshold count from which files will be
-deleted.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">nestedConditions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">PathCondition[]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">An optional set of nested
-<a href="#DeletePathCondition"><code>PathCondition</code></a>s. If any nested conditions
-exist they all need to accept the file before it is deleted. Nested
-conditions are only evaluated if the outer condition accepts a file (if
-the threshold count has been exceeded).</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect2">
-<h3 id="DeleteIfAccumulatedFileSize"><a class="anchor" href="#DeleteIfAccumulatedFileSize"></a>DeleteIfAccumulatedFileSize</h3>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 37. IfAccumulatedFileSize Condition Parameters</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">exceeds</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Required.</em> The threshold accumulated file size from
-which files will be deleted. The size can be specified in bytes, with
-the suffix KB, MB, GB, or TB, for example <code>20MB</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">nestedConditions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">PathCondition[]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">An optional set of nested
-<a href="#DeletePathCondition"><code>PathCondition</code></a>s. If any nested conditions
-exist they all need to accept the file before it is deleted. Nested
-conditions are only evaluated if the outer condition accepts a file (if
-the threshold accumulated file size has been exceeded).</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Below is a sample configuration that uses a RollingFileAppender with the cron triggering policy configured to trigger every day at midnight.
-Archives are stored in a directory based on the current year and month.
-All files under the base directory that match the "<strong>/app-</strong>.log.gz" glob and are 60 days old or older are deleted at rollover time.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Properties&gt;
-    &lt;Property name="baseDir"&gt;logs&lt;/Property&gt;
-  &lt;/Properties&gt;
-  &lt;Appenders&gt;
-    &lt;RollingFile name="RollingFile" fileName="${baseDir}/app.log"
-          filePattern="${baseDir}/$${date:yyyy-MM}/app-%d{yyyy-MM-dd}.log.gz"&gt;
-      &lt;PatternLayout pattern="%d %p %c{1.} [%t] %m%n" /&gt;
-      &lt;CronTriggeringPolicy schedule="0 0 0 * * ?"/&gt;
-      &lt;DefaultRolloverStrategy&gt;
-        &lt;Delete basePath="${baseDir}" maxDepth="2"&gt;
-          &lt;IfFileName glob="*/app-*.log.gz" /&gt;
-          &lt;IfLastModified age="60d" /&gt;
-        &lt;/Delete&gt;
-      &lt;/DefaultRolloverStrategy&gt;
-    &lt;/RollingFile&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="RollingFile"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Below is a sample configuration that uses a RollingFileAppender with both the time and size-based triggering policies will create up to 100 archives on the same day (1-100) that are stored in a directory based on the current year and month, and will compress each archive using gzip and will roll every hour.
-During every rollover, this configuration will delete files that match "<strong>/app-</strong>.log.gz" and are 30 days old or older, but keep the most recent 100 GB or the most recent 10 files, whichever comes first.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Properties&gt;
-    &lt;Property name="baseDir"&gt;logs&lt;/Property&gt;
-  &lt;/Properties&gt;
-  &lt;Appenders&gt;
-    &lt;RollingFile name="RollingFile" fileName="${baseDir}/app.log"
-          filePattern="${baseDir}/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz"&gt;
-      &lt;PatternLayout pattern="%d %p %c{1.} [%t] %m%n" /&gt;
-      &lt;Policies&gt;
-        &lt;TimeBasedTriggeringPolicy /&gt;
-        &lt;SizeBasedTriggeringPolicy size="250 MB"/&gt;
-      &lt;/Policies&gt;
-      &lt;DefaultRolloverStrategy max="100"&gt;
-        &lt;!--
-        Nested conditions: the inner condition is only evaluated on files
-        for which the outer conditions are true.
-        --&gt;
-        &lt;Delete basePath="${baseDir}" maxDepth="2"&gt;
-          &lt;IfFileName glob="*/app-*.log.gz"&gt;
-            &lt;IfLastModified age="30d"&gt;
-              &lt;IfAny&gt;
-                &lt;IfAccumulatedFileSize exceeds="100 GB" /&gt;
-                &lt;IfAccumulatedFileCount exceeds="10" /&gt;
-              &lt;/IfAny&gt;
-            &lt;/IfLastModified&gt;
-          &lt;/IfFileName&gt;
-        &lt;/Delete&gt;
-      &lt;/DefaultRolloverStrategy&gt;
-    &lt;/RollingFile&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="RollingFile"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="ScriptCondition"><a class="anchor" href="#ScriptCondition"></a>ScriptCondition</h3>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 38. ScriptCondition Parameters</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">script</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Script, ScriptFile or ScriptRef</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Script element that
-specifies the logic to be executed. The script passes a list of paths
-found under the base path and must return the paths to delete as a
-<code>java.util.List&lt;PathWithAttributes&gt;</code>. See also the
-<a href="filters.html#Script" class="xref page">ScriptFilter</a> documentation for an example of
-how ScriptFiles and ScriptRefs can be configured.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect2">
-<h3 id="ScriptParameters"><a class="anchor" href="#ScriptParameters"></a>ScriptParameters</h3>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 39. Script Parameters</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">basePath</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>java.nio.file.Path</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The directory from where the Delete
-action started scanning for files to delete. Can be used to relativize
-the paths in the <code>pathList</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pathList</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>java.util.List&lt;PathWithAttributes&gt;</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The list of paths found
-under the base path up to the specified max depth, sorted most recently
-modified files first. The script is free to modify and return this list.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">statusLogger</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">StatusLogger</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The <a href="status-logger.html" class="xref page">Status Logger</a> that can be used to log
-internal events during script execution.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">configuration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Configuration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Configuration that owns this
-ScriptCondition.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">substitutor</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">StrSubstitutor</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The StrSubstitutor used to replace lookup
-variables.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">?</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Any properties declared in the configuration.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Below is a sample configuration that uses a RollingFileAppender with the cron triggering policy configured to trigger every day at midnight.
-Archives are stored in a directory based on the current year and month.
-The script returns a list of rolled-over files under the base directory dated Friday the 13th.
-The Delete action will delete all files returned by the script.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="trace" name="MyApp"&gt;
-  &lt;Properties&gt;
-    &lt;Property name="baseDir"&gt;logs&lt;/Property&gt;
-  &lt;/Properties&gt;
-  &lt;Appenders&gt;
-    &lt;RollingFile name="RollingFile" fileName="${baseDir}/app.log"
-          filePattern="${baseDir}/$${date:yyyy-MM}/app-%d{yyyyMMdd}.log.gz"&gt;
-      &lt;PatternLayout pattern="%d %p %c{1.} [%t] %m%n" /&gt;
-      &lt;CronTriggeringPolicy schedule="0 0 0 * * ?"/&gt;
-      &lt;DefaultRolloverStrategy&gt;
-        &lt;Delete basePath="${baseDir}" maxDepth="2"&gt;
-          &lt;ScriptCondition&gt;
-            &lt;Script name="superstitious" language="groovy"&gt;&lt;![CDATA[
-                import java.nio.file.*;
-
-                def result = [];
-                def pattern = ~/\d*\/app-(\d*)\.log\.gz/;
-
-                pathList.each { pathWithAttributes -&gt;
-                  def relative = basePath.relativize pathWithAttributes.path
-                  statusLogger.trace 'SCRIPT: relative path=' + relative + " (base=$basePath)";
-
-                  // remove files dated Friday the 13th
-
-                  def matcher = pattern.matcher(relative.toString());
-                  if (matcher.find()) {
-                    def dateString = matcher.group(1);
-                    def calendar = Date.parse("yyyyMMdd", dateString).toCalendar();
-                    def friday13th = calendar.get(Calendar.DAY_OF_MONTH) [#13]
-== 13 \
-                                  &amp;&amp; calendar.get(Calendar.DAY_OF_WEEK) [#Calendar]
-== Calendar.FRIDAY;
-                    if (friday13th) {
-                      result.add pathWithAttributes;
-                      statusLogger.trace 'SCRIPT: deleting path ' + pathWithAttributes;
-                    }
-                  }
-                }
-                statusLogger.trace 'SCRIPT: returning ' + result;
-                result;
-              ]]&gt;
-            &lt;/Script&gt;
-          &lt;/ScriptCondition&gt;
-        &lt;/Delete&gt;
-      &lt;/DefaultRolloverStrategy&gt;
-    &lt;/RollingFile&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="RollingFile"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="CustomPosixViewAttributeOnRollover"><a class="anchor" href="#CustomPosixViewAttributeOnRollover"></a>CustomPosixViewAttributeOnRollover</h3>
-<div class="paragraph">
-<p>Log Archive File Attribute View Policy: Custom file attribute on Rollover</p>
-</div>
-<div class="paragraph">
-<p>Log4j-2.9 introduces a <code>PosixViewAttribute</code> action that gives users more control over which file attribute permissions, owner and group should be applied.
-The PosixViewAttribute action lets users configure one or more conditions that select the eligible files relative to a base directory.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 40. PosixViewAttribute Parameters</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">basePath</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Required.</em> Base path from where to start scanning
-for files to apply attributes.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">maxDepth</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of levels of directories to visit. A
-value of 0 means that only the starting file (the base path itself) is
-visited unless denied by the security manager. A value of
-Integer.MAX_VALUE indicates that all levels should be visited. The
-default is 1, meaning only the files in the specified base directory.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">followLinks</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to follow symbolic links. Default is
-false.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pathConditions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">PathCondition[]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">see <a href="#DeletePathCondition">[DeletePathCondition]</a></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">filePermissions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>File attribute permissions in POSIX format to apply when action is
-executed.</p>
-</div>
-<div class="paragraph">
-<p>The underlying files system shall support
-<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/attribute/PosixFileAttributeView.html"><code>POSIX</code></a>
-file attribute view.</p>
-</div>
-<div class="paragraph">
-<p>Examples: rw------- or rw-rw-rw- etc&#8230;&#8203;</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">fileOwner</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>File owner to define when action is executed.</p>
-</div>
-<div class="paragraph">
-<p>Changing the file&#8217;s owner may be restricted for security reasons and
-Operation not permitted IOException thrown. Only processes with an
-effective user ID equal to the user ID of the file or with appropriate
-privileges may change the ownership of a file if
-<a href="http://www.gnu.org/software/libc/manual/html_node/Options-for-Files.html">_POSIX_CHOWN_RESTRICTED</a>
-is in effect for path.</p>
-</div>
-<div class="paragraph">
-<p>The underlying files system shall support file
-<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html"><code>owner</code></a>
-attribute view.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">fileGroup</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>File group to define when action is executed.</p>
-</div>
-<div class="paragraph">
-<p>The underlying files system shall support
-<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/attribute/PosixFileAttributeView.html"><code>POSIX</code></a>
-file attribute view.</p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Below is a sample configuration that uses a RollingFileAppender and defines different POSIX file attribute views for current and rolled log files.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="trace" name="MyApp"&gt;
-  &lt;Properties&gt;
-    &lt;Property name="baseDir"&gt;logs&lt;/Property&gt;
-  &lt;/Properties&gt;
-  &lt;Appenders&gt;
-    &lt;RollingFile name="RollingFile" fileName="${baseDir}/app.log"
-                 filePattern="${baseDir}/$${date:yyyy-MM}/app-%d{yyyyMMdd}.log.gz"
-                 filePermissions="rw-------"&gt;
-      &lt;PatternLayout pattern="%d %p %c{1.} [%t] %m%n" /&gt;
-      &lt;CronTriggeringPolicy schedule="0 0 0 * * ?"/&gt;
-      &lt;DefaultRolloverStrategy stopCustomActionsOnError="true"&gt;
-        &lt;PosixViewAttribute basePath="${baseDir}/$${date:yyyy-MM}" filePermissions="r--r--r--"&gt;
-            &lt;IfFileName glob="*.gz" /&gt;
-        &lt;/PosixViewAttribute&gt;
-      &lt;/DefaultRolloverStrategy&gt;
-    &lt;/RollingFile&gt;
-  &lt;/Appenders&gt;
-
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="RollingFile"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="RollingRandomAccessFileAppender"><a class="anchor" href="#RollingRandomAccessFileAppender"></a>RollingRandomAccessFileAppender</h3>
-<div class="paragraph">
-<p>The RollingRandomAccessFileAppender is similar to the standard
-<a href="#RollingFileAppender">[RollingFileAppender]</a> except it is always buffered (this cannot be switched off) and internally it uses a
-<code>ByteBuffer + RandomAccessFile</code> instead of a <code>BufferedOutputStream</code>.
-We saw a 20-200% performance improvement compared to RollingFileAppender with "bufferedIO=true" in our measurements.
-The
-<code>RollingRandomAccessFileAppender</code> writes to the file named in the fileName parameter and rolls the file over according to the TriggeringPolicy and the RolloverPolicy.
-Similar to the RollingFileAppender, RollingRandomAccessFileAppender uses a RollingRandomAccessFileManager to perform the file I/O and perform the rollover.
-While RollingRandomAccessFileAppender from different Configurations cannot be shared, the RollingRandomAccessFileManagers can be if the Manager is accessible.
-For example, two web applications in a servlet container can have their configuration and safely write to the same file if Log4j is in a ClassLoader that is common to both of them.</p>
-</div>
-<div class="paragraph">
-<p>A RollingRandomAccessFileAppender requires a
-<a href="#TriggeringPolicies">triggering policy</a> and a
-<a href="#RolloverStrategies">rollover strategy</a>.
-The triggering policy determines if a rollover should be performed while the <code>RolloverStrategy</code>
-defines how the rollover should be done.
-If no RolloverStrategy is configured, RollingRandomAccessFileAppender will use the
-<a href="#DefaultRolloverStrategy">DefaultRolloverStrategy</a>.
-Since log4j-2.5, a <a href="#CustomDeleteOnRollover">custom delete action</a> can be configured in the DefaultRolloverStrategy to run at rollover.</p>
-</div>
-<div class="paragraph">
-<p>File locking is not supported by the RollingRandomAccessFileAppender.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 41. RollingRandomAccessFileAppender Parameters</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">append</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">When true - the default, records will be appended to
-the end of the file. When set to false, the file will be cleared before
-new records are written.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">filter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Filter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A Filter to determine if the event should be handled by
-this Appender. More than one Filter may be used by using a
-CompositeFilter.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">fileName</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the file to write to. If the file, or any
-of its parent directories, do not exist, they will be created.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">filePattern</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The pattern of the file name of the archived log
-file. The format of the pattern should is dependent on the
-RolloverPolicy that is used. The DefaultRolloverPolicy will accept both
-a date/time pattern compatible with
-<a href="https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html"><code>SimpleDateFormat</code></a>
-and/or a %i which represents an integer counter. The pattern also
-supports interpolation at runtime so any of the Lookups (such as the
-<a href="lookups.html#DateLookup" class="xref page">DateLookup</a> can be included in the
-pattern.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">immediateFlush</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>When set to true - the default, each write will be followed by a flush.
-This will guarantee the data is written to disk but could impact
-performance.</p>
-</div>
-<div class="paragraph">
-<p>Flushing after every write is only useful when using this appender with
-synchronous loggers. Asynchronous loggers and appenders will
-automatically flush at the end of a batch of events, even if
-immediateFlush is set to false. This also guarantees the data is written
-to disk but is more efficient.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">bufferSize</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The buffer size, defaults to 262,144 bytes (256 *
-1024).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">layout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Layout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Layout to use to format the LogEvent. If no layout
-is supplied the default pattern layout of "%m%n" will be used.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the Appender.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">policy</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">TriggeringPolicy</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The policy to use to determine if a rollover
-should occur.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">strategy</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">RolloverStrategy</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The strategy to use to determine the name
-and the location of the archive file.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ignoreExceptions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The default is <code>true</code>, causing exceptions
-encountered while appending events to be internally logged and then
-ignored. When set to <code>false</code> exceptions will be propagated to the
-caller, instead. You must set this to <code>false</code> when wrapping this
-Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">filePermissions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>File attribute permissions in POSIX format to apply whenever the file is
-created.</p>
-</div>
-<div class="paragraph">
-<p>The underlying files system shall support
-<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/attribute/PosixFileAttributeView.html"><code>POSIX</code></a>
-file attribute view.</p>
-</div>
-<div class="paragraph">
-<p>Examples: <code>rw-------</code> or <code>rw-rw-rw-</code> etc&#8230;&#8203;</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">fileOwner</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>File owner to define whenever the file is created.</p>
-</div>
-<div class="paragraph">
-<p>Changing the file&#8217;s owner may be restricted for security reasons and
-Operation not permitted IOException thrown. Only processes with an
-effective user ID equal to the user ID of the file or with appropriate
-privileges may change the ownership of a file if
-<a href="http://www.gnu.org/software/libc/manual/html_node/Options-for-Files.html">_POSIX_CHOWN_RESTRICTED</a>
-is in effect for path.</p>
-</div>
-<div class="paragraph">
-<p>The underlying file system shall support file
-<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html"><code>owner</code></a>
-attribute view.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">fileGroup</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>File group to define whenever the file is created.</p>
-</div>
-<div class="paragraph">
-<p>The underlying files system shall support
-<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/attribute/PosixFileAttributeView.html"><code>POSIX</code></a>
-file attribute view.</p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-<div class="sect3">
-<h4 id="_triggering_policies"><a class="anchor" href="#_triggering_policies"></a>Triggering Policies</h4>
-<div class="paragraph">
-<p>See <a href="#TriggeringPolicies">RollingFileAppender Triggering Policies</a>.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_rollover_strategies"><a class="anchor" href="#_rollover_strategies"></a>Rollover Strategies</h4>
-<div class="paragraph">
-<p>See <a href="#RolloverStrategies"><code>RollingFileAppender</code> rollover strategies</a>.</p>
-</div>
-<div class="paragraph">
-<p>Below is a sample configuration that uses a RollingRandomAccessFileAppender with both the time and size-based triggering policies will create up to 7 archives on the same day (1-7) that are stored in a directory based on the current year and month, and will compress each archive using gzip:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;RollingRandomAccessFile name="RollingRandomAccessFile" fileName="logs/app.log"
-                 filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz"&gt;
-      &lt;PatternLayout&gt;
-        &lt;Pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/Pattern&gt;
-      &lt;/PatternLayout&gt;
-      &lt;Policies&gt;
-        &lt;TimeBasedTriggeringPolicy /&gt;
-        &lt;SizeBasedTriggeringPolicy size="250 MB"/&gt;
-      &lt;/Policies&gt;
-    &lt;/RollingRandomAccessFile&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="RollingRandomAccessFile"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This second example shows a rollover strategy that will keep up to 20 files before removing them.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;RollingRandomAccessFile name="RollingRandomAccessFile" fileName="logs/app.log"
-                 filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz"&gt;
-      &lt;PatternLayout&gt;
-        &lt;Pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/Pattern&gt;
-      &lt;/PatternLayout&gt;
-      &lt;Policies&gt;
-        &lt;TimeBasedTriggeringPolicy /&gt;
-        &lt;SizeBasedTriggeringPolicy size="250 MB"/&gt;
-      &lt;/Policies&gt;
-      &lt;DefaultRolloverStrategy max="20"/&gt;
-    &lt;/RollingRandomAccessFile&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="RollingRandomAccessFile"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Below is a sample configuration that uses a RollingRandomAccessFileAppender with both the time and size-based triggering policies will create up to 7 archives on the same day (1-7) that are stored in a directory based on the current year and month, and will compress each archive using gzip and will roll every 6 hours when the hour is divisible by 6:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;RollingRandomAccessFile name="RollingRandomAccessFile" fileName="logs/app.log"
-                 filePattern="logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz"&gt;
-      &lt;PatternLayout&gt;
-        &lt;Pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/Pattern&gt;
-      &lt;/PatternLayout&gt;
-      &lt;Policies&gt;
-        &lt;TimeBasedTriggeringPolicy interval="6" modulate="true"/&gt;
-        &lt;SizeBasedTriggeringPolicy size="250 MB"/&gt;
-      &lt;/Policies&gt;
-    &lt;/RollingRandomAccessFile&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="RollingRandomAccessFile"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
 <h3 id="RoutingAppender"><a class="anchor" href="#RoutingAppender"></a>RoutingAppender</h3>
 <div class="paragraph">
 <p>The <code>RoutingAppender</code> evaluates LogEvents and then routes them to a subordinate Appender.
@@ -5780,7 +4181,7 @@ The <code>RoutingAppender</code> should be configured after any Appenders it ref
 <p>You can also configure a <code>RoutingAppender</code> with scripts: you can run a script when the appender starts and when a route is chosen for an log event.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 42. RoutingAppender Parameters</caption>
+<caption class="title">Table 27. RoutingAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -5935,7 +4336,7 @@ This means that <code>${...}</code> expression <strong>should not</strong> be es
 <p>This script is passed the following variables:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 43. RoutingAppender Routes Script Parameters</caption>
+<caption class="title">Table 28. RoutingAppender Routes Script Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -6438,7 +4839,7 @@ Due to limitations in the TCP protocol that means that when the target server cl
 If guaranteed delivery is required a protocol that requires acknowledgments must be used.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 44. <code>SocketAppender</code> Parameters</caption>
+<caption class="title">Table 29. <code>SocketAppender</code> Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -6601,7 +5002,7 @@ Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
 This section documents the parameters available for SSL configuration.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 45. SSL Configuration Parameters</caption>
+<caption class="title">Table 30. SSL Configuration Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -6644,7 +5045,7 @@ counterparty. Determines whether the remote authentication credentials
 <p>The Keystore is meant to contain your private keys and certificates, and determines which authentication credentials to send to the remote host.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 46. KeyStore Configuration Parameters</caption>
+<caption class="title">Table 31. KeyStore Configuration Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -6712,7 +5113,7 @@ Determines whether the remote authentication credentials (and thus the connectio
 <p>In some cases, they can be the same store, although it is often better practice to use distinct stores (especially when they are file-based).</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 47. TrustStore Configuration Parameters</caption>
+<caption class="title">Table 32. TrustStore Configuration Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -6789,7 +5190,7 @@ algorithms</a>.</p></td>
 The data can be sent over either TCP or UDP.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 48. <code>SyslogAppender</code> Parameters</caption>
+<caption class="title">Table 33. <code>SyslogAppender</code> Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
