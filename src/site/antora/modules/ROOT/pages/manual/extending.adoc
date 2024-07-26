@@ -45,6 +45,16 @@ Log4j allows extensions primarily using following mechanisms:
 
 include::partial$manual/plugin-preliminaries.adoc[]
 
+[#bindings]
+=== Bindings
+
+The Log4j plugin system was enhanced in 3.0 to support arbitrary bindings for xref:manual/dependencyinjection.adoc[dependency injection].
+Many shared components in Log4j could be configured via system properties or similar to include a fully qualified class name to use.
+Using custom bindings, however, these custom classes can be configured as code.
+Default bindings are configured in {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/impl/CoreDefaultBundle.java[`CoreDefaultBundle`].
+Custom bindings can be installed by defining a link:../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/di/spi/ConfigurableInstanceFactoryPostProcessor.html[`ConfigurableInstanceFactoryPostProcessor`] service class which invokes `ConfigurableInstanceFactory::registerBundle` to register the bundle class containing the bindings.
+This approach is more portable than the legacy approach of using system properties to define the classes as it removes ambiguity of `ClassLoader` ownership and other details of modules and similar runtimes.
+
 [#service-loader]
 === ``ServiceLoader``s
 
@@ -86,7 +96,8 @@ Under the hood, link:../javadoc/log4j-api/org/apache/logging/log4j/LogManager.ht
 Hence, you can extend it by providing a `org.apache.logging.log4j.spi.Provider` implementation in the form of a `ServiceLoader`.
 
 Having multiple ``Provider``s in the classpath is strongly discouraged.
-Yet when this happens, you can use xref:manual/systemproperties.adoc#log4j.provider[the `log4j.provider` property] to explicitly select one.
+A specific provider can be <<bindings,bound>> using a custom bundle class if Log4j Core is also available.
+Alternatively, you can use xref:manual/systemproperties.adoc#log4j.provider[the `log4j.provider` property] to explicitly select one.
 
 [#LoggerContextFactory]
 === `LoggerContextFactory`
@@ -99,7 +110,8 @@ If you are creating a new Log4j API implementation, you should <<Provider,provid
 === `ContextSelector`
 
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/Log4jContextFactory.html[`Log4jContextFactory`], the Log4j Core implementation of <<LoggerContextFactory>>, delegates the actual work to a link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ContextSelector.html[`ContextSelector`].
-It can be configured using xref:manual/systemproperties.adoc#log4j.loggerContext.selector[the `log4j.loggerContext.selector` property].
+This should be configured as a `ContextSelector` binding in a <<bindings,custom binding>>.
+Alternatively, it can be configured using xref:manual/systemproperties.adoc#log4j.loggerContext.selector[the `log4j.loggerContext.selector` property].
 
 [#ConfigurationFactory]
 === `ConfigurationFactory`
@@ -109,7 +121,8 @@ link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFac
 You can provide a custom `ConfigurationFactory` in the form of a <<Custom_Plugins,plugin>>.
 For example, see {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/config/xml/XmlConfigurationFactory.java[`XmlConfigurationFactory.java`] and {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/config/xml/XmlConfiguration.java[`XmlConfiguration.java`] of Log4j Core.
 
-You can use xref:manual/systemproperties.adoc#log4j.configuration.factory[the `log4j.configuration.factory` property] to explicitly set a `ConfigurationFactory` to be used before any other factory implementation.
+A specific configuration factory can be bound in a <<bindings,custom bundle class>> which can take priority over the default configuration factories.
+You can also use xref:manual/systemproperties.adoc#log4j.configuration.factory[the `log4j.configuration.factory` property] to explicitly set a `ConfigurationFactory` to be used before any other factory implementation.
 
 [#LoggerConfig]
 === `LoggerConfig`
@@ -119,7 +132,7 @@ A custom `LoggerConfig` needs to satisfy the following conditions:
 
 * It needs to extend from `LoggerConfig` class
 * It needs to be declared as a <<Custom_Plugins,plugin>>
-** Its plugin `category` should be set to link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Node.html#CATEGORY[`Node.CATEGORY`]
+* It needs to include a `@Configurable` annotation on the class
 
 For example, see `RootLogger` definition in {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/config/LoggerConfig.java[`LoggerConfig.java`].
 
@@ -127,7 +140,7 @@ For example, see `RootLogger` definition in {project-github-url}/log4j-core/src/
 === `LogEventFactory`
 
 Log4j Core uses link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/LogEventFactory.html[`LogEventFactory`] to create link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html[`LogEvent`]s.
-You can replace the default `LogEventFactory` implementation with a custom one of yours by using xref:manual/systemproperties.adoc#log4j.logEvent.factory[the `log4j.logEvent.factory` property].
+You can replace the default `LogEventFactory` implementation with a custom one of yours by defining a <<bindings,custom binding>> for `LogEventFactory` or by using xref:manual/systemproperties.adoc#log4j.logEvent.factory[the `log4j.logEvent.factory` property].
 
 [NOTE]
 ====
