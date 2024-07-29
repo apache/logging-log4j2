@@ -63,7 +63,7 @@ final class FuzzingUtil {
         }
     }
 
-    static LoggerContext createLayoutFuzzingLoggerContext(
+    static LoggerContext createLoggerContext(
             final String appenderPluginName,
             final Function<ConfigurationBuilder<?>, LayoutComponentBuilder> layoutSupplier) {
 

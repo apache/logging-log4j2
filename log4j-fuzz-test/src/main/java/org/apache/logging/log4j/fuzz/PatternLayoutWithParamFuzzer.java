@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.fuzz;
 
-import static org.apache.logging.log4j.fuzz.FuzzingUtil.createLayoutFuzzingLoggerContext;
+import static org.apache.logging.log4j.fuzz.FuzzingUtil.createLoggerContext;
 import static org.apache.logging.log4j.fuzz.FuzzingUtil.logWithParams;
 
 import com.code_intelligence.jazzer.api.FuzzedDataProvider;
@@ -31,7 +31,7 @@ public final class PatternLayoutWithParamFuzzer {
 
     static {
         LOGGER_CONTEXT =
-                createLayoutFuzzingLoggerContext(LayoutTesterAppender.PLUGIN_NAME, configBuilder -> configBuilder
+                createLoggerContext(LayoutTesterAppender.PLUGIN_NAME, configBuilder -> configBuilder
                         .newLayout("PatternLayout")
                         // Enforce using a single message-based converter, i.e., `MessagePatternConverter`
                         .addAttribute("pattern", "%m"));

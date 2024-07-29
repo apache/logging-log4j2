@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.fuzz;
 
-import static org.apache.logging.log4j.fuzz.FuzzingUtil.createLayoutFuzzingLoggerContext;
+import static org.apache.logging.log4j.fuzz.FuzzingUtil.createLoggerContext;
 import static org.apache.logging.log4j.fuzz.FuzzingUtil.logWithoutParams;
 
 import com.code_intelligence.jazzer.api.FuzzedDataProvider;
@@ -30,7 +30,7 @@ public final class JsonTemplateLayoutWithoutParamFuzzer {
     private static final Logger LOGGER;
 
     static {
-        LOGGER_CONTEXT = createLayoutFuzzingLoggerContext(
+        LOGGER_CONTEXT = createLoggerContext(
                 JsonEncodingLayoutTesterAppender.PLUGIN_NAME,
                 configBuilder -> configBuilder.newLayout("JsonTemplateLayout"));
         LOGGER = LOGGER_CONTEXT.getLogger(JsonTemplateLayoutWithoutParamFuzzer.class);
