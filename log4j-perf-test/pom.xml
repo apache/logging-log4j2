@@ -33,17 +33,16 @@
 
   <properties>
 
-    <log4j.docgen.skip>true</log4j.docgen.skip>
     <bnd.baseline.skip>true</bnd.baseline.skip>
+    <log4j.docgen.skip>true</log4j.docgen.skip>
     <maven.test.skip>true</maven.test.skip>
     <maven.deploy.skip>true</maven.deploy.skip>
     <maven.install.skip>true</maven.install.skip>
     <sign.skip>true</sign.skip>
+    <spotbugs.skip>true</spotbugs.skip>
 
-    <module.name>org.apache.logging.log4j.perf</module.name>
     <maven.compiler.release>9</maven.compiler.release>
     <surefire.jdkToolchain>[9, )</surefire.jdkToolchain>
-    <spotbugs.skip>true</spotbugs.skip>
 
     <!-- Dependency versions -->
     <slf4j2.version>2.0.9</slf4j2.version>

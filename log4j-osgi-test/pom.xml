@@ -32,15 +32,18 @@
   <description>The Apache Log4j OSGi tests</description>
 
   <properties>
-    <log4j.docgen.skip>true</log4j.docgen.skip>
-    <module.name>org.apache.logging.log4j.osgi</module.name>
+
+    <bnd.skip>true</bnd.skip>
     <bnd.baseline.skip>true</bnd.baseline.skip>
+    <log4j.docgen.skip>true</log4j.docgen.skip>
     <maven.deploy.skip>true</maven.deploy.skip>
     <maven.install.skip>true</maven.install.skip>
     <sign.skip>true</sign.skip>
-
     <spotbugs.skip>true</spotbugs.skip>
+
+    <!-- dependency versions -->
     <spifly.version>1.3.7</spifly.version>
+
   </properties>
 
   <dependencies>

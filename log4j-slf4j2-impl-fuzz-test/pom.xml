@@ -26,9 +26,9 @@
     <relativePath>../log4j-parent</relativePath>
   </parent>
 
-  <artifactId>log4j-core-fuzz-test</artifactId>
+  <artifactId>log4j-slf4j2-impl-fuzz-test</artifactId>
 
-  <name>Apache Log4j Core fuzz tests</name>
+  <name>SLF4J 2 Provider for Log4j API fuzz tests</name>
 
   <properties>
     <bnd.baseline.skip>true</bnd.baseline.skip>
@@ -40,6 +40,11 @@
   </properties>
 
   <dependencies>
+
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j2-impl</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>

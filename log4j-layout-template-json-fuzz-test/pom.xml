@@ -32,18 +32,12 @@
 
   <properties>
 
-    <log4j.docgen.skip>true</log4j.docgen.skip>
     <bnd.baseline.skip>true</bnd.baseline.skip>
+    <log4j.docgen.skip>true</log4j.docgen.skip>
     <maven.deploy.skip>true</maven.deploy.skip>
     <maven.install.skip>true</maven.install.skip>
     <maven.test.skip>true</maven.test.skip>
     <sign.skip>true</sign.skip>
-
-    <!--
-      ~ OSGi and JPMS options
-      -->
-    <bnd-module-name>org.apache.logging.log4j.layout.template.json.fuzz</bnd-module-name>
-    <Fragment-Host>org.apache.logging.log4j.layout.template.json.fuzz</Fragment-Host>
 
     <!-- dependency versions -->
     <json.version>20240303</json.version>

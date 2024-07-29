@@ -14,28 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.layout.template.json.fuzz;
+package org.apache.logging.slf4j.fuzz;
 
-import static org.apache.logging.log4j.fuzz.FuzzingUtil.createLoggerContext;
 import static org.apache.logging.log4j.fuzz.FuzzingUtil.fuzzLogger;
 
 import com.code_intelligence.jazzer.api.FuzzedDataProvider;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.fuzz.FuzzingUtil.Log4jLoggerFacade;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.fuzz.FuzzingUtil.LoggerFacade;
-import org.apache.logging.log4j.fuzz.JsonEncodingAppender;
 
-public final class JsonTemplateLayoutFuzzer {
+public final class Slf4jToLog4jBridgeWithJsonTemplateLayoutFuzzer {
 
-    private static final LoggerFacade LOGGER = createLogger();
-
-    private static LoggerFacade createLogger() {
-        final LoggerContext loggerContext = createLoggerContext(
-                JsonEncodingAppender.PLUGIN_NAME, configBuilder -> configBuilder.newLayout("JsonTemplateLayout"));
-        final Logger logger = loggerContext.getLogger(JsonTemplateLayoutFuzzer.class);
-        return new Log4jLoggerFacade(logger);
+    static {
+        final String configurationFile = Slf4jToLog4jBridgeWithJsonTemplateLayoutFuzzer.class.getSimpleName() + ".xml";
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, configurationFile);
     }
+
+    private static final LoggerFacade LOGGER =
+            Slf4jLoggerFacade.ofClass(Slf4jToLog4jBridgeWithJsonTemplateLayoutFuzzer.class);
 
     public static void fuzzerTestOneInput(final FuzzedDataProvider dataProvider) {
         fuzzLogger(LOGGER, dataProvider);

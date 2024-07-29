@@ -50,7 +50,7 @@ public final class FuzzingUtil {
                 ConfigurationBuilderFactory.newConfigurationBuilder();
 
         // Create the appender configuration
-        final String appenderName = "fuzzingAppender";
+        final String appenderName = "FUZZING_APPENDER";
         final LayoutComponentBuilder layoutComponentBuilder = layoutSupplier.apply(configBuilder);
         final AppenderComponentBuilder appenderComponentBuilder =
                 configBuilder.newAppender(appenderName, appenderPluginName).add(layoutComponentBuilder);
@@ -81,19 +81,14 @@ public final class FuzzingUtil {
         void log(String message, Throwable throwable);
 
         void log(String message, Object[] parameters);
-
-        static LoggerFacade ofLog4jLogger(final Logger logger) {
-            requireNonNull(logger, "logger");
-            return new Log4jLoggerFacade(logger);
-        }
     }
 
-    private static final class Log4jLoggerFacade implements LoggerFacade {
+    public static final class Log4jLoggerFacade implements LoggerFacade {
 
         private final Logger logger;
 
-        private Log4jLoggerFacade(final Logger logger) {
-            this.logger = logger;
+        public Log4jLoggerFacade(final Logger logger) {
+            this.logger = requireNonNull(logger, "logger");
         }
 
         @Override

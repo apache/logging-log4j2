@@ -14,9 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.layout.template.json.fuzz;
+package org.apache.logging.log4j.fuzz;
 
-import static org.apache.logging.log4j.layout.template.json.fuzz.JsonUtil.assertValidJson;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.Serializable;
@@ -31,38 +30,33 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 /**
- * A layout testing appender validating the JSON formatting of the layout's output.
+ * Appender encoding incoming log events using the provided layout.
+ * It is intended for appender-agnostic fuzzing.
  */
-@Plugin(
-        name = JsonEncodingLayoutTesterAppender.PLUGIN_NAME,
-        category = Core.CATEGORY_NAME,
-        elementType = Appender.ELEMENT_TYPE)
-public final class JsonEncodingLayoutTesterAppender extends AbstractAppender {
+@Plugin(name = EncodingAppender.PLUGIN_NAME, category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE)
+public final class EncodingAppender extends AbstractAppender {
 
-    public static final String PLUGIN_NAME = "JsonEncodingLayoutTesterAppender";
+    public static final String PLUGIN_NAME = "EncodingAppender";
 
-    private JsonEncodingLayoutTesterAppender(final String name, final Layout<? extends Serializable> layout) {
+    private EncodingAppender(final String name, final Layout<? extends Serializable> layout) {
         super(name, null, layout, true, null);
         // Guard `PLUGIN_NAME` against copy-paste mistakes
         assertThat(PLUGIN_NAME).isEqualTo(getClass().getSimpleName());
     }
 
     @PluginFactory
-    public static JsonEncodingLayoutTesterAppender createAppender(
+    public static EncodingAppender createAppender(
             final @PluginAttribute("name") String name, final @PluginElement("layout") Layout<?> layout) {
-        return new JsonEncodingLayoutTesterAppender(name, layout);
+        return new EncodingAppender(name, layout);
     }
 
     @Override
     public void append(final LogEvent event) {
-        final byte[] jsonBytes;
         try {
-            jsonBytes = getLayout().toByteArray(event);
+            getLayout().toByteArray(event);
         } catch (final Exception ignored) {
             // We are inspecting unexpected access.
             // Hence, event encoding failures are not of interest.
-            return;
         }
-        assertValidJson(jsonBytes);
     }
 }

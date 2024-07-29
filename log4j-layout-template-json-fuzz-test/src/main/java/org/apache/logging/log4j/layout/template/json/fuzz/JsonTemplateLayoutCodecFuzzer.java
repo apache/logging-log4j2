@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.layout.template.json.fuzz;
 
-import static org.apache.logging.log4j.layout.template.json.fuzz.JsonUtil.assertValidJson;
+import static org.apache.logging.log4j.fuzz.JsonUtil.assertValidJson;
 
 import com.code_intelligence.jazzer.api.FuzzedDataProvider;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;

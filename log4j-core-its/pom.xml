@@ -16,19 +16,24 @@
   ~ limitations under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>${revision}</version>
     <relativePath>../log4j-parent</relativePath>
   </parent>
+
   <artifactId>log4j-core-its</artifactId>
-  <packaging>jar</packaging>
+
   <name>Apache Log4j Core Integration Tests</name>
-  <description>Integration Tests for the Apache Log4j Implementation</description>
+
   <properties>
+
     <bnd.baseline.skip>true</bnd.baseline.skip>
+    <log4j.docgen.skip>true</log4j.docgen.skip>
     <maven.deploy.skip>true</maven.deploy.skip>
     <maven.install.skip>true</maven.install.skip>
     <sign.skip>true</sign.skip>
@@ -36,6 +41,7 @@
 
     <!-- Dependency versions -->
     <slf4j2.version>2.0.9</slf4j2.version>
+
   </properties>
 
   <dependencyManagement>

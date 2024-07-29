@@ -14,21 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.layout.template.json.fuzz;
+package org.apache.logging.log4j.fuzz;
 
 import com.code_intelligence.jazzer.api.FuzzerSecurityIssueCritical;
 import java.nio.charset.StandardCharsets;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-final class JsonUtil {
+public final class JsonUtil {
 
-    static void assertValidJson(final String json) {
+    public static void assertValidJson(final String json) {
         final byte[] jsonBytes = json.getBytes(StandardCharsets.UTF_8);
         assertValidJson(jsonBytes);
     }
 
-    static void assertValidJson(final byte[] jsonBytes) {
+    public static void assertValidJson(final byte[] jsonBytes) {
         // We deliberately use an external library instead of using `JsonReader` from Log4j.
         // This is to fuzz Log4j components in isolation.
         // We are not using Jackson or Gson, since they have token limitations due to performance reasons.

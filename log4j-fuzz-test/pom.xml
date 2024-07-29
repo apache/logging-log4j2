@@ -38,11 +38,8 @@
     <maven.test.skip>true</maven.test.skip>
     <sign.skip>true</sign.skip>
 
-    <!--
-      ~ OSGi and JPMS options
-      -->
-    <bnd-module-name>org.apache.logging.log4j.fuzz</bnd-module-name>
-    <Fragment-Host>org.apache.logging.log4j.fuzz</Fragment-Host>
+    <!-- dependency versions -->
+    <json.version>20240303</json.version>
 
   </properties>
 
@@ -61,6 +58,12 @@
     <dependency>
       <groupId>com.code-intelligence</groupId>
       <artifactId>jazzer-standalone</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>${json.version}</version>
     </dependency>
 
   </dependencies>

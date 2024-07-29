@@ -22,8 +22,9 @@ import static org.apache.logging.log4j.fuzz.FuzzingUtil.fuzzLogger;
 import com.code_intelligence.jazzer.api.FuzzedDataProvider;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.fuzz.EncodingAppender;
+import org.apache.logging.log4j.fuzz.FuzzingUtil.Log4jLoggerFacade;
 import org.apache.logging.log4j.fuzz.FuzzingUtil.LoggerFacade;
-import org.apache.logging.log4j.fuzz.LayoutTesterAppender;
 
 public final class PatternLayoutFuzzer {
 
@@ -31,12 +32,12 @@ public final class PatternLayoutFuzzer {
 
     private static LoggerFacade createLogger() {
         final LoggerContext loggerContext =
-                createLoggerContext(LayoutTesterAppender.PLUGIN_NAME, configBuilder -> configBuilder
+                createLoggerContext(EncodingAppender.PLUGIN_NAME, configBuilder -> configBuilder
                         .newLayout("PatternLayout")
                         // Enforce using a single message-based converter, i.e., `MessagePatternConverter`
                         .addAttribute("pattern", "%m"));
         final Logger logger = loggerContext.getLogger(PatternLayoutFuzzer.class);
-        return LoggerFacade.ofLog4jLogger(logger);
+        return new Log4jLoggerFacade(logger);
     }
 
     public static void fuzzerTestOneInput(final FuzzedDataProvider dataProvider) {
