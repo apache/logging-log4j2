@@ -171,6 +171,12 @@
 
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-fuzz-test</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-layout-template-json-test</artifactId>
         <version>${project.version}</version>
       </dependency>

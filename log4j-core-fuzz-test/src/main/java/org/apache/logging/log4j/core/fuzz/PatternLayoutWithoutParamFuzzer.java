@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.fuzz;
+package org.apache.logging.log4j.core.fuzz;
 
 import static org.apache.logging.log4j.fuzz.FuzzingUtil.createLoggerContext;
 import static org.apache.logging.log4j.fuzz.FuzzingUtil.logWithoutParams;
@@ -22,6 +22,7 @@ import static org.apache.logging.log4j.fuzz.FuzzingUtil.logWithoutParams;
 import com.code_intelligence.jazzer.api.FuzzedDataProvider;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.fuzz.LayoutTesterAppender;
 
 public final class PatternLayoutWithoutParamFuzzer {
 
@@ -30,11 +31,10 @@ public final class PatternLayoutWithoutParamFuzzer {
     private static final Logger LOGGER;
 
     static {
-        LOGGER_CONTEXT =
-                createLoggerContext(LayoutTesterAppender.PLUGIN_NAME, configBuilder -> configBuilder
-                        .newLayout("PatternLayout")
-                        // Enforce using a single message-based converter, i.e., `MessagePatternConverter`
-                        .addAttribute("pattern", "%m"));
+        LOGGER_CONTEXT = createLoggerContext(LayoutTesterAppender.PLUGIN_NAME, configBuilder -> configBuilder
+                .newLayout("PatternLayout")
+                // Enforce using a single message-based converter, i.e., `MessagePatternConverter`
+                .addAttribute("pattern", "%m"));
         LOGGER = LOGGER_CONTEXT.getLogger(PatternLayoutWithoutParamFuzzer.class);
     }
 

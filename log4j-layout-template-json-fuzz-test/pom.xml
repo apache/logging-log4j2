@@ -26,23 +26,27 @@
     <relativePath>../log4j-parent</relativePath>
   </parent>
 
-  <artifactId>log4j-fuzz-test</artifactId>
+  <artifactId>log4j-layout-template-json-fuzz-test</artifactId>
 
-  <name>Apache Log4j fuzz tests</name>
+  <name>Apache Log4j JSON Template Layout fuzz tests</name>
 
   <properties>
 
     <log4j.docgen.skip>true</log4j.docgen.skip>
     <bnd.baseline.skip>true</bnd.baseline.skip>
     <maven.deploy.skip>true</maven.deploy.skip>
+    <maven.install.skip>true</maven.install.skip>
     <maven.test.skip>true</maven.test.skip>
     <sign.skip>true</sign.skip>
 
     <!--
       ~ OSGi and JPMS options
       -->
-    <bnd-module-name>org.apache.logging.log4j.fuzz</bnd-module-name>
-    <Fragment-Host>org.apache.logging.log4j.fuzz</Fragment-Host>
+    <bnd-module-name>org.apache.logging.log4j.layout.template.json.fuzz</bnd-module-name>
+    <Fragment-Host>org.apache.logging.log4j.layout.template.json.fuzz</Fragment-Host>
+
+    <!-- dependency versions -->
+    <json.version>20240303</json.version>
 
   </properties>
 
@@ -50,19 +54,32 @@
 
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
+      <artifactId>log4j-layout-template-json</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-fuzz-test</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>com.code-intelligence</groupId>
-      <artifactId>jazzer-standalone</artifactId>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>${json.version}</version>
     </dependency>
 
   </dependencies>
+
+  <build>
+    <plugins>
+
+      <!-- Activate the inherited `generate-uber-jar` configuration -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+      </plugin>
+
+    </plugins>
+  </build>
 
 </project>

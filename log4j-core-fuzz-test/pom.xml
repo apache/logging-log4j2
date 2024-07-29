@@ -26,9 +26,9 @@
     <relativePath>../log4j-parent</relativePath>
   </parent>
 
-  <artifactId>log4j-fuzz-test</artifactId>
+  <artifactId>log4j-core-fuzz-test</artifactId>
 
-  <name>Apache Log4j fuzz tests</name>
+  <name>Apache Log4j Core fuzz tests</name>
 
   <properties>
 
@@ -41,8 +41,8 @@
     <!--
       ~ OSGi and JPMS options
       -->
-    <bnd-module-name>org.apache.logging.log4j.fuzz</bnd-module-name>
-    <Fragment-Host>org.apache.logging.log4j.fuzz</Fragment-Host>
+    <bnd-module-name>org.apache.logging.log4j.core.fuzz</bnd-module-name>
+    <Fragment-Host>org.apache.logging.log4j.core.fuzz</Fragment-Host>
 
   </properties>
 
@@ -50,19 +50,21 @@
 
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.code-intelligence</groupId>
-      <artifactId>jazzer-standalone</artifactId>
+      <artifactId>log4j-fuzz-test</artifactId>
     </dependency>
 
   </dependencies>
+
+  <build>
+    <plugins>
+
+      <!-- Activate the inherited `generate-uber-jar` configuration -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+      </plugin>
+
+    </plugins>
+  </build>
 
 </project>

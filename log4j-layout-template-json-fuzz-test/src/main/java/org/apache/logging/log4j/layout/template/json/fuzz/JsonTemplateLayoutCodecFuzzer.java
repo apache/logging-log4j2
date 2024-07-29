@@ -14,7 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.fuzz;
+package org.apache.logging.log4j.layout.template.json.fuzz;
+
+import static org.apache.logging.log4j.layout.template.json.fuzz.JsonUtil.assertValidJson;
 
 import com.code_intelligence.jazzer.api.FuzzedDataProvider;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
@@ -46,6 +48,6 @@ public final class JsonTemplateLayoutCodecFuzzer {
                 .build();
         jsonWriter.writeValue(object);
         final String actualJson = jsonWriter.getStringBuilder().toString();
-        FuzzingUtil.assertValidJson(actualJson);
+        assertValidJson(actualJson);
     }
 }
