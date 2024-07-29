@@ -1109,7 +1109,8 @@
               <phase>package</phase>
               <configuration>
                 <createDependencyReducedPom>false</createDependencyReducedPom>
-                <minimizeJar>true</minimizeJar>
+                <!-- Minimization causes `@Plugin`-annotated classes to be omitted, hence disabling it: -->
+                <minimizeJar>false</minimizeJar>
                 <finalName>${project.artifactId}-${project.version}-uber</finalName>
                 <transformers>
                   <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
