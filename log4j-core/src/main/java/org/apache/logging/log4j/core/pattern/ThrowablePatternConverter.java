@@ -18,10 +18,9 @@ package org.apache.logging.log4j.core.pattern;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -38,15 +37,11 @@ import org.apache.logging.log4j.util.Strings;
 @Plugin(name = "ThrowablePatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({"ex", "throwable", "exception"})
 public class ThrowablePatternConverter extends LogEventPatternConverter {
-
-    /**
-     * Lists {@link PatternFormatter}s for the suffix attribute.
-     */
-    protected final List<PatternFormatter> formatters;
-
+    private final Function<LogEvent, String> suffixProvider;
     private String rawOption;
     private final boolean subShortOption;
     private final boolean nonStandardLineSeparator;
+    private ThrowableRenderer<ThrowableRenderer.Context> renderer;
 
     /**
      * Options.
@@ -79,30 +74,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         if (options != null && options.length > 0) {
             rawOption = options[0];
         }
-        if (this.options.getSuffix() != null) {
-            final PatternParser parser = PatternLayout.createPatternParser(config);
-            final List<PatternFormatter> parsedSuffixFormatters = parser.parse(this.options.getSuffix());
-            // filter out nested formatters that will handle throwable
-            boolean hasThrowableSuffixFormatter = false;
-            for (final PatternFormatter suffixFormatter : parsedSuffixFormatters) {
-                if (suffixFormatter.handlesThrowable()) {
-                    hasThrowableSuffixFormatter = true;
-                }
-            }
-            if (!hasThrowableSuffixFormatter) {
-                this.formatters = parsedSuffixFormatters;
-            } else {
-                final List<PatternFormatter> suffixFormatters = new ArrayList<>();
-                for (final PatternFormatter suffixFormatter : parsedSuffixFormatters) {
-                    if (!suffixFormatter.handlesThrowable()) {
-                        suffixFormatters.add(suffixFormatter);
-                    }
-                }
-                this.formatters = suffixFormatters;
-            }
-        } else {
-            this.formatters = Collections.emptyList();
-        }
+        this.suffixProvider = createSuffixProvider(this.options.getSuffix(), config);
         subShortOption = ThrowableFormatOptions.MESSAGE.equalsIgnoreCase(rawOption)
                 || ThrowableFormatOptions.LOCALIZED_MESSAGE.equalsIgnoreCase(rawOption)
                 || ThrowableFormatOptions.FILE_NAME.equalsIgnoreCase(rawOption)
@@ -110,6 +82,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
                 || ThrowableFormatOptions.METHOD_NAME.equalsIgnoreCase(rawOption)
                 || ThrowableFormatOptions.CLASS_NAME.equalsIgnoreCase(rawOption);
         nonStandardLineSeparator = !Strings.LINE_SEPARATOR.equals(this.options.getSeparator());
+        createRenderer(this.options);
     }
 
     /**
@@ -188,23 +161,8 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         if (len > 0 && !Character.isWhitespace(buffer.charAt(len - 1))) {
             buffer.append(' ');
         }
-        if (!options.allLines() || nonStandardLineSeparator || Strings.isNotBlank(suffix)) {
-            final StringWriter w = new StringWriter();
-            throwable.printStackTrace(new PrintWriter(w));
-
-            final String[] array = w.toString().split(Strings.LINE_SEPARATOR);
-            final int limit = options.minLines(array.length) - 1;
-            final boolean suffixNotBlank = Strings.isNotBlank(suffix);
-            for (int i = 0; i <= limit; ++i) {
-                buffer.append(array[i]);
-                if (suffixNotBlank) {
-                    buffer.append(' ');
-                    buffer.append(suffix);
-                }
-                if (i < limit) {
-                    buffer.append(options.getSeparator());
-                }
-            }
+        if (requireAdditionalFormatting(suffix)) {
+            renderer.renderThrowable(buffer, throwable, suffix);
         } else {
             throwable.printStackTrace(new PrintWriter(new StringBuilderWriter(buffer)));
         }
@@ -221,18 +179,54 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
     }
 
     protected String getSuffix(final LogEvent event) {
-        if (formatters.isEmpty()) {
-            return Strings.EMPTY;
-        }
-        //noinspection ForLoopReplaceableByForEach
-        final StringBuilder toAppendTo = new StringBuilder();
-        for (int i = 0, size = formatters.size(); i < size; i++) {
-            formatters.get(i).format(event, toAppendTo);
-        }
-        return toAppendTo.toString();
+        return suffixProvider.apply(event);
     }
 
     public ThrowableFormatOptions getOptions() {
         return options;
+    }
+
+    private boolean requireAdditionalFormatting(final String suffix) {
+        return !options.allLines() || nonStandardLineSeparator || Strings.isNotBlank(suffix) || options.hasPackages();
+    }
+
+    private static Function<LogEvent, String> createSuffixProvider(final String suffix, final Configuration config) {
+        if (suffix != null) {
+            final PatternParser parser = PatternLayout.createPatternParser(config);
+            final List<PatternFormatter> parsedSuffixFormatters = parser.parse(suffix);
+            // filter out nested formatters that will handle throwable
+            boolean hasThrowableSuffixFormatter = false;
+            for (final PatternFormatter suffixFormatter : parsedSuffixFormatters) {
+                if (suffixFormatter.handlesThrowable()) {
+                    hasThrowableSuffixFormatter = true;
+                }
+            }
+            List<PatternFormatter> finalFormatters;
+            if (!hasThrowableSuffixFormatter) {
+                finalFormatters = parsedSuffixFormatters;
+            } else {
+                final List<PatternFormatter> suffixFormatters = new ArrayList<>();
+                for (final PatternFormatter suffixFormatter : parsedSuffixFormatters) {
+                    if (!suffixFormatter.handlesThrowable()) {
+                        suffixFormatters.add(suffixFormatter);
+                    }
+                }
+                finalFormatters = suffixFormatters;
+            }
+            return logEvent -> {
+                final StringBuilder toAppendTo = new StringBuilder();
+                for (int i = 0, size = finalFormatters.size(); i < size; i++) {
+                    finalFormatters.get(i).format(logEvent, toAppendTo);
+                }
+                return toAppendTo.toString();
+            };
+        } else {
+            return logEvent -> Strings.EMPTY;
+        }
+    }
+
+    void createRenderer(final ThrowableFormatOptions options) {
+        this.renderer =
+                new ThrowableRenderer<>(options.getIgnorePackages(), options.getSeparator(), options.getLines());
     }
 }

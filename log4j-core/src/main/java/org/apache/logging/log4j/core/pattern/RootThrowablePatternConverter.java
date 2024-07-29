@@ -19,8 +19,7 @@ package org.apache.logging.log4j.core.pattern;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.impl.ThrowableProxy;
-import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.core.impl.ThrowableFormatOptions;
 
 /**
  * Outputs the Throwable portion of the LoggingEvent as a full stack trace
@@ -33,6 +32,7 @@ import org.apache.logging.log4j.util.Strings;
 @Plugin(name = "RootThrowablePatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({"rEx", "rThrowable", "rException"})
 public final class RootThrowablePatternConverter extends ThrowablePatternConverter {
+    private RootThrowableRenderer renderer;
 
     /**
      * Private constructor.
@@ -60,35 +60,17 @@ public final class RootThrowablePatternConverter extends ThrowablePatternConvert
      * {@inheritDoc}
      */
     @Override
-    public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        final ThrowableProxy proxy = event.getThrownProxy();
-        final Throwable throwable = event.getThrown();
-        if (throwable != null && options.anyLines()) {
-            if (proxy == null) {
-                super.format(event, toAppendTo);
-                return;
-            }
-            final String trace = proxy.getCauseStackTraceAsString(
-                    options.getIgnorePackages(), options.getTextRenderer(), getSuffix(event), options.getSeparator());
-            final int len = toAppendTo.length();
-            if (len > 0 && !Character.isWhitespace(toAppendTo.charAt(len - 1))) {
-                toAppendTo.append(' ');
-            }
-            if (!options.allLines() || !Strings.LINE_SEPARATOR.equals(options.getSeparator())) {
-                final StringBuilder sb = new StringBuilder();
-                final String[] array = trace.split(Strings.LINE_SEPARATOR);
-                final int limit = options.minLines(array.length) - 1;
-                for (int i = 0; i <= limit; ++i) {
-                    sb.append(array[i]);
-                    if (i < limit) {
-                        sb.append(options.getSeparator());
-                    }
-                }
-                toAppendTo.append(sb.toString());
-
-            } else {
-                toAppendTo.append(trace);
-            }
+    public void format(final LogEvent event, final StringBuilder buffer) {
+        final int len = buffer.length();
+        if (len > 0 && !Character.isWhitespace(buffer.charAt(len - 1))) {
+            buffer.append(' ');
         }
+        renderer.renderThrowable(buffer, event.getThrown(), getSuffix(event));
+    }
+
+    @Override
+    void createRenderer(final ThrowableFormatOptions options) {
+        this.renderer =
+                new RootThrowableRenderer(options.getIgnorePackages(), options.getSeparator(), options.getLines());
     }
 }

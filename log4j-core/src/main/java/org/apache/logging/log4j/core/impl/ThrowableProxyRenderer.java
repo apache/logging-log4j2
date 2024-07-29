@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.impl;
 
 import java.util.List;
 import org.apache.logging.log4j.core.pattern.TextRenderer;
+import org.apache.logging.log4j.core.util.internal.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -240,10 +241,9 @@ final class ThrowableProxyRenderer {
             final List<String> ignorePackages,
             final TextRenderer textRenderer,
             final String suffix,
-            final String lineSeparator) {
-        textRenderer.render(src.getName(), sb, "Name");
-        textRenderer.render(": ", sb, "NameMessageSeparator");
-        textRenderer.render(src.getMessage(), sb, "Message");
+            final String lineSeparator,
+            final int maxLineCount) {
+        renderOn(src, sb, textRenderer);
         renderSuffix(suffix, sb, textRenderer);
         textRenderer.render(lineSeparator, sb, "Text");
         final StackTraceElement[] causedTrace =
@@ -260,6 +260,7 @@ final class ThrowableProxyRenderer {
                 lineSeparator);
         formatSuppressed(sb, TAB, src.getSuppressedProxies(), ignorePackages, textRenderer, suffix, lineSeparator);
         formatCause(sb, Strings.EMPTY, src.getCauseProxy(), ignorePackages, textRenderer, suffix, lineSeparator);
+        StringBuilders.truncateAfterDelimiter(sb, lineSeparator, maxLineCount);
     }
 
     /**
@@ -272,23 +273,24 @@ final class ThrowableProxyRenderer {
      * @param suffix         Append this to the end of each stack frame.
      * @param lineSeparator  The end-of-line separator.
      */
-    static void formatCauseStackTrace(
+    static void formatCauseStackTraceTo(
             final ThrowableProxy src,
             final StringBuilder sb,
             final List<String> ignorePackages,
             final TextRenderer textRenderer,
             final String suffix,
-            final String lineSeparator) {
+            final String lineSeparator,
+            final int maxLineCount) {
         final ThrowableProxy causeProxy = src.getCauseProxy();
         if (causeProxy != null) {
             formatWrapper(sb, causeProxy, ignorePackages, textRenderer, suffix, lineSeparator);
             sb.append(WRAPPED_BY_LABEL);
-            ThrowableProxyRenderer.renderSuffix(suffix, sb, textRenderer);
+            renderSuffix(suffix, sb, textRenderer);
         }
         renderOn(src, sb, textRenderer);
-        ThrowableProxyRenderer.renderSuffix(suffix, sb, textRenderer);
+        renderSuffix(suffix, sb, textRenderer);
         textRenderer.render(lineSeparator, sb, "Text");
-        ThrowableProxyRenderer.formatElements(
+        formatElements(
                 sb,
                 Strings.EMPTY,
                 0,
@@ -298,6 +300,7 @@ final class ThrowableProxyRenderer {
                 textRenderer,
                 suffix,
                 lineSeparator);
+        StringBuilders.truncateAfterDelimiter(sb, lineSeparator, maxLineCount);
     }
 
     private static void renderOn(
