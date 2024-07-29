@@ -35,6 +35,8 @@ import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuild
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.util.Strings;
 
+import static java.util.Objects.requireNonNull;
+
 public final class FuzzingUtil {
 
     private static final int MAX_STRING_LENGTH = 30;
@@ -68,13 +70,66 @@ public final class FuzzingUtil {
         return Configurator.initialize(config);
     }
 
-    public static void logWithoutParams(final Logger logger, final FuzzedDataProvider dataProvider) {
+    /**
+     * Contract modelling an API-agnostic logger.
+     * This allows {@link #fuzzLogger(LoggerFacade, FuzzedDataProvider)} to accept all logger implementations; of Log4j API, of SLF4J, etc.
+     */
+    public interface LoggerFacade {
+
+        void log(String message);
+
+        void log(String message, Throwable throwable);
+
+        void log(String message, Object[] parameters);
+
+        static LoggerFacade ofLog4jLogger(final Logger logger) {
+            requireNonNull(logger, "logger");
+            return new Log4jLoggerFacade(logger);
+        }
+    }
+
+    private static final class Log4jLoggerFacade implements LoggerFacade {
+
+        private final Logger logger;
+
+        private Log4jLoggerFacade(final Logger logger) {
+            this.logger = logger;
+        }
+
+        @Override
+        public void log(final String message) {
+            logger.error(message);
+        }
+
+        @Override
+        public void log(final String message, final Throwable throwable) {
+            logger.error(message, throwable);
+        }
+
+        @Override
+        public void log(final String message, final Object[] parameters) {
+            logger.error(message, parameters);
+        }
+    }
+
+    public static void fuzzLogger(final LoggerFacade logger, final FuzzedDataProvider dataProvider) {
+        requireNonNull(logger, "logger");
+        requireNonNull(dataProvider, "dataProvider");
+        final boolean parameterized = dataProvider.consumeBoolean();
+        if (parameterized) {
+            fuzzLoggerWithParams(logger, dataProvider);
+        } else {
+            fuzzLoggerWithoutParams(logger, dataProvider);
+        }
+    }
+
+    private static void fuzzLoggerWithoutParams(final LoggerFacade logger, final FuzzedDataProvider dataProvider) {
         final String message = dataProvider.consumeString(MAX_STRING_LENGTH);
         final Throwable throwable = createThrowableLogParam(dataProvider);
         if (throwable != null) {
-            logger.error(message, throwable);
+            logger.log(message, throwable);
         } else {
-            logger.error(message);
+            logger.log(message);
         }
     }
 
@@ -88,7 +143,7 @@ public final class FuzzingUtil {
         return new Exception(errorMessage);
     }
 
-    public static void logWithParams(final Logger logger, final FuzzedDataProvider dataProvider) {
+    private static void fuzzLoggerWithParams(final LoggerFacade logger, final FuzzedDataProvider dataProvider) {
         final int paramCount = dataProvider.consumeInt(1, 3);
         final String message = Strings.repeat("{}", paramCount);
         final Throwable throwable = createThrowableLogParam(dataProvider);
@@ -97,9 +152,9 @@ public final class FuzzingUtil {
                 .toArray(Object[]::new);
         if (throwable != null) {
             params[paramCount] = throwable;
-            logger.error(message, params);
+            logger.log(message, params);
         } else {
-            logger.error(message, params);
+            logger.log(message, params);
         }
     }
 

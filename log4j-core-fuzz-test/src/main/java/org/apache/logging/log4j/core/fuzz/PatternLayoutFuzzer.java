@@ -14,29 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.layout.template.json.fuzz;
+package org.apache.logging.log4j.core.fuzz;
 
 import static org.apache.logging.log4j.fuzz.FuzzingUtil.createLoggerContext;
-import static org.apache.logging.log4j.fuzz.FuzzingUtil.logWithoutParams;
+import static org.apache.logging.log4j.fuzz.FuzzingUtil.fuzzLogger;
 
 import com.code_intelligence.jazzer.api.FuzzedDataProvider;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.fuzz.FuzzingUtil.LoggerFacade;
+import org.apache.logging.log4j.fuzz.LayoutTesterAppender;
 
-public final class JsonTemplateLayoutWithoutParamFuzzer {
+public final class PatternLayoutFuzzer {
 
-    private static final LoggerContext LOGGER_CONTEXT;
+    private static final LoggerFacade LOGGER = createLogger();
 
-    private static final Logger LOGGER;
-
-    static {
-        LOGGER_CONTEXT = createLoggerContext(
-                JsonEncodingLayoutTesterAppender.PLUGIN_NAME,
-                configBuilder -> configBuilder.newLayout("JsonTemplateLayout"));
-        LOGGER = LOGGER_CONTEXT.getLogger(JsonTemplateLayoutWithoutParamFuzzer.class);
+    private static LoggerFacade createLogger() {
+        final LoggerContext loggerContext = createLoggerContext(LayoutTesterAppender.PLUGIN_NAME, configBuilder -> configBuilder
+                .newLayout("PatternLayout")
+                // Enforce using a single message-based converter, i.e., `MessagePatternConverter`
+                .addAttribute("pattern", "%m"));
+        final Logger logger = loggerContext.getLogger(PatternLayoutFuzzer.class);
+        return LoggerFacade.ofLog4jLogger(logger);
     }
 
     public static void fuzzerTestOneInput(final FuzzedDataProvider dataProvider) {
-        logWithoutParams(LOGGER, dataProvider);
+        fuzzLogger(LOGGER, dataProvider);
     }
 }
