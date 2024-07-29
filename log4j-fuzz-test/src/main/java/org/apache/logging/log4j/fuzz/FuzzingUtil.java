@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.fuzz;
 
+import static java.util.Objects.requireNonNull;
+
 import com.code_intelligence.jazzer.api.FuzzedDataProvider;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import java.util.function.Function;
@@ -34,8 +36,6 @@ import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.util.Strings;
-
-import static java.util.Objects.requireNonNull;
 
 public final class FuzzingUtil {
 

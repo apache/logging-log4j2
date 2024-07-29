@@ -30,10 +30,11 @@ public final class PatternLayoutFuzzer {
     private static final LoggerFacade LOGGER = createLogger();
 
     private static LoggerFacade createLogger() {
-        final LoggerContext loggerContext = createLoggerContext(LayoutTesterAppender.PLUGIN_NAME, configBuilder -> configBuilder
-                .newLayout("PatternLayout")
-                // Enforce using a single message-based converter, i.e., `MessagePatternConverter`
-                .addAttribute("pattern", "%m"));
+        final LoggerContext loggerContext =
+                createLoggerContext(LayoutTesterAppender.PLUGIN_NAME, configBuilder -> configBuilder
+                        .newLayout("PatternLayout")
+                        // Enforce using a single message-based converter, i.e., `MessagePatternConverter`
+                        .addAttribute("pattern", "%m"));
         final Logger logger = loggerContext.getLogger(PatternLayoutFuzzer.class);
         return LoggerFacade.ofLog4jLogger(logger);
     }
