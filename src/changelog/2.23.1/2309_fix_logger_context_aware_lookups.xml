@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="changed">
-  <issue id="2309" link="https://github.com/apache/logging-log4j2/pull/2309"/>
+  <issue id="2309" link="https://github.com/apache/logging-log4j2/issues/2309"/>
   <description format="asciidoc">Fix handling of `LoggerContextAware` lookups</description>
 </entry>

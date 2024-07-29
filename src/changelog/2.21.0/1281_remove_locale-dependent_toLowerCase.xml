@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
-  <issue id="1281" link="https://github.com/apache/logging-log4j2/pull/1281"/>
+  <issue id="1281" link="https://github.com/apache/logging-log4j2/issues/1281"/>
   <description format="asciidoc">Removed locale-dependent `toLowerCase/toUpperCase` calls</description>
 </entry>

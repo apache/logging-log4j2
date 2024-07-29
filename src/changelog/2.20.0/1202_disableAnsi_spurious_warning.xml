@@ -3,7 +3,7 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
-  <issue id="1202" link="https://github.com/apache/logging-log4j2/pull/1202"/>
+  <issue id="1202" link="https://github.com/apache/logging-log4j2/issues/1202"/>
   <description format="asciidoc">
     Eliminate status logger warning, when `disableAnsi` or `noConsoleNoAnsi` is
     used the style and highlight patterns.

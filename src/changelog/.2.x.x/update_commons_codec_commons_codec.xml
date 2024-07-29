@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="2543" link="https://github.com/apache/logging-log4j2/pull/2543"/>
-  <description format="asciidoc">Update `commons-codec:commons-codec` to version `1.17.0`</description>
+  <issue id="2741" link="https://github.com/apache/logging-log4j2/pull/2741"/>
+  <description format="asciidoc">Update `commons-codec:commons-codec` to version `1.17.1`</description>
 </entry>

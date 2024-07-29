@@ -114,7 +114,7 @@ The message retrieved from the bundle will be formatted using a <<FormattedMessa
 
 [WARNING]
 ====
-`LocalizedMessage` is primarily provided for compatibility with {logging-services-url}/log4j/1.x[Log4j 1].
+`LocalizedMessage` is primarily provided for compatibility with {logging-services-url}/log4j/1.x/index.html[Log4j 1].
 We advise you to perform log message localization at the representation layer of your application, e.g., the client UI.
 ====
 
@@ -309,7 +309,7 @@ This method will be called during event construction to pass the associated `Log
 ==== `MultiformatMessage`
 
 link:../javadoc/log4j-api/org/apache/logging/log4j/message/MultiformatMessage.html[`MultiformatMessage`] extends from `Message` to support multiple <<format-type,format types>>.
-For example, see {project-github-url}/tree/2.x/log4j-api/src/main/java/org/apache/logging/log4j/message/MapMessage.java[`MapMessage.java`] extending from `MultiformatMessage` to support multiple formats; XML, JSON, etc.
+For example, see {project-github-url}/log4j-api/src/main/java/org/apache/logging/log4j/message/MapMessage.java[`MapMessage.java`] extending from `MultiformatMessage` to support multiple formats; XML, JSON, etc.
 
 [#MultiFormatStringBuilderFormattable]
 ==== `MultiFormatStringBuilderFormattable`

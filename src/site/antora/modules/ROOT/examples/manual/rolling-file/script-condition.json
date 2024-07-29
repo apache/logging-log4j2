@@ -1,0 +1,33 @@
+{
+  "Configuration": {
+    "Appenders": {
+      // tag::appender[]
+      "RollingFile": {
+        "name": "FILE",
+        "filePattern": "/var/log/app.%d{yyyy-MM-dd}.log.gz",
+        "JsonTemplateLayout": {},
+        "DirectWriteRolloverStrategy": {
+          "Delete": {
+            "basePath": "/var/log",
+            "ScriptCondition": {
+              "ScriptFile": {
+                "path": "script-condition.groovy",
+                "language": "groovy"
+              }
+            }
+          }
+        },
+        "TimeBasedTriggeringPolicy": {}
+      }
+      // end::appender[]
+    },
+    "Loggers": {
+      "Root": {
+        "level": "INFO",
+        "AppenderRef": {
+          "ref": "FILE"
+        }
+      }
+    }
+  }
+}

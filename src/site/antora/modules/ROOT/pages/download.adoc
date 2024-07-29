@@ -28,6 +28,6 @@ You can manually download all published Log4j distributions, verify them, and se
 Are you looking for old versions of Log4j?
 While we recommend to always use the latest version, you can find the older versions here:
 
-* {logging-services-url}/1.x/[Log4j 1.x (End of Life, Java 1.4)]
-* {logging-services-url}/2.3.x/[Log4j 2.3.x (Java 6)]
-* {logging-services-url}/2.12.x/[Log4j 2.12.x (Java 7)]
+* {logging-services-url}/log4j/1.x/index.html[Log4j 1.x (End of Life, Java 1.4)]
+* {logging-services-url}/log4j/2.3.x/index.html[Log4j 2.3.x (Java 6)]
+* {logging-services-url}/log4j/2.12.x/index.html[Log4j 2.12.x (Java 7)]

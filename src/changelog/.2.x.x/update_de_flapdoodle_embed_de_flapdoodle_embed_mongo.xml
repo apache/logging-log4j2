@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="2710" link="https://github.com/apache/logging-log4j2/pull/2710"/>
-  <description format="asciidoc">Update `de.flapdoodle.embed:de.flapdoodle.embed.mongo` to version `4.12.0`</description>
+  <issue id="2759" link="https://github.com/apache/logging-log4j2/pull/2759"/>
+  <description format="asciidoc">Update `de.flapdoodle.embed:de.flapdoodle.embed.mongo` to version `4.13.1`</description>
 </entry>

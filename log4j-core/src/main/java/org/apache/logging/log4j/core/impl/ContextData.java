@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -33,6 +35,7 @@ import org.apache.logging.log4j.util.StringMap;
 /**
  * General purpose utility class for accessing data accessible through ContextDataProviders.
  */
+@ServiceConsumer(value = ContextDataProvider.class, resolution = Resolution.OPTIONAL)
 public final class ContextData {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
@@ -55,7 +58,7 @@ public final class ContextData {
         return Collections.unmodifiableList(providers);
     }
 
-    public static void addProvider(ContextDataProvider provider) {
+    public static void addProvider(final ContextDataProvider provider) {
         contextDataProviders.add(provider);
     }
 
@@ -78,7 +81,7 @@ public final class ContextData {
      * Populates the provided StringMap with data from the Context.
      * @param stringMap the StringMap to contain the results.
      */
-    public static void addAll(StringMap stringMap) {
+    public static void addAll(final StringMap stringMap) {
         final List<ContextDataProvider> providers = getProviders();
         providers.forEach((provider) -> provider.addAll(stringMap));
     }
@@ -88,16 +91,16 @@ public final class ContextData {
      * @param map the Map to contain the results.
      * @return the Map. Useful for chaining operations.
      */
-    public static Map<String, String> addAll(Map<String, String> map) {
+    public static Map<String, String> addAll(final Map<String, String> map) {
         final List<ContextDataProvider> providers = getProviders();
         providers.forEach((provider) -> provider.addAll(map));
         return map;
     }
 
-    public static String getValue(String key) {
-        List<ContextDataProvider> providers = getProviders();
-        for (ContextDataProvider provider : providers) {
-            String value = provider.get(key);
+    public static String getValue(final String key) {
+        final List<ContextDataProvider> providers = getProviders();
+        for (final ContextDataProvider provider : providers) {
+            final String value = provider.get(key);
             if (value != null) {
                 return value;
             }

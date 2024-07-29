@@ -24,7 +24,7 @@
 
 :jcl-link: https://commons.apache.org/proper/commons-logging/[JCL (Apache Commons Logging)]
 :jpl-link: https://openjdk.org/jeps/264[JPL (Java Platform Logging)]
-:jul-link: https://docs.oracle.com/en/java/javase/{java-target-version}/core/java-logging-overview.html[JUL (Java Logging)]
+:jul-link: https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/logging/overview.html[JUL (Java Logging)]
 :jboss-logging-link: https://github.com/jboss-logging/jboss-logging[JBoss Logging]
 
 // end::inc[]

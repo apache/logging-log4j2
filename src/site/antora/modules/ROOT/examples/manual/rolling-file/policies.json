@@ -1,0 +1,27 @@
+{
+  "Configuration": {
+    "Appenders": {
+      // tag::appender[]
+      "RollingFile": {
+        "name": "FILE",
+        "fileName": "app.log",
+        "filePattern": "app.%d{yyyy-MM-dd}.%i.log",
+        "JsonTemplateLayout": {},
+        "Policies": {
+          "OnStartupTriggeringPolicy": {},
+          "SizeBasedTriggeringPolicy": {},
+          "TimeBasedTriggeringPolicy": {}
+        }
+      }
+      // end::appender[]
+    },
+    "Loggers": {
+      "Root": {
+        "level": "INFO",
+        "AppenderRef": {
+          "ref": "FILE"
+        }
+      }
+    }
+  }
+}

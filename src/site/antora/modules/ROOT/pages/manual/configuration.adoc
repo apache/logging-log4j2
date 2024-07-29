@@ -286,6 +286,7 @@ Properties::
 include::example$manual/configuration/main-elements.properties[lines=17..-1]
 ----
 ====
+
 <1> Configures a console appender named `CONSOLE` with a pattern layout.
 <2> Configures a file appender named `MAIN` with a JSON template layout.
 <3> Configures a file appender named `DEBUG_LOG` with a pattern layout.
@@ -344,6 +345,7 @@ Users can add Components to loggers, appender references, appenders, or the glob
 +
 See xref:manual/filters.adoc[Filter configuration] for details.
 
+[#global-properties]
 Properties::
 +
 Represent a set of reusable configuration values for property substitution.
@@ -618,8 +620,8 @@ Loggers can emit additional context data that will be integrated with other cont
 ====
 The `value` of each property is subject to <<property-substitution,property substitution>> twice:
 
-* when the configuration is loaded,
-* each time a log event is generated.
+* when the configuration is loaded, it is evaluated in the xref:manual/lookups.adoc#global-context[global context].
+* each time a log event is generated, it is evaluated in the xref:manual/lookups.adoc#event-context[context of the event].
 
 Therefore, if you wish to insert a value that changes in time, you must double the `$` sign, as shown in the example below.
 ====
@@ -771,8 +773,8 @@ If `name` starts with a hyphen `-` (e.g. `-variable`), it must be escaped with a
 +
 The most common lookup prefixes are:
 +
-* `sys` for Java system properties (see xref:manual/lookups.adoc#system-properties-lookup[System Properties lookup]),
-* `env` for environment variables (see xref:manual/lookups.adoc#environment-lookup[Environment lookup]).
+* `sys` for Java system properties (see xref:manual/lookups.adoc#SystemPropertiesLookup[System Properties lookup]),
+* `env` for environment variables (see xref:manual/lookups.adoc#EnvironmentLookup[Environment lookup]).
 
 The above expansions have a version with an additional `default` value that is **expanded** if the lookup fails:
 
@@ -862,9 +864,8 @@ and the OS environment variable `FOO` has a value of `environment`, Log4j will e
 [WARNING]
 =====
 For security reasons, if the **expansion** of a `${...}` expression contains other expressions, these will **not** be expanded.
-The only exception to this rule is the expansion of properties in the `Properties` container.
 
-Properties defined in the `Properties` container can depend on each other.
+Properties defined in the `Properties` container, however, can depend on each other.
 If your configuration contains, for example:
 
 [tabs]
@@ -908,26 +909,45 @@ Therefore, the value of the `logging.file` property will be:
 =====
 
 [id=lazy-property-substitution]
-=== Lazy property substitution
+=== Runtime property substitution
 
-For most attributes, property substitution is performed only once at **configuration time**, but there are two categories of exceptions to this rule:
+For most attributes, property substitution is performed only once at **configuration time**,
+but there are exceptions to this rule: some attributes are **also** evaluated when a component-specific event occurs.
 
-* Some attributes are **also** evaluated when a component-specific event occurs.
-For example
-<<logger-elements-properties,additional context properties>>
-and the `pattern` attribute of the example below are evaluated at each log event, while the `filePattern` attribute of a
-xref:manual/appenders.adoc#rollingfileappender[rolling file appender]
-is evaluated at each rollover.
-+
 In this case:
 
-** If you want property substitution to happen only once, use one dollar sign, e.g., `${date:HH:mm:ss}`.
-** If you want property substitution to happen at each cyclic event, you use two dollar signs, e.g., `$${date:HH:mm:ss}`
+** If you want property substitution to happen at configuration time, use one dollar sign, e.g., `${date:HH:mm:ss}`.
+** If you want property substitution to happen at runtime, you use two dollar signs, e.g., `$${date:HH:mm:ss}`
 
-* Other components defer the evaluation of their child components.
-In this case, you only need one dollar `$` sign.
-+
-This case happens for the children of the `Route` element below:
+The list of attributes that support runtime property substitution is:
+
+* The `value` attribute of <<logger-elements-properties,nested `Property` elements>> of a logger configuration.
+* The
+xref:manual/pattern-layout.adoc#plugin-attr-pattern[`pattern`] attribute of the xref:manual/pattern-layout.adoc[].
+This attribute evaluates lookups in the xref:manual/lookups.adoc#event-context[context of the current log event].
+* Event template attributes of xref:manual/json-template-layout.adoc[].
+See xref:manual/json-template-layout.adoc#property-substitution-in-template[property substitution in JSON Template Layout]
+for more details.
+* The appender attributes listed in xref:manual/appenders.adoc#runtime-evaluation[runtime property substitution in appenders].
+
+[WARNING]
+====
+Certain lookups might behave differently when they are expanded at runtime.
+See xref:manual/lookups.adoc#evaluation-contexts[lookup evaluation contexts] for details.
+====
+
+[NOTE]
+====
+The
+xref:manual/appenders.adoc#Routes[`Route`] component of the
+xref:manual/appenders.adoc#RoutingAppender[`RoutingAppender`]
+is a different case altogether.
+The attributes of its children are expanded at runtime, but are not expanded at configuration time.
+
+Inside the `Route` component you **should not** use escaped `$$+{...}+` expressions, but only unescaped `$+{...}+` expressions.
+====
+
+The complete spectrum of behaviors concerning runtime property substitution is given by the routing appender example below:
 
 [tabs]
 ====
@@ -964,9 +984,9 @@ include::example$manual/configuration/routing.properties[tag=appender]
 ----
 ====
 
-<1> The `pattern` attribute is evaluated at configuration time and also each time a log event is routed.
+<1> The `pattern` attribute is evaluated at configuration time, and also each time a log event is routed.
 Therefore, the dollar `$` sign needs to be escaped.
-<2> All the attributes inside the `File` element have a **deferred** evaluation, therefore they need only one `$` sign.
+<2> All the attributes of children of the `Route` element have a **deferred** evaluation. Therefore, they need only one `$` sign.
 
 [id=arbiters]
 == [[Arbiters]] Arbiters
@@ -1066,6 +1086,7 @@ Properties::
 include::example$manual/configuration/arbiters-select.properties[tag=select]
 ----
 ====
+
 <1> If the Java system property `env` has a value of `dev`, a Pattern Layout will be used.
 <2> Otherwise, a JSON Template Layout will be used.
 

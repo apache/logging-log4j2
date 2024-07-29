@@ -241,7 +241,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
     }
 
     /**
-     * Formats the Structured data as described in <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a>.
+     * Formats the Structured data as described in <a href="https://datatracker.ietf.org/doc/html/rfc5424">RFC 5424</a>.
      *
      * @return The formatted String.
      */
@@ -250,7 +250,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
     }
 
     /**
-     * Formats the Structured data as described in <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a>.
+     * Formats the Structured data as described in <a href="https://datatracker.ietf.org/doc/html/rfc5424">RFC 5424</a>.
      *
      * @param format The format identifier.
      * @return The formatted String.
@@ -316,7 +316,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
     }
 
     /**
-     * Formats the Structured data as described in <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a>.
+     * Formats the Structured data as described in <a href="https://datatracker.ietf.org/doc/html/rfc5424">RFC 5424</a>.
      *
      * @param format The format identifier.
      * @return The formatted String.
@@ -380,8 +380,9 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      * @param formats
      *            An array of Strings that provide extra information about how to format the message. MapMessage uses
      *            the first format specifier it recognizes. The supported formats are XML, JSON, and JAVA. The default
-     *            format is key1="value1" key2="value2" as required by <a href="https://tools.ietf.org/html/rfc5424">RFC
-     *            5424</a> messages.
+     *            format is key1="value1" key2="value2" as required by
+     *            <a href="https://datatracker.ietf.org/doc/html/rfc5424">RFC 5424</a>
+     *            messages.
      *
      * @return The formatted message.
      */

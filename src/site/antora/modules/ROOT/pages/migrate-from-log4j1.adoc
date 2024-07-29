@@ -21,7 +21,7 @@ Licensed to the Apache Software Foundation (ASF) under one or more
 
 {log4j1-url}/index.html[Log4j 1]
 has reached **End of Life** in 2015 (see
-https://blogs.apache.org/foundation/entry/apache_logging_services_project_announces[announcement])
+https://news.apache.org/foundation/entry/apache_logging_services_project_announces[announcement])
 and is no longer supported.
 
 Since Log4j 2 has been rewritten from scratch, it introduces many breaking changes to its predecessor.
@@ -148,25 +148,25 @@ In order to migrate you code, you need to:
 | Migrate Log4j 1 type | to Log4j type
 
 | {log4j1-url}/apidocs/org/apache/log4j/MDC.html[org.apache.log4j.MDC]
-| link:../javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html[org.apache.logging.log4j.ThreadContext]
+| link:javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html[org.apache.logging.log4j.ThreadContext]
 
 | {log4j1-url}/apidocs/org/apache/log4j/NDC.html[org.apache.log4j.NDC]
-| link:../javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html[org.apache.logging.log4j.ThreadContext]
+| link:javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html[org.apache.logging.log4j.ThreadContext]
 
 | {log4j1-url}/apidocs/org/apache/log4j/Priority.html[org.apache.log4j.Priority]
-| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[org.apache.logging.log4j.Level]
+| link:javadoc/log4j-api/org/apache/logging/log4j/Level.html[org.apache.logging.log4j.Level]
 
 | {log4j1-url}/apidocs/org/apache/log4j/Level.html[org.apache.log4j.Level]
-| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[org.apache.logging.log4j.Level]
+| link:javadoc/log4j-api/org/apache/logging/log4j/Level.html[org.apache.logging.log4j.Level]
 
 | {log4j1-url}/apidocs/org/apache/log4j/Category.html[org.apache.log4j.Category]
-| link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html[org.apache.logging.log4j.Logger]
+| link:javadoc/log4j-api/org/apache/logging/log4j/Logger.html[org.apache.logging.log4j.Logger]
 
 | {log4j1-url}/apidocs/org/apache/log4j/Logger.html[org.apache.log4j.Logger]
-| link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html[org.apache.logging.log4j.Logger]
+| link:javadoc/log4j-api/org/apache/logging/log4j/Logger.html[org.apache.logging.log4j.Logger]
 
 | {log4j1-url}/apidocs/org/apache/log4j/LogManager.html[org.apache.log4j.LogManager]
-| link:../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html[org.apache.logging.log4j.LogManager]
+| link:javadoc/log4j-api/org/apache/logging/log4j/LogManager.html[org.apache.logging.log4j.LogManager]
 |===
 
 * Some Log4j 1 methods were renamed or moved to a different class.
@@ -178,13 +178,13 @@ Therefore, you need to replace the following methods with their Log4j 2 API equi
 | Migrate Log4j 1 method | to Log4j method
 
 | {log4j1-url}/apidocs/org/apache/log4j/Logger.html#getLogger(java.lang.String)[Logger.getLogger()]
-| link:../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#getLogger()[LogManager.getLogger()]
+| link:javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#getLogger()[LogManager.getLogger()]
 
 | {log4j1-url}/apidocs/org/apache/log4j/Logger.html#getRootLogger()[Logger.getRootLogger()]
-| link:../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#getRootLogger()[LogManager.getRootLogger()]
+| link:javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#getRootLogger()[LogManager.getRootLogger()]
 
 | {log4j1-url}/apidocs/org/apache/log4j/Category.html#getEffectiveLevel()[Category.getEffectiveLevel()]
-| link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#getLevel()[Logger.getLevel()]
+| link:javadoc/log4j-api/org/apache/logging/log4j/Logger.html#getLevel()[Logger.getLevel()]
 |===
 
 * Finally, some methods need specific conversion rules to be applied:
@@ -199,14 +199,14 @@ Therefore, you need to replace the following methods with their Log4j 2 API equi
 
 | {log4j1-url}/apidocs/org/apache/log4j/LogManager.html#shutdown()[`LogManager.shutdown()`]
 | Since Log4j 2.6, an equivalent
-link:../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#shutdown()[`o.a.l.l.LogManager.shutdown()`]
+link:javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#shutdown()[`o.a.l.l.LogManager.shutdown()`]
 method can be used.
 
 The utility of this method call depends upon the logging backend used with Log4j API.
 
 The Log4j Core backend automatically adds a JVM shutdown hook on start up to perform any cleanups, so the `LogManager.shutdown()` call can be safely removed.
 Starting in Log4j 2.1, you can also specify a custom
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/ShutdownCallbackRegistry.html[ShutdownCallbackRegistry].
+link:javadoc/log4j-core/org/apache/logging/log4j/core/util/ShutdownCallbackRegistry.html[ShutdownCallbackRegistry].
 
 See
 xref:manual/systemproperties.adoc#log4j2.shutdownCallbackRegistry[log4j2.shutdownCallbackRegistry]
@@ -504,7 +504,7 @@ The support for Log4j 1 configuration files uses Log4j 2 Core plugin system and 
 The Log4j 1 to Log4j 2 bridge supports out-of-the-box the following
 {log4j1-url}/index.html[Log4j 1]
 and
-link:/log4j/extras/index/html[Apache Extras for Log4j 1]
+link:/log4j/extras/index.html[Apache Extras for Log4j 1]
 components:
 
 Appenders::

@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
-  <issue id="1380" link="https://github.com/apache/logging-log4j2/pull/1380"/>
+  <issue id="1380" link="https://github.com/apache/logging-log4j2/issues/1380"/>
   <description format="asciidoc">Avoided using released objects in `StackTraceStringResolver` of `JsonTemplateLayout`</description>
 </entry>

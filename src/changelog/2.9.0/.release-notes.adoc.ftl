@@ -89,6 +89,7 @@ Basic compatibility with Log4j 1.x is provided through the `log4j-1.2-api` compo
 not implement some of the very implementation specific classes and methods.
 The package names and Maven `groupId` have been changed to `org.apache.logging.log4j` to avoid any conflicts with Log4j 1.x.
 
-For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see
+https://logging.apache.org/log4j/2.x/index.html[the Apache Log4j 2 website].
 
 <#include "../.changelog.adoc.ftl">

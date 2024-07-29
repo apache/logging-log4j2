@@ -39,13 +39,52 @@ Appenders always have a name so that they can be referenced from Loggers.
 In the tables below, the "Type" column corresponds to the Java type expected.
 For non-JDK classes, these should usually be in link:../javadoc/log4j-core/index.html[Log4j Core] unless otherwise noted.
 
-[#common-properties]
-== Common properties
+[#commons-concerns]
+== Common concerns
+
+[#buffering]
+=== Buffering
+
+Appenders that use stream-like resources (such as files, TCP connections) have an internal
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/ByteBuffer.html[`ByteBuffer`]
+that can be used to format each log event, before sending it to the underlying resource.
+The buffer is used if:
+
+* the
+xref:manual/systemproperties.adoc#log4j2.enableDirectEncoders[`log4j2.enableDirectEncoders`]
+configuration property is enabled,
+* or the <<bufferedIo,`bufferedIo`>> configuration attribute is enabled.
+
+The buffer is flushed to the underlying resource on three occasions:
+
+* if the buffer is full.
+* at the end of each log event batch, if
+xref:manual/async.adoc[asynchronous loggers]
+or
+<<AsyncAppender,appenders>>
+are used.
+* at the end of each log event, if the
+<<immediateFlush,`immediateFlush`>>
+configuration attribute is `true`.
 
 These configuration attributes are shared by multiple appenders:
 
-[#immediateFlush]
-=== `immediateFlush`
+[#bufferSize]
+==== `bufferSize`
+
+[cols="1h,5"]
+|===
+| Type
+| `int`
+
+| Default value
+| xref:manual/systemproperties.adoc#log4j2.encoderByteBufferSize[`log4j2.encoderByteBufferSize`]
+|===
+
+This configuration attribute specifies the size of the `ByteBuffer` used by the appender.
+
+[#bufferedIo]
+==== `bufferedIo`
 
 [cols="1h,5"]
 |===
@@ -53,21 +92,89 @@ These configuration attributes are shared by multiple appenders:
 | Default value | `true`
 |===
 
-If set to `true`, Log4j will flush all Java buffers at the end of each event:
+If set to `true`, Log4j Core will use an internal `ByteBuffer` to store log events before sending them.
 
+If the xref:manual/systemproperties.adoc#log4j2.enableDirectEncoders[`log4j2.enableDirectEncoders`] configuration property is set to `true`, the internal `ByteBuffer` will always be used.
+
+[#immediateFlush]
+==== `immediateFlush`
+
+[cols="1h,5"]
+|===
+| Type          | `boolean`
+| Default value | `true`
+|===
+
+If set to `true`, Log4j will flush Log4j Core and Java buffers at the end of each event:
+
+* the internal `ByteBuffer` of the appender will be flushed.
 * for appenders based on Java's
 https://docs.oracle.com/javase/{java-target-version}/docs/api/java/io/OutputStream.html[`OutputStream`]
-a call to the `OutputStream.flush()` method is performed.
-* if xref:manual/systemproperties.adoc#log4j2.enableDirectEncoders[`log4j2.enableDirectEncoders`] is set to `true`, many Log4j appenders use a
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/ByteBuffer.html[`ByteBuffer`]
-to format log events before sending them to the underlying resource.
-Setting `immediateFlush` to `true` flushes these buffers at each event.
+a call to the `OutputStream.flush()` method will be performed.
 
 [IMPORTANT]
 ====
 This setting only guarantees that a byte representation of the log event is passed to the operating system.
 It does not ensure that the operating system writes the event to the underlying storage.
 ====
+
+[TIP]
+====
+If you are using xref:manual/async.adoc[asynchronous loggers] or <<AsyncAppender,appenders>>, you can set this attribute to `false`.
+Log4j Core will still flush the internal buffer, whenever the log event queue becomes empty.
+====
+
+[#runtime-evaluation]
+=== Runtime evaluation of attributes
+
+The following configuration attributes are also evaluated at runtime, so can contain escaped `$$+{...}+` expressions.
+
+.List of attributes evaluated at runtime
+[cols="1,1,1,1"]
+|===
+| Component | Parameter | Event type | Evaluation context
+
+| <<HttpAppender,`HttpAppender`>>
+| <<HttpAppender-element-headers,`Property/value`>>
+| Log event
+| xref:manual/lookups.adoc#global-context[_global_]
+
+| <<KafkaAppender,`KafkaAppender`>>
+| <<KafkaAppender-attr-key,`key`>>
+| Log event
+| xref:manual/lookups.adoc#global-context[_global_]
+
+| <<NoSQLAppender,`NoSQLAppender`>>
+| <<NoSqlAppender-element-keyValuePairs,`KeyValuePair/value`>>
+| Log event
+| xref:manual/lookups.adoc#global-context[_global_]
+
+| <<PropertiesRewritePolicy,`PropertiesRewritePolicy`>>
+| <<PropertiesRewritePolicy-element-properties,`Property/value`>>
+| Log event
+| xref:manual/lookups.adoc#global-context[_global_]
+
+| <<Routes,`Routes`>>
+| `pattern`
+| Log event
+| xref:manual/lookups.adoc#event-context[_log event_]
+
+| xref:manual/rolling-file.adoc[`RollingFileAppender`]
+| xref:manual/rolling-file.adoc#attr-filePattern[`filePattern`]
+| Rollover
+| xref:manual/lookups.adoc#global-context[_global_]
+
+| xref:manual/rolling-file.adoc#AbstractPathAction[Optional actions]
+| `basePath`
+| Rollover
+| xref:manual/lookups.adoc#global-context[_global_]
+
+|===
+
+The <<Routes,`Route`>> component of the <<RoutingAppender,`RoutingAppender`>> is special: its children are evaluated at runtime, but they are **not** evaluated at configuration time.
+Inside the `Route` component you **should not** use escaped `$$+{...}+` expressions, but only unescaped `$+{...}+` expressions.
+
+See xref:manual/configuration.adoc#lazy-property-substitution[runtime property substitution] for more details.
 
 [#collection]
 == Collection
@@ -240,7 +347,8 @@ maximum capacity.
 [#CassandraAppender]
 === CassandraAppender
 
-The CassandraAppender writes its output to an https://cassandra.apache.org/[Apache Cassandra]
+The CassandraAppender writes its output to an
+https://cassandra.apache.org/_/index.html[Apache Cassandra]
 database.
 A keyspace and table must be configured ahead of time, and the columns of that table are mapped in a configuration file.
 Each column can specify either a xref:manual/pattern-layout.adoc[]https://logging.apache.org/log4j/2.x/manual/layouts.html#PatternLayout[StringLayout] (e.g., a PatternLayout) along with an optional conversion type, or only a conversion type for `org.apache.logging.log4j.spi.ThreadContextMap` or
@@ -510,6 +618,16 @@ The FileAppender uses a FileManager (which extends OutputStreamManager) to perfo
 While FileAppenders from different Configurations cannot be shared, the FileManagers can be if the Manager is accessible.
 For example, two web applications in a servlet container can have their configuration and safely write to the same file if Log4j is in a ClassLoader that is common to both of them.
 
+[NOTE]
+====
+The xref:manual/appenders.adoc#FileAppender[FileAppender] does not offer a mechanism for external applications to force it to reopen the log file.
+External tools such as
+https://github.com/logrotate/logrotate[`logrotate`]
+cannot rotate log files without losing log events.
+
+If you want to rotate your log files, use xref:manual/rolling-file.adoc[a rolling file appender].
+====
+
 .FileAppender Parameters
 [width="100%",cols="20%,20%,60%",options="header",]
 |=======================================================================
@@ -635,7 +753,7 @@ Here is a sample File configuration:
 
 _This is an optional component supplied in a separate jar._
 
-http://flume.apache.org/index.html[Apache Flume] is a distributed, reliable, and available system for efficiently collecting, aggregating, and moving large amounts of log data from many different sources to a centralized data store.
+https://flume.apache.org/index.html[Apache Flume] is a distributed, reliable, and available system for efficiently collecting, aggregating, and moving large amounts of log data from many different sources to a centralized data store.
 The FlumeAppender takes LogEvents and sends them to a Flume agent as serialized Avro events for consumption.
 
 The Flume Appender supports three modes of operation.
@@ -1277,7 +1395,9 @@ However, configurations written for 2.0 that use the `<JMSQueue/>` or `<JMSTopic
 | factoryBindingName
 | String
 | _Required_
-| The name to locate in the Context that provides the https://download.oracle.com/javaee/5/api/javax/jms/ConnectionFactory.html[ConnectionFactory]. This can be any subinterface of `ConnectionFactory` as well.
+| The name to locate in the Context that provides the
+https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/connectionfactory[ConnectionFactory].
+This can be any subinterface of `ConnectionFactory` as well.
 
 | factoryName
 | String
@@ -1312,7 +1432,9 @@ However, configurations written for 2.0 that use the `<JMSQueue/>` or `<JMSTopic
 | destinationBindingName
 | String
 | _Required_
-| The name to use to locate the https://download.oracle.com/javaee/5/api/javax/jms/Destination.html[Destination]. This can be a `Queue` or `Topic`, and as such, the attribute names `queueBindingName` and `topicBindingName` are aliases to maintain compatibility with the Log4j 2.0 JMS appenders.
+| The name to use to locate the
+https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/destination[Destination].
+This can be a `Queue` or `Topic`, and as such, the attribute names `queueBindingName` and `topicBindingName` are aliases to maintain compatibility with the Log4j 2.0 JMS appenders.
 
 | securityPrincipalName
 | String
@@ -1541,7 +1663,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         return this.id;
     }
 
-    public void setId(long id) {
+    public void setId(final long id) {
         this.id = id;
     }
 
@@ -1611,8 +1733,14 @@ Optional, default is 0 (infinite timeout).
 |readTimeoutMillis |integer |The socket read timeout in milliseconds.
 Optional, default is 0 (infinite timeout).
 
-|headers |Property[] |Additional HTTP headers to use. The values support
-xref:manual/lookups.adoc[lookups].
+| [[HttpAppender-element-headers]]headers
+| Property[]
+| Additional HTTP headers to use.
+
+The values support
+xref:manual/configuration.adoc#lazy-property-substitution[runtime property substitution]
+and are evaluated in a
+xref:manual/lookups.adoc#global-context[_global context_].
 
 |ignoreExceptions |boolean |The default is `true`, causing exceptions
 encountered while appending events to be internally logged and then
@@ -1648,7 +1776,7 @@ Here is a sample HttpAppender configuration snippet:
 The KafkaAppender logs events to an https://kafka.apache.org/[Apache Kafka] topic.
 Each log event is sent as a Kafka record.
 
-[width="100%",options="header"]
+[cols="1m,1m,5"]
 |===
 |Parameter Name |Type |Description
 
@@ -1656,9 +1784,14 @@ Each log event is sent as a Kafka record.
 |String
 |The Kafka topic to use. Required.
 
-|key
+|[[KafkaAppender-attr-key]]key
 |String
-|The key that will be sent to Kafka with every message. Optional value defaulting to `null`. Any of the xref:manual/lookups.adoc[Lookups] can be included.
+|The key that will be sent to Kafka with every message.
+
+Supports
+xref:manual/configuration.adoc#lazy-property-substitution[runtime property substitution]
+and is evaluated in the
+xref:manual/lookups.adoc#event-context[_context of the current event_].
 
 |filter
 |Filter
@@ -1736,7 +1869,7 @@ The MemoryMappedFileAppender maps a part of the specified file into memory and w
 The main benefit of using memory-mapped files is I/O performance.
 Instead of making system calls to write to disk, this appender can simply change the program's local memory, which is orders of magnitude faster.
 Also, in most operating systems the memory region mapped is the kernel's
-http://en.wikipedia.org/wiki/Page_cache[page cache] (file cache), meaning that no copies need to be created in user space.
+https://en.wikipedia.org/wiki/Page_cache[page cache] (file cache), meaning that no copies need to be created in user space.
 
 // TODO:
 // performance tests that compare performance of this appender to
@@ -1851,6 +1984,22 @@ to buffer log events and flush whenever the buffer reaches this size.
 NoSQLObject<W>>> |_Required._ The NoSQL provider that provides
 connections to the chosen NoSQL database.
 |=======================================================================
+
+.`NoSqlAppender` -- nested elements
+[cols="1m,1,4",id=NoSqlAppender-element-keyValuePairs]
+|===
+| Type | Multiplicity | Description
+
+| xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-util-KeyValuePair[`KeyValuePair`]
+| Zero or more
+a| Adds a simple key/value field to the NoSQL object.
+
+The `value` attribute of the pair supports
+xref:manual/configuration.adoc#lazy-property-substitution[runtime property substitution]
+using the
+xref:manual/lookups.adoc#event-context[current event as context].
+
+|===
 
 You specify which NoSQL provider to use by specifying the appropriate configuration element within the `<NoSql>` element.
 The only type currently supported is `<MongoDb>`.
@@ -2092,7 +2241,7 @@ http://mongodb.github.io/mongo-java-driver/4.0/apidocs/mongodb-driver-core/com/m
 in the format `mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database.collection][?options]]`.
 
 |capped |boolean |Enable support for
-https://docs.mongodb.com/manual/core/capped-collections/[capped
+https://www.mongodb.com/docs/manual/core/capped-collections/[capped
 collections]
 
 |collectionSize |long |Specify the size in bytes of the capped collection
@@ -2242,8 +2391,7 @@ The OutputStreamAppender uses an OutputStreamManager to handle the actual I/O, a
 The RandomAccessFileAppender is similar to the standard
 <<FileAppender>> except it is always buffered (this cannot be switched off) and internally it uses a
 `ByteBuffer + RandomAccessFile` instead of a `BufferedOutputStream`.
-We saw a 20-200% performance improvement compared to FileAppender with "bufferedIO=true" in our
-measurements.
+We saw a 20-200% performance improvement compared to FileAppender with "bufferedIO=true" in our measurements.
 Similar to the FileAppender, RandomAccessFileAppender uses a RandomAccessFileManager to perform the file I/O. While RandomAccessFileAppender from different Configurations cannot be shared, the RandomAccessFileManagers can be if the Manager is accessible.
 For example, two web applications in a servlet container can have their configuration and safely write to the same file if Log4j is in a ClassLoader that is common to both of them.
 
@@ -2391,6 +2539,7 @@ The following configuration shows a RewriteAppender configured to add a product 
 </Configuration>
 ----
 
+[#PropertiesRewritePolicy]
 ===== PropertiesRewritePolicy
 
 PropertiesRewritePolicy will add properties configured on the policy to the ThreadContext Map being logged.
@@ -2398,11 +2547,18 @@ The properties will not be added to the actual ThreadContext Map.
 The property values may contain variables that will be evaluated when the configuration is processed as well as when the event is logged.
 
 [cols="20%,20%,60%",options="header",]
-|=======================================================================
+|===
 |Parameter Name |Type |Description
-|properties |Property[] |One of more Property elements to define the
-keys and values to be added to the ThreadContext Map.
-|=======================================================================
+
+|[[PropertiesRewritePolicy-element-properties]]properties
+|Property[]
+|One of more Property elements to define the keys and values to be added to the ThreadContext Map.
+
+The `value` attribute of each `Property` element supports
+xref:manual/configuration.adoc#lazy-property-substitution[runtime property substitution]
+in the
+xref:manual/lookups.adoc#global-context[_global context_].
+|===
 
 The following configuration shows a RewriteAppender configured to add a product key and its value to the MapMessage:
 
@@ -2467,1136 +2623,6 @@ The following configuration shows a RewriteAppender configured to map level INFO
   <Loggers>
     <Root level="error">
       <AppenderRef ref="Rewrite"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-[id=rollingfileappender]
-=== [[RollingFileAppender]] RollingFileAppender
-
-The RollingFileAppender is an OutputStreamAppender that writes to the file named in the fileName parameter and rolls the file over according to the `TriggeringPolicy` and the `RolloverPolicy`.
-The `RollingFileAppender`
-uses a `RollingFileManager` (which extends `OutputStreamManager`) to perform the file I/O and perform the rollover.
-While `RolloverFileAppenders` from different Configurations cannot be shared, the `RollingFileManagers` can be if the Manager is accessible.
-For example, two web applications in a servlet container can have their configuration and safely write to the same file if Log4j is in a
-`ClassLoader` that is common to both of them.
-
-A RollingFileAppender requires a <<TriggeringPolicy>> and a <<RolloverStrategies>>.
-The triggering policy determines if a rollover should be performed while the `RolloverStrategy`
-defines how the rollover should be done.
-If no `RolloverStrategy` is configured, `RollingFileAppender` will use the
-<<DefaultRolloverStrategy>>.
-Since log4j-2.5, a <<CustomDeleteOnRollover,custom delete action>> can be configured in the DefaultRolloverStrategy to run at rollover.
-Since 2.8 if no file name is configured then
-<<DirectWriteRolloverStrategy>> will be used instead of DefaultRolloverStrategy.
-Since log4j-2.9, a
-<<CustomPosixViewAttributeOnRollover,custom POSIX file attribute view action>> can be configured in the DefaultRolloverStrategy to run at rollover, if not defined, the inherited POSIX file attribute view from the RollingFileAppender will be applied.
-
-File locking is not supported by the RollingFileAppender.
-
-.RollingFileAppender Parameters
-[width="100%",cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|append |boolean |When true - the default, records will be appended to
-the end of the file. When set to false, the file will be cleared before
-new records are written.
-
-|bufferedIO |boolean |When true - the default, records will be written
-to a buffer and the data will be written to disk when the buffer is full
-or, if immediateFlush is set, when the record is written. File locking
-cannot be used with bufferedIO. Performance tests have shown that using
-buffered I/O significantly improves performance, even if immediateFlush
-is enabled.
-
-|bufferSize |int |When bufferedIO is true, this is the buffer size, the
-default is 8192 bytes.
-
-|createOnDemand |boolean |The appender creates the file on-demand. The
-appender only creates the file when a log event passes all filters and
-is routed to this appender. Defaults to false.
-
-|filter |Filter |A Filter to determine if the event should be handled by
-this Appender. More than one Filter may be used by using a
-CompositeFilter.
-
-|fileName |String |The name of the file to write to. If the file, or any
-of its parent directories, do not exist, they will be created.
-
-|filePattern |String |The pattern of the file name of the archived log
-file. The format of the pattern is dependent on the `RolloverPolicy` that
-is used. The DefaultRolloverPolicy will accept both a date/time pattern
-compatible with
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/text/SimpleDateFormat.html[`SimpleDateFormat`]
-and/or a %i which represents an integer counter. The integer counter
-allows specifying a padding, like %3i for space-padding the counter to
-3 digits or (usually more useful) %03i for zero-padding the counter to
-3 digits. The pattern also
-supports interpolation at runtime so any of the Lookups (such as the
-xref:manual/lookups.adoc#DateLookup[DateLookup]) can be included in the
-pattern.
-
-|immediateFlush |boolean a|
-When set to true - the default, each write will be followed by a flush.
-This will guarantee that the data is passed to the operating system for writing;
-it does not guarantee that the data is written to a physical device
-such as a disk drive.
-
-Note that if this flag is set to false, and the logging activity is sparse,
-there may be an indefinite delay in the data eventually making it to the
-operating system, because it is held up in a buffer.
-This can cause surprising effects such as the logs not
-appearing in the tail output of a file immediately after writing to the log.
-
-Flushing after every write is only useful when using this appender with
-synchronous loggers. Asynchronous loggers and appenders will
-automatically flush at the end of a batch of events, even if
-immediateFlush is set to false. This also guarantees the data is passed
-to the operating system but is more efficient.
-
-|layout |Layout |The Layout to use to format the LogEvent. If no layout
-is supplied the default pattern layout of "%m%n" will be used.
-
-|name |String |The name of the Appender.
-
-|policy |TriggeringPolicy |The policy to use to determine if a rollover
-should occur.
-
-|strategy |RolloverStrategy |The strategy to use to determine the name
-and the location of the archive file.
-
-|ignoreExceptions |boolean |The default is `true`, causing exceptions
-encountered while appending events to be internally logged and then
-ignored. When set to `false` exceptions will be propagated to the
-caller, instead. You must set this to `false` when wrapping this
-Appender in a <<FailoverAppender>>.
-
-|filePermissions |String a|
-File attribute permissions in POSIX format to apply whenever the file is
-created.
-
-The underlying files system shall support
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[POSIX]
-file attribute view.
-
-Examples: rw------- or rw-rw-rw- etc...
-
-|fileOwner |String a|
-File owner to define whenever the file is created.
-
-Changing the file's owner may be restricted for security reasons and
-Operation not permitted IOException thrown. Only processes with an
-effective user ID equal to the user ID of the file or with appropriate
-privileges may change the ownership of a file if
-http://www.gnu.org/software/libc/manual/html_node/Options-for-Files.html[_POSIX_CHOWN_RESTRICTED]
-is in effect for path.
-
-The underlying files system shall support file
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html[owner]
-attribute view.
-
-|fileGroup |String a|
-File group to define whenever the file is created.
-
-The underlying files system shall support
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[POSIX]
-file attribute view.
-
-|=======================================================================
-
-[#TriggeringPolicies]
-=== TriggeringPolicies
-
-==== Composite Triggering Policy
-
-The `CompositeTriggeringPolicy` combines multiple triggering policies and returns true if any of the configured policies return true.
-The
-`CompositeTriggeringPolicy` is configured simply by wrapping other policies in a `Policies` element.
-
-For example, the following XML fragment defines policies that rollover the log when the JVM starts when the log size reaches twenty megabytes, and when the current date no longer matches the log's start date.
-
-[source,xml]
-----
-<Policies>
-  <OnStartupTriggeringPolicy />
-  <SizeBasedTriggeringPolicy size="20 MB" />
-  <TimeBasedTriggeringPolicy />
-</Policies>
-----
-
-==== Cron Triggering Policy
-
-The `CronTriggeringPolicy` triggers rollover based on a cron expression.
-This policy is controlled by a timer and is asynchronous in processing log events, so it is possible that log events from the previous or next period may appear at the beginning or end of the log file.
-The `filePattern` attribute of the Appender should contain a timestamp otherwise the target file will be overwritten on each rollover.
-
-.CronTriggeringPolicy Parameters
-[cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|schedule |String |The cron expression. The expression is the same as
-what is allowed in the Quartz scheduler. See
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/CronExpression.html[`CronExpression`]
-for a full description of the expression.
-
-|evaluateOnStartup |boolean |On startup the cron expression will be
-evaluated against the file's last modification timestamp. If the cron
-expression indicates a rollover should have occurred between that time
-and the current time the file will be immediately rolled over.
-|=======================================================================
-
-==== OnStartup Triggering Policy
-
-The `OnStartupTriggeringPolicy` policy causes a rollover if the log file is older than the current JVM's start time and the minimum file size is met or exceeded.
-
-.OnStartupTriggeringPolicy Parameters
-[cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|minSize |long |The minimum size the file must have to roll over. A size
-of zero will cause a rollover no matter what the file size is. The
-default value is 1, which will prevent rolling over an empty file.
-|=======================================================================
-
-_Google App Engine note:_ +
-When running in Google App Engine, the OnStartup policy causes a rollover if the log file is older than _the time when Log4J initialized_.
-(Google App Engine restricts access to certain classes so Log4J cannot determine JVM start time with
-`java.lang.management.ManagementFactory.getRuntimeMXBean().getStartTime()`
-and falls back to Log4J initialization time instead.)
-
-[#sizebased-triggering-policy]
-==== SizeBased Triggering Policy
-
-The `SizeBasedTriggeringPolicy` causes a rollover once the file has reached the specified size.
-The size can be specified in bytes, with the suffix KB, MB, GB, or TB for example `20MB`.
-size.
-The size may also contain a fractional value such as `1.5 MB`.
-The size is evaluated using the Java root Locale so a period must always be used for the fractional unit.
-When combined with a time-based triggering policy the file pattern must contain a `%i`.
-Otherwise, the target file will be overwritten on every rollover as the SizeBased Triggering Policy will not cause the timestamp value in the file name to change.
-When used without a time-based triggering policy the SizeBased Triggering Policy will cause the timestamp value to change.
-
-[#timebased-triggering-policy]
-==== TimeBased Triggering Policy
-
-The `TimeBasedTriggeringPolicy` causes a rollover once the date/time pattern no longer applies to the active file.
-This policy accepts an
-`interval` attribute which indicates how frequently the rollover should occur based on the time pattern and a `modulate` boolean attribute.
-
-.TimeBasedTriggeringPolicy Parameters
-[cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|interval |integer |How often a rollover should occur based on the most
-specific time unit in the date pattern. For example, with a date pattern
-with hours as the most specific item, an increment of 4 rollovers
-would occur every 4 hours. The default value is 1.
-
-|modulate |boolean |Indicates whether the interval should be adjusted to
-cause the next rollover to occur on the interval boundary. For example,
-if the item is hours, the current hour is 3 am and the interval is 4
-then the first rollover will occur at 4 am and then the next ones will occur
-at 8 am, noon, 4 pm, etc. The default value is false.
-
-|maxRandomDelay |integer |Indicates the maximum number of seconds to
-randomly delay a rollover. By default, this is 0 which indicates no
-delay. This setting is useful on servers where multiple applications are
-configured to roll over logfiles at the same time and can spread the
-load of doing so across time.
-|=======================================================================
-
-[#RolloverStrategies]
-=== RolloverStrategies
-
-[#DefaultRolloverStrategy]
-==== DefaultRolloverStrategy
-
-Default Rollover Strategy
-
-The default rollover strategy accepts both a date/time pattern and an integer from the `filePattern` attribute specified on the RollingFileAppender itself.
-If the date/time pattern is present it will be replaced with the current date and time values.
-If the pattern contains an integer it will be incremented on each rollover.
-If the pattern contains both a date/time and integer in the pattern the integer will be incremented until the result of the date/time pattern changes.
-If the file pattern ends with ".gz", ".zip", ".bz2", ".deflate", ".pack200", or ".xz" the resulting archive will be compressed using the compression scheme that matches the suffix.
-The formats bzip2, Deflate, Pack200 and XZ require
-https://commons.apache.org/proper/commons-compress/index.html[Apache Commons Compress].
-In addition, XZ requires
-https://www.tukaani.org/xz/java.html[XZ for Java].
-The pattern may also contain lookup references that can be resolved at runtime such as shown in the example below.
-
-The default rollover strategy supports three variations for incrementing the counter.
-To illustrate how it works, suppose that the min attribute is set to 1, the max attribute is set to 3, the file name is "foo.log", and the file name pattern is "foo-%i.log".
-
-[cols="15%,15%,15%,55%",options="header",]
-|=======================================================================
-|Number of rollovers |Active output target |Archived log files
-|Description
-|0 |foo.log |- |All logging is going to the initial file.
-
-|1 |foo.log |foo-1.log |During the first rollover foo.log is renamed to
-foo-1.log. A new foo.log file is created and starts being written to.
-
-|2 |foo.log |foo-2.log, foo-1.log |During the second rollover foo.log is
-renamed to foo-2.log. A new foo.log file is created and starts being
-written to.
-
-|3 |foo.log |foo-3.log, foo-2.log, foo-1.log |During the third rollover
-foo.log is renamed to foo-3.log. A new foo.log file is created and
-starts being written to.
-
-|4 |foo.log |foo-3.log, foo-2.log, foo-1.log |In the fourth and
-subsequent rollovers, foo-1.log is deleted, foo-2.log is renamed to
-foo-1.log, foo-3.log is renamed to foo-2.log and foo.log is renamed to
-foo-3.log. A new foo.log file is created and starts being written to.
-|=======================================================================
-
-By way of contrast, when the `fileIndex` attribute is set to "min" all the other settings are the same the "fixed window" strategy will be performed.
-
-[cols="15%,15%,15%,55%",options="header",]
-|=======================================================================
-|Number of rollovers |Active output target |Archived log files
-|Description
-|0 |foo.log |- |All logging is going to the initial file.
-
-|1 |foo.log |foo-1.log |During the first rollover foo.log is renamed to
-foo-1.log. A new foo.log file is created and starts being written to.
-
-|2 |foo.log |foo-1.log, foo-2.log |During the second rollover foo-1.log
-is renamed to foo-2.log and foo.log is renamed to foo-1.log. A new
-foo.log file is created and starts being written to.
-
-|3 |foo.log |foo-1.log, foo-2.log, foo-3.log |During the third rollover
-foo-2.log is renamed to foo-3.log, foo-1.log is renamed to foo-2.log and
-foo.log is renamed to foo-1.log. A new foo.log file is created and
-starts being written to.
-
-|4 |foo.log |foo-1.log, foo-2.log, foo-3.log |In the fourth and
-subsequent rollovers, foo-3.log is deleted, foo-2.log is renamed to
-foo-3.log, foo-1.log is renamed to foo-2.log and foo.log is renamed to
-foo-1.log. A new foo.log file is created and starts being written to.
-|=======================================================================
-
-Finally, as of release 2.8, if the `fileIndex` attribute is set to `nomax`
-then the min and max values will be ignored and file numbering will increment by 1 and each rollover will have an incrementally higher value with no maximum number of files.
-
-.DefaultRolloverStrategy Parameters
-[cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|fileIndex |String |If set to "max" (the default), files with a higher
-index will be newer than files with a smaller index. If set to "min",
-file renaming and the counter will follow the Fixed Window strategy
-described above.
-
-|min |integer |The minimum value of the counter. The default value is 1.
-
-|max |integer |The maximum value of the counter. Once this value is
-reached older archives will be deleted on subsequent rollovers. The
-default value is 7.
-
-|compressionLevel |integer |Sets the compression level, 0-9, where 0 =
-none, 1 = best speed, through 9 = best compression. Only implemented for
-ZIP files.
-
-|tempCompressedFilePattern |String |The pattern of the file name of the
-archived log file during compression.
-|=======================================================================
-
-[#DirectWriteRolloverStrategy]
-==== DirectWriteRolloverStrategy
-
-DirectWrite Rollover Strategy
-
-The DirectWriteRolloverStrategy causes log events to be written directly to files represented by the file pattern.
-With this strategy file renames are not performed.
-If the size-based triggering policy causes multiple files to be written during the specified period they will be numbered starting at one and continually incremented until a time-based rollover occurs.
-
-Warning: If the file pattern has a suffix indicating compression should take place the current file will not be compressed when the application is shut down.
-Furthermore, if the time changes such that the file pattern no longer matches the current file it will not be compressed at startup either.
-
-.DirectWriteRolloverStrategy Parameters
-[cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|maxFiles |String |The maximum number of files to allow in the period matching
-the file pattern. If the number of files is exceeded the
-oldest file will be deleted. If specified, the value must be greater
-than 1. If the value is less than zero or omitted then the number of
-files will not be limited.
-
-|compressionLevel |integer |Sets the compression level, 0-9, where 0 =
-none, 1 = best speed, through 9 = best compression. Only implemented for
-ZIP files.
-
-|tempCompressedFilePattern |String |The pattern of the file name of the
-archived log file during compression.
-|=======================================================================
-
-Below is a sample configuration that uses a RollingFileAppender with both the time and size-based triggering policies will create up to 7 archives on the same day (1-7) that are stored in a directory based on the current year and month, and will compress each archive using gzip:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
-      <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
-      </PatternLayout>
-      <Policies>
-        <TimeBasedTriggeringPolicy />
-        <SizeBasedTriggeringPolicy size="250 MB"/>
-      </Policies>
-    </RollingFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="RollingFile"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-This second example shows a rollover strategy that will keep up to 20 files before removing them.
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
-      <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
-      </PatternLayout>
-      <Policies>
-        <TimeBasedTriggeringPolicy />
-        <SizeBasedTriggeringPolicy size="250 MB"/>
-      </Policies>
-      <DefaultRolloverStrategy max="20"/>
-    </RollingFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="RollingFile"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-Below is a sample configuration that uses a RollingFileAppender with both the time and size-based triggering policies will create up to 7 archives on the same day (1-7) that are stored in a directory based on the current year and month, and will compress each archive using gzip and will roll every 6 hours when the hour is divisible by 6:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
-      <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
-      </PatternLayout>
-      <Policies>
-        <TimeBasedTriggeringPolicy interval="6" modulate="true"/>
-        <SizeBasedTriggeringPolicy size="250 MB"/>
-      </Policies>
-    </RollingFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="RollingFile"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-This sample configuration uses a RollingFileAppender with both the cron and size-based triggering policies, and writes directly to an unlimited number of archive files.
-The cron trigger causes a rollover every hour while the file size is limited to 250MB:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <RollingFile name="RollingFile" filePattern="logs/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
-      <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
-      </PatternLayout>
-      <Policies>
-        <CronTriggeringPolicy schedule="0 0 * * * ?"/>
-        <SizeBasedTriggeringPolicy size="250 MB"/>
-      </Policies>
-    </RollingFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="RollingFile"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-This sample configuration is the same as the previous one but limits the number of files saved each hour to 10:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <RollingFile name="RollingFile" filePattern="logs/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
-      <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
-      </PatternLayout>
-      <Policies>
-        <CronTriggeringPolicy schedule="0 0 * * * ?"/>
-        <SizeBasedTriggeringPolicy size="250 MB"/>
-      </Policies>
-      <DirectWriteRolloverStrategy maxFiles="10"/>
-    </RollingFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="RollingFile"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-[#CustomDeleteOnRollover]
-==== CustomDeleteOnRollover
-
-Log Archive Retention Policy: Delete on Rollover
-
-Log4j-2.5 introduces a `Delete` action that gives users more control over what files are deleted at rollover time than what was possible with the DefaultRolloverStrategy `max` attribute.
-The Delete action lets users configure one or more conditions that select the files to delete relative to a base directory.
-
-Note that it is possible to delete any file, not just rolled-over log files, so use this action with care!
-With the `testMode` parameter you can test your configuration without accidentally deleting the wrong files.
-
-.Delete Parameters
-[width="100%",cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|basePath |String |_Required._ Base path from where to start scanning
-for files to delete.
-
-|maxDepth |int |The maximum number of levels of directories to visit. A
-value of 0 means that only the starting file (the base path itself) is
-visited unless denied by the security manager. A value of
-Integer.MAX_VALUE indicates that all levels should be visited. The
-default is 1, meaning only the files in the specified base directory.
-
-|followLinks |boolean |Whether to follow symbolic links. Default is
-false.
-
-|testMode |boolean |If true, files are not deleted but instead a message
-is printed to the xref:manual/status-logger.adoc[]
-at INFO level. Use this to do a dry run to test if the configuration
-works as expected. The default is false.
-
-|pathSorter |PathSorter |A plugin implementing the
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathSorter.html[`PathSorter`]
-interface to sort the files before selecting the files to delete. The
-default is to sort the most recently modified files first.
-
-|pathConditions [[DeletePathCondition]] |PathCondition[] a|
-_Required if no ScriptCondition is specified._ One or more PathCondition
-elements.
-
-If more than one condition is specified, they all need to accept a path
-before it is deleted. Conditions can be nested, in which case the inner
-condition(s) are evaluated only if the outer condition accepts the path.
-If conditions are not nested they may be evaluated in any order.
-
-Conditions can also be combined with the logical operators AND, OR and
-NOT by using the `IfAll`, `IfAny` and `IfNot` composite conditions.
-
-Users can create custom conditions or use the built-in conditions:
-
-* <<DeleteIfFileName,`IfFileName`>> - accepts files whose path
-(relative to the base path) matches a
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/regex/Pattern.html[regular
-expression] or a
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)[glob].
-* <<DeleteIfLastModified,`IfLastModified`>> - accepts files that are as
-old as or older than the specified
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/Duration.html#parse(CharSequence)[duration].
-* <<DeleteIfAccumulatedFileCount,`IfAccumulatedFileCount`>> - accepts
-paths after some count threshold is exceeded during the file tree walk.
-* <<DeleteIfAccumulatedFileSize,`IfAccumulatedFileSize`>> - accepts
-paths after the accumulated file size threshold is exceeded during the
-file tree walk.
-* IfAll - accepts a path if all nested conditions accept it (logical
-AND). Nested conditions may be evaluated in any order.
-* IfAny - accepts a path if one of the nested conditions accepts it
-(logical OR). Nested conditions may be evaluated in any order.
-* IfNot - accepts a path if the nested condition does not accept it
-(logical NOT).
-
-|scriptCondition [[DeleteScriptCondition]] |ScriptCondition a|
-_Required if no PathConditions are specified._ A ScriptCondition element
-specifying a script.
-
-The ScriptCondition should contain a <<ScriptCondition,`Script`, `ScriptRef`, or `ScriptFile`>> element that specifies the logic to be
-executed. (See also the xref:manual/filters.adoc#Script[ScriptFilter]
-documentation for more examples of configuring ScriptFiles and
-ScriptRefs.)
-
-The script is passed several <<ScriptParameters,parameters>>,
-including a list of paths found under the base path (up to `maxDepth`)
-and must return a list with the paths to delete.
-
-|=======================================================================
-
-[#DeleteIfFileName]
-=== DeleteIfFileName
-
-.IfFileName Condition Parameters
-[cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|glob |String |_Required if regex is not specified._ Matches the relative
-path (relative to the base path) using a limited pattern language that
-resembles regular expressions but with a
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)[simpler
-syntax].
-
-|regex |String |_Required if glob not specified._ Matches the relative
-path (relative to the base path) using a regular expression as defined
-by the
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/regex/Pattern.html[`Pattern`]
-class.
-
-|nestedConditions |PathCondition[] |An optional set of nested
-<<DeletePathCondition,`PathCondition`>>s. If any nested conditions
-exist they all need to accept the file before it is deleted. Nested
-conditions are only evaluated if the outer condition accepts a file (if
-the path name matches).
-|=======================================================================
-
-[#DeleteIfLastModified]
-=== DeleteIfLastModified
-
-.IfLastModified Condition Parameters
-[cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|age |String |_Required._ Specifies a
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/Duration.html#parse(CharSequence)[`duration`].
-The condition accepts files that are as old or older than the specified
-duration.
-
-|nestedConditions |PathCondition[] |An optional set of nested
-<<DeletePathCondition,`PathCondition`>>s. If any nested conditions
-exist they all need to accept the file before it is deleted. Nested
-conditions are only evaluated if the outer condition accepts a file (if
-the file is old enough).
-|=======================================================================
-
-[#DeleteIfAccumulatedFileCount]
-=== DeleteIfAccumulatedFileCount
-
-.IfAccumulatedFileCount Condition Parameters
-[cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|exceeds |int |_Required._ The threshold count from which files will be
-deleted.
-
-|nestedConditions |PathCondition[] |An optional set of nested
-<<DeletePathCondition,`PathCondition`>>s. If any nested conditions
-exist they all need to accept the file before it is deleted. Nested
-conditions are only evaluated if the outer condition accepts a file (if
-the threshold count has been exceeded).
-|=======================================================================
-
-[#DeleteIfAccumulatedFileSize]
-=== DeleteIfAccumulatedFileSize
-
-.IfAccumulatedFileSize Condition Parameters
-[cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|exceeds |String |_Required._ The threshold accumulated file size from
-which files will be deleted. The size can be specified in bytes, with
-the suffix KB, MB, GB, or TB, for example `20MB`.
-
-|nestedConditions |PathCondition[] |An optional set of nested
-<<DeletePathCondition,`PathCondition`>>s. If any nested conditions
-exist they all need to accept the file before it is deleted. Nested
-conditions are only evaluated if the outer condition accepts a file (if
-the threshold accumulated file size has been exceeded).
-|=======================================================================
-
-Below is a sample configuration that uses a RollingFileAppender with the cron triggering policy configured to trigger every day at midnight.
-Archives are stored in a directory based on the current year and month.
-All files under the base directory that match the "*/app-*.log.gz" glob and are 60 days old or older are deleted at rollover time.
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Properties>
-    <Property name="baseDir">logs</Property>
-  </Properties>
-  <Appenders>
-    <RollingFile name="RollingFile" fileName="${baseDir}/app.log"
-          filePattern="${baseDir}/$${date:yyyy-MM}/app-%d{yyyy-MM-dd}.log.gz">
-      <PatternLayout pattern="%d %p %c{1.} [%t] %m%n" />
-      <CronTriggeringPolicy schedule="0 0 0 * * ?"/>
-      <DefaultRolloverStrategy>
-        <Delete basePath="${baseDir}" maxDepth="2">
-          <IfFileName glob="*/app-*.log.gz" />
-          <IfLastModified age="60d" />
-        </Delete>
-      </DefaultRolloverStrategy>
-    </RollingFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="RollingFile"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-Below is a sample configuration that uses a RollingFileAppender with both the time and size-based triggering policies will create up to 100 archives on the same day (1-100) that are stored in a directory based on the current year and month, and will compress each archive using gzip and will roll every hour.
-During every rollover, this configuration will delete files that match "*/app-*.log.gz" and are 30 days old or older, but keep the most recent 100 GB or the most recent 10 files, whichever comes first.
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Properties>
-    <Property name="baseDir">logs</Property>
-  </Properties>
-  <Appenders>
-    <RollingFile name="RollingFile" fileName="${baseDir}/app.log"
-          filePattern="${baseDir}/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
-      <PatternLayout pattern="%d %p %c{1.} [%t] %m%n" />
-      <Policies>
-        <TimeBasedTriggeringPolicy />
-        <SizeBasedTriggeringPolicy size="250 MB"/>
-      </Policies>
-      <DefaultRolloverStrategy max="100">
-        <!--
-        Nested conditions: the inner condition is only evaluated on files
-        for which the outer conditions are true.
-        -->
-        <Delete basePath="${baseDir}" maxDepth="2">
-          <IfFileName glob="*/app-*.log.gz">
-            <IfLastModified age="30d">
-              <IfAny>
-                <IfAccumulatedFileSize exceeds="100 GB" />
-                <IfAccumulatedFileCount exceeds="10" />
-              </IfAny>
-            </IfLastModified>
-          </IfFileName>
-        </Delete>
-      </DefaultRolloverStrategy>
-    </RollingFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="RollingFile"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-[#ScriptCondition]
-=== ScriptCondition
-
-.ScriptCondition Parameters
-[cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|script |Script, ScriptFile or ScriptRef |The Script element that
-specifies the logic to be executed. The script passes a list of paths
-found under the base path and must return the paths to delete as a
-`java.util.List<PathWithAttributes>`. See also the
-xref:manual/filters.adoc#Script[ScriptFilter] documentation for an example of
-how ScriptFiles and ScriptRefs can be configured.
-|=======================================================================
-
-[#ScriptParameters]
-=== ScriptParameters
-
-.Script Parameters
-[cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|basePath |`java.nio.file.Path` |The directory from where the Delete
-action started scanning for files to delete. Can be used to relativize
-the paths in the `pathList`.
-
-|pathList |`java.util.List<PathWithAttributes>` |The list of paths found
-under the base path up to the specified max depth, sorted most recently
-modified files first. The script is free to modify and return this list.
-
-|statusLogger |StatusLogger |The xref:manual/status-logger.adoc[] that can be used to log
-internal events during script execution.
-
-|configuration |Configuration |The Configuration that owns this
-ScriptCondition.
-
-|substitutor |StrSubstitutor |The StrSubstitutor used to replace lookup
-variables.
-
-|? |String |Any properties declared in the configuration.
-|=======================================================================
-
-Below is a sample configuration that uses a RollingFileAppender with the cron triggering policy configured to trigger every day at midnight.
-Archives are stored in a directory based on the current year and month.
-The script returns a list of rolled-over files under the base directory dated Friday the 13th.
-The Delete action will delete all files returned by the script.
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="trace" name="MyApp">
-  <Properties>
-    <Property name="baseDir">logs</Property>
-  </Properties>
-  <Appenders>
-    <RollingFile name="RollingFile" fileName="${baseDir}/app.log"
-          filePattern="${baseDir}/$${date:yyyy-MM}/app-%d{yyyyMMdd}.log.gz">
-      <PatternLayout pattern="%d %p %c{1.} [%t] %m%n" />
-      <CronTriggeringPolicy schedule="0 0 0 * * ?"/>
-      <DefaultRolloverStrategy>
-        <Delete basePath="${baseDir}" maxDepth="2">
-          <ScriptCondition>
-            <Script name="superstitious" language="groovy"><![CDATA[
-                import java.nio.file.*;
-
-                def result = [];
-                def pattern = ~/\d*\/app-(\d*)\.log\.gz/;
-
-                pathList.each { pathWithAttributes ->
-                  def relative = basePath.relativize pathWithAttributes.path
-                  statusLogger.trace 'SCRIPT: relative path=' + relative + " (base=$basePath)";
-
-                  // remove files dated Friday the 13th
-
-                  def matcher = pattern.matcher(relative.toString());
-                  if (matcher.find()) {
-                    def dateString = matcher.group(1);
-                    def calendar = Date.parse("yyyyMMdd", dateString).toCalendar();
-                    def friday13th = calendar.get(Calendar.DAY_OF_MONTH) [#13]
-== 13 \
-                                  && calendar.get(Calendar.DAY_OF_WEEK) [#Calendar]
-== Calendar.FRIDAY;
-                    if (friday13th) {
-                      result.add pathWithAttributes;
-                      statusLogger.trace 'SCRIPT: deleting path ' + pathWithAttributes;
-                    }
-                  }
-                }
-                statusLogger.trace 'SCRIPT: returning ' + result;
-                result;
-              ]]>
-            </Script>
-          </ScriptCondition>
-        </Delete>
-      </DefaultRolloverStrategy>
-    </RollingFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="RollingFile"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-[#CustomPosixViewAttributeOnRollover]
-=== CustomPosixViewAttributeOnRollover
-
-Log Archive File Attribute View Policy: Custom file attribute on Rollover
-
-Log4j-2.9 introduces a `PosixViewAttribute` action that gives users more control over which file attribute permissions, owner and group should be applied.
-The PosixViewAttribute action lets users configure one or more conditions that select the eligible files relative to a base directory.
-
-.PosixViewAttribute Parameters
-[width="100%",cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|basePath |String |_Required._ Base path from where to start scanning
-for files to apply attributes.
-
-|maxDepth |int |The maximum number of levels of directories to visit. A
-value of 0 means that only the starting file (the base path itself) is
-visited unless denied by the security manager. A value of
-Integer.MAX_VALUE indicates that all levels should be visited. The
-default is 1, meaning only the files in the specified base directory.
-
-|followLinks |boolean |Whether to follow symbolic links. Default is
-false.
-
-|pathConditions |PathCondition[] |see <<DeletePathCondition>>
-
-|filePermissions |String a|
-File attribute permissions in POSIX format to apply when action is
-executed.
-
-The underlying files system shall support
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[`POSIX`]
-file attribute view.
-
-Examples: rw------- or rw-rw-rw- etc...
-
-|fileOwner |String a|
-File owner to define when action is executed.
-
-Changing the file's owner may be restricted for security reasons and
-Operation not permitted IOException thrown. Only processes with an
-effective user ID equal to the user ID of the file or with appropriate
-privileges may change the ownership of a file if
-http://www.gnu.org/software/libc/manual/html_node/Options-for-Files.html[_POSIX_CHOWN_RESTRICTED]
-is in effect for path.
-
-The underlying files system shall support file
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html[`owner`]
-attribute view.
-
-|fileGroup |String a|
-File group to define when action is executed.
-
-The underlying files system shall support
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[`POSIX`]
-file attribute view.
-
-|=======================================================================
-
-Below is a sample configuration that uses a RollingFileAppender and defines different POSIX file attribute views for current and rolled log files.
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="trace" name="MyApp">
-  <Properties>
-    <Property name="baseDir">logs</Property>
-  </Properties>
-  <Appenders>
-    <RollingFile name="RollingFile" fileName="${baseDir}/app.log"
-                 filePattern="${baseDir}/$${date:yyyy-MM}/app-%d{yyyyMMdd}.log.gz"
-                 filePermissions="rw-------">
-      <PatternLayout pattern="%d %p %c{1.} [%t] %m%n" />
-      <CronTriggeringPolicy schedule="0 0 0 * * ?"/>
-      <DefaultRolloverStrategy stopCustomActionsOnError="true">
-        <PosixViewAttribute basePath="${baseDir}/$${date:yyyy-MM}" filePermissions="r--r--r--">
-            <IfFileName glob="*.gz" />
-        </PosixViewAttribute>
-      </DefaultRolloverStrategy>
-    </RollingFile>
-  </Appenders>
-
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="RollingFile"/>
-    </Root>
-  </Loggers>
-
-</Configuration>
-----
-
-[#RollingRandomAccessFileAppender]
-=== RollingRandomAccessFileAppender
-
-The RollingRandomAccessFileAppender is similar to the standard
-<<RollingFileAppender>> except it is always buffered (this cannot be switched off) and internally it uses a
-`ByteBuffer + RandomAccessFile` instead of a `BufferedOutputStream`.
-We saw a 20-200% performance improvement compared to RollingFileAppender with "bufferedIO=true" in our measurements.
-The
-`RollingRandomAccessFileAppender` writes to the file named in the fileName parameter and rolls the file over according to the TriggeringPolicy and the RolloverPolicy.
-Similar to the RollingFileAppender, RollingRandomAccessFileAppender uses a RollingRandomAccessFileManager to perform the file I/O and perform the rollover.
-While RollingRandomAccessFileAppender from different Configurations cannot be shared, the RollingRandomAccessFileManagers can be if the Manager is accessible.
-For example, two web applications in a servlet container can have their configuration and safely write to the same file if Log4j is in a ClassLoader that is common to both of them.
-
-A RollingRandomAccessFileAppender requires a
-<<TriggeringPolicies,triggering policy>> and a
-<<RolloverStrategies,rollover strategy>>.
-The triggering policy determines if a rollover should be performed while the `RolloverStrategy`
-defines how the rollover should be done.
-If no RolloverStrategy is configured, RollingRandomAccessFileAppender will use the
-<<DefaultRolloverStrategy>>.
-Since log4j-2.5, a <<CustomDeleteOnRollover,custom delete action>> can be configured in the DefaultRolloverStrategy to run at rollover.
-
-File locking is not supported by the RollingRandomAccessFileAppender.
-
-.RollingRandomAccessFileAppender Parameters
-[width="100%",cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|append |boolean |When true - the default, records will be appended to
-the end of the file. When set to false, the file will be cleared before
-new records are written.
-
-|filter |Filter |A Filter to determine if the event should be handled by
-this Appender. More than one Filter may be used by using a
-CompositeFilter.
-
-|fileName |String |The name of the file to write to. If the file, or any
-of its parent directories, do not exist, they will be created.
-
-|filePattern |String |The pattern of the file name of the archived log
-file. The format of the pattern should is dependent on the
-RolloverPolicy that is used. The DefaultRolloverPolicy will accept both
-a date/time pattern compatible with
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/text/SimpleDateFormat.html[`SimpleDateFormat`]
-and/or a %i which represents an integer counter. The pattern also
-supports interpolation at runtime so any of the Lookups (such as the
-xref:manual/lookups.adoc#DateLookup[DateLookup] can be included in the
-pattern.
-
-|immediateFlush |boolean a|
-When set to true - the default, each write will be followed by a flush.
-This will guarantee the data is written to disk but could impact
-performance.
-
-Flushing after every write is only useful when using this appender with
-synchronous loggers. Asynchronous loggers and appenders will
-automatically flush at the end of a batch of events, even if
-immediateFlush is set to false. This also guarantees the data is written
-to disk but is more efficient.
-
-|bufferSize |int |The buffer size, defaults to 262,144 bytes (256 *
-1024).
-
-|layout |Layout |The Layout to use to format the LogEvent. If no layout
-is supplied the default pattern layout of "%m%n" will be used.
-
-|name |String |The name of the Appender.
-
-|policy |TriggeringPolicy |The policy to use to determine if a rollover
-should occur.
-
-|strategy |RolloverStrategy |The strategy to use to determine the name
-and the location of the archive file.
-
-|ignoreExceptions |boolean |The default is `true`, causing exceptions
-encountered while appending events to be internally logged and then
-ignored. When set to `false` exceptions will be propagated to the
-caller, instead. You must set this to `false` when wrapping this
-Appender in a <<FailoverAppender>>.
-
-|filePermissions |String a|
-File attribute permissions in POSIX format to apply whenever the file is
-created.
-
-The underlying files system shall support
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[`POSIX`]
-file attribute view.
-
-Examples: `rw-------` or `rw-rw-rw-` etc...
-
-|fileOwner |String a|
-File owner to define whenever the file is created.
-
-Changing the file's owner may be restricted for security reasons and
-Operation not permitted IOException thrown. Only processes with an
-effective user ID equal to the user ID of the file or with appropriate
-privileges may change the ownership of a file if
-http://www.gnu.org/software/libc/manual/html_node/Options-for-Files.html[_POSIX_CHOWN_RESTRICTED]
-is in effect for path.
-
-The underlying file system shall support file
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html[`owner`]
-attribute view.
-
-|fileGroup |String a|
-File group to define whenever the file is created.
-
-The underlying files system shall support
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[`POSIX`]
-file attribute view.
-
-|=======================================================================
-
-==== Triggering Policies
-
-See <<TriggeringPolicies,RollingFileAppender Triggering Policies>>.
-
-==== Rollover Strategies
-
-See <<RolloverStrategies,`RollingFileAppender` rollover strategies>>.
-
-Below is a sample configuration that uses a RollingRandomAccessFileAppender with both the time and size-based triggering policies will create up to 7 archives on the same day (1-7) that are stored in a directory based on the current year and month, and will compress each archive using gzip:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="logs/app.log"
-                 filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
-      <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
-      </PatternLayout>
-      <Policies>
-        <TimeBasedTriggeringPolicy />
-        <SizeBasedTriggeringPolicy size="250 MB"/>
-      </Policies>
-    </RollingRandomAccessFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="RollingRandomAccessFile"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-This second example shows a rollover strategy that will keep up to 20 files before removing them.
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="logs/app.log"
-                 filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
-      <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
-      </PatternLayout>
-      <Policies>
-        <TimeBasedTriggeringPolicy />
-        <SizeBasedTriggeringPolicy size="250 MB"/>
-      </Policies>
-      <DefaultRolloverStrategy max="20"/>
-    </RollingRandomAccessFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="RollingRandomAccessFile"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-Below is a sample configuration that uses a RollingRandomAccessFileAppender with both the time and size-based triggering policies will create up to 7 archives on the same day (1-7) that are stored in a directory based on the current year and month, and will compress each archive using gzip and will roll every 6 hours when the hour is divisible by 6:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="logs/app.log"
-                 filePattern="logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
-      <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
-      </PatternLayout>
-      <Policies>
-        <TimeBasedTriggeringPolicy interval="6" modulate="true"/>
-        <SizeBasedTriggeringPolicy size="250 MB"/>
-      </Policies>
-    </RollingRandomAccessFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="RollingRandomAccessFile"/>
     </Root>
   </Loggers>
 </Configuration>
@@ -3702,6 +2728,15 @@ Each `Route` must reference an `Appender`.
 If the `Route` contains a ref attribute then the `Route` will reference an `Appender` that was defined in the configuration.
 If the `Route` contains an `Appender` definition then an
 `Appender` will be created within the context of the `RoutingAppender` and will be reused each time a matching `Appender` name is referenced through a `Route`.
+
+[WARNING]
+====
+Lookups in the **children** of the `Route` component are **not** evaluated at configuration time.
+The substitution is delayed until the `Route` element is evaluated.
+This means that `$+{...}+` expression **should not** be escaped as `$$+{...}+`.
+
+See xref:manual/configuration.adoc#lazy-property-substitution[lazy property substitution] for more details.
+====
 
 This script is passed the following variables:
 
@@ -4249,7 +3284,7 @@ If not specified, the default system Charset will be used.
 default is 0 (infinite timeout, like `Socket.connect()` methods).
 
 |enterpriseNumber |integer |The IANA enterprise number as described in
-http://tools.ietf.org/html/rfc5424#section-7.2.2[RFC 5424]
+https://datatracker.ietf.org/doc/html/rfc5424#section-7.2.2[RFC 5424]
 
 |filter |Filter |A Filter to determine if the event should be handled by
 this Appender. More than one Filter may be used by using a

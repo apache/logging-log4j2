@@ -123,7 +123,7 @@ component specifies the strategy used by Log4j to create new logger contexts.
 The choice of `ContextSelector` determines in particular:
 
 * how loggers are divided among logger contexts.
-See xref:manual/logsep.adoc[Log Separation] for details.
+See xref:jakarta.adoc#log-separation[Log Separation] for details.
 
 * the `Logger` implementation used by Log4j Core.
 See xref:manual/async.adoc[Async Logging] as an example of this usage.
@@ -225,7 +225,9 @@ link:../javadoc/log4j-api/org/apache/logging/log4j/util/PropertySource.html[`Pro
 
 Additional property source classes can be added through:
 
-* the standard Java SE https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/util/ServiceLoader.html[`ServiceLoader`] mechanism,
+* the standard Java SE
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/ServiceLoader.html[`ServiceLoader`]
+mechanism,
 * programmatically using `addPropertySource()` and `removePropertySource()` static methods of `PropertiesUtil`.
 
 Each property source can define its own naming convention for property names, although most of them support the standard:

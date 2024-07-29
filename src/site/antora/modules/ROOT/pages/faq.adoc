@@ -45,12 +45,12 @@ Refer to xref:manual/configuration.adoc[the Configuration page] for further deta
 == How do I configure Log4j programmatically?
 
 Starting with version `2.4`, Log4j provides xref:manual/customconfig.adoc[an API for programmatic configuration].
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/builder/api/ConfigurationBuilder.html[The new `ConfigurationBuilder` API] allows you to create ``Configuration``s in code by constructing component definitions without requiring you to know about the internals of actual configuration objects like loggers and appenders.
+link:javadoc/log4j-core/org/apache/logging/log4j/core/config/builder/api/ConfigurationBuilder.html[The new `ConfigurationBuilder` API] allows you to create ``Configuration``s in code by constructing component definitions without requiring you to know about the internals of actual configuration objects like loggers and appenders.
 
 [#reconfig_from_code]
 == How do I reconfigure Log4j programmatically?
 
-You can reconfigure Log4j programmatically using link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configurator.html[the `Configurator` API] as follows:
+You can reconfigure Log4j programmatically using link:javadoc/log4j-core/org/apache/logging/log4j/core/config/Configurator.html[the `Configurator` API] as follows:
 
 [source,java]
 ----
@@ -67,12 +67,12 @@ Normally there is no need to do this manually.
 Each `LoggerContext` registers a shutdown hook that takes care of releasing resources when the JVM exits, unless the `log4j.shutdownHookEnabled` system property is set to `false`.
 Likewise, xref:jakarta.adoc[Web applications] replace the shutdown hook with their own resource management mechanisms.
 That is, they clean up necessary resources when the web application is stopped.
-However, if you need to manually shut down Log4j, you can use one of the `shutdown()` methods of link:../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#shutdown()[`LogManager`].
+However, if you need to manually shut down Log4j, you can use one of the `shutdown()` methods of link:javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#shutdown()[`LogManager`].
 
 [#reconfig_level_from_code]
 == How do I set a logger level programmatically?
 
-You can set the level of a logger using link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configurator.html[`Configurator`] from Log4j Core:
+You can set the level of a logger using link:javadoc/log4j-core/org/apache/logging/log4j/core/config/Configurator.html[`Configurator`] from Log4j Core:
 
 [source,java]
 ----

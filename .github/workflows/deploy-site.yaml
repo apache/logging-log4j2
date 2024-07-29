@@ -57,7 +57,6 @@ jobs:
     # Secrets for committing the generated site
     secrets:
       GPG_SECRET_KEY: ${{ secrets.LOGGING_GPG_SECRET_KEY }}
-      GE_ACCESS_TOKEN: ${{ secrets.GE_ACCESS_TOKEN }}
     # Write permissions for committing the generated site
     permissions:
       contents: write
@@ -88,7 +87,6 @@ jobs:
     # Secrets for committing the generated site
     secrets:
       GPG_SECRET_KEY: ${{ secrets.LOGGING_GPG_SECRET_KEY }}
-      GE_ACCESS_TOKEN: ${{ secrets.GE_ACCESS_TOKEN }}
     # Write permissions for committing the generated site
     permissions:
       contents: write

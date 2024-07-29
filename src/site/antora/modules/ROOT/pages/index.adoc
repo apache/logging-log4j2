@@ -18,7 +18,7 @@
 = Apache Log4j
 
 Apache Log4j is a versatile, industrial-grade Java logging framework composed of an API, its implementation,  and components to assist the deployment for various use cases.
-The project is actively maintained by a {logging-services-url}/team-list.html[team] of volunteers and {logging-services-url}/support[support]ed by a big community.
+The project is actively maintained by a {logging-services-url}/team-list.html[team] of volunteers and {logging-services-url}/support.html[support]ed by a big community.
 
 [#shortcuts]
 == Shortcuts

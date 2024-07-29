@@ -3,7 +3,7 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
-  <issue id="2282" link="https://github.com/apache/logging-log4j2/issues/2282"/>
+  <issue id="2282" link="https://github.com/apache/logging-log4j2/pull/2282"/>
   <description format="asciidoc">
     Fix the behavior of `Logger#setLevel` and `Logger#getLevel` in the Log4j 1.2 bridge.
   </description>

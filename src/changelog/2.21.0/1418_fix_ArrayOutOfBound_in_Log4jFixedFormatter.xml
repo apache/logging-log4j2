@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
-  <issue id="1418" link="https://github.com/apache/logging-log4j2/pull/1418"/>
+  <issue id="1418" link="https://github.com/apache/logging-log4j2/issues/1418"/>
   <description format="asciidoc">Fixed buffer size in `Log4jFixedFormatter` date time formatter</description>
 </entry>

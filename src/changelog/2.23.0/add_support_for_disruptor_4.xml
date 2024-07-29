@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="added">
-  <issue id="1821" link="https://github.com/apache/logging-log4j2/issues/1821"/>
+  <issue id="1821" link="https://github.com/apache/logging-log4j2/pull/1821"/>
   <description format="asciidoc">Added support for LMAX Disruptor 4.x</description>
 </entry>

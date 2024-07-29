@@ -23,7 +23,7 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
  * Models a point in time, suitable for event timestamps.
  * <p>
  * Provides methods for obtaining high precision time information similar to the
- * <a href="https://docs.oracle.com/javase/9/docs/api/java/time/Instant.html">Instant</a> class introduced in Java 8,
+ * <a href="https://docs.oracle.com/javase/8/docs/api/java/time/Instant.html">Instant</a> class introduced in Java 8,
  * while also supporting the legacy millisecond precision API.
  * </p><p>
  * Depending on the platform, time sources ({@link Clock} implementations) may produce high precision or millisecond

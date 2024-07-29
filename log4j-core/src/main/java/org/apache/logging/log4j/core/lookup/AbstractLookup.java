@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import org.apache.logging.log4j.core.LogEvent;
+
 /**
  * A default lookup for others to extend.
  *
