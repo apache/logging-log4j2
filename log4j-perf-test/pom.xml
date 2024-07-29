@@ -16,7 +16,9 @@
   ~ limitations under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
@@ -30,7 +32,7 @@
   <description>The Apache Log4j development-time performance tests</description>
 
   <properties>
-    <uberjar.name>benchmarks</uberjar.name>
+
     <log4j.docgen.skip>true</log4j.docgen.skip>
     <bnd.baseline.skip>true</bnd.baseline.skip>
     <maven.test.skip>true</maven.test.skip>
@@ -44,8 +46,8 @@
     <spotbugs.skip>true</spotbugs.skip>
 
     <!-- Dependency versions -->
-    <log4j-transform.version>0.1.0</log4j-transform.version>
     <slf4j2.version>2.0.9</slf4j2.version>
+
   </properties>
 
   <dependencyManagement>
@@ -191,56 +193,13 @@
         </configuration>
       </plugin>
 
+      <!-- Activate the inherited `generate-uber-jar` configuration -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-transform-maven-shade-plugin-extensions</artifactId>
-            <version>${log4j-transform.version}</version>
-          </dependency>
-        </dependencies>
-        <executions>
-          <execution>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <phase>package</phase>
-            <configuration>
-              <createDependencyReducedPom>false</createDependencyReducedPom>
-              <minimizeJar>false</minimizeJar>
-              <finalName>${uberjar.name}</finalName>
-              <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>org.openjdk.jmh.Main</mainClass>
-                  <manifestEntries>
-                    <Multi-Release>true</Multi-Release>
-                  </manifestEntries>
-                </transformer>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-                <transformer implementation="org.apache.logging.log4j.maven.plugins.shade.transformer.Log4j2PluginCacheFileTransformer" />
-              </transformers>
-              <filters>
-                <filter>
-                  <!--
-                    Shading signed JARs will fail without this.
-                    http://stackoverflow.com/questions/999489/invalid-signature-file-when-attempting-to-run-a-jar
-                  -->
-                  <artifact>*:*</artifact>
-                  <excludes>
-                    <exclude>META-INF/*.SF</exclude>
-                    <exclude>META-INF/*.DSA</exclude>
-                    <exclude>META-INF/*.RSA</exclude>
-                  </excludes>
-                </filter>
-              </filters>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
 
     </plugins>
   </build>
+
 </project>

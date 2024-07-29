@@ -52,17 +52,17 @@
 
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core-test</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-layout-template-json</artifactId>
     </dependency>
 
     <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>com.code-intelligence</groupId>
-      <artifactId>jazzer</artifactId>
+      <artifactId>jazzer-standalone</artifactId>
     </dependency>
 
     <dependency>
@@ -72,5 +72,17 @@
     </dependency>
 
   </dependencies>
+
+  <build>
+    <plugins>
+
+      <!-- Activate the inherited `generate-uber-jar` configuration -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+      </plugin>
+
+    </plugins>
+  </build>
 
 </project>
