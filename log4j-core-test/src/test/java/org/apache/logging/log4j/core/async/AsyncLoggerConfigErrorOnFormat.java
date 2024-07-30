@@ -84,11 +84,6 @@ public class AsyncLoggerConfigErrorOnFormat {
         }
 
         @Override
-        public String getFormat() {
-            return null;
-        }
-
-        @Override
         public Object[] getParameters() {
             return null;
         }

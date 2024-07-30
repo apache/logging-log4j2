@@ -94,11 +94,6 @@ public class QueueFullAsyncLogger3Test extends QueueFullAbstractTest {
         }
 
         @Override
-        public String getFormat() {
-            return null;
-        }
-
-        @Override
         public Object[] getParameters() {
             return org.apache.logging.log4j.util.Constants.EMPTY_OBJECT_ARRAY;
         }

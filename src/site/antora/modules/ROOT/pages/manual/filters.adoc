@@ -746,19 +746,16 @@ include::partial$manual/log-event.adoc[]
 [#RegexFilter]
 ==== `RegexFilter`
 
-The `RegexFilter` matches a regular expression against either the result of
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html#getFormat()[`Message.getFormat()`]
-or
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html#getFormat()[`Message.getFormattedMessage()`].
-It can be used with all kinds of `Message` implementations.
+The `RegexFilter` matches a regular expression against messages.
+Besides the <<common-configuration-attributes,common configuration attributes>>, the `RegexFilter` supports the following parameters:
 
-Besides the <<common-configuration-attributes,common configuration attributes>>,
-the `RegexFilter` supports the following parameters:
-
-.`RegexFilter` -- configuration attributes
-[cols="1m,1,1,4"]
+.`RegexFilter` configuration attributes
+[%header,cols="1m,1,1,4"]
 |===
-|Attribute | Type | Default value | Description
+|Attribute
+| Type
+| Default value
+| Description
 
 | regex
 | https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/regex/Pattern.html[`Pattern`]
@@ -770,13 +767,7 @@ the `RegexFilter` supports the following parameters:
 | useRawMsg
 | `boolean`
 | `false`
-| If `true` the result of
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html#getFormat()[`Message.getFormat()`]
-will be used.
-Otherwise,
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html#getFormat()[`Message.getFormattedMessage()`]
-is used.
-
+| If `true`, for xref:manual/messages.adoc#ParameterizedMessage[`ParameterizedMessage`], xref:manual/messages.adoc#StringFormattedMessage[`StringFormattedMessage`], and xref:manual/messages.adoc#MessageFormatMessage[`MessageFormatMessage`], the message format pattern; for xref:manual/messages.adoc#StructuredDataMessage[`StructuredDataMessage`], the message field will be used as the match target.
 |===
 
 [WARNING]
