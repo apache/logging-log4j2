@@ -1784,18 +1784,11 @@ In case you are using Log4j Core, the following fields can be automatically gene
 <div class="sect3">
 <h4 id="RegexFilter"><a class="anchor" href="#RegexFilter"></a><code>RegexFilter</code></h4>
 <div class="paragraph">
-<p>The <code>RegexFilter</code> matches a regular expression against either the result of
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html#getFormat()"><code>Message.getFormat()</code></a>
-or
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html#getFormat()"><code>Message.getFormattedMessage()</code></a>.
-It can be used with all kinds of <code>Message</code> implementations.</p>
-</div>
-<div class="paragraph">
-<p>Besides the <a href="#common-configuration-attributes">common configuration attributes</a>,
-the <code>RegexFilter</code> supports the following parameters:</p>
+<p>The <code>RegexFilter</code> matches a regular expression against messages.
+Besides the <a href="#common-configuration-attributes">common configuration attributes</a>, the <code>RegexFilter</code> supports the following parameters:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. <code>RegexFilter</code>&#8201;&#8212;&#8201;configuration attributes</caption>
+<caption class="title">Table 10. <code>RegexFilter</code> configuration attributes</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 14.2857%;">
@@ -1822,12 +1815,7 @@ the <code>RegexFilter</code> supports the following parameters:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>useRawMsg</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code> the result of
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html#getFormat()"><code>Message.getFormat()</code></a>
-will be used.
-Otherwise,
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html#getFormat()"><code>Message.getFormattedMessage()</code></a>
-is used.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code>, for <a href="messages.html#ParameterizedMessage" class="xref page"><code>ParameterizedMessage</code></a>, <a href="messages.html#StringFormattedMessage" class="xref page"><code>StringFormattedMessage</code></a>, and <a href="messages.html#MessageFormatMessage" class="xref page"><code>MessageFormatMessage</code></a>, the message format pattern; for <a href="messages.html#StructuredDataMessage" class="xref page"><code>StructuredDataMessage</code></a>, the message field will be used as the match target.</p></td>
 </tr>
 </tbody>
 </table>

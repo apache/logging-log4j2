@@ -14243,12 +14243,7 @@ DENY.</p>
 </dl>
 </div>
 <div class="paragraph">
-<p>This filter returns the onMatch result if the message matches the regular expression.</p>
-</div>
-<div class="paragraph">
-<p>The "useRawMsg" attribute can be used to indicate whether the regular expression should be applied to the result of calling Message.
-getMessageFormat (true) or Message.
-getFormattedMessage() (false). The default is false.</p>
+<p>A filter that matches the given regular expression pattern against messages.</p>
 </div>
 <div class="sect4">
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-RegexFilter_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-RegexFilter_XML-snippet"></a>XML snippet</h5>
@@ -14313,7 +14308,7 @@ getFormattedMessage() (false). The default is false.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>If true, the raw message will be used, otherwise the formatted message will be used.</p>
+<p>If <code>true</code>, for <code>org.apache.logging.log4j.message.ParameterizedMessage</code>, <code>org.apache.logging.log4j.message.StringFormattedMessage</code>, and <code>org.apache.logging.log4j.message.MessageFormatMessage</code>, the message format pattern; for <code>org.apache.logging.log4j.message.StructuredDataMessage</code>, the message field will be used as the match target.</p>
 </div></div></td>
 </tr>
 </tbody>

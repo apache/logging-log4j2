@@ -1000,11 +1000,9 @@ In such a scenario, if you also have custom message types, consider implementing
 <div class="sect2">
 <h3 id="format-type"><a class="anchor" href="#format-type"></a>Format type</h3>
 <div class="paragraph">
-<p>The <a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html"><code>Message</code></a> interface supports the notion of <em>format</em> (e.g., JSON, XML) through its <code>getFormat()</code> method of return type <code>String</code>.
+<p>You can extend from <a href="#MultiformatMessage"><code>MultiformatMessage</code></a> (and optionally from <a href="#MultiFormatStringBuilderFormattable"><code>MultiFormatStringBuilderFormattable</code></a>) to implement messages that can format themselves in one or more encodings; JSON, XML, etc.
 Layouts leverage this mechanism to encode a message in a particular format.
-For instance, when <a href="json-template-layout.html" class="xref page">JSON Template Layout</a> figures out that <code>getFormat()</code> of a <code>Message</code> returns <code>JSON</code>, it injects the <code>Message#getFormattedMessage()</code> output as is without quoting it.
-This way a message implementation can communicate its support for a particular encoding.
-If you want to support multiple formats, extend from <a href="#MultiformatMessage"><code>MultiformatMessage</code></a>, and optionally from <a href="#MultiFormatStringBuilderFormattable"><code>MultiFormatStringBuilderFormattable</code></a>, instead.</p>
+For instance, when <a href="json-template-layout.html" class="xref page">JSON Template Layout</a> figures out that the array returned by <code>getFormats()</code> of a <code>MultiformatMessage</code> contains <code>JSON</code>, it injects the <code>MultiformatMessage#getFormattedMessage({"JSON"})</code> output as is without quoting it.</p>
 </div>
 </div>
 <div class="sect2">

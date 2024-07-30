@@ -91,10 +91,7 @@ loadScripts(document, 'script');</script>
         <a href="../config/plugins/Plugin.html#printObject()">printObject</a>=true)
 </span><span class="modifiers">public final class </span><span class="element-name type-name-label">RegexFilter</span>
 <span class="extends-implements">extends <a href="AbstractFilter.html" title="class in org.apache.logging.log4j.core.filter">AbstractFilter</a></span></div>
-<div class="block">This filter returns the onMatch result if the message matches the regular expression.
-
- The "useRawMsg" attribute can be used to indicate whether the regular expression should be applied to the result of
- calling Message.getMessageFormat (true) or Message.getFormattedMessage() (false). The default is false.</div>
+<div class="block">A filter that matches the given regular expression pattern against messages.</div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -339,7 +336,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>regex</code> - The regular expression to match.</dd>
 <dd><code>patternFlags</code> - An array of Strings where each String is a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html#compile-java.lang.String-int-" title="class or interface in java.util.regex" class="external-link"><code>Pattern.compile(String, int)</code></a> compilation flag.</dd>
-<dd><code>useRawMsg</code> - If true, the raw message will be used, otherwise the formatted message will be used.</dd>
+<dd><code>useRawMsg</code> - If <code>true</code>, for <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/ParameterizedMessage.html" title="class or interface in org.apache.logging.log4j.message" class="external-link"><code>ParameterizedMessage</code></a>, <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/StringFormattedMessage.html" title="class or interface in org.apache.logging.log4j.message" class="external-link"><code>StringFormattedMessage</code></a>, and <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/MessageFormatMessage.html" title="class or interface in org.apache.logging.log4j.message" class="external-link"><code>MessageFormatMessage</code></a>, the message format pattern; for <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html" title="class or interface in org.apache.logging.log4j.message" class="external-link"><code>StructuredDataMessage</code></a>, the message field will be used as the match target.</dd>
 <dd><code>match</code> - The action to perform when a match occurs.</dd>
 <dd><code>mismatch</code> - The action to perform when a mismatch occurs.</dd>
 <dt>Returns:</dt>
