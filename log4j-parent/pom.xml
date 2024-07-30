@@ -157,7 +157,7 @@
     <velocity.version>1.7</velocity.version>
     <wiremock.version>2.35.2</wiremock.version>
     <xmlunit.version>2.10.0</xmlunit.version>
-    <xz.version>1.9</xz.version>
+    <xz.version>1.10</xz.version>
     <zstd.version>1.5.6-4</zstd.version>
 
     <!-- =====================================================
