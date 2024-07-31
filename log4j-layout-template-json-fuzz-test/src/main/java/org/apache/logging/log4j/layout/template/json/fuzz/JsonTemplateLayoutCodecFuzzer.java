@@ -23,6 +23,9 @@ import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
 import org.apache.logging.log4j.layout.template.json.util.JsonReader;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 
+// FUZZER-SETUP-SCRIPT cp ${outputDir}/json.dict ${scriptPath}.dict
+// FUZZER-SETUP-SCRIPT cp ${outputDir}/json_seed_corpus.zip ${scriptPath}_seed_corpus.zip
+
 public final class JsonTemplateLayoutCodecFuzzer {
 
     public static void fuzzerTestOneInput(final FuzzedDataProvider dataProvider) {

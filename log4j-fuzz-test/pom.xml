@@ -57,7 +57,7 @@
 
     <dependency>
       <groupId>com.code-intelligence</groupId>
-      <artifactId>jazzer-standalone</artifactId>
+      <artifactId>jazzer</artifactId>
     </dependency>
 
     <dependency>

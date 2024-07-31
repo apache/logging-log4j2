@@ -1,0 +1,88 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+Log4j contains fuzz tests implemented using https://github.com/CodeIntelligenceTesting/jazzer[Jazzer]footnote:[
+We are aware that https://github.com/google/oss-fuzz/discussions/12195[Jazzer is discontinued].
+Yet it is still the only mature fuzzing framework in Java and https://google.github.io/oss-fuzz/getting-started/new-project-guide/jvm-lang/#jazzer[the recommended library by OSS-Fuzz].].
+These tests are located in `-fuzz-test` prefixed modules; `log4j-core-fuzz-test`, `log4j-layout-template-json-fuzz-test`, etc.
+
+[#oss-fuzz]
+== Google OSS-Fuzz
+
+https://github.com/google/oss-fuzz[OSS-Fuzz] is a Google service that continuously runs fuzz tests of critical F/OSS projects on a beefy cluster and reports its findings (bugs, vulnerabilities, etc.) privately to project maintainers.
+Log4j provides OSS-Fuzz integration with following helpers:
+
+- https://github.com/google/oss-fuzz/tree/master/projects/apache-logging-log4j2/Dockerfile[Dockerfile] to create a container image for running tests
+- link:oss-fuzz-build.sh[`oss-fuzz-build.sh`] to generate fuzz test runner scripts along with all necessary dependencies
+
+[#faq]
+== F.A.Q.
+
+Below we will try to answer some frequently asked questions.
+
+[#running]
+=== How can I run fuzz tests locally?
+
+. Clone the OSS-Fuzz repository:
++
+[source,bash]
+----
+git clone --depth 1 https://github.com/google/oss-fuzz
+cd oss-fuzz/projects/apache-logging-log4j2
+----
+
+. Build the container image:
++
+[source,bash]
+----
+docker build -t oss-fuzz-apache-logging-log4j2 .
+----
+
+. Run the container image to build the Log4j project and generate runner scripts along with dependencies:
++
+[source,bash]
+----
+export LOG4J_REPO_DIR=/path/to/local/clone/of/logging-log4j2 #<1>
+export LOG4J_FUZZ_DIR="$LOG4J_REPO_DIR/target/fuzzers" #<2>
+docker run -it \
+  -e FUZZING_LANGUAGE=java \
+  -v "$LOG4J_REPO_DIR":/src/logging-log4j2 \
+  -v "$LOG4J_FUZZ_DIR":/out \ #<2>
+  --network host \
+  oss-fuzz-apache-logging-log4j2
+----
+<1> Using a local clone of the `logging-log4j2` repository to use it as a compiler cache.
+That is, if it is already compiled (e.g., via `./mvnw install`) or `docker run` already invoked earlier, we can reuse existing compiled classes.
+<2> Directory where the generated runner scripts will be dumped to.
+
+. List generated runner scripts:
++
+[source,bash]
+----
+ls -al "$LOG4J_FUZZ_DIR"
+----
+
+. Execute one of the generated runner scripts:
++
+[source,bash]
+----
+docker run -it \
+  -e FUZZING_LANGUAGE=java \
+  -v "$LOG4J_FUZZ_DIR":/out \
+  oss-fuzz-apache-logging-log4j2 \
+  log4j-core-fuzz-test-PatternLayoutFuzzer
+----
