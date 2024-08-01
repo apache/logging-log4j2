@@ -33,7 +33,6 @@
 
   <properties>
 
-    <bnd.skip>true</bnd.skip>
     <bnd.baseline.skip>true</bnd.baseline.skip>
     <log4j.docgen.skip>true</log4j.docgen.skip>
     <maven.deploy.skip>true</maven.deploy.skip>
