@@ -408,7 +408,7 @@ On startup the cron expression will be evaluated against the current file's crea
 If a rollover should have occurred between that time and the current time the file will be immediately rolled over.
 
 | [[CronTriggeringPolicy-attr-schedule]]schedule
-| link:..//javadoc/log4j-core/org/apache/logging/log4j/core/util/CronExpression.html[`CronExpression`]
+| link:../../javadoc/log4j-core/org/apache/logging/log4j/core/util/CronExpression.html[`CronExpression`]
 | `0 0 0 * * ?`
 a| The cron expression, using the same syntax as the
 https://www.quartz-scheduler.org/[Quartz scheduler].
@@ -423,7 +423,7 @@ The supported fields are in order:
 * day of week
 
 See
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/CronExpression.html[`CronExpression`]
+link:../../javadoc/log4j-core/org/apache/logging/log4j/core/util/CronExpression.html[`CronExpression`]
 for a full specification of the format.
 
 |===
@@ -456,7 +456,7 @@ Otherwise, the target file will be overwritten on each rollover.
 | Attribute | Type | Default value | Description
 
 | [[SizeBasedTriggeringPolicy-attr-size]]size
-| link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/FileSize.html[`FileSize`]
+| link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/FileSize.html[`FileSize`]
 | `10 MB`
 a|
 The maximum file size of the current log file.
@@ -564,34 +564,34 @@ For example, the following XML fragment defines policies that rollover the log:
 ====
 XML::
 +
-.Snippet from an example {antora-examples-url}/manual/rolling-file/policies.xml[`log4j2.xml`]
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/policies.xml[`log4j2.xml`]
 [source,xml,indent=0]
 ----
-include::example$manual/rolling-file/policies.xml[tag=appender]
+include::example$manual/appenders/rolling-file/policies.xml[tag=appender]
 ----
 
 JSON::
 +
-.Snippet from an example {antora-examples-url}/manual/rolling-file/policies.json[`log4j2.json`]
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/policies.json[`log4j2.json`]
 [source,json,indent=0]
 ----
-include::example$manual/rolling-file/policies.json[tag=appender]
+include::example$manual/appenders/rolling-file/policies.json[tag=appender]
 ----
 
 YAML::
 +
-.Snippet from an example {antora-examples-url}/manual/rolling-file/policies.yaml[`log4j2.yaml`]
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/policies.yaml[`log4j2.yaml`]
 [source,yaml,indent=0]
 ----
-include::example$manual/rolling-file/policies.yaml[tag=appender]
+include::example$manual/appenders/rolling-file/policies.yaml[tag=appender]
 ----
 
 Properties::
 +
-.Snippet from an example {antora-examples-url}/manual/rolling-file/policies.properties[`log4j2.properties`]
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/policies.properties[`log4j2.properties`]
 [source,properties,indent=0]
 ----
-include::example$manual/rolling-file/policies.properties[tag=appender]
+include::example$manual/appenders/rolling-file/policies.properties[tag=appender]
 ----
 ====
 
@@ -670,7 +670,7 @@ See <<RolloverStrategy-compress>> for more details.
 |===
 | Type | Multiplicity | Description
 
-| [[element-Action]]link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/Action.html[`Action`]
+| [[element-Action]]link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/Action.html[`Action`]
 | zero or more
 |
 Additional actions to perform on a rollover beyond file rotation and compression.
@@ -1106,13 +1106,13 @@ If present, the action will only be performed on files for which the condition r
 
 **Required**, unless a <<DeleteAction-element-ScriptCondition,`ScriptCondition`>> is provided, in which case these elements are ignored.
 
-| [[DeleteAction-element-PathSorter]]link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathSorter.html[`PathSorter`]
+| [[DeleteAction-element-PathSorter]]link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathSorter.html[`PathSorter`]
 | zero or one
 |
 Provides a sorting order for files contained in <<AbstractPathAction-attr-basePath,`basePath`>>.
 
 The default implementation is
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathSortByModificationTime.html[`PathSortByModificationTime`],
+link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathSortByModificationTime.html[`PathSortByModificationTime`],
 which sorts files by ascending modification timestamp.
 
 | [[DeleteAction-element-ScriptCondition]]<<ScriptCondition>>
@@ -1217,7 +1217,7 @@ See <<DeleteAction-element-PathSorter,`PathSorter`>> for more information.
 | Attribute | Type | Default value | Description
 
 | [[IfAccumulatedFileSize-attr-exceeds]]exceeds
-| link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/FileSize.html[`FileSize`]
+| link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/FileSize.html[`FileSize`]
 |
 |
 The threshold size for the condition to match.
@@ -1345,7 +1345,7 @@ Accepts files based on their last modification timestamp.
 | Attribute | Type | Default value | Description
 
 | [[IfLastModified-attr-age]]age
-| link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/Duration.html[`Duration`]
+| link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/Duration.html[`Duration`]
 |
 | The condition accepts files that are as old or older than the specified duration.
 
@@ -1442,7 +1442,7 @@ See xref:manual/scripts.adoc[Scripts] for more details about scripting.
 |===
 
 The script must return a list of
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathWithAttributes.html[`PathWithAttributes`]
+link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathWithAttributes.html[`PathWithAttributes`]
 objects and supports the following bindings:
 
 [#ScriptFilter-bindings]
@@ -1461,7 +1461,7 @@ objects and supports the following bindings:
 The `Configuration` object.
 
 | [[ScriptFilter-binding-pathList]]pathList
-| link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathWithAttributes.html[`List<PathWithAttributes>`]
+| link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathWithAttributes.html[`List<PathWithAttributes>`]
 |
 The list of files contained in the base directory.
 
@@ -1471,11 +1471,11 @@ the relative file names against
 <<ScriptFilter-binding-basePath,`basePath`>>.
 
 | [[ScriptFilter-binding-substitutor]]substitutor
-| link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrSubstitutor.html[`StrSubstitutor`]
+| link:../../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrSubstitutor.html[`StrSubstitutor`]
 | The `StrSubstitutor` used to replace lookup variables.
 
 | [[ScriptFilter-binding-statusLogger]]statusLogger
-| link:../javadoc/log4j-core/org/apache/logging/log4j/core/Logger.html[`Logger`]
+| link:../../javadoc/log4j-core/org/apache/logging/log4j/core/Logger.html[`Logger`]
 | The xref:manual/status-logger.adoc[] to used by diagnostic messages in the script.
 
 | <key>
@@ -1524,34 +1524,34 @@ An equivalent configuration will look like this:
 ====
 XML::
 +
-.Snippet from an example {antora-examples-url}/manual/rolling-file/logrotate.xml[`log4j2.xml`]
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/logrotate.xml[`log4j2.xml`]
 [source,xml,indent=0]
 ----
-include::example$manual/rolling-file/logrotate.xml[tag=appender]
+include::example$manual/appenders/rolling-file/logrotate.xml[tag=appender]
 ----
 
 JSON::
 +
-.Snippet from an example {antora-examples-url}/manual/rolling-file/logrotate.json[`log4j2.json`]
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/logrotate.json[`log4j2.json`]
 [source,json,indent=0]
 ----
-include::example$manual/rolling-file/logrotate.json[tag=appender]
+include::example$manual/appenders/rolling-file/logrotate.json[tag=appender]
 ----
 
 YAML::
 +
-.Snippet from an example {antora-examples-url}/manual/rolling-file/logrotate.yaml[`log4j2.yaml`]
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/logrotate.yaml[`log4j2.yaml`]
 [source,yaml,indent=0]
 ----
-include::example$manual/rolling-file/logrotate.yaml[tag=appender]
+include::example$manual/appenders/rolling-file/logrotate.yaml[tag=appender]
 ----
 
 Properties::
 +
-.Snippet from an example {antora-examples-url}/manual/rolling-file/logrotate.properties[`log4j2.properties`]
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/logrotate.properties[`log4j2.properties`]
 [source,properties,indent=0]
 ----
-include::example$manual/rolling-file/logrotate.properties[tag=appender]
+include::example$manual/appenders/rolling-file/logrotate.properties[tag=appender]
 ----
 ====
 
@@ -1574,34 +1574,34 @@ Since we have a `%d` pattern in the configuration file, we need to use an explic
 ====
 XML::
 +
-.Snippet from an example {antora-examples-url}/manual/rolling-file/timestamped.xml[`log4j2.xml`]
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/timestamped.xml[`log4j2.xml`]
 [source,xml,indent=0]
 ----
-include::example$manual/rolling-file/timestamped.xml[tag=appender]
+include::example$manual/appenders/rolling-file/timestamped.xml[tag=appender]
 ----
 
 JSON::
 +
-.Snippet from an example {antora-examples-url}/manual/rolling-file/timestamped.json[`log4j2.json`]
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/timestamped.json[`log4j2.json`]
 [source,json,indent=0]
 ----
-include::example$manual/rolling-file/timestamped.json[tag=appender]
+include::example$manual/appenders/rolling-file/timestamped.json[tag=appender]
 ----
 
 YAML::
 +
-.Snippet from an example {antora-examples-url}/manual/rolling-file/timestamped.yaml[`log4j2.yaml`]
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/timestamped.yaml[`log4j2.yaml`]
 [source,yaml,indent=0]
 ----
-include::example$manual/rolling-file/timestamped.yaml[tag=appender]
+include::example$manual/appenders/rolling-file/timestamped.yaml[tag=appender]
 ----
 
 Properties::
 +
-.Snippet from an example {antora-examples-url}/manual/rolling-file/timestamped.properties[`log4j2.properties`]
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/timestamped.properties[`log4j2.properties`]
 [source,properties,indent=0]
 ----
-include::example$manual/rolling-file/timestamped.properties[tag=appender]
+include::example$manual/appenders/rolling-file/timestamped.properties[tag=appender]
 ----
 ====
 
@@ -1616,14 +1616,14 @@ If the supplied <<PathCondition,path conditions>> are not sufficient, you can us
 
 The <<timestamped,example above>> can be rewritten into the following Groovy script:
 
-.Snippet from an example {antora-examples-url}/manual/rolling-file/script-condition.groovy[`script-condition.groovy`]
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/script-condition.groovy[`script-condition.groovy`]
 [source,groovy]
 ----
-include::example$manual/rolling-file/script-condition.groovy[tag=script]
+include::example$manual/appenders/rolling-file/script-condition.groovy[tag=script]
 ----
 
 <1> Adding xref:manual/status-logger.adoc[] calls in your script might help in debugging it.
-<2> link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathWithAttributes.html#getPath()[`PathWithAttributes.getPath()`]
+<2> link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathWithAttributes.html#getPath()[`PathWithAttributes.getPath()`]
 always starts with `basePath`, so we need to relativize it.
 <3> Equivalent to the <<IfLastModified>> condition.
 <4> Equivalent to the <<IfFileName>> condition.
@@ -1634,34 +1634,34 @@ You can use the script in your configuration file as follows:
 ====
 XML::
 +
-.Snippet from an example {antora-examples-url}/manual/rolling-file/script-condition.xml[`log4j2.xml`]
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/script-condition.xml[`log4j2.xml`]
 [source,xml,indent=0]
 ----
-include::example$manual/rolling-file/script-condition.xml[tag=appender]
+include::example$manual/appenders/rolling-file/script-condition.xml[tag=appender]
 ----
 
 JSON::
 +
-.Snippet from an example {antora-examples-url}/manual/rolling-file/script-condition.json[`log4j2.json`]
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/script-condition.json[`log4j2.json`]
 [source,json,indent=0]
 ----
-include::example$manual/rolling-file/script-condition.json[tag=appender]
+include::example$manual/appenders/rolling-file/script-condition.json[tag=appender]
 ----
 
 YAML::
 +
-.Snippet from an example {antora-examples-url}/manual/rolling-file/script-condition.yaml[`log4j2.yaml`]
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/script-condition.yaml[`log4j2.yaml`]
 [source,yaml,indent=0]
 ----
-include::example$manual/rolling-file/script-condition.yaml[tag=appender]
+include::example$manual/appenders/rolling-file/script-condition.yaml[tag=appender]
 ----
 
 Properties::
 +
-.Snippet from an example {antora-examples-url}/manual/rolling-file/script-condition.properties[`log4j2.properties`]
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/script-condition.properties[`log4j2.properties`]
 [source,properties,indent=0]
 ----
-include::example$manual/rolling-file/script-condition.properties[tag=appender]
+include::example$manual/appenders/rolling-file/script-condition.properties[tag=appender]
 ----
 ====
 
@@ -1675,34 +1675,34 @@ In the example below, we create a different folder for each month:
 ====
 XML::
 +
-.Snippet from an example {antora-examples-url}/manual/rolling-file/per-month.xml[`log4j2.xml`]
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/per-month.xml[`log4j2.xml`]
 [source,xml,indent=0]
 ----
-include::example$manual/rolling-file/per-month.xml[tag=appender]
+include::example$manual/appenders/rolling-file/per-month.xml[tag=appender]
 ----
 
 JSON::
 +
-.Snippet from an example {antora-examples-url}/manual/rolling-file/per-month.json[`log4j2.json`]
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/per-month.json[`log4j2.json`]
 [source,json,indent=0]
 ----
-include::example$manual/rolling-file/per-month.json[tag=appender]
+include::example$manual/appenders/rolling-file/per-month.json[tag=appender]
 ----
 
 YAML::
 +
-.Snippet from an example {antora-examples-url}/manual/rolling-file/per-month.yaml[`log4j2.yaml`]
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/per-month.yaml[`log4j2.yaml`]
 [source,yaml,indent=0]
 ----
-include::example$manual/rolling-file/per-month.yaml[tag=appender]
+include::example$manual/appenders/rolling-file/per-month.yaml[tag=appender]
 ----
 
 Properties::
 +
-.Snippet from an example {antora-examples-url}/manual/rolling-file/per-month.properties[`log4j2.properties`]
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/per-month.properties[`log4j2.properties`]
 [source,properties,indent=0]
 ----
-include::example$manual/rolling-file/per-month.properties[tag=appender]
+include::example$manual/appenders/rolling-file/per-month.properties[tag=appender]
 ----
 ====
 

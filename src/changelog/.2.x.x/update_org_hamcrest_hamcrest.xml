@@ -2,6 +2,7 @@
 <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
-       type="fixed">
-  <description format="asciidoc">Fix handling of `Message#getFormat()` in `MessageResolver` of `JsonTemplateLayout`</description>
+       type="updated">
+  <issue id="2788" link="https://github.com/apache/logging-log4j2/pull/2788"/>
+  <description format="asciidoc">Update `org.hamcrest:hamcrest` to version `3.0`</description>
 </entry>
