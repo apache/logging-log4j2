@@ -4,12 +4,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Rolling file appenders :: Apache Log4j</title>
-    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/rolling-file.html">
+    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/appenders/rolling-file.html">
     <meta name="generator" content="Antora 3.2.0-alpha.4">
-<link rel="stylesheet" href="../_/css/site.css">
-<link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../_/css/site.css">
+<link rel="icon" href="../../_/../_images/favicon.ico" type="image/x-icon">
 <!-- `@asciidoctor/tabs` extension styles -->
-<link rel="stylesheet" href="../_/css/vendor/tabs.css">
+<link rel="stylesheet" href="../../_/css/vendor/tabs.css">
 <style>
   /* Swap colors of `IMPORTANT` and `WARNING` blocks */ 
   .doc .admonitionblock.important .icon { background-color: #f70; }
@@ -45,7 +45,7 @@
   <nav class="navbar">
     <div class="navbar-brand">
       <div class="navbar-item">
-        <img src="../_/../_images/logo-small-white.png" alt="Apache Log4j"/>
+        <img src="../../_/../_images/logo-small-white.png" alt="Apache Log4j"/>
       </div>
     </div>
     <div id="topbar-nav" class="navbar-menu">
@@ -62,16 +62,16 @@
 <div class="nav-panel-menu is-active" data-panel="menu">
   <nav class="nav-menu">
     <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
-    <h3 class="title"><a href="../index.html">Home</a></h3>
+    <h3 class="title"><a href="../../index.html">Home</a></h3>
 <ul class="nav-list">
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../download.html">Download</a>
+    <a class="nav-link" href="../../download.html">Download</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../release-notes.html">Release Notes</a>
+    <a class="nav-link" href="../../release-notes.html">Release Notes</a>
   </li>
 </ul>
   </li>
@@ -88,134 +88,140 @@
   </li>
   <li class="nav-item" data-depth="0">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="index.html">Manual</a>
+    <a class="nav-link" href="../index.html">Manual</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="getting-started.html">Getting started</a>
+    <a class="nav-link" href="../getting-started.html">Getting started</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="installation.html">Installation</a>
+    <a class="nav-link" href="../installation.html">Installation</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="architecture.html">Architecture</a>
+    <a class="nav-link" href="../architecture.html">Architecture</a>
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="api.html">API</a>
+    <a class="nav-link" href="../api.html">API</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="api.html#loggers">Loggers</a>
+    <a class="nav-link" href="../api.html#loggers">Loggers</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="eventlogging.html">Event Logger</a>
+    <a class="nav-link" href="../eventlogging.html">Event Logger</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="resource-logger.html">Resource Logger</a>
+    <a class="nav-link" href="../resource-logger.html">Resource Logger</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="simple-logger.html">Simple Logger</a>
+    <a class="nav-link" href="../simple-logger.html">Simple Logger</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="status-logger.html">Status Logger</a>
+    <a class="nav-link" href="../status-logger.html">Status Logger</a>
   </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="logbuilder.html">Fluent API</a>
+    <a class="nav-link" href="../logbuilder.html">Fluent API</a>
   </li>
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="api.html#fish-tagging">Fish tagging</a>
+    <a class="nav-link" href="../api.html#fish-tagging">Fish tagging</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="customloglevels.html">Levels</a>
+    <a class="nav-link" href="../customloglevels.html">Levels</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="markers.html">Markers</a>
+    <a class="nav-link" href="../markers.html">Markers</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="scoped-context.html">Scoped Context</a>
+    <a class="nav-link" href="../scoped-context.html">Scoped Context</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="thread-context.html">Thread Context</a>
+    <a class="nav-link" href="../thread-context.html">Thread Context</a>
   </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="messages.html">Messages</a>
+    <a class="nav-link" href="../messages.html">Messages</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
+    <a class="nav-link" href="../flowtracing.html">Flow Tracing</a>
   </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="config-intro.html">Configuration</a>
+    <a class="nav-link" href="../config-intro.html">Configuration</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="configuration.html">Configuration file</a>
+    <a class="nav-link" href="../configuration.html">Configuration file</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="systemproperties.html">Configuration properties</a>
+    <a class="nav-link" href="../systemproperties.html">Configuration properties</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="customconfig.html">Programmatic configuration</a>
+    <a class="nav-link" href="../customconfig.html">Programmatic configuration</a>
   </li>
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="appenders.html">Appenders</a>
+    <a class="nav-link" href="../appenders.html">Appenders</a>
 <ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="file.html">File appenders</a>
+  </li>
   <li class="nav-item is-current-page" data-depth="3">
     <a class="nav-link" href="rolling-file.html">Rolling file appenders</a>
   </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="delegating.html">Delegating Appenders</a>
+  </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="layouts.html">Layouts</a>
+    <a class="nav-link" href="../layouts.html">Layouts</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
+    <a class="nav-link" href="../json-template-layout.html">JSON Template Layout</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="pattern-layout.html">Pattern Layout</a>
+    <a class="nav-link" href="../pattern-layout.html">Pattern Layout</a>
   </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lookups.html">Lookups</a>
+    <a class="nav-link" href="../lookups.html">Lookups</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="filters.html">Filters</a>
+    <a class="nav-link" href="../filters.html">Filters</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="scripts.html">Scripts</a>
+    <a class="nav-link" href="../scripts.html">Scripts</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="jmx.html">JMX</a>
+    <a class="nav-link" href="../jmx.html">JMX</a>
   </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="extending.html">Extending</a>
+    <a class="nav-link" href="../extending.html">Extending</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="plugins.html">Plugins</a>
+    <a class="nav-link" href="../plugins.html">Plugins</a>
   </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="performance.html">Performance</a>
+    <a class="nav-link" href="../performance.html">Performance</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="async.html">Asynchronous loggers</a>
+    <a class="nav-link" href="../async.html">Asynchronous loggers</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="garbagefree.html">Garbage-free logging</a>
+    <a class="nav-link" href="../garbagefree.html">Garbage-free logging</a>
   </li>
 </ul>
   </li>
@@ -226,10 +232,10 @@
     <span class="nav-text">References</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../plugin-reference.html">Plugin reference</a>
+    <a class="nav-link" href="../../plugin-reference.html">Plugin reference</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../javadoc.html">Java API reference</a>
+    <a class="nav-link" href="../../javadoc.html">Java API reference</a>
   </li>
 </ul>
   </li>
@@ -238,28 +244,28 @@
     <span class="nav-text">Resources</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../faq.html">F.A.Q.</a>
+    <a class="nav-link" href="../../faq.html">F.A.Q.</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../migrate-from-log4j1.html">Migrating from Log4j 1</a>
+    <a class="nav-link" href="../../migrate-from-log4j1.html">Migrating from Log4j 1</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../migrate-from-logback.html">Migrating from Logback</a>
+    <a class="nav-link" href="../../migrate-from-logback.html">Migrating from Logback</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../migrate-from-slf4j.html">Migrating from SLF4J</a>
+    <a class="nav-link" href="../../migrate-from-slf4j.html">Migrating from SLF4J</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../hibernate.html">Integrating with Hibernate</a>
+    <a class="nav-link" href="../../hibernate.html">Integrating with Hibernate</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../jakarta.html">Integrating with Jakarta EE</a>
+    <a class="nav-link" href="../../jakarta.html">Integrating with Jakarta EE</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../soa.html">Integrating with service-oriented architectures</a>
+    <a class="nav-link" href="../../soa.html">Integrating with service-oriented architectures</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../development.html">Development</a>
+    <a class="nav-link" href="../../development.html">Development</a>
   </li>
 </ul>
   </li>
@@ -268,34 +274,34 @@
     <span class="nav-text">Components</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-cassandra.html">Cassandra Appender</a>
+    <a class="nav-link" href="../../log4j-cassandra.html">Cassandra Appender</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-couchdb.html">CouchDB Appender</a>
+    <a class="nav-link" href="../../log4j-couchdb.html">CouchDB Appender</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-docker.html">Log4j Docker</a>
+    <a class="nav-link" href="../../log4j-docker.html">Log4j Docker</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-flume-ng.html">Flume Appender</a>
+    <a class="nav-link" href="../../log4j-flume-ng.html">Flume Appender</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
+    <a class="nav-link" href="../../log4j-iostreams.html">Log4j IOStreams</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-spring-boot.html">Log4j Spring Boot Support</a>
+    <a class="nav-link" href="../../log4j-spring-boot.html">Log4j Spring Boot Support</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-spring-cloud-config.html">Log4j Spring Cloud Config</a>
+    <a class="nav-link" href="../../log4j-spring-cloud-config.html">Log4j Spring Cloud Config</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
+    <a class="nav-link" href="../../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-jul.html">JUL-to-Log4j bridge</a>
+    <a class="nav-link" href="../../log4j-jul.html">JUL-to-Log4j bridge</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-to-jul.html">Log4j-to-JUL bridge</a>
+    <a class="nav-link" href="../../log4j-to-jul.html">Log4j-to-JUL bridge</a>
   </li>
 </ul>
   </li>
@@ -332,17 +338,17 @@
 <main class="article">
 <div class="toolbar" role="navigation">
 <button class="nav-toggle"></button>
-  <a href="../index.html" class="home-link"></a>
+  <a href="../../index.html" class="home-link"></a>
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
-    <li><a href="../index.html">Home</a></li>
-    <li><a href="index.html">Manual</a></li>
-    <li><a href="config-intro.html">Configuration</a></li>
-    <li><a href="appenders.html">Appenders</a></li>
+    <li><a href="../../index.html">Home</a></li>
+    <li><a href="../index.html">Manual</a></li>
+    <li><a href="../config-intro.html">Configuration</a></li>
+    <li><a href="../appenders.html">Appenders</a></li>
     <li><a href="rolling-file.html">Rolling file appenders</a></li>
   </ul>
 </nav>
-<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/manual/rolling-file.adoc">Edit this Page</a></div>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/manual/appenders/rolling-file.adoc">Edit this Page</a></div>
 </div>
   <div class="content">
 <aside class="toc sidebar" data-title="Contents" data-levels="4">
@@ -405,7 +411,7 @@ to access log files.</p>
 <td class="content">
 <div class="paragraph">
 <p>Two appenders, even from different logger contexts, share a common
-<a href="architecture.html#AbstractManager" class="xref page"><code>RollingFileManager</code></a> if:</p>
+<a href="../architecture.html#AbstractManager" class="xref page"><code>RollingFileManager</code></a> if:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -466,14 +472,14 @@ See <a href="#conversion-patterns">Conversion patterns</a> for details</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="attr-bufferSize"></a>bufferSize</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="systemproperties.html#log4j2.encoderByteBufferSize" class="xref page"><code>8192</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../systemproperties.html#log4j2.encoderByteBufferSize" class="xref page"><code>8192</code></a></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p>The size of the
 <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html"><code>ByteBuffer</code></a>
 internally used by the appender.</p>
 </div>
 <div class="paragraph">
-<p>See <a href="appenders.html#buffering" class="xref page">Buffering</a> for more details.</p>
+<p>See <a href="../appenders.html#buffering" class="xref page">Buffering</a> for more details.</p>
 </div></div></td>
 </tr>
 <tr>
@@ -482,7 +488,7 @@ internally used by the appender.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">If set to <code>true</code>, Log4j Core will format each log event in an internal buffer, before sending it to the underlying resource.</p>
 <p class="tableblock">The <code>RandomAccessRollingFile</code> Appender always enables the internal buffer.</p>
-<p class="tableblock">See <a href="appenders.html#buffering" class="xref page">Buffering</a> for more details.</p></td>
+<p class="tableblock">See <a href="../appenders.html#buffering" class="xref page">Buffering</a> for more details.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="attr-createOnDemand"></a>createOnDemand</code></p></td>
@@ -509,7 +515,7 @@ If the folder containing the file does not exist, it will be created.</p>
 <td class="content">
 <div class="paragraph">
 <p>This attribute should not contain any
-<a href="configuration.html#lazy-property-substitution" class="xref page">runtime lookups</a>
+<a href="../configuration.html#lazy-property-substitution" class="xref page">runtime lookups</a>
 nor pattern converters.</p>
 </div>
 <div class="paragraph">
@@ -560,14 +566,14 @@ file attribute view.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">If <code>false</code>, logging exception will be forwarded to the caller of the logging statement.
 Otherwise, they will be ignored.</p>
-<p class="tableblock">Logging exceptions are always also logged to <a href="status-logger.html" class="xref page">Status Logger</a></p></td>
+<p class="tableblock">Logging exceptions are always also logged to <a href="../status-logger.html" class="xref page">Status Logger</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="attr-immediateFlush"></a>immediateFlush</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">If set to <code>true</code>, the appender will flush its internal buffer after each event.</p>
-<p class="tableblock">See <a href="appenders.html#buffering" class="xref page">Buffering</a> for more details.</p></td>
+<p class="tableblock">See <a href="../appenders.html#buffering" class="xref page">Buffering</a> for more details.</p></td>
 </tr>
 </tbody>
 </table>
@@ -587,16 +593,16 @@ Otherwise, they will be ignored.</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="element-Filter"></a><a href="filters.html" class="xref page"><code>Filter</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="element-Filter"></a><a href="../filters.html" class="xref page"><code>Filter</code></a></code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Allows filtering log events just before they are formatted and sent.</p>
-<p class="tableblock">See also <a href="filters.html#appender-stage" class="xref page">appender filtering stage</a>.</p></td>
+<p class="tableblock">See also <a href="../filters.html#appender-stage" class="xref page">appender filtering stage</a>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="element-Layout"></a><a href="layouts.html" class="xref page"><code>Layout</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="element-Layout"></a><a href="../layouts.html" class="xref page"><code>Layout</code></a></code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Formats log events.</p>
-<p class="tableblock">See <a href="layouts.html" class="xref page">Layouts</a> for more information.</p></td>
+<p class="tableblock">See <a href="../layouts.html" class="xref page">Layouts</a> for more information.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="element-TriggeringPolicy"></a><a href="#TriggeringPolicy"><code>TriggeringPolicy</code></a></code></p></td>
@@ -621,12 +627,12 @@ Otherwise, they will be ignored.</p>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="configuration.html#lazy-property-substitution" class="xref page">runtime lookups</a>, which are evaluated in
-<a href="lookups.html#global-context" class="xref page">a global context</a>.</p>
+<p><a href="../configuration.html#lazy-property-substitution" class="xref page">runtime lookups</a>, which are evaluated in
+<a href="../lookups.html#global-context" class="xref page">a global context</a>.</p>
 </li>
 <li>
 <p>a <code>%d{...}</code> pattern, functionally identical to the
-<a href="pattern-layout.html#converter-date" class="xref page">homonymous <code>PatternLayout</code> pattern</a>
+<a href="../pattern-layout.html#converter-date" class="xref page">homonymous <code>PatternLayout</code> pattern</a>
 except it uses the actual or inferred timestamp of the <strong>previous</strong> rollover.</p>
 </li>
 <li>
@@ -723,7 +729,7 @@ Consider using</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-RollingFileAppender" class="xref page">&#x1F4D6; Plugin reference for <code>RollingFile</code></a></p>
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-RollingFileAppender" class="xref page">&#x1F4D6; Plugin reference for <code>RollingFile</code></a></p>
 </div>
 </div>
 <div class="sect2">
@@ -760,7 +766,7 @@ The log file cannot be opened by multiple applications at the same time.</p></td
 </tbody>
 </table>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-RollingRandomAccessFileAppender" class="xref page">&#x1F4D6; Plugin reference for <code>RollingRandomAccessFile</code></a></p>
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-RollingRandomAccessFileAppender" class="xref page">&#x1F4D6; Plugin reference for <code>RollingRandomAccessFile</code></a></p>
 </div>
 </div>
 </div>
@@ -774,7 +780,7 @@ The log file cannot be opened by multiple applications at the same time.</p></td
 interface and are used to decide when is it time to rollover the current log file.</p>
 </div>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-TriggeringPolicy" class="xref page">&#x1F4D6; Plugin reference for <code>TriggeringPolicy</code></a></p>
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-TriggeringPolicy" class="xref page">&#x1F4D6; Plugin reference for <code>TriggeringPolicy</code></a></p>
 </div>
 <div class="sect2">
 <h3 id="TriggeringPolicy-common"><a class="anchor" href="#TriggeringPolicy-common"></a>Common concerns</h3>
@@ -881,7 +887,7 @@ A rollover will occur if the log file was created before the start time of the c
 </table>
 </div>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-OnStartupTriggeringPolicy" class="xref page">&#x1F4D6; Plugin reference for <code>OnStartupTriggeringPolicy</code></a></p>
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-OnStartupTriggeringPolicy" class="xref page">&#x1F4D6; Plugin reference for <code>OnStartupTriggeringPolicy</code></a></p>
 </div>
 </div>
 <div class="sect2">
@@ -946,7 +952,7 @@ If a rollover should have occurred between that time and the current time the fi
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="CronTriggeringPolicy-attr-schedule"></a>schedule</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="..//javadoc/log4j-core/org/apache/logging/log4j/core/util/CronExpression.html"><code>CronExpression</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/util/CronExpression.html"><code>CronExpression</code></a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>0 0 0 * * ?</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p>The cron expression, using the same syntax as the
@@ -979,14 +985,14 @@ If a rollover should have occurred between that time and the current time the fi
 </div>
 <div class="paragraph">
 <p>See
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/CronExpression.html"><code>CronExpression</code></a>
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/util/CronExpression.html"><code>CronExpression</code></a>
 for a full specification of the format.</p>
 </div></div></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-CronTriggeringPolicy" class="xref page">&#x1F4D6; Plugin reference for <code>CronTriggeringPolicy</code></a></p>
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-CronTriggeringPolicy" class="xref page">&#x1F4D6; Plugin reference for <code>CronTriggeringPolicy</code></a></p>
 </div>
 </div>
 <div class="sect2">
@@ -1037,7 +1043,7 @@ Otherwise, the target file will be overwritten on each rollover.</p>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SizeBasedTriggeringPolicy-attr-size"></a>size</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/FileSize.html"><code>FileSize</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/FileSize.html"><code>FileSize</code></a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>10 MB</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p>The maximum file size of the current log file.
@@ -1072,7 +1078,7 @@ Once this size is reached, a rollover will occur.</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-SizeBasedTriggeringPolicy" class="xref page">&#x1F4D6; Plugin reference for <code>SizeBasedTriggeringPolicy</code></a></p>
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-SizeBasedTriggeringPolicy" class="xref page">&#x1F4D6; Plugin reference for <code>SizeBasedTriggeringPolicy</code></a></p>
 </div>
 </div>
 <div class="sect2">
@@ -1173,14 +1179,14 @@ specific time unit in the last <code>%d{...}</code> pattern.</p></td>
 </div>
 <div class="paragraph">
 <p>You can modify the time of the rollover by specifying a different timezone in the <code>%d</code> pattern.
-See <a href="pattern-layout.html#converter-date" class="xref page"><code>date</code> converter syntax</a> for more details.</p>
+See <a href="../pattern-layout.html#converter-date" class="xref page"><code>date</code> converter syntax</a> for more details.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-TimeBasedTriggeringPolicy" class="xref page">&#x1F4D6; Plugin reference for <code>TimeBasedTriggeringPolicy</code></a></p>
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-TimeBasedTriggeringPolicy" class="xref page">&#x1F4D6; Plugin reference for <code>TimeBasedTriggeringPolicy</code></a></p>
 </div>
 </div>
 <div class="sect2">
@@ -1240,7 +1246,7 @@ The element itself has no configuration attributes.</p>
 </div>
 <div id="_tabs_1_xml--panel" class="tabpanel" aria-labelledby="_tabs_1_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/rolling-file/policies.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/rolling-file/policies.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;RollingFile name="FILE"
              fileName="app.log"
@@ -1257,7 +1263,7 @@ The element itself has no configuration attributes.</p>
 </div>
 <div id="_tabs_1_json--panel" class="tabpanel" aria-labelledby="_tabs_1_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/rolling-file/policies.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/rolling-file/policies.json"><code>log4j2.json</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"RollingFile": {
   "name": "FILE",
@@ -1275,7 +1281,7 @@ The element itself has no configuration attributes.</p>
 </div>
 <div id="_tabs_1_yaml--panel" class="tabpanel" aria-labelledby="_tabs_1_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/rolling-file/policies.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/rolling-file/policies.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">RollingFile:
   name: "FILE"
@@ -1291,7 +1297,7 @@ The element itself has no configuration attributes.</p>
 </div>
 <div id="_tabs_1_properties--panel" class="tabpanel" aria-labelledby="_tabs_1_properties">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/rolling-file/policies.properties"><code>log4j2.properties</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/rolling-file/policies.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = RollingFile
 appender.0.name = FILE
@@ -1310,7 +1316,7 @@ appender.0.policy.2.type = TimeBasedTriggeringPolicy</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-CompositeTriggeringPolicy" class="xref page">&#x1F4D6; Plugin reference for <code>Policies</code></a></p>
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-CompositeTriggeringPolicy" class="xref page">&#x1F4D6; Plugin reference for <code>Policies</code></a></p>
 </div>
 </div>
 </div>
@@ -1439,7 +1445,7 @@ Use the <code>DirectWriteRolloverStrategy</code> instead by omitting the <code>f
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="element-Action"></a><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/Action.html"><code>Action</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="element-Action"></a><a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/Action.html"><code>Action</code></a></code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">zero or more</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Additional actions to perform on a rollover beyond file rotation and compression.</p>
 <p class="tableblock">See <a href="#AbstractPathAction">Optional actions</a> for more details.</p></td>
@@ -1512,7 +1518,7 @@ Use the <code>DirectWriteRolloverStrategy</code> instead by omitting the <code>f
 </tbody>
 </table>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-DefaultRolloverStrategy" class="xref page">&#x1F4D6; Plugin reference for <code>DefaultRolloverStrategy</code></a></p>
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-DefaultRolloverStrategy" class="xref page">&#x1F4D6; Plugin reference for <code>DefaultRolloverStrategy</code></a></p>
 </div>
 </div>
 <div class="sect2">
@@ -1559,7 +1565,7 @@ Use the <code>DirectWriteRolloverStrategy</code> instead by omitting the <code>f
 </ul>
 </div>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-DirectWriteRolloverStrategy" class="xref page">&#x1F4D6; Plugin reference for <code>DirectWriteRolloverStrategy</code></a></p>
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-DirectWriteRolloverStrategy" class="xref page">&#x1F4D6; Plugin reference for <code>DirectWriteRolloverStrategy</code></a></p>
 </div>
 </div>
 <div class="sect2">
@@ -1607,7 +1613,7 @@ It is <strong>not</strong> the default strategy of Log4j 2.</p>
 </div>
 <div class="imageblock kroki">
 <div class="content">
-<img src="../_images/diag-d5122741a680d765fa3170a444015b615a1fdafd.svg" alt="Diagram">
+<img src="../../_images/diag-d5122741a680d765fa3170a444015b615a1fdafd.svg" alt="Diagram">
 </div>
 </div>
 </dd>
@@ -1637,7 +1643,7 @@ It is <strong>not</strong> the default strategy of Log4j 2.</p>
 </div>
 <div class="imageblock kroki">
 <div class="content">
-<img src="../_images/diag-35cc4e8101ffe76d0edc44ed334a6273018dc51b.svg" alt="Diagram">
+<img src="../../_images/diag-35cc4e8101ffe76d0edc44ed334a6273018dc51b.svg" alt="Diagram">
 </div>
 </div>
 </dd>
@@ -1652,7 +1658,7 @@ It is <strong>not</strong> the default strategy of Log4j 2.</p>
 </div>
 <div class="imageblock kroki">
 <div class="content">
-<img src="../_images/diag-768e5e02508ea736d8901892b519a6d3a7a770ab.svg" alt="Diagram">
+<img src="../../_images/diag-768e5e02508ea736d8901892b519a6d3a7a770ab.svg" alt="Diagram">
 </div>
 </div>
 </dd>
@@ -1803,7 +1809,7 @@ Since Log4j 2.6, additional actions can be configured manually.</p>
 </ul>
 </div>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-AbstractPathAction" class="xref page">&#x1F4D6; Plugin reference for <code>AbstractPathAction</code></a></p>
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-AbstractPathAction" class="xref page">&#x1F4D6; Plugin reference for <code>AbstractPathAction</code></a></p>
 </div>
 <div class="sect2">
 <h3 id="AbstractPathAction-config"><a class="anchor" href="#AbstractPathAction-config"></a>Common action configuration</h3>
@@ -1936,7 +1942,7 @@ The action will only be performed on files for which the condition returns <code
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="DeleteAction-attr-testMode"></a>testMode</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code>, no files will be deleted, but a <a href="status-logger.html" class="xref page">Status Logger</a> message of level <code>INFO</code> will be issued instead.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code>, no files will be deleted, but a <a href="../status-logger.html" class="xref page">Status Logger</a> message of level <code>INFO</code> will be issued instead.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1962,11 +1968,11 @@ The action will only be performed on files for which the condition returns <code
 <p class="tableblock"><strong>Required</strong>, unless a <a href="#DeleteAction-element-ScriptCondition"><code>ScriptCondition</code></a> is provided, in which case these elements are ignored.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="DeleteAction-element-PathSorter"></a><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathSorter.html"><code>PathSorter</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="DeleteAction-element-PathSorter"></a><a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathSorter.html"><code>PathSorter</code></a></code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Provides a sorting order for files contained in <a href="#AbstractPathAction-attr-basePath"><code>basePath</code></a>.</p>
 <p class="tableblock">The default implementation is
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathSortByModificationTime.html"><code>PathSortByModificationTime</code></a>,
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathSortByModificationTime.html"><code>PathSortByModificationTime</code></a>,
 which sorts files by ascending modification timestamp.</p></td>
 </tr>
 <tr>
@@ -1977,7 +1983,7 @@ which sorts files by ascending modification timestamp.</p></td>
 </tbody>
 </table>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-DeleteAction" class="xref page">&#x1F4D6; Plugin reference for <code>Delete</code></a></p>
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-DeleteAction" class="xref page">&#x1F4D6; Plugin reference for <code>Delete</code></a></p>
 </div>
 </div>
 <div class="sect2">
@@ -2081,7 +2087,7 @@ file attribute view.</p></td>
 </tbody>
 </table>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-PosixViewAttributeAction" class="xref page">&#x1F4D6; Plugin reference for <code>PosixViewAttribute</code></a></p>
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-PosixViewAttributeAction" class="xref page">&#x1F4D6; Plugin reference for <code>PosixViewAttribute</code></a></p>
 </div>
 </div>
 <div class="sect2">
@@ -2129,7 +2135,7 @@ See <a href="#DeleteAction-element-PathSorter"><code>PathSorter</code></a> for m
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="IfAccumulatedFileSize-attr-exceeds"></a>exceeds</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/FileSize.html"><code>FileSize</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/FileSize.html"><code>FileSize</code></a></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The threshold size for the condition to match.</p>
 <p class="tableblock">Admits the same syntax as the <a href="#SizeBasedTriggeringPolicy-attr-size"><code>size</code> attribute of <code>SizeBasedTriggeringPolicy</code></a>.</p>
@@ -2161,7 +2167,7 @@ This condition matches only if <strong>all</strong> the nested conditions also m
 </tbody>
 </table>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfAccumulatedFileSize" class="xref page">&#x1F4D6; Plugin reference for <code>IfAccumulatedFileSize</code></a></p>
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfAccumulatedFileSize" class="xref page">&#x1F4D6; Plugin reference for <code>IfAccumulatedFileSize</code></a></p>
 </div>
 </div>
 <div class="sect3">
@@ -2234,7 +2240,7 @@ This condition matches only if <strong>all</strong> the nested conditions also m
 </tbody>
 </table>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfAccumulatedFileCount" class="xref page">&#x1F4D6; Plugin reference for <code>IfAccumulatedFileCount</code></a></p>
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfAccumulatedFileCount" class="xref page">&#x1F4D6; Plugin reference for <code>IfAccumulatedFileCount</code></a></p>
 </div>
 </div>
 <div class="sect3">
@@ -2305,7 +2311,7 @@ This condition matches only if <strong>all</strong> the nested conditions also m
 </tbody>
 </table>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfFileName" class="xref page">&#x1F4D6; Plugin reference for <code>IfFileName</code></a></p>
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfFileName" class="xref page">&#x1F4D6; Plugin reference for <code>IfFileName</code></a></p>
 </div>
 </div>
 <div class="sect3">
@@ -2332,7 +2338,7 @@ This condition matches only if <strong>all</strong> the nested conditions also m
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="IfLastModified-attr-age"></a>age</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/Duration.html"><code>Duration</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/Duration.html"><code>Duration</code></a></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The condition accepts files that are as old or older than the specified duration.</p>
 <p class="tableblock"><strong>Required</strong></p></td>
@@ -2363,7 +2369,7 @@ This condition matches only if <strong>all</strong> the nested conditions also m
 </tbody>
 </table>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfLastModified" class="xref page">&#x1F4D6; Plugin reference for <code>IfLastModified</code></a></p>
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfLastModified" class="xref page">&#x1F4D6; Plugin reference for <code>IfLastModified</code></a></p>
 </div>
 </div>
 <div class="sect3">
@@ -2394,7 +2400,7 @@ This condition matches only if <strong>all</strong> the nested conditions also m
 </tbody>
 </table>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfNot" class="xref page">&#x1F4D6; Plugin reference for <code>IfNot</code></a></p>
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfNot" class="xref page">&#x1F4D6; Plugin reference for <code>IfNot</code></a></p>
 </div>
 </div>
 <div class="sect3">
@@ -2425,7 +2431,7 @@ This condition matches only if <strong>all</strong> the nested conditions also m
 </tbody>
 </table>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfAll" class="xref page">&#x1F4D6; Plugin reference for <code>IfAll</code></a></p>
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfAll" class="xref page">&#x1F4D6; Plugin reference for <code>IfAll</code></a></p>
 </div>
 </div>
 <div class="sect3">
@@ -2453,7 +2459,7 @@ This condition matches only if <strong>all</strong> the nested conditions also m
 </tbody>
 </table>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfAny" class="xref page">&#x1F4D6; Plugin reference for <code>IfAny</code></a></p>
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfAny" class="xref page">&#x1F4D6; Plugin reference for <code>IfAny</code></a></p>
 </div>
 </div>
 </div>
@@ -2481,19 +2487,19 @@ This condition matches only if <strong>all</strong> the nested conditions also m
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="scripts.html#Script" class="xref page"><code>Script</code></a>,
-<a href="scripts.html#ScriptFile" class="xref page"><code>ScriptFile</code></a>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../scripts.html#Script" class="xref page"><code>Script</code></a>,
+<a href="../scripts.html#ScriptFile" class="xref page"><code>ScriptFile</code></a>
 or
-<a href="scripts.html#ScriptRef" class="xref page"><code>ScriptRef</code></a></p></td>
+<a href="../scripts.html#ScriptRef" class="xref page"><code>ScriptRef</code></a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>one</strong></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">A reference to the script to execute.</p>
-<p class="tableblock">See <a href="scripts.html" class="xref page">Scripts</a> for more details about scripting.</p></td>
+<p class="tableblock">See <a href="../scripts.html" class="xref page">Scripts</a> for more details about scripting.</p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
 <p>The script must return a list of
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathWithAttributes.html"><code>PathWithAttributes</code></a>
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathWithAttributes.html"><code>PathWithAttributes</code></a>
 objects and supports the following bindings:</p>
 </div>
 <table id="ScriptFilter-bindings" class="tableblock frame-all grid-all stretch">
@@ -2518,12 +2524,12 @@ objects and supports the following bindings:</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="ScriptFilter-binding-configuration"></a>configuration</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="configuration.html" class="xref page"><code>Configuration</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../configuration.html" class="xref page"><code>Configuration</code></a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The <code>Configuration</code> object.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="ScriptFilter-binding-pathList"></a>pathList</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathWithAttributes.html"><code>List&lt;PathWithAttributes&gt;</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathWithAttributes.html"><code>List&lt;PathWithAttributes&gt;</code></a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The list of files contained in the base directory.</p>
 <p class="tableblock">The paths are obtained by
 <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html#resolve-java.nio.file.Path-">resolving</a>
@@ -2532,19 +2538,19 @@ the relative file names against
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="ScriptFilter-binding-substitutor"></a>substitutor</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrSubstitutor.html"><code>StrSubstitutor</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrSubstitutor.html"><code>StrSubstitutor</code></a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The <code>StrSubstitutor</code> used to replace lookup variables.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="ScriptFilter-binding-statusLogger"></a>statusLogger</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Logger.html"><code>Logger</code></a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The <a href="status-logger.html" class="xref page">Status Logger</a> to used by diagnostic messages in the script.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/Logger.html"><code>Logger</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <a href="../status-logger.html" class="xref page">Status Logger</a> to used by diagnostic messages in the script.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;key&gt;</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">If <code>&lt;key&gt;</code> is not one of the above, it will be bound to the value given by
-<a href="configuration.html#property-substitution" class="xref page">the global <code>Properties</code> configuration element.</a></p></td>
+<a href="../configuration.html#property-substitution" class="xref page">the global <code>Properties</code> configuration element.</a></p></td>
 </tr>
 </tbody>
 </table>
@@ -2552,7 +2558,7 @@ the relative file names against
 <p>For an example of <code>ScriptCondition</code> usage, see the <a href="#using-script-condition">Using <code>ScriptCondition</code></a> example below.</p>
 </div>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-ScriptCondition" class="xref page">&#x1F4D6; Plugin reference for <code>ScriptCondition</code></a></p>
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-ScriptCondition" class="xref page">&#x1F4D6; Plugin reference for <code>ScriptCondition</code></a></p>
 </div>
 </div>
 </div>
@@ -2613,7 +2619,7 @@ An equivalent configuration will look like this:</p>
 </div>
 <div id="_tabs_3_xml--panel" class="tabpanel" aria-labelledby="_tabs_3_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/rolling-file/logrotate.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/rolling-file/logrotate.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;RollingFile name="FILE"
              fileName="/var/log/app.log"
@@ -2630,7 +2636,7 @@ An equivalent configuration will look like this:</p>
 </div>
 <div id="_tabs_3_json--panel" class="tabpanel" aria-labelledby="_tabs_3_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/rolling-file/logrotate.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/rolling-file/logrotate.json"><code>log4j2.json</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"RollingFile": {
   "name": "FILE",
@@ -2654,7 +2660,7 @@ An equivalent configuration will look like this:</p>
 </div>
 <div id="_tabs_3_yaml--panel" class="tabpanel" aria-labelledby="_tabs_3_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/rolling-file/logrotate.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/rolling-file/logrotate.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">RollingFile:
   name: "FILE"
@@ -2673,7 +2679,7 @@ An equivalent configuration will look like this:</p>
 </div>
 <div id="_tabs_3_properties--panel" class="tabpanel" aria-labelledby="_tabs_3_properties">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/rolling-file/logrotate.properties"><code>log4j2.properties</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/rolling-file/logrotate.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = RollingFile
 appender.0.name = FILE
@@ -2759,7 +2765,7 @@ appender.0.policy.1.size = 100k</code></pre>
 </div>
 <div id="_tabs_4_xml--panel" class="tabpanel" aria-labelledby="_tabs_4_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/rolling-file/timestamped.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/rolling-file/timestamped.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;RollingFile name="FILE"
              filePattern="/var/log/app.%d{yyyy-MM-dd}.log.gz"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
@@ -2777,7 +2783,7 @@ appender.0.policy.1.size = 100k</code></pre>
 </div>
 <div id="_tabs_4_json--panel" class="tabpanel" aria-labelledby="_tabs_4_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/rolling-file/timestamped.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/rolling-file/timestamped.json"><code>log4j2.json</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"RollingFile": {
   "name": "FILE",
@@ -2801,7 +2807,7 @@ appender.0.policy.1.size = 100k</code></pre>
 </div>
 <div id="_tabs_4_yaml--panel" class="tabpanel" aria-labelledby="_tabs_4_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/rolling-file/timestamped.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/rolling-file/timestamped.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">RollingFile:
   name: "FILE"
@@ -2820,7 +2826,7 @@ appender.0.policy.1.size = 100k</code></pre>
 </div>
 <div id="_tabs_4_properties--panel" class="tabpanel" aria-labelledby="_tabs_4_properties">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/rolling-file/timestamped.properties"><code>log4j2.properties</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/rolling-file/timestamped.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = RollingFile
 appender.0.name = FILE
@@ -2871,7 +2877,7 @@ appender.0.policy.type = TimeBaseTriggeringPolicy</code></pre>
 <p>The <a href="#timestamped">example above</a> can be rewritten into the following Groovy script:</p>
 </div>
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/rolling-file/script-condition.groovy"><code>script-condition.groovy</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/rolling-file/script-condition.groovy"><code>script-condition.groovy</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">def limit = FileTime.from(ZonedDateTime.now().minusDays(15).toInstant())
 def matcher = FileSystems.getDefault().getPathMatcher('glob:app.*.log.gz')
@@ -2891,11 +2897,11 @@ return pathList.stream()
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Adding <a href="status-logger.html" class="xref page">Status Logger</a> calls in your script might help in debugging it.</td>
+<td>Adding <a href="../status-logger.html" class="xref page">Status Logger</a> calls in your script might help in debugging it.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathWithAttributes.html#getPath()"><code>PathWithAttributes.getPath()</code></a>
+<td><a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathWithAttributes.html#getPath()"><code>PathWithAttributes.getPath()</code></a>
 always starts with <code>basePath</code>, so we need to relativize it.</td>
 </tr>
 <tr>
@@ -2931,7 +2937,7 @@ always starts with <code>basePath</code>, so we need to relativize it.</td>
 </div>
 <div id="_tabs_5_xml--panel" class="tabpanel" aria-labelledby="_tabs_5_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/rolling-file/script-condition.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/rolling-file/script-condition.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;RollingFile name="FILE"
              filePattern="/var/log/app.%d{yyyy-MM-dd}.log.gz"&gt;
@@ -2951,7 +2957,7 @@ always starts with <code>basePath</code>, so we need to relativize it.</td>
 </div>
 <div id="_tabs_5_json--panel" class="tabpanel" aria-labelledby="_tabs_5_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/rolling-file/script-condition.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/rolling-file/script-condition.json"><code>log4j2.json</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"RollingFile": {
   "name": "FILE",
@@ -2975,7 +2981,7 @@ always starts with <code>basePath</code>, so we need to relativize it.</td>
 </div>
 <div id="_tabs_5_yaml--panel" class="tabpanel" aria-labelledby="_tabs_5_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/rolling-file/script-condition.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/rolling-file/script-condition.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">RollingFile:
   name: "FILE"
@@ -2993,7 +2999,7 @@ always starts with <code>basePath</code>, so we need to relativize it.</td>
 </div>
 <div id="_tabs_5_properties--panel" class="tabpanel" aria-labelledby="_tabs_5_properties">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/rolling-file/script-condition.properties"><code>log4j2.properties</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/rolling-file/script-condition.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = RollingFile
 appender.0.name = FILE
@@ -3042,7 +3048,7 @@ In the example below, we create a different folder for each month:</p>
 </div>
 <div id="_tabs_6_xml--panel" class="tabpanel" aria-labelledby="_tabs_6_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/rolling-file/per-month.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/rolling-file/per-month.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;RollingFile name="FILE"
              filePattern="/var/log/app/%d{yyyy-MM}/%d{yyyy-MM-dd}.log.gz"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
@@ -3060,7 +3066,7 @@ In the example below, we create a different folder for each month:</p>
 </div>
 <div id="_tabs_6_json--panel" class="tabpanel" aria-labelledby="_tabs_6_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/rolling-file/per-month.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/rolling-file/per-month.json"><code>log4j2.json</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"RollingFile": {
   "name": "FILE",
@@ -3082,7 +3088,7 @@ In the example below, we create a different folder for each month:</p>
 </div>
 <div id="_tabs_6_yaml--panel" class="tabpanel" aria-labelledby="_tabs_6_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/rolling-file/per-month.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/rolling-file/per-month.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">RollingFile:
   name: "FILE"
@@ -3100,7 +3106,7 @@ In the example below, we create a different folder for each month:</p>
 </div>
 <div id="_tabs_6_properties--panel" class="tabpanel" aria-labelledby="_tabs_6_properties">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/rolling-file/per-month.properties"><code>log4j2.properties</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/rolling-file/per-month.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = RollingFile
 appender.0.name = FILE
@@ -3154,9 +3160,9 @@ appender.0.policy.type = TimeBaseTriggeringPolicy</code></pre>
     Other names may be trademarks of their respective owners.
   </p>
 </footer>
-<script id="site-script" src="../_/js/site.js" data-ui-root-path="../_"></script>
-<script async src="../_/js/vendor/highlight.js"></script>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
 <!-- `@asciidoctor/tabs` extension scripts -->
-<script async src="../_/js/vendor/tabs.js"></script>
+<script async src="../../_/js/vendor/tabs.js"></script>
   </body>
 </html>

@@ -168,7 +168,13 @@
     <a class="nav-link" href="appenders.html">Appenders</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="rolling-file.html">Rolling file appenders</a>
+    <a class="nav-link" href="appenders/file.html">File appenders</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="appenders/rolling-file.html">Rolling file appenders</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="appenders/delegating.html">Delegating Appenders</a>
   </li>
 </ul>
   </li>
@@ -352,30 +358,36 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Appenders are responsible for delivering LogEvents to their destination.
+<p>Appenders are responsible for delivering log events to their destination.
 Every Appender must implement the
 <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Appender.html"><code>Appender</code></a>
-interface.
-Most Appenders will extend
+interface.</p>
+</div>
+<div class="paragraph">
+<p>While not strictly required by the Log4j Core architecture, most appenders inherit from
 <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/AbstractAppender.html"><code>AbstractAppender</code></a>
-which adds
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LifeCycle.html"><code>Lifecycle</code></a>
-and
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/filter/Filterable.html"><code>Filterable</code></a>
-support. <code>Lifecycle</code> allows components to finish initialization after configuration has been completed and to perform cleanup during shutdown.
-<code>Filterable</code> allows the component to have <code>Filter</code> attached to it which are evaluated during event processing.</p>
+and:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>delegate the filtering of log events to an implementation of
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Filter.html"><code>Filter</code></a>.
+See <a href="filters.html" class="xref page">Filters</a> for more information.</p>
+</li>
+<li>
+<p>delegate the formatting of log events to an implementation of
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html"><code>Layout</code></a>.
+See <a href="layouts.html" class="xref page">Layouts</a> for more information.</p>
+</li>
+<li>
+<p>only directly handle the writing of log event data to the target destination.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>Appenders usually are only responsible for writing the event data to the target destination.
-In most cases, they delegate responsibility for formatting the event to a <a href="layouts.html" class="xref page">layout</a>.
-Some appenders wrap other appenders so that they can modify the <code>LogEvent</code>, handle a failure in an <code>Appender</code>, route the event to a subordinate <code>Appender</code> based on advanced <code>Filter</code> criteria or provide similar functionality that does not directly format the event for viewing.</p>
-</div>
-<div class="paragraph">
-<p>Appenders always have a name so that they can be referenced from Loggers.</p>
-</div>
-<div class="paragraph">
-<p>In the tables below, the "Type" column corresponds to the Java type expected.
-For non-JDK classes, these should usually be in <a href="../javadoc/log4j-core/index.html">Log4j Core</a> unless otherwise noted.</p>
+<p>Appenders always have a name so that they can be referenced from a
+<a href="configuration.html#configuring-loggers" class="xref page">logger configuration</a>.</p>
 </div>
 </div>
 </div>
@@ -414,7 +426,7 @@ configuration property is enabled,</p>
 <p>at the end of each log event batch, if
 <a href="async.html" class="xref page">asynchronous loggers</a>
 or
-<a href="#AsyncAppender">appenders</a>
+<a href="appenders/delegating.html#AsyncAppender" class="xref page">appenders</a>
 are used.</p>
 </li>
 <li>
@@ -530,8 +542,57 @@ It does not ensure that the operating system writes the event to the underlying 
 </td>
 <td class="content">
 <div class="paragraph">
-<p>If you are using <a href="async.html" class="xref page">asynchronous loggers</a> or <a href="#AsyncAppender">appenders</a>, you can set this attribute to <code>false</code>.
+<p>If you are using
+<a href="async.html" class="xref page">asynchronous loggers</a>
+or
+<a href="appenders/delegating.html#AsyncAppender" class="xref page">appenders</a>, you can set this attribute to <code>false</code>.
 Log4j Core will still flush the internal buffer, whenever the log event queue becomes empty.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="exception-handling"><a class="anchor" href="#exception-handling"></a>Exception handling</h3>
+<div class="paragraph">
+<p>By default, Log4j Core uses <a href="status-logger.html" class="xref page">Status Logger</a> to report exceptions that occur in appenders.
+This behavior can be changed using the following configuration property:</p>
+</div>
+<div class="sect3">
+<h4 id="ignoreExceptions"><a class="anchor" href="#ignoreExceptions"></a><code>ignoreExceptions</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>If <code>false</code> logging exceptions will be forwarded to the caller.
+Otherwise, they will be logged using <a href="status-logger.html" class="xref page">Status Logger</a>.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If logging is important for your business, consider using a
+<a href="appenders/delegating.html#FailoverAppender" class="xref page"><code>Failover</code> Appender</a>
+to redirect log events to a different appender in case of exceptions.</p>
 </div>
 </td>
 </tr>
@@ -542,7 +603,7 @@ Log4j Core will still flush the internal buffer, whenever the log event queue be
 <div class="sect2">
 <h3 id="runtime-evaluation"><a class="anchor" href="#runtime-evaluation"></a>Runtime evaluation of attributes</h3>
 <div class="paragraph">
-<p>The following configuration attributes are also evaluated at runtime, so can contain escaped <code>$${...}</code> expressions.</p>
+<p>The following configuration attributes are also evaluated at runtime, so can contain escaped <code>$${...}</code> property substitution expressions.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. List of attributes evaluated at runtime</caption>
@@ -562,52 +623,56 @@ Log4j Core will still flush the internal buffer, whenever the log event queue be
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#HttpAppender"><code>HttpAppender</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#HttpAppender">HTTP Appender</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#HttpAppender-element-headers"><code>Property/value</code></a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Log event</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="lookups.html#global-context" class="xref page"><em>global</em></a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#KafkaAppender"><code>KafkaAppender</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#KafkaAppender">Kafka Appender</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#KafkaAppender-attr-key"><code>key</code></a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Log event</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="lookups.html#global-context" class="xref page"><em>global</em></a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#NoSQLAppender"><code>NoSQLAppender</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#NoSQLAppender">NoSQL Appender</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#NoSqlAppender-element-keyValuePairs"><code>KeyValuePair/value</code></a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Log event</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="lookups.html#global-context" class="xref page"><em>global</em></a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#PropertiesRewritePolicy"><code>PropertiesRewritePolicy</code></a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#PropertiesRewritePolicy-element-properties"><code>Property/value</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appenders/delegating.html#PropertiesRewritePolicy" class="xref page">PropertiesRewrite Policy</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appenders/delegating.html#PropertiesRewritePolicy-element-Property" class="xref page"><code>Property/value</code></a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Log event</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="lookups.html#global-context" class="xref page"><em>global</em></a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#Routes"><code>Routes</code></a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pattern</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appenders/delegating.html#Routes" class="xref page">Routes Container</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appenders/delegating.html#Routes-attr-pattern" class="xref page"><code>pattern</code></a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Log event</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="lookups.html#event-context" class="xref page"><em>log event</em></a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="rolling-file.html" class="xref page"><code>RollingFileAppender</code></a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="rolling-file.html#attr-filePattern" class="xref page"><code>filePattern</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appenders/rolling-file.html" class="xref page">Rolling File Appenders</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appenders/rolling-file.html#attr-filePattern" class="xref page"><code>filePattern</code></a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Rollover</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="lookups.html#global-context" class="xref page"><em>global</em></a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="rolling-file.html#AbstractPathAction" class="xref page">Optional actions</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>basePath</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appenders/rolling-file.html#AbstractPathAction" class="xref page">Optional Rollover Actions</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appenders/rolling-file.html#AbstractPathAction-attr-basePath" class="xref page"><code>basePath</code></a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Rollover</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="lookups.html#global-context" class="xref page"><em>global</em></a></p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>The <a href="#Routes"><code>Route</code></a> component of the <a href="#RoutingAppender"><code>RoutingAppender</code></a> is special: its children are evaluated at runtime, but they are <strong>not</strong> evaluated at configuration time.
-Inside the <code>Route</code> component you <strong>should not</strong> use escaped <code>$${...}</code> expressions, but only unescaped <code>${...}</code> expressions.</p>
+<p>The
+<a href="appenders/delegating.html#Route" class="xref page"><code>Route</code></a>
+component of the
+<a href="appenders/delegating.html#RoutingAppender" class="xref page">Routing Appender</a>
+is special: its children are evaluated at runtime, but they are <strong>not</strong> evaluated at configuration time.
+Inside the <code>Route</code> component you <strong>should not</strong> use escaped <code>$${...}</code> property substitution expressions, but only unescaped <code>${...}</code> property substitution expressions.</p>
 </div>
 <div class="paragraph">
 <p>See <a href="configuration.html#lazy-property-substitution" class="xref page">runtime property substitution</a> for more details.</p>
@@ -620,259 +685,55 @@ Inside the <code>Route</code> component you <strong>should not</strong> use esca
 <div class="sectionbody">
 <div class="paragraph">
 <p>Log4j bundles several predefined appenders to assist in several common deployment use cases.
-Following sections explain all these in detail.</p>
+They are documented in separate pages based on their target resource:</p>
 </div>
 <div class="sect2">
-<h3 id="AsyncAppender"><a class="anchor" href="#AsyncAppender"></a><a id="asyncappender"></a> AsyncAppender</h3>
+<h3 id="file-appenders"><a class="anchor" href="#file-appenders"></a>File appenders</h3>
 <div class="paragraph">
-<p>The AsyncAppender accepts references to other Appenders and causes LogEvents to be written to them on a separate Thread.
-Note that exceptions while writing to those Appenders will be hidden from the application.
-The AsyncAppender should be configured after the appenders it references to allow it to shut down properly.</p>
+<p>File appenders write logs to the filesystem.
+They can be further split into:</p>
 </div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Single file appenders</dt>
+<dd>
+<p>See <a href="appenders/file.html" class="xref page">File appenders</a> for details.</p>
+</dd>
+<dt class="hdlist1">Rolling file appenders</dt>
+<dd>
+<p>See <a href="appenders/rolling-file.html" class="xref page">Rolling file appenders</a> for details.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="delegating-appenders"><a class="anchor" href="#delegating-appenders"></a>Delegating appenders</h3>
 <div class="paragraph">
-<p>By default, AsyncAppender uses
-<a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ArrayBlockingQueue.html"><code>java.util.concurrent.ArrayBlockingQueue</code></a>
-which does not require any external libraries.
-Note that multi-threaded applications should exercise care when using this appender as such: the blocking queue is susceptible to lock contention and our
-<a href="performance.html#async" class="xref page">tests showed</a> performance may become worse when more threads are logging concurrently.
-Consider using
-<a href="async.html" class="xref page">lock-free Async Loggers</a> for optimal performance.</p>
+<p>Delegating appenders are intended to decorate other appenders:</p>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Log4j 2 brought the following enhancements to the Log4j 1 async appender:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>all appenders referenced by <code>AsyncAppender</code> flush their buffers to the OS at the end of a batch, when the queue becomes empty.
-This guarantees that the batch of log events is passed to the OS and is a more performant version of the <a href="#immediateFlush"><code>immediateFlush</code></a> attribute.</p>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-Similarly to what happens with the <code>immediateFlush</code> attribute, this does not guarantee that the OS stores the data on the underlying device.
-</td>
-</tr>
-</table>
-</div>
-</li>
-<li>
-<p>the type of queue is configurable to allow users to use faster and more performant queues, such as those from the
-<a href="https://github.com/JCTools/JCTools?tab=readme-ov-file#jctools">JCTools</a>
-or
-<a href="https://github.com/conversant/disruptor">Conversant Disruptor</a> projects.</p>
-</li>
-</ul>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. AsyncAppender Parameters</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">AppenderRef</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the Appenders to invoke
-asynchronously. Multiple AppenderRef elements can be configured.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">blocking</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If true, the appender will wait until there are free
-slots in the queue. If false, the event will be written to the error
-appender if the queue is full. The default is true.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">shutdownTimeout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">How many milliseconds the Appender should
-wait to flush outstanding log events in the queue on shutdown? The
-default is zero which means to wait forever.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">bufferSize</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">integer</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Specifies the maximum number of events that can be queued. The default
-is 1024. Note that when using a disruptor-style <code>BlockingQueue</code>, this
-buffer size must be a power of 2.</p>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><a href="appenders/delegating.html#AsyncAppender" class="xref page">Asynchronous appender</a></dt>
+<dd>
+<p>Perform all I/O on a dedicated thread</p>
+</dd>
+<dt class="hdlist1"><a href="appenders/delegating.html#FailoverAppender" class="xref page">Failover appender</a></dt>
+<dd>
+<p>Provide a backup appender in case an appender fails</p>
+</dd>
+<dt class="hdlist1"><a href="appenders/delegating.html#RewriteAppender" class="xref page">Rewrite appender</a></dt>
+<dd>
+<p>Modify log events prior to delivering them to the target</p>
+</dd>
+<dt class="hdlist1"><a href="appenders/delegating.html#RoutingAppender" class="xref page">Routing appender</a></dt>
+<dd>
+<p>Dynamically choose a different appender for each log event</p>
+</dd>
+</dl>
 </div>
 <div class="paragraph">
-<p>When the application is logging faster than the underlying appender can
-keep up with for a long enough time to fill up the queue, the behavior
-is determined by the
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html"><code>AsyncQueueFullPolicy</code></a>.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">errorRef</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the Appender to invoke if none of the
-appenders can be called, either due to errors in the appenders or
-because the queue is full. If not specified then errors will be ignored.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">filter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Filter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A Filter to determine if the event should be handled by
-this Appender. More than one Filter may be used by using a
-CompositeFilter.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the Appender.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ignoreExceptions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The default is <code>true</code>, causing exceptions
-encountered while appending events to be internally logged and then
-ignored. When set to <code>false</code> exceptions will be propagated to the
-caller, instead. You must set this to <code>false</code> when wrapping this
-Appender in a &lt;FailoverAppender&gt;&gt;.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">includeLocation</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Extracting location is an expensive operation
-(it can make logging 5 - 20 times slower). To improve performance,
-location is not included by default when adding a log event to the
-queue. You can change this by setting includeLocation="true".</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">BlockingQueueFactory</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">BlockingQueueFactory</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This element overrides what type of <code>BlockingQueue</code> to use.
-See <a href="#BlockingQueueFactory">below documentation</a> for more details.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>There are also a few system properties that can be used to maintain application throughput even when the underlying appender cannot keep up with the logging rate and the queue is filling up.
-See the details for system properties
-<a href="systemproperties.html#log4j2.asyncQueueFullPolicy" class="xref page"><code>log4j2.asyncQueueFullPolicy</code></a>
-and
-<a href="systemproperties.html#log4j2.discardThreshold" class="xref page"><code>log4j2.DiscardThreshold</code></a>.</p>
+<p>See <a href="appenders/delegating.html" class="xref page">Delegating Appenders</a> for details.</p>
 </div>
-<div class="paragraph">
-<p>A typical AsyncAppender configuration might look like this:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;File name="MyFile" fileName="logs/app.log"&gt;
-      &lt;PatternLayout&gt;
-        &lt;Pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/Pattern&gt;
-      &lt;/PatternLayout&gt;
-    &lt;/File&gt;
-    &lt;Async name="Async"&gt;
-      &lt;AppenderRef ref="MyFile"/&gt;
-    &lt;/Async&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="Async"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-<div id="BlockingQueueFactory" class="paragraph">
-<p>Starting in Log4j 2.7, a custom implementation of <code>BlockingQueue</code> or <code>TransferQueue</code> can be specified using a
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/BlockingQueueFactory.html"><code>BlockingQueueFactory</code></a>
-plugin.
-To override the default <code>BlockingQueueFactory</code>, specify the plugin inside an <code>&lt;Async/&gt;</code> element like so:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Configuration name="LinkedTransferQueueExample"&gt;
-  &lt;Appenders&gt;
-    &lt;List name="List"/&gt;
-    &lt;Async name="Async" bufferSize="262144"&gt;
-      &lt;AppenderRef ref="List"/&gt;
-      &lt;LinkedTransferQueue/&gt;
-    &lt;/Async&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root&gt;
-      &lt;AppenderRef ref="Async"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Log4j ships with the following implementations:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. BlockingQueueFactory Implementations</caption>
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 75%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Plugin Name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ArrayBlockingQueue</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This is the default implementation that uses
-<a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ArrayBlockingQueue.html"><code>ArrayBlockingQueue</code></a>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">DisruptorBlockingQueue</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This uses the
-<a href="https://github.com/conversant/disruptor">Conversant Disruptor</a>
-implementation of <code>BlockingQueue</code>. This plugin takes a single optional
-attribute, <code>spinPolicy</code>, which corresponds to the <code>SpinPolicy</code> enum.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">JCToolsBlockingQueue</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This uses
-<a href="https://jctools.github.io/JCTools/">JCTools</a>, specifically the MPSC
-bounded lock-free queue.
-This implementation is provided by the <code>log4j-jctools</code> artifact.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LinkedTransferQueue</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This uses the new Java 7 implementation
-<a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/LinkedTransferQueue.html"><code>LinkedTransferQueue</code></a>.
-Note that this queue does not use the <code>bufferSize</code> configuration
-attribute from AsyncAppender as <code>LinkedTransferQueue</code> does not support a
-maximum capacity.</p></td>
-</tr>
-</tbody>
-</table>
 </div>
 <div class="sect2">
 <h3 id="CassandraAppender"><a class="anchor" href="#CassandraAppender"></a>CassandraAppender</h3>
@@ -887,7 +748,7 @@ A conversion type compatible with <code>java.util.Date</code> will use the log e
 <code>timestamp</code> column type in Cassandra).</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. CassandraAppender Parameters</caption>
+<caption class="title">Table 2. CassandraAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -1051,7 +912,7 @@ TimestampGenerator. By default, this is <code>false</code>.</p></td>
 A Layout must be provided to format the LogEvent.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. ConsoleAppender Parameters</caption>
+<caption class="title">Table 3. ConsoleAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -1110,7 +971,7 @@ been tested with Oracle JVM on Linux and Windows so far.</em></p></td>
 encountered while appending events to be internally logged and then
 ignored. When set to <code>false</code> exceptions will be propagated to the
 caller, instead. You must set this to <code>false</code> when wrapping this
-Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
+Appender in a <a href="#FailoverAppender">[FailoverAppender]</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">target</p></td>
@@ -1135,318 +996,6 @@ Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
   &lt;Loggers&gt;
     &lt;Root level="error"&gt;
       &lt;AppenderRef ref="STDOUT"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="FailoverAppender"><a class="anchor" href="#FailoverAppender"></a>FailoverAppender</h3>
-<div class="paragraph">
-<p>The FailoverAppender wraps a set of appenders.
-If the primary Appender fails the secondary appenders will be tried in order until one succeeds or there are no more secondaries to try.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. FailoverAppender Parameters</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">filter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Filter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A Filter to determine if the event should be handled by
-this Appender. More than one Filter may be used by using a
-CompositeFilter.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">primary</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the primary Appender to use.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">failovers</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String[]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The names of the secondary Appenders to use.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the Appender.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">retryIntervalSeconds</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The number of seconds that should pass
-before retrying the primary Appender. The default is 60.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ignoreExceptions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The default is <code>true</code>, causing exceptions
-encountered while appending events to be internally logged and then
-ignored. When set to <code>false</code> exceptions will be propagated to the
-caller, instead.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">target</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Either "SYSTEM_OUT" or "SYSTEM_ERR". The default is
-"SYSTEM_ERR".</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>A Failover configuration might look like:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;RollingFile name="RollingFile" fileName="logs/app.log" filePattern="logs/app-%d{MM-dd-yyyy}.log.gz"
-                 ignoreExceptions="false"&gt;
-      &lt;PatternLayout&gt;
-        &lt;Pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/Pattern&gt;
-      &lt;/PatternLayout&gt;
-      &lt;TimeBasedTriggeringPolicy /&gt;
-    &lt;/RollingFile&gt;
-    &lt;Console name="STDOUT" target="SYSTEM_OUT" ignoreExceptions="false"&gt;
-      &lt;PatternLayout pattern="%m%n"/&gt;
-    &lt;/Console&gt;
-    &lt;Failover name="Failover" primary="RollingFile"&gt;
-      &lt;Failovers&gt;
-        &lt;AppenderRef ref="Console"/&gt;
-      &lt;/Failovers&gt;
-    &lt;/Failover&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="Failover"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="fileappender"><a class="anchor" href="#fileappender"></a><a id="FileAppender"></a> FileAppender</h3>
-<div class="paragraph">
-<p>The FileAppender is an OutputStreamAppender that writes to the File defined in the <code>fileName</code> parameter.
-The FileAppender uses a FileManager (which extends OutputStreamManager) to perform the file I/O.
-While FileAppenders from different Configurations cannot be shared, the FileManagers can be if the Manager is accessible.
-For example, two web applications in a servlet container can have their configuration and safely write to the same file if Log4j is in a ClassLoader that is common to both of them.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>The <a href="#FileAppender">FileAppender</a> does not offer a mechanism for external applications to force it to reopen the log file.
-External tools such as
-<a href="https://github.com/logrotate/logrotate"><code>logrotate</code></a>
-cannot rotate log files without losing log events.</p>
-</div>
-<div class="paragraph">
-<p>If you want to rotate your log files, use <a href="rolling-file.html" class="xref page">a rolling file appender</a>.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 7. FileAppender Parameters</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">append</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">When true - the default, records will be appended to
-the end of the file. When set to false, the file will be cleared before
-new records are written.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">bufferedIO</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">When true - the default, records will be written
-to a buffer and the data will be written to disk when the buffer is full
-or, if immediateFlush is set, when the record is written. File locking
-cannot be used with <code>bufferedIO</code>. Performance tests have shown that using
-buffered I/O significantly improves performance, even if <code>immediateFlush</code>
-is enabled.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">bufferSize</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">When <code>bufferedIO</code> is true, this is the buffer size, the
-default is 8192 bytes.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">createOnDemand</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The appender creates the file on-demand. The
-appender only creates the file when a log event passes all filters and
-is routed to this appender. Defaults to false.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">filter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Filter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A Filter to determine if the event should be handled by
-this Appender. More than one Filter may be used by using a
-CompositeFilter.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">fileName</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the file to write to. If the file, or any
-of its parent directories, do not exist, they will be created.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">immediateFlush</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>When set to true - the default, each write will be followed by a flush.
-This will guarantee that the data is passed to the operating system for writing;
-it does not guarantee that the data is written to a physical device
-such as a disk drive.</p>
-</div>
-<div class="paragraph">
-<p>Note that if this flag is set to false, and the logging activity is sparse,
-there may be an indefinite delay in the data eventually making it to the
-operating system, because it is held up in a buffer.
-This can cause surprising effects such as the logs not
-appearing in the tail output of a file immediately after writing to the log.</p>
-</div>
-<div class="paragraph">
-<p>Flushing after every write is only useful when using this appender with
-synchronous loggers. Asynchronous loggers and appenders will
-automatically flush at the end of a batch of events, even if
-immediateFlush is set to false. This also guarantees the data is passed
-to the operating system but is more efficient.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">layout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Layout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Layout to use to format the LogEvent. If no layout
-is supplied the default pattern layout of "%m%n" will be used.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">locking</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">When set to true, I/O operations will occur only
-while the file lock is held allowing FileAppenders in multiple JVMs and
-potentially multiple hosts to write to the same file simultaneously.
-This will significantly impact performance so should be used carefully.
-Furthermore, on many systems, the file lock is "advisory" meaning that
-other applications can perform operations on the file without acquiring
-a lock. The default value is false.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the Appender.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ignoreExceptions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The default is <code>true</code>, causing exceptions
-encountered while appending events to be internally logged and then
-ignored. When set to <code>false</code> exceptions will be propagated to the
-caller, instead. You must set this to <code>false</code> when wrapping this
-Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">filePermissions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>File attribute permissions in POSIX format to apply whenever the file is
-created.</p>
-</div>
-<div class="paragraph">
-<p>The underlying files system shall support
-<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/attribute/PosixFileAttributeView.html">POSIX</a>
-file attribute view.</p>
-</div>
-<div class="paragraph">
-<p>Examples: <code>rw-------</code> or <code>rw-rw-rw-</code> etc&#8230;&#8203;</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">fileOwner</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>File owner to define whenever the file is created.</p>
-</div>
-<div class="paragraph">
-<p>Changing the file&#8217;s owner may be restricted for security reasons and
-Operation not permitted IOException thrown. Only processes with an
-effective user ID equal to the user ID of the file or with appropriate
-privileges may change the ownership of a file if
-<a href="http://www.gnu.org/software/libc/manual/html_node/Options-for-Files.html">_POSIX_CHOWN_RESTRICTED</a>
-is in effect for path.</p>
-</div>
-<div class="paragraph">
-<p>The underlying files system shall support file
-<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html">owner</a>
-attribute view.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">fileGroup</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>File group to define whenever the file is created.</p>
-</div>
-<div class="paragraph">
-<p>The underlying files system shall support
-<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/attribute/PosixFileAttributeView.html">POSIX</a>
-file attribute view.</p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Here is a sample File configuration:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;File name="MyFile" fileName="logs/app.log"&gt;
-      &lt;PatternLayout&gt;
-        &lt;Pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/Pattern&gt;
-      &lt;/PatternLayout&gt;
-    &lt;/File&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="MyFile"/&gt;
     &lt;/Root&gt;
   &lt;/Loggers&gt;
 &lt;/Configuration&gt;</code></pre>
@@ -1485,7 +1034,7 @@ Setting the "type" attribute to "Embedded" will force the use of the embedded ag
 In addition, configuring agent properties in the appender configuration will also cause the embedded agent to be used.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 8. FlumeAppender Parameters</caption>
+<caption class="title">Table 4. FlumeAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -1654,7 +1203,7 @@ wait before timing out the request.</p></td>
 encountered while appending events to be internally logged and then
 ignored. When set to <code>false</code> exceptions will be propagated to the
 caller, instead. You must set this to <code>false</code> when wrapping this
-Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
+Appender in a <a href="#FailoverAppender">[FailoverAppender]</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
@@ -1809,7 +1358,7 @@ This connection source uses a JDBC connection string, a username, and a password
 Optionally, you can also use properties.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 9. JDBCAppender Parameters</caption>
+<caption class="title">Table 5. JDBCAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -1835,7 +1384,7 @@ Optionally, you can also use properties.</p>
 encountered while appending events to be internally logged and then
 ignored. When set to <code>false</code> exceptions will be propagated to the
 caller, instead. You must set this to <code>false</code> when wrapping this
-Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
+Appender in a <a href="#FailoverAppender">[FailoverAppender]</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">filter</p></td>
@@ -1931,7 +1480,7 @@ You must use exactly one of the following nested elements:</p>
 </ul>
 </div>
 <table id="JDBCDataSource" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. DataSource Parameters</caption>
+<caption class="title">Table 6. DataSource Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -1956,7 +1505,7 @@ by a connection pool; otherwise, logging will be very slow.</p></td>
 </tbody>
 </table>
 <table id="JDBCConnectionFactory" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. ConnectionFactory Parameters</caption>
+<caption class="title">Table 7. ConnectionFactory Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -1991,7 +1540,7 @@ be backed by a connection pool for the same reasons.</p></td>
 </tbody>
 </table>
 <table id="JDBCDriverManager" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. DriverManager Parameters</caption>
+<caption class="title">Table 8. DriverManager Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -2038,7 +1587,7 @@ properties and a username or password.</p></td>
 </tbody>
 </table>
 <table id="JDBCPoolingDriver" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. PoolingDriver Parameters (Apache Commons DBCP)</caption>
+<caption class="title">Table 9. PoolingDriver Parameters (Apache Commons DBCP)</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -2075,7 +1624,7 @@ a pooled connection elsewhere. For example:
 </tbody>
 </table>
 <table id="JDBCPoolableConnectionFactory" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. PoolableConnectionFactory Parameters (Apache Commons DBCP)</caption>
+<caption class="title">Table 10. PoolableConnectionFactory Parameters (Apache Commons DBCP)</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -2177,7 +1726,7 @@ The JDBCAppender uses this information to formulate a
 <code>PreparedStatement</code> to insert records without SQL injection vulnerability.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. Column Parameters</caption>
+<caption class="title">Table 11. Column Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -2265,7 +1814,7 @@ the value will be inserted as a VARCHAR or NVARCHAR (<code>setString</code> or
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. ColumnMapping Parameters</caption>
+<caption class="title">Table 12. ColumnMapping Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -2466,7 +2015,7 @@ Starting in Log4j 2.1, these appenders were combined into the JMS Appender, whic
 However, configurations written for 2.0 that use the <code>&lt;JMSQueue/&gt;</code> or <code>&lt;JMSTopic/&gt;</code> elements will continue to work with the new <code>&lt;JMS/&gt;</code> configuration element.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 17. JMS Appender Parameters</caption>
+<caption class="title">Table 13. JMS Appender Parameters</caption>
 <colgroup>
 <col style="width: 16.6666%;">
 <col style="width: 16.6666%;">
@@ -2760,7 +2309,7 @@ public class JpaLogEntity extends BasicLogEventEntity {
         return this.id;
     }
 
-    public void setId(long id) {
+    public void setId(final long id) {
         this.id = id;
     }
 
@@ -2782,7 +2331,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     public TestEntity() {
         super(null);
     }
-    public TestEntity(LogEvent wrappedEvent) {
+    public TestEntity(final LogEvent wrappedEvent) {
         super(wrappedEvent);
     }
 
@@ -2839,7 +2388,7 @@ Additional headers can be specified with embedded Property elements.</p>
 <a href="https://docs.oracle.com/javase/8/docs/api/java/net/HttpURLConnection.html"><code>HttpURLConnection</code></a>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 18. HttpAppender Parameters</caption>
+<caption class="title">Table 14. HttpAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -2921,7 +2470,7 @@ and are evaluated in a
 encountered while appending events to be internally logged and then
 ignored. When set to <code>false</code> exceptions will be propagated to the
 caller, instead. You must set this to <code>false</code> when wrapping this
-Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
+Appender in a <a href="#FailoverAppender">[FailoverAppender]</a>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -3000,7 +2549,7 @@ and is evaluated in the
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>ignoreExceptions</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The default is <code>true</code>, causing exceptions encountered while appending events to be internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the caller, instead. You must set this to <code>false</code> when wrapping this Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The default is <code>true</code>, causing exceptions encountered while appending events to be internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the caller, instead. You must set this to <code>false</code> when wrapping this Appender in a <a href="#FailoverAppender">[FailoverAppender]</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>syncSend</code></p></td>
@@ -3062,147 +2611,13 @@ Note that you need to use a version of the Kafka client library matching the Kaf
 </div>
 </div>
 <div class="sect2">
-<h3 id="MemoryMappedFileAppender"><a class="anchor" href="#MemoryMappedFileAppender"></a>MemoryMappedFileAppender</h3>
-<div class="paragraph">
-<p><em>New since 2.1. Be aware that this is a new addition, and although it has been tested on several platforms, it does not have as much track record as the other file appenders.</em></p>
-</div>
-<div class="paragraph">
-<p>The MemoryMappedFileAppender maps a part of the specified file into memory and writes log events to this memory, relying on the operating system&#8217;s virtual memory manager to synchronize the changes to the storage device.
-The main benefit of using memory-mapped files is I/O performance.
-Instead of making system calls to write to disk, this appender can simply change the program&#8217;s local memory, which is orders of magnitude faster.
-Also, in most operating systems the memory region mapped is the kernel&#8217;s
-<a href="https://en.wikipedia.org/wiki/Page_cache">page cache</a> (file cache), meaning that no copies need to be created in user space.</p>
-</div>
-<div class="paragraph">
-<p>There is some overhead with mapping a file region into memory, especially very large regions (half a gigabyte or more).
-The default region size is 32 MB, which should strike a reasonable balance between the frequency and the duration of remap operations.</p>
-</div>
-<div class="paragraph">
-<p>Similar to the FileAppender and the RandomAccessFileAppender, MemoryMappedFileAppender uses a MemoryMappedFileManager to actually perform the file I/O. While MemoryMappedFileAppender from different Configurations cannot be shared, the MemoryMappedFileManagers can be if the manager is accessible.
-For example, two web applications in a servlet container can have its own configuration and safely write to the same file if Log4j is in a ClassLoader that is common to both of them.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 19. MemoryMappedFileAppender Parameters</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">append</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">When true - the default, records will be appended to
-the end of the file. When set to false, the file will be cleared before
-new records are written.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">fileName</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the file to write to. If the file, or any
-of its parent directories, do not exist, they will be created.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">filters</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Filter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A Filter to determine if the event should be handled
-by this Appender. More than one Filter may be used by using a
-CompositeFilter.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">immediateFlush</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>When set to true, each write will be followed by a call to
-<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/MappedByteBuffer.html#force()"><code>MappedByteBuffer#force()</code></a>.
-This will guarantee the data is written to the storage device.</p>
-</div>
-<div class="paragraph">
-<p>The default for this parameter is <code>false</code>. This means that the data is
-written to the storage device even if the Java process crashes, but
-there may be data loss if the operating system crashes.</p>
-</div>
-<div class="paragraph">
-<p>Note that manually forcing a sync on every log event loses most of the
-performance benefits of using a memory-mapped file.</p>
-</div>
-<div class="paragraph">
-<p>Flushing after every write is only useful when using this appender with
-synchronous loggers. Asynchronous loggers and appenders will
-automatically flush at the end of a batch of events, even if
-immediateFlush is set to false. This also guarantees the data is written
-to disk but is more efficient.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">regionLength</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The length of the mapped region, defaults to 32 MB
-(32 * 1024 * 1024 bytes). This parameter must be a value between 256 and
-1,073,741,824 (1 GB or 2^30); values outside this range will be adjusted
-to the closest valid value. Log4j will round the specified value up to
-the nearest power of two.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">layout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Layout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Layout to use to format the LogEvent. If no layout
-is supplied the default pattern layout of "%m%n" will be used.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the Appender.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ignoreExceptions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The default is <code>true</code>, causing exceptions
-encountered while appending events to be internally logged and then
-ignored. When set to <code>false</code> exceptions will be propagated to the
-caller, instead. You must set this to <code>false</code> when wrapping this
-Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Here is a sample MemoryMappedFile configuration:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;MemoryMappedFile name="MyFile" fileName="logs/app.log"&gt;
-      &lt;PatternLayout&gt;
-        &lt;Pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/Pattern&gt;
-      &lt;/PatternLayout&gt;
-    &lt;/MemoryMappedFile&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="MyFile"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
 <h3 id="NoSQLAppender"><a class="anchor" href="#NoSQLAppender"></a>NoSQLAppender</h3>
 <div class="paragraph">
 <p>The NoSQLAppender writes log events to a NoSQL database using an internal lightweight provider interface.
 Provider implementations currently exist for MongoDB, and writing a custom provider is quite simple.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. NoSQLAppender Parameters</caption>
+<caption class="title">Table 15. NoSQLAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -3228,7 +2643,7 @@ Provider implementations currently exist for MongoDB, and writing a custom provi
 encountered while appending events to be internally logged and then
 ignored. When set to <code>false</code> exceptions will be propagated to the
 caller, instead. You must set this to <code>false</code> when wrapping this
-Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
+Appender in a <a href="#FailoverAppender">[FailoverAppender]</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">filter</p></td>
@@ -3253,7 +2668,7 @@ connections to the chosen NoSQL database.</p></td>
 </tbody>
 </table>
 <table id="NoSqlAppender-element-keyValuePairs" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. <code>NoSqlAppender</code>&#8201;&#8212;&#8201;nested elements</caption>
+<caption class="title">Table 16. <code>NoSqlAppender</code>&#8201;&#8212;&#8201;nested elements</caption>
 <colgroup>
 <col style="width: 16.6666%;">
 <col style="width: 16.6666%;">
@@ -3417,7 +2832,7 @@ for more information.</p>
 <p>In order to use a Log4j MongoDB appender you need to add the following dependencies to your application:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 22. MongoDB providers compatibility table</caption>
+<caption class="title">Table 17. MongoDB providers compatibility table</caption>
 <colgroup>
 <col style="width: 18.1818%;">
 <col style="width: 18.1818%;">
@@ -3484,7 +2899,7 @@ for more information.</p>
 The NoSQLAppender Appender writes log events to a NoSQL database using an internal lightweight provider interface.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 23. MongoDB Provider Parameters</caption>
+<caption class="title">Table 18. MongoDB Provider Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -3600,7 +3015,7 @@ collection documentation linked above for more information.</p></td>
 <a href="#NoSQLAppender">NoSQLAppender</a> provider for MongoDB using the MongoDB driver version 4. The NoSQLAppender Appender writes log events to a NoSQL database using an internal lightweight provider interface.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 24. MongoDB Provider Parameters</caption>
+<caption class="title">Table 19. MongoDB Provider Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -3789,680 +3204,6 @@ The NoSQLAppender writes log events to a NoSQL database using an internal lightw
     &lt;/Root&gt;
   &lt;/Loggers&gt;
 &lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="OutputStreamAppender"><a class="anchor" href="#OutputStreamAppender"></a>OutputStreamAppender</h3>
-<div class="paragraph">
-<p>The OutputStreamAppender provides the base for many of the other Appenders such as the File and Socket appenders that write the event to an Output Stream.
-It cannot be directly configured.
-Support for immediateFlush and buffering is provided by the OutputStreamAppender.
-The OutputStreamAppender uses an OutputStreamManager to handle the actual I/O, allowing the stream to be shared by Appenders in multiple configurations.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="RandomAccessFileAppender"><a class="anchor" href="#RandomAccessFileAppender"></a>RandomAccessFileAppender</h3>
-<div class="paragraph">
-<p>The RandomAccessFileAppender is similar to the standard
-<a href="#FileAppender">[FileAppender]</a> except it is always buffered (this cannot be switched off) and internally it uses a
-<code>ByteBuffer + RandomAccessFile</code> instead of a <code>BufferedOutputStream</code>.
-We saw a 20-200% performance improvement compared to FileAppender with "bufferedIO=true" in our measurements.
-Similar to the FileAppender, RandomAccessFileAppender uses a RandomAccessFileManager to perform the file I/O. While RandomAccessFileAppender from different Configurations cannot be shared, the RandomAccessFileManagers can be if the Manager is accessible.
-For example, two web applications in a servlet container can have their configuration and safely write to the same file if Log4j is in a ClassLoader that is common to both of them.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 25. RandomAccessFileAppender Parameters</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">append</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">When true - the default, records will be appended to
-the end of the file. When set to false, the file will be cleared before
-new records are written.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">fileName</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the file to write to. If the file, or any
-of its parent directories, do not exist, they will be created.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">filters</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Filter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A Filter to determine if the event should be handled
-by this Appender. More than one Filter may be used by using a
-CompositeFilter.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">immediateFlush</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>When set to true - the default, each write will be followed by a flush.
-This will guarantee that the data is passed to the operating system for writing;
-it does not guarantee that the data is written to a physical device
-such as a disk drive.</p>
-</div>
-<div class="paragraph">
-<p>Note that if this flag is set to false, and the logging activity is sparse,
-there may be an indefinite delay in the data eventually making it to the
-operating system, because it is held up in a buffer.
-This can cause surprising effects such as the logs not
-appearing in the tail output of a file immediately after writing to the log.</p>
-</div>
-<div class="paragraph">
-<p>Flushing after every write is only useful when using this appender with
-synchronous loggers. Asynchronous loggers and appenders will
-automatically flush at the end of a batch of events, even if
-immediateFlush is set to false. This also guarantees the data is passed
-to the operating system but is more efficient.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">bufferSize</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The buffer size, defaults to 262,144 bytes (256 *
-1024).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">layout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Layout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Layout to use to format the LogEvent. If no layout
-is supplied the default pattern layout of "%m%n" will be used.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the Appender.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ignoreExceptions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The default is <code>true</code>, causing exceptions
-encountered while appending events to be internally logged and then
-ignored. When set to <code>false</code> exceptions will be propagated to the
-caller, instead. You must set this to <code>false</code> when wrapping this
-Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Here is a sample RandomAccessFile configuration:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;RandomAccessFile name="MyFile" fileName="logs/app.log"&gt;
-      &lt;PatternLayout&gt;
-        &lt;Pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/Pattern&gt;
-      &lt;/PatternLayout&gt;
-    &lt;/RandomAccessFile&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="MyFile"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="RewriteAppender"><a class="anchor" href="#RewriteAppender"></a>RewriteAppender</h3>
-<div class="paragraph">
-<p>The RewriteAppender allows the LogEvent to be manipulated before it is processed by another Appender.
-This can be used to mask sensitive information such as passwords or to inject information into each event.
-The RewriteAppender must be configured with a RewritePolicy.
-The RewriteAppender should be configured after any Appenders it references to allow it to shut down properly.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 26. RewriteAppender Parameters</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">AppenderRef</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the Appenders to call after the
-LogEvent has been manipulated. Multiple AppenderRef elements can be
-configured.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">filter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Filter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A Filter to determine if the event should be handled by
-this Appender. More than one Filter may be used by using a
-CompositeFilter.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the Appender.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">rewritePolicy</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">RewritePolicy</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The RewritePolicy that will manipulate
-the LogEvent.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ignoreExceptions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The default is <code>true</code>, causing exceptions
-encountered while appending events to be internally logged and then
-ignored. When set to <code>false</code> exceptions will be propagated to the
-caller, instead. You must set this to <code>false</code> when wrapping this
-Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="sect3">
-<h4 id="RewritePolicy"><a class="anchor" href="#RewritePolicy"></a>RewritePolicy</h4>
-<div class="paragraph">
-<p>RewritePolicy is an interface that allows implementations to inspect and possibly modify LogEvents before they are passed to Appender.
-RewritePolicy declares a single method named rewrite that must be implemented.
-The method is passed the LogEvent and can return the same event or create a new one.</p>
-</div>
-<div class="sect4">
-<h5 id="_maprewritepolicy"><a class="anchor" href="#_maprewritepolicy"></a>MapRewritePolicy</h5>
-<div class="paragraph">
-<p>MapRewritePolicy will evaluate LogEvents that contain a MapMessage and will add or update elements of the Map.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">mode</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">"Add" or "Update"</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">keyValuePair</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">KeyValuePair[]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">An array of keys and their values.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>The following configuration shows a RewriteAppender configured to add a product key and its value to the MapMessage.:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;Console name="STDOUT" target="SYSTEM_OUT"&gt;
-      &lt;PatternLayout pattern="%m%n"/&gt;
-    &lt;/Console&gt;
-    &lt;Rewrite name="rewrite"&gt;
-      &lt;AppenderRef ref="STDOUT"/&gt;
-      &lt;MapRewritePolicy mode="Add"&gt;
-        &lt;KeyValuePair key="product" value="TestProduct"/&gt;
-      &lt;/MapRewritePolicy&gt;
-    &lt;/Rewrite&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="Rewrite"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="PropertiesRewritePolicy"><a class="anchor" href="#PropertiesRewritePolicy"></a>PropertiesRewritePolicy</h5>
-<div class="paragraph">
-<p>PropertiesRewritePolicy will add properties configured on the policy to the ThreadContext Map being logged.
-The properties will not be added to the actual ThreadContext Map.
-The property values may contain variables that will be evaluated when the configuration is processed as well as when the event is logged.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a id="PropertiesRewritePolicy-element-properties"></a>properties</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Property[]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">One of more Property elements to define the keys and values to be added to the ThreadContext Map.</p>
-<p class="tableblock">The <code>value</code> attribute of each <code>Property</code> element supports
-<a href="configuration.html#lazy-property-substitution" class="xref page">runtime property substitution</a>
-in the
-<a href="lookups.html#global-context" class="xref page"><em>global context</em></a>.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>The following configuration shows a RewriteAppender configured to add a product key and its value to the MapMessage:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;Console name="STDOUT" target="SYSTEM_OUT"&gt;
-      &lt;PatternLayout pattern="%m%n"/&gt;
-    &lt;/Console&gt;
-    &lt;Rewrite name="rewrite"&gt;
-      &lt;AppenderRef ref="STDOUT"/&gt;
-      &lt;PropertiesRewritePolicy&gt;
-        &lt;Property name="user"&gt;${sys:user.name}&lt;/Property&gt;
-        &lt;Property name="env"&gt;${sys:environment}&lt;/Property&gt;
-      &lt;/PropertiesRewritePolicy&gt;
-    &lt;/Rewrite&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="Rewrite"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_loggernamelevelrewritepolicy"><a class="anchor" href="#_loggernamelevelrewritepolicy"></a>LoggerNameLevelRewritePolicy</h5>
-<div class="paragraph">
-<p>You can use this policy to make loggers in third-party code less chatty by changing event levels.
-The LoggerNameLevelRewritePolicy will rewrite log event levels for a given logger name prefix.
-You configure a LoggerNameLevelRewritePolicy with a logger name prefix and a pair of levels, where a pair defines a source level and a target level.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">logger</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A logger name used as a prefix to test each event&#8217;s
-logger name.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LevelPair</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">KeyValuePair[]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">An array of keys and their values, each key
-is a source level, each value a target level.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>The following configuration shows a RewriteAppender configured to map level INFO to DEBUG and level WARN to INFO for all loggers that start with <code>com.foo.bar</code>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;Console name="STDOUT" target="SYSTEM_OUT"&gt;
-      &lt;PatternLayout pattern="%m%n"/&gt;
-    &lt;/Console&gt;
-    &lt;Rewrite name="rewrite"&gt;
-      &lt;AppenderRef ref="STDOUT"/&gt;
-      &lt;LoggerNameLevelRewritePolicy logger="com.foo.bar"&gt;
-        &lt;KeyValuePair key="INFO" value="DEBUG"/&gt;
-        &lt;KeyValuePair key="WARN" value="INFO"/&gt;
-      &lt;/LoggerNameLevelRewritePolicy&gt;
-    &lt;/Rewrite&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="Rewrite"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="RoutingAppender"><a class="anchor" href="#RoutingAppender"></a>RoutingAppender</h3>
-<div class="paragraph">
-<p>The <code>RoutingAppender</code> evaluates LogEvents and then routes them to a subordinate Appender.
-The target Appender may be an appender previously configured and may be referenced by its name or the Appender can be dynamically created as needed.
-The <code>RoutingAppender</code> should be configured after any Appenders it references to allow it to shut down properly.</p>
-</div>
-<div class="paragraph">
-<p>You can also configure a <code>RoutingAppender</code> with scripts: you can run a script when the appender starts and when a route is chosen for an log event.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 27. RoutingAppender Parameters</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Filter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Filter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A Filter to determine if the event should be handled by
-this Appender. More than one Filter may be used by using a
-CompositeFilter.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the Appender.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">RewritePolicy</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">RewritePolicy</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The RewritePolicy that will manipulate
-the LogEvent.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Routes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Routes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Contains one or more Route declarations to identify the
-criteria for choosing Appenders.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Script</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Script</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>This Script runs when Log4j starts the RoutingAppender and returns a
-String Route key to determine the default Route.</p>
-</div>
-<div class="paragraph">
-<p>This script is passed the following variables:</p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>|Parameter Name |Type |Description |configuration |Configuration |The active Configuration.</p>
-</div>
-<div class="paragraph">
-<p>|staticVariables |Map |A Map shared between all script invocations for this appender instance.
-This is the same map passed to the Routes Script.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ignoreExceptions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The default is <code>true</code>, causing exceptions
-encountered while appending events to be internally logged and then
-ignored. When set to <code>false</code> exceptions will be propagated to the
-caller, instead. You must set this to <code>false</code> when wrapping this
-Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>In this example, the script causes the "ServiceWindows" route to be the default route on Windows and "ServiceOther" on all other operating systems.
-Note that the List Appender is one of our test appenders, any appender can be used, it is only used as a shorthand.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="WARN" name="RoutingTest"&gt;
-  &lt;Appenders&gt;
-    &lt;Routing name="Routing"&gt;
-      &lt;Script name="RoutingInit" language="JavaScript"&gt;&lt;![CDATA[
-        java.lang.System.getProperty("os.name").search("Windows") &gt; -1 ? "ServiceWindows" : "ServiceOther";]]&gt;
-      &lt;/Script&gt;
-      &lt;Routes&gt;
-        &lt;Route key="ServiceOther"&gt;
-          &lt;List name="List1" /&gt;
-        &lt;/Route&gt;
-        &lt;Route key="ServiceWindows"&gt;
-          &lt;List name="List2" /&gt;
-        &lt;/Route&gt;
-      &lt;/Routes&gt;
-    &lt;/Routing&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="Routing" /&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-<div class="sect3">
-<h4 id="Routes"><a class="anchor" href="#Routes"></a>Routes</h4>
-<div class="paragraph">
-<p>The <code>Routes</code> element accepts a single attribute named "pattern".
-The pattern is evaluated against all the registered Lookups and the result is used to select a <code>Route</code>.
-Each <code>Route</code> may be configured with a key.
-If the key matches the result of evaluating the pattern then that <code>Route</code>
-will be selected.
-If no key is specified on a <code>Route</code> then that <code>Route</code> is the default.
-Only one <code>Route</code> can be configured as the default.</p>
-</div>
-<div class="paragraph">
-<p>The <code>Routes</code> element may contain a <code>Script</code> child element.
-If specified, the
-<code>Script</code> is run for each log event and returns the String Route key to use.</p>
-</div>
-<div class="paragraph">
-<p>You must specify either the pattern attribute or the <code>Script</code> element, but not both.</p>
-</div>
-<div class="paragraph">
-<p>Each <code>Route</code> must reference an <code>Appender</code>.
-If the <code>Route</code> contains a ref attribute then the <code>Route</code> will reference an <code>Appender</code> that was defined in the configuration.
-If the <code>Route</code> contains an <code>Appender</code> definition then an
-<code>Appender</code> will be created within the context of the <code>RoutingAppender</code> and will be reused each time a matching <code>Appender</code> name is referenced through a <code>Route</code>.</p>
-</div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Lookups in the <strong>children</strong> of the <code>Route</code> component are <strong>not</strong> evaluated at configuration time.
-The substitution is delayed until the <code>Route</code> element is evaluated.
-This means that <code>${...}</code> expression <strong>should not</strong> be escaped as <code>$${...}</code>.</p>
-</div>
-<div class="paragraph">
-<p>See <a href="configuration.html#lazy-property-substitution" class="xref page">lazy property substitution</a> for more details.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>This script is passed the following variables:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 28. RoutingAppender Routes Script Parameters</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">configuration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Configuration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The active Configuration.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">staticVariables</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Map</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A Map shared between all script invocations for
-this appender instance. This is the same map passed to the Routes
-Script.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">logEvent</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LogEvent</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The log event.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>In this example, the script runs for each log event and picks a route based on the presence of a Marker named "AUDIT".</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="WARN" name="RoutingTest"&gt;
-  &lt;Appenders&gt;
-    &lt;Console name="STDOUT" target="SYSTEM_OUT" /&gt;
-    &lt;Flume name="AuditLogger" compress="true"&gt;
-      &lt;Agent host="192.168.10.101" port="8800"/&gt;
-      &lt;Agent host="192.168.10.102" port="8800"/&gt;
-      &lt;RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/&gt;
-    &lt;/Flume&gt;
-    &lt;Routing name="Routing"&gt;
-      &lt;Routes&gt;
-        &lt;Script name="RoutingInit" language="JavaScript"&gt;&lt;![CDATA[
-          if (logEvent.getMarker() != null &amp;&amp; logEvent.getMarker().isInstanceOf("AUDIT")) {
-                return "AUDIT";
-            } else if (logEvent.getContextMap().containsKey("UserId")) {
-                return logEvent.getContextMap().get("UserId");
-            }
-            return "STDOUT";]]&gt;
-        &lt;/Script&gt;
-        &lt;Route&gt;
-          &lt;RollingFile
-              name="Rolling-${mdc:UserId}"
-              fileName="${mdc:UserId}.log"
-              filePattern="${mdc:UserId}.%i.log.gz"&gt;
-            &lt;PatternLayout&gt;
-              &lt;pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/pattern&gt;
-            &lt;/PatternLayout&gt;
-            &lt;SizeBasedTriggeringPolicy size="500" /&gt;
-          &lt;/RollingFile&gt;
-        &lt;/Route&gt;
-        &lt;Route ref="AuditLogger" key="AUDIT"/&gt;
-        &lt;Route ref="STDOUT" key="STDOUT"/&gt;
-      &lt;/Routes&gt;
-      &lt;IdlePurgePolicy timeToLive="15" timeUnit="minutes"/&gt;
-    &lt;/Routing&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="Routing" /&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="Purge"><a class="anchor" href="#Purge"></a>Purge Policy</h4>
-<div class="paragraph">
-<p>The RoutingAppender can be configured with a PurgePolicy whose purpose is to stop and remove dormant Appenders that have been dynamically created by the RoutingAppender.
-Log4j currently provides the IdlePurgePolicy is the only PurgePolicy available for cleaning up the Appenders.
-The IdlePurgePolicy accepts 2 attributes; timeToLive, which is the number of timeUnits the Appender should survive without having any events sent to it, and timeUnit, the String representation of java.util.concurrent.TimeUnit which is used with the timeToLive attribute.</p>
-</div>
-<div class="paragraph">
-<p>Below is a sample configuration that uses a RoutingAppender to route all Audit events to a FlumeAppender and all other events will be routed to a RollingFileAppender captures only the specific event type.
-Note that the AuditAppender was predefined while the RollingFileAppenders are created as needed.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;Flume name="AuditLogger" compress="true"&gt;
-      &lt;Agent host="192.168.10.101" port="8800"/&gt;
-      &lt;Agent host="192.168.10.102" port="8800"/&gt;
-      &lt;RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/&gt;
-    &lt;/Flume&gt;
-    &lt;Routing name="Routing"&gt;
-      &lt;Routes pattern="$${sd:type}"&gt;
-        &lt;Route&gt;
-          &lt;RollingFile name="Rolling-${sd:type}" fileName="${sd:type}.log"
-                       filePattern="${sd:type}.%i.log.gz"&gt;
-            &lt;PatternLayout&gt;
-              &lt;pattern&gt;%d %p %c{1.} [%t] %m%n&lt;/pattern&gt;
-            &lt;/PatternLayout&gt;
-            &lt;SizeBasedTriggeringPolicy size="500" /&gt;
-          &lt;/RollingFile&gt;
-        &lt;/Route&gt;
-        &lt;Route ref="AuditLogger" key="Audit"/&gt;
-      &lt;/Routes&gt;
-      &lt;IdlePurgePolicy timeToLive="15" timeUnit="minutes"/&gt;
-    &lt;/Routing&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="Routing"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
 </div>
 </div>
 </div>
@@ -4763,7 +3504,7 @@ As with other Appenders, the formatting can be controlled by specifying a Layout
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ignoreExceptions</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The default is <code>true</code>, causing exceptions encountered while appending events to be internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the caller, instead. You must set this to <code>false</code> when wrapping this Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The default is <code>true</code>, causing exceptions encountered while appending events to be internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the caller, instead. You must set this to <code>false</code> when wrapping this Appender in a <a href="#FailoverAppender">[FailoverAppender]</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">SSL</p></td>
@@ -4791,44 +3532,6 @@ As with other Appenders, the formatting can be controlled by specifying a Layout
 </div>
 </div>
 <div class="sect2">
-<h3 id="ScriptAppenderSelector"><a class="anchor" href="#ScriptAppenderSelector"></a>ScriptAppenderSelector</h3>
-<div class="paragraph">
-<p>When the configuration is built, the <code>ScriptAppenderSelector</code> appender calls a <code>ScriptPlugin</code> to compute an appender name.
-Log4j then creates one of the appender named listed under <code>AppenderSet</code> using the name of the
-<code>ScriptAppenderSelector</code>.
-After configuration, Log4j ignores the
-<code>ScriptAppenderSelector</code>.
-Log4j only builds the one selected appender from the configuration tree and ignores other <code>AppenderSet</code> child nodes.</p>
-</div>
-<div class="paragraph">
-<p>In the following example, the script returns the name "List2".
-The appender name is recorded under the name of the
-<code>ScriptAppenderSelector</code>, not the name of the selected appender, in this example, "SelectIt".</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Configuration status="WARN" name="ScriptAppenderSelectorExample"&gt;
-  &lt;Appenders&gt;
-    &lt;ScriptAppenderSelector name="SelectIt"&gt;
-      &lt;Script language="JavaScript"&gt;&lt;![CDATA[
-        java.lang.System.getProperty("os.name").search("Windows") &gt; -1 ? "MyCustomWindowsAppender" : "MySyslogAppender";]]&gt;
-      &lt;/Script&gt;
-      &lt;AppenderSet&gt;
-        &lt;MyCustomWindowsAppender name="MyAppender" ... /&gt;
-        &lt;SyslogAppender name="MySyslog" ... /&gt;
-      &lt;/AppenderSet&gt;
-    &lt;/ScriptAppenderSelector&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="SelectIt" /&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
 <h3 id="SocketAppender"><a class="anchor" href="#SocketAppender"></a>SocketAppender</h3>
 <div class="paragraph">
 <p>The <code>SocketAppender</code> is an OutputStreamAppender that writes its output to a remote destination specified by a host and port.
@@ -4839,7 +3542,7 @@ Due to limitations in the TCP protocol that means that when the target server cl
 If guaranteed delivery is required a protocol that requires acknowledgments must be used.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 29. <code>SocketAppender</code> Parameters</caption>
+<caption class="title">Table 20. <code>SocketAppender</code> Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4946,7 +3649,7 @@ default is 0 (infinite timeout, like <code>Socket.connect()</code> methods).</p>
 encountered while appending events to be internally logged and then
 ignored. When set to <code>false</code> exceptions will be propagated to the
 caller, instead. You must set this to <code>false</code> when wrapping this
-Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
+Appender in a <a href="#FailoverAppender">[FailoverAppender]</a>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -4994,15 +3697,14 @@ Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
 &lt;/Configuration&gt;</code></pre>
 </div>
 </div>
-</div>
-<div class="sect2">
-<h3 id="SSL"><a class="anchor" href="#SSL"></a>SSL</h3>
+<div class="sect3">
+<h4 id="SSL"><a class="anchor" href="#SSL"></a>SSL</h4>
 <div class="paragraph">
 <p>Several appenders can be configured to use either a plain network connection or a Secure Socket Layer (SSL) connection.
 This section documents the parameters available for SSL configuration.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 30. SSL Configuration Parameters</caption>
+<caption class="title">Table 21. SSL Configuration Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -5039,13 +3741,14 @@ counterparty. Determines whether the remote authentication credentials
 </tr>
 </tbody>
 </table>
+</div>
 <div class="sect3">
 <h4 id="KeyStore"><a class="anchor" href="#KeyStore"></a>KeyStore</h4>
 <div class="paragraph">
 <p>The Keystore is meant to contain your private keys and certificates, and determines which authentication credentials to send to the remote host.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 31. KeyStore Configuration Parameters</caption>
+<caption class="title">Table 22. KeyStore Configuration Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -5113,7 +3816,7 @@ Determines whether the remote authentication credentials (and thus the connectio
 <p>In some cases, they can be the same store, although it is often better practice to use distinct stores (especially when they are file-based).</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 32. TrustStore Configuration Parameters</caption>
+<caption class="title">Table 23. TrustStore Configuration Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -5190,7 +3893,7 @@ algorithms</a>.</p></td>
 The data can be sent over either TCP or UDP.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 33. <code>SyslogAppender</code> Parameters</caption>
+<caption class="title">Table 24. <code>SyslogAppender</code> Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -5283,7 +3986,7 @@ the id from the Message will be used instead of this value.</p></td>
 encountered while appending events to be internally logged and then
 ignored. When set to <code>false</code> exceptions will be propagated to the
 caller, instead. You must set this to <code>false</code> when wrapping this
-Appender in a <a href="#FailoverAppender">FailoverAppender</a>.</p></td>
+Appender in a <a href="#FailoverAppender">[FailoverAppender]</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">immediateFail</p></td>
