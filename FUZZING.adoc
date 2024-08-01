@@ -56,12 +56,10 @@ docker build -t oss-fuzz-apache-logging-log4j2 .
 +
 [source,bash]
 ----
-export LOG4J_REPO_DIR=/path/to/local/clone/of/logging-log4j2 #<1>
-export LOG4J_FUZZ_DIR="$LOG4J_REPO_DIR/target/fuzzers" #<2>
+export LOG4J_FUZZ_DIR="/path/to/store/generated/fuzzers" #<2>
 docker run -it \
   -e FUZZING_LANGUAGE=java \
-  -v "$LOG4J_REPO_DIR":/src/logging-log4j2 \
-  -v "$LOG4J_FUZZ_DIR":/out \ #<2>
+  -v "$LOG4J_FUZZ_DIR":/out \
   --network host \
   oss-fuzz-apache-logging-log4j2
 ----
@@ -84,5 +82,5 @@ docker run -it \
   -e FUZZING_LANGUAGE=java \
   -v "$LOG4J_FUZZ_DIR":/out \
   oss-fuzz-apache-logging-log4j2 \
-  log4j-core-fuzz-test-PatternLayoutFuzzer
+  /out/log4j-core-fuzz-test-PatternLayoutFuzzer
 ----

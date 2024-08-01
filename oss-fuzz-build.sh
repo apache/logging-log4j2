@@ -94,9 +94,12 @@ fi
 # Iterate over fuzzers
 for module in *-fuzz-test; do
 
+  # Copy the built module artifact to the output folder
+  cp "$PWD/$module/target/$module-$projectVersion.jar" "$OUT/$module-$projectVersion.jar"
+
   # Determine the Java class path
   ./mvnw dependency:build-classpath -Dmdep.outputFile=/tmp/cp.txt -pl $module
-  classPath="$(cat /tmp/cp.txt):$PWD/$module/target/$module-$projectVersion.jar"
+  classPath="$(cat /tmp/cp.txt):$OUT/$module-$projectVersion.jar"
   rm /tmp/cp.txt
 
   for fuzzer in $(find "$module" -name "*Fuzzer.java"); do
