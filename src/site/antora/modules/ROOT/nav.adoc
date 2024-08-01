@@ -45,6 +45,7 @@
 ** xref:manual/appenders.adoc[]
 *** xref:manual/appenders/file.adoc[]
 *** xref:manual/appenders/rolling-file.adoc[]
+*** xref:manual/appenders/database.adoc[]
 *** xref:manual/appenders/delegating.adoc[]
 ** xref:manual/layouts.adoc[]
 *** xref:manual/json-template-layout.adoc[]

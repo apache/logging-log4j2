@@ -313,7 +313,7 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 == Triggering Policies
 
 Triggering policies are Log4j plugins that implement the
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/TriggeringPolicy.html[`TriggeringPolicy`]
+link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/TriggeringPolicy.html[`TriggeringPolicy`]
 interface and are used to decide when is it time to rollover the current log file.
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-TriggeringPolicy[{open-book} Plugin reference for `TriggeringPolicy`]

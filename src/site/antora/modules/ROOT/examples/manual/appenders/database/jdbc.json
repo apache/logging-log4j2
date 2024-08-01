@@ -1,0 +1,62 @@
+{
+  "Configuration": {
+    "Appenders": {
+      // tag::appender[]
+      "JDBC": {
+        "name": "JDBC",
+        "tableName": "logs",
+        // <1>
+        "bufferSize": 10,
+        // <2>
+        "DataSource": {
+          "jndiName": "java:comp/env/jdbc/logging"
+        },
+        // <3>
+        "ColumnMapping": [
+          {
+            "name": "id",
+            "pattern": "%uuid{TIME}",
+            "columnType": "java.util.UUID"
+          },
+          {
+            "name": "timestamp",
+            "columnType": "java.util.Date"
+          },
+          {
+            "name": "level",
+            "pattern": "%level"
+          },
+          {
+            "name": "marker",
+            "pattern": "%marker"
+          },
+          {
+            "name": "logger",
+            "pattern": "%logger"
+          },
+          {
+            "name": "message",
+            "pattern": "%m"
+          },
+          {
+            "name": "mdc",
+            "columnType": "org.apache.logging.log4j.spi.ThreadContextMap"
+          },
+          {
+            "name": "ndc",
+            "columnType": "org.apache.logging.log4j.spi.ThreadContextStack"
+          }
+        ]
+      }
+      // end::appender[]
+    },
+    "Loggers": {
+      "Root": {
+        "level": "INFO",
+        "AppenderRef": {
+          "ref": "JDBC"
+        }
+      }
+    }
+  }
+}

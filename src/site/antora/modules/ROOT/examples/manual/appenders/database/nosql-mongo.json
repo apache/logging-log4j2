@@ -1,0 +1,22 @@
+{
+  "Configuration": {
+    "Appenders": {
+      // tag::appender[]
+      "NoSql": {
+        "name": "MONGO",
+        "MongoDb": {
+          "connection": "mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs"
+        }
+      }
+      // end::appender[]
+    },
+    "Loggers": {
+      "Root": {
+        "level": "INFO",
+        "AppenderRef": {
+          "ref": "MONGO"
+        }
+      }
+    }
+  }
+}
