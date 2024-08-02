@@ -174,6 +174,9 @@
     <a class="nav-link" href="appenders/rolling-file.html">Rolling file appenders</a>
   </li>
   <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="appenders/database.html">Database appenders</a>
+  </li>
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="appenders/delegating.html">Delegating Appenders</a>
   </li>
 </ul>
@@ -500,7 +503,7 @@ Refer to <a href="pattern-layout.html" class="xref page">Pattern Layout</a>.</p>
 <p>Following sections explain all predefined layouts in detail.</p>
 </div>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Layout" class="xref page">📖 Plugin reference for all <code>Layout</code> implementations</a></p>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Layout" class="xref page">&#x1F4D6; Plugin reference for all <code>Layout</code> implementations</a></p>
 </div>
 <div class="sect2">
 <h3 id="csv-layouts"><a class="anchor" href="#csv-layouts"></a><a id="CSVLayouts"></a> CSV Layouts</h3>
@@ -514,7 +517,7 @@ Refer to <a href="pattern-layout.html" class="xref page">Pattern Layout</a>.</p>
 Generated CSV records will be composed of fields denoting the message parameters.</p>
 </div>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-CsvParameterLayout" class="xref page">📖 Plugin reference for <code>CsvParameterLayout</code></a></p>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-CsvParameterLayout" class="xref page">&#x1F4D6; Plugin reference for <code>CsvParameterLayout</code></a></p>
 </div>
 <details>
 <summary class="title">Click here for examples</summary>
@@ -602,7 +605,7 @@ Generated CSV records will be composed of following fields in the given order:</
 </ol>
 </div>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-CsvLogEventLayout" class="xref page">📖 Plugin reference for <code>CsvLogEventLayout</code></a></p>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-CsvLogEventLayout" class="xref page">&#x1F4D6; Plugin reference for <code>CsvLogEventLayout</code></a></p>
 </div>
 <details>
 <summary class="title">Click here for examples</summary>
@@ -758,7 +761,7 @@ Unless compression is needed, we advise you to use <a href="json-template-layout
 </table>
 </div>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-GelfLayout" class="xref page">📖 Plugin reference for <code>GelfLayout</code></a></p>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-GelfLayout" class="xref page">&#x1F4D6; Plugin reference for <code>GelfLayout</code></a></p>
 </div>
 <div class="paragraph">
 <p>GELF Layout is configured with the following parameters:</p>
@@ -1097,7 +1100,7 @@ appender.2.layout.compressionThreshold = 1024</code></pre>
 <p><code>HtmlLayout</code> generates an HTML page, and adds each log event to a row in a table.</p>
 </div>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-HtmlLayout" class="xref page">📖 Plugin reference for <code>HtmlLayout</code></a></p>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-HtmlLayout" class="xref page">&#x1F4D6; Plugin reference for <code>HtmlLayout</code></a></p>
 </div>
 <div class="paragraph">
 <p>It is configured with the following parameters:</p>
@@ -1184,7 +1187,7 @@ It is succeeded by <a href="#JSONTemplateLayout">JSON Template Layout</a> provid
 </table>
 </div>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-JsonLayout" class="xref page">📖 Plugin reference for <code>JsonLayout</code></a></p>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-JsonLayout" class="xref page">&#x1F4D6; Plugin reference for <code>JsonLayout</code></a></p>
 </div>
 <details>
 <summary class="title">Click for an example output</summary>
@@ -1522,6 +1525,19 @@ It bundles several predefined event templates modeling popular JSON-based log fo
 </div>
 </div>
 <div class="sect2">
+<h3 id="MapMessageLayout"><a class="anchor" href="#MapMessageLayout"></a>Message Layout</h3>
+<div class="paragraph">
+<p><code>MessageLayout</code> is a special layout that extracts the
+<a href="messages.html" class="xref page"><code>Message</code></a>
+contained in a log event.
+It is currently only useful with the
+<a href="appenders/database.html#JdbcAppender" class="xref page">JDBC Appender</a>.</p>
+</div>
+<div class="paragraph">
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-MessageLayout" class="xref page">&#x1F4D6; Plugin reference for <code>MessageLayout</code></a></p>
+</div>
+</div>
+<div class="sect2">
 <h3 id="pattern-layout"><a class="anchor" href="#pattern-layout"></a><a id="PatternLayout"></a> Pattern Layout</h3>
 <div class="paragraph">
 <p><code>PatternLayout</code> is a customizable, efficient, garbage-free, and human-readable string generating layout using a user-provided pattern.
@@ -1585,7 +1601,7 @@ WARN  [main]: Message 2</code></pre>
 </table>
 </div>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-Rfc5424Layout" class="xref page">📖 Plugin reference for <code>Rfc5424Layout</code></a></p>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-Rfc5424Layout" class="xref page">&#x1F4D6; Plugin reference for <code>Rfc5424Layout</code></a></p>
 </div>
 <div class="paragraph">
 <p>RFC 5424 Layout is configured with the following parameters:</p>
@@ -1736,7 +1752,7 @@ Java Serialization has inherent security weaknesses.
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-SerializedLayout[📖 Plugin reference for `SerializedLayout`]</pre>
+<pre>xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-SerializedLayout[{open-book} Plugin reference for `SerializedLayout`]</pre>
 </div>
 </div>
 </div>
@@ -1761,7 +1777,7 @@ This matches the same format used by <a href="https://logging.apache.org/log4j/1
 </table>
 </div>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-SyslogLayout" class="xref page">📖 Plugin reference for <code>SyslogLayout</code></a></p>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-SyslogLayout" class="xref page">&#x1F4D6; Plugin reference for <code>SyslogLayout</code></a></p>
 </div>
 <div class="paragraph">
 <p>Syslog Layout is configured with the following parameters:</p>
@@ -1826,7 +1842,7 @@ XML Layout users are strongly advised to migrate to another layout!</p>
 </table>
 </div>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-XmlLayout" class="xref page">📖 Plugin reference for <code>XmlLayout</code></a></p>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-XmlLayout" class="xref page">&#x1F4D6; Plugin reference for <code>XmlLayout</code></a></p>
 </div>
 <details>
 <summary class="title">Click for an example output</summary>
@@ -1966,7 +1982,7 @@ XML Layout users are strongly advised to migrate to another layout!</p>
 </table>
 </div>
 <div class="paragraph">
-<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-YamlLayout" class="xref page">📖 Plugin reference for <code>YamlLayout</code></a></p>
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-YamlLayout" class="xref page">&#x1F4D6; Plugin reference for <code>YamlLayout</code></a></p>
 </div>
 <details>
 <summary class="title">Click for an example output</summary>
