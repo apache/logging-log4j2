@@ -56,16 +56,14 @@ docker build -t oss-fuzz-apache-logging-log4j2 .
 +
 [source,bash]
 ----
-export LOG4J_FUZZ_DIR="/path/to/store/generated/fuzzers" #<2>
+export LOG4J_FUZZ_DIR="/path/to/store/generated/fuzzers" #<1>
 docker run -it \
   -e FUZZING_LANGUAGE=java \
   -v "$LOG4J_FUZZ_DIR":/out \
   --network host \
   oss-fuzz-apache-logging-log4j2
 ----
-<1> Using a local clone of the `logging-log4j2` repository to use it as a compiler cache.
-That is, if it is already compiled (e.g., via `./mvnw install`) or `docker run` already invoked earlier, we can reuse existing compiled classes.
-<2> Directory where the generated runner scripts will be dumped to.
+<1> Directory where the generated runner scripts will be dumped to.
 
 . List generated runner scripts:
 +
@@ -83,4 +81,23 @@ docker run -it \
   -v "$LOG4J_FUZZ_DIR":/out \
   oss-fuzz-apache-logging-log4j2 \
   /out/log4j-core-fuzz-test-PatternLayoutFuzzer
+----
++
+OSS-Fuzz accepts passing fuzzing dictionary and corpus in `<runnerScript>.dict` and `<runnerScript>_seed_corpus.zip` named files, respectively.
+You can execute a runner script with these input too:
++
+[source,bash]
+----
+# Unpack the corpus packaged for OSS-Fuzz infrastructure
+unzip \
+  -q $LOG4J_FUZZ_DIR/log4j-layout-template-json-fuzz-test-JsonTemplateLayoutCodecFuzzer_seed_corpus.zip \
+  -d $LOG4J_FUZZ_DIR/log4j-layout-template-json-fuzz-test-JsonTemplateLayoutCodecFuzzer_seed_corpus
+
+docker run -it \
+  -e FUZZING_LANGUAGE=java \
+  -v "$LOG4J_FUZZ_DIR":/out \
+  oss-fuzz-apache-logging-log4j2 \
+  /out/log4j-layout-template-json-fuzz-test-JsonTemplateLayoutCodecFuzzer \
+  -dict=/out/log4j-layout-template-json-fuzz-test-JsonTemplateLayoutCodecFuzzer.dict \
+  /out/log4j-layout-template-json-fuzz-test-JsonTemplateLayoutCodecFuzzer_seed_corpus
 ----
