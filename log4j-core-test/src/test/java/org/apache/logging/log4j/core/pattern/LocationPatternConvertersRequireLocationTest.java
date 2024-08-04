@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-public class LocationPatternConvertersRequireLocationTest {
+class LocationPatternConvertersRequireLocationTest {
 
     private static final String KEY = "Converter";
 
