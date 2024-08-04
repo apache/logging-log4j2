@@ -25,11 +25,9 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Constants;
 import org.slf4j.spi.MDCAdapter;
 
-/**
- *
- */
 public class Log4jMDCAdapter implements MDCAdapter {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
@@ -90,7 +88,12 @@ public class Log4jMDCAdapter implements MDCAdapter {
         if (!Objects.equals(ThreadContext.get(key), value)) {
             LOGGER.warn("The key {} was used in both the string and stack-valued MDC.", key);
         }
-        ThreadContext.put(key, mapOfStacks.peekByKey(key));
+        final String oldValue = mapOfStacks.peekByKey(key);
+        if (oldValue != null) {
+            ThreadContext.put(key, oldValue);
+        } else {
+            ThreadContext.remove(key);
+        }
         return value;
     }
 
@@ -111,41 +114,92 @@ public class Log4jMDCAdapter implements MDCAdapter {
             ThreadContext.clearStack();
         } else {
             mapOfStacks.clearByKey(key);
-            ThreadContext.put(key, null);
+            ThreadContext.remove(key);
         }
+    }
+
+    // Used by tests
+    void clearDeque() {
+        mapOfStacks.clear();
     }
 
     private static class ThreadLocalMapOfStacks {
 
         private final ThreadLocal<Map<String, Deque<String>>> tlMapOfStacks = ThreadLocal.withInitial(HashMap::new);
 
-        public void pushByKey(final String key, final String value) {
-            tlMapOfStacks
-                    .get()
-                    .computeIfAbsent(key, ignored -> new ArrayDeque<>())
-                    .push(value);
+        private Map<String, Deque<String>> getMapOfStacks() {
+            Map<String, Deque<String>> localMap = tlMapOfStacks.get();
+            if (localMap == null) {
+                tlMapOfStacks.set(localMap = new HashMap<>());
+            }
+            return localMap;
         }
 
-        public String popByKey(final String key) {
-            final Deque<String> deque = tlMapOfStacks.get().get(key);
-            return deque != null ? deque.poll() : null;
-        }
-
-        public Deque<String> getCopyOfDequeByKey(final String key) {
-            final Deque<String> deque = tlMapOfStacks.get().get(key);
-            return deque != null ? new ArrayDeque<>(deque) : null;
-        }
-
-        public void clearByKey(final String key) {
-            final Deque<String> deque = tlMapOfStacks.get().get(key);
-            if (deque != null) {
-                deque.clear();
+        private void removeIfEmpty(final Map<String, Deque<String>> mapOfStacks) {
+            if (!Constants.ENABLE_THREADLOCALS && mapOfStacks != null && mapOfStacks.isEmpty()) {
+                tlMapOfStacks.remove();
             }
         }
 
+        public void pushByKey(final String key, final String value) {
+            getMapOfStacks().computeIfAbsent(key, ignored -> new ArrayDeque<>()).push(value);
+        }
+
+        public String popByKey(final String key) {
+            final Map<String, Deque<String>> mapOfStacks = tlMapOfStacks.get();
+            if (mapOfStacks != null) {
+                final Deque<String> deque = mapOfStacks.get(key);
+                if (deque != null) {
+                    final String result = deque.poll();
+                    if (!Constants.ENABLE_THREADLOCALS && deque.isEmpty()) {
+                        mapOfStacks.remove(key);
+                        removeIfEmpty(mapOfStacks);
+                    }
+                    return result;
+                }
+            }
+            return null;
+        }
+
+        public Deque<String> getCopyOfDequeByKey(final String key) {
+            final Map<String, Deque<String>> mapOfStacks = tlMapOfStacks.get();
+            if (mapOfStacks != null) {
+                final Deque<String> deque = mapOfStacks.get(key);
+                return deque != null ? new ArrayDeque<>(deque) : null;
+            }
+            return null;
+        }
+
+        public void clear() {
+            final Map<String, Deque<String>> mapOfStacks = tlMapOfStacks.get();
+            if (Constants.ENABLE_THREADLOCALS) {
+                mapOfStacks.clear();
+            } else {
+                tlMapOfStacks.remove();
+            }
+        }
+
+        public void clearByKey(final String key) {
+            final Map<String, Deque<String>> mapOfStacks = tlMapOfStacks.get();
+            if (mapOfStacks != null) {
+                mapOfStacks.computeIfPresent(key, (ignored, deque) -> {
+                    if (Constants.ENABLE_THREADLOCALS) {
+                        deque.clear();
+                        return deque;
+                    }
+                    return null;
+                });
+            }
+            removeIfEmpty(mapOfStacks);
+        }
+
         public String peekByKey(final String key) {
-            final Deque<String> deque = tlMapOfStacks.get().get(key);
-            return deque != null ? deque.peek() : null;
+            final Map<String, Deque<String>> mapOfStacks = tlMapOfStacks.get();
+            if (mapOfStacks != null) {
+                final Deque<String> deque = mapOfStacks.get(key);
+                return deque != null ? deque.peek() : null;
+            }
+            return null;
         }
     }
 }

@@ -94,12 +94,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
         }
     }
 
-    private static final ThreadLocal<Boolean> ASYNC_LOGGER_ENTERED = new ThreadLocal<Boolean>() {
-        @Override
-        protected Boolean initialValue() {
-            return Boolean.FALSE;
-        }
-    };
+    private static final ThreadLocal<Boolean> ASYNC_LOGGER_ENTERED = new ThreadLocal<>();
 
     private final AsyncLoggerConfigDelegate delegate;
 
@@ -126,29 +121,30 @@ public class AsyncLoggerConfig extends LoggerConfig {
     protected void log(final LogEvent event, final LoggerConfigPredicate predicate) {
         // See LOG4J2-2301
         if (predicate == LoggerConfigPredicate.ALL
-                && ASYNC_LOGGER_ENTERED.get() == Boolean.FALSE
                 &&
                 // Optimization: AsyncLoggerConfig is identical to LoggerConfig
                 // when no appenders are present. Avoid splitting for synchronous
                 // and asynchronous execution paths until encountering an
                 // AsyncLoggerConfig with appenders.
                 hasAppenders()) {
-            // This is the first AsnycLoggerConfig encountered by this LogEvent
-            ASYNC_LOGGER_ENTERED.set(Boolean.TRUE);
             try {
-                if (!isFiltered(event)) {
-                    // Detect the first time we encounter an AsyncLoggerConfig. We must log
-                    // to all non-async loggers first.
-                    processLogEvent(event, LoggerConfigPredicate.SYNCHRONOUS_ONLY);
-                    // Then pass the event to the background thread where
-                    // all async logging is executed. It is important this
-                    // happens at most once and after all synchronous loggers
-                    // have been invoked, because we lose parameter references
-                    // from reusable messages.
-                    logToAsyncDelegate(event);
+                if (ASYNC_LOGGER_ENTERED.get() == null) {
+                    // This is the first AsyncLoggerConfig encountered by this LogEvent
+                    ASYNC_LOGGER_ENTERED.set(Boolean.TRUE);
+                    if (!isFiltered(event)) {
+                        // Detect the first time we encounter an AsyncLoggerConfig. We must log
+                        // to all non-async loggers first.
+                        processLogEvent(event, LoggerConfigPredicate.SYNCHRONOUS_ONLY);
+                        // Then pass the event to the background thread where
+                        // all async logging is executed. It is important this
+                        // happens at most once and after all synchronous loggers
+                        // have been invoked, because we lose parameter references
+                        // from reusable messages.
+                        logToAsyncDelegate(event);
+                    }
                 }
             } finally {
-                ASYNC_LOGGER_ENTERED.set(Boolean.FALSE);
+                ASYNC_LOGGER_ENTERED.remove();
             }
         } else {
             super.log(event, predicate);

@@ -165,8 +165,12 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
         if (map != null) {
             final StringMap copy = createStringMap(map);
             copy.remove(key);
-            copy.freeze();
-            localMap.set(copy);
+            if (copy.isEmpty()) {
+                localMap.remove();
+            } else {
+                copy.freeze();
+                localMap.set(copy);
+            }
         }
     }
 
@@ -178,8 +182,12 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
             for (final String key : keys) {
                 copy.remove(key);
             }
-            copy.freeze();
-            localMap.set(copy);
+            if (copy.isEmpty()) {
+                localMap.remove();
+            } else {
+                copy.freeze();
+                localMap.set(copy);
+            }
         }
     }
 

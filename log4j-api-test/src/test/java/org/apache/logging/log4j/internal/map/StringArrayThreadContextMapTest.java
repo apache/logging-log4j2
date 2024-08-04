@@ -16,16 +16,19 @@
  */
 package org.apache.logging.log4j.internal.map;
 
+import static org.apache.logging.log4j.test.ThreadLocalUtil.assertThreadLocalCount;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.apache.logging.log4j.test.ThreadLocalUtil;
 import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.junit.jupiter.api.Test;
@@ -34,7 +37,9 @@ import org.junit.jupiter.api.Test;
  * Tests the {@code StringArrayThreadContextMap} class.
  */
 @UsingThreadContextMap
-public class StringArrayThreadContextMapTest {
+class StringArrayThreadContextMapTest {
+
+    private static final String KEY = "StringArrayThreadContextMapTest";
 
     @Test
     public void testEqualsVsSameKind() {
@@ -283,5 +288,27 @@ public class StringArrayThreadContextMapTest {
         iterationResultMap.clear();
         map.forEach(triConsumer, iterationResultMap);
         assertTrue(iterationResultMap.isEmpty());
+    }
+
+    @Test
+    void threadLocalsRemovedWhenMapEmpty() {
+        final StringArrayThreadContextMap contextMap = new StringArrayThreadContextMap();
+        final int threadLocalCount = ThreadLocalUtil.getThreadLocalCount();
+
+        contextMap.put(KEY, "threadLocalsRemovedWhenMapEmpty");
+        assertThreadLocalCount(threadLocalCount + 1);
+        contextMap.remove(KEY);
+        assertThreadLocalCount(threadLocalCount);
+
+        contextMap.put("key1", "value1");
+        contextMap.put("key2", "value2");
+        assertThreadLocalCount(threadLocalCount + 1);
+        contextMap.removeAll(Arrays.asList("key1", "key2"));
+        assertThreadLocalCount(threadLocalCount);
+
+        contextMap.put(KEY, "threadLocalsRemovedWhenMapEmpty");
+        assertThreadLocalCount(threadLocalCount + 1);
+        contextMap.clear();
+        assertThreadLocalCount(threadLocalCount);
     }
 }

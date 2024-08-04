@@ -16,16 +16,21 @@
  */
 package org.apache.logging.slf4j;
 
+import static org.apache.logging.log4j.test.ThreadLocalUtil.assertThreadLocalCount;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import org.apache.logging.log4j.test.ThreadLocalUtil;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
-public class Log4jMDCAdapterTest {
+@SetSystemProperty(key = "log4j2.enableThreadLocals", value = "false")
+class Log4jMDCAdapterTest {
 
     private static final Log4jMDCAdapter MDC_ADAPTER = new Log4jMDCAdapter();
     private static final String KEY = "Log4j2";
@@ -51,11 +56,22 @@ public class Log4jMDCAdapterTest {
 
     @ParameterizedTest
     @MethodSource("keys")
-    public void testPushPopByKey(final String key) {
+    void testPushPopByKey(final String key) {
         MDC_ADAPTER.clearDequeByKey(key);
         final Deque<String> expectedValues = createDeque(100);
         expectedValues.descendingIterator().forEachRemaining(v -> MDC_ADAPTER.pushByKey(key, v));
         assertThat(MDC_ADAPTER.getCopyOfDequeByKey(key)).containsExactlyElementsOf(expectedValues);
         assertThat(popDeque(key)).containsExactlyElementsOf(expectedValues);
+    }
+
+    @Test
+    void threadLocalClearedWhenMapOfStacksEmpty() {
+        MDC_ADAPTER.clear();
+        MDC_ADAPTER.clearDeque();
+        final int threadLocalCount = ThreadLocalUtil.getThreadLocalCount();
+        MDC_ADAPTER.pushByKey(KEY, "threadLocalClearedWhenMapOfStacksEmpty");
+        assertThreadLocalCount(threadLocalCount + 1);
+        assertThat(MDC_ADAPTER.popByKey(KEY)).isEqualTo("threadLocalClearedWhenMapOfStacksEmpty");
+        assertThreadLocalCount(threadLocalCount);
     }
 }
