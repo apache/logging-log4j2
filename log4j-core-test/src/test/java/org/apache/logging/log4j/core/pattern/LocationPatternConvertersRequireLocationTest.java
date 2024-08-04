@@ -26,7 +26,7 @@ import org.apache.logging.log4j.core.impl.LocationAware;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-public class LocationPatternConvertersRequireLocationTest {
+class LocationPatternConvertersRequireLocationTest {
 
     /**
      * Reproduces <a href="https://github.com/apache/logging-log4j2/issues/2781">github issue #2781</a>.
