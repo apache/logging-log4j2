@@ -180,6 +180,9 @@
     <a class="nav-link" href="appenders/network.html">Network Appenders</a>
   </li>
   <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="appenders/message-queue.html">Message queue appenders</a>
+  </li>
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="appenders/delegating.html">Delegating Appenders</a>
   </li>
 </ul>
@@ -552,7 +555,7 @@ It does not ensure that the operating system writes the event to the underlying 
 <a href="async.html" class="xref page">asynchronous loggers</a>
 or
 <a href="appenders/delegating.html#AsyncAppender" class="xref page">appenders</a>, you can set this attribute to <code>false</code>.
-Log4j Core will still flush the internal buffer, whenever the log event queue becomes empty.</p>
+Log4j Core will still flush the internal buffer whenever the log event queue becomes empty.</p>
 </div>
 </td>
 </tr>
@@ -629,20 +632,20 @@ to redirect log events to a different appender in case of exceptions.</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#HttpAppender">HTTP Appender</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#HttpAppender-element-headers"><code>Property/value</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appenders/network.html#HttpAppender" class="xref page">HTTP Appender</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appenders/network.html#HttpAppender-element-Property" class="xref page"><code>Property/value</code></a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Log event</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="lookups.html#global-context" class="xref page"><em>global</em></a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#KafkaAppender">Kafka Appender</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#KafkaAppender-attr-key"><code>key</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appenders/message-queue.html#KafkaAppender" class="xref page">Kafka Appender</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appenders/message-queue.html#KafkaAppender-attr-key" class="xref page"><code>key</code></a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Log event</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="lookups.html#global-context" class="xref page"><em>global</em></a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#NoSQLAppender">NoSQL Appender</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#NoSqlAppender-element-keyValuePairs"><code>KeyValuePair/value</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appenders/database.html#NoSqlAppender" class="xref page">NoSQL Appender</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appenders/database.html#NoSqlAppender-element-KeyValuePair" class="xref page"><code>KeyValuePair/value</code></a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Log event</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="lookups.html#global-context" class="xref page"><em>global</em></a></p></td>
 </tr>
@@ -692,6 +695,410 @@ Inside the <code>Route</code> component you <strong>should not</strong> use esca
 <div class="paragraph">
 <p>Log4j bundles several predefined appenders to assist in several common deployment use cases.
 They are documented in separate pages based on their target resource:</p>
+</div>
+<div class="sect2">
+<h3 id="ConsoleAppender"><a class="anchor" href="#ConsoleAppender"></a>Console Appender</h3>
+<div class="paragraph">
+<p>As one might expect, the Console Appender writes its output to either the standard output or standard error output.
+The appender supports four different ways to access the output streams:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>direct</code></dt>
+<dd>
+<p>This mode gives the best performance.
+It can be enabled by setting the <a href="#ConsoleAppender-attr-direct"><code>direct</code></a> attribute to <code>true</code>.</p>
+</dd>
+<dt class="hdlist1"><code>default</code></dt>
+<dd>
+<p>By default, the Console appender uses the values of <code>System.out</code> or <code>System.err</code> present at <strong>configuration time</strong>.
+Any changes to those streams at runtime will be ignored.</p>
+</dd>
+<dt class="hdlist1"><code>follow</code></dt>
+<dd>
+<p>This mode always uses the <strong>current</strong> value of the <code>System.out</code> and <code>System.err</code> streams.
+It can be enabled by setting the <a href="#ConsoleAppender-attr-follow"><code>follow</code></a> attribute to <code>true</code>.</p>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This setting might be useful in multi-application environments.
+Some application servers modify <code>System.out</code> and <code>System.err</code> to always point to the currently running application.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</dd>
+<dt class="hdlist1"><code>JANSI</code></dt>
+<dd>
+<p>If the application is running on Windows and the
+<a href="https://fusesource.github.io/jansi/">JANSI library</a>
+is available, the Console appender will use JANSI to emulate ANSI sequence support.
+This mode can be disabled by setting the
+<a href="systemproperties.html#log4j2.skipJansi" class="xref page"><code>log4j2.skipJansi</code></a>
+configuration attribute to <code>true</code>.</p>
+<div class="paragraph">
+<p>Additional runtime dependencies are required to use JANSI:</p>
+</div>
+<div id="_tabs_1" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_1_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_1_maven--panel" class="tabpanel" aria-labelledby="_tabs_1_maven">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.fusesource.jansi&lt;/groupId&gt;
+  &lt;artifactId&gt;jansi&lt;/artifactId&gt;
+  &lt;version&gt;1.18&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_gradle--panel" class="tabpanel" aria-labelledby="_tabs_1_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.fusesource.jansi:jansi:1.18'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</dd>
+</dl>
+</div>
+<table id="ConsoleAppender-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Console Appender configuration attributes</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Required</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="ConsoleAppender-attr-name"></a>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the appender.</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Optional</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="ConsoleAppender-attr-bufferSize"></a>bufferSize</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="systemproperties.html#log4j2.encoderByteBufferSize" class="xref page"><code>8192</code></a></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The size of the
+<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html"><code>ByteBuffer</code></a>
+internally used by the appender.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="#buffering">Buffering</a> for more details.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="ConsoleAppender-attr-direct"></a>direct</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>If set to <code>true</code>, log events will be written directly to either
+<a href="https://docs.oracle.com/javase/8/docs/api/java/io/FileDescriptor.html#out"><code>FileDescriptor.out</code></a>
+or
+<a href="https://docs.oracle.com/javase/8/docs/api/java/io/FileDescriptor.html#err"><code>FileDescriptor.err</code></a>.</p>
+</div>
+<div class="paragraph">
+<p>This setting bypasses the buffering of <code>System.out</code> and <code>System.err</code> and might provide a performance comparable to a <a href="appenders/file.html" class="xref page">file appender</a>.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If other logging backends or the application itself uses <code>System.out/System.err</code>, setting this to <code>true</code> might cause interleaved output.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This setting is incompatible with the
+<a href="#ConsoleAppender-attr-follow"><code>follow</code> attribute</a>
+and
+<a href="systemproperties.html#log4j2.skipJansi" class="xref page">JANSI support</a>.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="ConsoleAppender-attr-follow"></a>
+follow</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If set to <code>true</code>, the appender will honor reassignments of <code>System.out</code> (resp. <code>System.err</code>) via
+<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/System.html#setOut-java.io.PrintStream-"><code>System.setOut</code></a>
+(resp.
+<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/System.html#setOut-java.io.PrintStream-"><code>System.setErr</code></a>).</p>
+<p class="tableblock">Otherwise, the value of <code>System.out</code> (resp. <code>System.err</code>) at configuration time will be used.</p>
+<p class="tableblock">This setting is incompatible with the
+<a href="#ConsoleAppender-attr-direct"><code>direct</code> attribute</a>
+and
+<a href="systemproperties.html#log4j2.skipJansi" class="xref page">JANSI support</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="ConsoleAppender-attr-ignoreExceptions"></a>
+ignoreExceptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>false</code>, logging exception will be forwarded to the caller of the logging statement.
+Otherwise, they will be ignored.</p>
+<p class="tableblock">Logging exceptions are always also logged to <a href="status-logger.html" class="xref page">Status Logger</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="ConsoleAppender-attr-immediateFlush"></a>
+immediateFlush</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If set to <code>true</code>, the appender will flush its internal buffer and the buffer of the <code>System.out/System.err</code> stream after each log event.</p>
+<p class="tableblock">See <a href="#buffering">Buffering</a> for more details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="ConsoleAppender-attr-target"></a>
+target</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/ConsoleAppender.Target.html"><code>Target</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/ConsoleAppender.Target.html#SYSTEM_OUT"><code>SYSTEM_OUT</code></a></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>It specifies which standard output stream to use:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>SYSTEM_OUT</code></dt>
+<dd>
+<p>It uses the standard output.</p>
+</dd>
+<dt class="hdlist1"><code>SYSTEM_ERR</code></dt>
+<dd>
+<p>It uses the standard error output.</p>
+</dd>
+</dl>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<table id="ConsoleAppender-elements" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. Common nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Multiplicity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="ConsoleAppender-element-Filter"></a>
+<a href="filters.html" class="xref page"><code>Filter</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows filtering log events just before they are formatted and sent.</p>
+<p class="tableblock">See also <a href="filters.html#appender-stage" class="xref page">appender filtering stage</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="ConsoleAppender-element-Layout"></a>
+<a href="layouts.html" class="xref page"><code>Layout</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Formats log events.</p>
+<p class="tableblock">See <a href="layouts.html" class="xref page">Layouts</a> for more information.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-ConsoleAppender" class="xref page">&#x1F4D6; Plugin reference for <code>Console</code></a></p>
+</div>
+<div class="sect3">
+<h4 id="ConsoleAppender-examples"><a class="anchor" href="#ConsoleAppender-examples"></a>Configuration examples</h4>
+<div class="paragraph">
+<p>A typical configuration in a <strong>development</strong> environment might look like:</p>
+</div>
+<div id="_tabs_2" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_2_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_2_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_2_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_2_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_2_xml--panel" class="tabpanel" aria-labelledby="_tabs_2_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/console-dev.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Console name="CONSOLE"&gt;
+  &lt;PatternLayout pattern="%d [%t] %p %c - %m%n"/&gt;
+&lt;/Console&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_2_json--panel" class="tabpanel" aria-labelledby="_tabs_2_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/console-dev.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Console": {
+  "name": "CONSOLE",
+  "PatternLayout": {
+    "pattern": "%d [%t] %p %c - %m%n"
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_2_yaml--panel" class="tabpanel" aria-labelledby="_tabs_2_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/console-dev.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Console:
+  name: "CONSOLE"
+  PatternLayout:
+    pattern: "%d [%t] %p %c - %m%n"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_2_properties--panel" class="tabpanel" aria-labelledby="_tabs_2_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/console-dev.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = Console
+appender.0.name = CONSOLE
+
+appender.0.layout.type = PatternLayout
+appender.0.layout.pattern = %d [%t] %p %c - %m%n</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>A typical configuration for a <strong>production</strong> environment might look like</p>
+</div>
+<div id="_tabs_3" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_3_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_3_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_3_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_3_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_3_xml--panel" class="tabpanel" aria-labelledby="_tabs_3_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/console-prod.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Console name="CONSOLE"
+         direct="true"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;JsonTemplateLayout/&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+&lt;/Console&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_3_json--panel" class="tabpanel" aria-labelledby="_tabs_3_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/console-prod.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Console": {
+  "name": "CONSOLE",
+  "direct": true, <i class="conum" data-value="1"></i><b>(1)</b>
+  "JsonTemplateLayout": {} <i class="conum" data-value="2"></i><b>(2)</b>
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_3_yaml--panel" class="tabpanel" aria-labelledby="_tabs_3_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/console-prod.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Console:
+  name: "CONSOLE"
+  direct: true <i class="conum" data-value="1"></i><b>(1)</b>
+  JsonTemplateLayout: {} <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_3_properties--panel" class="tabpanel" aria-labelledby="_tabs_3_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/console-prod.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = Console
+appender.0.name = CONSOLE
+<i class="conum" data-value="1"></i><b>(1)</b>
+appender.0.direct = true
+
+<i class="conum" data-value="2"></i><b>(2)</b>
+appender.0.layout.type = JsonTemplateLayout</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Improve performance by setting <a href="#ConsoleAppender-attr-direct"><code>direct</code></a> to <code>true</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Use a structured layout.
+Additional dependencies are required, see <a href="json-template-layout.html" class="xref page">JSON Template Layout</a>.</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="file-appenders"><a class="anchor" href="#file-appenders"></a>File appenders</h3>
@@ -770,6 +1177,231 @@ The supported network protocols are:</p>
 </div>
 </div>
 <div class="sect2">
+<h3 id="message-queue-appenders"><a class="anchor" href="#message-queue-appenders"></a>Message queue appenders</h3>
+<div class="paragraph">
+<p>Message queue appenders forward log events to a message broker.
+The following systems are supported:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><a href="appenders/message-queue.html#FlumeAppender" class="xref page">Flume appender</a></dt>
+<dd>
+<p>Forwards log events to an
+<a href="https://flume.apache.org/">Apache Flume</a> server.</p>
+</dd>
+<dt class="hdlist1"><a href="appenders/message-queue.html#JmsAppender" class="xref page">JMS appender</a></dt>
+<dd>
+<p>Forwards log events to a
+<a href="https://jakarta.ee/specifications/messaging/2.0/">Jakarta Message 2.0</a> broker.</p>
+</dd>
+<dt class="hdlist1"><a href="appenders/message-queue.html#KafkaAppender" class="xref page">Kafka appender</a></dt>
+<dd>
+<p>Forwards log events to an
+<a href="https://kafka.apache.org/">Apache Kafka</a> server.</p>
+</dd>
+<dt class="hdlist1"><a href="appenders/message-queue.html#JeroMqAppender" class="xref page">ZeroMQ/JeroMQ appender</a></dt>
+<dd>
+<p>Forwards log events to a
+<a href="https://zeromq.org/">ZeroMQ</a> broker.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>See <a href="appenders/message-queue.html" class="xref page">Message queue appenders</a> for details.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="ServletAppender"><a class="anchor" href="#ServletAppender"></a>Servlet Appender</h3>
+<div class="paragraph">
+<p>The Servlet appender allows users to forward all logging calls to the
+<a href="https://jakarta.ee/specifications/servlet/5.0/apidocs/jakarta/servlet/servletcontext#log(java.lang.String,java.lang.Throwable)"><code>ServletContext.log()</code></a>
+methods.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The <code>ServletContext.log(String, Throwable)</code> method predates modern logging APIs.
+By using Servlet appender, you typically will not be able to differentiate log events by log level or logger name.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The Servlet Appender has no configuration attributes.</p>
+</div>
+<div class="paragraph">
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender" class="xref page">&#x1F4D6; Plugin reference for <code>Servlet</code></a></p>
+</div>
+<div class="paragraph">
+<p>You can use it by declaring an appender of type <code>Servlet</code> in your configuration file:</p>
+</div>
+<div id="_tabs_4" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_4_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_4_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_4_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_4_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_4_xml--panel" class="tabpanel" aria-labelledby="_tabs_4_xml">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Servlet name="SERVLET"&gt;
+  &lt;PatternLayout pattern="%m%n" alwaysWriteExceptions="false"/&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+&lt;/Servlet&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_4_json--panel" class="tabpanel" aria-labelledby="_tabs_4_json">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">"Servlet": {
+  "name": "SERVLET",
+  "PatternLayout": {
+    "pattern": "%m%n",
+    "alwaysWriteExceptions": false <i class="conum" data-value="1"></i><b>(1)</b>
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_4_yaml--panel" class="tabpanel" aria-labelledby="_tabs_4_yaml">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">Servlet:
+  name: "SERVLET"
+  PatternLayout:
+    pattern: "%m%n"
+    alwaysWriteExceptions: false <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_4_properties--panel" class="tabpanel" aria-labelledby="_tabs_4_properties">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">appender.0.type = Servlet
+appender.0.name = SERVLET
+appender.0.layout.type = PatternLayout
+appender.0.layout.pattern = %m%n
+<i class="conum" data-value="1"></i><b>(1)</b>
+appender.0.layout.alwaysWriteExceptions = false</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Encodes events using <a href="pattern-layout.html" class="xref page">Pattern Layout</a> and forwards the call to
+<code>ServletContext.log()</code>.
+Setting <code>alwaysWriteExceptions</code> to <code>false</code> prevents the stacktrace from appearing as both part of the <code>message</code> argument and as <code>throwable</code> argument:
+this usually results in the stacktrace being printed to the log file twice.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Additional runtime dependencies are required for using the servlet appender:</p>
+</div>
+<div id="_tabs_5" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_5_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_5_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_5_maven--panel" class="tabpanel" aria-labelledby="_tabs_5_maven">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;!-- We assume you use `log4j-bom` for dependency management --&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+  &lt;artifactId&gt;log4j-jakarta-web&lt;/artifactId&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_5_gradle--panel" class="tabpanel" aria-labelledby="_tabs_5_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">// We assume you use `log4j-bom` for dependency management
+runtimeOnly 'org.apache.logging.log4j:log4j-jakarta-web'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<details>
+<summary class="title">Click here if you are you using Jakarta EE 8 or any version of Java EE?</summary>
+<div class="content">
+<div class="paragraph">
+<p>Jakarta EE 8 and all Java EE applications servers use the legacy <code>javax</code> package prefix instead of <code>jakarta</code>.
+If you are using those application servers, you should replace the dependencies above with:</p>
+</div>
+<div id="_tabs_6" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_6_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_6_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_6_maven--panel" class="tabpanel" aria-labelledby="_tabs_6_maven">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;!-- We assume you use `log4j-bom` for dependency management --&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+  &lt;artifactId&gt;log4j-web&lt;/artifactId&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_6_gradle--panel" class="tabpanel" aria-labelledby="_tabs_6_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">// We assume you use `log4j-bom` for dependency management
+runtimeOnly 'org.apache.logging.log4j:log4j-web'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p>See <a href="../jakarta.html" class="xref page">Integrating with Jakarta EE</a> for more information.</p>
+</div>
+</div>
+<div class="sect2">
 <h3 id="delegating-appenders"><a class="anchor" href="#delegating-appenders"></a>Delegating appenders</h3>
 <div class="paragraph">
 <p>Delegating appenders are intended to decorate other appenders:</p>
@@ -798,1073 +1430,6 @@ The supported network protocols are:</p>
 <p>See <a href="appenders/delegating.html" class="xref page">Delegating Appenders</a> for details.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="consoleappender"><a class="anchor" href="#consoleappender"></a><a id="ConsoleAppender"></a> ConsoleAppender</h3>
-<div class="paragraph">
-<p>As one might expect, the ConsoleAppender writes its output to either
-<code>System.out</code> or <code>System.err</code> with <code>System.out</code> being the default target.
-A Layout must be provided to format the LogEvent.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. ConsoleAppender Parameters</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">filter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Filter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A Filter to determine if the event should be handled by
-this Appender. More than one Filter may be used by using a
-CompositeFilter.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">layout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Layout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Layout to use to format the LogEvent. If no layout
-is supplied the default pattern layout of "%m%n" will be used.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">follow</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Identifies whether the appender honors reassignments
-of <code>System.out</code> or <code>System.err</code> via <code>System.setOut</code> or <code>System.setErr</code> made
-after configuration. Note that the follow attribute cannot be used with
-Jansi on Windows. Cannot be used with <code>direct</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">direct</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Write directly to <code>java.io.FileDescriptor</code> and bypass
-<code>java.lang.System.out/.err</code>. Can give up to 10x performance boost when
-the output is redirected to a file or other process. Cannot be used with
-Jansi on Windows. Cannot be used with <code>follow</code>. The output will not respect
-<code>java.lang.System.setOut()/.setErr()</code> and may get intertwined with other
-output to <code>java.lang.System.out/.err</code> in a multi-threaded application.
-<em>New since 2.6.2. Be aware that this is a new addition, and it has only
-been tested with Oracle JVM on Linux and Windows so far.</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the Appender.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ignoreExceptions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The default is <code>true</code>, causing exceptions
-encountered while appending events to be internally logged and then
-ignored. When set to <code>false</code> exceptions will be propagated to the
-caller, instead. You must set this to <code>false</code> when wrapping this
-Appender in a <a href="#FailoverAppender">[FailoverAppender]</a>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">target</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Either "SYSTEM_OUT" or "SYSTEM_ERR". The default is
-"SYSTEM_OUT".</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>A typical Console configuration might look like:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;Console name="STDOUT" target="SYSTEM_OUT"&gt;
-      &lt;PatternLayout pattern="%m%n"/&gt;
-    &lt;/Console&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="STDOUT"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="FlumeAppender"><a class="anchor" href="#FlumeAppender"></a>FlumeAppender</h3>
-<div class="paragraph">
-<p><em>This is an optional component supplied in a separate jar.</em></p>
-</div>
-<div class="paragraph">
-<p><a href="https://flume.apache.org/index.html">Apache Flume</a> is a distributed, reliable, and available system for efficiently collecting, aggregating, and moving large amounts of log data from many different sources to a centralized data store.
-The FlumeAppender takes LogEvents and sends them to a Flume agent as serialized Avro events for consumption.</p>
-</div>
-<div class="paragraph">
-<p>The Flume Appender supports three modes of operation.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>It can act as a remote Flume client which sends Flume events via Avro to a Flume Agent configured with an Avro Source.</p>
-</li>
-<li>
-<p>It can act as an embedded Flume Agent where Flume events pass directly into Flume for processing.</p>
-</li>
-<li>
-<p>It can persist events to a local BerkeleyDB data store and then asynchronously send the events to Flume, similar to the embedded Flume Agent but without most of the Flume dependencies.</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>Usage as an embedded agent will cause the messages to be directly passed to the Flume Channel and then control will be immediately returned to the application.
-All interaction with remote agents will occur asynchronously.
-Setting the "type" attribute to "Embedded" will force the use of the embedded agent.
-In addition, configuring agent properties in the appender configuration will also cause the embedded agent to be used.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. FlumeAppender Parameters</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">agents</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Agent[]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">An array of Agents to which the logging events should
-be sent. If more than one agent is specified the first Agent will be the
-primary and subsequent Agents will be used in the order specified as
-secondaries should the primary Agent fail. Each Agent definition
-supplies the Agent&#8217;s host and port. The specification of agents and
-properties are mutually exclusive. If both are configured an error will
-result.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">agentRetries</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The number of times the agent should be retried
-before failing to a secondary. This parameter is ignored when
-<code>type="persistent"</code> is specified (agents are tried once before failing to
-the next).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">batchSize</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Specifies the number of events that should be sent
-as a batch. The default is 1. <em>This parameter only applies to the Flume
-Appender.</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">compress</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">When set to true the message body will be compressed
-using gzip</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">connectTimeoutMillis</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The number of milliseconds Flume will
-wait before timing out the connection.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">dataDir</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Directory where the Flume write-ahead log should be
-written. Valid only when embedded is set to true and Agent elements are
-used instead of Property elements.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">filter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Filter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A Filter to determine if the event should be handled by
-this Appender. More than one Filter may be used by using a
-CompositeFilter.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">eventPrefix</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The character string to prepend to each event
-attribute to distinguish it from MDC attributes. The default is
-an empty string.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">flumeEventFactory</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">FlumeEventFactory</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Factory that generates the Flume
-events from Log4j events. The default factory is the FlumeAvroAppender
-itself.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">layout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Layout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Layout to use to format the LogEvent. If no layout
-is specified RFC5424Layout will be used.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">lockTimeoutRetries</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The number of times to retry if a
-LockConflictException occurs while writing to Berkeley DB. The default
-is 5.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">maxDelayMillis</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of milliseconds to wait for
-batchSize events before publishing the batch.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">mdcExcludes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A comma-separated list of mdc keys that should be
-excluded from the FlumeEvent. This is mutually exclusive with the
-mdcIncludes attribute.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">mdcIncludes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A comma-separated list of mdc keys that should be
-included in the FlumeEvent. Any keys in the MDC not found in the list
-will be excluded. This option is mutually exclusive with the mdcExcludes
-attribute.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">mdcRequired</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A comma-separated list of <code>mdc</code> keys that must be
-present in the MDC. If a key is not present a LoggingException will be
-thrown.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">mdcPrefix</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A string that should be prepended to each MDC key to distinguish it from event attributes. The default string is
-"mdc:".</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the Appender.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">properties</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Property[]</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>One or more Property elements that are used to configure the Flume
-Agent. The properties must be configured without the agent name (the
-appender name is used for this) and no sources can be configured.
-Interceptors can be specified for the source using
-"sources.log4j-source.interceptors". All other Flume configuration
-properties are allowed. Specifying both Agent and Property elements will
-result in an error.</p>
-</div>
-<div class="paragraph">
-<p>When used to configure in Persistent mode the valid properties are:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><code>keyProvider</code> to specify the name of the plugin to provide the
-secret key for encryption.</p>
-</li>
-</ol>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">requestTimeoutMillis</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The number of milliseconds Flume will
-wait before timing out the request.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ignoreExceptions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The default is <code>true</code>, causing exceptions
-encountered while appending events to be internally logged and then
-ignored. When set to <code>false</code> exceptions will be propagated to the
-caller, instead. You must set this to <code>false</code> when wrapping this
-Appender in a <a href="#FailoverAppender">[FailoverAppender]</a>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">enumeration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">One of "Avro", "Embedded", or "Persistent" to
-indicate which variation of the Appender is desired.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>A sample FlumeAppender configuration that is configured with a primary and a secondary agent compresses the body and formats the body using the RFC5424Layout:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;Flume name="eventLogger" compress="true"&gt;
-      &lt;Agent host="192.168.10.101" port="8800"/&gt;
-      &lt;Agent host="192.168.10.102" port="8800"/&gt;
-      &lt;RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/&gt;
-    &lt;/Flume&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="eventLogger"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>A sample FlumeAppender configuration that is configured with a primary and a secondary agent compresses the body, formats the body using the RFC5424Layout, and persists encrypted events to disk:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;Flume name="eventLogger" compress="true" type="persistent" dataDir="./logData"&gt;
-      &lt;Agent host="192.168.10.101" port="8800"/&gt;
-      &lt;Agent host="192.168.10.102" port="8800"/&gt;
-      &lt;RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/&gt;
-      &lt;Property name="keyProvider"&gt;MySecretProvider&lt;/Property&gt;
-    &lt;/Flume&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="eventLogger"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>A sample FlumeAppender configuration that is configured with a primary and a secondary agent compresses the body, and formats the body using RFC5424Layout and passes the events to an embedded Flume Agent.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;Flume name="eventLogger" compress="true" type="Embedded"&gt;
-      &lt;Agent host="192.168.10.101" port="8800"/&gt;
-      &lt;Agent host="192.168.10.102" port="8800"/&gt;
-      &lt;RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/&gt;
-    &lt;/Flume&gt;
-    &lt;Console name="STDOUT"&gt;
-      &lt;PatternLayout pattern="%d [%p] %c %m%n"/&gt;
-    &lt;/Console&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Logger name="EventLogger" level="info"&gt;
-      &lt;AppenderRef ref="eventLogger"/&gt;
-    &lt;/Logger&gt;
-    &lt;Root level="warn"&gt;
-      &lt;AppenderRef ref="STDOUT"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>A sample FlumeAppender configuration that is configured with a primary and a secondary agent using Flume configuration properties compresses the body, formats the body using RFC5424Layout and passes the events to an embedded Flume Agent.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="error" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;Flume name="eventLogger" compress="true" type="Embedded"&gt;
-      &lt;Property name="channels"&gt;file&lt;/Property&gt;
-      &lt;Property name="channels.file.type"&gt;file&lt;/Property&gt;
-      &lt;Property name="channels.file.checkpointDir"&gt;target/file-channel/checkpoint&lt;/Property&gt;
-      &lt;Property name="channels.file.dataDirs"&gt;target/file-channel/data&lt;/Property&gt;
-      &lt;Property name="sinks"&gt;agent1 agent2&lt;/Property&gt;
-      &lt;Property name="sinks.agent1.channel"&gt;file&lt;/Property&gt;
-      &lt;Property name="sinks.agent1.type"&gt;avro&lt;/Property&gt;
-      &lt;Property name="sinks.agent1.hostname"&gt;192.168.10.101&lt;/Property&gt;
-      &lt;Property name="sinks.agent1.port"&gt;8800&lt;/Property&gt;
-      &lt;Property name="sinks.agent1.batch-size"&gt;100&lt;/Property&gt;
-      &lt;Property name="sinks.agent2.channel"&gt;file&lt;/Property&gt;
-      &lt;Property name="sinks.agent2.type"&gt;avro&lt;/Property&gt;
-      &lt;Property name="sinks.agent2.hostname"&gt;192.168.10.102&lt;/Property&gt;
-      &lt;Property name="sinks.agent2.port"&gt;8800&lt;/Property&gt;
-      &lt;Property name="sinks.agent2.batch-size"&gt;100&lt;/Property&gt;
-      &lt;Property name="sinkgroups"&gt;group1&lt;/Property&gt;
-      &lt;Property name="sinkgroups.group1.sinks"&gt;agent1 agent2&lt;/Property&gt;
-      &lt;Property name="sinkgroups.group1.processor.type"&gt;failover&lt;/Property&gt;
-      &lt;Property name="sinkgroups.group1.processor.priority.agent1"&gt;10&lt;/Property&gt;
-      &lt;Property name="sinkgroups.group1.processor.priority.agent2"&gt;5&lt;/Property&gt;
-      &lt;RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/&gt;
-    &lt;/Flume&gt;
-    &lt;Console name="STDOUT"&gt;
-      &lt;PatternLayout pattern="%d [%p] %c %m%n"/&gt;
-    &lt;/Console&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Logger name="EventLogger" level="info"&gt;
-      &lt;AppenderRef ref="eventLogger"/&gt;
-    &lt;/Logger&gt;
-    &lt;Root level="warn"&gt;
-      &lt;AppenderRef ref="STDOUT"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="jms-appender"><a class="anchor" href="#jms-appender"></a><a id="JMSAppender"></a>JMS Appender</h3>
-<div class="paragraph">
-<p>The JMS Appender sends the formatted log event to a JMS Destination.</p>
-</div>
-<div class="paragraph">
-<p>The JMS Appender requires JNDI support so as of release 2.17.0, this appender will not function unless <code>log4j2.enableJndiJms=true</code> is configured as a system property or environment variable.
-See the <a href="https://logging.apache.org/log4j/2.x/manual/configuration.html#enableJndiJms">enableJndiJms</a> system property.</p>
-</div>
-<div class="paragraph">
-<p>Note that in Log4j 2.0, this appender was split into a JMSQueueAppender and a JMSTopicAppender.
-Starting in Log4j 2.1, these appenders were combined into the JMS Appender, which makes no distinction between queues and topics.
-However, configurations written for 2.0 that use the <code>&lt;JMSQueue/&gt;</code> or <code>&lt;JMSTopic/&gt;</code> elements will continue to work with the new <code>&lt;JMS/&gt;</code> configuration element.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. JMS Appender Parameters</caption>
-<colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 16.6666%;">
-<col style="width: 16.6666%;">
-<col style="width: 50.0002%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">factoryBindingName</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Required</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name to locate in the Context that provides the
-<a href="https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/connectionfactory">ConnectionFactory</a>.
-This can be any subinterface of <code>ConnectionFactory</code> as well.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">factoryName</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Required</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The fully qualified class name that should be used to define the Initial Context Factory as defined in <a href="https://docs.oracle.com/javase/8/docs/api/javax/naming/Context.html#INITIAL_CONTEXT_FACTORY"><code>INITIAL_CONTEXT_FACTORY</code></a>. If a <code>factoryName</code> is specified without a <code>providerURL</code>, a warning message will be logged as this is likely to cause problems.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">filter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Filter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A Filter to determine if the event should be handled by this Appender. More than one Filter may be used by using a CompositeFilter.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">layout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Layout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Required</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Layout to use to format the LogEvent. <em>New since 2.9, in previous versions SerializedLayout was default.</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Required</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the Appender.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">password</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The password to use to create the JMS connection.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">providerURL</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Required</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The URL of the provider to use as defined by <a href="https://docs.oracle.com/javase/8/docs/api/javax/naming/Context.html#PROVIDER_URL">PROVIDER_URL</a>. From Log4j 2.17, only the <code>java:</code> protocol is supported.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">destinationBindingName</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Required</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name to use to locate the
-<a href="https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/destination">Destination</a>.
-This can be a <code>Queue</code> or <code>Topic</code>, and as such, the attribute names <code>queueBindingName</code> and <code>topicBindingName</code> are aliases to maintain compatibility with the Log4j 2.0 JMS appenders.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">securityPrincipalName</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the identity of the Principal as specified by <a href="https://docs.oracle.com/javase/8/docs/api/javax/naming/Context.html#SECURITY_PRINCIPAL">SECURITY_PRINCIPAL</a>. If a securityPrincipalName is specified without <code>securityCredentials</code>, a warning message will be logged as this is likely to cause problems.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">securityCredentials</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The security credentials for the principal as specified by <a href="https://docs.oracle.com/javase/8/docs/api/javax/naming/Context.html#SECURITY_CREDENTIALS">SECURITY_CREDENTIALS</a>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ignoreExceptions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">When <code>true</code>, exceptions caught while appending events are internally logged and then ignored. When <code>false</code> exceptions are propagated to the caller. You must set this to <code>false</code> when wrapping this Appender in a FailoverAppender.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">immediateFail</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">When set to true, log events will not wait to try to reconnect and will fail immediately if the JMS resources are not available. New in 2.9.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">reconnectIntervalMillis</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">5000</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If set to a value greater than 0, after an error, the JMSManager will attempt to reconnect to the broker after waiting the specified number of milliseconds. If the reconnect fails then an exception will be thrown (which can be caught by the application if <code>ignoreExceptions</code> is set to <code>false</code>). New in 2.9.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">urlPkgPrefixes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A colon-separated list of package prefixes for the class name of the factory class that will create a URL context factory as defined by <a href="https://docs.oracle.com/javase/8/docs/api/javax/naming/Context.html#URL_PKG_PREFIXES">URL_PKG_PREFIXES</a>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">userName</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The user ID used to create the JMS connection.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Here is a sample JMS Appender configuration:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;JMS name="jmsQueue" destinationBindingName="MyQueue"
-         factoryBindingName="MyQueueConnectionFactory"&gt;
-      &lt;JsonLayout properties="true"/&gt;
-    &lt;/JMS&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="jmsQueue"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>To map your Log4j <code>MapMessage</code> to JMS <code>javax.jms.MapMessage</code>, set the layout of the appender to <code>MessageLayout</code> with <code>&lt;MessageLayout /&gt;</code> (Since 2.9.):</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="warn" name="MyApp"&gt;
-  &lt;Appenders&gt;
-    &lt;JMS name="jmsQueue" destinationBindingName="MyQueue"
-         factoryBindingName="MyQueueConnectionFactory"&gt;
-      &lt;MessageLayout /&gt;
-    &lt;/JMS&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="error"&gt;
-      &lt;AppenderRef ref="jmsQueue"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="KafkaAppender"><a class="anchor" href="#KafkaAppender"></a>KafkaAppender</h3>
-<div class="paragraph">
-<p>The KafkaAppender logs events to an <a href="https://kafka.apache.org/">Apache Kafka</a> topic.
-Each log event is sent as a Kafka record.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 71.4286%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>topic</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Kafka topic to use. Required.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="KafkaAppender-attr-key"></a>key</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The key that will be sent to Kafka with every message.</p>
-<p class="tableblock">Supports
-<a href="configuration.html#lazy-property-substitution" class="xref page">runtime property substitution</a>
-and is evaluated in the
-<a href="lookups.html#event-context" class="xref page"><em>context of the current event</em></a>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>filter</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Filter</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A Filter to determine if the event should be handled by this Appender. More than one Filter may be used by using a CompositeFilter.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>layout</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Layout</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Layout to use to format the LogEvent. Required, there is no default. <em>New since 2.9, in previous versions <code>&lt;PatternLayout pattern="%m"/&gt;</code> was default.</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the Appender. Required.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ignoreExceptions</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The default is <code>true</code>, causing exceptions encountered while appending events to be internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the caller, instead. You must set this to <code>false</code> when wrapping this Appender in a <a href="#FailoverAppender">[FailoverAppender]</a>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>syncSend</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The default is <code>true</code>, causing sends to block until the record has been acknowledged by the Kafka server. When set to <code>false</code>, sends a return immediately, allowing for lower latency and significantly higher throughput. <em>New since 2.8. Be aware that this is a new addition, and it has not been extensively tested.
-Any failure sending to Kafka will be reported as an error to <a href="status-logger.html" class="xref page">Status Logger</a> and the log event will be dropped (the ignoreExceptions parameter will not be effective).
-Log events may arrive out of order on the Kafka server.</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>properties</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Property[]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">You can set properties in <a href="https://kafka.apache.org/documentation.html#producerconfigs">Kafka producer properties</a>. You need to set the <code>bootstrap.servers</code> property, there are sensible default values for the others. Do not set the <code>value.serializer</code> nor <code>key.serializer</code> properties.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Here is a sample KafkaAppender configuration snippet:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration&gt;
-  &lt;!-- ... --&gt;
-  &lt;Appenders&gt;
-    &lt;Kafka name="Kafka" topic="log-test"&gt;
-      &lt;PatternLayout pattern="%date %message"/&gt;
-      &lt;Property name="bootstrap.servers"&gt;localhost:9092&lt;/Property&gt;
-    &lt;/Kafka&gt;
-  &lt;/Appenders&gt;
-  &lt;!-- ... --&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This appender is synchronous by default and will block until the record has been acknowledged by the Kafka server, timeout for this can be set with the <code>timeout.ms</code> property (defaults to 30 seconds).
-Wrap with <a href="https://logging.apache.org/log4j/2.x/manual/appenders.html#AsyncAppender">Async appender</a> and/or set syncSend to <code>false</code> to log asynchronously.</p>
-</div>
-<div class="paragraph">
-<p>This appender requires the <a href="https://kafka.apache.org/">Kafka client library</a>.
-Note that you need to use a version of the Kafka client library matching the Kafka server used.</p>
-</div>
-<div class="paragraph">
-<p><em>Note:</em> Make sure to not let <code>org.apache.kafka</code> log to a Kafka appender on DEBUG level, since that will cause recursive logging:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration&gt;
-  &lt;!-- ... --&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="DEBUG"&gt;
-      &lt;AppenderRef ref="Kafka"/&gt;
-    &lt;/Root&gt;
-    &lt;Logger name="org.apache.kafka" level="INFO" /&gt; &lt;!-- avoid recursive logging --&gt;
-  &lt;/Loggers&gt;
-  &lt;!-- ... --&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="servlet-appender"><a class="anchor" href="#servlet-appender"></a>Servlet appender</h3>
-<div class="paragraph">
-<p>The servlet appender allows users to forward all logging calls to the
-<a href="https://jakarta.ee/specifications/servlet/5.0/apidocs/jakarta/servlet/servletcontext#log(java.lang.String,java.lang.Throwable)"><code>ServletContext.log()</code></a>
-methods.
-You can use it by declaring an appender of type <code>Servlet</code> in your configuration file:</p>
-</div>
-<div id="_tabs_1" class="openblock tabs is-sync is-loading">
-<div class="content">
-<div class="ulist tablist">
-<ul>
-<li id="_tabs_1_xml" class="tab">
-<p>XML</p>
-</li>
-<li id="_tabs_1_json" class="tab">
-<p>JSON</p>
-</li>
-<li id="_tabs_1_yaml" class="tab">
-<p>YAML</p>
-</li>
-<li id="_tabs_1_properties" class="tab">
-<p>Properties</p>
-</li>
-</ul>
-</div>
-<div id="_tabs_1_xml--panel" class="tabpanel" aria-labelledby="_tabs_1_xml">
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Servlet name="SERVLET"&gt;
-  &lt;PatternLayout pattern="%m%n" alwaysWriteExceptions="false"/&gt; <i class="conum" data-value="1"></i><b>(1)</b>
-&lt;/Servlet&gt;</code></pre>
-</div>
-</div>
-</div>
-<div id="_tabs_1_json--panel" class="tabpanel" aria-labelledby="_tabs_1_json">
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">"Servlet": {
-  "name": "SERVLET",
-  "PatternLayout": {
-    "pattern": "%m%n",
-    "alwaysWriteExceptions": false <i class="conum" data-value="1"></i><b>(1)</b>
-  }
-}</code></pre>
-</div>
-</div>
-</div>
-<div id="_tabs_1_yaml--panel" class="tabpanel" aria-labelledby="_tabs_1_yaml">
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">Servlet:
-  name: "SERVLET"
-  PatternLayout:
-    pattern: "%m%n"
-    alwaysWriteExceptions: false <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
-</div>
-</div>
-</div>
-<div id="_tabs_1_properties--panel" class="tabpanel" aria-labelledby="_tabs_1_properties">
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">appender.0.type = Servlet
-appender.0.name = SERVLET
-appender.0.layout.type = PatternLayout
-appender.0.layout.pattern = %m%n
-<i class="conum" data-value="1"></i><b>(1)</b>
-appender.0.layout.alwaysWriteExceptions = false</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Encodes events using <a href="pattern-layout.html" class="xref page">Pattern Layout</a> and forwards the call to
-<code>ServletContext.log()</code>.
-Setting <code>alwaysWriteExceptions</code> to <code>false</code> prevents the stacktrace from appearing as both part of the <code>message</code> argument and as <code>throwable</code> argument:
-this usually results in the stacktrace being printed to the log file twice.</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Additional runtime dependencies are required for using the servlet appender:</p>
-</div>
-<div id="_tabs_2" class="openblock tabs is-sync is-loading">
-<div class="content">
-<div class="ulist tablist">
-<ul>
-<li id="_tabs_2_maven" class="tab">
-<p>Maven</p>
-</li>
-<li id="_tabs_2_gradle" class="tab">
-<p>Gradle</p>
-</li>
-</ul>
-</div>
-<div id="_tabs_2_maven--panel" class="tabpanel" aria-labelledby="_tabs_2_maven">
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;!-- We assume you use `log4j-bom` for dependency management --&gt;
-&lt;dependency&gt;
-  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
-  &lt;artifactId&gt;log4j-jakarta-web&lt;/artifactId&gt;
-  &lt;scope&gt;runtime&lt;/scope&gt;
-&lt;/dependency&gt;</code></pre>
-</div>
-</div>
-</div>
-<div id="_tabs_2_gradle--panel" class="tabpanel" aria-labelledby="_tabs_2_gradle">
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">// We assume you use `log4j-bom` for dependency management
-runtimeOnly 'org.apache.logging.log4j:log4j-jakarta-web'</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<details>
-<summary class="title">Click here if you are you using Jakarta EE 8 or any version of Java EE?</summary>
-<div class="content">
-<div class="paragraph">
-<p>Jakarta EE 8 and all Java EE applications servers use the legacy <code>javax</code> package prefix instead of <code>jakarta</code>.
-If you are using those application servers, you should replace the dependencies above with:</p>
-</div>
-<div id="_tabs_3" class="openblock tabs is-sync is-loading">
-<div class="content">
-<div class="ulist tablist">
-<ul>
-<li id="_tabs_3_maven" class="tab">
-<p>Maven</p>
-</li>
-<li id="_tabs_3_gradle" class="tab">
-<p>Gradle</p>
-</li>
-</ul>
-</div>
-<div id="_tabs_3_maven--panel" class="tabpanel" aria-labelledby="_tabs_3_maven">
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;!-- We assume you use `log4j-bom` for dependency management --&gt;
-&lt;dependency&gt;
-  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
-  &lt;artifactId&gt;log4j-web&lt;/artifactId&gt;
-  &lt;scope&gt;runtime&lt;/scope&gt;
-&lt;/dependency&gt;</code></pre>
-</div>
-</div>
-</div>
-<div id="_tabs_3_gradle--panel" class="tabpanel" aria-labelledby="_tabs_3_gradle">
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">// We assume you use `log4j-bom` for dependency management
-runtimeOnly 'org.apache.logging.log4j:log4j-web'</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</details>
-<div class="paragraph">
-<p>See <a href="../jakarta.html" class="xref page">Integrating with Jakarta EE</a> for more information.</p>
-</div>
-<div class="admonitionblock caution">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-caution" title="Caution"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>The <code>ServletContext.log(String, Throwable)</code> method predates modern logging APIs.
-By using Servlet appender you typically will not be able to differentiate log events by log level or logger name.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="JeroMQAppender"><a class="anchor" href="#JeroMQAppender"></a>ZeroMQ/JeroMQ Appender</h3>
-<div class="paragraph">
-<p>The ZeroMQ appender uses the <a href="https://github.com/zeromq/jeromq">JeroMQ</a> library to send log events to one or more ZeroMQ endpoints.</p>
-</div>
-<div class="paragraph">
-<p>This is a simple JeroMQ configuration:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration name="JeroMQAppenderTest" status="TRACE"&gt;
-  &lt;Appenders&gt;
-    &lt;JeroMQ name="JeroMQAppender"&gt;
-      &lt;Property name="endpoint"&gt;tcp://*:5556&lt;/Property&gt;
-      &lt;Property name="endpoint"&gt;ipc://info-topic&lt;/Property&gt;
-    &lt;/JeroMQ&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="info"&gt;
-      &lt;AppenderRef ref="JeroMQAppender"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The table below describes all options.
-Please consult the JeroMQ and ZeroMQ documentation for details.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the Appender. Required.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Layout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">layout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Layout to use to format the LogEvent. If no layout is supplied the default pattern layout of "%m%n" will be used.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Filters</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Filter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Filter(s) of the Appender.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Properties</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Property[]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">One or more Property elements, named <code>endpoint</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ignoreExceptions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If true, exceptions will be logged and suppressed. If false errors will be logged and then passed to the application.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">affinity</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ZMQ_AFFINITY option. Defaults to 0.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">backlog</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ZMQ_BACKLOG option. Defaults to 100.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">delayAttachOnConnect</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ZMQ_DELAY_ATTACH_ON_CONNECT option. Defaults to false.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">identity</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">byte[]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ZMQ_IDENTITY option. Defaults to none.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ipv4Only</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ZMQ_IPV4ONLY option. Defaults to true.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">linger</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ZMQ_LINGER option. Defaults to -1.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">maxMsgSize</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ZMQ_MAXMSGSIZE option. Defaults to -1.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">rcvHwm</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ZMQ_RCVHWM option. Defaults to 1000.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">receiveBufferSize</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ZMQ_RCVBUF option. Defaults to 0.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">receiveTimeOut</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ZMQ_RCVTIMEO option. Defaults to -1.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">reconnectIVL</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ZMQ_RECONNECT_IVL option. Defaults to 100.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">reconnectIVLMax</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ZMQ_RECONNECT_IVL_MAX option. Defaults to 0.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sendBufferSize</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ZMQ_SNDBUF option. Defaults to 0.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sendTimeOut</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ZMQ_SNDTIMEO option. Defaults to -1.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sndHwm</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ZMQ_SNDHWM option. Defaults to 1000.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">tcpKeepAlive</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ZMQ_TCP_KEEPALIVE option. Defaults to -1.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">tcpKeepAliveCount</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ZMQ_TCP_KEEPALIVE_CNT option. Defaults to -1.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">tcpKeepAliveIdle</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ZMQ_TCP_KEEPALIVE_IDLE option. Defaults to -1.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">tcpKeepAliveInterval</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ZMQ_TCP_KEEPALIVE_INTVL option. Defaults to -1.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">xpubVerbose</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ZMQ_XPUB_VERBOSE option. Defaults to false.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
 </div>
 </div>
 <div class="sect1">
@@ -1882,7 +1447,7 @@ This section will guide you on how to create custom ones.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Implementing a reliable and efficient appender is a difficult task!</strong>
+<p><strong>Implementing a reliable and efficient appender is a challenging task!</strong>
 We strongly advise you to</p>
 </div>
 <div class="olist arabic">
@@ -1932,21 +1497,21 @@ While annotating your appender with <code>@Plugin</code>, you need to make sure 
 </div>
 <div class="paragraph">
 <p>Most appender implementation use <strong>managers</strong>, which model an abstraction owning the resources, such as an <code>OutputStream</code> or a socket.
-When a reconfiguration occurs a new appender will be created.
+When a reconfiguration occurs, a new appender will be created.
 However, if nothing significant in the previous manager has changed, the new appender will simply reference it instead of creating a new one.
 This ensures that events are not lost while a reconfiguration is taking place without requiring that logging pause while the reconfiguration takes place.
 You are strongly advised to study the manager concept in <a href="#collection">the predefined appenders</a>, and either use an existing manager, or create your own.</p>
 </div>
 <div class="paragraph">
-<p>You can check out following files for examples:</p>
+<p>You can check out the following files for examples:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-core/src/main/java/org/apache/logging/log4j/core/appender/HttpAppender.java"><code>HttpAppender.java</code></a> – <a href="#HttpAppender">[HttpAppender]</a> sends log events over HTTP using <code>HttpURLConnectionManager</code></p>
+<p><a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-core/src/main/java/org/apache/logging/log4j/core/appender/HttpAppender.java"><code>HttpAppender.java</code></a> – <a href="appenders/network.html#HttpAppender" class="xref page">HttpAppender</a> sends log events over HTTP using <code>HttpURLConnectionManager</code></p>
 </li>
 <li>
-<p><a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-core/src/main/java/org/apache/logging/log4j/core/appender/ConsoleAppender.java"><code>ConsoleAppender.java</code></a> – <a href="#ConsoleAppender">[ConsoleAppender]</a> writes log events to either <code>System.out</code> or <code>System.err</code> using <code>OutputStreamManager</code></p>
+<p><a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-core/src/main/java/org/apache/logging/log4j/core/appender/ConsoleAppender.java"><code>ConsoleAppender.java</code></a> – <a href="#ConsoleAppender">Console Appender</a> writes log events to either <code>System.out</code> or <code>System.err</code> using <code>OutputStreamManager</code></p>
 </li>
 </ul>
 </div>

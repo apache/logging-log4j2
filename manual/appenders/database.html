@@ -180,6 +180,9 @@
     <a class="nav-link" href="network.html">Network Appenders</a>
   </li>
   <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="message-queue.html">Message queue appenders</a>
+  </li>
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="delegating.html">Delegating Appenders</a>
   </li>
 </ul>
@@ -376,7 +379,7 @@
 <h3 id="ColumnMapping"><a class="anchor" href="#ColumnMapping"></a>Column mapping</h3>
 <div class="paragraph">
 <p>Since relational databases and some NoSQL databases split data into columns, Log4j Core provides a reusable
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/db/ColumnMapping.html"><code>ColumnMapping</code></a>
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/db/ColumnMapping.html"><code>ColumnMapping</code></a>
 configuration element to allow specifying the content of each column.</p>
 </div>
 <div class="paragraph">
@@ -448,7 +451,7 @@ configuration element to allow specifying the content of each column.</p>
 </li>
 <li>
 <p>The resulting <code>String</code> will be converted to the specified type using a
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/convert/TypeConverter.html"><code>TypeConverter</code></a>.
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/convert/TypeConverter.html"><code>TypeConverter</code></a>.
 See the
 <a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-plugins-convert-TypeConverter" class="xref page">plugin reference</a>
 for a list of available type converters.</p>
@@ -531,7 +534,7 @@ This attribute is used only if:</p>
 <li>
 <p>The <a href="#ColumnMapping-element-Layout">nested <code>Layout</code> element</a>
 is a
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/MessageLayout.html"><code>MessageLayout</code></a>.</p>
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/layout/MessageLayout.html"><code>MessageLayout</code></a>.</p>
 </li>
 <li>
 <p>The message being logged is a <code>MapMessage</code></p>
@@ -1417,7 +1420,7 @@ objects.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JdbcAppender-element-Layout"></a><a href="#JdbcAppender-MapMessage"><code>Layout</code></a></code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">An optional
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html"><code>Layout&lt;? extends Message&gt;</code></a>
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html"><code>Layout&lt;? extends Message&gt;</code></a>
 implementation that formats a log event as
 <a href="../messages.html" class="xref page">log <code>Message</code></a>.</p>
 <p class="tableblock">If supplied <code>MapMessage</code>s will be treated in a special way.</p>
@@ -1432,7 +1435,7 @@ implementation that formats a log event as
 <h3 id="ConnectionSource"><a class="anchor" href="#ConnectionSource"></a>Connection Sources</h3>
 <div class="paragraph">
 <p>When configuring the JDBC Appender, you must specify an implementation of
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/db/jdbc/ConnectionSource.html"><code>ConnectionSource</code></a>
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/db/jdbc/ConnectionSource.html"><code>ConnectionSource</code></a>
 that the appender will use to get
 <a href="https://docs.oracle.com/javase/8/docs/api/java/sql/Connection.html"><code>Connection</code></a> objects.</p>
 </div>
@@ -2047,14 +2050,28 @@ See <a href="#JpaAppender-configuration">Appender configuration</a> below.</p>
 </li>
 </ul>
 </div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Due to breaking changes in the underlying API, the JPA Appender cannot be used with Jakarta Persistence API 3.0 or later.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div class="sect2">
 <h3 id="JpaAppender-persistence"><a class="anchor" href="#JpaAppender-persistence"></a>Persistence configuration</h3>
 <div class="paragraph">
 <p>To store log events using JPA, you need to implement a JPA Entity that extends the
-<a href="../javadoc/log4j-jpa/org/apache/logging/log4j/core/appender/db/jpa/AbstractLogEventWrapperEntity.html"><code>AbstractLogEventWrapperEntity</code></a>
+<a href="../../javadoc/log4j-jpa/org/apache/logging/log4j/core/appender/db/jpa/AbstractLogEventWrapperEntity.html"><code>AbstractLogEventWrapperEntity</code></a>
 class.
 To help you with the implementation, Log4j provides a
-<a href="../javadoc/log4j-jpa/org/apache/logging/log4j/core/appender/db/jpa/BasicLogEventEntity.html"><code>BasicLogEventEntity</code></a>
+<a href="../../javadoc/log4j-jpa/org/apache/logging/log4j/core/appender/db/jpa/BasicLogEventEntity.html"><code>BasicLogEventEntity</code></a>
 class that only lacks an identity field.</p>
 </div>
 <div class="paragraph">
@@ -2211,7 +2228,7 @@ The definition of the persistence unit should look like the example below:</p>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The fully qualified name of the entity class to use.</p>
 <p class="tableblock">The type must extend
-<a href="../javadoc/log4j-jpa/org/apache/logging/log4j/core/appender/db/jpa/AbstractLogEventWrapperEntity.html"><code>AbstractLogEventWrapperEntity</code></a>.</p></td>
+<a href="../../javadoc/log4j-jpa/org/apache/logging/log4j/core/appender/db/jpa/AbstractLogEventWrapperEntity.html"><code>AbstractLogEventWrapperEntity</code></a>.</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Optional</p></th>
@@ -2460,7 +2477,7 @@ using the
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="NoSqlAppender-element-Layout"></a><a href="#NoSqlAppender-formatting"><code>Layout</code></a></code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">An optional
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html"><code>Layout&lt;? extends MapMessage&gt;</code></a>
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html"><code>Layout&lt;? extends MapMessage&gt;</code></a>
 implementation that formats a log event as
 <a href="../messages.html#MapMessage" class="xref page"><code>MapMessage</code></a>.</p>
 <p class="tableblock">See <a href="#NoSqlAppender-formatting">Formatting</a> for more details.</p></td>
@@ -2598,7 +2615,7 @@ You enhance the format with additional top level key/value pairs using nested
 <div class="paragraph">
 <p>The NoSQL Appender only handles the conversion of log events into NoSQL documents, and it delegates database-specific tasks to a NoSQL provider.
 NoSQL providers are Log4j plugins that implement the
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/nosql/NoSqlProvider.html"><code>NoSqlProvider</code></a>
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/nosql/NoSqlProvider.html"><code>NoSqlProvider</code></a>
 interface.
 Log4j Core currently provides the following providers:</p>
 </div>
@@ -3164,17 +3181,24 @@ runtimeOnly 'org.apache.logging.log4j:log4j-couchdb'</code></pre>
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-mongo.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = NoSql
-appender.0.name = MONGO
-appender.0.provider.type = MongoDB
-appender.0.provider.connection = mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs</code></pre>
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.1.type = NoSql
+appender.1.name = MONGO
+appender.1.provider.type = MongoDB
+appender.1.provider.connection = mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs</code></pre>
 </div>
 </div>
 </div>
 </div>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
 <div class="paragraph">
-<p>A similar configuration for an Apache CouchDB database looks like:</p>
+<p>Make sure to not let <code>org.bson</code>, <code>com.mongodb</code> log to a MongoDB database on a <code>DEBUG</code> level, since that will cause recursive logging:</p>
 </div>
 <div id="_tabs_12" class="openblock tabs is-sync is-loading">
 <div class="content">
@@ -3196,73 +3220,114 @@ appender.0.provider.connection = mongodb://${env:DB_USER}:${env:DB_PASS}@localho
 </div>
 <div id="_tabs_12_xml--panel" class="tabpanel" aria-labelledby="_tabs_12_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-couch.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-mongo.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;NoSql name="COUCH"&gt;
-  &lt;CouchDB protocol="https"
-           username="${env:DB_USER}"
-           password="${env:DB_PASS}"
-           server="localhost"
-           port="5984"
-           databaseName="logging"/&gt;
-&lt;/NoSql&gt;</code></pre>
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Root level="INFO"&gt;
+  &lt;AppenderRef ref="MONGO"/&gt;
+&lt;/Root&gt;
+&lt;Logger name="org.bson"
+        level="WARN"
+        additivity="false"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;AppenderRef ref="FILE"/&gt;
+&lt;/Logger&gt;
+&lt;Logger name="com.mongodb"
+        level="WARN"
+        additivity="false"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;AppenderRef ref="FILE"/&gt;
+&lt;/Logger&gt;</code></pre>
 </div>
 </div>
 </div>
 <div id="_tabs_12_json--panel" class="tabpanel" aria-labelledby="_tabs_12_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-couch.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-mongo.json"><code>log4j2.json</code></a></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"CouchDb": {
-  "name": "COUCH",
-  "CouchDB": {
-    "protocol": "https",
-    "username": "${env:DB_USER}",
-    "password": "${env:DB_PASS"},
-    "server": "localhost",
-    "port": 5984,
-    "databaseName": "logging"
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Root": {
+  "level": "INFO",
+  "AppenderRef": {
+    "ref": "MONGO"
   }
-}</code></pre>
+},
+"Logger": [
+  {
+    "name": "org.bson",
+    "level": "WARN",
+    "additivity": false, <i class="conum" data-value="1"></i><b>(1)</b>
+    "AppenderRef": {
+      "ref": "FILE"
+    }
+  },
+  {
+    "name": "com.mongodb",
+    "level": "WARN",
+    "additivity": false, <i class="conum" data-value="1"></i><b>(1)</b>
+    "AppenderRef": {
+      "ref": "FILE"
+    }
+  }
+]</code></pre>
 </div>
 </div>
 </div>
 <div id="_tabs_12_yaml--panel" class="tabpanel" aria-labelledby="_tabs_12_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-couch.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-mongo.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">NoSql:
-  name: "COUCH"
-  CouchDB:
-    protocol: "https"
-    username: "${env:DB_USER}"
-    password: "${env:DB_PASS}"
-    server: "localhost"
-    port: 5984
-    databaseName: "logging"</code></pre>
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Root:
+  level: "INFO"
+  AppenderRef:
+    ref: "MONGO"
+Logger:
+  - name: "org.bson"
+    level: "WARN"
+    additivity: false <i class="conum" data-value="1"></i><b>(1)</b>
+    AppenderRef:
+      ref: "FILE"
+  - name: "com.mongodb"
+    level: "WARN"
+    additivity: false <i class="conum" data-value="1"></i><b>(1)</b>
+    AppenderRef:
+      ref: "FILE"</code></pre>
 </div>
 </div>
 </div>
 <div id="_tabs_12_properties--panel" class="tabpanel" aria-labelledby="_tabs_12_properties">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-couch.properties"><code>log4j2.properties</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-mongo.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = NoSql
-appender.0.name = COUCH
-appender.0.provider.type = CouchDB
-appender.0.provider.protocol = https
-appender.0.provider.username = ${env:DB_USER}
-appender.0.provider.password = ${env:DB_PASS}
-appender.0.provider.server = localhost
-appender.0.provider.port = 5984
-appender.0.provider.databaseName = logging</code></pre>
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">rootLogger.level = INFO
+rootLogger.appenderRef.0.ref = MONGO
+
+logger.0.name = org.bson
+logger.0.level = WARN
+<i class="conum" data-value="1"></i><b>(1)</b>
+logger.0.additivity = false
+logger.0.appenderRef.0.ref = FILE
+
+logger.1.name = com.mongodb
+logger.1.level = WARN
+<i class="conum" data-value="1"></i><b>(1)</b>
+logger.1.additivity = false
+logger.1.appenderRef.0.ref = FILE</code></pre>
 </div>
 </div>
 </div>
 </div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Remember to set the <a href="../configuration.html#logger-attributes-additivity" class="xref page"><code>additivity</code></a> configuration attribute to <code>false</code>.</td>
+</tr>
+</table>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>You can define additional fields to the NoSQL document using <a href="#NoSqlAppender-element-KeyValuePair"><code>KeyValuePair</code> elements</a>, for example:</p>
+<p>A similar configuration for an Apache CouchDB database looks like:</p>
 </div>
 <div id="_tabs_13" class="openblock tabs is-sync is-loading">
 <div class="content">
@@ -3284,6 +3349,94 @@ appender.0.provider.databaseName = logging</code></pre>
 </div>
 <div id="_tabs_13_xml--panel" class="tabpanel" aria-labelledby="_tabs_13_xml">
 <div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-couch.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;NoSql name="COUCH"&gt;
+  &lt;CouchDB protocol="https"
+           username="${env:DB_USER}"
+           password="${env:DB_PASS}"
+           server="localhost"
+           port="5984"
+           databaseName="logging"/&gt;
+&lt;/NoSql&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_13_json--panel" class="tabpanel" aria-labelledby="_tabs_13_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-couch.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"CouchDb": {
+  "name": "COUCH",
+  "CouchDB": {
+    "protocol": "https",
+    "username": "${env:DB_USER}",
+    "password": "${env:DB_PASS"},
+    "server": "localhost",
+    "port": 5984,
+    "databaseName": "logging"
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_13_yaml--panel" class="tabpanel" aria-labelledby="_tabs_13_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-couch.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">NoSql:
+  name: "COUCH"
+  CouchDB:
+    protocol: "https"
+    username: "${env:DB_USER}"
+    password: "${env:DB_PASS}"
+    server: "localhost"
+    port: 5984
+    databaseName: "logging"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_13_properties--panel" class="tabpanel" aria-labelledby="_tabs_13_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-couch.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = NoSql
+appender.0.name = COUCH
+appender.0.provider.type = CouchDB
+appender.0.provider.protocol = https
+appender.0.provider.username = ${env:DB_USER}
+appender.0.provider.password = ${env:DB_PASS}
+appender.0.provider.server = localhost
+appender.0.provider.port = 5984
+appender.0.provider.databaseName = logging</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>You can define additional fields to the NoSQL document using <a href="#NoSqlAppender-element-KeyValuePair"><code>KeyValuePair</code> elements</a>, for example:</p>
+</div>
+<div id="_tabs_14" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_14_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_14_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_14_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_14_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_14_xml--panel" class="tabpanel" aria-labelledby="_tabs_14_xml">
+<div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-mongo-keys.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;NoSql name="MONGO"&gt;
@@ -3294,7 +3447,7 @@ appender.0.provider.databaseName = logging</code></pre>
 </div>
 </div>
 </div>
-<div id="_tabs_13_json--panel" class="tabpanel" aria-labelledby="_tabs_13_json">
+<div id="_tabs_14_json--panel" class="tabpanel" aria-labelledby="_tabs_14_json">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-mongo-keys.json"><code>log4j2.json</code></a></div>
 <div class="content">
@@ -3317,7 +3470,7 @@ appender.0.provider.databaseName = logging</code></pre>
 </div>
 </div>
 </div>
-<div id="_tabs_13_yaml--panel" class="tabpanel" aria-labelledby="_tabs_13_yaml">
+<div id="_tabs_14_yaml--panel" class="tabpanel" aria-labelledby="_tabs_14_yaml">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-mongo-keys.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
@@ -3333,7 +3486,7 @@ appender.0.provider.databaseName = logging</code></pre>
 </div>
 </div>
 </div>
-<div id="_tabs_13_properties--panel" class="tabpanel" aria-labelledby="_tabs_13_properties">
+<div id="_tabs_14_properties--panel" class="tabpanel" aria-labelledby="_tabs_14_properties">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-mongo-keys.properties"><code>log4j2.properties</code></a></div>
 <div class="content">

@@ -180,6 +180,9 @@
     <a class="nav-link" href="network.html">Network Appenders</a>
   </li>
   <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="message-queue.html">Message queue appenders</a>
+  </li>
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="delegating.html">Delegating Appenders</a>
   </li>
 </ul>
@@ -729,7 +732,7 @@ appender.0.ssl.ts.passwordEnvironmentVariable = TRUSTSTORE_PASSWORD</code></pre>
 <div class="paragraph">
 <p>The HTTP Appender sends log events over HTTP, by wrapping them in an HTTP request.
 The <code>Content-Type</code> HTTP header is set based on the
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html#getContentType()"><code>getContentType()</code></a>
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html#getContentType()"><code>getContentType()</code></a>
 method of the
 <a href="#HttpAppender-element-Layout">nested layout</a>.
 Additional headers can be configured using the nested

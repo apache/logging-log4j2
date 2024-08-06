@@ -179,6 +179,9 @@
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="network.html">Network Appenders</a>
   </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="message-queue.html">Message queue appenders</a>
+  </li>
   <li class="nav-item is-current-page" data-depth="3">
     <a class="nav-link" href="delegating.html">Delegating Appenders</a>
   </li>
@@ -679,7 +682,7 @@ appender.1.appenderRef.ref = FILE</code></pre>
 <h3 id="AsyncQueueFullPolicy"><a class="anchor" href="#AsyncQueueFullPolicy"></a>Queue full policy</h3>
 <div class="paragraph">
 <p>When the queue is full the <code>Async</code> Appender uses an
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html"><code>AsyncQueueFullPolicy</code></a>
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html"><code>AsyncQueueFullPolicy</code></a>
 to decide whether to:</p>
 </div>
 <div class="ulist">
@@ -705,7 +708,7 @@ See <a href="../systemproperties.html#properties-async" class="xref page">Async 
 <h3 id="BlockingQueueFactory"><a class="anchor" href="#BlockingQueueFactory"></a>Blocking Queue Factories</h3>
 <div class="paragraph">
 <p>The <code>Async</code> appender allows you to customize the blocking queue used by specifying a nested
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/BlockingQueueFactory.html"><code>BlockingQueueFactory</code></a>
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/async/BlockingQueueFactory.html"><code>BlockingQueueFactory</code></a>
 element.</p>
 </div>
 <div class="paragraph">
@@ -1218,7 +1221,7 @@ that will perform the actual logging.</p></td>
 <h3 id="RewritePolicy"><a class="anchor" href="#RewritePolicy"></a>Rewrite Policies</h3>
 <div class="paragraph">
 <p>A rewrite policy is a Log4j plugin that implements the
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rewrite/RewritePolicy.html"><code>RewritePolicy</code></a>
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rewrite/RewritePolicy.html"><code>RewritePolicy</code></a>
 interface.
 Rewrite policies allow to apply arbitrary modifications to log events.</p>
 </div>
@@ -1256,7 +1259,7 @@ It allows adding or updating the keys of the <code>MapMessage</code>.</p>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="MapRewritePolicy-attr-mode"></a>mode</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rewrite/MapRewritePolicy.Mode.html"><code>MapRewritePolicy.Mode</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rewrite/MapRewritePolicy.Mode.html"><code>MapRewritePolicy.Mode</code></a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/appender/rewrite/MapRewritePolicy.Mode.html#Add"><code>Add</code></a></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p>It determines which map entries to modify:</p>
@@ -1782,7 +1785,7 @@ This is the same map, which is passed to the <a href="#RoutingAppender-element-A
 <dt class="hdlist1"><code>logEvent</code></dt>
 <dd>
 <p>The
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html"><code>LogEvent</code></a>
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html"><code>LogEvent</code></a>
 being processed.</p>
 </dd>
 <dt class="hdlist1"><code>configuration</code></dt>
@@ -1970,7 +1973,7 @@ These appenders might be useful only for a short period of time, but will consum
 </div>
 <div class="paragraph">
 <p>The purge policy is a Log4j plugin that implements the
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/routing/PurgePolicy.html"><code>PurgePolicy</code></a>
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/routing/PurgePolicy.html"><code>PurgePolicy</code></a>
 interface and handles the lifecycle of automatically instantiated appenders.</p>
 </div>
 <div class="paragraph">
@@ -2453,7 +2456,7 @@ appender.0.route.0.appender.layout = Rfc5424Layout</code></pre>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
 <td>The <a href="#Routes-element-AbstractScript"><code>Routes</code> script</a> returns the name of the server to use.
 It also exports the value as <code>server</code> entry in
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html#getProperties()"><code>Configuration.getProperties()</code></a>.</td>
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html#getProperties()"><code>Configuration.getProperties()</code></a>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
