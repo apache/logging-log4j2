@@ -707,7 +707,7 @@ It bundles several predefined event templates modeling popular JSON-based log fo
 
 Read more on xref:manual/json-template-layout.adoc[]...
 
-[#MapMessageLayout]
+[#MessageLayout]
 === Message Layout
 
 `MessageLayout` is a special layout that extracts the

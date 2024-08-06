@@ -122,6 +122,10 @@ updates:
       # H2 version 2.3.x requires Java 11
       - dependency-name: "com.h2database:h2"
         versions: [ "[2.3,)" ]
+      # The Console Appender only support JANSI 1.x for now
+      # see https://github.com/apache/logging-log4j2/issues/1736
+      - dependency-name: "org.fusesource.jansi:jansi"
+        update-types: [ "version-update:semver-major" ]
 
   - package-ecosystem: github-actions
     directory: "/"
@@ -164,6 +168,10 @@ updates:
       # Don't upgrade to 3.x
       - dependency-name: "org.apache.logging.log4j:log4j-api"
         versions: [ "[3,)" ]
+      # The Console Appender only support JANSI 1.x for now
+      # see https://github.com/apache/logging-log4j2/issues/1736
+      - dependency-name: "org.fusesource.jansi:jansi"
+        update-types: [ "version-update:semver-major" ]
 
   - package-ecosystem: github-actions
     directory: "/"

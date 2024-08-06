@@ -1,0 +1,1212 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Message queue appenders
+
+This page guides you through message queue xref:manual/appenders.adoc[appenders] that forward log events to a message broker.
+
+[#FlumeAppender]
+== Flume Appender
+
+https://flume.apache.org/index.html[Apache Flume] is a distributed, reliable, and available system for efficiently collecting, aggregating, and moving large amounts of log data from many different sources to a centralized data store.
+The Flume Appender takes log events and sends them to a Flume agent as serialized Avro events for consumption.
+
+The Flume Appender supports three modes of operation.
+
+[#FlumeAppender-mode-AVRO]
+`AVRO`::
+It can act as a remote Flume client which sends Flume events via Avro to a Flume Agent configured with an Avro Source.
+
+[#FlumeAppender-mode-EMBEDDED]
+`EMBEDDED`::
+It can act as an embedded Flume Agent where Flume events pass directly into Flume for processing.
+
+[#FlumeAppender-mode-PERSISTENT]
+`PERSISTENT`::
+It can persist events to a local BerkeleyDB data store and then asynchronously send the events to Flume, similar to the embedded Flume Agent but without most of the Flume dependencies.
+
+Usage as an embedded agent will cause the messages to be directly passed to the Flume Channel, and then control will be immediately returned to the application.
+All interaction with remote agents will occur asynchronously.
+Setting the <<FlumeAppender-attr-type,`type` attribute>> to `EMBEDDED` will force the use of the embedded agent.
+In addition, configuring agent properties in the appender configuration will also cause the embedded agent to be used.
+
+[#FlumeAppender-attributes]
+.Flume Appender configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+4+h| Required
+
+| [[FlumeAppender-attr-name]]name
+| `String`
+|
+| The name of the appender.
+
+4+h| Optional
+
+| [[FlumeAppender-attr-type]]type
+| _enumeration_
+| `AVRO`
+|
+One of
+<<FlumeAppender-mode-AVRO,AVRO>>,
+<<FlumeAppender-mode-EMBEDDED,EMBEDDED>>
+or
+<<FlumeAppender-mode-PERSISTENT,PERSISTENT>>
+to indicate which variation of the Appender is desired.
+
+| [[FlumeAppender-attr-ignoreExceptions]]ignoreExceptions
+| `boolean`
+| `true`
+| If `false`, logging exception will be forwarded to the caller of the logging statement.
+Otherwise, they will be ignored.
+
+Logging exceptions are always also logged to xref:manual/status-logger.adoc[]
+
+| [[FlumeAppender-attr-connectTimeoutMillis]]connectTimeoutMillis
+| `int`
+| `0`
+|
+The connect timeout in milliseconds.
+If `0` the timeout is infinite.
+
+| [[FlumeAppender-attr-requestTimeoutMillis]]requestTimeoutMillis
+| `int`
+| `0`
+|The request timeout in milliseconds.
+If `0` the timeout is infinite.
+
+| [[FlumeAppender-attr-agentRetries]]agentRetries
+| `int`
+| `0`
+|
+The number of times the agent should be retried before failing to a secondary.
+This parameter is ignored when `type="persistent"` is specified (agents are tried once before failing to
+the next).
+
+| [[FlumeAppender-attr-batchSize]]batchSize
+| `int`
+| `1`
+|
+It specifies the number of events that should be sent as a batch.
+
+| [[FlumeAppender-attr-compress]]compress
+| `boolean`
+| `false`
+|
+When set to `true` the message body will be compressed using gzip.
+
+| [[FlumeAppender-attr-dataDir]]dataDir
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[`Path`]
+|
+|
+Directory where the Flume write-ahead log should be written.
+Valid only when embedded is set to true and Agent elements are used instead of Property elements.
+
+| [[FlumeAppender-attr-eventPrefix]]eventPrefix
+| `String`
+| `""`
+|
+The character string to prepend to each event attribute to distinguish it from MDC attributes.
+
+| [[FlumeAppender-attr-lockTimeoutRetries]]lockTimeoutRetries
+| `int`
+| `5`
+|
+The number of times to retry if a LockConflictException occurs while writing to Berkeley DB.
+
+| [[FlumeAppender-attr-maxDelayMillis]]maxDelayMillis
+| `int`
+| `60000`
+|
+The maximum number of milliseconds to wait for <<FlumeAppender-attr-batchSize,batchSize>> events before publishing the batch.
+
+| [[FlumeAppender-attr-mdcExcludes]]mdcExcludes
+| `String[]`
+|
+|A comma-separated list of mdc keys that should be excluded from the FlumeEvent.
+
+This is mutually exclusive with the <<FlumeAppender-attr-mdcIncludes,mdcIncludes>> attribute.
+
+| [[FlumeAppender-attr-mdcIncludes]]mdcIncludes
+| `String[]`
+|
+|
+A comma-separated list of mdc keys that should be included in the `FlumeEvent`.
+Any keys in the MDC not found in the list will be excluded.
+
+This option is mutually exclusive with the <<FlumeAppender-attr-mdcExcludes,mdcExcludes>> attribute.
+
+| [[FlumeAppender-attr-mdcRequired]]mdcRequired
+| `String[]`
+|
+|
+A comma-separated list of `mdc` keys that must be present in the MDC.
+If a key is not present, a LoggingException will be thrown.
+
+| [[FlumeAppender-attr-mdcPrefix]]mdcPrefix
+| `String`
+| `mdc:`
+|
+A string that should be prepended to each MDC key to distinguish it from event attributes.
+
+|===
+
+[#FlumeAppender-elements]
+.Flume Appender nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[FlumeAppender-element-Agent]]<<Agent,`Agent`>>
+| zero or more
+|
+An array of Agents to which the logging events should be sent.
+If more than one agent is specified, the first Agent will be the primary and subsequent Agents will be used in the order specified as secondaries should the primary Agent fail.
+Each Agent definition supplies the Agent's host and port.
+
+The specification of agents and <<FlumeAppender-element-Property,properties>> are mutually exclusive.
+
+| [[FlumeAppender-element-Filter]]xref:manual/filters.adoc[`Filter`]
+| zero or one
+|
+Allows filtering log events just before they are formatted and sent.
+
+See also xref:manual/filters.adoc#appender-stage[appender filtering stage].
+
+| [[FlumeAppender-element-FlumeEventFactory]]<<FlumeEventFactory,`FlumeEventFactory`>>
+| zero or one
+|
+Factory that generates the Flume events from Log4j events.
+
+The default factory is the appender itself.
+
+| [[FlumeAppender-element-Layout]]xref:manual/layouts.adoc[`Layout`]
+| zero or one
+|
+Formats log events.
+If not provided, xref:manual/layouts.adoc#RFC5424Layout[Rfc5424 Layout] is used.
+
+See xref:manual/layouts.adoc[] for more information.
+
+| [[FlumeAppender-element-Property]]xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property[`Property`]
+| zero or more
+|
+One or more Property elements that are used to configure the Flume Agent.
+The properties must be configured without the agent name, the appender name is used for this, and no sources can be configured.
+Interceptors can be specified for the source using "sources.log4j-source.interceptors".
+All other Flume configuration properties are allowed.
+Specifying both Agent and Property elements will result in an error.
+
+When used to configure in Persistent mode, the valid properties are:
+
+1. `keyProvider` to specify the name of the plugin to provide the
+secret key for encryption.
+
+The specification of <<FlumeAppender-element-Agent,agents>> and properties are mutually exclusive.
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender[{plugin-reference-marker} Plugin reference for `Flume`]
+
+Additional runtime dependencies are required to use the Flume Appender:
+
+[tabs]
+====
+Maven::
++
+[source,xml]
+----
+<!-- We assume you use `log4j-bom` for dependency management -->
+<dependency>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-flume-ng</artifactId>
+  <scope>runtime</scope>
+</dependency>
+----
+
+Gradle::
++
+[source,groovy]
+----
+// We assume you use `log4j-bom` for dependency management
+runtimeOnly 'org.apache.logging.log4j:log4j-flume-ng'
+----
+====
+
+[#Agent]
+=== Agent Addresses
+
+The address of the Flume server is specified using the `Agent` element, which supports the following configuration options:
+
+[#Agent-attributes]
+.`Agent` configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[Agent-attr-host]]host
+| https://docs.oracle.com/javase/8/docs/api/java/net/InetAddress.html[`InetAddress`]
+| `localhost`
+| The host to connect to.
+
+| [[Agent-attr-port]]port
+| `int`
+| `35853`
+| The port to connect to.
+
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-Agent[{plugin-reference-marker} Plugin reference for `Agent`]
+
+[#FlumeEventFactory]
+=== Flume event factories
+
+Flume event factories are Log4j plugins that implement the
+link:../../javadoc/log4j-flume-ng/org/apache/logging/log4j/flume/appender/FlumeEventFactory.html[`FlumeEventFactory`]
+and allow to customize the way log events are transformed into
+link:../../javadoc/log4j-flume-ng/org/apache/logging/log4j/flume/appender/FlumeEvent.html[`FlumeEvent`]s.
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeEventFactory[{plugin-reference-marker} Plugin reference for `FlumeEventFactory`]
+
+[#FlumeAppender-examples]
+=== Configuration examples
+
+A sample Flume Appender which is configured with a primary and a secondary agent, compresses the body and formats the body using the RFC5424 Layout:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/flume-avro.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/message-queue/flume-avro.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/flume-avro.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/message-queue/flume-avro.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/flume-avro.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/message-queue/flume-avro.yaml[tag=appender]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/flume-avro.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/message-queue/flume-avro.properties[tag=appender]
+----
+====
+
+<1> Primary agent
+<2> Secondary agent
+
+A sample Flume Appender, which is configured with a primary and a secondary agent, compresses the body, formats the body using the RFC5424 Layout, and persists encrypted events to disk:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/flume-persistent.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/message-queue/flume-persistent.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/flume-persistent.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/message-queue/flume-persistent.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/flume-persistent.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/message-queue/flume-persistent.yaml[tag=appender]
+----
+
+Properties::
++
+This example cannot be configured using Java properties.
+====
+
+A sample Flume Appender, which is configured with a primary and a secondary agent compresses the body, formats the body using RFC5424 Layout, and passes the events to an embedded Flume Agent.
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/flume-embedded.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/message-queue/flume-embedded.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/flume-embedded.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/message-queue/flume-embedded.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/flume-embedded.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/message-queue/flume-embedded.yaml[tag=appender]
+----
+
+Properties::
++
+This example cannot be configured using Java properties.
+====
+
+[#JmsAppender]
+== JMS Appender
+
+The JMS Appender sends the formatted log event to a
+https://jakarta.ee/specifications/messaging/2.0/[Jakarta Messaging API]
+destination.
+
+[IMPORTANT]
+====
+As of Log4j `2.17.0` you need to enable the JMS Appender **explicitly** by setting the
+xref:manual/systemproperties.adoc#log4j2.enableJndiJms[`log4j2.enableJndiJms`]
+configuration property to `true`.
+
+Due to breaking changes in the underlying API, the JMS Appender cannot be used with Jakarta Messaging API 3.0 or later.
+====
+
+[#JmsAppender-attributes]
+.JMS Appender configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+4+h| Required
+
+| [[JmsAppender-attr-name]]name
+| `String`
+|
+| The name of the appender.
+
+| [[JmsAppender-attr-factoryBindingName]]factoryBindingName
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Name.html[`Name`]
+|
+|
+The JNDI name of the
+https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/connectionfactory[`ConnectionFactory`].
+
+Only the `java:` protocol is supported.
+
+| [[JmsAppender-attr-destinationBindingName]]destinationBindingName
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Name.html[`Name`]
+|
+|
+The JNDI name of the
+https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/destination[`Destination`], which can be either a
+https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/queue[`Queue`]
+or a
+https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/topic[`Topic`].
+
+Only the `java:` protocol is supported.
+
+4+h| JNDI configuration (overrides system properties)
+
+| [[JmsAppender-attr-factoryName]]factoryName
+| String
+|
+|
+It specifies the
+https://docs.oracle.com/javase/8/docs/api/javax/naming/spi/InitialContextFactory.html[`InitialContextFactory`].
+
+See
+https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Context.html#INITIAL_CONTEXT_FACTORY[INITIAL_CONTEXT_FACTORY]
+for details.
+
+| [[JmsAppender-attr-urlPkgPrefixes]]urlPkgPrefixes
+| String[]
+|
+|
+A colon-separated list of package prefixes that contain URL context factories.
+
+See https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Context.html#URL_PKG_PREFIXES[URL_PKG_PREFIXES] for details.
+
+| [[JmsAppender-attr-providerURL]]providerURL
+| String
+|
+|
+A configuration parameter for the <<JmsAppender-attr-factoryName,`InitialContextFactory`>>.
+
+See https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Context.html#PROVIDER_URL[PROVIDER_URL]
+for details.
+
+| [[JmsAppender-attr-securityPrincipalName]]securityPrincipalName
+| String
+|
+|
+The name of the principal to use for the <<JmsAppender-attr-factoryName,`InitialContextFactory`>>.
+
+See
+https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Context.html#SECURITY_PRINCIPAL[SECURITY_PRINCIPAL]
+for details.
+
+| securityCredentials
+| String
+| null
+|
+The security credentials for the <<JmsAppender-attr-securityPrincipalName,principal>>.
+
+See
+https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Context.html#SECURITY_CREDENTIALS[SECURITY_CREDENTIALS]
+for details.
+
+4+h| Optional
+
+| [[JmsAppender-attr-userName]]userName
+| `String`
+|
+|
+The username for the
+https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/connectionfactory[`ConnectionFactory`].
+
+| [[JmsAppender-attr-password]]password
+| `String`
+|
+|
+The password for the
+https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/connectionfactory[`ConnectionFactory`].
+
+| [[JmsAppender-attr-ignoreExceptions]]ignoreExceptions
+| `boolean`
+| `true`
+| If `false`, logging exception will be forwarded to the caller of the logging statement.
+Otherwise, they will be ignored.
+
+Logging exceptions are always also logged to xref:manual/status-logger.adoc[]
+
+| [[JmsAppender-attr-reconnectIntervalMillis]]reconnectIntervalMillis
+| `long`
+| `5000`
+|The request timeout in milliseconds.
+If `0` the timeout is infinite.
+
+|===
+
+[#JmsAppender-elements]
+.JMS Appender nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[JmsAppender-element-Filter]]xref:manual/filters.adoc[`Filter`]
+| zero or one
+|
+Allows filtering log events just before they are formatted and sent.
+
+See also xref:manual/filters.adoc#appender-stage[appender filtering stage].
+
+| [[JmsAppender-element-Layout]]xref:manual/layouts.adoc[`Layout`]
+| **one**
+|
+Used in the mapping process to get a JMS
+https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/message[`Message`].
+
+See <<JmsAppender-mapping>> below for more information.
+
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-JmsAppender[{plugin-reference-marker} Plugin reference for `JMS`]
+
+[#JmsAppender-mapping]
+=== Mapping events to JMS messages
+
+The mapping between log events and JMS messages has two steps:
+
+. First, the xref:manual/layouts.adoc[layout] is used to transform a log event into an intermediary format.
+. Then, a https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/message[`Message`] is created based on the type of object returned by the layout:
+
+`String`::
+Strings are converted into
+https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/textmessage[`TextMessage`]s.
+
+xref:manual/messages.adoc#MapMessage[`MapMessage`]::
+The Log4j `MapMessage` type is mapped to the JMS
+https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/mapmessage[`MapMessage`]
+type.
+
+`Serializable`::
+Anything else is converted into an
+https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/objectmessage[`ObjectMessage`].
+
+[#JmsAppender-examples]
+=== Configuration examples
+
+Here is a sample JMS Appender configuration:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/jms-simple.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/message-queue/jms-simple.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/jms-simple.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/message-queue/jms-simple.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/jms-simple.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/message-queue/jms-simple.yaml[tag=appender]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/jms-simple.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/message-queue/jms-simple.properties[tag=appender]
+----
+====
+
+To map your Log4j `MapMessage` to JMS `javax.jms.MapMessage`, set the layout of the appender to xref:manual/layouts.adoc#MessageLayout[`MessageLayout`]:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/jms-message.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/message-queue/jms-message.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/jms-message.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/message-queue/jms-message.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/jms-message.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/message-queue/jms-message.yaml[tag=appender]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/jms-message.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/message-queue/jms-message.properties[tag=appender]
+----
+====
+
+[[KafkaAppender]]
+== Kafka Appender
+
+The KafkaAppender logs events to an https://kafka.apache.org/[Apache Kafka] topic.
+Each log event is sent as a
+https://kafka.apache.org/30/javadoc/org/apache/kafka/clients/producer/ProducerRecord.html[`ProducerRecord<byte[\], byte[\]>`], where:
+
+* the key is provided by the byte representation of the <<KafkaAppender-attr-key,`key`>> attribute.
+* the value is provided by the byte representation produced by the <<KafkaAppender-element-Layout,layout>>.
+
+This appender is synchronous by default and will block until the record has been acknowledged by the Kafka server.
+The maximum delivery time can be configured using the
+https://kafka.apache.org/documentation.html#producerconfigs_delivery.timeout.ms[Kafka `delivery.timeout.ms` property].
+Wrap the appender with an
+xref:manual/appenders/delegating.adoc[Async Appender]
+or set
+<<KafkaAppender-attr-syncSend,`syncSend`>>
+to `false` to log asynchronously.
+
+[#KafkaAppender-attributes]
+.Kafka Appender configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+4+h| Required
+
+| [[KafkaAppender-attr-name]]name
+| `String`
+|
+| The name of the appender.
+
+
+| [[KafkaAppender-attr-topic]]topic
+| `String`
+|
+|
+The Kafka topic to use.
+
+4+h| Optional
+
+| [[KafkaAppender-attr-key]]key
+| `String`
+|
+|
+The key of the Kafka
+https://kafka.apache.org/30/javadoc/org/apache/kafka/clients/producer/ProducerRecord.html[`ProducerRecord`].
+
+Supports
+xref:manual/configuration.adoc#lazy-property-substitution[runtime property substitution]
+and is evaluated in the
+xref:manual/lookups.adoc#global-context[_global context_].
+
+| [[KafkaAppender-attr-ignoreExceptions]]ignoreExceptions
+| `boolean`
+| `true`
+| If `false`, logging exception will be forwarded to the caller of the logging statement.
+Otherwise, they will be ignored.
+
+Logging exceptions are always also logged to xref:manual/status-logger.adoc[]
+
+| [[KafkaAppender-attr-syncSend]]syncSend
+| `boolean`
+| `true`
+a|
+If `true`, the appender blocks until the record has been acknowledged by the Kafka server.
+Otherwise, the appender returns immediately, allowing for lower latency and significantly higher throughput.
+
+[NOTE]
+====
+If set to `false` any failure sending to Kafka will be reported as an error to xref:manual/status-logger.adoc[] and the log event will be dropped.
+The <<KafkaAppender-attr-ignoreExceptions,`ignoreExceptions`>> setting will not be effective.
+
+Log events may arrive out of order on the Kafka server.
+====
+|===
+
+[#KafkaAppender-elements]
+.Kafka Appender nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[KafkaAppender-element-Filter]]xref:manual/filters.adoc[`Filter`]
+| zero or one
+|
+Allows filtering log events just before they are formatted and sent.
+
+See also xref:manual/filters.adoc#appender-stage[appender filtering stage].
+
+| [[KafkaAppender-element-Layout]]xref:manual/layouts.adoc[`Layout`]
+| **one**
+|
+Formats the log event as a byte array using
+link:../../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html#toByteArray(org.apache.logging.log4j.core.LogEvent)[`Layout.toByteArray()`].
+
+See xref:manual/layouts.adoc[] for more information.
+
+| [[KafkaAppender-element-Property]]xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property[`Property`]
+| one or more
+a|
+These properties are forwarded directly to the Kafka producer.
+See
+https://kafka.apache.org/documentation.html#producerconfigs[Kafka producer properties]
+for more details.
+
+`bootstrap.servers`::
+This property is **required**.
+
+`key.serializer`::
+`value.serializer`::
+These properties should not be used.
+
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-kafka-KafkaAppender[{plugin-reference-marker} Plugin reference for `Kafka`]
+
+Additional runtime dependencies are required to use the Kafka Appender:
+
+[tabs]
+====
+Maven::
++
+[source,xml,subs="+attributes"]
+----
+<dependency>
+  <groupId>org.apache.kafka</groupId>
+  <artifactId>kafka-clients</artifactId>
+  <version>{kafka-version}</version>
+</dependency>
+----
+
+Gradle::
++
+[source,groovy,subs="+attributes"]
+----
+runtimeOnly 'org.apache.kafka:kafka-clients:{kafka-version}'
+----
+====
+
+[#KafkaAppender-examples]
+=== Configuration examples
+
+Here is a sample Kafka Appender configuration snippet:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/kafka.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/message-queue/kafka.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/kafka.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/message-queue/kafka.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/kafka.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/message-queue/kafka.yaml[tag=appender]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/kafka.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/message-queue/kafka.properties[tag=appender]
+----
+====
+
+<1> The <<KafkaAppender-attr-key,`key`>> attribute supports runtime lookups.
+
+[NOTE]
+=====
+Make sure to not let `org.apache.kafka` log to a Kafka appender on `DEBUG` level, since that will cause recursive logging:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/kafka.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/message-queue/kafka.xml[tag=loggers]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/kafka.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/message-queue/kafka.json[tag=loggers]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/kafka.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/message-queue/kafka.yaml[tag=loggers]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/kafka.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/message-queue/kafka.properties[tag=loggers]
+----
+====
+
+<1> Remember to set the xref:manual/configuration.adoc#logger-attributes-additivity[`additivity`] configuration attribute to `false`.
+=====
+
+[[JeroMqAppender]]
+== ZeroMQ/JeroMQ Appender
+
+The ZeroMQ appender uses the https://github.com/zeromq/jeromq[JeroMQ] library to send log events to one or more ZeroMQ endpoints.
+
+[#JeroMqAppender-attributes]
+.JeroMQ Appender configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+4+h| Required
+
+| [[JeroMqAppender-attr-name]]name
+| `String`
+|
+| The name of the appender.
+
+4+h| Optional
+
+| [[JeroMqAppender-attr-ignoreExceptions]]ignoreExceptions
+| `boolean`
+| `true`
+| If `false`, logging exception will be forwarded to the caller of the logging statement.
+Otherwise, they will be ignored.
+
+Logging exceptions are always also logged to xref:manual/status-logger.adoc[]
+
+| [[JeroMqAppender-attr-affinity]]affinity
+| `long`
+| `0`
+|
+The I/O affinity of the sending thread.
+
+See
+https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setAffinity&lpar;long&rpar;[`Socket.setAffinity()`]
+for more details.
+
+| [[JeroMqAppender-attr-backlog]]backlog
+| `int`
+| `100`
+|
+The maximum size of the backlog.
+
+See
+https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setBacklog&lpar;long&rpar;[`Socket.setBacklog()`]
+for more details.
+
+| [[JeroMqAppender-attr-delayAttachOnConnect]]delayAttachOnConnect
+| `boolean`
+| `false`
+|
+Delays the attachment of a pipe on connection.
+
+See
+https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setDelayAttachOnConnect&lpar;long&rpar;[`Socket.setDelayAttachOnConnect()`]
+for more details.
+
+| [[JeroMqAppender-attr-identity]]identity
+| `byte[]`
+|
+|
+It sets the identity of the socket.
+
+See
+https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setIdentity(byte&#91;&#93;)[`Socket.setIdentity()`]
+for more details.
+
+| [[JeroMqAppender-attr-ipv4Only]]ipv4Only
+| `boolean`
+| `true`
+|
+If set, only IPv4 will be used.
+
+See
+https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setIPv4Only&lpar;long&rpar;[`Socket.setIPv4Only()`]
+for more details.
+
+| [[JeroMqAppender-attr-linger]]linger
+| `long`
+| `-1`
+|
+It sets the linger-period for the socket.
+The value `-1` mean infinite.
+
+See
+https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setLinger&lpar;long&rpar;[`Socket.setLinger()`]
+for more details.
+
+| [[JeroMqAppender-attr-maxMsgSize]]maxMsgSize
+| `long`
+| `-1`
+|
+Size limit in bytes for inbound messages.
+
+See
+https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setMaxMsgSize&lpar;long&rpar;[`Socket.setMaxMsgSize()`]
+for more details.
+
+| [[JeroMqAppender-attr-rcvHwm]]rcvHwm
+| `int`
+| `1000`
+|
+It sets the high-water mark for inbound messages.
+
+See
+https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setRcvHWM&lpar;long&rpar;[`Socket.setRcvHWM()`]
+for more details.
+
+| [[JeroMqAppender-attr-receiveBufferSize]]receiveBufferSize
+| `long`
+| `0`
+|
+It sets the OS buffer size for inbound messages.
+A value of `0` uses the OS default value.
+
+See
+https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setReceiveBufferSize&lpar;long&rpar;[`Socket.setReceiveBufferSize()`]
+for more details.
+
+| [[JeroMqAppender-attr-receiveTimeOut]]receiveTimeOut
+| `int`
+| `-1`
+|
+It sets the timeout in milliseconds for receive operations.
+
+See
+https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setReceiveTimeOut&lpar;long&rpar;[`Socket.setReceiveTimeOut()`]
+for more details.
+
+| [[JeroMqAppender-attr-reconnectIVL]]reconnectIVL
+| `int`
+| `100`
+|
+It sets the reconnection interval.
+
+See
+https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setReconnectIVL&lpar;long&rpar;[`Socket.setReconnectIVL()`]
+for more details.
+
+| [[JeroMqAppender-attr-reconnectIVLMax]]reconnectIVLMax
+| `long`
+| `0`
+|
+It sets the maximum reconnection interval.
+
+See
+https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setReconnectIVLMax&lpar;long&rpar;[`Socket.setReconnectIVLMax()`]
+for more details.
+
+| [[JeroMqAppender-attr-sendBufferSize]]sendBufferSize
+| `int`
+| `0`
+|
+It sets the OS buffer size for outbound messages.
+A value of `0` uses the OS default value.
+
+See
+https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setSendBufferSize&lpar;long&rpar;[`Socket.setSendBufferSize()`]
+for more details.
+
+| [[JeroMqAppender-attr-sendTimeOut]]sendTimeOut
+| `int`
+| `-1`
+|
+It sets the timeout in milliseconds for send operations.
+
+See
+https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setSendTimeOut&lpar;long&rpar;[`Socket.setSendTimeOut()`]
+for more details.
+
+| [[JeroMqAppender-attr-sndHwm]]sndHwm
+| `int`
+| `1000`
+|
+It sets the OS buffer size for outbound messages.
+A value of `0` uses the OS default value.
+
+See
+https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setSendBufferSize&lpar;long&rpar;[`Socket.setSendBufferSize()`]
+for more details.
+
+| [[JeroMqAppender-attr-tcpKeepAlive]]tcpKeepAlive
+| `int`
+| `-1`
+a|
+A value of:
+
+`0`:: disables TCP keep-alive packets.
+
+`1`:: enables TCP keep-alive packets.
+
+`-1`:: uses the OS default value.
+
+See
+https://www.javadoc.io/doc/org.zeromq/jeromq/latest/org/zeromq/ZMQ.Socket.html#setTCPKeepAlive&lpar;long&rpar;[`Socket.setTCPKeepAlive()`]
+for more details.
+
+| [[JeroMqAppender-attr-tcpKeepAliveCount]]tcpKeepAliveCount
+| `long`
+| `-1`
+|
+It sets the maximum number of keep-alive probes before dropping the connection.
+A value of `-1` uses the OS default.
+
+See
+https://www.javadoc.io/doc/org.zeromq/jeromq/latest/org/zeromq/ZMQ.Socket.html#setTCPKeepAliveCount&lpar;long&rpar;[`Socket.setTCPKeepAliveCount()`]
+for more details.
+
+| [[JeroMqAppender-attr-tcpKeepAliveIdle]]tcpKeepAliveIdle
+| `long`
+| `-1`
+|
+It sets the time a connection needs to remain idle before keep-alive probes are sent.
+The unit depends on the OS and a value of `-1` uses the OS default.
+
+See
+https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setTCPKeepAliveIdle&lpar;long&rpar;[`Socket.setTCPKeepAliveIdle()`]
+for more details.
+
+| [[JeroMqAppender-attr-tcpKeepAliveInterval]]tcpKeepAliveInterval
+| `long`
+| `-1`
+|
+It sets the time between two keep-alive probes.
+The unit depends on the OS and a value of `-1` uses the OS default.
+
+See
+https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setTCPKeepAliveInterval&lpar;long&rpar;[`Socket.setTCPKeepAliveInterval()`]
+for more details.
+
+| [[JeroMqAppender-attr-xpubVerbose]]xpubVerbose
+| `boolean`
+| `false`
+|
+If `true`, all subscriptions are passed upstream.
+
+See
+https://www.javadoc.io/doc/org.zeromq/jeromq/latest/org/zeromq/ZMQ.Socket.html#setXpubVerbose&lpar;long&rpar;[`Socket.setXpubVerbose()`]
+for more details.
+|===
+
+[#JeroMqAppender-elements]
+.JeroMQ Appender nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[JeroMqAppender-element-Filter]]xref:manual/filters.adoc[`Filter`]
+| zero or one
+|
+Allows filtering log events just before they are formatted and sent.
+
+See also xref:manual/filters.adoc#appender-stage[appender filtering stage].
+
+| [[JeroMqAppender-element-Layout]]xref:manual/layouts.adoc[`Layout`]
+| **one**
+|
+Formats the log event as a byte array using
+link:../../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html#toByteArray(org.apache.logging.log4j.core.LogEvent)[`Layout.toByteArray()`].
+
+See xref:manual/layouts.adoc[] for more information.
+
+| [[JeroMqAppender-element-Property]]xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property[`Property`]
+| one or more
+|
+Only properties with an `endpoint` name are supported.
+At least one is required to provide the address of the endpoint to connect to.
+
+See
+https://www.javadoc.io/doc/org.zeromq/jeromq/latest/org/zeromq/ZMQ.Socket.html#connect(java.lang.String)[`Socket.connect` JavaDoc]
+for more details.
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-jeromq-JeroMqAppender[{plugin-reference-marker} Plugin reference for `JeroMQ`]
+
+
+Additional runtime dependencies are required to use the JeroMQ Appender:
+
+[tabs]
+====
+Maven::
++
+[source,xml,subs="+attributes"]
+----
+<dependency>
+  <groupId>org.zeromq</groupId>
+  <artifactId>jeromq</artifactId>
+  <version>{jeromq-version}</version>
+</dependency>
+----
+
+Gradle::
++
+[source,groovy,subs="+attributes"]
+----
+runtimeOnly 'org.zeromq:jeromq:{jeromq-version}'
+----
+====
+
+[#JeroMqAppender-examples]
+=== Configuration examples
+
+This is a simple JeroMQ configuration:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/jeromq.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/message-queue/jeromq.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/jeromq.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/message-queue/jeromq.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/jeromq.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/message-queue/jeromq.yaml[tag=appender]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/jeromq.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/message-queue/jeromq.properties[tag=appender]
+----
+====

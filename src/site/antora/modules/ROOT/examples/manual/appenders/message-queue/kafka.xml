@@ -22,26 +22,23 @@
                    https://logging.apache.org/xml/ns/log4j-config-2.xsd">
   <Appenders>
     <File name="FILE"
-          fileName="logs/mongo.log">
+          fileName="logs/kafka.log">
       <JsonTemplateLayout/>
     </File>
     <!-- tag::appender[] -->
-    <NoSql name="MONGO">
-      <MongoDb connection="mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs"/>
-    </NoSql>
+    <Kafka name="KAFKA"
+           topic="logs"
+           key="$${web:contextName}"> <!--1-->
+      <JsonTemplateLayout/>
+    </Kafka>
     <!-- end::appender[] -->
   </Appenders>
   <Loggers>
     <!-- tag::loggers[] -->
     <Root level="INFO">
-      <AppenderRef ref="MONGO"/>
+      <AppenderRef ref="KAFKA"/>
     </Root>
-    <Logger name="org.bson"
-            level="WARN"
-            additivity="false"> <!--1-->
-      <AppenderRef ref="FILE"/>
-    </Logger>
-    <Logger name="com.mongodb"
+    <Logger name="org.apache.kafka"
             level="WARN"
             additivity="false"> <!--1-->
       <AppenderRef ref="FILE"/>

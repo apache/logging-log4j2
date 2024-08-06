@@ -21,31 +21,17 @@
                    https://logging.apache.org/xml/ns
                    https://logging.apache.org/xml/ns/log4j-config-2.xsd">
   <Appenders>
-    <File name="FILE"
-          fileName="logs/mongo.log">
-      <JsonTemplateLayout/>
-    </File>
     <!-- tag::appender[] -->
-    <NoSql name="MONGO">
-      <MongoDb connection="mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs"/>
-    </NoSql>
+    <JeroMQ name="JEROMQ">
+      <JsonTemplateLayout/>
+      <Property name="endpoint" value="tcp://*:5556"/>
+      <Property name="endpoint" value="ipc://info-topic"/>
+    </JeroMQ>
     <!-- end::appender[] -->
   </Appenders>
   <Loggers>
-    <!-- tag::loggers[] -->
     <Root level="INFO">
-      <AppenderRef ref="MONGO"/>
+      <AppenderRef ref="JEROMQ"/>
     </Root>
-    <Logger name="org.bson"
-            level="WARN"
-            additivity="false"> <!--1-->
-      <AppenderRef ref="FILE"/>
-    </Logger>
-    <Logger name="com.mongodb"
-            level="WARN"
-            additivity="false"> <!--1-->
-      <AppenderRef ref="FILE"/>
-    </Logger>
-    <!-- end::loggers[] -->
   </Loggers>
 </Configuration>

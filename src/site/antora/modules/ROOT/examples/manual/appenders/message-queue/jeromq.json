@@ -1,0 +1,30 @@
+{
+  "Configuration": {
+    "Appenders": {
+      // tag::appender[]
+      "JeroMQ": {
+        "name": "JEROMQ",
+        "JsonTemplateLayout": {},
+        "Property": [
+          {
+            "name": "endpoint",
+            "value": "tcp://*:5556"
+          },
+          {
+            "name": "endpoint",
+            "value": "ipc://info-topic"
+          }
+        ]
+      }
+      // end::appender[]
+    },
+    "Loggers": {
+      "Root": {
+        "level": "INFO",
+        "AppenderRef": {
+          "ref": "JEROMQ"
+        }
+      }
+    }
+  }
+}

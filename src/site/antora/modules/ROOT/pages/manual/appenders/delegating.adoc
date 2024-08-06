@@ -210,7 +210,7 @@ include::example$manual/appenders/delegating/async.properties[tag=appenders]
 === Queue full policy
 
 When the queue is full the `Async` Appender uses an
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[`AsyncQueueFullPolicy`]
+link:../../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[`AsyncQueueFullPolicy`]
 to decide whether to:
 
 * drop the log event.
@@ -225,7 +225,7 @@ See xref:manual/systemproperties.adoc#properties-async[Async components] for mor
 === Blocking Queue Factories
 
 The `Async` appender allows you to customize the blocking queue used by specifying a nested
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/BlockingQueueFactory.html[`BlockingQueueFactory`]
+link:../../javadoc/log4j-core/org/apache/logging/log4j/core/async/BlockingQueueFactory.html[`BlockingQueueFactory`]
 element.
 
 You can specify the size of the queue using the <<AsyncAppender-attr-bufferSize,`bufferSize`>> configuration attribute.
@@ -535,7 +535,7 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 === Rewrite Policies
 
 A rewrite policy is a Log4j plugin that implements the
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rewrite/RewritePolicy.html[`RewritePolicy`]
+link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rewrite/RewritePolicy.html[`RewritePolicy`]
 interface.
 Rewrite policies allow to apply arbitrary modifications to log events.
 
@@ -557,7 +557,7 @@ It allows adding or updating the keys of the `MapMessage`.
 | Attribute | Type | Default value | Description
 
 | [[MapRewritePolicy-attr-mode]]mode
-| link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rewrite/MapRewritePolicy.Mode.html[`MapRewritePolicy.Mode`]
+| link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rewrite/MapRewritePolicy.Mode.html[`MapRewritePolicy.Mode`]
 | link:../https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/appender/rewrite/MapRewritePolicy.Mode.html#Add[`Add`]
 a|
 It determines which map entries to modify:
@@ -853,7 +853,7 @@ This is the same map, which is passed to the <<RoutingAppender-element-AbstractS
 
 `logEvent`::
 The
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html[`LogEvent`]
+link:../../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html[`LogEvent`]
 being processed.
 
 `configuration`::
@@ -961,7 +961,7 @@ If your default <<Route,`Route` element>> contains an <<Route-element-Appender,a
 These appenders might be useful only for a short period of time, but will consume system resources unless they are stopped.
 
 The purge policy is a Log4j plugin that implements the
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/routing/PurgePolicy.html[`PurgePolicy`]
+link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/routing/PurgePolicy.html[`PurgePolicy`]
 interface and handles the lifecycle of automatically instantiated appenders.
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-PurgePolicy[{plugin-reference-marker} Plugin reference for `PurgePolicy`]
@@ -1148,7 +1148,7 @@ include::example$manual/appenders/delegating/routing-script.properties[tag=appen
 <1> The <<RoutingAppender-element-AbstractScript,`Routing` script>> performs the initialization of state variables.
 <2> The <<Routes-element-AbstractScript,`Routes` script>> returns the name of the server to use.
 It also exports the value as `server` entry in
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html#getProperties()[`Configuration.getProperties()`].
+link:../../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html#getProperties()[`Configuration.getProperties()`].
 <3> The exported value can be used as `+${server}+` in the appender definition.
 
 [#ScriptAppenderSelector]

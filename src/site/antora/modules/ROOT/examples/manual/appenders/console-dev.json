@@ -1,0 +1,22 @@
+{
+  "Configuration": {
+    "Appenders": {
+      // tag::appender[]
+      "Console": {
+        "name": "CONSOLE",
+        "PatternLayout": {
+          "pattern": "%d [%t] %p %c - %m%n"
+        }
+      }
+      // end::appender[]
+    },
+    "Loggers": {
+      "Root": {
+        "level": "INFO",
+        "AppenderRef": {
+          "ref": "CONSOLE"
+        }
+      }
+    }
+  }
+}

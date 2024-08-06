@@ -1,6 +1,11 @@
 {
   "Configuration": {
     "Appenders": {
+      "File": {
+        "name": "FILE",
+        "fileName": "logs/mongo.log",
+        "JsonTemplateLayout": {}
+      },
       // tag::appender[]
       "NoSql": {
         "name": "MONGO",
@@ -11,12 +16,32 @@
       // end::appender[]
     },
     "Loggers": {
+      // tag::loggers[]
       "Root": {
         "level": "INFO",
         "AppenderRef": {
           "ref": "MONGO"
         }
-      }
+      },
+      "Logger": [
+        {
+          "name": "org.bson",
+          "level": "WARN",
+          "additivity": false, // <1>
+          "AppenderRef": {
+            "ref": "FILE"
+          }
+        },
+        {
+          "name": "com.mongodb",
+          "level": "WARN",
+          "additivity": false, // <1>
+          "AppenderRef": {
+            "ref": "FILE"
+          }
+        }
+      ]
+      // end::loggers[]
     }
   }
 }

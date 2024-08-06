@@ -269,7 +269,7 @@ include::example$manual/appenders/network/ssl.properties[tag=ssl]
 
 The HTTP Appender sends log events over HTTP, by wrapping them in an HTTP request.
 The `Content-Type` HTTP header is set based on the
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html#getContentType()[`getContentType()`]
+link:../../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html#getContentType()[`getContentType()`]
 method of the
 <<HttpAppender-element-Layout,nested layout>>.
 Additional headers can be configured using the nested

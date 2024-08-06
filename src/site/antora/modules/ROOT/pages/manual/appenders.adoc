@@ -122,7 +122,7 @@ If you are using
 xref:manual/async.adoc[asynchronous loggers]
 or
 xref:manual/appenders/delegating.adoc#AsyncAppender[appenders], you can set this attribute to `false`.
-Log4j Core will still flush the internal buffer, whenever the log event queue becomes empty.
+Log4j Core will still flush the internal buffer whenever the log event queue becomes empty.
 ====
 
 [#exception-handling]
@@ -160,18 +160,18 @@ The following configuration attributes are also evaluated at runtime, so can con
 |===
 | Component | Parameter | Event type | Evaluation context
 
-| <<HttpAppender,HTTP Appender>>
-| <<HttpAppender-element-headers,`Property/value`>>
+| xref:manual/appenders/network.adoc#HttpAppender[HTTP Appender]
+| xref:manual/appenders/network.adoc#HttpAppender-element-Property[`Property/value`]
 | Log event
 | xref:manual/lookups.adoc#global-context[_global_]
 
-| <<KafkaAppender,Kafka Appender>>
-| <<KafkaAppender-attr-key,`key`>>
+| xref:manual/appenders/message-queue.adoc#KafkaAppender[Kafka Appender]
+| xref:manual/appenders/message-queue.adoc#KafkaAppender-attr-key[`key`]
 | Log event
 | xref:manual/lookups.adoc#global-context[_global_]
 
-| <<NoSQLAppender,NoSQL Appender>>
-| <<NoSqlAppender-element-keyValuePairs,`KeyValuePair/value`>>
+| xref:manual/appenders/database.adoc#NoSqlAppender[NoSQL Appender]
+| xref:manual/appenders/database.adoc#NoSqlAppender-element-KeyValuePair[`KeyValuePair/value`]
 | Log event
 | xref:manual/lookups.adoc#global-context[_global_]
 
@@ -211,6 +211,269 @@ See xref:manual/configuration.adoc#lazy-property-substitution[runtime property s
 
 Log4j bundles several predefined appenders to assist in several common deployment use cases.
 They are documented in separate pages based on their target resource:
+
+[#ConsoleAppender]
+=== Console Appender
+
+As one might expect, the Console Appender writes its output to either the standard output or standard error output.
+The appender supports four different ways to access the output streams:
+
+`direct`::
+This mode gives the best performance.
+It can be enabled by setting the <<ConsoleAppender-attr-direct,`direct`>> attribute to `true`.
+
+`default`::
+By default, the Console appender uses the values of `System.out` or `System.err` present at **configuration time**.
+Any changes to those streams at runtime will be ignored.
+
+`follow`::
+This mode always uses the **current** value of the `System.out` and `System.err` streams.
+It can be enabled by setting the <<ConsoleAppender-attr-follow,`follow`>> attribute to `true`.
++
+[TIP]
+====
+This setting might be useful in multi-application environments.
+Some application servers modify `System.out` and `System.err` to always point to the currently running application.
+====
+
+`JANSI`::
+If the application is running on Windows and the
+https://fusesource.github.io/jansi/[JANSI library]
+is available, the Console appender will use JANSI to emulate ANSI sequence support.
+This mode can be disabled by setting the
+xref:manual/systemproperties.adoc#log4j2.skipJansi[`log4j2.skipJansi`]
+configuration attribute to `true`.
++
+Additional runtime dependencies are required to use JANSI:
++
+[tabs]
+====
+Maven::
++
+[source,xml,subs="+attributes"]
+----
+<dependency>
+  <groupId>org.fusesource.jansi</groupId>
+  <artifactId>jansi</artifactId>
+  <version>{jansi-version}</version>
+</dependency>
+
+----
+
+Gradle::
++
+[source,groovy,subs="+attributes"]
+----
+runtimeOnly 'org.fusesource.jansi:jansi:{jansi-version}'
+----
+
+====
+
+[#ConsoleAppender-attributes]
+.Console Appender configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+4+h| Required
+
+| [[ConsoleAppender-attr-name]]name
+| `String`
+|
+| The name of the appender.
+
+4+h| Optional
+
+| [[ConsoleAppender-attr-bufferSize]]bufferSize
+| `int`
+| xref:manual/systemproperties.adoc#log4j2.encoderByteBufferSize[`8192`]
+a|
+The size of the
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/ByteBuffer.html[`ByteBuffer`]
+internally used by the appender.
+
+See <<buffering,Buffering>> for more details.
+
+| [[ConsoleAppender-attr-direct]]direct
+| `boolean`
+| `false`
+a|
+If set to `true`, log events will be written directly to either
+https://docs.oracle.com/javase/8/docs/api/java/io/FileDescriptor.html#out[`FileDescriptor.out`]
+or
+https://docs.oracle.com/javase/8/docs/api/java/io/FileDescriptor.html#err[`FileDescriptor.err`].
+
+This setting bypasses the buffering of `System.out` and `System.err` and might provide a performance comparable to a xref:manual/appenders/file.adoc[file appender].
+
+[CAUTION]
+====
+
+If other logging backends or the application itself uses `System.out/System.err`, setting this to `true` might cause interleaved output.
+
+====
+
+This setting is incompatible with the
+<<ConsoleAppender-attr-follow,`follow` attribute>>
+and
+xref:manual/systemproperties.adoc#log4j2.skipJansi[JANSI support].
+
+| [[ConsoleAppender-attr-follow]]
+follow
+| `boolean`
+| `false`
+|
+If set to `true`, the appender will honor reassignments of `System.out` (resp. `System.err`) via
+https://docs.oracle.com/javase/8/docs/api/java/lang/System.html#setOut-java.io.PrintStream-[`System.setOut`]
+(resp.
+https://docs.oracle.com/javase/8/docs/api/java/lang/System.html#setOut-java.io.PrintStream-[`System.setErr`]).
+
+Otherwise, the value of `System.out` (resp. `System.err`) at configuration time will be used.
+
+This setting is incompatible with the
+<<ConsoleAppender-attr-direct,`direct` attribute>>
+and
+xref:manual/systemproperties.adoc#log4j2.skipJansi[JANSI support].
+
+| [[ConsoleAppender-attr-ignoreExceptions]]
+ignoreExceptions
+| `boolean`
+| `true`
+| If `false`, logging exception will be forwarded to the caller of the logging statement.
+Otherwise, they will be ignored.
+
+Logging exceptions are always also logged to xref:manual/status-logger.adoc[]
+
+| [[ConsoleAppender-attr-immediateFlush]]
+immediateFlush
+| `boolean`
+| `true`
+|
+If set to `true`, the appender will flush its internal buffer and the buffer of the `System.out/System.err` stream after each log event.
+
+See xref:manual/appenders.adoc#buffering[Buffering] for more details.
+
+| [[ConsoleAppender-attr-target]]
+target
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/ConsoleAppender.Target.html[`Target`]
+| link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/ConsoleAppender.Target.html#SYSTEM_OUT[`SYSTEM_OUT`]
+a|
+It specifies which standard output stream to use:
+
+`SYSTEM_OUT`::
+It uses the standard output.
+
+`SYSTEM_ERR`::
+It uses the standard error output.
+
+|===
+
+[#ConsoleAppender-elements]
+.Common nested elements
+[cols="1m,1,4"]
+|===
+
+| Type | Multiplicity | Description
+
+| [[ConsoleAppender-element-Filter]]
+xref:manual/filters.adoc[`Filter`]
+| zero or one
+|
+Allows filtering log events just before they are formatted and sent.
+
+See also xref:manual/filters.adoc#appender-stage[appender filtering stage].
+
+| [[ConsoleAppender-element-Layout]]
+xref:manual/layouts.adoc[`Layout`]
+| zero or one
+|
+Formats log events.
+
+See xref:manual/layouts.adoc[] for more information.
+
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-ConsoleAppender[{plugin-reference-marker} Plugin reference for `Console`]
+
+[#ConsoleAppender-examples]
+==== Configuration examples
+
+A typical configuration in a **development** environment might look like:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/console-dev.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/console-dev.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/console-dev.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/console-dev.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/console-dev.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/console-dev.yaml[tag=appender]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/console-dev.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/console-dev.properties[tag=appender]
+----
+====
+
+A typical configuration for a **production** environment might look like
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/console-prod.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/console-prod.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/console-prod.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/console-prod.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/console-prod.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/console-prod.yaml[tag=appender]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/console-prod.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/console-prod.properties[tag=appender]
+----
+====
+
+<1> Improve performance by setting <<ConsoleAppender-attr-direct,`direct`>> to `true`.
+<2> Use a structured layout.
+Additional dependencies are required, see xref:manual/json-template-layout.adoc[].
 
 [#file-appenders]
 === File appenders
@@ -262,553 +525,47 @@ This is handled by the xref:manual/appenders/network.adoc#HttpAppender[SMTP Appe
 
 See xref:manual/appenders/network.adoc[] for details.
 
-[#delegating-appenders]
-=== Delegating appenders
+[#message-queue-appenders]
+=== Message queue appenders
 
-Delegating appenders are intended to decorate other appenders:
+Message queue appenders forward log events to a message broker.
+The following systems are supported:
 
-xref:manual/appenders/delegating.adoc#AsyncAppender[Asynchronous appender]::
-Perform all I/O on a dedicated thread
+xref:manual/appenders/message-queue.adoc#FlumeAppender[Flume appender]::
+Forwards log events to an
+https://flume.apache.org/[Apache Flume] server.
 
-xref:manual/appenders/delegating.adoc#FailoverAppender[Failover appender]::
-Provide a backup appender in case an appender fails
+xref:manual/appenders/message-queue.adoc#JmsAppender[JMS appender]::
+Forwards log events to a
+https://jakarta.ee/specifications/messaging/2.0/[Jakarta Message 2.0] broker.
 
-xref:manual/appenders/delegating.adoc#RewriteAppender[Rewrite appender]::
-Modify log events prior to delivering them to the target
+xref:manual/appenders/message-queue.adoc#KafkaAppender[Kafka appender]::
+Forwards log events to an
+https://kafka.apache.org/[Apache Kafka] server.
 
-xref:manual/appenders/delegating.adoc#RoutingAppender[Routing appender]::
-Dynamically choose a different appender for each log event
+xref:manual/appenders/message-queue.adoc#JeroMqAppender[ZeroMQ/JeroMQ appender]::
+Forwards log events to a
+https://zeromq.org/[ZeroMQ] broker.
 
-See xref:manual/appenders/delegating.adoc[] for details.
+See xref:manual/appenders/message-queue.adoc[] for details.
 
-[id=consoleappender]
-=== [[ConsoleAppender]] ConsoleAppender
+[#ServletAppender]
+=== Servlet Appender
 
-As one might expect, the ConsoleAppender writes its output to either
-`System.out` or `System.err` with `System.out` being the default target.
-A Layout must be provided to format the LogEvent.
-
-.ConsoleAppender Parameters
-[cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|filter |Filter |A Filter to determine if the event should be handled by
-this Appender. More than one Filter may be used by using a
-CompositeFilter.
-
-|layout |Layout |The Layout to use to format the LogEvent. If no layout
-is supplied the default pattern layout of "%m%n" will be used.
-
-|follow |boolean |Identifies whether the appender honors reassignments
-of `System.out` or `System.err` via `System.setOut` or `System.setErr` made
-after configuration. Note that the follow attribute cannot be used with
-Jansi on Windows. Cannot be used with `direct`.
-
-|direct |boolean |Write directly to `java.io.FileDescriptor` and bypass
-`java.lang.System.out/.err`. Can give up to 10x performance boost when
-the output is redirected to a file or other process. Cannot be used with
-Jansi on Windows. Cannot be used with `follow`. The output will not respect
-`java.lang.System.setOut()/.setErr()` and may get intertwined with other
-output to `java.lang.System.out/.err` in a multi-threaded application.
-_New since 2.6.2. Be aware that this is a new addition, and it has only
-been tested with Oracle JVM on Linux and Windows so far._
-
-|name |String |The name of the Appender.
-
-|ignoreExceptions |boolean |The default is `true`, causing exceptions
-encountered while appending events to be internally logged and then
-ignored. When set to `false` exceptions will be propagated to the
-caller, instead. You must set this to `false` when wrapping this
-Appender in a <<FailoverAppender>>.
-
-|target |String |Either "SYSTEM_OUT" or "SYSTEM_ERR". The default is
-"SYSTEM_OUT".
-|=======================================================================
-
-A typical Console configuration might look like:
-
-[source,xml,prettyprint,linenums]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <Console name="STDOUT" target="SYSTEM_OUT">
-      <PatternLayout pattern="%m%n"/>
-    </Console>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="STDOUT"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-[#FlumeAppender]
-=== FlumeAppender
-
-_This is an optional component supplied in a separate jar._
-
-https://flume.apache.org/index.html[Apache Flume] is a distributed, reliable, and available system for efficiently collecting, aggregating, and moving large amounts of log data from many different sources to a centralized data store.
-The FlumeAppender takes LogEvents and sends them to a Flume agent as serialized Avro events for consumption.
-
-The Flume Appender supports three modes of operation.
-
-1. It can act as a remote Flume client which sends Flume events via Avro to a Flume Agent configured with an Avro Source.
-2. It can act as an embedded Flume Agent where Flume events pass directly into Flume for processing.
-3. It can persist events to a local BerkeleyDB data store and then asynchronously send the events to Flume, similar to the embedded Flume Agent but without most of the Flume dependencies.
-
-Usage as an embedded agent will cause the messages to be directly passed to the Flume Channel and then control will be immediately returned to the application.
-All interaction with remote agents will occur asynchronously.
-Setting the "type" attribute to "Embedded" will force the use of the embedded agent.
-In addition, configuring agent properties in the appender configuration will also cause the embedded agent to be used.
-
-.FlumeAppender Parameters
-[width="100%",cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|agents |Agent[] |An array of Agents to which the logging events should
-be sent. If more than one agent is specified the first Agent will be the
-primary and subsequent Agents will be used in the order specified as
-secondaries should the primary Agent fail. Each Agent definition
-supplies the Agent's host and port. The specification of agents and
-properties are mutually exclusive. If both are configured an error will
-result.
-
-|agentRetries |integer |The number of times the agent should be retried
-before failing to a secondary. This parameter is ignored when
-`type="persistent"` is specified (agents are tried once before failing to
-the next).
-
-|batchSize |integer |Specifies the number of events that should be sent
-as a batch. The default is 1. _This parameter only applies to the Flume
-Appender._
-
-|compress |boolean |When set to true the message body will be compressed
-using gzip
-
-|connectTimeoutMillis |integer |The number of milliseconds Flume will
-wait before timing out the connection.
-
-|dataDir |String |Directory where the Flume write-ahead log should be
-written. Valid only when embedded is set to true and Agent elements are
-used instead of Property elements.
-
-|filter |Filter |A Filter to determine if the event should be handled by
-this Appender. More than one Filter may be used by using a
-CompositeFilter.
-
-|eventPrefix |String |The character string to prepend to each event
-attribute to distinguish it from MDC attributes. The default is
-an empty string.
-
-|flumeEventFactory |FlumeEventFactory |Factory that generates the Flume
-events from Log4j events. The default factory is the FlumeAvroAppender
-itself.
-
-|layout |Layout |The Layout to use to format the LogEvent. If no layout
-is specified RFC5424Layout will be used.
-
-|lockTimeoutRetries |integer |The number of times to retry if a
-LockConflictException occurs while writing to Berkeley DB. The default
-is 5.
-
-|maxDelayMillis |integer |The maximum number of milliseconds to wait for
-batchSize events before publishing the batch.
-
-|mdcExcludes |String |A comma-separated list of mdc keys that should be
-excluded from the FlumeEvent. This is mutually exclusive with the
-mdcIncludes attribute.
-
-|mdcIncludes |String |A comma-separated list of mdc keys that should be
-included in the FlumeEvent. Any keys in the MDC not found in the list
-will be excluded. This option is mutually exclusive with the mdcExcludes
-attribute.
-
-|mdcRequired |String |A comma-separated list of `mdc` keys that must be
-present in the MDC. If a key is not present a LoggingException will be
-thrown.
-
-|mdcPrefix |String |A string that should be prepended to each MDC key to distinguish it from event attributes. The default string is
-"mdc:".
-
-|name |String |The name of the Appender.
-
-|properties |Property[] a|
-One or more Property elements that are used to configure the Flume
-Agent. The properties must be configured without the agent name (the
-appender name is used for this) and no sources can be configured.
-Interceptors can be specified for the source using
-"sources.log4j-source.interceptors". All other Flume configuration
-properties are allowed. Specifying both Agent and Property elements will
-result in an error.
-
-When used to configure in Persistent mode the valid properties are:
-
-1. `keyProvider` to specify the name of the plugin to provide the
-secret key for encryption.
-
-|requestTimeoutMillis |integer |The number of milliseconds Flume will
-wait before timing out the request.
-
-|ignoreExceptions |boolean |The default is `true`, causing exceptions
-encountered while appending events to be internally logged and then
-ignored. When set to `false` exceptions will be propagated to the
-caller, instead. You must set this to `false` when wrapping this
-Appender in a <<FailoverAppender>>.
-
-|type |enumeration |One of "Avro", "Embedded", or "Persistent" to
-indicate which variation of the Appender is desired.
-|=======================================================================
-
-A sample FlumeAppender configuration that is configured with a primary and a secondary agent compresses the body and formats the body using the RFC5424Layout:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <Flume name="eventLogger" compress="true">
-      <Agent host="192.168.10.101" port="8800"/>
-      <Agent host="192.168.10.102" port="8800"/>
-      <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
-    </Flume>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="eventLogger"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-A sample FlumeAppender configuration that is configured with a primary and a secondary agent compresses the body, formats the body using the RFC5424Layout, and persists encrypted events to disk:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <Flume name="eventLogger" compress="true" type="persistent" dataDir="./logData">
-      <Agent host="192.168.10.101" port="8800"/>
-      <Agent host="192.168.10.102" port="8800"/>
-      <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
-      <Property name="keyProvider">MySecretProvider</Property>
-    </Flume>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="eventLogger"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-A sample FlumeAppender configuration that is configured with a primary and a secondary agent compresses the body, and formats the body using RFC5424Layout and passes the events to an embedded Flume Agent.
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <Flume name="eventLogger" compress="true" type="Embedded">
-      <Agent host="192.168.10.101" port="8800"/>
-      <Agent host="192.168.10.102" port="8800"/>
-      <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
-    </Flume>
-    <Console name="STDOUT">
-      <PatternLayout pattern="%d [%p] %c %m%n"/>
-    </Console>
-  </Appenders>
-  <Loggers>
-    <Logger name="EventLogger" level="info">
-      <AppenderRef ref="eventLogger"/>
-    </Logger>
-    <Root level="warn">
-      <AppenderRef ref="STDOUT"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-A sample FlumeAppender configuration that is configured with a primary and a secondary agent using Flume configuration properties compresses the body, formats the body using RFC5424Layout and passes the events to an embedded Flume Agent.
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="error" name="MyApp">
-  <Appenders>
-    <Flume name="eventLogger" compress="true" type="Embedded">
-      <Property name="channels">file</Property>
-      <Property name="channels.file.type">file</Property>
-      <Property name="channels.file.checkpointDir">target/file-channel/checkpoint</Property>
-      <Property name="channels.file.dataDirs">target/file-channel/data</Property>
-      <Property name="sinks">agent1 agent2</Property>
-      <Property name="sinks.agent1.channel">file</Property>
-      <Property name="sinks.agent1.type">avro</Property>
-      <Property name="sinks.agent1.hostname">192.168.10.101</Property>
-      <Property name="sinks.agent1.port">8800</Property>
-      <Property name="sinks.agent1.batch-size">100</Property>
-      <Property name="sinks.agent2.channel">file</Property>
-      <Property name="sinks.agent2.type">avro</Property>
-      <Property name="sinks.agent2.hostname">192.168.10.102</Property>
-      <Property name="sinks.agent2.port">8800</Property>
-      <Property name="sinks.agent2.batch-size">100</Property>
-      <Property name="sinkgroups">group1</Property>
-      <Property name="sinkgroups.group1.sinks">agent1 agent2</Property>
-      <Property name="sinkgroups.group1.processor.type">failover</Property>
-      <Property name="sinkgroups.group1.processor.priority.agent1">10</Property>
-      <Property name="sinkgroups.group1.processor.priority.agent2">5</Property>
-      <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
-    </Flume>
-    <Console name="STDOUT">
-      <PatternLayout pattern="%d [%p] %c %m%n"/>
-    </Console>
-  </Appenders>
-  <Loggers>
-    <Logger name="EventLogger" level="info">
-      <AppenderRef ref="eventLogger"/>
-    </Logger>
-    <Root level="warn">
-      <AppenderRef ref="STDOUT"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-[#jms-appender]
-=== [[JMSAppender]]JMS Appender
-
-The JMS Appender sends the formatted log event to a JMS Destination.
-
-The JMS Appender requires JNDI support so as of release 2.17.0, this appender will not function unless `log4j2.enableJndiJms=true` is configured as a system property or environment variable.
-See the https://logging.apache.org/log4j/2.x/manual/configuration.html#enableJndiJms[enableJndiJms] system property.
-
-Note that in Log4j 2.0, this appender was split into a JMSQueueAppender and a JMSTopicAppender.
-Starting in Log4j 2.1, these appenders were combined into the JMS Appender, which makes no distinction between queues and topics.
-However, configurations written for 2.0 that use the `<JMSQueue/>` or `<JMSTopic/>` elements will continue to work with the new `<JMS/>` configuration element.
-
-.JMS Appender Parameters
-[cols="1,1,1,3",options="header"]
-|===
-| Parameter Name | Type | Default | Description
-
-| factoryBindingName
-| String
-| _Required_
-| The name to locate in the Context that provides the
-https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/connectionfactory[ConnectionFactory].
-This can be any subinterface of `ConnectionFactory` as well.
-
-| factoryName
-| String
-| _Required_
-| The fully qualified class name that should be used to define the Initial Context Factory as defined in https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Context.html#INITIAL_CONTEXT_FACTORY[`INITIAL_CONTEXT_FACTORY`]. If a `factoryName` is specified without a `providerURL`, a warning message will be logged as this is likely to cause problems.
-
-| filter
-| Filter
-| null
-| A Filter to determine if the event should be handled by this Appender. More than one Filter may be used by using a CompositeFilter.
-
-| layout
-| Layout
-| _Required_
-| The Layout to use to format the LogEvent. _New since 2.9, in previous versions SerializedLayout was default._
-
-| name
-| String
-| _Required_
-| The name of the Appender.
-
-| password
-| String
-| null
-| The password to use to create the JMS connection.
-
-| providerURL
-| String
-| _Required_
-| The URL of the provider to use as defined by https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Context.html#PROVIDER_URL[PROVIDER_URL]. From Log4j 2.17, only the `java:` protocol is supported.
-
-| destinationBindingName
-| String
-| _Required_
-| The name to use to locate the
-https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/destination[Destination].
-This can be a `Queue` or `Topic`, and as such, the attribute names `queueBindingName` and `topicBindingName` are aliases to maintain compatibility with the Log4j 2.0 JMS appenders.
-
-| securityPrincipalName
-| String
-| null
-| The name of the identity of the Principal as specified by https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Context.html#SECURITY_PRINCIPAL[SECURITY_PRINCIPAL]. If a securityPrincipalName is specified without `securityCredentials`, a warning message will be logged as this is likely to cause problems.
-
-| securityCredentials
-| String
-| null
-| The security credentials for the principal as specified by https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Context.html#SECURITY_CREDENTIALS[SECURITY_CREDENTIALS].
-
-| ignoreExceptions
-| boolean
-| true
-| When `true`, exceptions caught while appending events are internally logged and then ignored. When `false` exceptions are propagated to the caller. You must set this to `false` when wrapping this Appender in a FailoverAppender.
-
-| immediateFail
-| boolean
-| false
-| When set to true, log events will not wait to try to reconnect and will fail immediately if the JMS resources are not available. New in 2.9.
-
-| reconnectIntervalMillis
-| long
-| 5000
-| If set to a value greater than 0, after an error, the JMSManager will attempt to reconnect to the broker after waiting the specified number of milliseconds. If the reconnect fails then an exception will be thrown (which can be caught by the application if `ignoreExceptions` is set to `false`). New in 2.9.
-
-| urlPkgPrefixes
-| String
-| null
-| A colon-separated list of package prefixes for the class name of the factory class that will create a URL context factory as defined by https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Context.html#URL_PKG_PREFIXES[URL_PKG_PREFIXES].
-
-| userName
-| String
-| null
-| The user ID used to create the JMS connection.
-|===
-
-Here is a sample JMS Appender configuration:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <JMS name="jmsQueue" destinationBindingName="MyQueue"
-         factoryBindingName="MyQueueConnectionFactory">
-      <JsonLayout properties="true"/>
-    </JMS>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="jmsQueue"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-To map your Log4j `MapMessage` to JMS `javax.jms.MapMessage`, set the layout of the appender to `MessageLayout` with `&lt;MessageLayout /&gt;` (Since 2.9.):
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp">
-  <Appenders>
-    <JMS name="jmsQueue" destinationBindingName="MyQueue"
-         factoryBindingName="MyQueueConnectionFactory">
-      <MessageLayout />
-    </JMS>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="jmsQueue"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-[[KafkaAppender]]
-=== KafkaAppender
-
-The KafkaAppender logs events to an https://kafka.apache.org/[Apache Kafka] topic.
-Each log event is sent as a Kafka record.
-
-[cols="1m,1m,5"]
-|===
-|Parameter Name |Type |Description
-
-|topic
-|String
-|The Kafka topic to use. Required.
-
-|[[KafkaAppender-attr-key]]key
-|String
-|The key that will be sent to Kafka with every message.
-
-Supports
-xref:manual/configuration.adoc#lazy-property-substitution[runtime property substitution]
-and is evaluated in the
-xref:manual/lookups.adoc#event-context[_context of the current event_].
-
-|filter
-|Filter
-|A Filter to determine if the event should be handled by this Appender. More than one Filter may be used by using a CompositeFilter.
-
-|layout
-|Layout
-|The Layout to use to format the LogEvent. Required, there is no default. _New since 2.9, in previous versions `<PatternLayout pattern="%m"/>` was default._
-
-|name
-|String
-|The name of the Appender. Required.
-
-|ignoreExceptions
-|boolean
-|The default is `true`, causing exceptions encountered while appending events to be internally logged and then ignored. When set to `false` exceptions will be propagated to the caller, instead. You must set this to `false` when wrapping this Appender in a <<FailoverAppender>>.
-
-|syncSend
-|boolean
-|The default is `true`, causing sends to block until the record has been acknowledged by the Kafka server. When set to `false`, sends a return immediately, allowing for lower latency and significantly higher throughput. _New since 2.8. Be aware that this is a new addition, and it has not been extensively tested.
-Any failure sending to Kafka will be reported as an error to xref:manual/status-logger.adoc[] and the log event will be dropped (the ignoreExceptions parameter will not be effective).
-Log events may arrive out of order on the Kafka server._
-
-|properties
-|Property[]
-|You can set properties in https://kafka.apache.org/documentation.html#producerconfigs[Kafka producer properties]. You need to set the `bootstrap.servers` property, there are sensible default values for the others. Do not set the `value.serializer` nor `key.serializer` properties.
-|===
-
-Here is a sample KafkaAppender configuration snippet:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration>
-  <!-- ... -->
-  <Appenders>
-    <Kafka name="Kafka" topic="log-test">
-      <PatternLayout pattern="%date %message"/>
-      <Property name="bootstrap.servers">localhost:9092</Property>
-    </Kafka>
-  </Appenders>
-  <!-- ... -->
-</Configuration>
-----
-
-This appender is synchronous by default and will block until the record has been acknowledged by the Kafka server, timeout for this can be set with the `timeout.ms` property (defaults to 30 seconds).
-Wrap with https://logging.apache.org/log4j/2.x/manual/appenders.html#AsyncAppender[Async appender] and/or set syncSend to `false` to log asynchronously.
-
-This appender requires the https://kafka.apache.org/[Kafka client library].
-Note that you need to use a version of the Kafka client library matching the Kafka server used.
-
-_Note:_ Make sure to not let `org.apache.kafka` log to a Kafka appender on DEBUG level, since that will cause recursive logging:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration>
-  <!-- ... -->
-  <Loggers>
-    <Root level="DEBUG">
-      <AppenderRef ref="Kafka"/>
-    </Root>
-    <Logger name="org.apache.kafka" level="INFO" /> <!-- avoid recursive logging -->
-  </Loggers>
-  <!-- ... -->
-</Configuration>
-----
-
-[#servlet-appender]
-=== Servlet appender
-
-The servlet appender allows users to forward all logging calls to the
+The Servlet appender allows users to forward all logging calls to the
 https://jakarta.ee/specifications/servlet/5.0/apidocs/jakarta/servlet/servletcontext#log(java.lang.String,java.lang.Throwable)[`ServletContext.log()`]
 methods.
+
+[CAUTION]
+====
+The `ServletContext.log(String, Throwable)` method predates modern logging APIs.
+By using Servlet appender, you typically will not be able to differentiate log events by log level or logger name.
+====
+
+The Servlet Appender has no configuration attributes.
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender[{plugin-reference-marker} Plugin reference for `Servlet`]
+
 You can use it by declaring an appender of type `Servlet` in your configuration file:
 
 [tabs]
@@ -853,145 +610,24 @@ include::partial$manual/dependencies-log4j-jakarta-web.adoc[]
 
 See xref:jakarta.adoc[] for more information.
 
-[CAUTION]
-====
-The `ServletContext.log(String, Throwable)` method predates modern logging APIs.
-By using Servlet appender you typically will not be able to differentiate log events by log level or logger name.
-====
+[#delegating-appenders]
+=== Delegating appenders
 
+Delegating appenders are intended to decorate other appenders:
 
-[[JeroMQAppender]]
-=== ZeroMQ/JeroMQ Appender
+xref:manual/appenders/delegating.adoc#AsyncAppender[Asynchronous appender]::
+Perform all I/O on a dedicated thread
 
-The ZeroMQ appender uses the https://github.com/zeromq/jeromq[JeroMQ] library to send log events to one or more ZeroMQ endpoints.
+xref:manual/appenders/delegating.adoc#FailoverAppender[Failover appender]::
+Provide a backup appender in case an appender fails
 
-This is a simple JeroMQ configuration:
+xref:manual/appenders/delegating.adoc#RewriteAppender[Rewrite appender]::
+Modify log events prior to delivering them to the target
 
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration name="JeroMQAppenderTest" status="TRACE">
-  <Appenders>
-    <JeroMQ name="JeroMQAppender">
-      <Property name="endpoint">tcp://*:5556</Property>
-      <Property name="endpoint">ipc://info-topic</Property>
-    </JeroMQ>
-  </Appenders>
-  <Loggers>
-    <Root level="info">
-      <AppenderRef ref="JeroMQAppender"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
+xref:manual/appenders/delegating.adoc#RoutingAppender[Routing appender]::
+Dynamically choose a different appender for each log event
 
-The table below describes all options.
-Please consult the JeroMQ and ZeroMQ documentation for details.
-
-[width="100%",options="header"]
-|===
-|Parameter Name |Type |Description
-
-|name
-|String
-|The name of the Appender. Required.
-
-|Layout
-|layout
-|The Layout to use to format the LogEvent. If no layout is supplied the default pattern layout of "%m%n" will be used.
-
-|Filters
-|Filter
-|The Filter(s) of the Appender.
-
-|Properties
-|Property[]
-|One or more Property elements, named `endpoint`.
-
-|ignoreExceptions
-|boolean
-|If true, exceptions will be logged and suppressed. If false errors will be logged and then passed to the application.
-
-|affinity
-|long
-|The ZMQ_AFFINITY option. Defaults to 0.
-
-|backlog
-|long
-|The ZMQ_BACKLOG option. Defaults to 100.
-
-|delayAttachOnConnect
-|boolean
-|The ZMQ_DELAY_ATTACH_ON_CONNECT option. Defaults to false.
-
-|identity
-|byte[]
-|The ZMQ_IDENTITY option. Defaults to none.
-
-|ipv4Only
-|boolean
-|The ZMQ_IPV4ONLY option. Defaults to true.
-
-|linger
-|long
-|The ZMQ_LINGER option. Defaults to -1.
-
-|maxMsgSize
-|long
-|The ZMQ_MAXMSGSIZE option. Defaults to -1.
-
-|rcvHwm
-|long
-|The ZMQ_RCVHWM option. Defaults to 1000.
-
-|receiveBufferSize
-|long
-|The ZMQ_RCVBUF option. Defaults to 0.
-
-|receiveTimeOut
-|int
-|The ZMQ_RCVTIMEO option. Defaults to -1.
-
-|reconnectIVL
-|long
-|The ZMQ_RECONNECT_IVL option. Defaults to 100.
-
-|reconnectIVLMax
-|long
-|The ZMQ_RECONNECT_IVL_MAX option. Defaults to 0.
-
-|sendBufferSize
-|long
-|The ZMQ_SNDBUF option. Defaults to 0.
-
-|sendTimeOut
-|int
-|The ZMQ_SNDTIMEO option. Defaults to -1.
-
-|sndHwm
-|long
-|The ZMQ_SNDHWM option. Defaults to 1000.
-
-|tcpKeepAlive
-|int
-|The ZMQ_TCP_KEEPALIVE option. Defaults to -1.
-
-|tcpKeepAliveCount
-|long
-|The ZMQ_TCP_KEEPALIVE_CNT option. Defaults to -1.
-
-|tcpKeepAliveIdle
-|long
-|The ZMQ_TCP_KEEPALIVE_IDLE option. Defaults to -1.
-
-|tcpKeepAliveInterval
-|long
-|The ZMQ_TCP_KEEPALIVE_INTVL option. Defaults to -1.
-
-|xpubVerbose
-|boolean
-|The ZMQ_XPUB_VERBOSE option. Defaults to false.
-|===
+See xref:manual/appenders/delegating.adoc[] for details.
 
 [#extending]
 == Extending
@@ -1001,7 +637,7 @@ This section will guide you on how to create custom ones.
 
 [WARNING]
 ====
-*Implementing a reliable and efficient appender is a difficult task!*
+*Implementing a reliable and efficient appender is a challenging task!*
 We strongly advise you to
 
 . Use existing appenders and/or managers whenever appropriate
@@ -1024,12 +660,12 @@ While annotating your appender with `@Plugin`, you need to make sure that
 * The `category` attribute is set to link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Node.html#CATEGORY[`Node.CATEGORY`]
 
 Most appender implementation use *managers*, which model an abstraction owning the resources, such as an `OutputStream` or a socket.
-When a reconfiguration occurs a new appender will be created.
+When a reconfiguration occurs, a new appender will be created.
 However, if nothing significant in the previous manager has changed, the new appender will simply reference it instead of creating a new one.
 This ensures that events are not lost while a reconfiguration is taking place without requiring that logging pause while the reconfiguration takes place.
 You are strongly advised to study the manager concept in <<collection,the predefined appenders>>, and either use an existing manager, or create your own.
 
-You can check out following files for examples:
+You can check out the following files for examples:
 
-* {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/appender/HttpAppender.java[`HttpAppender.java`] – <<HttpAppender>> sends log events over HTTP using `HttpURLConnectionManager`
+* {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/appender/HttpAppender.java[`HttpAppender.java`] – xref:manual/appenders/network.adoc#HttpAppender[HttpAppender] sends log events over HTTP using `HttpURLConnectionManager`
 * {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/appender/ConsoleAppender.java[`ConsoleAppender.java`] – <<ConsoleAppender>> writes log events to either `System.out` or `System.err` using `OutputStreamManager`
