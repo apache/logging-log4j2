@@ -523,7 +523,7 @@ The username used to authenticate against the SMTP server.
 4+h| https://datatracker.ietf.org/doc/html/rfc5322[RFC 822 message] fields
 
 | [[SmtpAppender-attr-from]]from
-| https://jakarta.ee/specifications/mail/2.1/apidocs/jakarta.mail/jakarta/mail/internet/internetaddress[`InternetAddress[]`]
+| https://jakarta.ee/specifications/mail/2.1/apidocs/jakarta.mail/jakarta/mail/internet/internetaddress[`InternetAddress[\]`]
 |
 |
 A list of
@@ -534,7 +534,7 @@ https://datatracker.ietf.org/doc/html/rfc2822#section-3.4[RFC2822 Address Specif
 for the format.
 
 | [[SmtpAppender-attr-replyTo]]replyTo
-| https://jakarta.ee/specifications/mail/2.1/apidocs/jakarta.mail/jakarta/mail/internet/internetaddress[`InternetAddress[]`]
+| https://jakarta.ee/specifications/mail/2.1/apidocs/jakarta.mail/jakarta/mail/internet/internetaddress[`InternetAddress[\]`]
 |
 |
 A list of
@@ -545,7 +545,7 @@ https://datatracker.ietf.org/doc/html/rfc2822#section-3.4[RFC2822 Address Specif
 for the format.
 
 | [[SmtpAppender-attr-to]]to
-| https://jakarta.ee/specifications/mail/2.1/apidocs/jakarta.mail/jakarta/mail/internet/internetaddress[`InternetAddress[]`]
+| https://jakarta.ee/specifications/mail/2.1/apidocs/jakarta.mail/jakarta/mail/internet/internetaddress[`InternetAddress[\]`]
 |
 |
 A list of
@@ -558,7 +558,7 @@ for the format.
 **Required**, if <<SmtpAppender-attr-cc,`cc`>> and <<SmtpAppender-attr-bcc,`bcc`>> are empty.
 
 | [[SmtpAppender-attr-cc]]cc
-| https://jakarta.ee/specifications/mail/2.1/apidocs/jakarta.mail/jakarta/mail/internet/internetaddress[`InternetAddress[]`]
+| https://jakarta.ee/specifications/mail/2.1/apidocs/jakarta.mail/jakarta/mail/internet/internetaddress[`InternetAddress[\]`]
 |
 |
 A list of
@@ -571,7 +571,7 @@ for the format.
 **Required**, if <<SmtpAppender-attr-to,`to`>> and <<SmtpAppender-attr-bcc,`bcc`>> are empty.
 
 | [[SmtpAppender-attr-bcc]]bcc
-| https://jakarta.ee/specifications/mail/2.1/apidocs/jakarta.mail/jakarta/mail/internet/internetaddress[`InternetAddress[]`]
+| https://jakarta.ee/specifications/mail/2.1/apidocs/jakarta.mail/jakarta/mail/internet/internetaddress[`InternetAddress[\]`]
 |
 |
 A list of
