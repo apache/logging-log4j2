@@ -334,54 +334,11 @@ For instance, <code>log4j-slf4j2-impl</code> <em>bridges</em> SLF4J calls to Log
 <div class="paragraph">
 <p>To make things a little bit more tangible, consider the following visualization of a typical Log4j Core installation with bridges for an application:</p>
 </div>
-<div class="literalblock kroki-error">
-<div class="title">Visualization of a typical Log4j Core installation with SLF4J, JUL, and JPL bridges.</div>
+<div class="imageblock kroki">
 <div class="content">
-<pre>/-----------------------------------------------------------------------------------\
-|                                                                                   |
-|       +------------+                       +----------+          +----------+     |
-|       |            |                       |          |          |          |     |
-|       |            v                       |          v          |          v     |
-| +-----+-----+ +---------+ +---------+ +----+----+ +-------+ +----+----+ +-------+ |
-| |           | |{d}c1FF  | |         | |         | |{d}c1FF| |         | |{d}c1FF| |
-| |Application| |Log4j API| |Library 1| |Library 2| | SLF4J | |Library 3| |  JUL  | |
-| |           | |         | |         | |         | |       | |         | |       | |
-| +-----------+ +--+------+ +----+----+ +---------+ +---+---+ +---------+ +---+---+ |
-|                  :   ^         |                      :                     :     |
-|                  |   |         |                      |                     |     |
-| Compile time     |   |         |                      |                     |     |
-\------------------|---|---------|----------------------|---------------------|-----/
-                   |   |         |                      |                     |
-                   |   |         |                /-----/         /-----------/
-                   |   |         |                |               |
-        /----------/   \------+--|----------+-----|---------\     |
-        |                     |  |          |     |         |     |
-/-------|---------------------|--|----------|-----|---------|-----|-----------------\
-|       |                     |  |          |     |         |     |         Runtime |
-|       v                     :  |          :     v         :     v                 |
-| +----------+          +-----+------+ +----+---------+ +---+--------+              |
-| |cGRE      |          |cYEL        | |cYEL          | |cYEL        |              |
-| |Log4j Core|          |JPL to Log4j| |SLF4J to Log4j| |JUL to Log4j|              |
-| |          |          |            | |              | |            |              |
-| +----------+          +------------+ +--------------+ +------------+              |
-| |log4j2.xml|                ^  |                                                  |
-| +----------+                |  |                                                  |
-|                             |  |                                                  |
-|                             |  |                                                  |
-|            /-------------+--|--/                                                  |
-|            |             |  |                                                     |
-| +----------+-------------|--|---------------------------------------------------+ |
-| |JRE                     v  :                                                   | |
-| |                      +----+--+                                                | |
-| |                      |{d}c1FF|                                                | |
-| |                      |  JPL  |                                                | |
-| |                      |       |                                                | |
-| |                      +-------+                                                | |
-| |                                                                               | |
-| +-------------------------------------------------------------------------------+ |
-|                                                                                   |
-\-----------------------------------------------------------------------------------/</pre>
+<img src="_images/diag-1fd758c2554d79996565796f77cf0f8dc6b3bca2.svg" alt="Visualization of a typical Log4j Core installation with SLF4J, JUL, and JPL bridges.">
 </div>
+<div class="title">Figure 1. Visualization of a typical Log4j Core installation with SLF4J, JUL, and JPL bridges.</div>
 </div>
 </div>
 </details>

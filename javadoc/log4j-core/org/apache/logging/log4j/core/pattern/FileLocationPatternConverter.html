@@ -127,12 +127,17 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Obtains an instance of pattern converter.</div>
 </div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#requiresLocation()" class="member-name-link">requiresLocation</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Some pattern converters require location information.</div>
+</div>
 </div>
 </div>
 </div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-org.apache.logging.log4j.core.pattern.LogEventPatternConverter">Methods inherited from class&nbsp;org.apache.logging.log4j.core.pattern.<a href="LogEventPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">LogEventPatternConverter</a></h3>
-<code><a href="LogEventPatternConverter.html#emptyVariableOutput()">emptyVariableOutput</a>, <a href="LogEventPatternConverter.html#format(java.lang.Object,java.lang.StringBuilder)">format</a>, <a href="LogEventPatternConverter.html#handlesThrowable()">handlesThrowable</a>, <a href="LogEventPatternConverter.html#isVariable()">isVariable</a>, <a href="LogEventPatternConverter.html#requiresLocation()">requiresLocation</a></code></div>
+<code><a href="LogEventPatternConverter.html#emptyVariableOutput()">emptyVariableOutput</a>, <a href="LogEventPatternConverter.html#format(java.lang.Object,java.lang.StringBuilder)">format</a>, <a href="LogEventPatternConverter.html#handlesThrowable()">handlesThrowable</a>, <a href="LogEventPatternConverter.html#isVariable()">isVariable</a></code></div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-org.apache.logging.log4j.core.pattern.AbstractPatternConverter">Methods inherited from class&nbsp;org.apache.logging.log4j.core.pattern.<a href="AbstractPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">AbstractPatternConverter</a></h3>
 <code><a href="AbstractPatternConverter.html#getName()">getName</a>, <a href="AbstractPatternConverter.html#getStyleClass(java.lang.Object)">getStyleClass</a></code></div>
@@ -175,6 +180,21 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>event</code> - event to format, may not be null.</dd>
 <dd><code>output</code> - string buffer to which the formatted event will be appended.  May not be null.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="requiresLocation()">
+<h3>requiresLocation</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">requiresLocation</span>()</div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="LogEventPatternConverter.html#requiresLocation()">LogEventPatternConverter</a></code></span></div>
+<div class="block">Some pattern converters require location information. By returning true the location can be
+ calculated efficiently.</div>
+<dl class="notes">
+<dt>Overrides:</dt>
+<dd><code><a href="LogEventPatternConverter.html#requiresLocation()">requiresLocation</a></code>&nbsp;in class&nbsp;<code><a href="LogEventPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">LogEventPatternConverter</a></code></dd>
+<dt>Returns:</dt>
+<dd>true if this PatternConverter uses location information.</dd>
 </dl>
 </section>
 </li>
