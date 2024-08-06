@@ -16,7 +16,6 @@
 ////
 
 = Layouts
-:open-book: &#x1F4D6;
 
 An xref:manual/appenders.adoc[appender] uses a *layout* to encode a link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html[`LogEvent`] into a form that meets the needs of whatever will be consuming the log event.
 This page will try to answer following questions:
@@ -66,7 +65,7 @@ Refer to xref:manual/pattern-layout.adoc[].
 
 Following sections explain all predefined layouts in detail.
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Layout[{open-book} Plugin reference for all `Layout` implementations]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Layout[{plugin-reference-marker} Plugin reference for all `Layout` implementations]
 
 [#csv-layouts]
 === [[CSVLayouts]] CSV Layouts
@@ -79,7 +78,7 @@ There are two layouts performing https://en.wikipedia.org/wiki/Comma-separated_v
 `CsvParameterLayout` encodes *only* the parameters of the message of a log event.
 Generated CSV records will be composed of fields denoting the message parameters.
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-CsvParameterLayout[{open-book} Plugin reference for `CsvParameterLayout`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-CsvParameterLayout[{plugin-reference-marker} Plugin reference for `CsvParameterLayout`]
 
 .Click here for examples
 [%collapsible]
@@ -130,7 +129,7 @@ Generated CSV records will be composed of following fields in the given order:
 . Thread context map
 . Thread context stack
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-CsvLogEventLayout[{open-book} Plugin reference for `CsvLogEventLayout`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-CsvLogEventLayout[{plugin-reference-marker} Plugin reference for `CsvLogEventLayout`]
 
 .Click here for examples
 [%collapsible]
@@ -239,7 +238,7 @@ This layout does not implement chunking.
 Unless compression is needed, we advise you to use xref:manual/json-template-layout.adoc[JSON Template Layout] instead, which provides GELF Layout support out of the box and offers more capabilities and performance.
 ====
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-GelfLayout[{open-book} Plugin reference for `GelfLayout`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-GelfLayout[{plugin-reference-marker} Plugin reference for `GelfLayout`]
 
 GELF Layout is configured with the following parameters:
 
@@ -397,7 +396,7 @@ include::example$manual/gelf-layout/log4j2.properties[lines=17..48,indent=0]
 
 `HtmlLayout` generates an HTML page, and adds each log event to a row in a table.
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-HtmlLayout[{open-book} Plugin reference for `HtmlLayout`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-HtmlLayout[{plugin-reference-marker} Plugin reference for `HtmlLayout`]
 
 It is configured with the following parameters:
 
@@ -455,7 +454,7 @@ JSON Layout is considered deprecated.
 It is succeeded by <<JSONTemplateLayout>> providing more capabilities and efficiency.
 ====
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-JsonLayout[{open-book} Plugin reference for `JsonLayout`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-JsonLayout[{plugin-reference-marker} Plugin reference for `JsonLayout`]
 
 .Click for an example output
 [%collapsible]
@@ -717,7 +716,7 @@ contained in a log event.
 It is currently only useful with the
 xref:manual/appenders/database.adoc#JdbcAppender[JDBC Appender].
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-MessageLayout[{open-book} Plugin reference for `MessageLayout`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-MessageLayout[{plugin-reference-marker} Plugin reference for `MessageLayout`]
 
 [id=pattern-layout]
 === [[PatternLayout]] Pattern Layout
@@ -760,7 +759,7 @@ Read more on xref:manual/pattern-layout.adoc[]...
 RFC 5424 obsoletes RFC 3164, implemented by <<SyslogLayout>>.
 ====
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-Rfc5424Layout[{open-book} Plugin reference for `Rfc5424Layout`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-Rfc5424Layout[{plugin-reference-marker} Plugin reference for `Rfc5424Layout`]
 
 RFC 5424 Layout is configured with the following parameters:
 
@@ -873,7 +872,7 @@ Java Serialization has inherent security weaknesses.
 *Serialized Layout users are strongly advised to migrate to another layout!*
 ====
 
- xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-SerializedLayout[{open-book} Plugin reference for `SerializedLayout`]
+ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-SerializedLayout[{plugin-reference-marker} Plugin reference for `SerializedLayout`]
 
 [#SyslogLayout]
 === Syslog Layout
@@ -886,7 +885,7 @@ This matches the same format used by {logging-services-url}/log4j/1.x/index.html
 RFC 3164, implemented by Syslog Layout, is obsoleted by RFC 5424, implemented by <<RFC5424Layout>>.
 ====
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-SyslogLayout[{open-book} Plugin reference for `SyslogLayout`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-SyslogLayout[{plugin-reference-marker} Plugin reference for `SyslogLayout`]
 
 Syslog Layout is configured with the following parameters:
 
@@ -926,7 +925,7 @@ It defaults to `LOCAL0`.
 XML Layout users are strongly advised to migrate to another layout!
 ====
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-XmlLayout[{open-book} Plugin reference for `XmlLayout`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-XmlLayout[{plugin-reference-marker} Plugin reference for `XmlLayout`]
 
 .Click for an example output
 [%collapsible]
@@ -1025,7 +1024,7 @@ YAML is a superset of JSON.
 *We strongly advise existing YAML Layout users to migrate to <<JSONTemplateLayout>>* providing more capabilities and efficiency.
 ====
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-YamlLayout[{open-book} Plugin reference for `YamlLayout`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-YamlLayout[{plugin-reference-marker} Plugin reference for `YamlLayout`]
 
 .Click for an example output
 [%collapsible]

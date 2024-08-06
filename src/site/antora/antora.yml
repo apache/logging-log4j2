@@ -38,6 +38,7 @@ version: ~
 start_page: index.adoc
 asciidoc:
   attributes:
+    plugin-reference-marker: "&#x1F4D6;"
     # Commons
     antora-examples-url: "https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples"
     project-github-url: "https://github.com/apache/logging-log4j2/tree/2.x"

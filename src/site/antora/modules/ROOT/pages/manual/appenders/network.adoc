@@ -15,8 +15,7 @@
     limitations under the License.
 ////
 
-= Network appenders
-:open-book: &#x1F4D6;
+= Network Appenders
 
 This section guides you through xref:manual/appenders.adoc[appenders] that use simple network protocols to transmit log events to a remote host.
 
@@ -92,7 +91,7 @@ It specifies the trust roots to use for TLS server authentication.
 
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-ssl-SslConfiguration[{open-book} Plugin reference for `SSL`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-ssl-SslConfiguration[{plugin-reference-marker} Plugin reference for `SSL`]
 
 [#KeyStoreConfiguration]
 ==== KeyStore
@@ -157,7 +156,7 @@ See https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/s
 See also xref:manual/systemproperties.adoc#log4j2.keyStoreKeyManagerFactoryAlgorithm[`log4j2.keyStoreKeyManagerFactoryAlgorithm`].
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-ssl-KeyStoreConfiguration[{open-book} Plugin reference for `KeyStore`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-ssl-KeyStoreConfiguration[{plugin-reference-marker} Plugin reference for `KeyStore`]
 
 [#TrustStoreConfiguration]
 ==== TrustStore
@@ -223,7 +222,7 @@ See https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/s
 See also xref:manual/systemproperties.adoc#log4j2.trustStoreKeyManagerFactoryAlgorithm[`log4j2.trustStoreKeyManagerFactoryAlgorithm`].
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-ssl-TrustStoreConfiguration[{open-book} Plugin reference for `TrustStore`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-ssl-TrustStoreConfiguration[{plugin-reference-marker} Plugin reference for `TrustStore`]
 
 [#SslConfiguration-examples]
 ==== TLS configuration example
@@ -380,7 +379,7 @@ See <<tls-configuration>> for more details.
 
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-HttpAppender[{open-book} Plugin reference for `HTTP`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-HttpAppender[{plugin-reference-marker} Plugin reference for `HTTP`]
 
 [#HttpAppender-examples]
 === Configuration examples
@@ -625,7 +624,7 @@ See <<tls-configuration>> for more details.
 
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-SmtpAppender[{open-book} Plugin reference for `SMTP`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-SmtpAppender[{plugin-reference-marker} Plugin reference for `SMTP`]
 
 Additional runtime dependencies are required to use the SMTP appender:
 
@@ -936,7 +935,7 @@ Uses the xref:manual/layouts.adoc#RFC5424Layout[Rfc5424 Layout].
 All the remaining configuration attributes and nested elements are inherited from
 <<SocketAppender,Socket Appender>> and the chosen layout.
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-SyslogAppender[{open-book} Plugin reference for `Syslog`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-SyslogAppender[{plugin-reference-marker} Plugin reference for `Syslog`]
 
 [#SyslogAppender-examples]
 === Configuration examples

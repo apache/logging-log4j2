@@ -38,6 +38,7 @@ version: ~
 start_page: index.adoc
 asciidoc:
   attributes:
+    plugin-reference-marker: "&#x1F4D6;"
     # Commons
     antora-examples-url: "${scm.url}/tree/${scm.tag}/src/site/antora/modules/ROOT/examples"
     project-github-url: "${scm.url}/tree/${scm.tag}"

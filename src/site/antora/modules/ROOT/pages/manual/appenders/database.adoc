@@ -16,7 +16,6 @@
 ////
 
 = Database appenders
-:open-book: &#x1F4D6;
 
 Log4j Core provides multiple appenders to send log events directly to your database.
 
@@ -329,7 +328,7 @@ runtimeOnly 'org.apache.logging.log4j:log4j-cassandra'
 
 ====
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-cassandra_org-apache-logging-log4j-cassandra-CassandraAppender[{open-book} Plugin reference for `Cassandra`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-cassandra_org-apache-logging-log4j-cassandra-CassandraAppender[{plugin-reference-marker} Plugin reference for `Cassandra`]
 
 [#SocketAddress]
 === Socket Addresses
@@ -354,7 +353,7 @@ The address of the Cassandra server is specified using the `SocketAddress` eleme
 
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-SocketAddress[{open-book} Plugin reference for `SocketAddress`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-SocketAddress[{plugin-reference-marker} Plugin reference for `SocketAddress`]
 
 [#CassandraAppender-examples]
 === Configuration examples
@@ -504,7 +503,7 @@ The following database-specific restrictions apply:
 | zero or more
 | **Deprecated**: an older mechanism to define <<JdbcAppender-element-ColumnMapping,column mappings>>.
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-ColumnConfig[{open-book} Plugin reference for `ColumnConfig`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-ColumnConfig[{plugin-reference-marker} Plugin reference for `ColumnConfig`]
 
 | [[JdbcAppender-element-ConnectionSource]]<<ConnectionSource,`ConnectionSource`>>
 | **one**
@@ -529,7 +528,7 @@ See <<JdbcAppender-MapMessage>> for more details.
 
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-JdbcAppender[{open-book} Plugin reference for `JDBC`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-JdbcAppender[{plugin-reference-marker} Plugin reference for `JDBC`]
 
 [#ConnectionSource]
 === Connection Sources
@@ -539,7 +538,7 @@ link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/db/jdbc/Connec
 that the appender will use to get
 https://docs.oracle.com/javase/8/docs/api/java/sql/Connection.html[`Connection`] objects.
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-ConnectionSource[{open-book} Plugin reference for `ConnectionSource`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-ConnectionSource[{plugin-reference-marker} Plugin reference for `ConnectionSource`]
 
 The following connection sources are available out-of-the-box:
 
@@ -574,7 +573,7 @@ Only the `java:` JNDI protocol is supported.
 **Required**
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-DataSourceConnectionSource[{open-book} Plugin reference for `DataSource`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-DataSourceConnectionSource[{plugin-reference-marker} Plugin reference for `DataSource`]
 
 [#FactoryMethodConnectionSource]
 ==== `ConnectionFactory`
@@ -612,7 +611,7 @@ The name of the factory method.
 **Required**
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-FactoryMethodConnectionSource[{open-book} Plugin reference for `ConnectionFactory`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-FactoryMethodConnectionSource[{plugin-reference-marker} Plugin reference for `ConnectionFactory`]
 
 [#DriverManagerConnectionSource]
 ==== `DriverManager`
@@ -682,7 +681,7 @@ A list of key/value pairs to pass to `DriverManager`.
 If supplied, the <<DriverManagerConnectionSource-attr-userName,`userName`>> and <<DriverManagerConnectionSource-attr-password,`password`>> attributes will be ignored.
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-DriverManagerConnectionSource[{open-book} Plugin reference for `DriverManager`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-DriverManagerConnectionSource[{plugin-reference-marker} Plugin reference for `DriverManager`]
 
 [#PoolingDriverConnectionSource]
 ==== `PoolingDriver`
@@ -756,7 +755,7 @@ The available parameters are the same as those provided by DBCP 2.
 See
 https://commons.apache.org/proper/commons-dbcp/configuration.html[DBCP 2 configuration] for more details.
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-core-appender-db-jdbc-PoolableConnectionFactoryConfig[{open-book} Plugin reference for `PoolableConnectionFactory`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-core-appender-db-jdbc-PoolableConnectionFactoryConfig[{plugin-reference-marker} Plugin reference for `PoolableConnectionFactory`]
 |===
 
 Additional runtime dependencies are required for using `PoolingDriver`:
@@ -785,7 +784,7 @@ runtimeOnly 'org.apache.logging.log4j:log4j-jdbc-dbcp2'
 
 ====
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-core-appender-db-jdbc-PoolingDriverConnectionSource[{open-book} Plugin reference for `PoolingDriver`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-core-appender-db-jdbc-PoolingDriverConnectionSource[{plugin-reference-marker} Plugin reference for `PoolingDriver`]
 
 [#JdbcAppender-MapMessage]
 === Map Message handling
@@ -986,7 +985,7 @@ runtimeOnly 'org.apache.logging.log4j:log4j-jpa'
 ----
 ====
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-jpa_org-apache-logging-log4j-core-appender-db-jpa-JpaAppender[{open-book} Plugin reference for `JPA`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-jpa_org-apache-logging-log4j-core-appender-db-jpa-JpaAppender[{plugin-reference-marker} Plugin reference for `JPA`]
 
 [#JpaAppender-examples]
 === Configuration examples
@@ -1099,7 +1098,7 @@ xref:manual/messages.adoc#MapMessage[`MapMessage`].
 See <<NoSqlAppender-formatting>> for more details.
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-nosql-NoSqlAppender[{open-book} Plugin reference for `NoSQL`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-nosql-NoSqlAppender[{plugin-reference-marker} Plugin reference for `NoSQL`]
 
 [#NoSqlAppender-formatting]
 === Formatting
@@ -1273,7 +1272,7 @@ runtimeOnly 'org.apache.logging.log4j:log4j-mongodb'
 ----
 ====
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider[{open-book} Plugin reference for `MongoDb`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider[{plugin-reference-marker} Plugin reference for `MongoDb`]
 
 [#MongoDb4Provider]
 ==== MongoDb4 Provider (deprecated)
@@ -1340,7 +1339,7 @@ runtimeOnly 'org.apache.logging.log4j:log4j-mongodb4'
 ----
 ====
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-mongodb4-MongoDb4Provider[{open-book} Plugin reference for `MongoDb4`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-mongodb4-MongoDb4Provider[{plugin-reference-marker} Plugin reference for `MongoDb4`]
 
 [#CouchDbProvider]
 === Apache CouchDB provider
@@ -1459,7 +1458,7 @@ runtimeOnly 'org.apache.logging.log4j:log4j-couchdb'
 ----
 ====
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-couchdb-CouchDbProvider[{open-book} Plugin reference for `CouchDb`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-couchdb-CouchDbProvider[{plugin-reference-marker} Plugin reference for `CouchDb`]
 
 [#NoSqlAppender-examples]
 === Configuration examples
