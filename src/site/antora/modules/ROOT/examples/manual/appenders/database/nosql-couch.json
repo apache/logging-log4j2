@@ -12,8 +12,7 @@
           "port": 5984,
           "databaseName": "logging"
         }
-      }
-      // end::appender[]
+      // end::appender[],
     },
     "Loggers": {
       "Root": {

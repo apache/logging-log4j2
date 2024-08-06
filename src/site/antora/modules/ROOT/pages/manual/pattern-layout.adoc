@@ -1731,7 +1731,7 @@ xref:manual/lookups.adoc[] are intended as a very generic, convenience utility t
 |xref:manual/lookups.adoc#MapLookup[Map Lookup]
 |<<converter-map>>
 
-|xref:manual/lookups.adoc#marker-lookup[Marker Lookup]
+|xref:manual/lookups.adoc#MarkerLookup[Marker Lookup]
 |<<converter-marker>>
 |===
 =====

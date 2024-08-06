@@ -96,13 +96,13 @@ The following xref:manual/appenders.adoc[appenders] are garbage-free during stea
 
 // Maintain the alphabetical ordering while making changes, please!
 * xref:manual/appenders.adoc#ConsoleAppender[`ConsoleAppender`]
-* xref:manual/appenders.adoc#FileAppender[`FileAppender`]
-* xref:manual/appenders.adoc#MemoryMappedFileAppender[`MemoryMappedFileAppender`]
-* xref:manual/appenders.adoc#RandomAccessFileAppender[`RandomAccessFileAppender`]
-* xref:manual/appenders.adoc#RollingFileAppender[`RollingFileAppender`] (except during rollover)
-* xref:manual/appenders.adoc#RollingRandomAccessFileAppender[`RollingRandomAccessFileAppender`] (except during rollover)
+* xref:manual/appenders/file.adoc#FileAppender[`FileAppender`]
+* xref:manual/appenders/file.adoc#MemoryMappedFileAppender[`MemoryMappedFileAppender`]
+* xref:manual/appenders/file.adoc#RandomAccessFileAppender[`RandomAccessFileAppender`]
+* xref:manual/appenders/rolling-file.adoc#RollingFileAppender[`RollingFileAppender`] (except during rollover)
+* xref:manual/appenders/rolling-file.adoc#RollingRandomAccessFileAppender[`RollingRandomAccessFileAppender`] (except during rollover)
 
-Any other appender not shared in the above list (including xref:manual/appenders.adoc#AsyncAppender[`AsyncAppender`]) is not garbage-free.
+Any other appender not shared in the above list (including xref:manual/appenders/delegating.adoc#AsyncAppender[`AsyncAppender`]) is not garbage-free.
 
 .Implementation notes
 [%collapsible]

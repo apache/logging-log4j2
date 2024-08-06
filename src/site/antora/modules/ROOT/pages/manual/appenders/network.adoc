@@ -424,7 +424,7 @@ include::example$manual/appenders/network/http.properties[tag=appender]
 <1> This HTTP header is evaluated once at configuration time.
 <2> This HTTP header is evaluated at each log event.
 
-[[SMTPAppender]]
+[#SmtpAppender]
 == SMTP Appender
 
 The SMTP writes log events to an e-mail service using
