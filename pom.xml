@@ -337,6 +337,7 @@
     <site-conversant.version>1.2.21</site-conversant.version>
     <site-disruptor.version>4.0.0</site-disruptor.version>
     <site-jackson.version>2.17.2</site-jackson.version>
+    <site-javax-mail.version>1.6.2</site-javax-mail.version>
     <site-jctools.version>4.0.5</site-jctools.version>
     <site-log4j-api.version>2.23.1</site-log4j-api.version>
     <site-log4j-core.version>2.23.1</site-log4j-core.version>
@@ -766,6 +767,12 @@
             <artifactId>jackson-bom</artifactId>
             <version>${site-jackson.version}</version>
             <type>pom</type>
+          </dependency>
+
+          <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>${site-javax-mail.version}</version>
           </dependency>
 
           <dependency>

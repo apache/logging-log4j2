@@ -16,7 +16,6 @@
 ////
 
 = Delegating Appenders
-:open-book: &#x1F4D6;
 
 Log4j Core supplies multiple appenders that do not perform any work themselves, but modify the way other appenders work.
 The following behaviors can be modified:
@@ -168,7 +167,7 @@ See <<BlockingQueueFactory>> below.
 
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-AsyncAppender[{open-book} Plugin reference for `Async`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-AsyncAppender[{plugin-reference-marker} Plugin reference for `Async`]
 
 As an example, you can instrument a xref:manual/appenders/file.adoc#FileAppender[`File` appender] to perform asynchronous I/O, by using the following appender configurations:
 
@@ -231,7 +230,7 @@ element.
 
 You can specify the size of the queue using the <<AsyncAppender-attr-bufferSize,`bufferSize`>> configuration attribute.
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-BlockingQueueFactory[{open-book} Plugin reference for `BlockingQueueFactory`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-BlockingQueueFactory[{plugin-reference-marker} Plugin reference for `BlockingQueueFactory`]
 
 [#ArrayBlockingQueueFactory]
 `ArrayBlockingQueue`::
@@ -239,7 +238,7 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 This is the default implementation that produces
 https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/concurrent/ArrayBlockingQueue.html[`ArrayBlockingQueue`]s.
 +
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-ArrayBlockingQueueFactory[{open-book} Plugin reference for `ArrayBlockingQueue`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-ArrayBlockingQueueFactory[{plugin-reference-marker} Plugin reference for `ArrayBlockingQueue`]
 
 [#DisruptorBlockingQueueFactory]
 `DisruptorBlockingQueue`::
@@ -289,7 +288,7 @@ runtimeOnly 'com.conversantmedia:disruptor:{conversant-version}'
 ====
 =====
 +
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-DisruptorBlockingQueueFactory[{open-book} Plugin reference for `DisruptorBlockingQueue`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-DisruptorBlockingQueueFactory[{plugin-reference-marker} Plugin reference for `DisruptorBlockingQueue`]
 
 [#JCToolsBlockingQueueFactory]
 `JCToolsBlockingQueue`::
@@ -326,7 +325,7 @@ runtimeOnly 'org.jctools:jctools-core:{jctools-version}'
 ====
 =====
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-JCToolsBlockingQueueFactory[{open-book} Plugin reference for `JCToolsBlockingQueue`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-JCToolsBlockingQueueFactory[{plugin-reference-marker} Plugin reference for `JCToolsBlockingQueue`]
 
 [#LinkedTransferQueueFactory]
 `LinkedTransferQueue`::
@@ -335,7 +334,7 @@ This queue factory produces
 https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/concurrent/LinkedTransferQueue.html[`LinkedTransferQueue`]s.
 Note that this queue does not have a maximum capacity and ignores the <<AsyncAppender-attr-bufferSize,`bufferSize`>> attribute.
 +
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-LinkedTransferQueueFactory[{open-book} Plugin reference for `LinkedTransferQueue`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-LinkedTransferQueueFactory[{plugin-reference-marker} Plugin reference for `LinkedTransferQueue`]
 
 [#FailoverAppender]
 == `Failover` Appender
@@ -455,7 +454,7 @@ include::example$manual/appenders/delegating/failover.properties[tag=appenders]
 
 <1> The primary appender must set `ignoreExceptions` to `false`.
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-FailoverAppender[{open-book} Plugin reference for `Failover`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-FailoverAppender[{plugin-reference-marker} Plugin reference for `Failover`]
 
 [#RewriteAppender]
 == `Rewrite` Appender
@@ -530,7 +529,7 @@ The <<RewritePolicy,rewrite policy>> to apply to all logged events.
 
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-RewriteAppender[{open-book} Plugin reference for `Rewrite`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-RewriteAppender[{plugin-reference-marker} Plugin reference for `Rewrite`]
 
 [#RewritePolicy]
 === Rewrite Policies
@@ -540,7 +539,7 @@ link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rewrite/Rewrit
 interface.
 Rewrite policies allow to apply arbitrary modifications to log events.
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-RewritePolicy[{open-book} Plugin reference for `RewritePolicy`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-RewritePolicy[{plugin-reference-marker} Plugin reference for `RewritePolicy`]
 
 Log4j Core provides three rewrite policies out-of-the-box:
 
@@ -586,7 +585,7 @@ A list of map entries to add to the `MapMessage`.
 
 |===
 +
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-MapRewritePolicy[{open-book} Plugin reference for `MapRewritePolicy`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-MapRewritePolicy[{plugin-reference-marker} Plugin reference for `MapRewritePolicy`]
 
 [#PropertiesRewritePolicy]
 `PropertiesRewritePolicy`::
@@ -616,7 +615,7 @@ in the
 xref:manual/lookups.adoc#global-context[_global context_].
 |===
 +
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-PropertiesRewritePolicy[{open-book} Plugin reference for `PropertiesRewritePolicy`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-PropertiesRewritePolicy[{plugin-reference-marker} Plugin reference for `PropertiesRewritePolicy`]
 
 [#LoggerNameLevelRewritePolicy]
 LoggerNameLevelRewritePolicy::
@@ -658,7 +657,7 @@ Provides a mapping between old level names and new level names.
 
 |===
 +
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-LoggerNameLevelRewritePolicy[{open-book} Plugin reference for `LoggerNameLevelRewritePolicy`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-LoggerNameLevelRewritePolicy[{plugin-reference-marker} Plugin reference for `LoggerNameLevelRewritePolicy`]
 
 [#RewriteAppender-examples]
 === Configuration example
@@ -803,7 +802,7 @@ See <<Routes,`Routes`>> for more details.
 
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-RoutingAppender[{open-book} Plugin reference for `Routing`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-RoutingAppender[{plugin-reference-marker} Plugin reference for `Routing`]
 
 [#route-selection]
 === Route selection
@@ -872,7 +871,7 @@ See also xref:manual/scripts.adoc[] for more details on scripting in Log4j Core.
 |
 |===
 +
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-Routes[{open-book} Plugin reference for `Routes`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-Routes[{plugin-reference-marker} Plugin reference for `Routes`]
 
 [#Route]
 `Route`::
@@ -938,7 +937,7 @@ The appender definition is evaluated in the xref:manual/lookups.adoc#event-conte
 See xref:manual/configuration.adoc#lazy-property-substitution[lazy property substitution] for more details.
 ====
 +
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-Route[{open-book} Plugin reference for `Route`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-Route[{plugin-reference-marker} Plugin reference for `Route`]
 
 For each log event, the appropriate route is selected as follows:
 
@@ -965,7 +964,7 @@ The purge policy is a Log4j plugin that implements the
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/routing/PurgePolicy.html[`PurgePolicy`]
 interface and handles the lifecycle of automatically instantiated appenders.
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-PurgePolicy[{open-book} Plugin reference for `PurgePolicy`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-PurgePolicy[{plugin-reference-marker} Plugin reference for `PurgePolicy`]
 
 [NOTE]
 ====
@@ -1008,7 +1007,7 @@ It specifies the time unit to use for the other attributes.
 
 |===
 +
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-IdlePurgePolicy[{open-book} Plugin reference for `IdlePurgePolicy`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-IdlePurgePolicy[{plugin-reference-marker} Plugin reference for `IdlePurgePolicy`]
 
 [#RoutingAppender-examples]
 === Configuration examples
@@ -1199,4 +1198,4 @@ A lazy container for appender definitions.
 
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-ScriptAppenderSelector[{open-book} Plugin reference for `ScriptAppenderSelector`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-ScriptAppenderSelector[{plugin-reference-marker} Plugin reference for `ScriptAppenderSelector`]

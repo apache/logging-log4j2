@@ -38,6 +38,7 @@ version: ~
 start_page: index.adoc
 asciidoc:
   attributes:
+    plugin-reference-marker: "&#x1F4D6;"
     # Commons
     antora-examples-url: "https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples"
     project-github-url: "https://github.com/apache/logging-log4j2/tree/2.x"
@@ -57,6 +58,7 @@ asciidoc:
     conversant-version: "1.2.3-conversant"
     disruptor-version: "1.2.3-disruptor"
     jackson-version: "1.2.3-jackson"
+    javax-mail-version: "1.2.3-javax-mail"
     jctools-version: "1.2.3-jctools"
     log4j-api-version: "1.2.3-api"
     log4j-core-version: "1.2.3-core"

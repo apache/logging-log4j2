@@ -1,0 +1,41 @@
+{
+  "Configuration": {
+    "Appenders": {
+      // tag::appender[]
+      "Http": {
+        "name": "HTTP",
+        "url": "https://localhost/logs",
+        "JsonTemplateLayout": {},
+        "Property": [
+          { // <1>
+            "name": "X-Java-Version",
+            "value": "${java:version}"
+          },
+          { // <2>
+            "name": "X-Context-Path",
+            "value": "$${web:contextPath}"
+          }
+        ],
+        "Ssl": {
+          "KeyStore": {
+            "location": "keystore.p12",
+            "password": "${env:KEYSTORE_PASSWORD}"
+          },
+          "TrustStore": {
+            "location": "truststore.p12",
+            "password": "${env:TRUSTSTORE_PASSWORD}"
+          }
+        }
+      }
+      // end::appender[]
+    },
+    "Loggers": {
+      "Root": {
+        "level": "INFO",
+        "AppenderRef": {
+          "ref": "HTTP"
+        }
+      }
+    }
+  }
+}

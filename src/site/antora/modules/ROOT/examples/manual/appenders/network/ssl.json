@@ -1,0 +1,32 @@
+{
+  "Configuration": {
+    "Appenders": {
+      "Socket": {
+        "name": "SOCKET",
+        "host": "localhost",
+        // tag::ssl[]
+        "Ssl": {
+          "KeyStore": {
+            "location": "keystore.p12",
+            "type": "PKCS12",
+            "password": "${env:KEYSTORE_PASSWORD}"
+          },
+          "TrustStore": {
+            "location": "truststore.p12",
+            "type": "PKCS12",
+            "passwordEnvironmentVariable": "TRUSTSTORE_PASSWORD"
+          }
+        }
+        // end::ssl[]
+      }
+    },
+    "Loggers": {
+      "Root": {
+        "level": "INFO",
+        "AppenderRef": {
+          "ref": "SOCKET"
+        }
+      }
+    }
+  }
+}
