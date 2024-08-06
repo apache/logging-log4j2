@@ -18,6 +18,8 @@
 = Network appenders
 :open-book: &#x1F4D6;
 
+This section guides you through xref:manual/appenders.adoc[appenders] that use simple network protocols to transmit log events to a remote host.
+
 [#common-configuration]
 == Common concerns
 
