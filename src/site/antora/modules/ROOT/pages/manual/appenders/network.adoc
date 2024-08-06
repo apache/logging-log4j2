@@ -15,7 +15,7 @@
     limitations under the License.
 ////
 
-= Network Appenders
+= Network appenders
 :open-book: &#x1F4D6;
 
 [#common-configuration]
