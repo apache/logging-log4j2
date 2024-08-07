@@ -271,7 +271,7 @@ To help users add logging statements to JavaServer Pages, Log4j provides a JSP t
 https://web.archive.org/web/20140215182415/http://jakarta.apache.org/taglibs/log/[Jakarta Commons Log Tag library].
 To use it, you need to add the following runtime dependency to your web application project:
 
-include::partial$manual/dependencies-log4j-taglib.adoc[]
+include::partial$components/log4j-taglib.adoc[]
 
 and add the following declaration to your JSP pages:
 

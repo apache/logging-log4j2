@@ -167,7 +167,7 @@ In this section, we will share guides on some popular integration scenarios.
 [#docker]
 === Docker
 
-See xref:manual/lookups.adoc#DockerLookup[Docker Lookup].
+See xref:components.adoc#log4j-docker[Log4j Docker] for Docker-specific Log4j features, e.g., xref:manual/lookups.adoc#DockerLookup[Docker Lookup].
 We also strongly advise you to check https://docs.docker.com/config/containers/logging/[the extensive logging integration] offered by Docker containers.
 
 === Kubernetes

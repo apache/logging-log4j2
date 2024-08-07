@@ -19,21 +19,23 @@
 ====
 Maven::
 +
-[source,xml]
+We assume you use xref:artifacts.adoc#log4j-bom[`log4j-bom`] for dependency management.
++
+[source,xml,subs="+attributes"]
 ----
-<!-- We assume you use `log4j-bom` for dependency management -->
 <dependency>
   <groupId>org.apache.logging.log4j</groupId>
-  <artifactId>log4j-docker</artifactId>
+  <artifactId>log4j-appserver</artifactId>
   <scope>runtime</scope>
 </dependency>
 ----
 
 Gradle::
 +
-[source,groovy]
+We assume you use xref:artifacts.adoc#log4j-bom[`log4j-bom`] for dependency management.
++
+[source,groovy,subs="+attributes"]
 ----
-// We assume you use `log4j-bom` for dependency management
-runtimeOnly 'org.apache.logging.log4j:log4j-docker'
+runtimeOnly 'org.apache.logging.log4j:log4j-appserver'
 ----
 ====

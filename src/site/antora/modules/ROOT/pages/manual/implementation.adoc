@@ -15,13 +15,23 @@
     limitations under the License.
 ////
 
-include::partial$components/log4j-jakarta-web.adoc[]
+= Reference implementation
 
-.Click here if you are you using Jakarta EE 8 or any version of Java EE?
-[%collapsible]
-=====
-Jakarta EE 8 and all Java EE applications servers use the legacy `javax` package prefix instead of `jakarta`.
-If you are using those application servers, you should replace the dependencies above with:
+The reference implementation of the xref:manual/api.adoc[] is called Log4j Core.
+It is a versatile, reliable, feature-rich and production-ready implementation.
+The remaining chapters of the manual describe the ins and outs of this logging implementation:
 
-include::partial$components/log4j-web.adoc[]
-=====
+Do you want to learn about its architecture?::
+Go to xref:manual/architecture.adoc[].
+
+Do you want to install Log4j Core?::
+Go to xref:manual/installation.adoc#impl-core[Installing Log4j Core].
+
+Do you want to configure Log4j Core?::
+Go to xref:manual/config-intro.adoc[].
+
+Do you want to write custom components for Log4j Core?::
+Go to xref:manual/extending.adoc[].
+
+Do you want to tune your installation for a better performance?::
+Go to xref:manual/performance.adoc[].

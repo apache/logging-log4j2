@@ -92,38 +92,7 @@ include::partial$concepts.adoc[tags=inc;api;impl;bridge]
 We will need a BOM (Bill of Materials) to manage the versions of the dependencies.
 This way we won't need to provide the version for each Log4j module explicitly.
 
-[tabs]
-====
-Maven::
-+
-[source,xml,subs="+attributes"]
-----
-<project>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-bom</artifactId>
-        <version>{log4j-core-version}</version>
-        <scope>import</scope>
-        <type>pom</type>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
-</project>
-----
-
-Gradle::
-+
-[source,groovy,subs="+attributes"]
-----
-dependencies {
-  implementation platform('org.apache.logging.log4j:log4j-bom:{log4j-core-version}')
-}
-----
-====
+include::partial$components/log4j-bom.adoc[]
 
 [#using-api]
 == How do I log using Log4j API?

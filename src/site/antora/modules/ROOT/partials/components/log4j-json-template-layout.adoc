@@ -15,13 +15,27 @@
     limitations under the License.
 ////
 
-include::partial$components/log4j-jakarta-web.adoc[]
+[tabs]
+====
+Maven::
++
+We assume you use xref:artifacts.adoc#log4j-bom[`log4j-bom`] for dependency management.
++
+[source,xml,subs="+attributes"]
+----
+<dependency>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-json-template-layout</artifactId>
+  <scope>runtime</scope>
+</dependency>
+----
 
-.Click here if you are you using Jakarta EE 8 or any version of Java EE?
-[%collapsible]
-=====
-Jakarta EE 8 and all Java EE applications servers use the legacy `javax` package prefix instead of `jakarta`.
-If you are using those application servers, you should replace the dependencies above with:
-
-include::partial$components/log4j-web.adoc[]
-=====
+Gradle::
++
+We assume you use xref:artifacts.adoc#log4j-bom[`log4j-bom`] for dependency management.
++
+[source,groovy,subs="+attributes"]
+----
+runtimeOnly 'org.apache.logging.log4j:log4j-json-template-layout'
+----
+====

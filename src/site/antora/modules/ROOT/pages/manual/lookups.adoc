@@ -364,7 +364,8 @@ See <<lookups-patterns>> for more information.
 | `docker:<key>`
 
 where `<key>` is one of the <<DockerLookup-keys>>.
-| Dependency | `log4j-docker`
+| Dependency
+| xref:components.adoc#log4j-docker[`log4j-docker`]
 |===
 
 Docker Lookup queries https://docs.docker.com/engine/api/[the API of the Docker Engine] running your container.
@@ -382,9 +383,11 @@ It supports the retrieval of following container attributes:
 |shortImageId |The first 12 characters of the container image ID
 |===
 
-Additional runtime dependencies are required for using Docker Lookup:
-
-include::partial$manual/dependencies-log4j-docker.adoc[]
+.Additional runtime dependencies are required for using Docker Lookup:
+[%collapsible]
+=====
+include::partial$components/log4j-docker.adoc[]
+=====
 
 [#EnvironmentLookup]
 === Environment Lookup
@@ -797,7 +800,7 @@ If you want to provide a configuration file specifically for this phase, call it
 
 Additional runtime dependencies are required for using Spring Boot Lookup:
 
-include::partial$manual/dependencies-log4j-spring-boot.adoc[]
+include::partial$components/log4j-spring-boot.adoc[]
 
 [#StructuredDataLookup]
 === Structured Data Lookup

@@ -561,7 +561,7 @@ Before installing the bridge, you need to make sure that none of the artifacts a
 
 To install the bridge, add the following dependency to your application:
 
-include::partial$manual/dependencies-log4j-1.2-api.adoc[]
+include::partial$components/log4j-1.2-api.adoc[]
 
 [#when-to-stop-using-the-log4j-1-x-bridge]
 === When to stop using the Log4j 1 to Log4j 2 bridge

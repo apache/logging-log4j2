@@ -18,39 +18,7 @@
 To log, you need a link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html[`Logger`] instance which you will retrieve from the link:../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html[`LogManager`].
 These are all part of the `log4j-api` module, which you can install as follows:
 
-[tabs]
-====
-Maven::
-+
-[source,xml]
-----
-<project>
-
-  <!-- Assuming `log4j-bom` is added -->
-
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api</artifactId>
-    </dependency>
-  </dependencies>
-
-</project>
-----
-
-Gradle::
-+
-[source,groovy]
-----
-dependencies {
-
-  // Assuming `log4j-bom` is added
-
-  implementation 'org.apache.logging.log4j:log4j-api'
-
-}
-----
-====
+include::partial$components/log4j-api.adoc[]
 
 You can use the `Logger` instance to log by using methods like `info()`, `warn()`, `error()`, etc.
 These methods are named after the _log levels_ they represent, a way to categorize log events by severity.

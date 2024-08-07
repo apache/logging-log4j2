@@ -71,34 +71,7 @@ The rest of the instructions in this page assume you use one of these.
 To keep your Log4j module versions in sync with each other, a BOM (Bill of Material) file is provided for your convenience.
 You can import the BOM in your build tool of preference:
 
-[tabs]
-====
-Maven::
-+
-[source,xml,subs="+attributes"]
-----
-<dependencyManagement>
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-bom</artifactId>
-      <version>{log4j-core-version}</version>
-      <scope>import</scope>
-      <type>pom</type>
-    </dependency>
-  </dependencies>
-</dependencyManagement>
-----
-
-Gradle::
-+
-[source,groovy,subs="+attributes"]
-----
-dependencies {
-  implementation platform('org.apache.logging.log4j:log4j-bom:{log4j-core-version}')
-}
-----
-====
+include::partial$components/log4j-bom.adoc[]
 
 Once you import the BOM, you don't need to explicitly provide the versions of the Log4j artifacts managed by it.
 
@@ -153,25 +126,7 @@ repositories {
 
 The easiest way to install Log4j API is through a dependency management tool such as Maven or Gradle, by adding the following dependency:
 
-[tabs]
-====
-Maven::
-+
-[source,xml]
-----
-<dependency>
-  <groupId>org.apache.logging.log4j</groupId>
-  <artifactId>log4j-api</artifactId>
-</dependency>
-----
-
-Gradle::
-+
-[source,groovy]
-----
-implementation 'org.apache.logging.log4j:log4j-api'
-----
-====
+include::partial$components/log4j-api.adoc[]
 
 [#impl]
 == Installing a logging implementation
@@ -279,54 +234,22 @@ The following sections explain the installation of Log4j-provided bridges.
 
 You can translate {slf4j-url}[SLF4J] calls to Log4j API using the `log4j-slf4j2-impl` artifact:
 
-[tabs]
-====
-Maven::
-+
-[source,xml]
-----
-<!-- SLF4J-to-Log4j bridge -->
-<dependency>
-  <groupId>org.apache.logging.log4j</groupId>
-  <artifactId>log4j-slf4j2-impl</artifactId>
-  <scope>runtime</scope>
-</dependency>
-----
+include::partial$components/log4j-slf4j2-impl.adoc[]
 
-Gradle::
-+
-[source,groovy]
-----
-runtimeOnly 'org.apache.logging.log4j:log4j-slf4j2-impl' // SLF4J-to-Log4j bridge
-----
-====
+.Are you still using SLF4J 1.x?
+[%collapsible]
+=====
+Add this example instead:
+
+include::partial$components/log4j-slf4j-impl.adoc[]
+=====
 
 [#impl-core-bridge-jul]
 ===== Installing JUL-to-Log4j bridge
 
 You can translate {jul-link} calls to Log4j API using the `log4j-jul` artifact:
 
-[tabs]
-====
-Maven::
-+
-[source,xml]
-----
-<!-- JUL-to-Log4j bridge -->
-<dependency>
-  <groupId>org.apache.logging.log4j</groupId>
-  <artifactId>log4j-jul</artifactId>
-  <scope>runtime</scope>
-</dependency>
-----
-
-Gradle::
-+
-[source,groovy]
-----
-runtimeOnly 'org.apache.logging.log4j:log4j-jul' // JUL-to-Log4j bridge
-----
-====
+include::partial$components/log4j-jul.adoc[]
 
 In order to activate the bridge from JUL to Log4j API, you also need to add:
 
@@ -345,27 +268,7 @@ See xref:log4j-jul.adoc[] for more information.
 
 You can translate {jpl-link} calls to Log4j API using the `log4j-jpl` artifact:
 
-[tabs]
-====
-Maven::
-+
-[source,xml]
-----
-<!-- JPL-to-Log4j bridge -->
-<dependency>
-  <groupId>org.apache.logging.log4j</groupId>
-  <artifactId>log4j-jpl</artifactId>
-  <scope>runtime</scope>
-</dependency>
-----
-
-Gradle::
-+
-[source,groovy]
-----
-runtimeOnly 'org.apache.logging.log4j:log4j-jpl' // JPL-to-Log4j bridge
-----
-====
+include::partial$components/log4j-jpa.adoc[]
 
 [#impl-core-bridge-jcl]
 ===== Installing JCL-to-Log4j bridge
@@ -394,6 +297,14 @@ Gradle::
 +
 Gradle users should refer to the https://docs.gradle.org/current/userguide/platforms.html#sub:using-platform-to-control-transitive-deps[Using a platform to control transitive versions] of the Gradle documentation.
 ====
+
+.Are you using Commons Logging 1.2.0 or earlier?
+[%collapsible]
+=====
+You need to install the following dependency instead:
+
+include::partial$components/log4j-jcl.adoc[]
+=====
 
 [#impl-core-bridge-jboss-logging]
 ===== Installing JBoss Logging-to-Log4j bridge
