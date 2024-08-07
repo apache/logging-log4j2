@@ -151,7 +151,7 @@ https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/
 
 | <<ContextMapLookup,`ctx`>>
 |
-| {log4j2-url}/manual/thread-context.adoc[]
+| {log4j2-url}/manual/thread-context.html[]
 
 | <<DateLookup,`date`>>
 |
@@ -230,7 +230,7 @@ link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getTimeMi
 
 | <<MapLookup,`map`>>
 |
-| {log4j2-url}/manual/messages.adoc#MapMessage[`MapMessage`]
+| {log4j2-url}/manual/messages.html#MapMessage[`MapMessage`]
 
 | <<MarkerLookup,`marker`>>
 |
@@ -239,7 +239,7 @@ link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getMarker
 
 | <<StructuredDataLookup,`sd`>>
 |
-| {log4j2-url}/manual/messages.adoc#StructuredDataMessage[`StructuredDataMessage`]
+| {log4j2-url}/manual/messages.html#StructuredDataMessage[`StructuredDataMessage`]
 
 |===
 
@@ -292,13 +292,13 @@ The Context Map Lookup can be used in two different contexts:
 
 Global context::
 If used in the global context, it uses the
-{log4j2-url}/manual/thread-context.adoc[ThreadContext]
+{log4j2-url}/manual/thread-context.html[ThreadContext]
 to retrieve data.
 +
 [WARNING]
 ====
 When used in this context
-{log4j2-url}/manual/thread-context.adoc#custom-ContextDataProvider[custom context data providers]
+{log4j2-url}/manual/thread-context.html#custom-ContextDataProvider[custom context data providers]
 are not supported.
 ====
 
@@ -306,7 +306,7 @@ Log event context::
 In the context of an event, the Context Map lookup uses the Log event
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html#getContextData()[context map data]
 of a log event to resolve the key.
-{log4j2-url}/manual/thread-context.adoc#custom-ContextDataProvider[Custom context data providers] are therefore supported.
+{log4j2-url}/manual/thread-context.html#custom-ContextDataProvider[Custom context data providers] are therefore supported.
 +
 [TIP]
 ====
@@ -424,16 +424,16 @@ It supports the retrieval of the following event attributes:
 |Simple class name of the exception, if one is present.
 
 |Level
-|{log4j2-url}/manual/customloglevels.adoc[Logging level] of the event
+|{log4j2-url}/manual/customloglevels.html[Logging level] of the event
 
 |Logger
 |Name of the logger
 
 |Marker
-|{log4j2-url}/manual/markers.adoc[Marker] associated with the log event, if one is present.
+|{log4j2-url}/manual/markers.html[Marker] associated with the log event, if one is present.
 
 |Message
-|Formatted {log4j2-url}/manual/messages.adoc[`Message`]
+|Formatted {log4j2-url}/manual/messages.html[`Message`]
 
 |ThreadId
 |Thread id associated with the log event
@@ -692,7 +692,7 @@ where `<key>` is any `String`.
 |===
 
 The Map Lookup retrieves the value assigned to the given key in a
-{log4j2-url}/manual/messages.adoc#MapMessage[`MapMessage`].
+{log4j2-url}/manual/messages.html#MapMessage[`MapMessage`].
 
 [TIP]
 ====
@@ -753,7 +753,7 @@ where `<key>` is either one of the <<StructuredDataLookup-keys>> or any `String`
 |===
 
 The Structured Data Lookup is very similar to <<MapLookup>> and retrieves the value assigned to the given key in a
-{log4j2-url}/manual/messages.adoc#StructuredDataMessage[`StructuredDataMessage`].
+{log4j2-url}/manual/messages.html#StructuredDataMessage[`StructuredDataMessage`].
 Additionally, the following virtual keys are supported:
 
 .Structured Data Lookup virtual keys

@@ -1,0 +1,61 @@
+{
+  "Configuration": {
+    "Appenders": {
+      "JDBC": {
+        "name": "JDBC_LOG",
+        "tableName": "logs",
+        "MessageLayout": {},
+        // tag::mapping[]
+        "ColumnMapping": [
+          // <1>
+          {
+            "name": "id",
+            "literal": "currval('logging_seq')"
+          },
+          // <2>
+          {
+            "name": "uuid",
+            "pattern": "%uuid{TIME}",
+            "columnType": "java.util.UUID"
+          },
+          {
+            "name": "message",
+            "pattern": "%m"
+          },
+          // <3>
+          {
+            "name": "timestamp",
+            "columnType": "java.util.Date"
+          },
+          {
+            "name": "mdc",
+            "columnType": "org.apache.logging.log4j.spi.ThreadContextMap"
+          },
+          {
+            "name": "ndc",
+            "columnType": "org.apache.logging.log4j.spi.ThreadContextStack"
+          },
+          // <4>
+          {
+            "name": "asJson",
+            "JsonTemplateLayout": {}
+          },
+          // <5>
+          {
+            "name": "resource",
+            "source": "resourceId"
+          }
+        ]
+        // end::mapping[]
+      }
+    },
+    "Loggers": {
+      "Root": {
+        "level": "INFO",
+        "AppenderRef": {
+          "ref": "JDBC_LOG"
+        }
+      }
+    }
+  }
+}

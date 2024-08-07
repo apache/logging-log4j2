@@ -14,6 +14,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
+
 [id=filters]
 = Filters
 
@@ -107,7 +108,7 @@ This is the only stage, which differentiates between an `ACCEPT` and `NEUTRAL` f
 Filtering logging calls at this stage provides the best performance:
 
 * this stage precedes the creation of log events, therefore operations like the
-{log4j2-url}/manual/thread-context.adoc[injection of context data],
+{log4j2-url}/manual/thread-context.html[injection of context data],
 xref:manual/layouts.adoc#LocationInformation[computation of location information]
 will not be performed for disabled log statements.
 * this stage precedes the asynchronous calls performed by either
@@ -567,7 +568,7 @@ the `LevelRangeFilter` supports the following parameter:
 ====
 Make sure not to invert the bounds of the range.
 Starting from the smallest level,
-{log4j2-url}/manual/customloglevels.adoc[the Log4j API defines]: `OFF`,
+{log4j2-url}/manual/customloglevels.html[the Log4j API defines]: `OFF`,
 `FATAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`, `TRACE` and `ALL`.
 ====
 
@@ -601,7 +602,7 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 The `DynamicThresholdFilter` is a variant of <<ThresholdFilter>>,
 which uses a different threshold for each log event.
 The effective threshold to use is determined by querying the
-{log4j2-url}/manual/thread-context.adoc[context data]
+{log4j2-url}/manual/thread-context.html[context data]
 of the log event.
 For each log event:
 
@@ -698,7 +699,7 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 === Marker filters
 
 The following filters use the
-{log4j2-url}/manual/markers.adoc[log event marker]
+{log4j2-url}/manual/markers.html[log event marker]
 to filter log events.
 
 [#NoMarkerFilter]
@@ -739,7 +740,7 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 === Message filters
 
 Message filters allow filtering log events based on the
-{log4j2-url}/manual/messages.adoc[`Message`]
+{log4j2-url}/manual/messages.html[`Message`]
 contained in the log event.
 
 include::partial$manual/log-event.adoc[]
@@ -747,19 +748,16 @@ include::partial$manual/log-event.adoc[]
 [#RegexFilter]
 ==== `RegexFilter`
 
-The `RegexFilter` matches a regular expression against either the result of
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html#getFormat()[`Message.getFormat()`]
-or
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html#getFormat()[`Message.getFormattedMessage()`].
-It can be used with all kinds of `Message` implementations.
+The `RegexFilter` matches a regular expression against messages.
+Besides the <<common-configuration-attributes,common configuration attributes>>, the `RegexFilter` supports the following parameters:
 
-Besides the <<common-configuration-attributes,common configuration attributes>>,
-the `RegexFilter` supports the following parameters:
-
-.`RegexFilter` -- configuration attributes
-[cols="1m,1,1,4"]
+.`RegexFilter` configuration attributes
+[%header,cols="1m,1,1,4"]
 |===
-|Attribute | Type | Default value | Description
+|Attribute
+| Type
+| Default value
+| Description
 
 | regex
 | https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/util/regex/Pattern.html[`Pattern`]
@@ -771,13 +769,14 @@ the `RegexFilter` supports the following parameters:
 | useRawMsg
 | `boolean`
 | `false`
-| If `true` the result of
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html#getFormat()[`Message.getFormat()`]
-will be used.
-Otherwise,
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html#getFormat()[`Message.getFormattedMessage()`]
-is used.
-
+| If `true`, for
+{log4j2-url}/manual/messages.html#ParameterizedMessage[`ParameterizedMessage`],
+{log4j2-url}/manual/messages.html#StringFormattedMessage[`StringFormattedMessage`],
+and
+{log4j2-url}/messages.html#MessageFormatMessage[`MessageFormatMessage`],
+the message format pattern; for
+{log4j2-url}/manual/messages.html#StructuredDataMessage[`StructuredDataMessage`],
+the message field will be used as the match target.
 |===
 
 [WARNING]
@@ -824,7 +823,7 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 The following filters match log events based on the content of one of these map structures:
 
 * The map contained in a
-{log4j2-url}/manual/messages.adoc#MapMessage[`MapMessage`] object.
+{log4j2-url}/manual/messages.html#MapMessage[`MapMessage`] object.
 See
 link:../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html#getData()[`MapMessage.getData()`]
 for details.
@@ -878,7 +877,7 @@ that appears in the configuration map is one of the allowed values.
 ==== `MapFilter`
 
 The `MapFilter` allows filtering based on the contents of all
-{log4j2-url}/manual/messages.adoc#collection-structured[structured ``Message``s].
+{log4j2-url}/manual/messages.html#collection-structured[structured ``Message``s].
 
 This filter encodes the <<configuration-map>> introduced above as a list of
 `KeyValuePair` elements.
@@ -967,7 +966,7 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 ==== `StructuredDataFilter`
 
 The `StructuredDataFilter` is a variant of <<MapFilter>> that only matches
-{log4j2-url}/manual/messages.adoc#StructuredDataMessage[`StructureDataMessage`]s.
+{log4j2-url}/manual/messages.html#StructuredDataMessage[`StructureDataMessage`]s.
 
 In addition to matching the map structure contained in a `StructuredDataMessage`
 (which corresponds to https://datatracker.ietf.org/doc/html/rfc5424#section-6.3.3[RFC 5424 `SD-PARAM` elements])
@@ -1088,7 +1087,7 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 
 The `ContextMapFilter` works in the same way as the <<MapFilter>> above,
 except it checks the
-{log4j2-url}/manual/thread-context.adoc[context map data]
+{log4j2-url}/manual/thread-context.html[context map data]
 of the log event instead of the log message.
 
 This filter also encodes the <<configuration-map>> introduced above as a list of
@@ -1177,7 +1176,7 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 ==== `MutableContextMapFilter`
 
 The `MutableContextMapFilter` is an alternative version of <<ContextMapFilter>> that also uses the
-{log4j2-url}/manual/thread-context.adoc[context data map]
+{log4j2-url}/manual/thread-context.html[context data map]
 to filter messages, but externalizes the <<configuration-map>>, so it can be kept in a separate location.
 
 This filter encodes the <<configuration-map>> as JSON.
@@ -1316,22 +1315,22 @@ For global filters, the following bindings are available:
 | The logger used in the log statement.
 
 | level
-| {log4j2-url}/manual/customloglevels.adoc[`Level`]
+| {log4j2-url}/manual/customloglevels.html[`Level`]
 | The level used in the log statement.
 
 | marker
-| {log4j2-url}/manual/markers.adoc[`Marker`]
+| {log4j2-url}/manual/markers.html[`Marker`]
 | The marker used in the log statement.
 
 | message
-| {log4j2-url}/manual/messages.adoc[`Message`]
+| {log4j2-url}/manual/messages.html[`Message`]
 a| The message used in the log event if the user directly supplied one.
 Otherwise:
 
 * If the logging statement contained an `Object` argument, it is wrapped in a
-{log4j2-url}/manual/messages.adoc#ObjectMessage[`ObjectMessage`].
+{log4j2-url}/manual/messages.html#ObjectMessage[`ObjectMessage`].
 * If the logging statement contained a format `String`, it is wrapped in a
-{log4j2-url}/manual/messages.adoc#SimpleMessage[`SimpleMessage`].
+{log4j2-url}/manual/messages.html#SimpleMessage[`SimpleMessage`].
 
 | parameters
 | `Object[]`

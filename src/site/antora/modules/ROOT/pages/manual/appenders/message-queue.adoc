@@ -1,0 +1,703 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Message queue appenders
+
+This page guides you through message queue xref:manual/appenders.adoc[appenders] that forward log events to a message broker.
+
+[#FlumeAppender]
+== Flume Appender
+
+https://flume.apache.org/index.html[Apache Flume] is a distributed, reliable, and available system for efficiently collecting, aggregating, and moving large amounts of log data from many different sources to a centralized data store.
+The Flume Appender takes log events and sends them to a Flume agent as serialized Avro events for consumption.
+
+The Flume Appender supports three modes of operation.
+
+[#FlumeAppender-mode-AVRO]
+`AVRO`::
+It can act as a remote Flume client which sends Flume events via Avro to a Flume Agent configured with an Avro Source.
+
+[#FlumeAppender-mode-EMBEDDED]
+`EMBEDDED`::
+It can act as an embedded Flume Agent where Flume events pass directly into Flume for processing.
+
+[#FlumeAppender-mode-PERSISTENT]
+`PERSISTENT`::
+It can persist events to a local BerkeleyDB data store and then asynchronously send the events to Flume, similar to the embedded Flume Agent but without most of the Flume dependencies.
+
+Usage as an embedded agent will cause the messages to be directly passed to the Flume Channel, and then control will be immediately returned to the application.
+All interaction with remote agents will occur asynchronously.
+Setting the <<FlumeAppender-attr-type,`type` attribute>> to `EMBEDDED` will force the use of the embedded agent.
+In addition, configuring agent properties in the appender configuration will also cause the embedded agent to be used.
+
+[#FlumeAppender-attributes]
+.Flume Appender configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+4+h| Required
+
+| [[FlumeAppender-attr-name]]name
+| `String`
+|
+| The name of the appender.
+
+4+h| Optional
+
+| [[FlumeAppender-attr-type]]type
+| _enumeration_
+| `AVRO`
+|
+One of
+<<FlumeAppender-mode-AVRO,AVRO>>,
+<<FlumeAppender-mode-EMBEDDED,EMBEDDED>>
+or
+<<FlumeAppender-mode-PERSISTENT,PERSISTENT>>
+to indicate which variation of the Appender is desired.
+
+| [[FlumeAppender-attr-ignoreExceptions]]ignoreExceptions
+| `boolean`
+| `true`
+| If `false`, logging exception will be forwarded to the caller of the logging statement.
+Otherwise, they will be ignored.
+
+Logging exceptions are always also logged to the
+{log4j2-url}/manual/status-logger.html[status logger].
+
+| [[FlumeAppender-attr-connectTimeoutMillis]]connectTimeoutMillis
+| `int`
+| `0`
+|
+The connect timeout in milliseconds.
+If `0` the timeout is infinite.
+
+| [[FlumeAppender-attr-requestTimeoutMillis]]requestTimeoutMillis
+| `int`
+| `0`
+|The request timeout in milliseconds.
+If `0` the timeout is infinite.
+
+| [[FlumeAppender-attr-agentRetries]]agentRetries
+| `int`
+| `0`
+|
+The number of times the agent should be retried before failing to a secondary.
+This parameter is ignored when `type="persistent"` is specified (agents are tried once before failing to
+the next).
+
+| [[FlumeAppender-attr-batchSize]]batchSize
+| `int`
+| `1`
+|
+It specifies the number of events that should be sent as a batch.
+
+| [[FlumeAppender-attr-compress]]compress
+| `boolean`
+| `false`
+|
+When set to `true` the message body will be compressed using gzip.
+
+| [[FlumeAppender-attr-dataDir]]dataDir
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[`Path`]
+|
+|
+Directory where the Flume write-ahead log should be written.
+Valid only when embedded is set to true and Agent elements are used instead of Property elements.
+
+| [[FlumeAppender-attr-eventPrefix]]eventPrefix
+| `String`
+| `""`
+|
+The character string to prepend to each event attribute to distinguish it from MDC attributes.
+
+| [[FlumeAppender-attr-lockTimeoutRetries]]lockTimeoutRetries
+| `int`
+| `5`
+|
+The number of times to retry if a LockConflictException occurs while writing to Berkeley DB.
+
+| [[FlumeAppender-attr-maxDelayMillis]]maxDelayMillis
+| `int`
+| `60000`
+|
+The maximum number of milliseconds to wait for <<FlumeAppender-attr-batchSize,batchSize>> events before publishing the batch.
+
+| [[FlumeAppender-attr-mdcExcludes]]mdcExcludes
+| `String[]`
+|
+|A comma-separated list of mdc keys that should be excluded from the FlumeEvent.
+
+This is mutually exclusive with the <<FlumeAppender-attr-mdcIncludes,mdcIncludes>> attribute.
+
+| [[FlumeAppender-attr-mdcIncludes]]mdcIncludes
+| `String[]`
+|
+|
+A comma-separated list of mdc keys that should be included in the `FlumeEvent`.
+Any keys in the MDC not found in the list will be excluded.
+
+This option is mutually exclusive with the <<FlumeAppender-attr-mdcExcludes,mdcExcludes>> attribute.
+
+| [[FlumeAppender-attr-mdcRequired]]mdcRequired
+| `String[]`
+|
+|
+A comma-separated list of `mdc` keys that must be present in the MDC.
+If a key is not present, a LoggingException will be thrown.
+
+| [[FlumeAppender-attr-mdcPrefix]]mdcPrefix
+| `String`
+| `mdc:`
+|
+A string that should be prepended to each MDC key to distinguish it from event attributes.
+
+|===
+
+[#FlumeAppender-elements]
+.Flume Appender nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[FlumeAppender-element-Agent]]<<Agent,`Agent`>>
+| zero or more
+|
+An array of Agents to which the logging events should be sent.
+If more than one agent is specified, the first Agent will be the primary and subsequent Agents will be used in the order specified as secondaries should the primary Agent fail.
+Each Agent definition supplies the Agent's host and port.
+
+The specification of agents and <<FlumeAppender-element-Property,properties>> are mutually exclusive.
+
+| [[FlumeAppender-element-Filter]]xref:manual/filters.adoc[`Filter`]
+| zero or one
+|
+Allows filtering log events just before they are formatted and sent.
+
+See also xref:manual/filters.adoc#appender-stage[appender filtering stage].
+
+| [[FlumeAppender-element-FlumeEventFactory]]<<FlumeEventFactory,`FlumeEventFactory`>>
+| zero or one
+|
+Factory that generates the Flume events from Log4j events.
+
+The default factory is the appender itself.
+
+| [[FlumeAppender-element-Layout]]xref:manual/layouts.adoc[`Layout`]
+| zero or one
+|
+Formats log events.
+If not provided, xref:manual/layouts.adoc#RFC5424Layout[Rfc5424 Layout] is used.
+
+See xref:manual/layouts.adoc[] for more information.
+
+| [[FlumeAppender-element-Property]]xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property[`Property`]
+| zero or more
+|
+One or more Property elements that are used to configure the Flume Agent.
+The properties must be configured without the agent name, the appender name is used for this, and no sources can be configured.
+Interceptors can be specified for the source using "sources.log4j-source.interceptors".
+All other Flume configuration properties are allowed.
+Specifying both Agent and Property elements will result in an error.
+
+When used to configure in Persistent mode, the valid properties are:
+
+1. `keyProvider` to specify the name of the plugin to provide the
+secret key for encryption.
+
+The specification of <<FlumeAppender-element-Agent,agents>> and properties are mutually exclusive.
+|===
+
+Additional runtime dependencies are required to use the Flume Appender:
+
+[tabs]
+====
+Maven::
++
+[source,xml]
+----
+<!-- We assume you use `log4j-bom` for dependency management -->
+<dependency>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-flume-ng</artifactId>
+  <scope>runtime</scope>
+</dependency>
+----
+
+Gradle::
++
+[source,groovy]
+----
+// We assume you use `log4j-bom` for dependency management
+runtimeOnly 'org.apache.logging.log4j:log4j-flume-ng'
+----
+====
+
+To use the Flume Appender <<FlumeAppender-mode-PERSISTENT,PERSISTENT mode>>, you need the following additional dependency:
+
+[tabs]
+====
+Maven::
++
+[source,xml,subs="+attributes"]
+----
+<dependency>
+  <groupId>com.sleepycat</groupId>
+  <artifactId>je</artifactId>
+  <version>{je-version}</version>
+  <scope>runtime</scope>
+</dependency>
+----
+
+Gradle::
++
+[source,groovy]
+----
+runtimeOnly 'com.sleepycat:je:{je-version}'
+----
+====
+
+If you use the Flume Appender in <<FlumeAppender-mode-EMBEDDED,EMBEDDED mode>>, you need to add the `flume-ng-embedded-agent` dependency below and all the channel and sink implementation you plan to use.
+
+See https://flume.apache.org/releases/content/1.11.0/FlumeDeveloperGuide.html#embedded-agent[Flume Embedded Agent] documentation for more details.
+
+[tabs]
+====
+Maven::
++
+[source,xml,subs="+attributes"]
+----
+<dependency>
+  <groupId>org.apache.flume</groupId>
+  <artifactId>flume-ng-embedded-agent</artifactId>
+  <version>{flume-version}</version>
+  <scope>runtime</scope>
+</dependency>
+----
+
+Gradle::
++
+[source,groovy]
+----
+runtimeOnly 'org.apache.flume:flume-ng-embedded-agent:{flume-version}'
+----
+====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender[{plugin-reference-marker} Plugin reference for `Flume`]
+
+[#Agent]
+=== Agent Addresses
+
+The address of the Flume server is specified using the `Agent` element, which supports the following configuration options:
+
+[#Agent-attributes]
+.`Agent` configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[Agent-attr-host]]host
+| https://docs.oracle.com/javase/8/docs/api/java/net/InetAddress.html[`InetAddress`]
+| `localhost`
+| The host to connect to.
+
+| [[Agent-attr-port]]port
+| `int`
+| `35853`
+| The port to connect to.
+
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-Agent[{plugin-reference-marker} Plugin reference for `Agent`]
+
+[#FlumeEventFactory]
+=== Flume event factories
+
+Flume event factories are Log4j plugins that implement the
+link:../../javadoc/log4j-flume-ng/org/apache/logging/log4j/flume/appender/FlumeEventFactory.html[`FlumeEventFactory`]
+and allow to customize the way log events are transformed into
+link:../../javadoc/log4j-flume-ng/org/apache/logging/log4j/flume/appender/FlumeEvent.html[`FlumeEvent`]s.
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeEventFactory[{plugin-reference-marker} Plugin reference for `FlumeEventFactory`]
+
+[#FlumeAppender-examples]
+=== Configuration examples
+
+A sample Flume Appender which is configured with a primary and a secondary agent, compresses the body and formats the body using the RFC5424 Layout:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/flume-avro.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/message-queue/flume-avro.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/flume-avro.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/message-queue/flume-avro.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/flume-avro.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/message-queue/flume-avro.yaml[tag=appender]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/flume-avro.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/message-queue/flume-avro.properties[tag=appender]
+----
+====
+
+<1> Primary agent
+<2> Secondary agent
+
+A sample Flume Appender, which is configured with a primary and a secondary agent, compresses the body, formats the body using the RFC5424 Layout, and persists encrypted events to disk:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/flume-persistent.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/message-queue/flume-persistent.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/flume-persistent.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/message-queue/flume-persistent.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/flume-persistent.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/message-queue/flume-persistent.yaml[tag=appender]
+----
+
+Properties::
++
+This example cannot be configured using Java properties.
+====
+
+A sample Flume Appender, which is configured with a primary and a secondary agent compresses the body, formats the body using RFC5424 Layout, and passes the events to an embedded Flume Agent.
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/flume-embedded.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/message-queue/flume-embedded.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/flume-embedded.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/message-queue/flume-embedded.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/flume-embedded.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/message-queue/flume-embedded.yaml[tag=appender]
+----
+
+Properties::
++
+This example cannot be configured using Java properties.
+====
+
+[#JmsAppender]
+== JMS Appender
+
+The JMS Appender sends the formatted log event to a
+https://jakarta.ee/specifications/messaging/3.0/[Jakarta Messaging API 3.0]
+destination.
+
+[IMPORTANT]
+====
+As of Log4j `2.17.0` you need to enable the JMS Appender **explicitly** by setting the
+xref:manual/systemproperties.adoc#log4j.jndi.enableJms[`log4j2.enableJndiJms`]
+configuration property to `true`.
+====
+
+[#JmsAppender-attributes]
+.JMS Appender configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+4+h| Required
+
+| [[JmsAppender-attr-name]]name
+| `String`
+|
+| The name of the appender.
+
+| [[JmsAppender-attr-factoryBindingName]]factoryBindingName
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Name.html[`Name`]
+|
+|
+The JNDI name of the
+https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/connectionfactory[`ConnectionFactory`].
+
+Only the `java:` protocol is supported.
+
+| [[JmsAppender-attr-destinationBindingName]]destinationBindingName
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Name.html[`Name`]
+|
+|
+The JNDI name of the
+https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/destination[`Destination`], which can be either a
+https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/queue[`Queue`]
+or a
+https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/topic[`Topic`].
+
+Only the `java:` protocol is supported.
+
+4+h| JNDI configuration (overrides system properties)
+
+| [[JmsAppender-attr-factoryName]]factoryName
+| String
+|
+|
+It specifies the
+https://docs.oracle.com/javase/8/docs/api/javax/naming/spi/InitialContextFactory.html[`InitialContextFactory`].
+
+See
+https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Context.html#INITIAL_CONTEXT_FACTORY[INITIAL_CONTEXT_FACTORY]
+for details.
+
+| [[JmsAppender-attr-urlPkgPrefixes]]urlPkgPrefixes
+| String[]
+|
+|
+A colon-separated list of package prefixes that contain URL context factories.
+
+See https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Context.html#URL_PKG_PREFIXES[URL_PKG_PREFIXES] for details.
+
+| [[JmsAppender-attr-providerURL]]providerURL
+| String
+|
+|
+A configuration parameter for the <<JmsAppender-attr-factoryName,`InitialContextFactory`>>.
+
+See https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Context.html#PROVIDER_URL[PROVIDER_URL]
+for details.
+
+| [[JmsAppender-attr-securityPrincipalName]]securityPrincipalName
+| String
+|
+|
+The name of the principal to use for the <<JmsAppender-attr-factoryName,`InitialContextFactory`>>.
+
+See
+https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Context.html#SECURITY_PRINCIPAL[SECURITY_PRINCIPAL]
+for details.
+
+| securityCredentials
+| String
+| null
+|
+The security credentials for the <<JmsAppender-attr-securityPrincipalName,principal>>.
+
+See
+https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Context.html#SECURITY_CREDENTIALS[SECURITY_CREDENTIALS]
+for details.
+
+4+h| Optional
+
+| [[JmsAppender-attr-userName]]userName
+| `String`
+|
+|
+The username for the
+https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/connectionfactory[`ConnectionFactory`].
+
+| [[JmsAppender-attr-password]]password
+| `String`
+|
+|
+The password for the
+https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/connectionfactory[`ConnectionFactory`].
+
+| [[JmsAppender-attr-ignoreExceptions]]ignoreExceptions
+| `boolean`
+| `true`
+| If `false`, logging exception will be forwarded to the caller of the logging statement.
+Otherwise, they will be ignored.
+
+Logging exceptions are always also logged to the
+{log4j2-url}/manual/status-logger.html[status logger].
+
+| [[JmsAppender-attr-reconnectIntervalMillis]]reconnectIntervalMillis
+| `long`
+| `5000`
+|The request timeout in milliseconds.
+If `0` the timeout is infinite.
+
+|===
+
+[#JmsAppender-elements]
+.JMS Appender nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[JmsAppender-element-Filter]]xref:manual/filters.adoc[`Filter`]
+| zero or one
+|
+Allows filtering log events just before they are formatted and sent.
+
+See also xref:manual/filters.adoc#appender-stage[appender filtering stage].
+
+| [[JmsAppender-element-Layout]]xref:manual/layouts.adoc[`Layout`]
+| **one**
+|
+Used in the mapping process to get a JMS
+https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/message[`Message`].
+
+See <<JmsAppender-mapping>> below for more information.
+
+|===
+
+Additional runtime dependencies are required to use the JMS Appender:
+
+include::partial$manual/dependencies-log4j-jakarta-jms.adoc[]
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-JmsAppender[{plugin-reference-marker} Plugin reference for `JMS`]
+
+[#JmsAppender-mapping]
+=== Mapping events to JMS messages
+
+The mapping between log events and JMS messages has two steps:
+
+. First, the xref:manual/layouts.adoc[layout] is used to transform a log event into an intermediary format.
+. Then, a https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/message[`Message`] is created based on the type of object returned by the layout:
+
+`String`::
+Strings are converted into
+https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/textmessage[`TextMessage`]s.
+
+{log4j2-url}/manual/messages.html#MapMessage[`MapMessage`]::
+The Log4j `MapMessage` type is mapped to the JMS
+https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/mapmessage[`MapMessage`]
+type.
+
+`Serializable`::
+Anything else is converted into an
+https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/objectmessage[`ObjectMessage`].
+
+[#JmsAppender-examples]
+=== Configuration examples
+
+Here is a sample JMS Appender configuration:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/jms-simple.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/message-queue/jms-simple.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/jms-simple.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/message-queue/jms-simple.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/jms-simple.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/message-queue/jms-simple.yaml[tag=appender]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/jms-simple.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/message-queue/jms-simple.properties[tag=appender]
+----
+====
+
+To map your Log4j `MapMessage` to JMS `javax.jms.MapMessage`, set the layout of the appender to xref:manual/layouts.adoc#MessageLayout[`MessageLayout`]:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/jms-message.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/message-queue/jms-message.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/jms-message.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/message-queue/jms-message.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/jms-message.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/message-queue/jms-message.yaml[tag=appender]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/message-queue/jms-message.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/message-queue/jms-message.properties[tag=appender]
+----
+====
+

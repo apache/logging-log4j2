@@ -1,0 +1,32 @@
+{
+  "Configuration": {
+    "Appenders": {
+      // tag::appender[]
+      "NoSql": {
+        "name": "MONGO",
+        "MongoDb": {
+          "connection": "mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs"
+        },
+        "KeyValuePair": [
+          {
+            "key": "startTime",
+            "value": "${date:yyyy-MM-dd hh:mm:ss.SSS}" // <1>
+          },
+          {
+            "key": "currentTime",
+            "value": "$${date:yyyy-MM-dd hh:mm:ss.SSS}" // <2>
+          }
+        ]
+      }
+      // end::appender[]
+    },
+    "Loggers": {
+      "Root": {
+        "level": "INFO",
+        "AppenderRef": {
+          "ref": "MONGO"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "Configuration": {
+    "Appenders": {
+      // tag::appender[]
+      "Flume": {
+        "name": "FLUME",
+        "Rfc5424Layout": {
+          "enterpriseNumber": 18060,
+          "includeMDC": true,
+          "appName": "MyAPP"
+        },
+        "Agent": [
+          { // <1>
+            "host": "192.168.10.101",
+            "port": "8800"
+          },
+          { // <2>
+            "host": "192.168.10.102",
+            "port": "8800"
+          }
+        ]
+      }
+      // end::appender[]
+    },
+    "Loggers": {
+      "Root": {
+        "level": "INFO",
+        "AppenderRef": {
+          "ref": "FLUME"
+        }
+      }
+    }
+  }
+}

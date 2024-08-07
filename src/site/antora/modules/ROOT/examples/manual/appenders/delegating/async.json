@@ -1,0 +1,23 @@
+{
+  "Configuration": {
+    "Appenders": {
+      // tag::appenders[]
+      "File": {
+        "name": "FILE",
+        "fileName": "app.log"
+      },
+      "Async": {
+        "name": "ASYNC"
+      }
+      // end::appenders[]
+    },
+    "Loggers": {
+      "Root": {
+        "level": "INFO",
+        "AppenderRef": {
+          "ref": "ASYNC"
+        }
+      }
+    }
+  }
+}

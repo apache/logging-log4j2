@@ -1,0 +1,32 @@
+{
+  "Configuration": {
+    "Appenders": {
+      // tag::appender[]
+      "Routing": {
+        "name": "ROUTING",
+        "Routes": {
+          "pattern": "$${event:Marker}}", // <1>
+          "Route": {
+            "File": { // <2>
+              "name": "${event:Marker}",
+              "fileName": "${event:Marker:-main}.log",
+              "JsonTemplateLayout": {}
+            }
+          }
+        },
+        "IdlePurgePolicy": { // <3>
+          "timeToLive": 15
+        }
+      }
+      // end::appender[]
+    },
+    "Loggers": {
+      "Root": {
+        "level": "INFO",
+        "AppenderRef": {
+          "ref": "ROUTING"
+        }
+      }
+    }
+  }
+}
