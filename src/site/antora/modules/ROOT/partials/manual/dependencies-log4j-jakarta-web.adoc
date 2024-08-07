@@ -15,24 +15,4 @@
     limitations under the License.
 ////
 
-[tabs]
-====
-Maven::
-+
-[source,xml,subs=+attributes]
-----
-<dependency>
-  <groupId>org.apache.logging.log4j</groupId>
-  <artifactId>log4j-jakarta-web</artifactId>
-  <version>{log4j-jakarta-version}</version>
-  <scope>runtime</scope>
-</dependency>
-----
-
-Gradle::
-+
-[source,groovy,subs=+attributes]
-----
-runtimeOnly 'org.apache.logging.log4j:log4j-jakarta-web:{log4j-jakarta-version}'
-----
-====
+include::partial$components/log4j-jakarta-web.adoc[]

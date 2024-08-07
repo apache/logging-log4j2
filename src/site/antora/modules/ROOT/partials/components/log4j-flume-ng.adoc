@@ -19,23 +19,23 @@
 ====
 Maven::
 +
-We assume you use xref:components.adoc#log4j-bom[`log4j-bom`] for dependency management.
+We assume you use xref:artifacts.adoc#log4j-bom[`log4j-bom`] for dependency management.
 +
 [source,xml,subs="+attributes"]
 ----
 <dependency>
   <groupId>org.apache.logging.log4j</groupId>
-  <artifactId>log4j-jdbc</artifactId>
+  <artifactId>log4j-flume-ng</artifactId>
   <scope>runtime</scope>
 </dependency>
 ----
 
 Gradle::
 +
-We assume you use xref:components.adoc#log4j-bom[`log4j-bom`] for dependency management.
+We assume you use xref:artifacts.adoc#log4j-bom[`log4j-bom`] for dependency management.
 +
 [source,groovy,subs="+attributes"]
 ----
-runtimeOnly 'org.apache.logging.log4j:log4j-jdbc'
+runtimeOnly 'org.apache.logging.log4j:log4j-flume-ng'
 ----
 ====

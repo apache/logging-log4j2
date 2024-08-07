@@ -19,23 +19,27 @@
 ====
 Maven::
 +
-We assume you use xref:components.adoc#log4j-bom[`log4j-bom`] for dependency management.
-+
 [source,xml,subs="+attributes"]
 ----
-<dependency>
-  <groupId>org.apache.logging.log4j</groupId>
-  <artifactId>log4j-jdbc</artifactId>
-  <scope>runtime</scope>
-</dependency>
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-bom</artifactId>
+      <version>{log4j-core-version}</version>
+      <scope>import</scope>
+      <type>pom</type>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
 ----
 
 Gradle::
 +
-We assume you use xref:components.adoc#log4j-bom[`log4j-bom`] for dependency management.
-+
 [source,groovy,subs="+attributes"]
 ----
-runtimeOnly 'org.apache.logging.log4j:log4j-jdbc'
+dependencies {
+  implementation platform('org.apache.logging.log4j:log4j-bom:{log4j-core-version}')
+}
 ----
 ====

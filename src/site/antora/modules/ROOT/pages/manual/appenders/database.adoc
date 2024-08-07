@@ -551,7 +551,7 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-
 
 Additional runtime dependencies are required for using `PoolingDriver`:
 
-include::partial$manual/dependencies-log4j-jdbc-dbcp2.adoc[]
+include::partial$components/log4j-jdbc-dbcp2.adoc[]
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-core-appender-db-jdbc-PoolingDriverConnectionSource[{plugin-reference-marker} Plugin reference for `PoolingDriver`]
 
@@ -835,28 +835,7 @@ It specifies the capped collection size of bytes.
 
 Additional runtime dependencies are required to use the `MongoDb` provider:
 
-[tabs]
-====
-Maven::
-+
-[source,xml]
-----
-<!-- We assume you use `log4j-bom` for dependency management -->
-<dependency>
-  <groupId>org.apache.logging.log4j</groupId>
-  <artifactId>log4j-mongodb</artifactId>
-  <scope>runtime</scope>
-</dependency>
-----
-
-Gradle::
-+
-[source,groovy]
-----
-// We assume you use `log4j-bom` for dependency management
-runtimeOnly 'org.apache.logging.log4j:log4j-mongodb'
-----
-====
+include::partial$components/log4j-mongodb.adoc[]
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider[{plugin-reference-marker} Plugin reference for `MongoDb`]
 
