@@ -1,0 +1,44 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to you under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+Configuration:
+  Appenders:
+    File:
+      - name: "MAIN_LOG"
+        fileName: "main.log"
+        JsonTemplateLayout: {}
+      - name: "MARKED_LOG"
+        fileName: "marked.log"
+        JsonTemplateLayout: {}
+      - name: "AUDIT_LOG"
+        fileName: "audit.log"
+        JsonTemplateLayout: {}
+    # tag::appender[]
+    Routing:
+      Routes:
+        pattern: "$${event:Marker}"
+        Route:
+          - key: "AUDIT" # <1>
+            ref: "AUDIT_LOG"
+          - key: "$${event:Marker}" # <2>
+            ref: "MAIN_LOG"
+          - ref: "MARKED_LOG" # <3>
+    # end::appender[]
+  Loggers:
+    Root:
+      level: "INFO"
+      AppenderRef:
+        ref: "ROUTING"

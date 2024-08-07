@@ -1,0 +1,38 @@
+{
+  "Configuration": {
+    "Appenders": {
+      // tag::appender[]
+      "SMTP": {
+        "name": "SMTP",
+        "smtpProtocol": "smtps",
+        "smtpHost": "mx.example.org",
+        "from": "app@example.org",
+        "to": "root@example.org",
+        "subject": "[%markerSimpleName] Security incident on ${hostName}", // <1>
+        "MarkerFilter": { // <2>
+          "marker": "AUDIT"
+        },
+        "HtmlLayout": {},
+        "Ssl": {
+          "KeyStore": {
+            "location": "keystore.p12",
+            "password": "${env:KEYSTORE_PASSWORD}"
+          },
+          "TrustStore": {
+            "location": "truststore.p12",
+            "password": "${env:TRUSTSTORE_PASSWORD}"
+          }
+        }
+      }
+      // end::appender[]
+    },
+    "Loggers": {
+      "Root": {
+        "level": "INFO",
+        "AppenderRef": {
+          "ref": "SMTP"
+        }
+      }
+    }
+  }
+}

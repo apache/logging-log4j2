@@ -361,6 +361,17 @@ It bundles several predefined event templates modeling popular JSON-based log fo
 
 Read more on xref:manual/json-template-layout.adoc[]...
 
+[#MessageLayout]
+=== Message Layout
+
+`MessageLayout` is a special layout that extracts the
+{log4j2-url}/manual/messages.html[`Message`]
+contained in a log event.
+It is currently only useful with the
+xref:manual/appenders/database.adoc#JdbcAppender[JDBC Appender].
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-MessageLayout[{plugin-reference-marker} Plugin reference for `MessageLayout`]
+
 [id=pattern-layout]
 === [[PatternLayout]] Pattern Layout
 

@@ -1,0 +1,52 @@
+{
+  "Configuration": {
+    "Appenders": {
+      "File": [
+        {
+          "name": "MAIN_LOG",
+          "fileName": "main.log",
+          "JsonTemplateLayout": {}
+        },
+        {
+          "name": "MARKED_LOG",
+          "fileName": "marked.log",
+          "JsonTemplateLayout": {}
+        },
+        {
+          "name": "AUDIT_LOG",
+          "fileName": "audit.log",
+          "JsonTemplateLayout": {}
+        }
+      ],
+      // tag::appender[]
+      "Routing": {
+        "name": "ROUTING",
+        "Routes": {
+          "pattern": "$${event:Marker}}",
+          "Route": [
+            { // <1>
+              "key": "AUDIT",
+              "ref": "AUDIT_LOG"
+            },
+            { // <2>
+              "key": "$${event:Marker}",
+              "ref": "MAIN_LOG"
+            },
+            { // <3>
+              "ref": "MARKED_LOG"
+            }
+          ]
+        }
+      }
+      // end::appender[]
+    },
+    "Loggers": {
+      "Root": {
+        "level": "INFO",
+        "AppenderRef": {
+          "ref": "ROUTING"
+        }
+      }
+    }
+  }
+}

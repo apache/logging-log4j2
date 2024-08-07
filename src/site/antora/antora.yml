@@ -38,6 +38,7 @@ version: ~
 start_page: index.adoc
 asciidoc:
   attributes:
+    plugin-reference-marker: "&#x1F4D6;"
     # Commons
     antora-examples-url: "https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples"
     project-github-url: "https://github.com/apache/logging-log4j2/tree/main"
@@ -52,10 +53,15 @@ asciidoc:
     lmax-disruptor-url: "https://lmax-exchange.github.io/disruptor/"
     slf4j-url: "https://www.slf4j.org"
     # Dependency versions
+    commons-compress-version: "1.2.3-commons-compress"
     commons-csv-version: "1.2.3-commons-csv"
     commons-logging-version: "1.2.3-commons-logging"
+    conversant-version: "1.2.3-conversant"
     disruptor-version: "1.2.3-disruptor"
+    flume-version: "1.2.3-flume"
     jackson-version: "1.2.3-jackson"
+    jansi-version: "1.2.3-jansi"
+    je-version: "1.2.3-je"
     log4j-api-version: "1.2.3-api"
     log4j-core-version: "1.2.3-core"
     log4j-jakarta-version: "1.2.3-jakarta"

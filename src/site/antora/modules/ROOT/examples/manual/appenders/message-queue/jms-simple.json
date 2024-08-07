@@ -1,0 +1,22 @@
+{
+  "Configuration": {
+    "Appenders": {
+      // tag::appender[]
+      "JMS": {
+        "name": "JMS",
+        "factoryBindingName": "jms/ConnectionFactory",
+        "destinationBindingName": "jms/Queue",
+        "JsonTemplateLayout": {}
+      }
+      // end::appender[]
+    },
+    "Loggers": {
+      "Root": {
+        "level": "INFO",
+        "AppenderRef": {
+          "ref": "JMS"
+        }
+      }
+    }
+  }
+}
