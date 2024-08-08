@@ -99,7 +99,7 @@ Nevertheless, there are some tips we recommend you to practice:
 
 * *For writing to console*, use a xref:manual/appenders.adoc#ConsoleAppender[Console Appender] and make sure to configure its `direct` attribute to `true` for the maximum efficiency.
 
-* *For writing to an external service*, use a xref:manual/appenders.adoc#SocketAppender[Socket Appender] and make sure to set the protocol to TCP and configure the null delimiter of the associated layout.
+* *For writing to an external service*, use a xref:manual/appenders/network.adoc#SocketAppender[Socket Appender] and make sure to set the protocol to TCP and configure the null delimiter of the associated layout.
 For instance, see xref:manual/json-template-layout.adoc#plugin-attr-nullEventDelimiterEnabled[the `nullEventDelimiterEnabled` configuration attribute of JSON Template Layout].
 
 [#file]
@@ -167,7 +167,7 @@ In this section, we will share guides on some popular integration scenarios.
 [#docker]
 === Docker
 
-See xref:log4j-docker.adoc[Log4j Docker] for Docker-specific Log4j features, e.g., xref:manual/lookups.adoc#DockerLookup[Docker Lookup].
+See xref:manual/lookups.adoc#DockerLookup[Docker Lookup].
 We also strongly advise you to check https://docs.docker.com/config/containers/logging/[the extensive logging integration] offered by Docker containers.
 
 === Kubernetes

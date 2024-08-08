@@ -34,7 +34,7 @@ but events related to the application emitted by a **shared** library (e.g. JPA 
 To diagnose a problem with the application, you might need to look into multiple log files.
 Separate log files::
 Each application must use a **different** log file to prevent problems with concurrent access to the same file by multiple applications.
-Problems may arise, especially if xref:manual/appenders.adoc#rollingfileappender[rolling file appender] is used.
+Problems may arise, especially if a xref:manual/appenders/rolling-file.adoc[rolling file appender] is used.
 Lifecycle::
 Web applications have a different lifecycle from the application server.
 Additional care is required to stop Log4j Core when the application is stopped.
@@ -540,7 +540,7 @@ include::example$manual/webapp/log4j2-single.properties[tag=global]
 
 * Logging events to a separate appender for each application.
 In this case, you can use
-xref:manual/appenders.adoc#RoutingAppender[routing appender]
+xref:manual/appenders/delegating.adoc#RoutingAppender[routing appender]
 to separate the events.
 This kind of configuration might be used on the development server together with the
 xref:manual/pattern-layout.adoc[human-friendly Pattern Layout]:

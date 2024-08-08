@@ -66,7 +66,7 @@ See {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/
 ====
 The `name` attribute of plugins of a certain `category` is recommended to be distinct and this matching is case-insensitive.
 In case of a name collision, a warning will be emitted, and the plugin <<plugin-discovery,discovery order>> will determine the effective plugin.
-For example, to override the `File` plugin which is provided by the built-in xref:manual/appenders.adoc#FileAppender[File Appender], you would need to place your plugin in a JAR file in the classpath ahead of Log4j Core JAR.
+For example, to override the `File` plugin which is provided by the built-in xref:manual/appenders/file.adoc#FileAppender[File Appender], you would need to place your plugin in a JAR file in the classpath ahead of Log4j Core JAR.
 In an OSGi environment, the order that bundles are scanned for plugins generally follows the same order that bundles were installed into the framework; see
 https://docs.osgi.org/javadoc/r6/core/org/osgi/framework/BundleContext.html#getBundles()[`getBundles()`]
 and

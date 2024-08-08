@@ -77,13 +77,8 @@
 * xref:development.adoc[]
 
 .Components
-* xref:log4j-cassandra.adoc[]
-* xref:log4j-couchdb.adoc[]
-* xref:log4j-docker.adoc[]
-* xref:log4j-flume-ng.adoc[]
 * xref:log4j-iostreams.adoc[]
 * xref:log4j-spring-boot.adoc[]
-* xref:log4j-spring-cloud-config.adoc[]
 * xref:log4j-spring-cloud-config-client.adoc[]
 * xref:log4j-jul.adoc[]
 * xref:log4j-to-jul.adoc[]

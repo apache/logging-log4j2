@@ -19,10 +19,7 @@ Licensed to the Apache Software Foundation (ASF) under one or more
 :log4j1-url: https://logging.apache.org/log4j/1.x
 :sonatype-url: https://central.sonatype.com/artifact
 
-{log4j1-url}/index.html[Log4j 1]
-has reached **End of Life** in 2015 (see
-https://news.apache.org/foundation/entry/apache_logging_services_project_announces[announcement])
-and is no longer supported.
+include::partial$log4j1-eol.adoc[]
 
 Since Log4j 2 has been rewritten from scratch, it introduces many breaking changes to its predecessor.
 Most notably:
@@ -351,7 +348,7 @@ Log4j 2 contains an equivalent for most Log4j 1 appenders:
 | Log4j 1 appender | Log4j 2 equivalent | Notes
 
 | {log4j1-url}/apidocs/org/apache/log4j/AsyncAppender.html[org.apache.log4j.AsyncAppender]
-| xref:manual/appenders.adoc#AsyncAppender[Async]
+| xref:manual/appenders/delegating.adoc#AsyncAppender[Async]
 |
 
 | {log4j1-url}/apidocs/org/apache/log4j/ConsoleAppender.html[org.apache.log4j.ConsoleAppender]
@@ -359,39 +356,39 @@ Log4j 2 contains an equivalent for most Log4j 1 appenders:
 |
 
 | {log4j1-url}/apidocs/org/apache/log4j/DailyRollingFileAppender.html[org.apache.log4j.DailyRollingFileAppender]
-| xref:manual/appenders.adoc#RollingFileAppender[RollingFile]
+| xref:manual/appenders/rolling-file.adoc#RollingFileAppender[RollingFile]
 | See <<rolling-file-conversion,additional steps below>>.
 
 | {log4j1-url}/apidocs/org/apache/log4j/FileAppender.html[org.apache.log4j.FileAppender]
-| xref:manual/appenders.adoc#FileAppender[File]
+| xref:manual/appenders/file.adoc#FileAppender[File]
 |
 
 | {log4j1-url}/apidocs/org/apache/log4j/RollingFileAppender.html[org.apache.log4j.RollingFileAppender]
-| xref:manual/appenders.adoc#RollingFileAppender[RollingFile]
+| xref:manual/appenders/rolling-file.adoc#RollingFileAppender[RollingFile]
 | See <<rolling-file-conversion,additional steps below>>.
 
 | {log4j1-url}/apidocs/org/apache/log4j/jdbc/JDBCAppender.html[org.apache.log4j.jdbc.JDBCAppender]
-| xref:manual/appenders.adoc#JDBCAppender[JDBC]
+| xref:manual/appenders/database.adoc#JdbcAppender[JDBC]
 |
 
 | {log4j1-url}/apidocs/org/apache/log4j/net/JMSAppender.html[org.apache.log4j.net.JMSAppender]
-| xref:manual/appenders.adoc#jms-appender[JMS]
+| xref:manual/appenders/message-queue.adoc#JmsAppender[JMS]
 |
 
 | {log4j1-url}/apidocs/org/apache/log4j/net/SocketAppender.html[org.apache.log4j.net.SocketAppender]
-| xref:manual/appenders.adoc#SocketAppender[Socket]
+| xref:manual/appenders/network.adoc#SocketAppender[Socket]
 |
 
 | {log4j1-url}/apidocs/org/apache/log4j/net/SMTPAppender.html[org.apache.log4j.net.SMTPAppender]
-| xref:manual/appenders.adoc#SMTPAppender[SMTP]
+| xref:manual/appenders/network.adoc#SmtpAppender[SMTP]
 |
 
 | {log4j1-url}/apidocs/org/apache/log4j/net/SyslogAppender.html[org.apache.log4j.net.SyslogAppender]
-| xref:manual/appenders.adoc#SyslogAppender[Syslog]
+| xref:manual/appenders/network.adoc#SyslogAppender[Syslog]
 | Does not support custom layouts.
 
 | {log4j1-url}/apidocs/org/apache/log4j/rewrite/RewriteAppender.html[org.apache.log4j.rewrite.RewriteAppender]
-| xref:manual/appenders.adoc#RewriteAppender[Rewrite]
+| xref:manual/appenders/delegating.adoc#RewriteAppender[Rewrite]
 |
 
 |===
@@ -408,7 +405,7 @@ Log4j 1 always rolls the current log file (e.g. `app.log`) to a log file with in
 Log4j 2 on the other hand uses the first available index (e.g. `app.log.42` if files `app.log.1` thru `app.log.41` already exist).
 +
 To use the same algorithm to determine the index of the logged file in Log4j 1 and Log4j 2, you need to configure the `fileIndex` attribute of the
-xref:manual/appenders.adoc#DefaultRolloverStrategy[default rollover strategy] to `min`.
+xref:manual/appenders/rolling-file.adoc#DefaultRolloverStrategy[default rollover strategy] to `min`.
 +
 [source,xml]
 ----
@@ -541,7 +538,7 @@ See
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-Builder[the plugin reference] for a complete list.
 
 [#option-1-use-the-log4j-1-x-bridge-log4j-1-2-api]
-== [[Log4j1.2Bridge]]Log4j 1 to Log4j 2 bridge
+== [[Log4j12Bridge]]Log4j 1 to Log4j 2 bridge
 
 In order to help users with the migration process, a Log4j 1 to Log4j 2 bridge is available.
 The bridge can fulfill three separate functions:

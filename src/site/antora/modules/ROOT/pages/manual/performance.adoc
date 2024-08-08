@@ -160,7 +160,7 @@ Their aim is to return from a `log()` call to the application as soon as possibl
 [#async-appender]
 ===== Asynchronous appender
 
-The xref:manual/appenders.adoc#AsyncAppender[asynchronous appender] accepts references to other appenders and causes log events to be written to them on a separate thread.
+The xref:manual/appenders/delegating.adoc#AsyncAppender[asynchronous appender] accepts references to other appenders and causes log events to be written to them on a separate thread.
 The backing queue uses `ArrayBlockingQueue` by default, though it can be replaced with a better performing one suitable for your use case.
 
 [#gcfree]

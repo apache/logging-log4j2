@@ -112,7 +112,7 @@ This task should ideally be delegated to <<Configurator>>.
 Though there are cases where the provided convenience methods fall short of:
 
 * Custom xref:manual/plugins.adoc#core[plugins that are declared to be represented in a configuration]
-* Custom subcomponents (e.g., a xref:manual/appenders.adoc#TriggeringPolicies[triggering policy] for xref:manual/appenders.adoc#RollingFileAppender[`RollingFileAppender`])
+* Custom subcomponents (e.g., a xref:manual/appenders/rolling-file.adoc#TriggeringPolicy[triggering policy] for xref:manual/appenders/rolling-file.adoc#RollingFileAppender[rolling file appenders])
 
 For those, you can use the generic link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/builder/api/ConfigurationBuilder.html#newComponent()[`ConfigurationBuilder#newComponent()`] method.
 

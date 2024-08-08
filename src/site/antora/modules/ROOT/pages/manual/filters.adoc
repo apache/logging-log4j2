@@ -114,7 +114,7 @@ will not be performed for disabled log statements.
 * this stage precedes the asynchronous calls performed by either
 xref:manual/async.adoc[asynchronous loggers]
 or
-xref:manual/appenders.adoc#AsyncAppender[asynchronous appenders].
+xref:manual/appenders/delegating.adoc#AsyncAppender[asynchronous appenders].
 ====
 
 [#logger-config-stage]
@@ -227,7 +227,7 @@ All standard appenders implement `Filterable`.
 [NOTE]
 ====
 Some appenders like the
-xref:manual/appenders.adoc#AsyncAppender[asynchronous appender]
+xref:manual/appenders/delegating.adoc#AsyncAppender[asynchronous appender]
 use appender references to transfer log events to other appenders.
 In such a case, the filtering process goes back to the <<appender-control-stage,`AppenderControl` stage>>.
 ====
@@ -529,7 +529,7 @@ the `LevelMatchFilter` supports the following parameter:
 [TIP]
 ====
 If you wish to use a different log file for each log level, you should also use a
-xref:manual/appenders.adoc#RoutingAppender[`Routing` appender] together with the
+xref:manual/appenders/delegating.adoc#RoutingAppender[`Routing` appender] together with the
 xref:manual/lookups.adoc#EventLookup[`${event:Level}` lookup].
 Such a solution will ensure that:
 
@@ -1073,7 +1073,7 @@ to modify the ``KeyValuePair``s without restarting your application.
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-StructuredDataFilter[📖 Plugin reference for `StructuredDataFilter`]
 
-[#ContextMapFilter]
+[#ThreadContextMapFilter]
 ==== `ContextMapFilter`
 
 The `ContextMapFilter` works in the same way as the <<MapFilter>> above,
@@ -1166,7 +1166,7 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 [#MutableThreadContextMapFilter]
 ==== `MutableContextMapFilter`
 
-The `MutableContextMapFilter` is an alternative version of <<ContextMapFilter>> that also uses the
+The `MutableContextMapFilter` is an alternative version of <<ThreadContextMapFilter>> that also uses the
 xref:manual/thread-context.adoc[context data map]
 to filter messages, but externalizes the <<configuration-map>>, so it can be kept in a separate location.
 

@@ -248,6 +248,56 @@ runtimeOnly 'org.apache.logging.log4j:log4j-flume-ng'
 ----
 ====
 
+To use the Flume Appender <<FlumeAppender-mode-PERSISTENT,PERSISTENT mode>>, you need the following additional dependency:
+
+[tabs]
+====
+Maven::
++
+[source,xml,subs="+attributes"]
+----
+<dependency>
+  <groupId>com.sleepycat</groupId>
+  <artifactId>je</artifactId>
+  <version>{je-version}</version>
+  <scope>runtime</scope>
+</dependency>
+----
+
+Gradle::
++
+[source,groovy]
+----
+runtimeOnly 'com.sleepycat:je:{je-version}'
+----
+====
+
+If you use the Flume Appender in <<FlumeAppender-mode-EMBEDDED,EMBEDDED mode>>, you need to add the `flume-ng-embedded-agent` dependency below and all the channel and sink implementation you plan to use.
+
+See https://flume.apache.org/releases/content/1.11.0/FlumeDeveloperGuide.html#embedded-agent[Flume Embedded Agent] documentation for more details.
+
+[tabs]
+====
+Maven::
++
+[source,xml,subs="+attributes"]
+----
+<dependency>
+  <groupId>org.apache.flume</groupId>
+  <artifactId>flume-ng-embedded-agent</artifactId>
+  <version>{flume-version}</version>
+  <scope>runtime</scope>
+</dependency>
+----
+
+Gradle::
++
+[source,groovy]
+----
+runtimeOnly 'org.apache.flume:flume-ng-embedded-agent:{flume-version}'
+----
+====
+
 [#Agent]
 === Agent Addresses
 
@@ -1146,7 +1196,6 @@ for more details.
 |===
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-jeromq-JeroMqAppender[{plugin-reference-marker} Plugin reference for `JeroMQ`]
-
 
 Additional runtime dependencies are required to use the JeroMQ Appender:
 

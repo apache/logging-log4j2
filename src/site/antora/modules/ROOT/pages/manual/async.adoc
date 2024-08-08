@@ -23,7 +23,7 @@ Log4j offers out-of-the-box two different asynchronous logging solutions:
 Asynchronous appender::
 A classical queue-based asynchronous appender, which is available since Log4j 1.
 +
-See xref:manual/appenders.adoc#AsyncAppender[Asynchronous appender] for more details.
+See xref:manual/appenders/delegating.adoc#AsyncAppender[Asynchronous appender] for more details.
 
 Asynchronous loggers::
 Asynchronous loggers are a new feature available since Log4j 2.

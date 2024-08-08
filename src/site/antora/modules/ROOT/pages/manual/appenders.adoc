@@ -305,11 +305,9 @@ https://docs.oracle.com/javase/8/docs/api/java/io/FileDescriptor.html#err[`FileD
 
 This setting bypasses the buffering of `System.out` and `System.err` and might provide a performance comparable to a xref:manual/appenders/file.adoc[file appender].
 
-[CAUTION]
+[WARNING]
 ====
-
 If other logging backends or the application itself uses `System.out/System.err`, setting this to `true` might cause interleaved output.
-
 ====
 
 This setting is incompatible with the
@@ -481,10 +479,10 @@ Additional dependencies are required, see xref:manual/json-template-layout.adoc[
 File appenders write logs to the filesystem.
 They can be further split into:
 
-Single file appenders:::
+[[FileAppender]][[MemoryMappedFileAppender]][[RandomAccessFileAppender]]Single file appenders:::
 See xref:manual/appenders/file.adoc[] for details.
 
-Rolling file appenders:::
+[[RollingFileAppender]][[RollingRandomAccessFileAppender]]Rolling file appenders:::
 See xref:manual/appenders/rolling-file.adoc[] for details.
 
 [#database-appenders]
@@ -492,36 +490,43 @@ See xref:manual/appenders/rolling-file.adoc[] for details.
 
 The appenders write log events directly to a database.
 
+[#CassandraAppender]
 xref:manual/appenders/database.adoc#CassandraAppender[Cassandra appender]::
 Sends log events to
 https://cassandra.apache.org/_/index.html[Apache Cassandra]
 
+[#JDBCAppender]
 xref:manual/appenders/database.adoc#JdbcAppender[JDBC appender]::
 Sends log events to a JDBC driver
 
+[#JPAAppender]
 xref:manual/appenders/database.adoc#JpaAppender[JPA appender]::
 Uses Jakarta Persistence API to deliver log events to a database
 
-xref:manual/appenders/database.adoc#NoSqlAppender[NoSQL appender]::
+[#NoSQLAppender]
+[[NoSQLAppenderMongoDB]][[NoSQLAppenderMongoDB3]][[NoSQLAppenderMongoDB4]][[NoSQLAppenderCouchDB]]xref:manual/appenders/database.adoc#NoSqlAppender[NoSQL appender]::
 Store log events to a document-oriented database
 
 See xref:manual/appenders/database.adoc[] for details.
 
 [#network-appenders]
-=== Network appenders
+=== [[SSL]][[SyslogAppender]]Network appenders
 
 These appenders use simple network protocols to transmit log events to a remote host.
 The supported network protocols are:
 
+[#SocketAppender]
 `UDP`::
 `TCP`::
 These are handled by the xref:manual/appenders/network.adoc#SocketAppender[Socket Appender].
 
+[#HttpAppender]
 `HTTP`::
 This is handled by the xref:manual/appenders/network.adoc#HttpAppender[HTTP Appender].
 
+[#SMTPAppender]
 `SMTP`::
-This is handled by the xref:manual/appenders/network.adoc#HttpAppender[SMTP Appender].
+This is handled by the xref:manual/appenders/network.adoc#SmtpAppender[SMTP Appender].
 
 See xref:manual/appenders/network.adoc[] for details.
 
@@ -531,18 +536,22 @@ See xref:manual/appenders/network.adoc[] for details.
 Message queue appenders forward log events to a message broker.
 The following systems are supported:
 
+[#FlumeAppender]
 xref:manual/appenders/message-queue.adoc#FlumeAppender[Flume appender]::
 Forwards log events to an
 https://flume.apache.org/[Apache Flume] server.
 
+[#JMSAppender]
 xref:manual/appenders/message-queue.adoc#JmsAppender[JMS appender]::
 Forwards log events to a
 https://jakarta.ee/specifications/messaging/2.0/[Jakarta Message 2.0] broker.
 
+[#KafkaAppender]
 xref:manual/appenders/message-queue.adoc#KafkaAppender[Kafka appender]::
 Forwards log events to an
 https://kafka.apache.org/[Apache Kafka] server.
 
+[#JeroMQAppender]
 xref:manual/appenders/message-queue.adoc#JeroMqAppender[ZeroMQ/JeroMQ appender]::
 Forwards log events to a
 https://zeromq.org/[ZeroMQ] broker.
@@ -556,7 +565,7 @@ The Servlet appender allows users to forward all logging calls to the
 https://jakarta.ee/specifications/servlet/5.0/apidocs/jakarta/servlet/servletcontext#log(java.lang.String,java.lang.Throwable)[`ServletContext.log()`]
 methods.
 
-[CAUTION]
+[WARNING]
 ====
 The `ServletContext.log(String, Throwable)` method predates modern logging APIs.
 By using Servlet appender, you typically will not be able to differentiate log events by log level or logger name.
@@ -611,19 +620,23 @@ include::partial$manual/dependencies-log4j-jakarta-web.adoc[]
 See xref:jakarta.adoc[] for more information.
 
 [#delegating-appenders]
-=== Delegating appenders
+=== [[ScriptAppenderSelector]]Delegating appenders
 
 Delegating appenders are intended to decorate other appenders:
 
+[#AsyncAppender]
 xref:manual/appenders/delegating.adoc#AsyncAppender[Asynchronous appender]::
 Perform all I/O on a dedicated thread
 
+[#FailoverAppender]
 xref:manual/appenders/delegating.adoc#FailoverAppender[Failover appender]::
 Provide a backup appender in case an appender fails
 
+[#RewriteAppender]
 xref:manual/appenders/delegating.adoc#RewriteAppender[Rewrite appender]::
 Modify log events prior to delivering them to the target
 
+[#RoutingAppender]
 xref:manual/appenders/delegating.adoc#RoutingAppender[Routing appender]::
 Dynamically choose a different appender for each log event
 
