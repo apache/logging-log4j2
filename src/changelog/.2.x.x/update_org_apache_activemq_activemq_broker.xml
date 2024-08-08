@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="2472" link="https://github.com/apache/logging-log4j2/pull/2472"/>
-  <description format="asciidoc">Update `org.apache.activemq:activemq-broker` to version `6.1.2`</description>
+  <issue id="2808" link="https://github.com/apache/logging-log4j2/pull/2808"/>
+  <description format="asciidoc">Update `org.apache.activemq:activemq-broker` to version `6.1.3`</description>
 </entry>
