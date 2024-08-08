@@ -47,8 +47,9 @@ import org.apache.log4j.spi.OptionHandler;
 import org.apache.log4j.spi.RendererSupport;
 import org.apache.log4j.spi.ThrowableRenderer;
 import org.apache.log4j.spi.ThrowableRendererSupport;
-import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**
@@ -119,15 +120,12 @@ public class PropertyConfigurator implements Configurator {
         }
     }
 
-    static final String CATEGORY_PREFIX = "log4j.category.";
-    static final String LOGGER_PREFIX = "log4j.logger.";
-    static final String FACTORY_PREFIX = "log4j.factory";
-    static final String ADDITIVITY_PREFIX = "log4j.additivity.";
-    static final String ROOT_CATEGORY_PREFIX = "log4j.rootCategory";
-    static final String ROOT_LOGGER_PREFIX = "log4j.rootLogger";
-    static final String APPENDER_PREFIX = "log4j.appender.";
-    static final String RENDERER_PREFIX = "log4j.renderer.";
-    static final String THRESHOLD_PREFIX = "log4j.threshold";
+    private static final String CATEGORY_PREFIX = "log4j.category.";
+    private static final String LOGGER_PREFIX = "log4j.logger.";
+    private static final String FACTORY_PREFIX = "log4j.factory";
+    private static final String ADDITIVITY_PREFIX = "log4j.additivity.";
+    private static final String APPENDER_PREFIX = "log4j.appender.";
+    private static final String RENDERER_PREFIX = "log4j.renderer.";
 
     private static final String THROWABLE_RENDERER_PREFIX = "log4j.throwableRenderer";
     private static final String LOGGER_REF = "logger-ref";
@@ -146,6 +144,16 @@ public class PropertyConfigurator implements Configurator {
     private static final String RESET_KEY = "log4j.reset";
 
     private static final String INTERNAL_ROOT_NAME = "root";
+
+    private static boolean isFullCompatibilityEnabled() {
+        return PropertiesUtil.getProperties().getBooleanProperty(ConfigurationFactory.LOG4J1_EXPERIMENTAL);
+    }
+
+    private static void warnFullCompatibilityDisabled() {
+        LogLog.warn(
+                "Ignoring `PropertyConfigurator` call, since `log4j1.compatibility` is not enabled.\n"
+                        + "See https://logging.staged.apache.org/log4j/2.x/migrate-from-log4j1.html#log4j1.compatibility for details.");
+    }
 
     /**
      * Reads configuration options from an InputStream.
@@ -212,15 +220,15 @@ public class PropertyConfigurator implements Configurator {
         configureAndWatch(configFilename, delayMillis, StackLocatorUtil.getCallerClassLoader(2));
     }
 
-    static void configureAndWatch(final String configFilename, final long delay, final ClassLoader classLoader) {
-        final PropertyWatchdog watchdog = new PropertyWatchdog(configFilename, classLoader);
-        watchdog.setDelay(delay);
-        watchdog.start();
-    }
-
-    private static Configuration reconfigure(final Configuration configuration) {
-        org.apache.logging.log4j.core.config.Configurator.reconfigure(configuration);
-        return configuration;
+    private static void configureAndWatch(
+            final String configFilename, final long delay, final ClassLoader classLoader) {
+        if (isFullCompatibilityEnabled()) {
+            final PropertyWatchdog watchdog = new PropertyWatchdog(configFilename, classLoader);
+            watchdog.setDelay(delay);
+            watchdog.start();
+        } else {
+            warnFullCompatibilityDisabled();
+        }
     }
 
     /**
@@ -240,31 +248,16 @@ public class PropertyConfigurator implements Configurator {
      * @see #parseCatsAndRenderers
      */
     protected void configureLoggerFactory(final Properties properties) {
-        final String factoryClassName = OptionConverter.findAndSubst(LOGGER_FACTORY_KEY, properties);
-        if (factoryClassName != null) {
-            LogLog.debug("Setting category factory to [" + factoryClassName + "].");
-            loggerFactory = (LoggerFactory)
-                    OptionConverter.instantiateByClassName(factoryClassName, LoggerFactory.class, loggerFactory);
-            PropertySetter.setProperties(loggerFactory, properties, FACTORY_PREFIX + ".");
-        }
-    }
-
-    void configureRootCategory(final Properties properties, final LoggerRepository loggerRepository) {
-        String effectiveFrefix = ROOT_LOGGER_PREFIX;
-        String value = OptionConverter.findAndSubst(ROOT_LOGGER_PREFIX, properties);
-
-        if (value == null) {
-            value = OptionConverter.findAndSubst(ROOT_CATEGORY_PREFIX, properties);
-            effectiveFrefix = ROOT_CATEGORY_PREFIX;
-        }
-
-        if (value == null) {
-            LogLog.debug("Could not find root logger information. Is this OK?");
-        } else {
-            final Logger root = loggerRepository.getRootLogger();
-            synchronized (root) {
-                parseCategory(properties, root, effectiveFrefix, INTERNAL_ROOT_NAME, value);
+        if (isFullCompatibilityEnabled()) {
+            final String factoryClassName = OptionConverter.findAndSubst(LOGGER_FACTORY_KEY, properties);
+            if (factoryClassName != null) {
+                LogLog.debug("Setting category factory to [" + factoryClassName + "].");
+                loggerFactory = (LoggerFactory)
+                        OptionConverter.instantiateByClassName(factoryClassName, LoggerFactory.class, loggerFactory);
+                PropertySetter.setProperties(loggerFactory, properties, FACTORY_PREFIX + ".");
             }
+        } else {
+            warnFullCompatibilityDisabled();
         }
     }
 
@@ -279,9 +272,9 @@ public class PropertyConfigurator implements Configurator {
         doConfigure(inputStream, loggerRepository, StackLocatorUtil.getCallerClassLoader(2));
     }
 
-    Configuration doConfigure(
+    private void doConfigure(
             final InputStream inputStream, final LoggerRepository loggerRepository, final ClassLoader classLoader) {
-        return doConfigure(loadProperties(inputStream), loggerRepository, classLoader);
+        doConfigure(loadProperties(inputStream), loggerRepository, classLoader);
     }
 
     /**
@@ -298,54 +291,29 @@ public class PropertyConfigurator implements Configurator {
 
     /**
      * Reads configuration options from <code>properties</code>.
-     *
+     * <p>
      * See {@link #doConfigure(String, LoggerRepository)} for the expected format.
      *
-     * @param properties The properties
+     * @param properties       The properties
      * @param loggerRepository The hierarchy
      */
-    Configuration doConfigure(
+    private void doConfigure(
             final Properties properties, final LoggerRepository loggerRepository, final ClassLoader classLoader) {
-        final PropertiesConfiguration configuration =
-                new PropertiesConfiguration(LogManager.getContext(classLoader), properties);
-        configuration.doConfigure();
+        if (isFullCompatibilityEnabled()) {
+            final PropertiesConfiguration configuration =
+                    new PropertiesConfiguration(LogManager.getContext(classLoader), properties);
+            configuration.doConfigure();
 
-        repository = loggerRepository;
-        //      String value = properties.getProperty(LogLog.DEBUG_KEY);
-        //      if (value == null) {
-        //          value = properties.getProperty("log4j.configDebug");
-        //          if (value != null) {
-        //              LogLog.warn("[log4j.configDebug] is deprecated. Use [log4j.debug] instead.");
-        //          }
-        //      }
-        //
-        //      if (value != null) {
-        //          LogLog.setInternalDebugging(OptionConverter.toBoolean(value, true));
-        //      }
-        //
-        //      //
-        //      // if log4j.reset=true then
-        //      // reset hierarchy
-        //      final String reset = properties.getProperty(RESET_KEY);
-        //      if (reset != null && OptionConverter.toBoolean(reset, false)) {
-        //          hierarchy.resetConfiguration();
-        //      }
-        //
-        //      final String thresholdStr = OptionConverter.findAndSubst(THRESHOLD_PREFIX, properties);
-        //      if (thresholdStr != null) {
-        //          hierarchy.setThreshold(OptionConverter.toLevel(thresholdStr, (Level) Level.ALL));
-        //          LogLog.debug("Hierarchy threshold set to [" + hierarchy.getThreshold() + "].");
-        //      }
-        //
-        //      configureRootCategory(properties, hierarchy);
-        //      configureLoggerFactory(properties);
-        //      parseCatsAndRenderers(properties, hierarchy);
-        //
-        // We don't want to hold references to appenders preventing their
-        // garbage collection.
-        registry.clear();
+            repository = loggerRepository;
 
-        return reconfigure(configuration);
+            // We don't want to hold references to appenders preventing their
+            // garbage collection.
+            registry.clear();
+
+            org.apache.logging.log4j.core.config.Configurator.reconfigure(configuration);
+        } else {
+            warnFullCompatibilityDisabled();
+        }
     }
 
     /**
@@ -365,17 +333,20 @@ public class PropertyConfigurator implements Configurator {
      * @param loggerRepository The hierarchy
      */
     @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN", justification = "The filename comes from a system property.")
-    Configuration doConfigure(
+    private void doConfigure(
             final String fileName, final LoggerRepository loggerRepository, final ClassLoader classLoader) {
-        try (final InputStream inputStream = Files.newInputStream(Paths.get(fileName))) {
-            return doConfigure(inputStream, loggerRepository, classLoader);
-        } catch (final Exception e) {
-            if (e instanceof InterruptedIOException || e instanceof InterruptedException) {
-                Thread.currentThread().interrupt();
+        if (isFullCompatibilityEnabled()) {
+            try (final InputStream inputStream = Files.newInputStream(Paths.get(fileName))) {
+                doConfigure(inputStream, loggerRepository, classLoader);
+            } catch (final Exception e) {
+                if (e instanceof InterruptedIOException) {
+                    Thread.currentThread().interrupt();
+                }
+                LogLog.error("Could not read configuration file [" + fileName + "].", e);
+                LogLog.error("Ignoring configuration file [" + fileName + "].");
             }
-            LogLog.error("Could not read configuration file [" + fileName + "].", e);
-            LogLog.error("Ignoring configuration file [" + fileName + "].");
-            return null;
+        } else {
+            warnFullCompatibilityDisabled();
         }
     }
 
@@ -390,17 +361,20 @@ public class PropertyConfigurator implements Configurator {
         doConfigure(url, loggerRepository, StackLocatorUtil.getCallerClassLoader(2));
     }
 
-    Configuration doConfigure(final URL url, final LoggerRepository loggerRepository, final ClassLoader classLoader) {
-        LogLog.debug("Reading configuration from URL " + url);
-        try {
-            final URLConnection urlConnection = UrlConnectionFactory.createConnection(url);
-            try (final InputStream inputStream = urlConnection.getInputStream()) {
-                return doConfigure(inputStream, loggerRepository, classLoader);
+    private void doConfigure(final URL url, final LoggerRepository loggerRepository, final ClassLoader classLoader) {
+        if (isFullCompatibilityEnabled()) {
+            LogLog.debug("Reading configuration from URL " + url);
+            try {
+                final URLConnection urlConnection = UrlConnectionFactory.createConnection(url);
+                try (final InputStream inputStream = urlConnection.getInputStream()) {
+                    doConfigure(inputStream, loggerRepository, classLoader);
+                }
+            } catch (final IOException e) {
+                LogLog.error("Could not read configuration file from URL [" + url + "].", e);
+                LogLog.error("Ignoring configuration file [" + url + "].");
             }
-        } catch (final IOException e) {
-            LogLog.error("Could not read configuration file from URL [" + url + "].", e);
-            LogLog.error("Ignoring configuration file [" + url + "].");
-            return null;
+        } else {
+            warnFullCompatibilityDisabled();
         }
     }
 
@@ -422,7 +396,7 @@ public class PropertyConfigurator implements Configurator {
     /**
      * Parse the additivity option for a non-root category.
      */
-    void parseAdditivityForLogger(final Properties properties, final Logger logger, final String loggerName) {
+    private void parseAdditivityForLogger(final Properties properties, final Logger logger, final String loggerName) {
         final String value = OptionConverter.findAndSubst(ADDITIVITY_PREFIX + loggerName, properties);
         LogLog.debug("Handling " + ADDITIVITY_PREFIX + loggerName + "=[" + value + "]");
         // touch additivity only if necessary
@@ -433,8 +407,8 @@ public class PropertyConfigurator implements Configurator {
         }
     }
 
-    Appender parseAppender(final Properties properties, final String appenderName) {
-        Appender appender = registryGet(appenderName);
+    private Appender parseAppender(final Properties properties, final String appenderName) {
+        Appender appender = (Appender) registry.get(appenderName);
         if ((appender != null)) {
             LogLog.debug("Appender \"" + appenderName + "\" was already parsed.");
             return appender;
@@ -499,11 +473,11 @@ public class PropertyConfigurator implements Configurator {
             LogLog.debug("Parsed \"" + appenderName + "\" options.");
         }
         parseAppenderFilters(properties, appenderName, appender);
-        registryPut(appender);
+        registry.put(appender.getName(), appender);
         return appender;
     }
 
-    void parseAppenderFilters(final Properties properties, final String appenderName, final Appender appender) {
+    private void parseAppenderFilters(final Properties properties, final String appenderName, final Appender appender) {
         // extract filters and filter options from props into a hashtable mapping
         // the property name defining the filter class to a list of pre-parsed
         // name-value pairs associated to that filter
@@ -567,7 +541,7 @@ public class PropertyConfigurator implements Configurator {
     /**
      * This method must work for the root category as well.
      */
-    void parseCategory(
+    private void parseCategory(
             final Properties properties,
             final Logger logger,
             final String optionKey,
@@ -628,6 +602,10 @@ public class PropertyConfigurator implements Configurator {
      * Parse non-root elements, such non-root categories and renderers.
      */
     protected void parseCatsAndRenderers(final Properties properties, final LoggerRepository loggerRepository) {
+        if (!isFullCompatibilityEnabled()) {
+            warnFullCompatibilityDisabled();
+            return;
+        }
         final Enumeration enumeration = properties.propertyNames();
         while (enumeration.hasMoreElements()) {
             final String key = (String) enumeration.nextElement();
@@ -692,13 +670,5 @@ public class PropertyConfigurator implements Configurator {
                 }
             }
         }
-    }
-
-    Appender registryGet(final String name) {
-        return (Appender) registry.get(name);
-    }
-
-    void registryPut(final Appender appender) {
-        registry.put(appender.getName(), appender);
     }
 }
