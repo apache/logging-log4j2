@@ -23,6 +23,7 @@ import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.Enumeration;
@@ -52,8 +53,12 @@ public class PluginCache {
      * @return plugin mapping of names to plugin entries.
      */
     public Map<String, PluginEntry> getCategory(final String category) {
-        final String key = toRootLowerCase(category);
-        return categories.computeIfAbsent(key, ignored -> new TreeMap<>());
+        return getCategory(category, categories);
+    }
+
+    private static Map<String, PluginEntry> getCategory(
+            final String category, final Map<String, Map<String, PluginEntry>> categories) {
+        return categories.computeIfAbsent(toRootLowerCase(category), ignored -> new TreeMap<>());
     }
 
     /**
@@ -94,11 +99,26 @@ public class PluginCache {
         categories.clear();
         while (resources.hasMoreElements()) {
             final URL url = resources.nextElement();
-            try (final DataInputStream in = new DataInputStream(new BufferedInputStream(url.openStream()))) {
+            loadInputStream(url.openStream(), categories);
+        }
+    }
+
+    static void loadInputStream(final InputStream input, final Map<String, Map<String, PluginEntry>> categories)
+            throws IOException {
+        try (final DataInputStream in = new DataInputStream(new BufferedInputStream(input))) {
+            // Allow concatenated plugin files separated by `\n`
+            boolean first = true;
+            while (in.available() > 0) {
+                if (first) {
+                    first = false;
+                } else {
+                    // Read the `\n` character
+                    in.readByte();
+                }
                 final int count = in.readInt();
                 for (int i = 0; i < count; i++) {
                     final String category = in.readUTF();
-                    final Map<String, PluginEntry> m = getCategory(category);
+                    final Map<String, PluginEntry> m = getCategory(category, categories);
                     final int entries = in.readInt();
                     for (int j = 0; j < entries; j++) {
                         // Must always read all parts of the entry, even if not adding, so that the stream progresses

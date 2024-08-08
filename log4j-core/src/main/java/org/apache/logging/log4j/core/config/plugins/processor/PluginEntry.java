@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.config.plugins.processor;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Memento object for storing a plugin entry to a cache file.
@@ -77,6 +78,23 @@ public class PluginEntry implements Serializable {
 
     public void setCategory(final String category) {
         this.category = category;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final PluginEntry that = (PluginEntry) o;
+        return printable == that.printable
+                && defer == that.defer
+                && Objects.equals(key, that.key)
+                && Objects.equals(className, that.className)
+                && Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(key, className, name, printable, defer);
     }
 
     @Override

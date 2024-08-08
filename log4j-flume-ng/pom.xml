@@ -56,11 +56,6 @@
     </dependency>
     <dependency>
       <groupId>org.apache.flume</groupId>
-      <artifactId>flume-ng-core</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.flume</groupId>
       <artifactId>flume-ng-embedded-agent</artifactId>
       <optional>true</optional>
     </dependency>

@@ -281,3 +281,48 @@ See `@PluginElement("EventTemplateAdditionalField")` usage in {project-github-ur
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/util/PluginUtil.html[`PluginUtil`],
 which is a convenient wrapper around <<#plugin-discovery,`PluginManager`>>, to discover and load plugins.
 See {project-github-url}/log4j-layout-template-json/src/main/java/org/apache/logging/log4j/layout/template/json/resolver/TemplateResolverFactories.java[`TemplateResolverFactories.java`] for example usages.
+
+[#plugin-merge]
+== Merging plugin descriptors
+
+The plugin descriptor is located in a JAR file at the following fixed location:
+----
+META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat
+----
+
+Some deployment techniques like
+https://softwareengineering.stackexchange.com/questions/297276/what-is-a-shaded-java-dependency[shading]
+require multiple plugin descriptors to be merged into one.
+This can be done in multiple ways:
+
+* By using a resource transformer specialized in `Log4j2Plugins.dat` files.
+We are aware of the existence of the following resource transformers for different Java build tools:
+
+https://maven.apache.org/plugins/maven-shade-plugin/[Maven Shade Plugin]:::
+You can use the
+https://logging.staged.apache.org/log4j/transform/log4j-transform-maven-shade-plugin-extensions.html#log4j-plugin-cache-transformer[Log4j Plugin Descriptor Transformer].
+
+https://gradleup.com/shadow/[Gradle Shadow Plugin]:::
+You can use the
+https://github.com/GradleUp/shadow/blob/main/src/main/groovy/com/github/jengelman/gradle/plugins/shadow/transformers/Log4j2PluginsCacheFileTransformer.groovy[`Log4j2PluginsCacheFileTransformer`].
+
+* Since version `2.24.0` you can any resource transformer capable of concatenating files using `\n` as separator.
+The following resource transformers are known to exist:
+
+https://github.com/sbt/sbt-assembly[SBT Assembly Plugin]:::
+You can use `MergeStrategy.concat`.
+See
+https://github.com/sbt/sbt-assembly?tab=readme-ov-file#merge-strategy[SBT Assembly Merge Strategy]
+for details.
+
+https://maven.apache.org/plugins/maven-shade-plugin/[Maven Shade Plugin]:::
+You can use the standard `AppendingTransformer`.
+See
+https://maven.apache.org/plugins/maven-shade-plugin/examples/resource-transformers.html#AppendingTransformer[Maven Shade Plugin Resource Transformers]
+for details.
+
+https://gradleup.com/shadow/[Gradle Shadow Plugin]:::
+You can use the standard `AppendingTransformer`.
+See
+https://gradleup.com/shadow/configuration/merging/#appending-text-files[Appending Text Files]
+in the Gradle Shadow Plugin documentation for details.
