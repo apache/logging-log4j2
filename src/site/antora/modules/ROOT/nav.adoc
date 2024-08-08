@@ -64,9 +64,9 @@
 * xref:development.adoc[]
 
 .Components
-* xref:log4j-flume-ng.adoc[]
-* xref:log4j-docker.adoc[]
 * xref:log4j-spring-cloud-config-client.adoc[]
+* xref:log4j-jul.adoc[]
+* xref:log4j-to-jul.adoc[]
 
 .Related projects
 * {log4j2-url}[Log4j 2]

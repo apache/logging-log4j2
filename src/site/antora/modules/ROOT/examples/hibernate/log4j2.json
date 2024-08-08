@@ -13,7 +13,7 @@
         {
           "name": "org.hibernate.SQL",
           "level": "DEBUG"
-        },
+        }
 
         // Log JDBC bind parameters and extracted values
         //
