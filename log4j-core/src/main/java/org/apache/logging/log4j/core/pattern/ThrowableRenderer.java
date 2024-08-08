@@ -26,9 +26,7 @@ import org.apache.logging.log4j.util.Strings;
 
 class ThrowableRenderer<C extends ThrowableRenderer.Context> {
 
-    private static final String CAUSED_BY_LABEL = "Caused by: ";
-
-    private static final String SUPPRESSED_LABEL = "Suppressed: ";
+    static final String CAUSED_BY_LABEL = "Caused by: ";
 
     final List<String> ignoredPackageNames;
 
@@ -64,15 +62,6 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
         renderSuffix(buffer, stackTraceElementSuffix);
         buffer.append(lineSeparator);
         renderStackTraceElements(buffer, throwable, context, stackTraceElementSuffix);
-
-        final Throwable[] suppressedThrowables = throwable.getSuppressed();
-        if (suppressedThrowables != null && suppressedThrowables.length != 0) {
-            buffer.append(SUPPRESSED_LABEL);
-            renderSuffix(buffer, stackTraceElementSuffix);
-            for (final Throwable suppresedThrowable : suppressedThrowables) {
-                renderThrowable(buffer, suppresedThrowable, context, stackTraceElementSuffix);
-            }
-        }
 
         final Throwable cause = throwable.getCause();
         if (cause != null) {
