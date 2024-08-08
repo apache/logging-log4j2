@@ -95,11 +95,11 @@ fi
 for module in *-fuzz-test; do
 
   # Copy the built module artifact to the output folder
-  cp "$PWD/$module/target/$module-$projectVersion.jar" "$OUT/$module-$projectVersion.jar"
+  cp "$PWD/$module/target/$module-$projectVersion.jar" "$outputDir/$module-$projectVersion.jar"
 
   # Determine the Java class path
   ./mvnw dependency:build-classpath -Dmdep.outputFile=/tmp/cp.txt -pl $module
-  classPath="$(cat /tmp/cp.txt):$OUT/$module-$projectVersion.jar"
+  classPath="$(sed "s|$outputDir/||g" /tmp/cp.txt):$module-$projectVersion.jar"
   rm /tmp/cp.txt
 
   for fuzzer in $(find "$module" -name "*Fuzzer.java"); do
@@ -116,7 +116,8 @@ for module in *-fuzz-test; do
 
 # OSS-Fuzz detects fuzzers by checking the presence of the magical "LLVMFuzzerTestOneInput" word, hence this line.
 
-scriptDir=\$(cd -- "\$(dirname -- "\${BASH_SOURCE[0]}")")
+# Switch to the script directory
+cd -- "\$(dirname -- "\${BASH_SOURCE[0]}")"
 
 # Determine JVM args
 if [[ "\$@" =~ (^| )-runs=[0-9]+(\$| ) ]]; then
@@ -126,9 +127,9 @@ else
 fi
 
 # Run the fuzzer
-LD_LIBRARY_PATH="\$JVM_LD_LIBRARY_PATH":"\$scriptDir" \\
-"\$scriptDir/jazzer_driver" \\
-  --agent_path="\$scriptDir/jazzer_agent_deploy.jar" \\
+LD_LIBRARY_PATH="\$JVM_LD_LIBRARY_PATH":. \\
+jazzer_driver \\
+  --agent_path=jazzer_agent_deploy.jar \\
   --cp="$classPath" \\
   --target_class="$fqcn" \\
   --jvm_args="\$jvmArgs" \\
