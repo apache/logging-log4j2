@@ -19,7 +19,7 @@
 ====
 Maven::
 +
-We assume you use xref:artifacts.adoc#log4j-bom[`log4j-bom`] for dependency management.
+We assume you use xref:components.adoc#log4j-bom[`log4j-bom`] for dependency management.
 +
 [source,xml,subs="+attributes"]
 ----
@@ -32,7 +32,7 @@ We assume you use xref:artifacts.adoc#log4j-bom[`log4j-bom`] for dependency mana
 
 Gradle::
 +
-We assume you use xref:artifacts.adoc#log4j-bom[`log4j-bom`] for dependency management.
+We assume you use xref:components.adoc#log4j-bom[`log4j-bom`] for dependency management.
 +
 [source,groovy,subs="+attributes"]
 ----

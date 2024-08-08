@@ -227,7 +227,7 @@ The `log4j-jakarta-smtp` contains an xref:manual/appenders.adoc[appender] for th
 https://jakarta.ee/specifications/mail/2.0/[Jakarta Mail 2.0 API]
 and later versions.
 
-See xref:manual/appenders/network.adoc#SMTPAppender[SMTP Appender] for more information.
+See xref:manual/appenders/network.adoc#SmtpAppender[SMTP Appender] for more information.
 
 include::partial$components/log4j-jakarta-smtp.adoc[]
 
@@ -491,7 +491,7 @@ The `log4j-spring-cloud-config-client` provides utils to integrate with
 https://spring.io/projects/spring-cloud-config[Spring Cloud Config 3.x]
 or earlier versions.
 
-See xref:log4j-spring-cloud-config.adoc[] for more details.
+See xref:log4j-spring-cloud-config-client.adoc[] for more details.
 
 include::partial$components/log4j-spring-cloud-config-client.adoc[]
 
