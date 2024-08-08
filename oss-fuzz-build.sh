@@ -116,17 +116,19 @@ for module in *-fuzz-test; do
 
 # OSS-Fuzz detects fuzzers by checking the presence of the magical "LLVMFuzzerTestOneInput" word, hence this line.
 
+scriptDir=\$(cd -- "\$(dirname -- "\${BASH_SOURCE[0]}")")
+
 # Determine JVM args
-if [[ "\$@" =~ (^| )-runs=[0-9]+($| ) ]]; then
+if [[ "\$@" =~ (^| )-runs=[0-9]+(\$| ) ]]; then
   jvmArgs="-Xmx1900m:-Xss900k"
 else
   jvmArgs="-Xmx2048m:-Xss1024k"
 fi
 
 # Run the fuzzer
-LD_LIBRARY_PATH="$JVM_LD_LIBRARY_PATH" \\
-  /usr/local/bin/jazzer_driver \\
-  --agent_path=/usr/local/bin/jazzer_agent_deploy.jar \\
+LD_LIBRARY_PATH="\$JVM_LD_LIBRARY_PATH":"\$scriptDir" \\
+"\$scriptDir/jazzer_driver" \\
+  --agent_path="\$scriptDir/jazzer_agent_deploy.jar" \\
   --cp="$classPath" \\
   --target_class="$fqcn" \\
   --jvm_args="\$jvmArgs" \\
