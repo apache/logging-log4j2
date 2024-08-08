@@ -85,7 +85,7 @@ for a list of available type converters.
 a|
 If set, the value will be added **directly** in the insert statement of the database-specific query language.
 
-[CAUTION]
+[WARNING]
 ====
 This value is added as-is, without any validation.
 Never use user-provided data to determine its value.
@@ -98,7 +98,7 @@ a|
 It specifies the database-specific parameter marker to use.
 Otherwise, the default parameter marker for the database language will be used.
 
-[CAUTION]
+[WARNING]
 ====
 This value is added as-is, without any validation.
 Never use user-provided data to determine its value.

@@ -305,11 +305,9 @@ https://docs.oracle.com/javase/8/docs/api/java/io/FileDescriptor.html#err[`FileD
 
 This setting bypasses the buffering of `System.out` and `System.err` and might provide a performance comparable to a xref:manual/appenders/file.adoc[file appender].
 
-[CAUTION]
+[WARNING]
 ====
-
 If other logging backends or the application itself uses `System.out/System.err`, setting this to `true` might cause interleaved output.
-
 ====
 
 This setting is incompatible with the
@@ -567,7 +565,7 @@ The Servlet appender allows users to forward all logging calls to the
 https://jakarta.ee/specifications/servlet/5.0/apidocs/jakarta/servlet/servletcontext#log(java.lang.String,java.lang.Throwable)[`ServletContext.log()`]
 methods.
 
-[CAUTION]
+[WARNING]
 ====
 The `ServletContext.log(String, Throwable)` method predates modern logging APIs.
 By using Servlet appender, you typically will not be able to differentiate log events by log level or logger name.
