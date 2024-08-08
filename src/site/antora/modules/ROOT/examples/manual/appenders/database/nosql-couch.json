@@ -1,0 +1,26 @@
+{
+  "Configuration": {
+    "Appenders": {
+      // tag::appender[]
+      "CouchDb": {
+        "name": "COUCH",
+        "CouchDB": {
+          "protocol": "https",
+          "username": "${env:DB_USER}",
+          "password": "${env:DB_PASS"},
+          "server": "localhost",
+          "port": 5984,
+          "databaseName": "logging"
+        }
+      // end::appender[]
+    },
+    "Loggers": {
+      "Root": {
+        "level": "INFO",
+        "AppenderRef": {
+          "ref": "COUCH"
+        }
+      }
+    }
+  }
+}

@@ -32,6 +32,7 @@
   <description>The Apache Log4j Flume Appender</description>
 
   <properties>
+    <maven.javadoc.skip>false</maven.javadoc.skip>
 
     <!--
       ~ OSGi and JPMS options

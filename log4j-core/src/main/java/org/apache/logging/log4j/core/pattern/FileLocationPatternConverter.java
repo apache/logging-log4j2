@@ -18,13 +18,14 @@ package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.impl.LocationAware;
 
 /**
  * Returns the event's line location information in a StringBuilder.
  */
 @Plugin(name = "FileLocationPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({"F", "file"})
-public final class FileLocationPatternConverter extends LogEventPatternConverter {
+public final class FileLocationPatternConverter extends LogEventPatternConverter implements LocationAware {
     /**
      * Singleton.
      */
@@ -57,5 +58,10 @@ public final class FileLocationPatternConverter extends LogEventPatternConverter
         if (element != null) {
             output.append(element.getFileName());
         }
+    }
+
+    @Override
+    public boolean requiresLocation() {
+        return true;
     }
 }

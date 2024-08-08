@@ -17,7 +17,6 @@
 
 = Rolling file appenders
 :check-mark: &#x2713;
-:open-book: &#x1F4D6;
 :x-mark: &#x2717;
 
 Log4j Core provides multiple appenders that allow to archive the current log file and truncate it.
@@ -283,7 +282,7 @@ Note that the effects of this setting depend on the Operating System: some syste
 This setting can also reduce the performance of the appender.
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-RollingFileAppender[{open-book} Plugin reference for `RollingFile`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-RollingFileAppender[{plugin-reference-marker} Plugin reference for `RollingFile`]
 
 [#RollingRandomAccessFileAppender]
 === `RollingRandomAccessFile` configuration
@@ -307,16 +306,16 @@ This setting does not give the same atomicity guarantees as for the
 The log file cannot be opened by multiple applications at the same time.
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-RollingRandomAccessFileAppender[{open-book} Plugin reference for `RollingRandomAccessFile`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-RollingRandomAccessFileAppender[{plugin-reference-marker} Plugin reference for `RollingRandomAccessFile`]
 
 [#TriggeringPolicy]
 == Triggering Policies
 
 Triggering policies are Log4j plugins that implement the
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/TriggeringPolicy.html[`TriggeringPolicy`]
+link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/TriggeringPolicy.html[`TriggeringPolicy`]
 interface and are used to decide when is it time to rollover the current log file.
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-TriggeringPolicy[{open-book} Plugin reference for `TriggeringPolicy`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-TriggeringPolicy[{plugin-reference-marker} Plugin reference for `TriggeringPolicy`]
 
 [#TriggeringPolicy-common]
 === Common concerns
@@ -374,7 +373,7 @@ On platforms where JMX is absent or disabled, like Android or
 https://cloud.google.com/appengine[Google App Engine], the `OnStartupTriggeringPolicy` will use the timestamp, when its class was loaded instead.
 ====
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-OnStartupTriggeringPolicy[{open-book} Plugin reference for `OnStartupTriggeringPolicy`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-OnStartupTriggeringPolicy[{plugin-reference-marker} Plugin reference for `OnStartupTriggeringPolicy`]
 
 [#CronTriggeringPolicy]
 === `CronTriggeringPolicy`
@@ -428,7 +427,7 @@ for a full specification of the format.
 
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-CronTriggeringPolicy[{open-book} Plugin reference for `CronTriggeringPolicy`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-CronTriggeringPolicy[{plugin-reference-marker} Plugin reference for `CronTriggeringPolicy`]
 
 [#SizeBasedTriggeringPolicy]
 === `SizeBasedTriggeringPolicy`
@@ -475,7 +474,7 @@ https://docs.oracle.com/javase/8/docs/api/java/text/NumberFormat.html#getInstanc
 
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-SizeBasedTriggeringPolicy[{open-book} Plugin reference for `SizeBasedTriggeringPolicy`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-SizeBasedTriggeringPolicy[{plugin-reference-marker} Plugin reference for `SizeBasedTriggeringPolicy`]
 
 [#TimeBasedTriggeringPolicy]
 === `TimeBasedTriggeringPolicy`
@@ -540,7 +539,7 @@ You can modify the time of the rollover by specifying a different timezone in th
 See xref:manual/pattern-layout.adoc#converter-date[`date` converter syntax] for more details.
 ====
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-TimeBasedTriggeringPolicy[{open-book} Plugin reference for `TimeBasedTriggeringPolicy`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-TimeBasedTriggeringPolicy[{plugin-reference-marker} Plugin reference for `TimeBasedTriggeringPolicy`]
 
 [#Policies]
 === Multiple policies
@@ -595,7 +594,7 @@ include::example$manual/appenders/rolling-file/policies.properties[tag=appender]
 ----
 ====
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-CompositeTriggeringPolicy[{open-book} Plugin reference for `Policies`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-CompositeTriggeringPolicy[{plugin-reference-marker} Plugin reference for `Policies`]
 
 [#RolloverStrategy]
 == Rollover strategies
@@ -716,7 +715,7 @@ Maximum value for the <<conversion-pattern-integer,`%i`>> conversion pattern.
 This attribute is **ignored** if <<DefaultRolloverStrategy-attr-fileIndex,`fileIndex`>> is set to `nomax`.
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-DefaultRolloverStrategy[{open-book} Plugin reference for `DefaultRolloverStrategy`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-DefaultRolloverStrategy[{plugin-reference-marker} Plugin reference for `DefaultRolloverStrategy`]
 
 [#DirectWriteRolloverStrategy]
 === `DirectWriteRolloverStrategy` configuration
@@ -740,7 +739,7 @@ The `DirectWriteRolloverStrategy` has a reduced set of configuration options for
 
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-DirectWriteRolloverStrategy[{open-book} Plugin reference for `DirectWriteRolloverStrategy`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-DirectWriteRolloverStrategy[{plugin-reference-marker} Plugin reference for `DirectWriteRolloverStrategy`]
 
 [#RolloverStrategy-index]
 === Incrementing file indexes
@@ -1011,7 +1010,7 @@ Log4j Core provides out-of-the-box two actions:
 * the <<DeleteAction>> to delete old log files after a rollover,
 * the <<PosixViewAttributeAction>> to change the POSIX permissions of old log files.
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-AbstractPathAction[{open-book} Plugin reference for `AbstractPathAction`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-AbstractPathAction[{plugin-reference-marker} Plugin reference for `AbstractPathAction`]
 
 [#AbstractPathAction-config]
 === Common action configuration
@@ -1120,7 +1119,7 @@ which sorts files by ascending modification timestamp.
 | If present, all the <<DeleteAction-element-PathCondition,nested ``PathCondition``s>> are ignored and the provided script is executed to select the file to delete.
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-DeleteAction[{open-book} Plugin reference for `Delete`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-DeleteAction[{plugin-reference-marker} Plugin reference for `Delete`]
 
 [#PosixViewAttributeAction]
 === `PosixViewAttribute` action
@@ -1191,7 +1190,7 @@ A set of conditions to select the files to modify.
 
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-PosixViewAttributeAction[{open-book} Plugin reference for `PosixViewAttribute`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-PosixViewAttributeAction[{plugin-reference-marker} Plugin reference for `PosixViewAttribute`]
 
 [#PathCondition]
 === Path conditions
@@ -1240,7 +1239,7 @@ This condition matches only if **all** the nested conditions also match.
 
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfAccumulatedFileSize[{open-book} Plugin reference for `IfAccumulatedFileSize`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfAccumulatedFileSize[{plugin-reference-marker} Plugin reference for `IfAccumulatedFileSize`]
 
 [#IfAccumulatedFileCount]
 ==== `IfAccumulatedFileCount`
@@ -1281,7 +1280,7 @@ This condition matches only if **all** the nested conditions also match.
 
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfAccumulatedFileCount[{open-book} Plugin reference for `IfAccumulatedFileCount`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfAccumulatedFileCount[{plugin-reference-marker} Plugin reference for `IfAccumulatedFileCount`]
 
 [#IfFileName]
 ==== `IfFileName`
@@ -1331,7 +1330,7 @@ This condition matches only if **all** the nested conditions also match.
 
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfFileName[{open-book} Plugin reference for `IfFileName`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfFileName[{plugin-reference-marker} Plugin reference for `IfFileName`]
 
 [#IfLastModified]
 ==== `IfLastModified`
@@ -1364,7 +1363,7 @@ This condition matches only if **all** the nested conditions also match.
 
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfLastModified[{open-book} Plugin reference for `IfLastModified`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfLastModified[{plugin-reference-marker} Plugin reference for `IfLastModified`]
 
 [#IfNot]
 ==== `IfNot`
@@ -1382,7 +1381,7 @@ Negates the result of the nested condition.
 
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfNot[{open-book} Plugin reference for `IfNot`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfNot[{plugin-reference-marker} Plugin reference for `IfNot`]
 
 [#IfAll]
 ==== `IfAll`
@@ -1400,7 +1399,7 @@ Accepts a file if all the nested conditions are true.
 
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfAll[{open-book} Plugin reference for `IfAll`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfAll[{plugin-reference-marker} Plugin reference for `IfAll`]
 
 [#IfAny]
 ==== `IfAny`
@@ -1416,7 +1415,7 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfAny[{open-book} Plugin reference for `IfAny`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfAny[{plugin-reference-marker} Plugin reference for `IfAny`]
 
 [#ScriptCondition]
 === `ScriptCondition`
@@ -1487,7 +1486,7 @@ xref:manual/configuration.adoc#property-substitution[the global `Properties` con
 
 For an example of `ScriptCondition` usage, see the <<using-script-condition>> example below.
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-ScriptCondition[{open-book} Plugin reference for `ScriptCondition`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-ScriptCondition[{plugin-reference-marker} Plugin reference for `ScriptCondition`]
 
 [#recipes]
 == Configuration recipes

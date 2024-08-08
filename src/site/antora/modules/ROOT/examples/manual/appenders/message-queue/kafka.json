@@ -1,0 +1,37 @@
+{
+  "Configuration": {
+    "Appenders": {
+      "File": {
+        "name": "FILE",
+        "fileName": "logs/kafka.log",
+        "JsonTemplateLayout": {}
+      },
+      // tag::appender[]
+      "Kafka": {
+        "name": "KAFKA",
+        "topic": "logs",
+        "key": "$${web:contextName}", // <1>
+        "JsonTemplateLayout": {}
+      }
+      // end::appender[]
+    },
+    "Loggers": {
+      // tag::loggers[]
+      "Root": {
+        "level": "INFO",
+        "AppenderRef": {
+          "ref": "KAFKA"
+        }
+      },
+      "Logger": {
+        "name": "org.apache.kafka",
+        "level": "WARN",
+        "additivity": false, // <1>
+        "AppenderRef": {
+          "ref": "FILE"
+        }
+      }
+      // end::loggers[]
+    }
+  }
+}

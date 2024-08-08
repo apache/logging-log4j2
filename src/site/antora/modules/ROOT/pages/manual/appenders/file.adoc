@@ -17,7 +17,6 @@
 
 = File appenders
 :check-mark: &#x2713;
-:open-book: &#x1F4D6;
 :x-mark: &#x2717;
 
 Log4j Core provides multiple appenders that store log messages in a file.
@@ -218,7 +217,7 @@ Note that the effects of this setting depend on the Operating System: some syste
 This setting can also reduce the performance of the appender.
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-FileAppender[{open-book} Plugin reference for `File`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-FileAppender[{plugin-reference-marker} Plugin reference for `File`]
 
 [#RandomAccessFileAppender]
 === `RandomAccessFile` configuration
@@ -244,7 +243,7 @@ The log file cannot be opened by multiple applications at the same time.
 
 Unlike the <<FileAppender,`File` appender>>, this appender always uses an internal buffer of size <<attr-bufferSize,`bufferSize`>>.
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-RandomAccessFileAppender[{open-book} Plugin reference for `RandomAccessFile`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-RandomAccessFileAppender[{plugin-reference-marker} Plugin reference for `RandomAccessFile`]
 
 [#MemoryMappedFileAppender]
 === `MemoryMappedFile` configuration
@@ -276,4 +275,4 @@ It specifies the size measured in bytes of the memory mapped log file buffer.
 
 Unlike other file appenders, this appender always uses a memory mapped buffer of size <<MemoryMappedFileAppender-attr-regionLength,`regionLength`>> as its internal buffer.
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-MemoryMappedFileAppender[{open-book} Plugin reference for `MemoryMappedFile`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-MemoryMappedFileAppender[{plugin-reference-marker} Plugin reference for `MemoryMappedFile`]

@@ -125,7 +125,7 @@ include::example$manual/customloglevels/LevelExample.java[tag=shorthand]
 [#level-selection]
 === Which level to use?
 
-[CAUTION]
+[WARNING]
 ====
 While Log4j API defines a set of standard levels, it does not define the purpose of these levels.
 Many different conventions on which log levels to use coexist in the industry.

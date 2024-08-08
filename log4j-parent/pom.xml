@@ -64,7 +64,7 @@
     <angus-activation.version>2.0.2</angus-activation.version>
     <angus-mail.version>2.0.3</angus-mail.version>
     <assertj.version>3.26.3</assertj.version>
-    <awaitility.version>4.2.1</awaitility.version>
+    <awaitility.version>4.2.2</awaitility.version>
     <bsh.version>2.0b6</bsh.version>
     <cassandra.version>3.11.17</cassandra.version>
     <cassandra-driver.version>3.11.5</cassandra-driver.version>
@@ -113,7 +113,7 @@
     <je.version>18.3.12</je.version>
     <jeromq.version>0.6.0</jeromq.version>
     <jetty.version>9.4.55.v20240627</jetty.version>
-    <jmdns.version>3.5.9</jmdns.version>
+    <jmdns.version>3.5.10</jmdns.version>
     <jmh.version>1.37</jmh.version>
     <json-unit.version>2.40.1</json-unit.version>
     <junit.version>4.13.2</junit.version>

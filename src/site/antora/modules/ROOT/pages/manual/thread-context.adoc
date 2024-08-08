@@ -29,7 +29,9 @@ The entry point for associating logging-related information with the executing t
 link:../javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html[`ThreadContext`].
 It offers both
 
+[#mdc]
 * map-structured – referred to as _Thread Context Map_ or _Mapped Diagnostic Context (MDC)_
+[#ndc]
 * stack-structured – referred to as _Thread Context Stack_ or _Nested Diagnostic Context (NDC)_
 
 storage:

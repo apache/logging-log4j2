@@ -38,6 +38,7 @@ version: ~
 start_page: index.adoc
 asciidoc:
   attributes:
+    plugin-reference-marker: "&#x1F4D6;"
     # Commons
     antora-examples-url: "${scm.url}/tree/${scm.tag}/src/site/antora/modules/ROOT/examples"
     project-github-url: "${scm.url}/tree/${scm.tag}"
@@ -56,8 +57,14 @@ asciidoc:
     commons-logging-version: "${site-commons-logging.version}"
     conversant-version: "${site-conversant.version}"
     disruptor-version: "${site-disruptor.version}"
+    flume-version: "${site-flume.version}"
     jackson-version: "${site-jackson.version}"
+    jansi-version: "${site-jansi.version}"
+    javax-mail-version: "${site-javax-mail.version}"
     jctools-version: "${site-jctools.version}"
+    je-version: "${site-je.version}"
+    jeromq-version: "${site-jeromq.version}"
+    kafka-version: "${site-kafka.version}"
     log4j-api-version: "${log4j-api.version}"
     log4j-core-version: "${site-log4j-core.version}"
     log4j-layout-template-json-version: "${site-log4j-layout-template-json.version}"

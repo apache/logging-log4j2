@@ -364,7 +364,7 @@ See <<lookups-patterns>> for more information.
 | `docker:<key>`
 
 where `<key>` is one of the <<DockerLookup-keys>>.
-| Dependency | xref:log4j-docker.adoc[]
+| Dependency | `log4j-docker`
 |===
 
 Docker Lookup queries https://docs.docker.com/engine/api/[the API of the Docker Engine] running your container.

@@ -45,6 +45,9 @@
 ** xref:manual/appenders.adoc[]
 *** xref:manual/appenders/file.adoc[]
 *** xref:manual/appenders/rolling-file.adoc[]
+*** xref:manual/appenders/database.adoc[]
+*** xref:manual/appenders/network.adoc[]
+*** xref:manual/appenders/message-queue.adoc[]
 *** xref:manual/appenders/delegating.adoc[]
 ** xref:manual/layouts.adoc[]
 *** xref:manual/json-template-layout.adoc[]
@@ -74,13 +77,8 @@
 * xref:development.adoc[]
 
 .Components
-* xref:log4j-cassandra.adoc[]
-* xref:log4j-couchdb.adoc[]
-* xref:log4j-docker.adoc[]
-* xref:log4j-flume-ng.adoc[]
 * xref:log4j-iostreams.adoc[]
 * xref:log4j-spring-boot.adoc[]
-* xref:log4j-spring-cloud-config.adoc[]
 * xref:log4j-spring-cloud-config-client.adoc[]
 * xref:log4j-jul.adoc[]
 * xref:log4j-to-jul.adoc[]

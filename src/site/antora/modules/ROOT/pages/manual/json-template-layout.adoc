@@ -957,7 +957,7 @@ Resolve the logger's fully qualified class name:
 [#event-template-resolver-main]
 ===== `main`
 
-Performs xref:manual/lookups.adoc#AppMainArgsLookup[Main Argument Lookup] for the given `index` or `key`
+Performs xref:manual/lookups.adoc#MainMapLookup[Main Argument Lookup] for the given `index` or `key`
 
 .`main` event template resolver grammar
 [source]
@@ -1686,13 +1686,13 @@ xref:manual/lookups.adoc[] are intended as a very generic, convenience utility t
 |xref:manual/lookups.adoc#LowerLookup[Lower Lookup]
 |<<event-template-resolver-caseConverter>>
 
-|xref:manual/lookups.adoc#AppMainArgsLookup[Main Arguments Lookup]
+|xref:manual/lookups.adoc#MainMapLookup[Main Arguments Lookup]
 |<<event-template-resolver-main>>
 
 |xref:manual/lookups.adoc#MapLookup[Map Lookup]
 |<<event-template-resolver-map>>
 
-|xref:manual/lookups.adoc#marker-lookup[Marker Lookup]
+|xref:manual/lookups.adoc#MarkerLookup[Marker Lookup]
 |<<event-template-resolver-marker>>
 
 |xref:manual/lookups.adoc#UpperLookup[Upper Lookup]

@@ -244,7 +244,7 @@ We will cover them while <<configuring-loggers, configuring loggers>>.
 [[Appenders]] Appenders::
 xref:manual/appenders.adoc[] are the exit point of the logging pipeline.
 They decide which resource (console, file, database, or similar) the log event is sent to.
-In the examples of this chapter, we will only use the xref:manual/appenders.adoc#consoleappender[console appender] and the xref:manual/appenders.adoc#fileappender[file appender].
+In the examples of this chapter, we will only use the xref:manual/appenders.adoc#ConsoleAppender[console appender] and the xref:manual/appenders/file.adoc[file appender].
 
 Layouts::
 xref:manual/layouts.adoc[] tell appenders how to format the log event: text, JSON, XML, or similar.
@@ -939,8 +939,8 @@ See xref:manual/lookups.adoc#evaluation-contexts[lookup evaluation contexts] for
 [NOTE]
 ====
 The
-xref:manual/appenders.adoc#Routes[`Route`] component of the
-xref:manual/appenders.adoc#RoutingAppender[`RoutingAppender`]
+xref:manual/appenders/delegating.adoc#Routes[`Route`] component of the
+xref:manual/appenders/delegating.adoc#RoutingAppender[Routing Appender]
 is a different case altogether.
 The attributes of its children are expanded at runtime, but are not expanded at configuration time.
 
