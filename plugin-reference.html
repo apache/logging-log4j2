@@ -283,25 +283,10 @@
     <span class="nav-text">Components</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="log4j-cassandra.html">Cassandra Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="log4j-couchdb.html">CouchDB Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="log4j-docker.html">Log4j Docker</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="log4j-flume-ng.html">Flume Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="log4j-iostreams.html">Log4j IOStreams</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="log4j-spring-boot.html">Log4j Spring Boot Support</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="log4j-spring-cloud-config.html">Log4j Spring Cloud Config</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
@@ -1489,7 +1474,7 @@ Originally developed by Ceki Glc and Anders Kristensen.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>header</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
@@ -2176,7 +2161,7 @@ NOTE: The Log4j API supports custom levels, the following list contains only the
 <p><a href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender">FlumeAppender</a></p>
 </li>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
+<p><a href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
 </li>
 </ul>
 </div>
@@ -2297,7 +2282,7 @@ When resources require locking (e.g., through <code>org.apache.logging.log4j.cor
 <p><a href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender">FlumeAppender</a></p>
 </li>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
+<p><a href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
 </li>
 </ul>
 </div>
@@ -2702,7 +2687,7 @@ In most circumstances, implementation classes should store their <code>org.apach
 <p><a href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender">FlumeAppender</a></p>
 </li>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
+<p><a href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
 </li>
 </ul>
 </div>
@@ -2910,7 +2895,7 @@ In most circumstances, implementation classes should store their <code>org.apach
 <p><a href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender">FlumeAppender</a></p>
 </li>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
+<p><a href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
 </li>
 </ul>
 </div>
@@ -3086,7 +3071,7 @@ In most circumstances, implementation classes should store their <code>org.apach
 <p><a href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender">FlumeAppender</a></p>
 </li>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
+<p><a href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
 </li>
 </ul>
 </div>
@@ -7450,7 +7435,7 @@ However, configurations set up for the 2.0 version of the JMS appenders will sti
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider">NoSqlProvider</a>?</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider">NoSqlProvider</a>?</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p>Sets the provider.</p>
 </div></div></td>
@@ -13222,7 +13207,7 @@ A filter may choose to support being called only from the context or only from a
 <p><a href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender">FlumeAppender</a></p>
 </li>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
+<p><a href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
 </li>
 </ul>
 </div>
@@ -13704,7 +13689,7 @@ DENY.</p>
 <p><a href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender">FlumeAppender</a></p>
 </li>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
+<p><a href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
 </li>
 </ul>
 </div>
@@ -15100,7 +15085,7 @@ The default Level is ERROR.</p>
 <p><a href="#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-JsonTemplateLayout">JsonTemplateLayout</a></p>
 </li>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
+<p><a href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
 </li>
 </ul>
 </div>
@@ -17826,7 +17811,7 @@ Supports Lookup expressions.</p>
 <p><a href="#org-apache-logging-log4j_log4j-docker_org-apache-logging-log4j-docker-DockerLookup">DockerLookup</a></p>
 </li>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-WebLookup">WebLookup</a></p>
+<p><a href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-WebLookup">WebLookup</a></p>
 </li>
 </ul>
 </div>
@@ -18284,7 +18269,7 @@ If these do not suffice, you can subclass and implement your own matcher.</p>
 <p><a href="#org-apache-logging-log4j_log4j-spring-boot_org-apache-logging-log4j-spring-boot-SpringLookup">SpringLookup</a></p>
 </li>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-WebLookup">WebLookup</a></p>
+<p><a href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-WebLookup">WebLookup</a></p>
 </li>
 </ul>
 </div>
@@ -21816,6 +21801,37 @@ toString(), or to output the value of a specific key within the property bundle 
 <div class="sect2">
 <h3 id="org-apache-logging-log4j_log4j-couchdb"><a class="anchor" href="#org-apache-logging-log4j_log4j-couchdb"></a><code>log4j-couchdb</code></h3>
 <div class="sect3">
+<h4 id="org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider"><a class="anchor" href="#org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider"></a><code>NoSqlProvider</code></h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Class</dt>
+<dd>
+<p><code>org.apache.logging.log4j.core.appender.nosql.NoSqlProvider</code></p>
+</dd>
+<dt class="hdlist1">Provider</dt>
+<dd>
+<p><code>org.apache.logging.log4j:log4j-couchdb</code></p>
+</dd>
+</dl>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider_implementations"></a>Known implementations</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-couchdb-CouchDbProvider">CouchDbProvider</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider">MongoDbProvider</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-mongodb4-MongoDb4Provider">MongoDb4Provider</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect3">
 <h4 id="org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-couchdb-CouchDbProvider"><a class="anchor" href="#org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-couchdb-CouchDbProvider"></a>CouchDB</h4>
 <div class="dlist">
 <dl>
@@ -22338,148 +22354,6 @@ Minimum is 1000.</p>
 </li>
 </ul>
 </div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="org-apache-logging-log4j_log4j-jakarta-web"><a class="anchor" href="#org-apache-logging-log4j_log4j-jakarta-web"></a><code>log4j-jakarta-web</code></h3>
-<div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-WebLookup"><a class="anchor" href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-WebLookup"></a>web</h4>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Class</dt>
-<dd>
-<p><code>org.apache.logging.log4j.web.WebLookup</code></p>
-</dd>
-<dt class="hdlist1">Provider</dt>
-<dd>
-<p><code>org.apache.logging.log4j:log4j-jakarta-web</code></p>
-</dd>
-</dl>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-WebLookup_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-WebLookup_XML-snippet"></a>XML snippet</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;web/&gt;</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender"><a class="anchor" href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender"></a>Servlet</h4>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Class</dt>
-<dd>
-<p><code>org.apache.logging.log4j.web.appender.ServletAppender</code></p>
-</dd>
-<dt class="hdlist1">Provider</dt>
-<dd>
-<p><code>org.apache.logging.log4j:log4j-jakarta-web</code></p>
-</dd>
-</dl>
-</div>
-<div class="paragraph">
-<p>Logs using the ServletContext&#8217;s log method</p>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender_XML-snippet"></a>XML snippet</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Servlet ignoreExceptions=""
-         logThrowables=""
-         name=""&gt;
-    &lt;a-Filter-implementation/&gt;
-    &lt;a-Layout-implementation/&gt;
-    &lt;Property/&gt;&lt;!-- multiple occurrences allowed --&gt;
-&lt;/Servlet&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender-attributes"><a class="anchor" href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender-attributes"></a>Attributes</h5>
-<div class="paragraph">
-<p>Optional attributes are denoted by <code>?</code>-suffixed types.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 62.5%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ignoreExceptions</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>logThrowables</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Logs with <code>jakarta.servlet.ServletContext#log(String,Throwable)</code> if true and with <code>jakarta.servlet.ServletContext#log(String)</code> if false.</p>
-</div>
-<div class="paragraph">
-<p>Logs with <code>jakarta.servlet.ServletContext#log(String,Throwable)</code> if true and with <code>jakarta.servlet.ServletContext#log(String)</code> if false.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender_components"><a class="anchor" href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender_components"></a>Nested components</h5>
-<div class="paragraph">
-<p>Optional components are denoted by <code>?</code>-suffixed types.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 71.4286%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Tag</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Property</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property">Property</a>?</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Filter">Filter</a>?</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Layout">Layout</a>?</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
-</tr>
-</tbody>
-</table>
 </div>
 </div>
 </div>
@@ -24058,37 +23932,6 @@ Minimum is 1000.</p>
 <div class="sect2">
 <h3 id="org-apache-logging-log4j_log4j-mongodb4"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb4"></a><code>log4j-mongodb4</code></h3>
 <div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider"></a><code>NoSqlProvider</code></h4>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Class</dt>
-<dd>
-<p><code>org.apache.logging.log4j.core.appender.nosql.NoSqlProvider</code></p>
-</dd>
-<dt class="hdlist1">Provider</dt>
-<dd>
-<p><code>org.apache.logging.log4j:log4j-mongodb4</code></p>
-</dd>
-</dl>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider_implementations"></a>Known implementations</h5>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-couchdb-CouchDbProvider">CouchDbProvider</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider">MongoDbProvider</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-mongodb4-MongoDb4Provider">MongoDb4Provider</a></p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect3">
 <h4 id="org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-mongodb4-MongoDb4Provider"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-mongodb4-MongoDb4Provider"></a>MongoDb4</h4>
 <div class="dlist">
 <dl>
@@ -24300,6 +24143,148 @@ Minimum is 1000.</p>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p>Sets the Profile Name or Names.</p>
 </div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="org-apache-logging-log4j_log4j-web"><a class="anchor" href="#org-apache-logging-log4j_log4j-web"></a><code>log4j-web</code></h3>
+<div class="sect3">
+<h4 id="org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-WebLookup"><a class="anchor" href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-WebLookup"></a>web</h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Class</dt>
+<dd>
+<p><code>org.apache.logging.log4j.web.WebLookup</code></p>
+</dd>
+<dt class="hdlist1">Provider</dt>
+<dd>
+<p><code>org.apache.logging.log4j:log4j-web</code></p>
+</dd>
+</dl>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-WebLookup_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-WebLookup_XML-snippet"></a>XML snippet</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;web/&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender"><a class="anchor" href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender"></a>Servlet</h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Class</dt>
+<dd>
+<p><code>org.apache.logging.log4j.web.appender.ServletAppender</code></p>
+</dd>
+<dt class="hdlist1">Provider</dt>
+<dd>
+<p><code>org.apache.logging.log4j:log4j-web</code></p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Logs using the ServletContext&#8217;s log method</p>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender_XML-snippet"></a>XML snippet</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Servlet ignoreExceptions=""
+         logThrowables=""
+         name=""&gt;
+    &lt;a-Filter-implementation/&gt;
+    &lt;a-Layout-implementation/&gt;
+    &lt;Property/&gt;&lt;!-- multiple occurrences allowed --&gt;
+&lt;/Servlet&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender-attributes"><a class="anchor" href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender-attributes"></a>Attributes</h5>
+<div class="paragraph">
+<p>Optional attributes are denoted by <code>?</code>-suffixed types.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ignoreExceptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>logThrowables</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Logs with <code>javax.servlet.ServletContext#log(String,Throwable)</code> if true and with <code>javax.servlet.ServletContext#log(String)</code> if false.</p>
+</div>
+<div class="paragraph">
+<p>Logs with <code>javax.servlet.ServletContext#log(String,Throwable)</code> if true and with <code>javax.servlet.ServletContext#log(String)</code> if false.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender_components"><a class="anchor" href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender_components"></a>Nested components</h5>
+<div class="paragraph">
+<p>Optional components are denoted by <code>?</code>-suffixed types.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 71.4286%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Tag</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Property</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property">Property</a>?</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Filter">Filter</a>?</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Layout">Layout</a>?</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 </tbody>
 </table>

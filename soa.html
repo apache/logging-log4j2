@@ -283,25 +283,10 @@
     <span class="nav-text">Components</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="log4j-cassandra.html">Cassandra Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="log4j-couchdb.html">CouchDB Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="log4j-docker.html">Log4j Docker</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="log4j-flume-ng.html">Flume Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="log4j-iostreams.html">Log4j IOStreams</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="log4j-spring-boot.html">Log4j Spring Boot Support</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="log4j-spring-cloud-config.html">Log4j Spring Cloud Config</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
@@ -497,7 +482,7 @@ Nevertheless, there are some tips we recommend you to practice:</p>
 <p><strong>For writing to console</strong>, use a <a href="manual/appenders.html#ConsoleAppender" class="xref page">Console Appender</a> and make sure to configure its <code>direct</code> attribute to <code>true</code> for the maximum efficiency.</p>
 </li>
 <li>
-<p><strong>For writing to an external service</strong>, use a <a href="manual/appenders.html#SocketAppender" class="xref page">Socket Appender</a> and make sure to set the protocol to TCP and configure the null delimiter of the associated layout.
+<p><strong>For writing to an external service</strong>, use a <a href="manual/appenders/network.html#SocketAppender" class="xref page">Socket Appender</a> and make sure to set the protocol to TCP and configure the null delimiter of the associated layout.
 For instance, see <a href="manual/json-template-layout.html#plugin-attr-nullEventDelimiterEnabled" class="xref page">the <code>nullEventDelimiterEnabled</code> configuration attribute of JSON Template Layout</a>.</p>
 </li>
 </ul>
@@ -630,7 +615,7 @@ Coupling the configuration with the application at deployment and gradually depl
 <div class="sect2">
 <h3 id="docker"><a class="anchor" href="#docker"></a>Docker</h3>
 <div class="paragraph">
-<p>See <a href="log4j-docker.html" class="xref page">Log4j Docker</a> for Docker-specific Log4j features, e.g., <a href="manual/lookups.html#DockerLookup" class="xref page">Docker Lookup</a>.
+<p>See <a href="manual/lookups.html#DockerLookup" class="xref page">Docker Lookup</a>.
 We also strongly advise you to check <a href="https://docs.docker.com/config/containers/logging/">the extensive logging integration</a> offered by Docker containers.</p>
 </div>
 </div>

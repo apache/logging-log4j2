@@ -283,25 +283,10 @@
     <span class="nav-text">Components</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="log4j-cassandra.html">Cassandra Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="log4j-couchdb.html">CouchDB Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="log4j-docker.html">Log4j Docker</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="log4j-flume-ng.html">Flume Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="log4j-iostreams.html">Log4j IOStreams</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="log4j-spring-boot.html">Log4j Spring Boot Support</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="log4j-spring-cloud-config.html">Log4j Spring Cloud Config</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
@@ -401,7 +386,7 @@ Log4j 2 and onwards use <code>log4j2.xml</code>.</p>
 </div>
 <div class="paragraph">
 <p>Web applications can specify the Log4j configuration file location with a servlet context parameter.
-See <a href="jakarta.html#ContextParams" class="xref page">the related page on web applications</a>.</p>
+See <a href="jakarta.html#log4jConfiguration" class="xref page">the related page on web applications</a>.</p>
 </div>
 <div class="paragraph">
 <p>Refer to <a href="manual/configuration.html" class="xref page">the Configuration page</a> for further details.</p>
@@ -528,7 +513,7 @@ This disables level-based <a href="manual/status-logger.html" class="xref page">
 <h2 id="separate_log_files"><a class="anchor" href="#separate_log_files"></a>How do I dynamically write to separate log files?</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You can use <a href="manual/appenders.html#RoutingAppender" class="xref page">the routing appender</a> to evaluate a log message and forward it to a particular appender.</p>
+<p>You can use <a href="manual/appenders/delegating.html#RoutingAppender" class="xref page">the routing appender</a> to evaluate a log message and forward it to a particular appender.</p>
 </div>
 </div>
 </div>

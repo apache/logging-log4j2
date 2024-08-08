@@ -283,25 +283,10 @@
     <span class="nav-text">Components</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-cassandra.html">Cassandra Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-couchdb.html">CouchDB Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-docker.html">Log4j Docker</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-flume-ng.html">Flume Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-spring-boot.html">Log4j Spring Boot Support</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-spring-cloud-config.html">Log4j Spring Cloud Config</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
@@ -965,7 +950,7 @@ We will cover them while <a href="#configuring-loggers">configuring loggers</a>.
 <dd>
 <p><a href="appenders.html" class="xref page">Appenders</a> are the exit point of the logging pipeline.
 They decide which resource (console, file, database, or similar) the log event is sent to.
-In the examples of this chapter, we will only use the <a href="appenders.html#consoleappender" class="xref page">console appender</a> and the <a href="appenders.html#fileappender" class="xref page">file appender</a>.</p>
+In the examples of this chapter, we will only use the <a href="appenders.html#ConsoleAppender" class="xref page">console appender</a> and the <a href="appenders/file.html" class="xref page">file appender</a>.</p>
 </dd>
 <dt class="hdlist1">Layouts</dt>
 <dd>
@@ -2509,8 +2494,8 @@ See <a href="lookups.html#evaluation-contexts" class="xref page">lookup evaluati
 <td class="content">
 <div class="paragraph">
 <p>The
-<a href="appenders.html#Routes" class="xref page"><code>Route</code></a> component of the
-<a href="appenders.html#RoutingAppender" class="xref page"><code>RoutingAppender</code></a>
+<a href="appenders/delegating.html#Routes" class="xref page"><code>Route</code></a> component of the
+<a href="appenders/delegating.html#RoutingAppender" class="xref page">Routing Appender</a>
 is a different case altogether.
 The attributes of its children are expanded at runtime, but are not expanded at configuration time.</p>
 </div>

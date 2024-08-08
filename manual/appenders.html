@@ -283,25 +283,10 @@
     <span class="nav-text">Components</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-cassandra.html">Cassandra Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-couchdb.html">CouchDB Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-docker.html">Log4j Docker</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-flume-ng.html">Flume Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-spring-boot.html">Log4j Spring Boot Support</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-spring-cloud-config.html">Log4j Spring Cloud Config</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
@@ -835,11 +820,11 @@ or
 <div class="paragraph">
 <p>This setting bypasses the buffering of <code>System.out</code> and <code>System.err</code> and might provide a performance comparable to a <a href="appenders/file.html" class="xref page">file appender</a>.</p>
 </div>
-<div class="admonitionblock caution">
+<div class="admonitionblock warning">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-caution" title="Caution"></i>
+<i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
 <div class="paragraph">
@@ -1108,11 +1093,11 @@ They can be further split into:</p>
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1">Single file appenders</dt>
+<dt class="hdlist1"><a id="FileAppender"></a><a id="MemoryMappedFileAppender"></a><a id="RandomAccessFileAppender"></a>Single file appenders</dt>
 <dd>
 <p>See <a href="appenders/file.html" class="xref page">File appenders</a> for details.</p>
 </dd>
-<dt class="hdlist1">Rolling file appenders</dt>
+<dt class="hdlist1"><a id="RollingFileAppender"></a><a id="RollingRandomAccessFileAppender"></a>Rolling file appenders</dt>
 <dd>
 <p>See <a href="appenders/rolling-file.html" class="xref page">Rolling file appenders</a> for details.</p>
 </dd>
@@ -1124,22 +1109,34 @@ They can be further split into:</p>
 <div class="paragraph">
 <p>The appenders write log events directly to a database.</p>
 </div>
-<div class="dlist">
+<div id="CassandraAppender" class="dlist">
 <dl>
 <dt class="hdlist1"><a href="appenders/database.html#CassandraAppender" class="xref page">Cassandra appender</a></dt>
 <dd>
 <p>Sends log events to
 <a href="https://cassandra.apache.org/_/index.html">Apache Cassandra</a></p>
 </dd>
+</dl>
+</div>
+<div id="JDBCAppender" class="dlist">
+<dl>
 <dt class="hdlist1"><a href="appenders/database.html#JdbcAppender" class="xref page">JDBC appender</a></dt>
 <dd>
 <p>Sends log events to a JDBC driver</p>
 </dd>
+</dl>
+</div>
+<div id="JPAAppender" class="dlist">
+<dl>
 <dt class="hdlist1"><a href="appenders/database.html#JpaAppender" class="xref page">JPA appender</a></dt>
 <dd>
 <p>Uses Jakarta Persistence API to deliver log events to a database</p>
 </dd>
-<dt class="hdlist1"><a href="appenders/database.html#NoSqlAppender" class="xref page">NoSQL appender</a></dt>
+</dl>
+</div>
+<div id="NoSQLAppender" class="dlist">
+<dl>
+<dt class="hdlist1"><a id="NoSQLAppenderMongoDB"></a><a id="NoSQLAppenderMongoDB3"></a><a id="NoSQLAppenderMongoDB4"></a><a id="NoSQLAppenderCouchDB"></a><a href="appenders/database.html#NoSqlAppender" class="xref page">NoSQL appender</a></dt>
 <dd>
 <p>Store log events to a document-oriented database</p>
 </dd>
@@ -1150,25 +1147,33 @@ They can be further split into:</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="network-appenders"><a class="anchor" href="#network-appenders"></a>Network appenders</h3>
+<h3 id="network-appenders"><a class="anchor" href="#network-appenders"></a><a id="SSL"></a><a id="SyslogAppender"></a>Network appenders</h3>
 <div class="paragraph">
 <p>These appenders use simple network protocols to transmit log events to a remote host.
 The supported network protocols are:</p>
 </div>
-<div class="dlist">
+<div id="SocketAppender" class="dlist">
 <dl>
 <dt class="hdlist1"><code>UDP</code></dt>
 <dt class="hdlist1"><code>TCP</code></dt>
 <dd>
 <p>These are handled by the <a href="appenders/network.html#SocketAppender" class="xref page">Socket Appender</a>.</p>
 </dd>
+</dl>
+</div>
+<div id="HttpAppender" class="dlist">
+<dl>
 <dt class="hdlist1"><code>HTTP</code></dt>
 <dd>
 <p>This is handled by the <a href="appenders/network.html#HttpAppender" class="xref page">HTTP Appender</a>.</p>
 </dd>
+</dl>
+</div>
+<div id="SMTPAppender" class="dlist">
+<dl>
 <dt class="hdlist1"><code>SMTP</code></dt>
 <dd>
-<p>This is handled by the <a href="appenders/network.html#HttpAppender" class="xref page">SMTP Appender</a>.</p>
+<p>This is handled by the <a href="appenders/network.html#SmtpAppender" class="xref page">SMTP Appender</a>.</p>
 </dd>
 </dl>
 </div>
@@ -1182,23 +1187,35 @@ The supported network protocols are:</p>
 <p>Message queue appenders forward log events to a message broker.
 The following systems are supported:</p>
 </div>
-<div class="dlist">
+<div id="FlumeAppender" class="dlist">
 <dl>
 <dt class="hdlist1"><a href="appenders/message-queue.html#FlumeAppender" class="xref page">Flume appender</a></dt>
 <dd>
 <p>Forwards log events to an
 <a href="https://flume.apache.org/">Apache Flume</a> server.</p>
 </dd>
+</dl>
+</div>
+<div id="JMSAppender" class="dlist">
+<dl>
 <dt class="hdlist1"><a href="appenders/message-queue.html#JmsAppender" class="xref page">JMS appender</a></dt>
 <dd>
 <p>Forwards log events to a
 <a href="https://jakarta.ee/specifications/messaging/2.0/">Jakarta Message 2.0</a> broker.</p>
 </dd>
+</dl>
+</div>
+<div id="KafkaAppender" class="dlist">
+<dl>
 <dt class="hdlist1"><a href="appenders/message-queue.html#KafkaAppender" class="xref page">Kafka appender</a></dt>
 <dd>
 <p>Forwards log events to an
 <a href="https://kafka.apache.org/">Apache Kafka</a> server.</p>
 </dd>
+</dl>
+</div>
+<div id="JeroMQAppender" class="dlist">
+<dl>
 <dt class="hdlist1"><a href="appenders/message-queue.html#JeroMqAppender" class="xref page">ZeroMQ/JeroMQ appender</a></dt>
 <dd>
 <p>Forwards log events to a
@@ -1217,11 +1234,11 @@ The following systems are supported:</p>
 <a href="https://jakarta.ee/specifications/servlet/5.0/apidocs/jakarta/servlet/servletcontext#log(java.lang.String,java.lang.Throwable)"><code>ServletContext.log()</code></a>
 methods.</p>
 </div>
-<div class="admonitionblock caution">
+<div class="admonitionblock warning">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-caution" title="Caution"></i>
+<i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
 <div class="paragraph">
@@ -1402,24 +1419,36 @@ runtimeOnly 'org.apache.logging.log4j:log4j-web'</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="delegating-appenders"><a class="anchor" href="#delegating-appenders"></a>Delegating appenders</h3>
+<h3 id="delegating-appenders"><a class="anchor" href="#delegating-appenders"></a><a id="ScriptAppenderSelector"></a>Delegating appenders</h3>
 <div class="paragraph">
 <p>Delegating appenders are intended to decorate other appenders:</p>
 </div>
-<div class="dlist">
+<div id="AsyncAppender" class="dlist">
 <dl>
 <dt class="hdlist1"><a href="appenders/delegating.html#AsyncAppender" class="xref page">Asynchronous appender</a></dt>
 <dd>
 <p>Perform all I/O on a dedicated thread</p>
 </dd>
+</dl>
+</div>
+<div id="FailoverAppender" class="dlist">
+<dl>
 <dt class="hdlist1"><a href="appenders/delegating.html#FailoverAppender" class="xref page">Failover appender</a></dt>
 <dd>
 <p>Provide a backup appender in case an appender fails</p>
 </dd>
+</dl>
+</div>
+<div id="RewriteAppender" class="dlist">
+<dl>
 <dt class="hdlist1"><a href="appenders/delegating.html#RewriteAppender" class="xref page">Rewrite appender</a></dt>
 <dd>
 <p>Modify log events prior to delivering them to the target</p>
 </dd>
+</dl>
+</div>
+<div id="RoutingAppender" class="dlist">
+<dl>
 <dt class="hdlist1"><a href="appenders/delegating.html#RoutingAppender" class="xref page">Routing appender</a></dt>
 <dd>
 <p>Dynamically choose a different appender for each log event</p>

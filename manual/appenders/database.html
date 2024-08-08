@@ -283,25 +283,10 @@
     <span class="nav-text">Components</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../log4j-cassandra.html">Cassandra Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../log4j-couchdb.html">CouchDB Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../log4j-docker.html">Log4j Docker</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../log4j-flume-ng.html">Flume Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../../log4j-iostreams.html">Log4j IOStreams</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../../log4j-spring-boot.html">Log4j Spring Boot Support</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../log4j-spring-cloud-config.html">Log4j Spring Cloud Config</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
@@ -472,11 +457,11 @@ for a list of available type converters.</p>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p>If set, the value will be added <strong>directly</strong> in the insert statement of the database-specific query language.</p>
 </div>
-<div class="admonitionblock caution">
+<div class="admonitionblock warning">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-caution" title="Caution"></i>
+<i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
 <div class="paragraph">
@@ -496,11 +481,11 @@ Never use user-provided data to determine its value.</p>
 <p>It specifies the database-specific parameter marker to use.
 Otherwise, the default parameter marker for the database language will be used.</p>
 </div>
-<div class="admonitionblock caution">
+<div class="admonitionblock warning">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-caution" title="Caution"></i>
+<i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
 <div class="paragraph">
@@ -3375,8 +3360,7 @@ logger.1.appenderRef.0.ref = FILE</code></pre>
     "server": "localhost",
     "port": 5984,
     "databaseName": "logging"
-  }
-}</code></pre>
+  }</code></pre>
 </div>
 </div>
 </div>

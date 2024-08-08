@@ -283,25 +283,10 @@
     <span class="nav-text">Components</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-cassandra.html">Cassandra Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-couchdb.html">CouchDB Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-docker.html">Log4j Docker</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-flume-ng.html">Flume Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-spring-boot.html">Log4j Spring Boot Support</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-spring-cloud-config.html">Log4j Spring Cloud Config</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
@@ -460,7 +445,7 @@ Existing usages are kept for backward compatibility reasons with the legacy conf
 <div class="paragraph">
 <p>The <code>name</code> attribute of plugins of a certain <code>category</code> is recommended to be distinct and this matching is case-insensitive.
 In case of a name collision, a warning will be emitted, and the plugin <a href="#plugin-discovery">discovery order</a> will determine the effective plugin.
-For example, to override the <code>File</code> plugin which is provided by the built-in <a href="appenders.html#FileAppender" class="xref page">File Appender</a>, you would need to place your plugin in a JAR file in the classpath ahead of Log4j Core JAR.
+For example, to override the <code>File</code> plugin which is provided by the built-in <a href="appenders/file.html#FileAppender" class="xref page">File Appender</a>, you would need to place your plugin in a JAR file in the classpath ahead of Log4j Core JAR.
 In an OSGi environment, the order that bundles are scanned for plugins generally follows the same order that bundles were installed into the framework; see
 <a href="https://docs.osgi.org/javadoc/r6/core/org/osgi/framework/BundleContext.html#getBundles()"><code>getBundles()</code></a>
 and

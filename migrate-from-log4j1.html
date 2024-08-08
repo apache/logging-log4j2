@@ -283,25 +283,10 @@
     <span class="nav-text">Components</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="log4j-cassandra.html">Cassandra Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="log4j-couchdb.html">CouchDB Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="log4j-docker.html">Log4j Docker</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="log4j-flume-ng.html">Flume Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="log4j-iostreams.html">Log4j IOStreams</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="log4j-spring-boot.html">Log4j Spring Boot Support</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="log4j-spring-cloud-config.html">Log4j Spring Cloud Config</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
@@ -365,11 +350,21 @@
 <h1 class="page">Migrating from Log4j 1</h1>
 <div id="preamble">
 <div class="sectionbody">
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
 <div class="paragraph">
-<p><a href="https://logging.apache.org/log4j/1.x/index.html">Log4j 1</a>
-has reached <strong>End of Life</strong> in 2015 (see
-<a href="https://news.apache.org/foundation/entry/apache_logging_services_project_announces">announcement</a>)
-and is no longer supported.</p>
+<p><a href="http://logging.apache.org/log4j/1.x">Log4j 1</a> has <a href="https://blogs.apache.org/foundation/entry/apache_logging_services_project_announces">reached End of Life</a> in 2015, and is no longer supported.
+Vulnerabilities reported after August 2015 against Log4j 1 are not checked and will not be fixed.
+Users should <a href="#">upgrade to Log4j 2</a> to obtain security fixes.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>Since Log4j 2 has been rewritten from scratch, it introduces many breaking changes to its predecessor.
@@ -921,7 +916,7 @@ Log4j 2 extended this mechanism, by introducing pluggable <a href="manual/lookup
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/AsyncAppender.html">org.apache.log4j.AsyncAppender</a></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="manual/appenders.html#AsyncAppender" class="xref page">Async</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="manual/appenders/delegating.html#AsyncAppender" class="xref page">Async</a></code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
@@ -931,47 +926,47 @@ Log4j 2 extended this mechanism, by introducing pluggable <a href="manual/lookup
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/DailyRollingFileAppender.html">org.apache.log4j.DailyRollingFileAppender</a></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="manual/appenders.html#RollingFileAppender" class="xref page">RollingFile</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="manual/appenders/rolling-file.html#RollingFileAppender" class="xref page">RollingFile</a></code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">See <a href="#rolling-file-conversion">additional steps below</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/FileAppender.html">org.apache.log4j.FileAppender</a></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="manual/appenders.html#FileAppender" class="xref page">File</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="manual/appenders/file.html#FileAppender" class="xref page">File</a></code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/RollingFileAppender.html">org.apache.log4j.RollingFileAppender</a></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="manual/appenders.html#RollingFileAppender" class="xref page">RollingFile</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="manual/appenders/rolling-file.html#RollingFileAppender" class="xref page">RollingFile</a></code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">See <a href="#rolling-file-conversion">additional steps below</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/jdbc/JDBCAppender.html">org.apache.log4j.jdbc.JDBCAppender</a></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="manual/appenders.html#JDBCAppender" class="xref page">JDBC</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="manual/appenders/database.html#JdbcAppender" class="xref page">JDBC</a></code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/net/JMSAppender.html">org.apache.log4j.net.JMSAppender</a></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="manual/appenders.html#jms-appender" class="xref page">JMS</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="manual/appenders/message-queue.html#JmsAppender" class="xref page">JMS</a></code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/net/SocketAppender.html">org.apache.log4j.net.SocketAppender</a></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="manual/appenders.html#SocketAppender" class="xref page">Socket</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="manual/appenders/network.html#SocketAppender" class="xref page">Socket</a></code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/net/SMTPAppender.html">org.apache.log4j.net.SMTPAppender</a></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="manual/appenders.html#SMTPAppender" class="xref page">SMTP</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="manual/appenders/network.html#SmtpAppender" class="xref page">SMTP</a></code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/net/SyslogAppender.html">org.apache.log4j.net.SyslogAppender</a></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="manual/appenders.html#SyslogAppender" class="xref page">Syslog</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="manual/appenders/network.html#SyslogAppender" class="xref page">Syslog</a></code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Does not support custom layouts.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/rewrite/RewriteAppender.html">org.apache.log4j.rewrite.RewriteAppender</a></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="manual/appenders.html#RewriteAppender" class="xref page">Rewrite</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="manual/appenders/delegating.html#RewriteAppender" class="xref page">Rewrite</a></code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 </tbody>
@@ -991,7 +986,7 @@ Log4j 1 always rolls the current log file (e.g. <code>app.log</code>) to a log f
 Log4j 2 on the other hand uses the first available index (e.g. <code>app.log.42</code> if files <code>app.log.1</code> thru <code>app.log.41</code> already exist).</p>
 <div class="paragraph">
 <p>To use the same algorithm to determine the index of the logged file in Log4j 1 and Log4j 2, you need to configure the <code>fileIndex</code> attribute of the
-<a href="manual/appenders.html#DefaultRolloverStrategy" class="xref page">default rollover strategy</a> to <code>min</code>.</p>
+<a href="manual/appenders/rolling-file.html#DefaultRolloverStrategy" class="xref page">default rollover strategy</a> to <code>min</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1320,7 +1315,7 @@ components:</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="option-1-use-the-log4j-1-x-bridge-log4j-1-2-api"><a class="anchor" href="#option-1-use-the-log4j-1-x-bridge-log4j-1-2-api"></a><a id="Log4j1.2Bridge"></a>Log4j 1 to Log4j 2 bridge</h2>
+<h2 id="option-1-use-the-log4j-1-x-bridge-log4j-1-2-api"><a class="anchor" href="#option-1-use-the-log4j-1-x-bridge-log4j-1-2-api"></a><a id="Log4j12Bridge"></a>Log4j 1 to Log4j 2 bridge</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>In order to help users with the migration process, a Log4j 1 to Log4j 2 bridge is available.

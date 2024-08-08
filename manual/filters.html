@@ -283,25 +283,10 @@
     <span class="nav-text">Components</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-cassandra.html">Cassandra Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-couchdb.html">CouchDB Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-docker.html">Log4j Docker</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-flume-ng.html">Flume Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-spring-boot.html">Log4j Spring Boot Support</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-spring-cloud-config.html">Log4j Spring Cloud Config</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
@@ -526,7 +511,7 @@ will not be performed for disabled log statements.</p>
 <p>this stage precedes the asynchronous calls performed by either
 <a href="async.html" class="xref page">asynchronous loggers</a>
 or
-<a href="appenders.html#AsyncAppender" class="xref page">asynchronous appenders</a>.</p>
+<a href="appenders/delegating.html#AsyncAppender" class="xref page">asynchronous appenders</a>.</p>
 </li>
 </ul>
 </div>
@@ -602,7 +587,7 @@ the log event is discarded.</p>
 <td class="content">
 <div class="paragraph">
 <p>Some appenders like the
-<a href="appenders.html#AsyncAppender" class="xref page">asynchronous appender</a>
+<a href="appenders/delegating.html#AsyncAppender" class="xref page">asynchronous appender</a>
 use appender references to transfer log events to other appenders.
 In such a case, the filtering process goes back to the <a href="#appender-control-stage"><code>AppenderControl</code> stage</a>.</p>
 </div>
@@ -1247,7 +1232,7 @@ the <code>LevelMatchFilter</code> supports the following parameter:</p>
 <td class="content">
 <div class="paragraph">
 <p>If you wish to use a different log file for each log level, you should also use a
-<a href="appenders.html#RoutingAppender" class="xref page"><code>Routing</code> appender</a> together with the
+<a href="appenders/delegating.html#RoutingAppender" class="xref page"><code>Routing</code> appender</a> together with the
 <a href="lookups.html#EventLookup" class="xref page"><code>${event:Level}</code> lookup</a>.
 Such a solution will ensure that:</p>
 </div>
@@ -2434,7 +2419,7 @@ to modify the <code>KeyValuePair</code>s without restarting your application.</p
 </div>
 </div>
 <div class="sect3">
-<h4 id="ContextMapFilter"><a class="anchor" href="#ContextMapFilter"></a><code>ContextMapFilter</code></h4>
+<h4 id="ThreadContextMapFilter"><a class="anchor" href="#ThreadContextMapFilter"></a><code>ContextMapFilter</code></h4>
 <div class="paragraph">
 <p>The <code>ContextMapFilter</code> works in the same way as the <a href="#MapFilter"><code>MapFilter</code></a> above,
 except it checks the
@@ -2631,7 +2616,7 @@ to modify the <code>KeyValuePair</code>s without restarting your application.</p
 <div class="sect3">
 <h4 id="MutableThreadContextMapFilter"><a class="anchor" href="#MutableThreadContextMapFilter"></a><code>MutableContextMapFilter</code></h4>
 <div class="paragraph">
-<p>The <code>MutableContextMapFilter</code> is an alternative version of <a href="#ContextMapFilter"><code>ContextMapFilter</code></a> that also uses the
+<p>The <code>MutableContextMapFilter</code> is an alternative version of <a href="#ThreadContextMapFilter"><code>ContextMapFilter</code></a> that also uses the
 <a href="thread-context.html" class="xref page">context data map</a>
 to filter messages, but externalizes the <a href="#configuration-map">Configuration map</a>, so it can be kept in a separate location.</p>
 </div>

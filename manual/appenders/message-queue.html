@@ -283,25 +283,10 @@
     <span class="nav-text">Components</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../log4j-cassandra.html">Cassandra Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../log4j-couchdb.html">CouchDB Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../log4j-docker.html">Log4j Docker</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../log4j-flume-ng.html">Flume Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../../log4j-iostreams.html">Log4j IOStreams</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../../log4j-spring-boot.html">Log4j Spring Boot Support</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../log4j-spring-cloud-config.html">Log4j Spring Cloud Config</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
@@ -646,6 +631,81 @@ runtimeOnly 'org.apache.logging.log4j:log4j-flume-ng'</code></pre>
 </div>
 </div>
 </div>
+<div class="paragraph">
+<p>To use the Flume Appender <a href="#FlumeAppender-mode-PERSISTENT">PERSISTENT mode</a>, you need the following additional dependency:</p>
+</div>
+<div id="_tabs_2" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_2_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_2_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_2_maven--panel" class="tabpanel" aria-labelledby="_tabs_2_maven">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.sleepycat&lt;/groupId&gt;
+  &lt;artifactId&gt;je&lt;/artifactId&gt;
+  &lt;version&gt;18.3.12&lt;/version&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_2_gradle--panel" class="tabpanel" aria-labelledby="_tabs_2_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.sleepycat:je:{je-version}'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>If you use the Flume Appender in <a href="#FlumeAppender-mode-EMBEDDED">EMBEDDED mode</a>, you need to add the <code>flume-ng-embedded-agent</code> dependency below and all the channel and sink implementation you plan to use.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="https://flume.apache.org/releases/content/1.11.0/FlumeDeveloperGuide.html#embedded-agent">Flume Embedded Agent</a> documentation for more details.</p>
+</div>
+<div id="_tabs_3" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_3_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_3_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_3_maven--panel" class="tabpanel" aria-labelledby="_tabs_3_maven">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.flume&lt;/groupId&gt;
+  &lt;artifactId&gt;flume-ng-embedded-agent&lt;/artifactId&gt;
+  &lt;version&gt;1.11.0&lt;/version&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_3_gradle--panel" class="tabpanel" aria-labelledby="_tabs_3_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.flume:flume-ng-embedded-agent:{flume-version}'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
 <div class="sect2">
 <h3 id="Agent"><a class="anchor" href="#Agent"></a>Agent Addresses</h3>
 <div class="paragraph">
@@ -703,25 +763,25 @@ and allow to customize the way log events are transformed into
 <div class="paragraph">
 <p>A sample Flume Appender which is configured with a primary and a secondary agent, compresses the body and formats the body using the RFC5424 Layout:</p>
 </div>
-<div id="_tabs_2" class="openblock tabs is-sync is-loading">
+<div id="_tabs_4" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_2_xml" class="tab">
+<li id="_tabs_4_xml" class="tab">
 <p>XML</p>
 </li>
-<li id="_tabs_2_json" class="tab">
+<li id="_tabs_4_json" class="tab">
 <p>JSON</p>
 </li>
-<li id="_tabs_2_yaml" class="tab">
+<li id="_tabs_4_yaml" class="tab">
 <p>YAML</p>
 </li>
-<li id="_tabs_2_properties" class="tab">
+<li id="_tabs_4_properties" class="tab">
 <p>Properties</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_2_xml--panel" class="tabpanel" aria-labelledby="_tabs_2_xml">
+<div id="_tabs_4_xml--panel" class="tabpanel" aria-labelledby="_tabs_4_xml">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/flume-avro.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
@@ -735,7 +795,7 @@ and allow to customize the way log events are transformed into
 </div>
 </div>
 </div>
-<div id="_tabs_2_json--panel" class="tabpanel" aria-labelledby="_tabs_2_json">
+<div id="_tabs_4_json--panel" class="tabpanel" aria-labelledby="_tabs_4_json">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/flume-avro.json"><code>log4j2.json</code></a></div>
 <div class="content">
@@ -760,7 +820,7 @@ and allow to customize the way log events are transformed into
 </div>
 </div>
 </div>
-<div id="_tabs_2_yaml--panel" class="tabpanel" aria-labelledby="_tabs_2_yaml">
+<div id="_tabs_4_yaml--panel" class="tabpanel" aria-labelledby="_tabs_4_yaml">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/flume-avro.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
@@ -780,7 +840,7 @@ and allow to customize the way log events are transformed into
 </div>
 </div>
 </div>
-<div id="_tabs_2_properties--panel" class="tabpanel" aria-labelledby="_tabs_2_properties">
+<div id="_tabs_4_properties--panel" class="tabpanel" aria-labelledby="_tabs_4_properties">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/flume-avro.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
@@ -820,25 +880,25 @@ appender.0.secondary.port = 8800</code></pre>
 <div class="paragraph">
 <p>A sample Flume Appender, which is configured with a primary and a secondary agent, compresses the body, formats the body using the RFC5424 Layout, and persists encrypted events to disk:</p>
 </div>
-<div id="_tabs_3" class="openblock tabs is-sync is-loading">
+<div id="_tabs_5" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_3_xml" class="tab">
+<li id="_tabs_5_xml" class="tab">
 <p>XML</p>
 </li>
-<li id="_tabs_3_json" class="tab">
+<li id="_tabs_5_json" class="tab">
 <p>JSON</p>
 </li>
-<li id="_tabs_3_yaml" class="tab">
+<li id="_tabs_5_yaml" class="tab">
 <p>YAML</p>
 </li>
-<li id="_tabs_3_properties" class="tab">
+<li id="_tabs_5_properties" class="tab">
 <p>Properties</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_3_xml--panel" class="tabpanel" aria-labelledby="_tabs_3_xml">
+<div id="_tabs_5_xml--panel" class="tabpanel" aria-labelledby="_tabs_5_xml">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/flume-persistent.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
@@ -856,7 +916,7 @@ appender.0.secondary.port = 8800</code></pre>
 </div>
 </div>
 </div>
-<div id="_tabs_3_json--panel" class="tabpanel" aria-labelledby="_tabs_3_json">
+<div id="_tabs_5_json--panel" class="tabpanel" aria-labelledby="_tabs_5_json">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/flume-persistent.json"><code>log4j2.json</code></a></div>
 <div class="content">
@@ -888,7 +948,7 @@ appender.0.secondary.port = 8800</code></pre>
 </div>
 </div>
 </div>
-<div id="_tabs_3_yaml--panel" class="tabpanel" aria-labelledby="_tabs_3_yaml">
+<div id="_tabs_5_yaml--panel" class="tabpanel" aria-labelledby="_tabs_5_yaml">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/flume-persistent.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
@@ -912,7 +972,7 @@ appender.0.secondary.port = 8800</code></pre>
 </div>
 </div>
 </div>
-<div id="_tabs_3_properties--panel" class="tabpanel" aria-labelledby="_tabs_3_properties">
+<div id="_tabs_5_properties--panel" class="tabpanel" aria-labelledby="_tabs_5_properties">
 <div class="paragraph">
 <p>This example cannot be configured using Java properties.</p>
 </div>
@@ -922,25 +982,25 @@ appender.0.secondary.port = 8800</code></pre>
 <div class="paragraph">
 <p>A sample Flume Appender, which is configured with a primary and a secondary agent compresses the body, formats the body using RFC5424 Layout, and passes the events to an embedded Flume Agent.</p>
 </div>
-<div id="_tabs_4" class="openblock tabs is-sync is-loading">
+<div id="_tabs_6" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_4_xml" class="tab">
+<li id="_tabs_6_xml" class="tab">
 <p>XML</p>
 </li>
-<li id="_tabs_4_json" class="tab">
+<li id="_tabs_6_json" class="tab">
 <p>JSON</p>
 </li>
-<li id="_tabs_4_yaml" class="tab">
+<li id="_tabs_6_yaml" class="tab">
 <p>YAML</p>
 </li>
-<li id="_tabs_4_properties" class="tab">
+<li id="_tabs_6_properties" class="tab">
 <p>Properties</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_4_xml--panel" class="tabpanel" aria-labelledby="_tabs_4_xml">
+<div id="_tabs_6_xml--panel" class="tabpanel" aria-labelledby="_tabs_6_xml">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/flume-embedded.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
@@ -956,7 +1016,7 @@ appender.0.secondary.port = 8800</code></pre>
 </div>
 </div>
 </div>
-<div id="_tabs_4_json--panel" class="tabpanel" aria-labelledby="_tabs_4_json">
+<div id="_tabs_6_json--panel" class="tabpanel" aria-labelledby="_tabs_6_json">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/flume-embedded.json"><code>log4j2.json</code></a></div>
 <div class="content">
@@ -983,7 +1043,7 @@ appender.0.secondary.port = 8800</code></pre>
 </div>
 </div>
 </div>
-<div id="_tabs_4_yaml--panel" class="tabpanel" aria-labelledby="_tabs_4_yaml">
+<div id="_tabs_6_yaml--panel" class="tabpanel" aria-labelledby="_tabs_6_yaml">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/flume-embedded.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
@@ -1003,7 +1063,7 @@ appender.0.secondary.port = 8800</code></pre>
 </div>
 </div>
 </div>
-<div id="_tabs_4_properties--panel" class="tabpanel" aria-labelledby="_tabs_4_properties">
+<div id="_tabs_6_properties--panel" class="tabpanel" aria-labelledby="_tabs_6_properties">
 <div class="paragraph">
 <p>This example cannot be configured using Java properties.</p>
 </div>
@@ -1239,25 +1299,25 @@ type.</p>
 <div class="paragraph">
 <p>Here is a sample JMS Appender configuration:</p>
 </div>
-<div id="_tabs_5" class="openblock tabs is-sync is-loading">
+<div id="_tabs_7" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_5_xml" class="tab">
+<li id="_tabs_7_xml" class="tab">
 <p>XML</p>
 </li>
-<li id="_tabs_5_json" class="tab">
+<li id="_tabs_7_json" class="tab">
 <p>JSON</p>
 </li>
-<li id="_tabs_5_yaml" class="tab">
+<li id="_tabs_7_yaml" class="tab">
 <p>YAML</p>
 </li>
-<li id="_tabs_5_properties" class="tab">
+<li id="_tabs_7_properties" class="tab">
 <p>Properties</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_5_xml--panel" class="tabpanel" aria-labelledby="_tabs_5_xml">
+<div id="_tabs_7_xml--panel" class="tabpanel" aria-labelledby="_tabs_7_xml">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/jms-simple.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
@@ -1269,7 +1329,7 @@ type.</p>
 </div>
 </div>
 </div>
-<div id="_tabs_5_json--panel" class="tabpanel" aria-labelledby="_tabs_5_json">
+<div id="_tabs_7_json--panel" class="tabpanel" aria-labelledby="_tabs_7_json">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/jms-simple.json"><code>log4j2.json</code></a></div>
 <div class="content">
@@ -1282,7 +1342,7 @@ type.</p>
 </div>
 </div>
 </div>
-<div id="_tabs_5_yaml--panel" class="tabpanel" aria-labelledby="_tabs_5_yaml">
+<div id="_tabs_7_yaml--panel" class="tabpanel" aria-labelledby="_tabs_7_yaml">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/jms-simple.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
@@ -1294,7 +1354,7 @@ type.</p>
 </div>
 </div>
 </div>
-<div id="_tabs_5_properties--panel" class="tabpanel" aria-labelledby="_tabs_5_properties">
+<div id="_tabs_7_properties--panel" class="tabpanel" aria-labelledby="_tabs_7_properties">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/jms-simple.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
@@ -1312,25 +1372,25 @@ appender.0.layout.type = JsonTemplateLayout</code></pre>
 <div class="paragraph">
 <p>To map your Log4j <code>MapMessage</code> to JMS <code>javax.jms.MapMessage</code>, set the layout of the appender to <a href="../layouts.html#MessageLayout" class="xref page"><code>MessageLayout</code></a>:</p>
 </div>
-<div id="_tabs_6" class="openblock tabs is-sync is-loading">
+<div id="_tabs_8" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_6_xml" class="tab">
+<li id="_tabs_8_xml" class="tab">
 <p>XML</p>
 </li>
-<li id="_tabs_6_json" class="tab">
+<li id="_tabs_8_json" class="tab">
 <p>JSON</p>
 </li>
-<li id="_tabs_6_yaml" class="tab">
+<li id="_tabs_8_yaml" class="tab">
 <p>YAML</p>
 </li>
-<li id="_tabs_6_properties" class="tab">
+<li id="_tabs_8_properties" class="tab">
 <p>Properties</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_6_xml--panel" class="tabpanel" aria-labelledby="_tabs_6_xml">
+<div id="_tabs_8_xml--panel" class="tabpanel" aria-labelledby="_tabs_8_xml">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/jms-message.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
@@ -1342,7 +1402,7 @@ appender.0.layout.type = JsonTemplateLayout</code></pre>
 </div>
 </div>
 </div>
-<div id="_tabs_6_json--panel" class="tabpanel" aria-labelledby="_tabs_6_json">
+<div id="_tabs_8_json--panel" class="tabpanel" aria-labelledby="_tabs_8_json">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/jms-message.json"><code>log4j2.json</code></a></div>
 <div class="content">
@@ -1355,7 +1415,7 @@ appender.0.layout.type = JsonTemplateLayout</code></pre>
 </div>
 </div>
 </div>
-<div id="_tabs_6_yaml--panel" class="tabpanel" aria-labelledby="_tabs_6_yaml">
+<div id="_tabs_8_yaml--panel" class="tabpanel" aria-labelledby="_tabs_8_yaml">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/jms-message.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
@@ -1367,7 +1427,7 @@ appender.0.layout.type = JsonTemplateLayout</code></pre>
 </div>
 </div>
 </div>
-<div id="_tabs_6_properties--panel" class="tabpanel" aria-labelledby="_tabs_6_properties">
+<div id="_tabs_8_properties--panel" class="tabpanel" aria-labelledby="_tabs_8_properties">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/jms-message.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
@@ -1555,19 +1615,19 @@ for more details.</p>
 <div class="paragraph">
 <p>Additional runtime dependencies are required to use the Kafka Appender:</p>
 </div>
-<div id="_tabs_7" class="openblock tabs is-sync is-loading">
+<div id="_tabs_9" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_7_maven" class="tab">
+<li id="_tabs_9_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_7_gradle" class="tab">
+<li id="_tabs_9_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_7_maven--panel" class="tabpanel" aria-labelledby="_tabs_7_maven">
+<div id="_tabs_9_maven--panel" class="tabpanel" aria-labelledby="_tabs_9_maven">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
@@ -1578,7 +1638,7 @@ for more details.</p>
 </div>
 </div>
 </div>
-<div id="_tabs_7_gradle--panel" class="tabpanel" aria-labelledby="_tabs_7_gradle">
+<div id="_tabs_9_gradle--panel" class="tabpanel" aria-labelledby="_tabs_9_gradle">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.kafka:kafka-clients:3.8.0'</code></pre>
@@ -1592,25 +1652,25 @@ for more details.</p>
 <div class="paragraph">
 <p>Here is a sample Kafka Appender configuration snippet:</p>
 </div>
-<div id="_tabs_8" class="openblock tabs is-sync is-loading">
+<div id="_tabs_10" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_8_xml" class="tab">
+<li id="_tabs_10_xml" class="tab">
 <p>XML</p>
 </li>
-<li id="_tabs_8_json" class="tab">
+<li id="_tabs_10_json" class="tab">
 <p>JSON</p>
 </li>
-<li id="_tabs_8_yaml" class="tab">
+<li id="_tabs_10_yaml" class="tab">
 <p>YAML</p>
 </li>
-<li id="_tabs_8_properties" class="tab">
+<li id="_tabs_10_properties" class="tab">
 <p>Properties</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_8_xml--panel" class="tabpanel" aria-labelledby="_tabs_8_xml">
+<div id="_tabs_10_xml--panel" class="tabpanel" aria-labelledby="_tabs_10_xml">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/kafka.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
@@ -1622,7 +1682,7 @@ for more details.</p>
 </div>
 </div>
 </div>
-<div id="_tabs_8_json--panel" class="tabpanel" aria-labelledby="_tabs_8_json">
+<div id="_tabs_10_json--panel" class="tabpanel" aria-labelledby="_tabs_10_json">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/kafka.json"><code>log4j2.json</code></a></div>
 <div class="content">
@@ -1635,7 +1695,7 @@ for more details.</p>
 </div>
 </div>
 </div>
-<div id="_tabs_8_yaml--panel" class="tabpanel" aria-labelledby="_tabs_8_yaml">
+<div id="_tabs_10_yaml--panel" class="tabpanel" aria-labelledby="_tabs_10_yaml">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/kafka.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
@@ -1647,7 +1707,7 @@ for more details.</p>
 </div>
 </div>
 </div>
-<div id="_tabs_8_properties--panel" class="tabpanel" aria-labelledby="_tabs_8_properties">
+<div id="_tabs_10_properties--panel" class="tabpanel" aria-labelledby="_tabs_10_properties">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/kafka.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
@@ -1681,25 +1741,25 @@ appender.1.layout.type = JsonTemplateLayout</code></pre>
 <div class="paragraph">
 <p>Make sure to not let <code>org.apache.kafka</code> log to a Kafka appender on <code>DEBUG</code> level, since that will cause recursive logging:</p>
 </div>
-<div id="_tabs_9" class="openblock tabs is-sync is-loading">
+<div id="_tabs_11" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_9_xml" class="tab">
+<li id="_tabs_11_xml" class="tab">
 <p>XML</p>
 </li>
-<li id="_tabs_9_json" class="tab">
+<li id="_tabs_11_json" class="tab">
 <p>JSON</p>
 </li>
-<li id="_tabs_9_yaml" class="tab">
+<li id="_tabs_11_yaml" class="tab">
 <p>YAML</p>
 </li>
-<li id="_tabs_9_properties" class="tab">
+<li id="_tabs_11_properties" class="tab">
 <p>Properties</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_9_xml--panel" class="tabpanel" aria-labelledby="_tabs_9_xml">
+<div id="_tabs_11_xml--panel" class="tabpanel" aria-labelledby="_tabs_11_xml">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/kafka.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
@@ -1714,7 +1774,7 @@ appender.1.layout.type = JsonTemplateLayout</code></pre>
 </div>
 </div>
 </div>
-<div id="_tabs_9_json--panel" class="tabpanel" aria-labelledby="_tabs_9_json">
+<div id="_tabs_11_json--panel" class="tabpanel" aria-labelledby="_tabs_11_json">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/kafka.json"><code>log4j2.json</code></a></div>
 <div class="content">
@@ -1735,7 +1795,7 @@ appender.1.layout.type = JsonTemplateLayout</code></pre>
 </div>
 </div>
 </div>
-<div id="_tabs_9_yaml--panel" class="tabpanel" aria-labelledby="_tabs_9_yaml">
+<div id="_tabs_11_yaml--panel" class="tabpanel" aria-labelledby="_tabs_11_yaml">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/kafka.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
@@ -1752,7 +1812,7 @@ Logger:
 </div>
 </div>
 </div>
-<div id="_tabs_9_properties--panel" class="tabpanel" aria-labelledby="_tabs_9_properties">
+<div id="_tabs_11_properties--panel" class="tabpanel" aria-labelledby="_tabs_11_properties">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/kafka.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
@@ -2081,19 +2141,19 @@ for more details.</p></td>
 <div class="paragraph">
 <p>Additional runtime dependencies are required to use the JeroMQ Appender:</p>
 </div>
-<div id="_tabs_10" class="openblock tabs is-sync is-loading">
+<div id="_tabs_12" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_10_maven" class="tab">
+<li id="_tabs_12_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_10_gradle" class="tab">
+<li id="_tabs_12_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_10_maven--panel" class="tabpanel" aria-labelledby="_tabs_10_maven">
+<div id="_tabs_12_maven--panel" class="tabpanel" aria-labelledby="_tabs_12_maven">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
@@ -2104,7 +2164,7 @@ for more details.</p></td>
 </div>
 </div>
 </div>
-<div id="_tabs_10_gradle--panel" class="tabpanel" aria-labelledby="_tabs_10_gradle">
+<div id="_tabs_12_gradle--panel" class="tabpanel" aria-labelledby="_tabs_12_gradle">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.zeromq:jeromq:0.6.0'</code></pre>
@@ -2118,25 +2178,25 @@ for more details.</p></td>
 <div class="paragraph">
 <p>This is a simple JeroMQ configuration:</p>
 </div>
-<div id="_tabs_11" class="openblock tabs is-sync is-loading">
+<div id="_tabs_13" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_11_xml" class="tab">
+<li id="_tabs_13_xml" class="tab">
 <p>XML</p>
 </li>
-<li id="_tabs_11_json" class="tab">
+<li id="_tabs_13_json" class="tab">
 <p>JSON</p>
 </li>
-<li id="_tabs_11_yaml" class="tab">
+<li id="_tabs_13_yaml" class="tab">
 <p>YAML</p>
 </li>
-<li id="_tabs_11_properties" class="tab">
+<li id="_tabs_13_properties" class="tab">
 <p>Properties</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_11_xml--panel" class="tabpanel" aria-labelledby="_tabs_11_xml">
+<div id="_tabs_13_xml--panel" class="tabpanel" aria-labelledby="_tabs_13_xml">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/jeromq.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
@@ -2148,7 +2208,7 @@ for more details.</p></td>
 </div>
 </div>
 </div>
-<div id="_tabs_11_json--panel" class="tabpanel" aria-labelledby="_tabs_11_json">
+<div id="_tabs_13_json--panel" class="tabpanel" aria-labelledby="_tabs_13_json">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/jeromq.json"><code>log4j2.json</code></a></div>
 <div class="content">
@@ -2169,7 +2229,7 @@ for more details.</p></td>
 </div>
 </div>
 </div>
-<div id="_tabs_11_yaml--panel" class="tabpanel" aria-labelledby="_tabs_11_yaml">
+<div id="_tabs_13_yaml--panel" class="tabpanel" aria-labelledby="_tabs_13_yaml">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/jeromq.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
@@ -2184,7 +2244,7 @@ for more details.</p></td>
 </div>
 </div>
 </div>
-<div id="_tabs_11_properties--panel" class="tabpanel" aria-labelledby="_tabs_11_properties">
+<div id="_tabs_13_properties--panel" class="tabpanel" aria-labelledby="_tabs_13_properties">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/jeromq.properties"><code>log4j2.properties</code></a></div>
 <div class="content">

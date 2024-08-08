@@ -283,25 +283,10 @@
     <span class="nav-text">Components</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-cassandra.html">Cassandra Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-couchdb.html">CouchDB Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-docker.html">Log4j Docker</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-flume-ng.html">Flume Appender</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-spring-boot.html">Log4j Spring Boot Support</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-spring-cloud-config.html">Log4j Spring Cloud Config</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
@@ -730,7 +715,7 @@ Their aim is to return from a <code>log()</code> call to the application as soon
 <div class="sect4">
 <h5 id="async-appender"><a class="anchor" href="#async-appender"></a>Asynchronous appender</h5>
 <div class="paragraph">
-<p>The <a href="appenders.html#AsyncAppender" class="xref page">asynchronous appender</a> accepts references to other appenders and causes log events to be written to them on a separate thread.
+<p>The <a href="appenders/delegating.html#AsyncAppender" class="xref page">asynchronous appender</a> accepts references to other appenders and causes log events to be written to them on a separate thread.
 The backing queue uses <code>ArrayBlockingQueue</code> by default, though it can be replaced with a better performing one suitable for your use case.</p>
 </div>
 </div>
