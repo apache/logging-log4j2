@@ -77,8 +77,8 @@ class Initializers {
         void setupModule(
                 final SetupContext context, final boolean includeStacktrace, final boolean stacktraceAsString) {
             super.setupModule(context, includeStacktrace, stacktraceAsString);
-            // Prevents reflective JPMS access
-            // https://github.com/apache/logging-log4j2/issues/2814
+            // These classes don't have public constructors, so we instantiate them directly.
+            // See https://github.com/apache/logging-log4j2/issues/2814
             context.addSerializers(new SimpleSerializers(singletonList(new ContextDataAsEntryListSerializer())));
             context.addDeserializers(
                     new SimpleDeserializers(singletonMap(StringMap.class, new ContextDataAsEntryListDeserializer())));
@@ -97,8 +97,8 @@ class Initializers {
         void setupModule(
                 final SetupContext context, final boolean includeStacktrace, final boolean stacktraceAsString) {
             super.setupModule(context, includeStacktrace, stacktraceAsString);
-            // Prevents reflective JPMS access
-            // https://github.com/apache/logging-log4j2/issues/2814
+            // These classes don't have public constructors, so we instantiate them directly.
+            // See https://github.com/apache/logging-log4j2/issues/2814
             context.addSerializers(new SimpleSerializers(singletonList(new ContextDataSerializer())));
             context.addDeserializers(
                     new SimpleDeserializers(singletonMap(StringMap.class, new ContextDataDeserializer())));
