@@ -45,7 +45,7 @@
 
     <!-- Dependency versions -->
     <log4j-transform.version>0.1.0</log4j-transform.version>
-    <slf4j2.version>2.0.9</slf4j2.version>
+    <slf4j2.version>2.0.15</slf4j2.version>
   </properties>
 
   <dependencyManagement>
