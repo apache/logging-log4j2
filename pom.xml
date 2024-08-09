@@ -343,7 +343,7 @@
     <site-log4j-jakarta.version>3.0.0-alpha1</site-log4j-jakarta.version>
     <site-log4j-layout-template-json.version>3.0.0-beta2</site-log4j-layout-template-json.version>
     <site-logback.version>1.5.6</site-logback.version>
-    <site-slf4j.version>2.0.13</site-slf4j.version>
+    <site-slf4j.version>2.0.15</site-slf4j.version>
 
     <!-- ============================================================
          Direct dependency version properties (in alphabetical order)
