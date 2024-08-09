@@ -16,9 +16,12 @@
  */
 package org.apache.logging.log4j.core.jackson;
 
+import aQute.bnd.annotation.baseline.BaselineIgnore;
+
 /**
  * Keeps constants separate from any class that may depend on third party jars.
  */
+@BaselineIgnore("2.24.0")
 public final class JsonConstants {
     public static final String ELT_CAUSE = "cause";
     public static final String ELT_CONTEXT_MAP = "contextMap";
