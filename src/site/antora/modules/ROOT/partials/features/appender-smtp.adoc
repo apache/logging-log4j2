@@ -15,31 +15,36 @@
     limitations under the License.
 ////
 
-[tabs]
+// This file exists in both the 2.x and 3.x branches.
+// It contains the dependencies required to enable the SMTP appender.
+
+
+include::partial$components/log4j-jakarta-smtp.adoc[]
+
+.Click here if you are you using Jakarta EE 8 or any version of Java EE?
+[%collapsible]
 =====
+Jakarta EE 8 and all Java EE applications servers use the legacy `javax` package prefix instead of `jakarta`.
+If you are using those application servers, you should replace the dependencies above with:
 
-log4j2.xml::
+[tabs]
+====
+Maven::
 +
---
-include::partial$features/config-xml.adoc[]
---
+[source,xml,subs="+attributes"]
+----
+<dependency>
+  <groupId>com.sun.mail</groupId>
+  <artifactId>javax.mail</artifactId>
+  <version>{javax-mail-version}</version>
+</dependency>
+----
 
-log4j2.json::
+Gradle::
 +
---
-include::partial$features/config-json.adoc[]
---
-
-log4j2.yaml::
-+
---
-include::partial$features/config-yaml.adoc[]
---
-
-log4j2.properties::
-+
---
-include::partial$features/config-properties.adoc[]
---
-
+[source,groovy,subs="+attributes"]
+----
+runtimeOnly 'com.sun.mail:javax.mail:{javax-mail-version}'
+----
+====
 =====

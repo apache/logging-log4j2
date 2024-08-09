@@ -15,31 +15,29 @@
     limitations under the License.
 ////
 
+// This file exists in both the 2.x and 3.x branches.
+// It contains the dependencies required to enable YAML configuration.
+
 [tabs]
-=====
+====
 
-log4j2.xml::
+Maven::
 +
---
-include::partial$features/config-xml.adoc[]
---
+[source,xml,subs="+attributes"]
+----
+<dependency>
+    <groupId>com.fasterxml.jackson.dataformat</groupId>
+    <artifactId>jackson-dataformat-yaml</artifactId>
+    <version>{jackson-version}</version>
+    <scope>runtime</scope>
+</dependency>
+----
 
-log4j2.json::
+Gradle::
 +
---
-include::partial$features/config-json.adoc[]
---
+[source,groovy,subs="+attributes"]
+----
+runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:{jackson-version}'
+----
 
-log4j2.yaml::
-+
---
-include::partial$features/config-yaml.adoc[]
---
-
-log4j2.properties::
-+
---
-include::partial$features/config-properties.adoc[]
---
-
-=====
+====

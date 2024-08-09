@@ -299,30 +299,7 @@ https://jctools.github.io/JCTools/[JCTools], specifically the MPSC bounded lock-
 .Additional dependencies are required to use `JCToolsBlockingQueue`
 [%collapsible]
 =====
-
-[tabs]
-====
-
-Maven::
-+
-[source,xml,subs="+attributes"]
-----
-<dependency>
-  <groupId>org.jctools</groupId>
-  <artifactId>jctools-core</artifactId>
-  <version>{jctools-version}</version>
-  <scope>runtime</scope>
-</dependency>
-----
-
-Gradle::
-+
-[source,groovy,subs="+attributes"]
-----
-runtimeOnly 'org.jctools:jctools-core:{jctools-version}'
-----
-
-====
+include::partial$features/queue-jctools.adoc[]
 =====
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-JCToolsBlockingQueueFactory[{plugin-reference-marker} Plugin reference for `JCToolsBlockingQueue`]

@@ -961,7 +961,7 @@ Using the Web Lookup, you can, for example, place the log file in the applicatio
 
 Additional runtime dependencies are required for using web lookup:
 
-include::partial$manual/dependencies-log4j-jakarta-web.adoc[]
+include::partial$features/servlet-support.adoc[]
 
 [#third-party]
 == Third-party lookups

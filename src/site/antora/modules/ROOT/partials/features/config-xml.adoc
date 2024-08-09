@@ -15,31 +15,16 @@
     limitations under the License.
 ////
 
-[tabs]
-=====
+// This file exists in both the 2.x and 3.x branches.
+// It contains the dependencies required to enable XML configuration.
 
-log4j2.xml::
-+
---
-include::partial$features/config-xml.adoc[]
---
+JPMS users need to add:
 
-log4j2.json::
-+
---
-include::partial$features/config-json.adoc[]
---
+[source,java]
+----
+module foo.bar {
+    requires java.xml;
+}
+----
 
-log4j2.yaml::
-+
---
-include::partial$features/config-yaml.adoc[]
---
-
-log4j2.properties::
-+
---
-include::partial$features/config-properties.adoc[]
---
-
-=====
+to their `module-info.java` descriptor.

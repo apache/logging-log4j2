@@ -15,31 +15,16 @@
     limitations under the License.
 ////
 
-[tabs]
+// This file exists in both the 2.x and 3.x branches.
+// It contains the dependencies required to enable Servlet environment support.
+
+include::partial$components/log4j-jakarta-web.adoc[]
+
+.Click here if you are you using Jakarta EE 8 or any version of Java EE?
+[%collapsible]
 =====
+Jakarta EE 8 and all Java EE applications servers use the legacy `javax` package prefix instead of `jakarta`.
+If you are using those application servers, you should replace the dependencies above with:
 
-log4j2.xml::
-+
---
-include::partial$features/config-xml.adoc[]
---
-
-log4j2.json::
-+
---
-include::partial$features/config-json.adoc[]
---
-
-log4j2.yaml::
-+
---
-include::partial$features/config-yaml.adoc[]
---
-
-log4j2.properties::
-+
---
-include::partial$features/config-properties.adoc[]
---
-
+include::partial$components/log4j-web.adoc[]
 =====
