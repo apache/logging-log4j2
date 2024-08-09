@@ -21,7 +21,6 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import java.io.IOException;
-import java.util.Map;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
@@ -35,7 +34,7 @@ public class ContextDataAsEntryListSerializer extends StdSerializer<ReadOnlyStri
     private static final long serialVersionUID = 1L;
 
     protected ContextDataAsEntryListSerializer() {
-        super(Map.class, false);
+        super(ReadOnlyStringMap.class);
     }
 
     @Override
