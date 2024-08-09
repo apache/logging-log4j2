@@ -30,7 +30,7 @@
     <!-- OSGi and JPMS options -->
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
     <!-- Dependency versions -->
-    <mongodb5.version>4.11.3</mongodb5.version>
+    <mongodb5.version>5.1.3</mongodb5.version>
     <!-- TODO: Remove in next release after 2.24.0. -->
     <bnd.baseline.fail.on.missing>false</bnd.baseline.fail.on.missing>
     <bnd.baseline.skip>true</bnd.baseline.skip>
