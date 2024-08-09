@@ -63,9 +63,9 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
     ELT_THROWN,
     ELT_CONTEXT_MAP,
     ELT_CONTEXT_STACK,
+    ELT_END_OF_BATCH,
     ELT_LOGGER_FQCN,
-    ELT_SOURCE,
-    ELT_END_OF_BATCH
+    ELT_SOURCE
 })
 abstract class LogEventMixIn implements LogEvent {
 
