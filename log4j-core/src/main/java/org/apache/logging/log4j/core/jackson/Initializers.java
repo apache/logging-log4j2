@@ -53,7 +53,7 @@ class Initializers {
             context.setMixInAnnotations(Marker.class, MarkerMixIn.class);
             context.setMixInAnnotations(Level.class, LevelMixIn.class);
             context.setMixInAnnotations(Instant.class, InstantMixIn.class);
-            context.setMixInAnnotations(LogEvent.class, LogEventJsonMixIn.class);
+            context.setMixInAnnotations(LogEvent.class, LogEventMixIn.class);
             // Log4j Core classes: we do not want to bring in Jackson at runtime if we do not have to.
             context.setMixInAnnotations(ExtendedStackTraceElement.class, ExtendedStackTraceElementMixIn.class);
             context.setMixInAnnotations(
