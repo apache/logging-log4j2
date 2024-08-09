@@ -348,7 +348,7 @@
     <site-log4j-core.version>2.23.1</site-log4j-core.version>
     <site-log4j-layout-template-json.version>2.23.1</site-log4j-layout-template-json.version>
     <site-logback.version>1.5.5</site-logback.version>
-    <site-slf4j.version>2.0.13</site-slf4j.version>
+    <site-slf4j.version>2.0.15</site-slf4j.version>
 
     <!-- =====================================================
          Direct dependency version properties (in alphabetical order)
