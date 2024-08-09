@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.jackson;
 
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
-import org.apache.logging.log4j.core.jackson.Initializers.SetupContextInitializer;
+import org.apache.logging.log4j.core.jackson.Initializers.SetupContextAsEntryListInitializer;
 import org.apache.logging.log4j.core.jackson.Initializers.SimpleModuleInitializer;
 
 /**
@@ -43,6 +43,6 @@ final class Log4jXmlModule extends JacksonXmlModule {
     public void setupModule(final SetupContext context) {
         // Calling super is a MUST!
         super.setupModule(context);
-        new SetupContextInitializer().setupModule(context, includeStacktrace, stacktraceAsString);
+        new SetupContextAsEntryListInitializer().setupModule(context, includeStacktrace, stacktraceAsString);
     }
 }

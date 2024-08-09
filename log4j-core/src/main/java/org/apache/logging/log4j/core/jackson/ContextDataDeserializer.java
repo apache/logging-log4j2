@@ -17,12 +17,10 @@
 package org.apache.logging.log4j.core.jackson;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import java.io.IOException;
-import java.util.Map;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.util.StringMap;
 
@@ -36,12 +34,11 @@ public class ContextDataDeserializer extends StdDeserializer<StringMap> {
     private static final long serialVersionUID = 1L;
 
     ContextDataDeserializer() {
-        super(Map.class);
+        super(StringMap.class);
     }
 
     @Override
-    public StringMap deserialize(final JsonParser jp, final DeserializationContext ctxt)
-            throws IOException, JsonProcessingException {
+    public StringMap deserialize(final JsonParser jp, final DeserializationContext ctxt) throws IOException {
 
         // Sanity check: verify that we got "Json Object":
         //        JsonToken tok = jp.nextToken();
@@ -51,7 +48,7 @@ public class ContextDataDeserializer extends StdDeserializer<StringMap> {
         final StringMap contextData = ContextDataFactory.createContextData();
         // Iterate over object fields:
         while (jp.nextToken() != JsonToken.END_OBJECT) {
-            final String fieldName = jp.getCurrentName();
+            final String fieldName = jp.currentName();
 
             // move to value
             jp.nextToken();

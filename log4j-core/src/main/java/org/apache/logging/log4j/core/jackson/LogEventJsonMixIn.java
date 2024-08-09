@@ -22,7 +22,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
@@ -58,21 +57,12 @@ abstract class LogEventJsonMixIn implements LogEvent {
 
     private static final long serialVersionUID = 1L;
 
-    //    @JsonProperty(JsonConstants.ELT_CONTEXT_MAP)
-    //    @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_CONTEXT_MAP)
-    //    @JsonSerialize(using = MapSerializer.class)
-    //    @JsonDeserialize(using = MapDeserializer.class)
     @Override
     @JsonIgnore
-    //    @JsonProperty(JsonConstants.ELT_CONTEXT_MAP)
-    //    @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_CONTEXT_MAP)
     public abstract Map<String, String> getContextMap();
 
     @JsonProperty(JsonConstants.ELT_CONTEXT_MAP)
     @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_CONTEXT_MAP)
-    @JsonSerialize(using = ContextDataSerializer.class)
-    @JsonDeserialize(using = ContextDataDeserializer.class)
-    // @JsonIgnore
     @Override
     public abstract ReadOnlyStringMap getContextData();
 
@@ -156,10 +146,4 @@ abstract class LogEventJsonMixIn implements LogEvent {
     @JsonIgnore
     @Override
     public abstract boolean isIncludeLocation();
-
-    @Override
-    public abstract void setEndOfBatch(boolean endOfBatch);
-
-    @Override
-    public abstract void setIncludeLocation(boolean locationRequired);
 }

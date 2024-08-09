@@ -16,8 +16,13 @@
  */
 package org.apache.logging.log4j.core.jackson;
 
+import static java.util.Collections.singletonList;
+import static java.util.Collections.singletonMap;
+
 import com.fasterxml.jackson.databind.Module.SetupContext;
+import com.fasterxml.jackson.databind.module.SimpleDeserializers;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.module.SimpleSerializers;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
@@ -27,6 +32,7 @@ import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
+import org.apache.logging.log4j.util.StringMap;
 
 /**
  * Initialization utils.
@@ -36,10 +42,7 @@ import org.apache.logging.log4j.message.ObjectMessage;
  */
 class Initializers {
 
-    /**
-     * Used to set up {@link SetupContext} from different {@link SimpleModule}s.
-     */
-    static class SetupContextInitializer {
+    private abstract static class AbstractInitializer {
 
         void setupModule(
                 final SetupContext context, final boolean includeStacktrace, final boolean stacktraceAsString) {
@@ -50,7 +53,7 @@ class Initializers {
             context.setMixInAnnotations(Marker.class, MarkerMixIn.class);
             context.setMixInAnnotations(Level.class, LevelMixIn.class);
             context.setMixInAnnotations(Instant.class, InstantMixIn.class);
-            context.setMixInAnnotations(LogEvent.class, LogEventWithContextListMixIn.class);
+            context.setMixInAnnotations(LogEvent.class, LogEventJsonMixIn.class);
             // Log4j Core classes: we do not want to bring in Jackson at runtime if we do not have to.
             context.setMixInAnnotations(ExtendedStackTraceElement.class, ExtendedStackTraceElementMixIn.class);
             context.setMixInAnnotations(
@@ -62,33 +65,43 @@ class Initializers {
                             : ThrowableProxyWithoutStacktraceMixIn.class);
         }
     }
+    /**
+     * Used to set up {@link SetupContext} from different {@link SimpleModule}s.
+     * <p>
+     *     Serializes the context map as list of objects.
+     * </p>
+     */
+    static class SetupContextAsEntryListInitializer extends AbstractInitializer {
+
+        @Override
+        void setupModule(
+                final SetupContext context, final boolean includeStacktrace, final boolean stacktraceAsString) {
+            super.setupModule(context, includeStacktrace, stacktraceAsString);
+            // Prevents reflective JPMS access
+            // https://github.com/apache/logging-log4j2/issues/2814
+            context.addSerializers(new SimpleSerializers(singletonList(new ContextDataAsEntryListSerializer())));
+            context.addDeserializers(
+                    new SimpleDeserializers(singletonMap(StringMap.class, new ContextDataAsEntryListDeserializer())));
+        }
+    }
 
     /**
      * Used to set up {@link SetupContext} from different {@link SimpleModule}s.
-     * Differs from SetupContextInitializer by installing {@code LogEventJsonMixIn} for LogEvents,
-     * not {@code LogEventMixIn}, so it handles ThreadContext serialization differently.
+     * <p>
+     *     Serializes the context map as object.
+     * </p>
      */
-    static class SetupContextJsonInitializer {
+    static class SetupContextInitializer extends AbstractInitializer {
 
+        @Override
         void setupModule(
                 final SetupContext context, final boolean includeStacktrace, final boolean stacktraceAsString) {
-            // JRE classes: we cannot edit those with Jackson annotations
-            context.setMixInAnnotations(StackTraceElement.class, StackTraceElementMixIn.class);
-            // Log4j API classes: we do not want to edit those with Jackson annotations because the API module should
-            // not depend on Jackson.
-            context.setMixInAnnotations(Marker.class, MarkerMixIn.class);
-            context.setMixInAnnotations(Level.class, LevelMixIn.class);
-            context.setMixInAnnotations(Instant.class, InstantMixIn.class);
-            context.setMixInAnnotations(LogEvent.class, LogEventJsonMixIn.class); // different ThreadContext handling
-            // Log4j Core classes: we do not want to bring in Jackson at runtime if we do not have to.
-            context.setMixInAnnotations(ExtendedStackTraceElement.class, ExtendedStackTraceElementMixIn.class);
-            context.setMixInAnnotations(
-                    ThrowableProxy.class,
-                    includeStacktrace
-                            ? (stacktraceAsString
-                                    ? ThrowableProxyWithStacktraceAsStringMixIn.class
-                                    : ThrowableProxyMixIn.class)
-                            : ThrowableProxyWithoutStacktraceMixIn.class);
+            super.setupModule(context, includeStacktrace, stacktraceAsString);
+            // Prevents reflective JPMS access
+            // https://github.com/apache/logging-log4j2/issues/2814
+            context.addSerializers(new SimpleSerializers(singletonList(new ContextDataSerializer())));
+            context.addDeserializers(
+                    new SimpleDeserializers(singletonMap(StringMap.class, new ContextDataDeserializer())));
         }
     }
 

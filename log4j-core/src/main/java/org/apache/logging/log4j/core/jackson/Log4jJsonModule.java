@@ -18,8 +18,8 @@ package org.apache.logging.log4j.core.jackson;
 
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import org.apache.logging.log4j.core.jackson.Initializers.SetupContextAsEntryListInitializer;
 import org.apache.logging.log4j.core.jackson.Initializers.SetupContextInitializer;
-import org.apache.logging.log4j.core.jackson.Initializers.SetupContextJsonInitializer;
 import org.apache.logging.log4j.core.jackson.Initializers.SimpleModuleInitializer;
 
 /**
@@ -33,7 +33,6 @@ class Log4jJsonModule extends SimpleModule {
     private final boolean encodeThreadContextAsList;
     private final boolean includeStacktrace;
     private final boolean stacktraceAsString;
-    private final boolean objectMessageAsJsonObject;
 
     Log4jJsonModule(
             final boolean encodeThreadContextAsList,
@@ -44,7 +43,6 @@ class Log4jJsonModule extends SimpleModule {
         this.encodeThreadContextAsList = encodeThreadContextAsList;
         this.includeStacktrace = includeStacktrace;
         this.stacktraceAsString = stacktraceAsString;
-        this.objectMessageAsJsonObject = objectMessageAsJsonObject;
         // MUST init here.
         // Calling this from setupModule is too late!
         //noinspection ThisEscapedInObjectConstruction
@@ -56,9 +54,9 @@ class Log4jJsonModule extends SimpleModule {
         // Calling super is a MUST!
         super.setupModule(context);
         if (encodeThreadContextAsList) {
-            new SetupContextInitializer().setupModule(context, includeStacktrace, stacktraceAsString);
+            new SetupContextAsEntryListInitializer().setupModule(context, includeStacktrace, stacktraceAsString);
         } else {
-            new SetupContextJsonInitializer().setupModule(context, includeStacktrace, stacktraceAsString);
+            new SetupContextInitializer().setupModule(context, includeStacktrace, stacktraceAsString);
         }
     }
 }
