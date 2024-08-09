@@ -1443,6 +1443,12 @@ xref:manual/scripts.adoc#ScriptRef[`ScriptRef`]
 See xref:manual/scripts.adoc[Scripts] for more details about scripting.
 |===
 
+.Additional runtime dependencies are required to use `ScriptCondition`
+[%collapsible]
+=====
+include::partial$components/log4j-script.adoc[]
+=====
+
 The script must return a list of
 link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathWithAttributes.html[`PathWithAttributes`]
 objects and supports the following bindings:

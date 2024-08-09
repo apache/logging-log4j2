@@ -1277,7 +1277,7 @@ It does not support **any** configuration attribute, even the common configurati
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-DenyAllFilter[📖 Plugin reference for `DenyAllFilter`]
 
-[#Script]
+[#ScriptFilter]
 ==== `ScriptFilter`
 
 The `ScriptFilter` executes a script that must return `true` if the event matches and `false` otherwise.
@@ -1300,6 +1300,12 @@ xref:manual/scripts.adoc#ScriptRef[`ScriptRef`]
 
 See xref:manual/scripts.adoc[Scripts] for more details about scripting.
 |===
+
+.Additional runtime dependencies are required to use `ScripFilter`
+[%collapsible]
+=====
+include::partial$components/log4j-script.adoc[]
+=====
 
 The bindings available to the script depend
 on whether the `ScriptFilter` is used as a global filter in the <<logger-stage,Logger stage>> or in the remaining stages.
@@ -1365,6 +1371,8 @@ For the remaining filters, only these bindings are available:
 
 
 |===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-ScriptFilter[📖 Plugin reference for `ScriptFilter`]
 
 As an example, if you wish to match only log events that contain a certain exception,
 you can use a simple Groovy script:
@@ -1458,8 +1466,6 @@ Properties::
 include::example$manual/filters/ScriptFilter.properties[tag=global]
 ----
 ====
-
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-ScriptFilter[📖 Plugin reference for `ScriptFilter`]
 
 [#extending]
 == Extending

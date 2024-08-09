@@ -590,7 +590,7 @@ this usually results in the stacktrace being printed to the log file twice.
 
 Additional runtime dependencies are required for using the servlet appender:
 
-include::partial$manual/dependencies-log4j-jakarta-web.adoc[]
+include::partial$features/servlet-support.adoc[]
 
 See xref:jakarta.adoc[] for more information.
 

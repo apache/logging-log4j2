@@ -23,11 +23,15 @@ https://docs.oracle.com/en/java/javase/11/scripting/scripting-languages-and-java
 scripting languages to be used in some of its components.
 
 [WARNING]
-====
+=====
+Additional runtime dependencies are required to enable JSR 223 scripting:
+
+include::partial$components/log4j-script.adoc[]
+
 In order to enable a scripting language, its name must be included in the
 xref:manual/systemproperties.adoc#log4j.script.enableLanguages[`log4j.script.enableLanguages`]
 configuration property.
-====
+=====
 
 Each component that allows scripts can contain on of the following configuration elements:
 

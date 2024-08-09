@@ -294,13 +294,16 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 [#JCToolsBlockingQueueFactory]
 `JCToolsBlockingQueue`::
 +
++
 This queue factory uses
 https://jctools.github.io/JCTools/[JCTools], specifically the MPSC bounded lock-free queue.
 +
 .Additional dependencies are required to use `JCToolsBlockingQueue`
 [%collapsible]
 =====
-include::partial$manual/dependencies-log4j-jctools.adoc[]
+
+include::partial$features/queue-jctools.adoc[]
+
 =====
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-JCToolsBlockingQueueFactory[{plugin-reference-marker} Plugin reference for `JCToolsBlockingQueue`]
@@ -1096,6 +1099,13 @@ include::example$manual/appenders/delegating/routing-definition.properties[tag=a
 
 [#RoutingAppender-example-script]
 ==== Using scripts
+
+[WARNING]
+=====
+Additional runtime dependencies are required to use scripts:
+
+include::partial$components/log4j-script.adoc[]
+=====
 
 If the flexibility of xref:manual/lookups.adoc[] is not enough to express your routing logic, you can also resort to scripts.
 In the example below, we route messages in a round-robin fashion to three different Syslog servers:

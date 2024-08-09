@@ -16,87 +16,30 @@
 ////
 
 [tabs]
-====
-
-Maven::
-+
-[tabs]
 =====
 
 log4j2.xml::
 +
-JPMS users need to add:
-+
-[source,java]
-----
-module foo.bar {
-    requires java.xml;
-}
-----
-+
-to their `module-info.java` descriptor.
+--
+include::partial$features/config-xml.adoc[]
+--
 
 log4j2.json::
 +
-No dependency required.
+--
+include::partial$features/config-json.adoc[]
+--
 
 log4j2.yaml::
 +
-[source,xml]
-----
-<dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-config-yaml</artifactId>
-</dependency>
-----
+--
+include::partial$features/config-yaml.adoc[]
+--
 
 log4j2.properties::
 +
-[source,xml]
-----
-<dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-config-properties</artifactId>
-</dependency>
-----
+--
+include::partial$features/config-properties.adoc[]
+--
 
 =====
-
-Gradle::
-+
-[tabs]
-=====
-
-log4j2.xml::
-+
-JPMS users need to add:
-+
-[source,java]
-----
-module foo.bar {
-    requires java.xml;
-}
-----
-+
-to their `module-info.java` descriptor.
-
-log4j2.json::
-+
-No dependency required.
-
-log4j2.yaml::
-+
-[source,groovy]
-----
-runtimeOnly 'org.apache.logging.log4j:log4j-config-yaml'
-----
-
-log4j2.properties::
-+
-[source,groovy]
-----
-runtimeOnly 'org.apache.logging.log4j:log4j-config-properties'
-----
-
-=====
-====

@@ -162,7 +162,9 @@ java.lang.RuntimeException: Message
 [TIP]
 ====
 As a temporary solution, the SLF4J-to-Log4j API bridges contain a special
-xref:manual/api.adoc#logger-message-factories[`MessageFactory`]
+{log4j2-url}/manual/api.html#logger-message-factories[`MessageFactory`]
 that classifies trailing `Throwable` arguments in the same way Logback does.
-To use it, you need to set the xref:manual/systemproperties.adoc#log4j2.messageFactory[`log4j2.messageFactory`] configuration property to `org.apache.logging.slf4j.message.ThrowableConsumingMessageFactory`.
+To use it, you need to set the
+{log4j2-url}/manual/systemproperties.html#log4j2.messageFactory[`log4j2.messageFactory`]
+configuration property to `org.apache.logging.slf4j.message.ThrowableConsumingMessageFactory`.
 ====

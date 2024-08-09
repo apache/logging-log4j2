@@ -544,7 +544,7 @@ Android does not support JNDI.
 
 Additional runtime dependencies are required for using JNDI Lookup:
 
-include::partial$manual/dependencies-log4j-jndi.adoc[]
+include::partial$components/log4j-jndi.adoc[]
 
 [#Log4jLookup]
 === Configuration Location Lookup
@@ -940,7 +940,7 @@ Using the Web Lookup, you can, for example, place the log file in the applicatio
 
 Additional runtime dependencies are required for using web lookup:
 
-include::partial$manual/dependencies-log4j-jakarta-web.adoc[]
+include::partial$features/servlet-support.adoc[]
 
 [#third-party]
 == Third-party lookups

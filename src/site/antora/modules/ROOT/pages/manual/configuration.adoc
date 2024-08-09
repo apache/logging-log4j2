@@ -55,7 +55,7 @@ xref:manual/systemproperties.adoc#log4j.configuration.level[`log4j.configuration
 to the console.
 
 You can override the location of the configuration file
-using the xref:manual/systemproperties.adoc#log4j2.configurationFile[`log4j2.configurationFile`
+using the xref:manual/systemproperties.adoc#log4j.configuration.location[`log4j.configuration.location`
 system property].
 In such a case, Log4j Core will guess the configuration file format from the provided file name,
 or use the default configuration factory if the extension is unknown.
@@ -71,7 +71,8 @@ That is, don't provide both `log4j2.xml` and `log4j2.json` files.
 === Predefined ``ConfigurationFactory`` plugins
 
 Log4j Core uses plugins extending from link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html[`ConfigurationFactory`] to determine which configuration file extensions are supported, in which order, and how to read them.
-How this works under the hood and how you can introduce your custom implementations is explained in <<ConfigurationFactory>>.
+How this works under the hood and how you can introduce your custom implementations is explained in
+xref:manual/extending.adoc#ConfigurationFactory[`ConfigurationFactory`].
 
 .Supported configuration file formats by predefined `ConfigurationFactory` plugins
 [%header,cols="1,1m,1"]
@@ -238,7 +239,7 @@ for more details.
 Log4j Core's logging pipeline is quite complex (see xref:manual/architecture.adoc[Architecture]), but most users only require these elements:
 
 Loggers::
-xref:manual/api.adoc#loggers[Loggers] are the entry point of the logging pipeline, which is directly used in the code.
+{log4j2-url}manual/api.adoc#loggers[Loggers] are the entry point of the logging pipeline, which is directly used in the code.
 Their configuration must specify which level of messages they log and to which appenders they send the messages.
 We will cover them while <<configuring-loggers, configuring loggers>>.
 

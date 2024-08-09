@@ -241,7 +241,7 @@ There are certain caveats associated with the configuration of garbage-free logg
 [#core-limitation-properties]
 Property substitutions::
 
-Some xref:manual/configuration.adoc#PropertySubstitution[property substitutions] (e.g., ones using xref:manual/lookups.adoc#DateLookup[Date Lookup]) might result in temporary objects being created during steady-state logging.
+Some xref:manual/configuration.adoc#property-substitution[property substitutions] (e.g., ones using xref:manual/lookups.adoc#DateLookup[Date Lookup]) might result in temporary objects being created during steady-state logging.
 
 [#core-limitation-async-logger-wait-strategy]
 Asynchronous logger wait strategies::

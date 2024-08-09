@@ -15,27 +15,7 @@
     limitations under the License.
 ////
 
-[tabs]
-====
-Maven::
-+
-We assume you use xref:components.adoc#log4j-bom[`log4j-bom`] for dependency management.
-+
-[source,xml]
-----
-<dependency>
-  <groupId>org.apache.logging.log4j</groupId>
-  <artifactId>log4j-docker</artifactId>
-  <scope>runtime</scope>
-</dependency>
-----
+// This file exists in both the 2.x and 3.x branches.
+// It contains the dependencies required to enable the blocking queue based on JCTools.
 
-Gradle::
-+
-We assume you use xref:components.adoc#log4j-bom[`log4j-bom`] for dependency management.
-+
-[source,groovy]
-----
-runtimeOnly 'org.apache.logging.log4j:log4j-docker'
-----
-====
+include::partial$components/log4j-jctools.adoc[]

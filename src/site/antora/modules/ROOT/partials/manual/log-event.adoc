@@ -30,7 +30,9 @@ Log events contain fields that can be classified into three categories:
 . Some fields are provided explicitly, in a link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html[`Logger`] method call.
 The most important are the log level and the log message, which is a description of what happened, and it is addressed to humans.
 
-. Some fields are contextual (e.g., xref:manual/thread-context.adoc[]) and are either provided explicitly by developers of other parts of the application, or is injected by Java instrumentation.
+. Some fields are contextual (e.g.,
+{log4j2-url}/manual/thread-context.html[Thread Context])
+and are either provided explicitly by developers of other parts of the application, or is injected by Java instrumentation.
 
 . The last category of fields is those that are computed automatically by the logging implementation employed.
 
@@ -42,15 +44,15 @@ include::example$manual/messages/log-event.json[]
 ----
 
 <1> Explicitly supplied fields:
-`log.level`:: The xref:manual/customloglevels.adoc[level] of the event, either explicitly provided as an argument to the logger call, or implied by the name of the logger method
+`log.level`:: {log4j2-url}/manual/customloglevels.html[level] of the event, either explicitly provided as an argument to the logger call, or implied by the name of the logger method
 `message`:: The **log message** that describes what happened
 `error.*`:: An _optional_ `Throwable` explicitly passed as an argument to the logger call
-`marker`:: An _optional_ xref:manual/markers.adoc[marker] explicitly passed as an argument to the logger call
-`log.logger`:: The xref:manual/api.adoc#logger-names[logger name] provided explicitly to `LogManager.getLogger()` or inferred by Log4j API
+`marker`:: An _optional_ {log4j2-url}manual/markers.html[marker] explicitly passed as an argument to the logger call
+`log.logger`:: The {log4j2-url}/manual/api.html#logger-names[logger name] provided explicitly to `LogManager.getLogger()` or inferred by Log4j API
 
 <2> Contextual fields:
-`tags`:: The xref:manual/thread-context.adoc[] stack
-`labels`:: The xref:manual/thread-context.adoc[] map
+`tags`:: The {log4j2-url}/manual/thread-context.html[Thread Context] stack
+`labels`:: The {log4j2-url}/manual/thread-context.html[Thread Context] map
 
 <3> Logging backend specific fields.
 In case you are using Log4j Core, the following fields can be automatically generated:

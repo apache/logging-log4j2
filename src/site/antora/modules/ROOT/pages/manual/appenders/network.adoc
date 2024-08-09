@@ -628,7 +628,7 @@ See <<tls-configuration>> for more details.
 
 Additional runtime dependencies are required to use the SMTP appender:
 
-include::partial$manual/dependencies-log4j-jakarta-stmp.adoc[]
+include::partial$features/appender-smtp.adoc[]
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-SmtpAppender[{plugin-reference-marker} Plugin reference for `SMTP`]
 

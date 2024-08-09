@@ -628,7 +628,7 @@ See <<JmsAppender-mapping>> below for more information.
 
 Additional runtime dependencies are required to use the JMS Appender:
 
-include::partial$manual/dependencies-log4j-jakarta-jms.adoc[]
+include::partial$features/appender-jms.adoc[]
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-JmsAppender[{plugin-reference-marker} Plugin reference for `JMS`]
 

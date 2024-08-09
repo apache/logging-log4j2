@@ -15,4 +15,7 @@
     limitations under the License.
 ////
 
-include::partial$components/log4j-jakarta-web.adoc[]
+// This file exists in both the 2.x and 3.x branches.
+// It contains the dependencies required to enable CSV Layouts.
+
+include::partial$components/log4j-csv.adoc[]

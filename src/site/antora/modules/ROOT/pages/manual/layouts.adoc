@@ -205,27 +205,7 @@ Both `CsvParameterLayout` and `CsvLogEventLayout` are configured with the follow
 
 Additional runtime dependencies are required for using CSV layouts:
 
-[tabs]
-====
-Maven::
-+
-[source,xml,subs="+attributes"]
-----
-<dependency>
-  <groupId>org.apache.commons</groupId>
-  <artifactId>commons-csv</artifactId>
-  <version>{commons-csv-version}</version>
-  <scope>runtime</scope>
-</dependency>
-----
-
-Gradle::
-+
-[source,groovy,subs="+attributes"]
-----
-runtimeOnly 'org.apache.commons:commons-csv:{commons-csv-version}'
-----
-====
+include::partial$features/layout-csv.adoc[]
 
 [#HTMLLayout]
 === HTML Layout

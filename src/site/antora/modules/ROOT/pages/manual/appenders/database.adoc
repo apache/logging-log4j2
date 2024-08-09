@@ -315,7 +315,7 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 
 Additional runtime dependencies are required to use the JDBC Appender:
 
-include::partial$manual/dependencies-log4j-jdbc.adoc[]
+include::partial$components/log4j-jdbc.adoc[]
 
 [#ConnectionSource]
 === Connection Sources
@@ -362,7 +362,7 @@ Only the `java:` JNDI protocol is supported.
 
 Additional runtime dependencies are required to use `DataSource`:
 
-include::partial$manual/dependencies-log4j-jndi.adoc[]
+include::partial$components/log4j-jndi.adoc[]
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-DataSourceConnectionSource[{plugin-reference-marker} Plugin reference for `DataSource`]
 

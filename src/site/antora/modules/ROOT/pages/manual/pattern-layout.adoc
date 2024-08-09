@@ -490,7 +490,7 @@ https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/
 formats are supported.
 Only timestamps in the formats mentioned in the table above may use the _nano-of-second_ pattern letter `n` instead of the _fraction-of-second_ pattern letter `S`.
 
-Users may revert to a millisecond-precision clock when running on Java 9 by setting xref:manual/systemproperties.adoc#log4j2.clock[the `log4j2.clock` system property] to `SystemMillisClock`.
+Users may revert to a millisecond-precision clock when running on Java 9 by setting xref:manual/systemproperties.adoc#log4j.configuration.clock[the `log4j.configuration.clock` system property] to `SystemMillisClock`.
 
 [WARNING]
 ====
@@ -1344,7 +1344,7 @@ uuid{RANDOM|TIME}
 
 The time-based UUID is a Type 1 UUID generated using the MAC address of each host
 To ensure uniqueness across multiple JVMs and/or class loaders on the same host, a random number between 0 and 16,384 will be associated with each instance of the UUID generator class, and included in each time-based UUID generated.
-See also xref:manual/systemproperties.adoc#log4j2.uuidSequence[`log4j2.uuidSequence`].
+See also xref:manual/systemproperties.adoc#log4j.uuid.sequence[`log4j.uuid.sequence`].
 Because time-based UUIDs contain the MAC address and timestamp, they should be used with care.
 
 [#format-modifiers]
@@ -1583,7 +1583,7 @@ If your terminal supports 24-bit colors, you can specify:
 ANSI escape sequences are supported natively on many platforms, but not by default on Windows.
 To enable ANSI support add the
 http://fusesource.github.io/jansi/[Jansi]
-dependency to your application, and set xref:manual/systemproperties.adoc#log4j2.skipJansi[the `log4j2.skipJansi` system property] to `false`.
+dependency to your application, and set xref:manual/systemproperties.adoc#log4j.console.jansiEnabled[the `log4j.console.jansiEnabled` system property] to `true`.
 This allows Log4j to use Jansi to add ANSI escape codes when writing to the console.
 
 [NOTE]
@@ -1685,7 +1685,7 @@ Format modifiers to control such things as field width, padding, left, and right
 |<<converter-thread-priority,%tp>>
 |
 
-|<<converter-thread-context-map[%X{key,,key2...\>>} +
+|<<converter-thread-context-map,%X{key,,key2...\>>} +
 %mdc{key[,key2...\]} +
 %MDC{key[,key2...\]}]
 |
@@ -1789,4 +1789,4 @@ To get the most out of it, mind the following checklist:
 
 * Enable xref:manual/garbagefree.adoc[garbage-free logging]
 * Mind <<garbage-free,the garbage footprint of features you use>>
-* Don't give too much slack to xref:manual/systemproperties.adoc#log4j2.layoutStringBuilderMaxSize[`log4j2.layoutStringBuilderMaxSize`] and try to keep it relatively tight
+* Don't give too much slack to xref:manual/systemproperties.adoc#log4j.gc.layoutStringBuilderMaxSize[`log4j.gc.layoutStringBuilderMaxSize`] and try to keep it relatively tight

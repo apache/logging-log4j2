@@ -123,7 +123,7 @@ repositories {
 
 The easiest way to install Log4j API is through a dependency management tool such as Maven or Gradle, by adding the following dependency:
 
-include::partial$components/log4j-api.adoc[]
+include::partial$features/api.adoc[]
 
 [#impl]
 == Installing a logging implementation
@@ -262,7 +262,7 @@ to the JVM parameters in your application launcher.
 
 You can translate {jpl-link} calls to Log4j API using the `log4j-jpl` artifact:
 
-include::partial$components/log4j-jpa.adoc[]
+include::partial$components/log4j-jpl.adoc[]
 
 [#impl-core-bridge-jcl]
 ===== Installing JCL-to-Log4j bridge
@@ -292,14 +292,6 @@ Gradle::
 +
 Gradle users should refer to the https://docs.gradle.org/current/userguide/platforms.html#sub:using-platform-to-control-transitive-deps[Using a platform to control transitive versions] of the Gradle documentation.
 ====
-
-.Are you using Commons Logging 1.2.0 or earlier?
-[%collapsible]
-=====
-You need to install the following dependency instead:
-
-include::partial$components/log4j-jcl.adoc[]
-=====
 
 [#impl-core-bridge-jboss-logging]
 ===== Installing JBoss Logging-to-Log4j bridge

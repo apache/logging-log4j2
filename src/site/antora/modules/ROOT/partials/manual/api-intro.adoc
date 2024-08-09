@@ -18,7 +18,7 @@
 To log, you need a {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Logger.html[`Logger`] instance which you will retrieve from the {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/LogManager.html[`LogManager`].
 These are all part of the `log4j-api` module, which you can install as follows:
 
-include::partial$components/log4j-api.adoc[]
+include::partial$features/api.adoc[]
 
 You can use the `Logger` instance to log by using methods like `info()`, `warn()`, `error()`, etc.
 These methods are named after the _log levels_ they represent, a way to categorize log events by severity.
