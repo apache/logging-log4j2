@@ -304,29 +304,7 @@ See <<SocketAddress>> for the configuration syntax.
 
 Additional runtime dependencies are required for using the Cassandra Appender:
 
-[tabs]
-====
-Maven::
-+
-[source,xml]
-----
-<!-- We assume you use `log4j-bom` for dependency management -->
-<dependency>
-  <groupId>org.apache.logging.log4j</groupId>
-  <artifactId>log4j-cassandra</artifactId>
-  <scope>runtime</scope>
-</dependency>
-----
-
-Gradle::
-+
-[source,groovy]
-----
-// We assume you use `log4j-bom` for dependency management
-runtimeOnly 'org.apache.logging.log4j:log4j-cassandra'
-----
-
-====
+include::partial$components/log4j-cassandra.adoc[]
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-cassandra_org-apache-logging-log4j-cassandra-CassandraAppender[{plugin-reference-marker} Plugin reference for `Cassandra`]
 
@@ -760,29 +738,7 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-
 
 Additional runtime dependencies are required for using `PoolingDriver`:
 
-[tabs]
-====
-Maven::
-+
-[source,xml]
-----
-<!-- We assume you use `log4j-bom` for dependency management -->
-<dependency>
-  <groupId>org.apache.logging.log4j</groupId>
-  <artifactId>log4j-jdbc-dbcp2</artifactId>
-  <scope>runtime</scope>
-</dependency>
-----
-
-Gradle::
-+
-[source,groovy]
-----
-// We assume you use `log4j-bom` for dependency management
-runtimeOnly 'org.apache.logging.log4j:log4j-jdbc-dbcp2'
-----
-
-====
+include::partial$components/log4j-jdbc-dbcp2.adoc[]
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-core-appender-db-jdbc-PoolingDriverConnectionSource[{plugin-reference-marker} Plugin reference for `PoolingDriver`]
 
@@ -965,30 +921,9 @@ See also xref:manual/filters.adoc#appender-stage[appender filtering stage].
 
 |===
 
-Additional runtime dependencies are required for using the Cassandra Appender:
+Additional runtime dependencies are required for using the JPA Appender:
 
-[tabs]
-====
-Maven::
-+
-[source,xml]
-----
-<!-- We assume you use `log4j-bom` for dependency management -->
-<dependency>
-  <groupId>org.apache.logging.log4j</groupId>
-  <artifactId>log4j-jpa</artifactId>
-  <scope>runtime</scope>
-</dependency>
-----
-
-Gradle::
-+
-[source,groovy]
-----
-// We assume you use `log4j-bom` for dependency management
-runtimeOnly 'org.apache.logging.log4j:log4j-jpa'
-----
-====
+include::partial$components/log4j-jpa.adoc[]
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-jpa_org-apache-logging-log4j-core-appender-db-jpa-JpaAppender[{plugin-reference-marker} Plugin reference for `JPA`]
 
@@ -1254,28 +1189,7 @@ It specifies the capped collection size of bytes.
 
 Additional runtime dependencies are required to use the `MongoDb` provider:
 
-[tabs]
-====
-Maven::
-+
-[source,xml]
-----
-<!-- We assume you use `log4j-bom` for dependency management -->
-<dependency>
-  <groupId>org.apache.logging.log4j</groupId>
-  <artifactId>log4j-mongodb</artifactId>
-  <scope>runtime</scope>
-</dependency>
-----
-
-Gradle::
-+
-[source,groovy]
-----
-// We assume you use `log4j-bom` for dependency management
-runtimeOnly 'org.apache.logging.log4j:log4j-mongodb'
-----
-====
+include::partial$components/log4j-mongodb.adoc[]
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider[{plugin-reference-marker} Plugin reference for `MongoDb`]
 
@@ -1321,28 +1235,7 @@ It specifies the capped collection size of bytes.
 
 Additional runtime dependencies are required to use the `MongoDb4` provider:
 
-[tabs]
-====
-Maven::
-+
-[source,xml]
-----
-<!-- We assume you use `log4j-bom` for dependency management -->
-<dependency>
-  <groupId>org.apache.logging.log4j</groupId>
-  <artifactId>log4j-mongodb4</artifactId>
-  <scope>runtime</scope>
-</dependency>
-----
-
-Gradle::
-+
-[source,groovy]
-----
-// We assume you use `log4j-bom` for dependency management
-runtimeOnly 'org.apache.logging.log4j:log4j-mongodb4'
-----
-====
+include::partial$components/log4j-mongodb4.adoc[]
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-mongodb4-MongoDb4Provider[{plugin-reference-marker} Plugin reference for `MongoDb4`]
 
@@ -1440,28 +1333,7 @@ object.
 
 Additional runtime dependencies are required to use the `CouchDb` provider:
 
-[tabs]
-====
-Maven::
-+
-[source,xml]
-----
-<!-- We assume you use `log4j-bom` for dependency management -->
-<dependency>
-  <groupId>org.apache.logging.log4j</groupId>
-  <artifactId>log4j-couchdb</artifactId>
-  <scope>runtime</scope>
-</dependency>
-----
-
-Gradle::
-+
-[source,groovy]
-----
-// We assume you use `log4j-bom` for dependency management
-runtimeOnly 'org.apache.logging.log4j:log4j-couchdb'
-----
-====
+include::partial$components/log4j-couchdb.adoc[]
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-couchdb-CouchDbProvider[{plugin-reference-marker} Plugin reference for `CouchDb`]
 

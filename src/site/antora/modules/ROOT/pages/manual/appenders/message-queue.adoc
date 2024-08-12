@@ -225,28 +225,7 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-flume-ng_org-apache-lo
 
 Additional runtime dependencies are required to use the Flume Appender:
 
-[tabs]
-====
-Maven::
-+
-[source,xml]
-----
-<!-- We assume you use `log4j-bom` for dependency management -->
-<dependency>
-  <groupId>org.apache.logging.log4j</groupId>
-  <artifactId>log4j-flume-ng</artifactId>
-  <scope>runtime</scope>
-</dependency>
-----
-
-Gradle::
-+
-[source,groovy]
-----
-// We assume you use `log4j-bom` for dependency management
-runtimeOnly 'org.apache.logging.log4j:log4j-flume-ng'
-----
-====
+include::partial$components/log4j-flume-ng.adoc[]
 
 To use the Flume Appender <<FlumeAppender-mode-PERSISTENT,PERSISTENT mode>>, you need the following additional dependency:
 

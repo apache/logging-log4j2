@@ -19,20 +19,22 @@
 ====
 Maven::
 +
+We assume you use xref:components.adoc#log4j-bom[`log4j-bom`] for dependency management.
++
 [source,xml,subs="+attributes"]
 ----
 <dependency>
-  <groupId>com.lmax</groupId>
-  <artifactId>disruptor</artifactId>
-  <version>{disruptor-version}</version>
-  <scope>runtime</scope>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-iostreams</artifactId>
 </dependency>
 ----
 
 Gradle::
 +
+We assume you use xref:components.adoc#log4j-bom[`log4j-bom`] for dependency management.
++
 [source,groovy,subs="+attributes"]
 ----
-runtimeOnly 'com.lmax:disruptor:{disruptor-version}'
+implementation 'org.apache.logging.log4j:log4j-iostreams'
 ----
 ====

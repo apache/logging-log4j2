@@ -41,47 +41,7 @@ While running tests or developing locally, you can use xref:manual/pattern-layou
 
 Adding `log4j-layout-template-json` artifact to your list of dependencies is enough to enable access to JSON Template Layout in your Log4j configuration:
 
-[tabs]
-====
-Maven::
-+
-[source,xml,subs="+attributes"]
-----
-<project>
-
-  <!-- Assuming `log4j-bom` is imported --><!--1-->
-
-  <dependency>
-
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-layout-template-json</artifactId>
-      <scope>runtime</scope><!--2-->
-    </dependency>
-
-  </dependency>
-
-</project>
-----
-
-Gradle::
-+
-[source,groovy,subs="+attributes"]
-----
-dependencies {
-
-  // Assuming `log4j-bom` is imported <1>
-
-  runtimeOnly // <2>
-    'org.apache.logging.log4j:log4j-slf4j2-impl'
-
-}
-----
-====
-<1> Assuming you xref:manual/installation.adoc#bom[imported `org.apache.logging.log4j:log4j-bom`]
-<2> For applications, logging implementation dependencies are required at _runtime_.
-If you want to use JSON Template Layout for tests, you need to switch the scope to _test_.
-See xref:manual/installation.adoc[] for details.
+include::partial$components/log4j-json-template-layout.adoc[]
 
 JSON Template Layout is primarily configured through an *event template* describing the structure log events should be JSON-encoded in.
 Event templates themselves are also JSON documents, where objects containing `$resolver` members, such as,

@@ -247,7 +247,7 @@ Log4j provides the following implementations:
 |===
 | Name | Priority | Naming Convention | Module | Description
 
-| SpringPropertySource
+| [[SpringPropertySource]]SpringPropertySource
 | -100
 | standard
 | log4j-spring
