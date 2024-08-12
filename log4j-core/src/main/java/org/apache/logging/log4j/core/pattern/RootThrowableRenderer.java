@@ -20,7 +20,7 @@ import java.util.List;
 
 final class RootThrowableRenderer extends ThrowableRenderer<ThrowableRenderer.Context> {
 
-    private static final String WRAPPED_BY_LABEL = "Wrapped by: ";
+    private static final String WRAPPED_BY_CAPTION = "Wrapped by: ";
 
     RootThrowableRenderer(final List<String> ignoredPackageNames, final String lineSeparator, final int maxLineCount) {
         super(ignoredPackageNames, lineSeparator, maxLineCount);
@@ -52,7 +52,7 @@ final class RootThrowableRenderer extends ThrowableRenderer<ThrowableRenderer.Co
             final String prefix) {
         if (cause != null) {
             renderThrowable(buffer, cause, context, stackTraceElementSuffix, prefix, "");
-            buffer.append(WRAPPED_BY_LABEL);
+            buffer.append(WRAPPED_BY_CAPTION);
         }
     }
 }
