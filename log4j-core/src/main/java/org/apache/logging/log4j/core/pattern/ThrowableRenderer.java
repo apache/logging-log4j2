@@ -71,7 +71,7 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
         renderCause(buffer, throwable.getCause(), context, stackTraceElementSuffix, prefix);
     }
 
-    void renderSuppressed(
+    final void renderSuppressed(
             final StringBuilder buffer,
             final Throwable[] suppressedThrowables,
             final C context,
@@ -102,7 +102,7 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
         }
     }
 
-    void renderStackTraceElements(
+    final void renderStackTraceElements(
             final StringBuilder buffer,
             final Throwable throwable,
             final C context,
