@@ -108,9 +108,6 @@
     <a class="nav-link" href="eventlogging.html">Event Logger</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="resource-logger.html">Resource Logger</a>
-  </li>
-  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="simple-logger.html">Simple Logger</a>
   </li>
   <li class="nav-item" data-depth="3">
@@ -130,9 +127,6 @@
   </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="markers.html">Markers</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="scoped-context.html">Scoped Context</a>
   </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="thread-context.html">Thread Context</a>
@@ -897,20 +891,17 @@ For example, <code>org.apache.logging.appender</code> and <code>org.apache.loggi
 <div class="paragraph">
 <p>In most cases, applications name their loggers by passing the current class&#8217;s name to <code>LogManager.getLogger(&#8230;&#8203;)</code>.
 Because this usage is so common, Log4j provides that as the default when the logger name parameter is either omitted or is null.
-For example, all <code>Logger</code>-typed variables below will have a name of <code>com.mycompany.LoggerNameTest</code>:</p>
+For example, all <code>Logger</code>-typed variables below will have a name of <code>com.example.LoggerNameTest</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package com.mycompany;
-
-public class LoggerNameTest {
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public class LoggerNameTest {
 
     Logger logger1 = LogManager.getLogger(LoggerNameTest.class);
 
     Logger logger2 = LogManager.getLogger(LoggerNameTest.class.getName());
 
     Logger logger3 = LogManager.getLogger();
-
 }</code></pre>
 </div>
 </div>
@@ -936,7 +927,7 @@ public class LoggerNameTest {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.info("Hello, {}!", name)</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.info("Hello, {}!", name);</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -944,7 +935,7 @@ public class LoggerNameTest {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.log(Level.INFO, messageFactory.createMessage("Hello, {}!", new Object[]{name}));</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.log(Level.INFO, messageFactory.createMessage("Hello, {}!", new Object[] {name}));</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -953,12 +944,10 @@ Log4j allows users to customize this behaviour in several <code>getLogger()</cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LogManager
-        .getLogger() <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LogManager.getLogger() <i class="conum" data-value="1"></i><b>(1)</b>
         .info("Hello, {}!", name); <i class="conum" data-value="2"></i><b>(2)</b>
 
-LogManager
-        .getLogger(StringFormatterMessageFactory.INSTANCE) <i class="conum" data-value="3"></i><b>(3)</b>
+LogManager.getLogger(StringFormatterMessageFactory.INSTANCE) <i class="conum" data-value="3"></i><b>(3)</b>
         .info("Hello, %s!", name); <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
 </div>
 </div>
@@ -999,7 +988,8 @@ If you need more control over how the parameters are formatted, you can also use
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Logger logger = LogManager.getFormatterLogger();
 logger.debug("Logging in user %s with birthday %s", user.getName(), user.getBirthdayCalendar());
-logger.debug("Logging in user %1$s with birthday %2$tm %2$te,%2$tY", user.getName(), user.getBirthdayCalendar());
+logger.debug(
+        "Logging in user %1$s with birthday %2$tm %2$te,%2$tY", user.getName(), user.getBirthdayCalendar());
 logger.debug("Integer.MAX_VALUE = %,d", Integer.MAX_VALUE);
 logger.debug("Long.MAX_VALUE = %,d", Long.MAX_VALUE);</code></pre>
 </div>
@@ -1028,25 +1018,6 @@ logger.printf(Level.INFO, "Hello, %s!", userName);</code></pre>
 <p>Keep in mind that, contrary to the formatter logger, the default Log4j logger (i.e., <code>{}</code>-style parameters) is heavily optimized for several use cases and can operate <a href="garbagefree.html" class="xref page">garbage-free</a> when configured correctly.
 You might reconsider your formatter logger usages for latency sensitive applications.</p>
 </div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="resource-logger"><a class="anchor" href="#resource-logger"></a>Resource logger</h3>
-<div class="paragraph">
-<p>Resource loggers, introduced in Log4j API <code>2.24.0</code>, is a special kind of <code>Logger</code> that:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>is a regular class member variable that will be garbage collected along with the class instance</p>
-</li>
-<li>
-<p>enriches generated log events with data associated with the resource (i.e., the class instance)</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p><a href="resource-logger.html" class="xref page">Read more on resource loggers&#8230;&#8203;</a></p>
 </div>
 </div>
 <div class="sect2">
@@ -1105,11 +1076,11 @@ Users can use the status logger to either emit logs in their custom Log4j compon
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">logger.atInfo()
-      .withMarker(marker)
-      .withLocation()
-      .withThrowable(exception)
-      .log("Login for user `{}` failed", userId);</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.atInfo()
+        .withMarker(marker)
+        .withLocation()
+        .withThrowable(exception)
+        .log("Login for user `{}` failed", userId);</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1121,8 +1092,7 @@ Users can use the status logger to either emit logs in their custom Log4j compon
 <h2 id="fish-tagging"><a class="anchor" href="#fish-tagging"></a>Fish tagging</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Just as a fish can be tagged and have its movement tracked (aka. <em>fish tagging</em> <sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup>), stamping log events with a common tag or set of data
-elements allows the complete flow of a transaction or a request to be tracked.
+<p>Just as a fish can be tagged and have its movement tracked (aka. <em>fish tagging</em> <sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup>), stamping log events with a common tag or set of data elements allows the complete flow of a transaction or a request to be tracked.
 You can use them for several purposes, such as:</p>
 </div>
 <div class="ulist">
@@ -1166,60 +1136,11 @@ Log4j also allows you to introduce your own custom levels too.</p>
         logger.debug(ACCOUNT_MARKER, "Removing user with ID `{}`", userId);
         // ...
     }
-
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p><a href="markers.html" class="xref page">Read more on markers&#8230;&#8203;</a></p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="scoped-context"><a class="anchor" href="#scoped-context"></a>Scoped Context</h3>
-<div class="paragraph">
-<p>Just like a <a href="https://docs.oracle.com/en/java/javase/22/docs/api/java.base/java/lang/ScopedValue.html">Java&#8217;s <code>ScopedValue</code></a>, <em>Scoped Context</em> facilitates associating information with a certain block of code and makings this accessible to the rest of the logging system:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">private class Worker implements Runnable {
-
-    private static final Logger LOGGER = LogManager.getLogger();
-
-    public void authUser(Request request, Session session) {
-         // ... <i class="conum" data-value="3"></i><b>(3)</b>
-        ScopedContext
-                .where("ipAddress", request.getRemoteAddr()) <i class="conum" data-value="1"></i><b>(1)</b>
-                .where("hostName", request.getServerName()) <i class="conum" data-value="1"></i><b>(1)</b>
-                .where("loginId", session.getAttribute("loginId")) <i class="conum" data-value="1"></i><b>(1)</b>
-                .run(() -&gt; { <i class="conum" data-value="2"></i><b>(2)</b>
-                    LOGGER.debug("Authenticating user");
-                    // ...
-                });
-         // ... <i class="conum" data-value="3"></i><b>(3)</b>
-    }
-
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Associating properties such that they will only be visible to Log4j <strong>within the scope of the <code>run()</code> method</strong>.
-These properties can later on be used to, for instance, filter the log event, provide extra information in the layout, etc.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The block determining the visibility scope of the provided properties.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Outside the scope of the <code>run()</code> method provided properties will not be visible.</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p><a href="scoped-context.html" class="xref page">Read more on Scoped Context&#8230;&#8203;</a></p>
 </div>
 </div>
 <div class="sect2">
@@ -1340,7 +1261,7 @@ LOGGER.info(new SimpleMessage("foo"));</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.info("foo {} {}", "bar", "baz");
-LOGGER.info(new ParameterizedMessage("foo {} {}", new Object[]{"bar", "baz"}));</code></pre>
+LOGGER.info(new ParameterizedMessage("foo {} {}", new Object[] {"bar", "baz"}));</code></pre>
 </div>
 </div>
 </li>
@@ -1348,9 +1269,7 @@ LOGGER.info(new ParameterizedMessage("foo {} {}", new Object[]{"bar", "baz"}));<
 <p><code>Map</code>-typed messages:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.info(new StringMapMessage()
-    .with("key1", "val1")
-    .with("key2", "val2"));</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.info(new StringMapMessage().with("key1", "val1").with("key2", "val2"));</code></pre>
 </div>
 </div>
 </li>

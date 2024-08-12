@@ -108,9 +108,6 @@
     <a class="nav-link" href="eventlogging.html">Event Logger</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="resource-logger.html">Resource Logger</a>
-  </li>
-  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="simple-logger.html">Simple Logger</a>
   </li>
   <li class="nav-item" data-depth="3">
@@ -130,9 +127,6 @@
   </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="markers.html">Markers</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="scoped-context.html">Scoped Context</a>
   </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="thread-context.html">Thread Context</a>
@@ -1064,9 +1058,6 @@ The <code>Unbox.box(primitive)</code> methods write directly into a <code>String
 </li>
 <li>
 <p>The <code>ThreadContext</code> stack (aka. NDC) is not garbage-free.</p>
-</li>
-<li>
-<p><a href="scoped-context.html" class="xref page">Scoped Context</a> is not garbage-free.</p>
 </li>
 <li>
 <p>Logging very large messages (i.e., more than <a href="#log4j2.maxReusableMsgSize"><code>log4j2.maxReusableMsgSize</code></a> characters, which defaults to 518), when all loggers are <a href="async.html" class="xref page">asynchronous loggers</a>, will cause the internal <code>StringBuilder</code> in the

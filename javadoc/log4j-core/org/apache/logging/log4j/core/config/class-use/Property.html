@@ -687,7 +687,6 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color"><span class="type-name-label">ThreadContextDataInjector.</span><code><a href="../../impl/ThreadContextDataInjector.html#copyProperties(java.util.List,org.apache.logging.log4j.util.StringMap)" class="member-name-link">copyProperties</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../Property.html" title="class in org.apache.logging.log4j.core.config">Property</a>&gt;&nbsp;properties,
  <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html" title="class or interface in org.apache.logging.log4j.util" class="external-link">StringMap</a>&nbsp;result)</code></div>
 <div class="col-last even-row-color">
-<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Copies key-value pairs from the specified property list into the specified <code>StringMap</code>.</div>
 </div>
 <div class="col-first odd-row-color"><code><a href="../../LogEvent.html" title="interface in org.apache.logging.log4j.core">LogEvent</a></code></div>
@@ -766,16 +765,23 @@ loadScripts(document, 'script');</script>
 <div class="block">Creates a log event.</div>
 </div>
 <div class="col-first even-row-color"><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html" title="class or interface in org.apache.logging.log4j.util" class="external-link">StringMap</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">ThreadContextDataInjector.ForDefaultThreadContextMap.</span><code><a href="../../impl/ThreadContextDataInjector.ForDefaultThreadContextMap.html#injectContextData(java.util.List,org.apache.logging.log4j.util.StringMap)" class="member-name-link">injectContextData</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../Property.html" title="class in org.apache.logging.log4j.core.config">Property</a>&gt;&nbsp;props,
+<div class="col-second even-row-color"><span class="type-name-label">ThreadContextDataInjector.ForCopyOnWriteThreadContextMap.</span><code><a href="../../impl/ThreadContextDataInjector.ForCopyOnWriteThreadContextMap.html#injectContextData(java.util.List,org.apache.logging.log4j.util.StringMap)" class="member-name-link">injectContextData</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../Property.html" title="class in org.apache.logging.log4j.core.config">Property</a>&gt;&nbsp;props,
  <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html" title="class or interface in org.apache.logging.log4j.util" class="external-link">StringMap</a>&nbsp;ignore)</code></div>
 <div class="col-last even-row-color">
+<div class="block">If there are no configuration properties, this injector will return the thread context's internal data
+ structure.</div>
+</div>
+<div class="col-first odd-row-color"><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html" title="class or interface in org.apache.logging.log4j.util" class="external-link">StringMap</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">ThreadContextDataInjector.ForDefaultThreadContextMap.</span><code><a href="../../impl/ThreadContextDataInjector.ForDefaultThreadContextMap.html#injectContextData(java.util.List,org.apache.logging.log4j.util.StringMap)" class="member-name-link">injectContextData</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../Property.html" title="class in org.apache.logging.log4j.core.config">Property</a>&gt;&nbsp;props,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html" title="class or interface in org.apache.logging.log4j.util" class="external-link">StringMap</a>&nbsp;ignore)</code></div>
+<div class="col-last odd-row-color">
 <div class="block">Puts key-value pairs from both the specified list of properties as well as the thread context into the
  specified reusable StringMap.</div>
 </div>
-<div class="col-first odd-row-color"><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html" title="class or interface in org.apache.logging.log4j.util" class="external-link">StringMap</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">ThreadContextDataInjector.ForGarbageFreeThreadContextMap.</span><code><a href="../../impl/ThreadContextDataInjector.ForGarbageFreeThreadContextMap.html#injectContextData(java.util.List,org.apache.logging.log4j.util.StringMap)" class="member-name-link">injectContextData</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../Property.html" title="class in org.apache.logging.log4j.core.config">Property</a>&gt;&nbsp;props,
+<div class="col-first even-row-color"><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html" title="class or interface in org.apache.logging.log4j.util" class="external-link">StringMap</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ThreadContextDataInjector.ForGarbageFreeThreadContextMap.</span><code><a href="../../impl/ThreadContextDataInjector.ForGarbageFreeThreadContextMap.html#injectContextData(java.util.List,org.apache.logging.log4j.util.StringMap)" class="member-name-link">injectContextData</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../Property.html" title="class in org.apache.logging.log4j.core.config">Property</a>&gt;&nbsp;props,
  <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html" title="class or interface in org.apache.logging.log4j.util" class="external-link">StringMap</a>&nbsp;reusable)</code></div>
-<div class="col-last odd-row-color">
+<div class="col-last even-row-color">
 <div class="block">Puts key-value pairs from both the specified list of properties as well as the thread context into the
  specified reusable StringMap.</div>
 </div>

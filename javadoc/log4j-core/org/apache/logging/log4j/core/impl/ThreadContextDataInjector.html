@@ -77,18 +77,13 @@ loadScripts(document, 'script');</script>
 </div>
 <section class="class-description" id="class-description">
 <hr>
-<div class="type-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
-</span><span class="modifiers">public class </span><span class="element-name type-name-label">ThreadContextDataInjector</span>
+<div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">ThreadContextDataInjector</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use @{link ContextData} instead.</div>
-</div>
 <div class="block"><code>ThreadContextDataInjector</code> contains a number of strategies for copying key-value pairs from the various
  <code>ThreadContext</code> map implementations into a <code>StringMap</code>. In the case of duplicate keys,
  thread context values overwrite configuration <code>Property</code> values.
  <p>
- This class is no longer directly used by Log4j. It is only present in case it is being overridden by a user.
- Will be removed in 3.0.0.
+ These are the default <code>ContextDataInjector</code> objects returned by the <a href="ContextDataInjectorFactory.html" title="class in org.apache.logging.log4j.core.impl"><code>ContextDataInjectorFactory</code></a>.
  </p></div>
 <dl class="notes">
 <dt>Since:</dt>
@@ -119,20 +114,18 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>static class&nbsp;</code></div>
 <div class="col-second even-row-color"><code><a href="ThreadContextDataInjector.ForCopyOnWriteThreadContextMap.html" class="type-name-link" title="class in org.apache.logging.log4j.core.impl">ThreadContextDataInjector.ForCopyOnWriteThreadContextMap</a></code></div>
 <div class="col-last even-row-color">
-<div class="block"><span class="deprecated-label">Deprecated.</span></div>
-<div class="block">Th</div>
+<div class="block">The <code>ContextDataInjector</code> used when the ThreadContextMap implementation is a copy-on-write
+ StringMap-based data structure.</div>
 </div>
 <div class="col-first odd-row-color"><code>static class&nbsp;</code></div>
 <div class="col-second odd-row-color"><code><a href="ThreadContextDataInjector.ForDefaultThreadContextMap.html" class="type-name-link" title="class in org.apache.logging.log4j.core.impl">ThreadContextDataInjector.ForDefaultThreadContextMap</a></code></div>
 <div class="col-last odd-row-color">
-<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Default <code>ContextDataInjector</code> for the legacy <code>Map&lt;String, String&gt;</code>-based ThreadContext (which is
  also the ThreadContext implementation used for web applications).</div>
 </div>
 <div class="col-first even-row-color"><code>static class&nbsp;</code></div>
 <div class="col-second even-row-color"><code><a href="ThreadContextDataInjector.ForGarbageFreeThreadContextMap.html" class="type-name-link" title="class in org.apache.logging.log4j.core.impl">ThreadContextDataInjector.ForGarbageFreeThreadContextMap</a></code></div>
 <div class="col-last even-row-color">
-<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">The <code>ContextDataInjector</code> used when the ThreadContextMap implementation is a garbage-free
  StringMap-based data structure.</div>
 </div>
@@ -151,7 +144,6 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;<a href="../util/ContextDataProvider.html" title="interface in org.apache.logging.log4j.core.util">ContextDataProvider</a>&gt;</code></div>
 <div class="col-second even-row-color"><code><a href="#contextDataProviders" class="member-name-link">contextDataProviders</a></code></div>
 <div class="col-last even-row-color">
-<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">ContextDataProviders loaded via OSGi.</div>
 </div>
 </div>
@@ -166,9 +158,7 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E()" class="member-name-link">ThreadContextDataInjector</a>()</code></div>
-<div class="col-last even-row-color">
-<div class="block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
 </li>
@@ -183,11 +173,10 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#copyProperties(java.util.List,org.apache.logging.log4j.util.StringMap)" class="member-name-link">copyProperties</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../config/Property.html" title="class in org.apache.logging.log4j.core.config">Property</a>&gt;&nbsp;properties,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#copyProperties(java.util.List,org.apache.logging.log4j.util.StringMap)" class="member-name-link">copyProperties</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../config/Property.html" title="class in org.apache.logging.log4j.core.config">Property</a>&gt;&nbsp;properties,
  <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html" title="class or interface in org.apache.logging.log4j.util" class="external-link">StringMap</a>&nbsp;result)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
-<div class="block"><span class="deprecated-label">Deprecated.</span></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Copies key-value pairs from the specified property list into the specified <code>StringMap</code>.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static void</code></div>
@@ -218,7 +207,6 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="contextDataProviders">
 <h3>contextDataProviders</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;<a href="../util/ContextDataProvider.html" title="interface in org.apache.logging.log4j.core.util">ContextDataProvider</a>&gt;</span>&nbsp;<span class="element-name">contextDataProviders</span></div>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">ContextDataProviders loaded via OSGi.</div>
 </section>
 </li>
@@ -234,7 +222,6 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="&lt;init&gt;()">
 <h3>ThreadContextDataInjector</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">ThreadContextDataInjector</span>()</div>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 </section>
 </li>
 </ul>
@@ -262,7 +249,6 @@ loadScripts(document, 'script');</script>
 <h3>copyProperties</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">copyProperties</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../config/Property.html" title="class in org.apache.logging.log4j.core.config">Property</a>&gt;&nbsp;properties,
  <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html" title="class or interface in org.apache.logging.log4j.util" class="external-link">StringMap</a>&nbsp;result)</span></div>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Copies key-value pairs from the specified property list into the specified <code>StringMap</code>.</div>
 <dl class="notes">
 <dt>Parameters:</dt>

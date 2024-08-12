@@ -15,7 +15,11 @@
 <script type="text/javascript" src="../../../../../../script-dir/jquery-ui.min.js"></script>
 </head>
 <body class="class-declaration-page">
-<script type="text/javascript">var pathtoroot = "../../../../../../";
+<script type="text/javascript">var evenRowColor = "even-row-color";
+var oddRowColor = "odd-row-color";
+var tableTab = "table-tab";
+var activeTableTab = "active-table-tab";
+var pathtoroot = "../../../../../../";
 loadScripts(document, 'script');</script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
@@ -50,7 +54,7 @@ loadScripts(document, 'script');</script>
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor-detail">Constr</a>&nbsp;|&nbsp;</li>
-<li>Method</li>
+<li><a href="#method-detail">Method</a></li>
 </ul>
 </div>
 <div class="nav-list-search"><label for="search-input">SEARCH:</label>
@@ -69,9 +73,7 @@ loadScripts(document, 'script');</script>
 <h1 title="Class ThreadContextDataInjector.ForCopyOnWriteThreadContextMap" class="title">Class ThreadContextDataInjector.ForCopyOnWriteThreadContextMap</h1>
 </div>
 <div class="inheritance" title="Inheritance Tree"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">java.lang.Object</a>
-<div class="inheritance"><a href="ThreadContextDataInjector.ForDefaultThreadContextMap.html" title="class in org.apache.logging.log4j.core.impl">org.apache.logging.log4j.core.impl.ThreadContextDataInjector.ForDefaultThreadContextMap</a>
 <div class="inheritance">org.apache.logging.log4j.core.impl.ThreadContextDataInjector.ForCopyOnWriteThreadContextMap</div>
-</div>
 </div>
 <section class="class-description" id="class-description">
 <dl class="notes">
@@ -84,8 +86,14 @@ loadScripts(document, 'script');</script>
 </dl>
 <hr>
 <div class="type-signature"><span class="modifiers">public static class </span><span class="element-name type-name-label">ThreadContextDataInjector.ForCopyOnWriteThreadContextMap</span>
-<span class="extends-implements">extends <a href="ThreadContextDataInjector.ForDefaultThreadContextMap.html" title="class in org.apache.logging.log4j.core.impl">ThreadContextDataInjector.ForDefaultThreadContextMap</a></span></div>
-<div class="block">Th</div>
+<span class="extends-implements">extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
+implements <a href="../ContextDataInjector.html" title="interface in org.apache.logging.log4j.core">ContextDataInjector</a></span></div>
+<div class="block">The <code>ContextDataInjector</code> used when the ThreadContextMap implementation is a copy-on-write
+ StringMap-based data structure.
+ <p>
+ If there are no configuration properties, this injector will return the thread context's internal data
+ structure. Otherwise the configuration properties are combined with the thread context key-value pairs into the
+ specified reusable StringMap.</div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -106,15 +114,31 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
-<div class="inherited-list">
-<h3 id="methods-inherited-from-class-org.apache.logging.log4j.core.impl.ThreadContextDataInjector.ForDefaultThreadContextMap">Methods inherited from class&nbsp;org.apache.logging.log4j.core.impl.<a href="ThreadContextDataInjector.ForDefaultThreadContextMap.html" title="class in org.apache.logging.log4j.core.impl">ThreadContextDataInjector.ForDefaultThreadContextMap</a></h3>
-<code><a href="ThreadContextDataInjector.ForDefaultThreadContextMap.html#injectContextData(java.util.List,org.apache.logging.log4j.util.StringMap)">injectContextData</a>, <a href="ThreadContextDataInjector.ForDefaultThreadContextMap.html#rawContextData()">rawContextData</a></code></div>
+<div id="method-summary-table">
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html" title="class or interface in org.apache.logging.log4j.util" class="external-link">StringMap</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#injectContextData(java.util.List,org.apache.logging.log4j.util.StringMap)" class="member-name-link">injectContextData</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../config/Property.html" title="class in org.apache.logging.log4j.core.config">Property</a>&gt;&nbsp;props,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html" title="class or interface in org.apache.logging.log4j.util" class="external-link">StringMap</a>&nbsp;ignore)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">If there are no configuration properties, this injector will return the thread context's internal data
+ structure.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/ReadOnlyStringMap.html" title="class or interface in org.apache.logging.log4j.util" class="external-link">ReadOnlyStringMap</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#rawContextData()" class="member-name-link">rawContextData</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Returns a <code>ReadOnlyStringMap</code> object reflecting the current state of the context.</div>
+</div>
+</div>
+</div>
+</div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-java.lang.Object">Methods inherited from class&nbsp;java.lang.<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></h3>
 <code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#clone--" title="class or interface in java.lang" class="external-link">clone</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#equals-java.lang.Object-" title="class or interface in java.lang" class="external-link">equals</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#finalize--" title="class or interface in java.lang" class="external-link">finalize</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#getClass--" title="class or interface in java.lang" class="external-link">getClass</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#hashCode--" title="class or interface in java.lang" class="external-link">hashCode</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#notify--" title="class or interface in java.lang" class="external-link">notify</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#notifyAll--" title="class or interface in java.lang" class="external-link">notifyAll</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#toString--" title="class or interface in java.lang" class="external-link">toString</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#wait--" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#wait-long-" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#wait-long-int-" title="class or interface in java.lang" class="external-link">wait</a></code></div>
-<div class="inherited-list">
-<h3 id="methods-inherited-from-class-org.apache.logging.log4j.core.ContextDataInjector">Methods inherited from interface&nbsp;org.apache.logging.log4j.core.<a href="../ContextDataInjector.html" title="interface in org.apache.logging.log4j.core">ContextDataInjector</a></h3>
-<code><a href="../ContextDataInjector.html#getValue(java.lang.String)">getValue</a></code></div>
 </section>
 </li>
 </ul>
@@ -130,6 +154,63 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="&lt;init&gt;()">
 <h3>ForCopyOnWriteThreadContextMap</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">ForCopyOnWriteThreadContextMap</span>()</div>
+</section>
+</li>
+</ul>
+</section>
+</li>
+<!-- ============ METHOD DETAIL ========== -->
+<li>
+<section class="method-details" id="method-detail">
+<h2>Method Details</h2>
+<ul class="member-list">
+<li>
+<section class="detail" id="injectContextData(java.util.List,org.apache.logging.log4j.util.StringMap)">
+<h3>injectContextData</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html" title="class or interface in org.apache.logging.log4j.util" class="external-link">StringMap</a></span>&nbsp;<span class="element-name">injectContextData</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../config/Property.html" title="class in org.apache.logging.log4j.core.config">Property</a>&gt;&nbsp;props,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html" title="class or interface in org.apache.logging.log4j.util" class="external-link">StringMap</a>&nbsp;ignore)</span></div>
+<div class="block">If there are no configuration properties, this injector will return the thread context's internal data
+ structure. Otherwise the configuration properties are combined with the thread context key-value pairs into the
+ specified reusable StringMap.</div>
+<dl class="notes">
+<dt>Specified by:</dt>
+<dd><code><a href="../ContextDataInjector.html#injectContextData(java.util.List,org.apache.logging.log4j.util.StringMap)">injectContextData</a></code>&nbsp;in interface&nbsp;<code><a href="../ContextDataInjector.html" title="interface in org.apache.logging.log4j.core">ContextDataInjector</a></code></dd>
+<dt>Parameters:</dt>
+<dd><code>props</code> - list of configuration properties, may be <code>null</code></dd>
+<dd><code>ignore</code> - a <code>StringMap</code> instance from the log event</dd>
+<dt>Returns:</dt>
+<dd>a <code>StringMap</code> combining configuration properties with thread context data</dd>
+<dt>See Also:</dt>
+<dd>
+<ul class="see-list-long">
+<li><a href="ThreadContextDataInjector.html#copyProperties(java.util.List,org.apache.logging.log4j.util.StringMap)"><code>ThreadContextDataInjector.copyProperties(List, StringMap)</code></a></li>
+</ul>
+</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="rawContextData()">
+<h3>rawContextData</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/ReadOnlyStringMap.html" title="class or interface in org.apache.logging.log4j.util" class="external-link">ReadOnlyStringMap</a></span>&nbsp;<span class="element-name">rawContextData</span>()</div>
+<div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="../ContextDataInjector.html#rawContextData()">ContextDataInjector</a></code></span></div>
+<div class="block">Returns a <code>ReadOnlyStringMap</code> object reflecting the current state of the context. Configuration properties
+ are not included in the result.
+ <p>
+ This method may be called multiple times for each log event by Filters and Lookups and implementors should take
+ care to make this method as performant as possible while preserving at least the following thread-safety
+ guarantee.
+ </p><p>
+ Thread-safety note: The returned object can only be safely used <em>in the current thread</em>. Changes in the
+ underlying context may or may not be reflected in the returned object, depending on the context data source and
+ the implementation of this method. It is not safe to pass the returned object to another thread.
+ </p></div>
+<dl class="notes">
+<dt>Specified by:</dt>
+<dd><code><a href="../ContextDataInjector.html#rawContextData()">rawContextData</a></code>&nbsp;in interface&nbsp;<code><a href="../ContextDataInjector.html" title="interface in org.apache.logging.log4j.core">ContextDataInjector</a></code></dd>
+<dt>Returns:</dt>
+<dd>a <code>ReadOnlyStringMap</code> object reflecting the current state of the context, may not return <code>null</code></dd>
+</dl>
 </section>
 </li>
 </ul>

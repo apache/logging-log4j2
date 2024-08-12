@@ -73,20 +73,18 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>static class&nbsp;</code></div>
 <div class="col-second even-row-color"><code><a href="../impl/ThreadContextDataInjector.ForCopyOnWriteThreadContextMap.html" class="type-name-link" title="class in org.apache.logging.log4j.core.impl">ThreadContextDataInjector.ForCopyOnWriteThreadContextMap</a></code></div>
 <div class="col-last even-row-color">
-<div class="block"><span class="deprecated-label">Deprecated.</span></div>
-<div class="block">Th</div>
+<div class="block">The <code>ContextDataInjector</code> used when the ThreadContextMap implementation is a copy-on-write
+ StringMap-based data structure.</div>
 </div>
 <div class="col-first odd-row-color"><code>static class&nbsp;</code></div>
 <div class="col-second odd-row-color"><code><a href="../impl/ThreadContextDataInjector.ForDefaultThreadContextMap.html" class="type-name-link" title="class in org.apache.logging.log4j.core.impl">ThreadContextDataInjector.ForDefaultThreadContextMap</a></code></div>
 <div class="col-last odd-row-color">
-<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Default <code>ContextDataInjector</code> for the legacy <code>Map&lt;String, String&gt;</code>-based ThreadContext (which is
  also the ThreadContext implementation used for web applications).</div>
 </div>
 <div class="col-first even-row-color"><code>static class&nbsp;</code></div>
 <div class="col-second even-row-color"><code><a href="../impl/ThreadContextDataInjector.ForGarbageFreeThreadContextMap.html" class="type-name-link" title="class in org.apache.logging.log4j.core.impl">ThreadContextDataInjector.ForGarbageFreeThreadContextMap</a></code></div>
 <div class="col-last even-row-color">
-<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">The <code>ContextDataInjector</code> used when the ThreadContextMap implementation is a garbage-free
  StringMap-based data structure.</div>
 </div>
@@ -99,14 +97,8 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>static <a href="../ContextDataInjector.html" title="interface in org.apache.logging.log4j.core">ContextDataInjector</a></code></div>
 <div class="col-second even-row-color"><span class="type-name-label">ContextDataInjectorFactory.</span><code><a href="../impl/ContextDataInjectorFactory.html#createInjector()" class="member-name-link">createInjector</a>()</code></div>
 <div class="col-last even-row-color">
-<div class="block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Uses ContextData instead.</div>
-</div>
-</div>
-<div class="col-first odd-row-color"><code>static <a href="../ContextDataInjector.html" title="interface in org.apache.logging.log4j.core">ContextDataInjector</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">ContextDataInjectorFactory.</span><code><a href="../impl/ContextDataInjectorFactory.html#createInjector(boolean)" class="member-name-link">createInjector</a><wbr>(boolean&nbsp;useDefault)</code></div>
-<div class="col-last odd-row-color">
-<div class="block"><span class="deprecated-label">Deprecated.</span></div>
+<div class="block">Returns a new <code>ContextDataInjector</code> instance based on the value of system property
+ <code>log4j2.ContextDataInjector</code>.</div>
 </div>
 </div>
 </section>
