@@ -433,6 +433,13 @@ public class Provider {
     }
 
     /**
+     * @return An implementation of the {@link ScopedContextProvider} service to use.
+     */
+    public ScopedContextProvider getScopedContextProvider() {
+        return ScopedContextProvider.simple();
+    }
+
+    /**
      * Gets the URL containing this Provider's Log4j details.
      *
      * @return the URL corresponding to the Provider {@code META-INF/log4j-provider.properties} file or {@code null}

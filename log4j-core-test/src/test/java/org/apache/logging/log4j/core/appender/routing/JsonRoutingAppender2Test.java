@@ -34,7 +34,7 @@ import org.junit.rules.RuleChain;
  */
 public class JsonRoutingAppender2Test {
     private static final String CONFIG = "log4j-routing2.json";
-    private static final String LOG_FILENAME = "target/rolling1/rollingtest-Unknown.log";
+    private static final String LOG_FILENAME = "target/rolling1/routingtest2-Unknown.log";
 
     private final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
 

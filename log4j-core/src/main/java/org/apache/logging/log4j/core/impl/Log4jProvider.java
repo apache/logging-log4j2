@@ -17,13 +17,16 @@
 package org.apache.logging.log4j.core.impl;
 
 import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceConsumer;
 import aQute.bnd.annotation.spi.ServiceProvider;
 import org.apache.logging.log4j.spi.Provider;
+import org.apache.logging.log4j.spi.ScopedContextProvider;
 
 /**
  * Binding for the Log4j API.
  */
 @ServiceProvider(value = Provider.class, resolution = Resolution.OPTIONAL)
+@ServiceConsumer(value = ScopedContextProvider.class, resolution = Resolution.OPTIONAL)
 public class Log4jProvider extends Provider {
     public Log4jProvider() {
         super(10, CURRENT_VERSION, Log4jContextFactory.class);

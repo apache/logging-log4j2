@@ -47,7 +47,7 @@ public class JdkMapAdapterStringMap implements StringMap {
     // It is a cache, no need to synchronise it between threads.
     private static Map<Class<?>, Void> UNMODIFIABLE_MAPS_CACHE = new WeakHashMap<>();
 
-    private final Map<String, String> map;
+    protected final Map<String, String> map;
     private boolean immutable = false;
     private transient String[] sortedKeys;
 

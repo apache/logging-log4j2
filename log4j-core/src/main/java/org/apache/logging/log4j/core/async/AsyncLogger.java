@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.ReliabilityStrategy;
+import org.apache.logging.log4j.core.impl.ContextData;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.util.Clock;
@@ -484,6 +485,11 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
 
         final Thread currentThread = Thread.currentThread();
         final String threadName = THREAD_NAME_CACHING_STRATEGY.getThreadName();
+        if (CONTEXT_DATA_INJECTOR == null) {
+            ContextData.addAll((StringMap) event.getContextData());
+        } else {
+            CONTEXT_DATA_INJECTOR.injectContextData(null, (StringMap) event.getContextData());
+        }
         event.setValues(
                 asyncLogger,
                 asyncLogger.getName(),
@@ -492,9 +498,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
                 level,
                 message,
                 thrown,
-                // config properties are taken care of in the EventHandler thread
-                // in the AsyncLogger#actualAsyncLog method
-                CONTEXT_DATA_INJECTOR.injectContextData(null, (StringMap) event.getContextData()),
+                null,
                 contextStack,
                 currentThread.getId(),
                 threadName,

@@ -32,7 +32,7 @@
  * @see <a href="https://logging.apache.org/log4j/2.x/manual/api.html">Log4j 2 API manual</a>
  */
 @Export
-@Version("2.20.2")
+@Version("2.24.0")
 package org.apache.logging.log4j;
 
 import org.osgi.annotation.bundle.Export;

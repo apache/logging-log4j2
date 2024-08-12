@@ -19,6 +19,9 @@
  * Public Message Types used for Log4j 2. Users may implement their own Messages.
  */
 @Export
+/**
+ * Bumped to 2.24.0, since FormattedMessage behavior changed.
+ */
 @Version("2.24.0")
 package org.apache.logging.log4j.message;
 

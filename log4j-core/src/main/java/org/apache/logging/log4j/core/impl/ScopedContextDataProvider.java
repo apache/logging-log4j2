@@ -18,39 +18,47 @@ package org.apache.logging.log4j.core.impl;
 
 import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceProvider;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
-import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.util.ContextDataProvider;
-import org.apache.logging.log4j.util.StringMap;
+import org.apache.logging.log4j.spi.ScopedContextProvider;
+import org.apache.logging.log4j.util.ProviderUtil;
 
 /**
- * ContextDataProvider for ThreadContext data.
+ * ContextDataProvider for {@code Map<String, String>} data.
+ * @since 2.24.0
  */
 @ServiceProvider(value = ContextDataProvider.class, resolution = Resolution.OPTIONAL)
-public class ThreadContextDataProvider implements ContextDataProvider {
+public class ScopedContextDataProvider implements ContextDataProvider {
+
+    private final ScopedContextProvider scopedContext =
+            ProviderUtil.getProvider().getScopedContextProvider();
 
     @Override
-    public String get(String key) {
-        return ThreadContext.get(key);
+    public String get(final String key) {
+        return scopedContext.getString(key);
     }
 
     @Override
     public Map<String, String> supplyContextData() {
-        return ThreadContext.getImmutableContext();
-    }
-
-    @Override
-    public StringMap supplyStringMap() {
-        return ThreadContext.getThreadContextMap().getReadOnlyContextData();
+        final Map<String, ?> contextMap = scopedContext.getContextMap();
+        if (!contextMap.isEmpty()) {
+            final Map<String, String> map = new HashMap<>();
+            contextMap.forEach((key, value) -> map.put(key, value.toString()));
+            return map;
+        } else {
+            return Collections.emptyMap();
+        }
     }
 
     @Override
     public int size() {
-        return ThreadContext.getContext().size();
+        return scopedContext.getContextMap().size();
     }
 
     @Override
-    public void addAll(Map<String, String> map) {
-        map.putAll(ThreadContext.getContext());
+    public void addAll(final Map<String, String> map) {
+        scopedContext.getContextMap().forEach((key, value) -> map.put(key, String.valueOf(value)));
     }
 }

@@ -31,18 +31,19 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.impl.ContextData;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
+import org.apache.logging.log4j.core.util.ContextDataProvider;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.PerformanceSensitive;
-import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringMap;
 
 /**
  * Compares against a log level that is associated with a context value. By default the context is the
- * {@link ThreadContext}, but users may {@linkplain ContextDataInjectorFactory configure} a custom
- * {@link ContextDataInjector} which obtains context data from some other source.
+ * {@link ThreadContext} and/or the {@link org.apache.logging.log4j.ScopedContext}, but users may add a custom
+ * {@link ContextDataProvider} which obtains context data from some other source.
  */
 @Plugin(
         name = "DynamicThresholdFilter",
@@ -125,8 +126,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
         return true;
     }
 
-    private Result filter(final Level level, final ReadOnlyStringMap contextMap) {
-        final String value = contextMap.getValue(key);
+    private Result filter(final Level level, String value) {
         if (value != null) {
             Level ctxLevel = levelMap.get(value);
             if (ctxLevel == null) {
@@ -139,7 +139,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
 
     @Override
     public Result filter(final LogEvent event) {
-        return filter(event.getLevel(), event.getContextData());
+        return filter(event.getLevel(), (String) event.getContextData().getValue(key));
     }
 
     @Override
@@ -160,8 +160,11 @@ public final class DynamicThresholdFilter extends AbstractFilter {
         return filter(level, currentContextData());
     }
 
-    private ReadOnlyStringMap currentContextData() {
-        return injector.rawContextData();
+    private String currentContextData() {
+        if (injector == null) {
+            return ContextData.getValue(key);
+        }
+        return injector.rawContextData().getValue(key);
     }
 
     @Override

@@ -91,7 +91,7 @@ public class ThreadContextDataInjectorTest {
                         : readOnlythreadContextMap.getClass().getName(),
                 is(equalTo(readOnlythreadContextMapClassName)));
 
-        final ContextDataInjector contextDataInjector = createInjector();
+        final ContextDataInjector contextDataInjector = createInjector(true);
         final StringMap stringMap = contextDataInjector.injectContextData(null, new SortedArrayStringMap());
 
         assertThat("thread context map", ThreadContext.getContext(), allOf(hasEntry("foo", "bar"), not(hasKey("baz"))));

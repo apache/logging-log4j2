@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="https://logging.apache.org/xml/ns"
+       xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="added">
+  <issue id="apache/logging-log4j-kotlin#71" link="https://github.com/apache/logging-log4j-kotlin/issues/71"/>
+  <issue id="2214" link="https://github.com/apache/logging-log4j2/discussions/2214"/>
+  <description format="asciidoc">Add `ScopedContext` to `log4j-api` and `ScopedContextDataProvider` to `log4j-core`.
+Move `ContextDataProvider` to `log4j-api` to allow custom data providers to be included in lookups.</description>
+</entry>
