@@ -33,7 +33,6 @@
 ** xref:manual/api.adoc#fish-tagging[Fish tagging]
 *** xref:manual/customloglevels.adoc[]
 *** xref:manual/markers.adoc[]
-*** xref:manual/scoped-context.adoc[]
 *** xref:manual/thread-context.adoc[]
 ** xref:manual/messages.adoc[]
 ** xref:manual/flowtracing.adoc[]

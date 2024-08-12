@@ -16,18 +16,17 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import org.apache.logging.log4j.ScopedContext;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.impl.ContextData;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 /**
- * Looks up keys from the context. By default this is the {@link ThreadContext} or {@link ScopedContext}. Users may
- * add their own {@link org.apache.logging.log4j.core.util.ContextDataProvider} which can be retrieved via this
- * Lookup.
+ * Looks up keys from the context. By default this is the {@link ThreadContext}, but users may
+ * {@linkplain ContextDataInjectorFactory configure} a custom {@link ContextDataInjector} which obtains context data
+ * from some other source.
  */
 @Plugin(name = "ctx", category = StrLookup.CATEGORY)
 public class ContextMapLookup implements StrLookup {
@@ -41,10 +40,11 @@ public class ContextMapLookup implements StrLookup {
      */
     @Override
     public String lookup(final String key) {
-        if (injector == null) {
-            return ContextData.getValue(key);
-        }
-        return injector.getValue(key);
+        return currentContextData().getValue(key);
+    }
+
+    private ReadOnlyStringMap currentContextData() {
+        return injector.rawContextData();
     }
 
     /**
