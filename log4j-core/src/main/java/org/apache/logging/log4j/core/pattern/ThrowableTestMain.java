@@ -17,21 +17,22 @@
 package org.apache.logging.log4j.core.pattern;
 
 import java.util.Collections;
+import java.util.List;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 
 public class ThrowableTestMain {
 
     public static void main(String[] args) {
         Throwable r = createException("r", 1, 3);
-        renderException(r, null);
+        renderException(r);
+        renderException(r, new ThrowableRenderer<>(Collections.emptyList(), System.lineSeparator(), Integer.MAX_VALUE));
+        renderException(r, "%ex");
         renderException(
-                r,
-                new ThrowableRenderer<>(Collections.emptyList(), System.lineSeparator(), Integer.MAX_VALUE));
+                r, new ExtendedThrowableRenderer(Collections.emptyList(), System.lineSeparator(), Integer.MAX_VALUE));
+        renderException(r, "%xEx");
         renderException(
-                r,
-                new ExtendedThrowableRenderer(Collections.emptyList(), System.lineSeparator(), Integer.MAX_VALUE));
-        renderException(
-                r,
-                new RootThrowableRenderer(Collections.emptyList(), System.lineSeparator(), Integer.MAX_VALUE));
+                r, new RootThrowableRenderer(Collections.emptyList(), System.lineSeparator(), Integer.MAX_VALUE));
+        renderException(r, "%rEx");
     }
 
     private static Throwable createException(String name, int depth, int maxDepth) {
@@ -43,15 +44,31 @@ public class ThrowableTestMain {
         return r;
     }
 
+    private static void renderException(Throwable throwable) {
+        System.out.format("%n=== %-25s ==============================%n%n", "Throwable");
+        throwable.printStackTrace(System.out);
+    }
+
     private static void renderException(Throwable throwable, ThrowableRenderer<?> renderer) {
-        if (renderer == null) {
-            System.out.format("%n=== %-25s ==============================%n%n", "Throwable");
-            throwable.printStackTrace();
-        } else {
-            System.out.format("%n=== %-25s ==============================%n%n", renderer.getClass().getSimpleName());
-            final StringBuilder stringBuilder = new StringBuilder();
-            renderer.renderThrowable(stringBuilder, throwable, "");
-            System.out.println(stringBuilder);
+        System.out.format(
+                "%n=== %-25s ==============================%n%n",
+                renderer.getClass().getSimpleName());
+        final StringBuilder stringBuilder = new StringBuilder();
+        renderer.renderThrowable(stringBuilder, throwable, "");
+        System.out.println(stringBuilder);
+    }
+
+    private static void renderException(Throwable throwable, String pattern) {
+        System.out.format("%n=== %-25s ==============================%n%n", String.format("pattern(\"%s\")", pattern));
+        PatternParser parser = new PatternParser(PatternConverter.CATEGORY);
+        List<PatternFormatter> formatters = parser.parse(pattern);
+        if (formatters.size() != 1) {
+            throw new IllegalArgumentException("was expecting a single formatter, found " + formatters.size());
         }
+        PatternFormatter formatter = formatters.get(0);
+        Log4jLogEvent logEvent = Log4jLogEvent.newBuilder().setThrown(throwable).build();
+        StringBuilder stringBuilder = new StringBuilder();
+        formatter.format(logEvent, stringBuilder);
+        System.out.println(stringBuilder);
     }
 }
