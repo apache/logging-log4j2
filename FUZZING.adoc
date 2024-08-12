@@ -26,7 +26,7 @@ These tests are located in `-fuzz-test` prefixed modules; `log4j-core-fuzz-test`
 https://github.com/google/oss-fuzz[OSS-Fuzz] is a Google service that continuously runs fuzz tests of critical F/OSS projects on a beefy cluster and reports its findings (bugs, vulnerabilities, etc.) privately to project maintainers.
 Log4j provides OSS-Fuzz integration with following helpers:
 
-- https://github.com/google/oss-fuzz/tree/master/projects/apache-logging-log4j2/Dockerfile[Dockerfile] to create a container image for running tests
+- https://github.com/google/oss-fuzz/tree/master/projects/log4j2/Dockerfile[Dockerfile] to create a container image for running tests
 - link:oss-fuzz-build.sh[`oss-fuzz-build.sh`] to generate fuzz test runner scripts along with all necessary dependencies
 
 [#faq]
@@ -42,14 +42,14 @@ Below we will try to answer some frequently asked questions.
 [source,bash]
 ----
 git clone --depth 1 https://github.com/google/oss-fuzz
-cd oss-fuzz/projects/apache-logging-log4j2
+cd oss-fuzz/projects/log4j2
 ----
 
 . Build the container image:
 +
 [source,bash]
 ----
-docker build -t oss-fuzz-apache-logging-log4j2 .
+docker build -t oss-fuzz-log4j2 .
 ----
 
 . Run the container image to build the Log4j project and generate runner scripts along with dependencies:
@@ -61,7 +61,7 @@ docker run -it \
   -e FUZZING_LANGUAGE=java \
   -v "$LOG4J_FUZZ_DIR":/out \
   --network host \
-  oss-fuzz-apache-logging-log4j2
+  oss-fuzz-log4j2
 ----
 <1> Directory where the generated runner scripts will be dumped to.
 
@@ -79,7 +79,7 @@ ls -al "$LOG4J_FUZZ_DIR"
 docker run -it \
   -e FUZZING_LANGUAGE=java \
   -v "$LOG4J_FUZZ_DIR":/out \
-  oss-fuzz-apache-logging-log4j2 \
+  oss-fuzz-log4j2 \
   /out/log4j-core-fuzz-test-PatternLayoutFuzzer
 ----
 +
@@ -96,7 +96,7 @@ unzip \
 docker run -it \
   -e FUZZING_LANGUAGE=java \
   -v "$LOG4J_FUZZ_DIR":/out \
-  oss-fuzz-apache-logging-log4j2 \
+  oss-fuzz-log4j2 \
   /out/log4j-layout-template-json-fuzz-test-JsonTemplateLayoutCodecFuzzer \
   -dict=/out/log4j-layout-template-json-fuzz-test-JsonTemplateLayoutCodecFuzzer.dict \
   /out/log4j-layout-template-json-fuzz-test-JsonTemplateLayoutCodecFuzzer_seed_corpus
