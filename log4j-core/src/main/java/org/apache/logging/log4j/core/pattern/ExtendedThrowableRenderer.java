@@ -31,9 +31,6 @@ import org.apache.logging.log4j.util.StackLocatorUtil;
 
 final class ExtendedThrowableRenderer extends ThrowableRenderer<ExtendedThrowableRenderer.ExtendedContext> {
 
-    private static final String SUPPRESSED_LABEL = "Suppressed: ";
-    private static final String TAB = "\t";
-
     ExtendedThrowableRenderer(
             final List<String> ignoredPackageNames, final String lineSeparator, final int maxLineCount) {
         super(ignoredPackageNames, lineSeparator, maxLineCount);
@@ -49,6 +46,7 @@ final class ExtendedThrowableRenderer extends ThrowableRenderer<ExtendedThrowabl
             final StringBuilder buffer,
             final StackTraceElement stackTraceElement,
             final ExtendedContext context,
+            final String prefix,
             final String stackTraceElementSuffix) {
 
         // Short-circuit on ignored stack trace elements
@@ -61,7 +59,7 @@ final class ExtendedThrowableRenderer extends ThrowableRenderer<ExtendedThrowabl
         // Render the stack trace element
         if (context.ignoredStackTraceElementCount > 0) {
             renderSuppressedCount(
-                    buffer, context.ignoredStackTraceElementCount, stackTraceElementSuffix, lineSeparator);
+                    buffer, context.ignoredStackTraceElementCount, prefix, lineSeparator);
             context.ignoredStackTraceElementCount = 0;
         }
         buffer.append("\tat ");
@@ -74,55 +72,6 @@ final class ExtendedThrowableRenderer extends ThrowableRenderer<ExtendedThrowabl
         }
         renderSuffix(buffer, stackTraceElementSuffix);
         buffer.append(lineSeparator);
-    }
-
-    @Override
-    void renderThrowable(
-            StringBuilder buffer, Throwable throwable, ExtendedContext context, String stackTraceElementSuffix) {
-        renderThrowable(buffer, throwable, context, stackTraceElementSuffix, "", "");
-    }
-
-    void renderThrowable(
-            final StringBuilder buffer,
-            final Throwable throwable,
-            final ExtendedContext context,
-            final String stackTraceElementSuffix,
-            final String prefix,
-            final String label) {
-        if (throwable == null) {
-            return;
-        }
-        buffer.append(prefix);
-        buffer.append(label);
-        renderThrowableMessage(buffer, throwable);
-        renderSuffix(buffer, stackTraceElementSuffix);
-        buffer.append(lineSeparator);
-        renderStackTraceElements(buffer, throwable, context, stackTraceElementSuffix);
-        renderSuppressedThrowables(buffer, throwable.getSuppressed(), context, stackTraceElementSuffix, prefix + TAB);
-        renderCause(buffer, throwable.getCause(), context, stackTraceElementSuffix, prefix);
-    }
-
-    private void renderSuppressedThrowables(
-            final StringBuilder buffer,
-            final Throwable[] suppressedThrowables,
-            final ExtendedContext context,
-            final String stackTraceElementSuffix,
-            final String prefix) {
-        if (suppressedThrowables == null) {
-            return;
-        }
-        for (final Throwable suppressedThrowable : suppressedThrowables) {
-            renderThrowable(buffer, suppressedThrowable, context, stackTraceElementSuffix, prefix, SUPPRESSED_LABEL);
-        }
-    }
-
-    private void renderCause(
-            final StringBuilder buffer,
-            final Throwable cause,
-            final ExtendedContext context,
-            final String stackTraceElementSuffix,
-            final String prefix) {
-        renderThrowable(buffer, cause, context, stackTraceElementSuffix, prefix, CAUSED_BY_LABEL);
     }
 
     static final class ExtendedContext extends ThrowableRenderer.Context {

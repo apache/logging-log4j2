@@ -31,16 +31,28 @@ final class RootThrowableRenderer extends ThrowableRenderer<ThrowableRenderer.Co
             final StringBuilder buffer,
             final Throwable throwable,
             final Context context,
-            final String stackTraceElementSuffix) {
-        final Throwable cause = throwable.getCause();
-        if (cause != null) {
-            renderThrowable(buffer, throwable.getCause(), context, stackTraceElementSuffix);
-            buffer.append(WRAPPED_BY_LABEL);
-            renderSuffix(buffer, stackTraceElementSuffix);
-        }
+            final String stackTraceElementSuffix,
+            final String prefix,
+            final String caption) {
+        renderCause(buffer, throwable.getCause(), context, stackTraceElementSuffix, prefix);
+        buffer.append(prefix);
+        buffer.append(caption);
         renderThrowableMessage(buffer, throwable);
-        renderSuffix(buffer, stackTraceElementSuffix);
         buffer.append(lineSeparator);
-        renderStackTraceElements(buffer, throwable, context, stackTraceElementSuffix);
+        renderStackTraceElements(buffer, throwable, context, prefix, stackTraceElementSuffix);
+        renderSuppressed(buffer, throwable.getSuppressed(), context, stackTraceElementSuffix, prefix + TAB);
+    }
+
+    @Override
+    void renderCause(
+            final StringBuilder buffer,
+            final Throwable cause,
+            final Context context,
+            final String stackTraceElementSuffix,
+            final String prefix) {
+        if (cause != null) {
+            renderThrowable(buffer, cause, context, stackTraceElementSuffix, prefix, "");
+            buffer.append(WRAPPED_BY_LABEL);
+        }
     }
 }
