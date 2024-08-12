@@ -119,7 +119,28 @@
     <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
     <a class="nav-link" href="appenders.html">Appenders</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="appenders/file.html">File appenders</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="appenders/rolling-file.html">Rolling file appenders</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="appenders/database.html">Database appenders</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="appenders/network.html">Network Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="appenders/message-queue.html">Message queue appenders</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="appenders/delegating.html">Delegating Appenders</a>
+  </li>
+</ul>
   </li>
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
@@ -431,7 +452,7 @@ Otherwise, a
 <ul>
 <li>
 <p>this stage precedes the creation of log events, therefore operations like the
-<a href="https://logging.apache.org/log4j/2.x/manual/thread-context.adoc">injection of context data</a>,
+<a href="https://logging.apache.org/log4j/2.x/manual/thread-context.html">injection of context data</a>,
 <a href="layouts.html#LocationInformation" class="xref page">computation of location information</a>
 will not be performed for disabled log statements.</p>
 </li>
@@ -1232,7 +1253,7 @@ the <code>LevelRangeFilter</code> supports the following parameter:</p>
 <div class="paragraph">
 <p>Make sure not to invert the bounds of the range.
 Starting from the smallest level,
-<a href="https://logging.apache.org/log4j/2.x/manual/customloglevels.adoc">the Log4j API defines</a>: <code>OFF</code>,
+<a href="https://logging.apache.org/log4j/2.x/manual/customloglevels.html">the Log4j API defines</a>: <code>OFF</code>,
 <code>FATAL</code>, <code>ERROR</code>, <code>WARN</code>, <code>INFO</code>, <code>DEBUG</code>, <code>TRACE</code> and <code>ALL</code>.</p>
 </div>
 </td>
@@ -1287,7 +1308,7 @@ the <code>ThresholdFilter</code> supports the following parameter:</p>
 <p>The <code>DynamicThresholdFilter</code> is a variant of <a href="#ThresholdFilter"><code>ThresholdFilter</code></a>,
 which uses a different threshold for each log event.
 The effective threshold to use is determined by querying the
-<a href="https://logging.apache.org/log4j/2.x/manual/thread-context.adoc">context data</a>
+<a href="https://logging.apache.org/log4j/2.x/manual/thread-context.html">context data</a>
 of the log event.
 For each log event:</p>
 </div>
@@ -1493,7 +1514,7 @@ to modify the <code>KeyValuePair</code>s without restarting your application.</p
 <h3 id="marker-filters"><a class="anchor" href="#marker-filters"></a>Marker filters</h3>
 <div class="paragraph">
 <p>The following filters use the
-<a href="https://logging.apache.org/log4j/2.x/manual/markers.adoc">log event marker</a>
+<a href="https://logging.apache.org/log4j/2.x/manual/markers.html">log event marker</a>
 to filter log events.</p>
 </div>
 <div class="sect3">
@@ -1553,7 +1574,7 @@ the <code>MarkerFilter</code> supports the following parameter:</p>
 <h3 id="message-filters"><a class="anchor" href="#message-filters"></a>Message filters</h3>
 <div class="paragraph">
 <p>Message filters allow filtering log events based on the
-<a href="https://logging.apache.org/log4j/2.x/manual/messages.adoc"><code>Message</code></a>
+<a href="https://logging.apache.org/log4j/2.x/manual/messages.html"><code>Message</code></a>
 contained in the log event.</p>
 </div>
 <div class="admonitionblock important">
@@ -1714,18 +1735,11 @@ In case you are using Log4j Core, the following fields can be automatically gene
 <div class="sect3">
 <h4 id="RegexFilter"><a class="anchor" href="#RegexFilter"></a><code>RegexFilter</code></h4>
 <div class="paragraph">
-<p>The <code>RegexFilter</code> matches a regular expression against either the result of
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html#getFormat()"><code>Message.getFormat()</code></a>
-or
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html#getFormat()"><code>Message.getFormattedMessage()</code></a>.
-It can be used with all kinds of <code>Message</code> implementations.</p>
-</div>
-<div class="paragraph">
-<p>Besides the <a href="#common-configuration-attributes">common configuration attributes</a>,
-the <code>RegexFilter</code> supports the following parameters:</p>
+<p>The <code>RegexFilter</code> matches a regular expression against messages.
+Besides the <a href="#common-configuration-attributes">common configuration attributes</a>, the <code>RegexFilter</code> supports the following parameters:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. <code>RegexFilter</code>&#8201;&#8212;&#8201;configuration attributes</caption>
+<caption class="title">Table 10. <code>RegexFilter</code> configuration attributes</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 14.2857%;">
@@ -1752,12 +1766,14 @@ the <code>RegexFilter</code> supports the following parameters:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>useRawMsg</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code> the result of
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html#getFormat()"><code>Message.getFormat()</code></a>
-will be used.
-Otherwise,
-<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html#getFormat()"><code>Message.getFormattedMessage()</code></a>
-is used.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code>, for
+<a href="https://logging.apache.org/log4j/2.x/manual/messages.html#ParameterizedMessage"><code>ParameterizedMessage</code></a>,
+<a href="https://logging.apache.org/log4j/2.x/manual/messages.html#StringFormattedMessage"><code>StringFormattedMessage</code></a>,
+and
+<a href="https://logging.apache.org/log4j/2.x/messages.html#MessageFormatMessage"><code>MessageFormatMessage</code></a>,
+the message format pattern; for
+<a href="https://logging.apache.org/log4j/2.x/manual/messages.html#StructuredDataMessage"><code>StructuredDataMessage</code></a>,
+the message field will be used as the match target.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1849,7 +1865,7 @@ the <code>StringMatchFilter</code> supports the following parameters:</p>
 <ul>
 <li>
 <p>The map contained in a
-<a href="https://logging.apache.org/log4j/2.x/manual/messages.adoc#MapMessage"><code>MapMessage</code></a> object.
+<a href="https://logging.apache.org/log4j/2.x/manual/messages.html#MapMessage"><code>MapMessage</code></a> object.
 See
 <a href="../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html#getData()"><code>MapMessage.getData()</code></a>
 for details.</p>
@@ -1931,7 +1947,7 @@ that appears in the configuration map is one of the allowed values.</p>
 <h4 id="MapFilter"><a class="anchor" href="#MapFilter"></a><code>MapFilter</code></h4>
 <div class="paragraph">
 <p>The <code>MapFilter</code> allows filtering based on the contents of all
-<a href="https://logging.apache.org/log4j/2.x/manual/messages.adoc#collection-structured">structured <code>Message</code>s</a>.</p>
+<a href="https://logging.apache.org/log4j/2.x/manual/messages.html#collection-structured">structured <code>Message</code>s</a>.</p>
 </div>
 <div class="paragraph">
 <p>This filter encodes the <a href="#configuration-map">Configuration map</a> introduced above as a list of
@@ -2125,7 +2141,7 @@ to modify the <code>KeyValuePair</code>s without restarting your application.</p
 <h4 id="StructuredDataFilter"><a class="anchor" href="#StructuredDataFilter"></a><code>StructuredDataFilter</code></h4>
 <div class="paragraph">
 <p>The <code>StructuredDataFilter</code> is a variant of <a href="#MapFilter"><code>MapFilter</code></a> that only matches
-<a href="https://logging.apache.org/log4j/2.x/manual/messages.adoc#StructuredDataMessage"><code>StructureDataMessage</code></a>s.</p>
+<a href="https://logging.apache.org/log4j/2.x/manual/messages.html#StructuredDataMessage"><code>StructureDataMessage</code></a>s.</p>
 </div>
 <div class="paragraph">
 <p>In addition to matching the map structure contained in a <code>StructuredDataMessage</code>
@@ -2365,7 +2381,7 @@ to modify the <code>KeyValuePair</code>s without restarting your application.</p
 <div class="paragraph">
 <p>The <code>ContextMapFilter</code> works in the same way as the <a href="#MapFilter"><code>MapFilter</code></a> above,
 except it checks the
-<a href="https://logging.apache.org/log4j/2.x/manual/thread-context.adoc">context map data</a>
+<a href="https://logging.apache.org/log4j/2.x/manual/thread-context.html">context map data</a>
 of the log event instead of the log message.</p>
 </div>
 <div class="paragraph">
@@ -2559,7 +2575,7 @@ to modify the <code>KeyValuePair</code>s without restarting your application.</p
 <h4 id="MutableThreadContextMapFilter"><a class="anchor" href="#MutableThreadContextMapFilter"></a><code>MutableContextMapFilter</code></h4>
 <div class="paragraph">
 <p>The <code>MutableContextMapFilter</code> is an alternative version of <a href="#ContextMapFilter"><code>ContextMapFilter</code></a> that also uses the
-<a href="https://logging.apache.org/log4j/2.x/manual/thread-context.adoc">context data map</a>
+<a href="https://logging.apache.org/log4j/2.x/manual/thread-context.html">context data map</a>
 to filter messages, but externalizes the <a href="#configuration-map">Configuration map</a>, so it can be kept in a separate location.</p>
 </div>
 <div class="paragraph">
@@ -2799,17 +2815,17 @@ For global filters, the following bindings are available:</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>level</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/manual/customloglevels.adoc"><code>Level</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/manual/customloglevels.html"><code>Level</code></a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The level used in the log statement.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>marker</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/manual/markers.adoc"><code>Marker</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/manual/markers.html"><code>Marker</code></a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The marker used in the log statement.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/manual/messages.adoc"><code>Message</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/manual/messages.html"><code>Message</code></a></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p>The message used in the log event if the user directly supplied one.
 Otherwise:</p>
@@ -2818,11 +2834,11 @@ Otherwise:</p>
 <ul>
 <li>
 <p>If the logging statement contained an <code>Object</code> argument, it is wrapped in a
-<a href="https://logging.apache.org/log4j/2.x/manual/messages.adoc#ObjectMessage"><code>ObjectMessage</code></a>.</p>
+<a href="https://logging.apache.org/log4j/2.x/manual/messages.html#ObjectMessage"><code>ObjectMessage</code></a>.</p>
 </li>
 <li>
 <p>If the logging statement contained a format <code>String</code>, it is wrapped in a
-<a href="https://logging.apache.org/log4j/2.x/manual/messages.adoc#SimpleMessage"><code>SimpleMessage</code></a>.</p>
+<a href="https://logging.apache.org/log4j/2.x/manual/messages.html#SimpleMessage"><code>SimpleMessage</code></a>.</p>
 </li>
 </ul>
 </div></div></td>

@@ -119,7 +119,28 @@
     <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
     <a class="nav-link" href="appenders.html">Appenders</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="appenders/file.html">File appenders</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="appenders/rolling-file.html">Rolling file appenders</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="appenders/database.html">Database appenders</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="appenders/network.html">Network Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="appenders/message-queue.html">Message queue appenders</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="appenders/delegating.html">Delegating Appenders</a>
+  </li>
+</ul>
   </li>
   <li class="nav-item is-current-page" data-depth="2">
     <button class="nav-item-toggle"></button>
@@ -858,6 +879,19 @@ It bundles several predefined event templates modeling popular JSON-based log fo
 </div>
 <div class="paragraph">
 <p>Read more on <a href="json-template-layout.html" class="xref page">JSON Template Layout</a>&#8230;&#8203;</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="MessageLayout"><a class="anchor" href="#MessageLayout"></a>Message Layout</h3>
+<div class="paragraph">
+<p><code>MessageLayout</code> is a special layout that extracts the
+<a href="https://logging.apache.org/log4j/2.x/manual/messages.html"><code>Message</code></a>
+contained in a log event.
+It is currently only useful with the
+<a href="appenders/database.html#JdbcAppender" class="xref page">JDBC Appender</a>.</p>
+</div>
+<div class="paragraph">
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-MessageLayout" class="xref page">&#x1F4D6; Plugin reference for <code>MessageLayout</code></a></p>
 </div>
 </div>
 <div class="sect2">
