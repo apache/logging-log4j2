@@ -100,10 +100,13 @@ final class ExtendedThrowableRenderer extends ThrowableRenderer<ExtendedThrowabl
             // Stack trace elements of a `Throwable` only contain the class name.
             // But we need the associated `Class<?>` to extract its resource information, i.e., JAR file and version.
             // We are capturing the current stack to find suitable class loaders.
-            // We will use this as a bootstrap to go from a class names in a stack trace to a `Class<?>`.
+            // We will use this as a bootstrap to go from a class name in a stack trace to a `Class<?>`.
             final Map<String, ClassResourceInfo> classResourceInfoByName =
                     StackLocatorUtil.getCurrentStackTrace().stream()
-                            .collect(Collectors.toMap(Class::getName, clazz -> new ClassResourceInfo(clazz, true)));
+                            .collect(Collectors.toMap(
+                                    Class::getName,
+                                    clazz -> new ClassResourceInfo(clazz, true),
+                                    (classResourceInfo1, classResourceInfo2) -> classResourceInfo1));
 
             // Walk over the causal chain
             final Set<Throwable> visitedThrowables = new HashSet<>();
