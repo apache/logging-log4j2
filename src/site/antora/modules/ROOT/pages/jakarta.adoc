@@ -73,7 +73,7 @@ an additional **Log4j Web** artifact is provided.
 
 To install Log4j Web in your web application, you need to add it as a runtime dependency:
 
-include::partial$manual/dependencies-log4j-jakarta-web.adoc[]
+include::partial$features/servlet-support.adoc[]
 
 If you are writing a Servlet 3.0 or later application, Apache Log4j Web will register a
 https://jakarta.ee/specifications/servlet/5.0/apidocs/jakarta/servlet/servletcontainerinitializer[`ServletContainerInitializer`]
