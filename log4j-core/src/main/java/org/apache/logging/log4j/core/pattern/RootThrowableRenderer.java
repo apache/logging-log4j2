@@ -27,7 +27,11 @@ final class RootThrowableRenderer extends ThrowableRenderer<ThrowableRenderer.Co
     }
 
     @Override
-    void renderThrowable(StringBuilder buffer, Throwable throwable, Context context, String stackTraceElementSuffix) {
+    void renderThrowable(
+            final StringBuilder buffer,
+            final Throwable throwable,
+            final Context context,
+            final String stackTraceElementSuffix) {
         renderThrowable(buffer, throwable, context, stackTraceElementSuffix, "");
     }
 
@@ -60,11 +64,11 @@ final class RootThrowableRenderer extends ThrowableRenderer<ThrowableRenderer.Co
 
     @Override
     void renderSuppressed(
-            StringBuilder buffer,
-            Throwable[] suppressedThrowables,
-            Context context,
-            String stackTraceElementSuffix,
-            String prefix) {
+            final StringBuilder buffer,
+            final Throwable[] suppressedThrowables,
+            final Context context,
+            final String stackTraceElementSuffix,
+            final String prefix) {
         if (suppressedThrowables != null && suppressedThrowables.length != 0) {
             buffer.append(prefix);
             buffer.append(SUPPRESSED_CAPTION);

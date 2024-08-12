@@ -59,8 +59,7 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
             final StringBuilder buffer,
             final Throwable throwable,
             final C context,
-            final String stackTraceElementSuffix)
-    {
+            final String stackTraceElementSuffix) {
         renderThrowable(buffer, throwable, context, stackTraceElementSuffix, "", "");
     }
 
