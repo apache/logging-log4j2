@@ -1,0 +1,1716 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Rolling file appenders
+:check-mark: &#x2713;
+:x-mark: &#x2717;
+
+Log4j Core provides multiple appenders that allow to archive the current log file and truncate it.
+
+[TIP]
+====
+The rolling file appenders support many configuration options.
+
+If you are just interested in some configuration examples, see the <<recipes>> section.
+====
+
+[#appenders]
+== Appenders
+
+Log4j Core provides two rolling file appenders:
+
+`RollingFile`::
+The `RollingFile` Appender uses
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/io/FileOutputStream.html[`FileOutputStream`]
+to access log files.
+
+`RollingRandomAccessFile`::
+The `RollingRandomAccessFile` Appender uses
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/io/RandomAccessFile.html[`RandomAccessFile`]
+to access log files.
+
+[NOTE]
+====
+Two appenders, even from different logger contexts, share a common
+xref:manual/architecture.adoc#AbstractManager[`RollingFileManager`] if:
+
+* they have the same non-null value of the <<attr-fileName,`fileName` attribute>>.
+* they have no `fileName` attribute, but have the same value of the <<attr-filePattern,`filePattern` attribute>>.
+
+Sharing a `RollingFileManager` guarantees that rollovers will occur only once, but requires most of the remaining configuration parameters to be the same.
+====
+
+[#common-configuration]
+=== Common configuration
+
+[#attributes]
+.Common configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+4+h| Required
+
+| [[attr-filePattern]]filePattern
+| https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[`Path`]
+|
+| The pattern for the archived log files.
+See <<conversion-patterns>> for details
+
+If <<attr-fileName,`fileName`>> is `null`, the file pattern will also be used for the current file.
+
+| [[attr-name]]name
+| `String`
+|
+| The name of the appender.
+
+4+h| Optional
+
+| [[attr-bufferSize]]bufferSize
+| `int`
+| xref:manual/systemproperties.adoc#log4j.gc.encoderByteBufferSize[`8192`]
+a|
+The size of the
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/ByteBuffer.html[`ByteBuffer`]
+internally used by the appender.
+
+See xref:manual/appenders.adoc#buffering[Buffering] for more details.
+
+| [[attr-bufferedIo]]bufferedIo
+| `boolean`
+| `true`
+|
+If set to `true`, Log4j Core will format each log event in an internal buffer, before sending it to the underlying resource.
+
+The `RandomAccessRollingFile` Appender always enables the internal buffer.
+
+See xref:manual/appenders.adoc#buffering[Buffering] for more details.
+
+| [[attr-createOnDemand]]createOnDemand
+| boolean
+| `false`
+|
+The appender creates the file on-demand. The
+appender only creates the file when a log event passes all filters and
+is routed to this appender. Defaults to false.
+
+| [[attr-fileName]]fileName
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[`Path`]
+| `null`
+a| The path to the current log file, can be `null`.
+If the folder containing the file does not exist, it will be created.
+
+[WARNING]
+====
+This attribute should not contain any
+xref:manual/configuration.adoc#lazy-property-substitution[runtime lookups]
+nor pattern converters.
+
+To use pattern converters, see <<attr-filePattern,`filePattern`>>.
+====
+
+| [[attr-filePermissions]]filePermissions
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/PosixFilePermissions.html[`PosixFilePermissions`]
+| `null`
+a|
+If not `null`, it specifies the POSIX file permissions to apply to each created file.
+The permissions must be provided in the format used by
+https://docs.oracle.com/javase/8/docs/api/java/nio/file/attribute/PosixFilePermissions.html#fromString-java.lang.String-[`PosixFilePermissions.fromString()`],
+e.g. `rw-rw----`.
+
+The underlying files system shall support
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[POSIX]
+file attribute view.
+
+| [[attr-fileOwner]]fileOwner
+| `String`
+| `null`
+|
+If not `null`, it specifies the file owner to apply to each created file.
+
+The underlying files system shall support file
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html[owner]
+attribute view.
+
+| [[attr-fileGroup]]fileGroup
+| `String`
+| `null`
+|
+If not `null`, it specifies the file group owner to apply to each created file.
+
+The underlying files system shall support
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[POSIX]
+file attribute view.
+
+| [[attr-ignoreExceptions]]ignoreExceptions
+| `boolean`
+| `true`
+| If `false`, logging exception will be forwarded to the caller of the logging statement.
+Otherwise, they will be ignored.
+
+Logging exceptions are always also logged to the
+{log4j2-url}/manual/status-logger.html[status logger].
+
+| [[attr-immediateFlush]]immediateFlush
+| `boolean`
+| `true`
+|
+If set to `true`, the appender will flush its internal buffer after each event.
+
+See xref:manual/appenders.adoc#buffering[Buffering] for more details.
+
+|===
+
+[#elements]
+.Common nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[element-Filter]]xref:manual/filters.adoc[`Filter`]
+| zero or one
+|
+Allows filtering log events just before they are formatted and sent.
+
+See also xref:manual/filters.adoc#appender-stage[appender filtering stage].
+
+| [[element-Layout]]xref:manual/layouts.adoc[`Layout`]
+| zero or one
+|
+Formats log events.
+
+See xref:manual/layouts.adoc[] for more information.
+
+| [[element-TriggeringPolicy]]<<TriggeringPolicy,`TriggeringPolicy`>>
+| **one**
+|
+Determines when to archive the current log file.
+
+See <<TriggeringPolicy>> for more information.
+
+| [[element-RolloverStrategy]]<<RolloverStrategy,`RolloverStrategy`>>
+| zero or one
+|
+Determines the actions performed during a rollover.
+
+See <<RolloverStrategy>> for more information.
+
+|===
+
+[#conversion-patterns]
+=== Conversion patterns
+
+The `filePattern` attribute accepts the following pattern specifiers:
+
+* xref:manual/configuration.adoc#lazy-property-substitution[runtime lookups], which are evaluated in
+xref:manual/lookups.adoc#global-context[a global context].
+[[conversion-pattern-date]]
+* a `%d++{...}++` pattern, functionally identical to the
+xref:manual/pattern-layout.adoc#converter-date[homonymous `PatternLayout` pattern]
+except it uses the actual or inferred timestamp of the **previous** rollover.
+[[conversion-pattern-integer]]
+* a `%i` pattern that expands to the computed index for the archived file.
+
+All patterns accept also format specifiers, e.g. `%03i` prints the index as zero-padded number with 3 digits.
+
+[TIP]
+====
+The `+$${date:...}+` runtime lookup and `+%d{...}+` conversion pattern are not equivalent:
+
+* `+$${date:...}+` formats the **current** date.
+* `+%d{...}+` formats the date of the **previous** rollover.
+
+Setting the `filePattern` property to
+
+[source]
+----
+$${date:yyyy-MM}/%d{yyyy-MM-dd}.log
+----
+
+will write the `2024-06-30.log` log file into the `2024-07` directory.
+Consider using
+
+[source]
+----
+%d{yyyy-MM}/%d{yyyy-MM-dd}.log
+----
+
+instead.
+====
+
+[#RollingFileAppender]
+=== `RollingFile` configuration
+
+The `RollingFile` Appender provides the following configuration options, beyond the <<common-configuration,common ones>>:
+
+[#RollingFileAppender-attributes]
+.`RollingFile` configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[RollingFileAppender-attr-append]]append
+| `boolean`
+| `true`
+|
+If `true`, the log file will be opened in
+https://docs.oracle.com/javase/8/docs/api/java/nio/file/StandardOpenOption.html#APPEND[`APPEND` mode].
+
+On most systems this guarantees atomic writes to the end of the file, even if the file is opened by multiple applications.
+
+| [[RollingFileAppender-attr-locking]]locking
+| `boolean`
+| `false`
+|
+If `true`, Log4j will lock the log file at **each** log event.
+
+Note that the effects of this setting depend on the Operating System: some systems like most POSIX OSes do not offer mandatory locking, but only advisory file locking.
+
+This setting can also reduce the performance of the appender.
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-RollingFileAppender[{plugin-reference-marker} Plugin reference for `RollingFile`]
+
+[#RollingRandomAccessFileAppender]
+=== `RollingRandomAccessFile` configuration
+
+The `RollingRandomAccessFile` Appender provides the following configuration options, beyond the <<common-configuration,common ones>>:
+
+[#RollingRandomAccessFileAppender-attributes]
+.`RollingRandomAccessFile` configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[RollingRandomAccessFile-attr-append]]append
+| `boolean`
+| `true`
+|
+If `true`, the appender starts writing at the end of the file.
+
+This setting does not give the same atomicity guarantees as for the
+<<RollingFileAppender-attr-append,`RollingFile` Appender>>.
+The log file cannot be opened by multiple applications at the same time.
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-RollingRandomAccessFileAppender[{plugin-reference-marker} Plugin reference for `RollingRandomAccessFile`]
+
+[#TriggeringPolicy]
+== Triggering Policies
+
+Triggering policies are Log4j plugins that implement the
+link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/TriggeringPolicy.html[`TriggeringPolicy`]
+interface and are used to decide when is it time to rollover the current log file.
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-TriggeringPolicy[{plugin-reference-marker} Plugin reference for `TriggeringPolicy`]
+
+[#TriggeringPolicy-common]
+=== Common concerns
+
+Triggering policies usually decide to rollover a file based on two parameters:
+
+* the size of the current file.
++
+[NOTE]
+====
+While all JVMs can reliably check the size of a file, Log4j only checks it at startup and at each rollover and infers all file size changes, based on the size of logs delivered.
+If multiple managers are writing to the same file, the size computation will be off.
+====
+
+* the creation timestamp of the current file.
++
+[IMPORTANT]
+====
+Not all file systems support a creation timestamp.
+Most notably, POSIX does not specify such a timestamp, so the value used by Log4j might depend on the type of filesystem used and the JVM.
+If the creation timestamp is not available, the last modification timestamp is used, which might differ by up to a whole rollover period.
+
+See
+https://docs.oracle.com/javase/8/docs/api/java/nio/file/attribute/BasicFileAttributes.html#creationTime--[`BasicFileAttributes.creationTime()`]
+for more details.
+
+After the first rollover Log4j uses the timestamp of the rollover as creation timestamp.
+====
+
+[#OnStartupTriggeringPolicy]
+=== `OnStartupTriggeringPolicy`
+
+The `OnStartupTriggeringPolicy` policy causes a rollover only once during the lifetime of a JVM.
+A rollover will occur if the log file was created before the start time of the current JVM and the minimum file size is met or exceeded.
+
+[#OnStartupTriggeringPolicy-attributes]
+.`OnStartupTriggeringPolicy` configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[OnStartupTriggeringPolicy-attr-minSize]]minSize
+| `long`
+| `1`
+|
+The minimum size the file must have to roll over.
+
+|===
+
+[NOTE]
+====
+The `OnStartupTriggeringPolicy` uses JMX to retrieve the start time of the JVM.
+
+On platforms where JMX is absent or disabled, like Android or
+https://cloud.google.com/appengine[Google App Engine], the `OnStartupTriggeringPolicy` will use the timestamp, when its class was loaded instead.
+====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-OnStartupTriggeringPolicy[{plugin-reference-marker} Plugin reference for `OnStartupTriggeringPolicy`]
+
+[#CronTriggeringPolicy]
+=== `CronTriggeringPolicy`
+
+The `CronTriggeringPolicy` triggers rollover based on a CRON expression.
+
+[NOTE]
+====
+The
+<<attr-filePattern,`filePattern`>>
+attribute of the Appender should contain a
+<<conversion-pattern-date,`+%d{...}+` timestamp>>, otherwise the target file will be overwritten on each rollover.
+====
+
+[WARNING]
+====
+This policy is controlled by a timer and is asynchronous in processing log events, so it is possible that log events from the previous or next period may appear at the beginning or end of the log file.
+====
+
+[#CronTriggeringPolicy-attributes]
+.`CronTriggeringPolicy` configuration attributes
+[cols="1m,1,2,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[CronTriggeringPolicy-attr-evaluateOnStartup]]evaluateOnStartup
+| boolean
+| `false`
+|
+On startup the cron expression will be evaluated against the current file's creation timestamp.
+If a rollover should have occurred between that time and the current time the file will be immediately rolled over.
+
+| [[CronTriggeringPolicy-attr-schedule]]schedule
+| link:../../javadoc/log4j-core/org/apache/logging/log4j/core/util/CronExpression.html[`CronExpression`]
+| `0 0 0 * * ?`
+a| The cron expression, using the same syntax as the
+https://www.quartz-scheduler.org/[Quartz scheduler].
+
+The supported fields are in order:
+
+* second
+* minute
+* hour
+* day of month
+* month
+* day of week
+
+See
+link:../../javadoc/log4j-core/org/apache/logging/log4j/core/util/CronExpression.html[`CronExpression`]
+for a full specification of the format.
+
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-CronTriggeringPolicy[{plugin-reference-marker} Plugin reference for `CronTriggeringPolicy`]
+
+[#SizeBasedTriggeringPolicy]
+=== `SizeBasedTriggeringPolicy`
+
+The `SizeBasedTriggeringPolicy` causes a rollover once the file has reached the specified size.
+
+The size can be specified in bytes, with the suffix KB, MB, GB, or TB for example `20MB`.
+size.
+The size may also contain a fractional value such as `1.5 MB`.
+The size is evaluated using the Java root Locale so a period must always be used for the fractional unit.
+
+[NOTE]
+====
+When combined with a time-based triggering policy, the
+<<attr-filePattern,`filePattern`>>
+attribute of the Appender should contain an
+<<conversion-pattern-integer,`%i` conversion pattern>>.
+Otherwise, the target file will be overwritten on each rollover.
+====
+
+[#SizeBasedTriggeringPolicy-attributes]
+.`SizeBasedTriggeringPolicy` configuration attributes
+[cols="1m,1,,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[SizeBasedTriggeringPolicy-attr-size]]size
+| link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/FileSize.html[`FileSize`]
+| `10 MB`
+a|
+The maximum file size of the current log file.
+Once this size is reached, a rollover will occur.
+
+The syntax of this attribute is:
+----
+<number> [ " " ] [ <unit> ]
+----
+i.e.:
+
+* a number recognized by
+https://docs.oracle.com/javase/8/docs/api/java/text/NumberFormat.html#getInstance--[`NumberFormat`]
+* followed by optional whitespace
+* followed by an optional unit: `k`, `kB`, `M`, `MB`, `G`, `GB`, `T`, `TB`.
+
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-SizeBasedTriggeringPolicy[{plugin-reference-marker} Plugin reference for `SizeBasedTriggeringPolicy`]
+
+[#TimeBasedTriggeringPolicy]
+=== `TimeBasedTriggeringPolicy`
+
+The `TimeBasedTriggeringPolicy` causes a rollover, when the smallest time unit in `filePattern` changes value.
+So the rollover can occur at the end of a month, week, at midnight, end of the hour, etc.
+
+[NOTE]
+====
+The
+<<attr-filePattern,`filePattern`>>
+attribute of the Appender should contain a
+<<conversion-pattern-date,`+%d{...}+` timestamp>>, otherwise the target file will be overwritten on each rollover.
+
+Multiple `%d` patterns can be used.
+The rollover frequency time unit will be determined by the last `%d` pattern.
+====
+
+[#TimeBasedTriggeringPolicy-attributes]
+.`TimeBasedTriggeringPolicy` configuration attributes
+[cols="1m,1,,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[TimeBasedTriggeringPolicy-attr-interval]]interval
+| `int`
+| `1`
+|
+How often a rollover should occur based on the most
+specific time unit in the last `+%d{...}+` pattern.
+
+| [[TimeBasedTriggeringPolicy-attr-modulate]]modulate
+| `boolean`
+| `false`
+a|
+If `true`, the rollover will be aligned to a boundary of `interval` time units.
+
+For example, if the rotation frequency is hourly with an interval of `4` and the application starts at `3:14`:
+
+`false`::
+Will roll over at `3:00`, `7:00`, `11:00`, `15:00`, `19:00` and `23:00` each day.
+
+`true`::
+Will roll over at `0:00`, `4:00`, `8:00`, `12:00`, `16:00` and `20:00` each day.
+
+Only applies if <<TimeBasedTriggeringPolicy-attr-interval,`interval`>> is greater than `1`.
+
+| [[TimeBasedTriggeringPolicy-attr-maxRandomDelay]]maxRandomDelay
+| `int`
+| `0`
+|
+Indicates the maximum number of seconds to randomly delay a rollover.
+
+This setting is useful on servers where multiple applications are configured to roll over log files at the same time and can spread the load of doing so across time.
+|===
+
+[TIP]
+====
+When the rollover frequency is daily or lower, the rolling file appender will rotate files at midnight of the server's default timezone.
+
+You can modify the time of the rollover by specifying a different timezone in the `%d` pattern.
+See xref:manual/pattern-layout.adoc#converter-date[`date` converter syntax] for more details.
+====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-TimeBasedTriggeringPolicy[{plugin-reference-marker} Plugin reference for `TimeBasedTriggeringPolicy`]
+
+[#Policies]
+=== Multiple policies
+
+A rolling file appender allows only **one** <<element-TriggeringPolicy,nested triggering policy element>>.
+If you wish to use multiple policies, you need to wrap them in a `Policies` element.
+The element itself has no configuration attributes.
+
+[WARNING]
+====
+The effects of using **both** time-based triggering policies (<<CronTriggeringPolicy>> and <<TimeBasedTriggeringPolicy>>) at the same time are undefined.
+====
+
+For example, the following XML fragment defines policies that rollover the log:
+
+* when the JVM starts.
+* when the log size reaches 10 MB.
+* at midnight local time.
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/policies.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/rolling-file/policies.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/policies.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/rolling-file/policies.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/policies.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/rolling-file/policies.yaml[tag=appender]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/policies.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/rolling-file/policies.properties[tag=appender]
+----
+====
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-CompositeTriggeringPolicy[{plugin-reference-marker} Plugin reference for `Policies`]
+
+[#RolloverStrategy]
+== Rollover strategies
+
+A rollover strategy determines how old archive files are rotated or deleted to make place for newer ones.
+The actions performed during a rollover include:
+
+* Renaming files in a cyclic way.
+See <<RolloverStrategy-index>> for more details.
+* Compression of archived log files.
+See <<RolloverStrategy-compress>> for more details.
+* Deletion of old archived log files.
+See <<DeleteAction>> for more details.
+* Changing the POSIX permissions of archived log files.
+See <<PosixViewAttributeAction>> for more details.
+
+There are two different rollover strategies available out of the box:
+
+`DefaultRolloverStrategy`::
+This is the default strategy used if the
+<<attr-fileName,`fileName` configuration attribute>>
+is specified.
+It stores the current log file in the location specified by `fileName` and the archived log files in the location specified by
+<<attr-filePattern,`filePattern`>>.
+
+`DirectWriteRolloverStrategy`::
+This is the default strategy used if the
+<<attr-fileName,`fileName` configuration attribute>>
+is `null`.
+It stores the current log file directly in its rolled over location specified by <<attr-filePattern,`filePattern`>>.
+
+[TIP]
+====
+Using runtime lookups in the `fileName` configuration attribute is discouraged, since it will break the logic of the `DefaultRolloverStrategy`.
+Use the `DirectWriteRolloverStrategy` instead by omitting the `fileName` attribute in your configuration.
+====
+
+[#RolloverStrategy-configuration]
+=== Common configuration
+
+Both rollover strategies support the following configuration parameters:
+
+[#RolloverStrategy-attributes]
+.Common rollover strategy configuration attributes
+[cols="1m,1,,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[RolloverStrategy-attr-compressionLevel]]compressionLevel
+| `int`
+| `7`
+| Determine the compression level of archived log files.
+
+See <<RolloverStrategy-compress>> for more details.
+
+| [[RolloverStrategy-attr-tempCompressedFilePattern]]tempCompressedFilePattern
+| https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[`Path`]
+|
+| Temporary location to store compressed files.
+
+See <<RolloverStrategy-compress>> for more details.
+
+| [[RolloverStrategy-attr-stopCustomActionsOnError]]stopCustomActionsOnError
+| `boolean`
+| `true`
+| If `true`, <<AbstractPathAction,custom actions>> will be stopped if one of them fails.
+|===
+
+[#RolloverStrategy-elements]
+.Common Rollover Strategy nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[element-Action]]link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/Action.html[`Action`]
+| zero or more
+|
+Additional actions to perform on a rollover beyond file rotation and compression.
+
+See <<AbstractPathAction>> for more details.
+|===
+
+[#DefaultRolloverStrategy]
+=== `DefaultRolloverStrategy` configuration
+
+The `DefaultRolloverStrategy` supports additional attributes that control the <<RolloverStrategy-index,incrementation of file indexes>>.
+
+[#DefaultRolloverStrategy-attributes]
+.`DefaultRolloverStrategy` configuration attributes
+[cols="1m,1,,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[DefaultRolloverStrategy-attr-fileIndex]]fileIndex
+| _enumeration_
+| `max`
+a|
+Determines the strategy for determining the value of the <<conversion-pattern-integer,`%i`>> conversion pattern for the current log file.
+
+The supported values are:
+
+<<RolloverStrategy-index-min,`min`>>:: uses the value of the <<DefaultRolloverStrategy-attr-min,`min`>> attribute.
+<<RolloverStrategy-index-max,`max`>>:: uses the first unused integer between the <<DefaultRolloverStrategy-attr-min,`min`>> and <<DefaultRolloverStrategy-attr-max,`max`>> attributes.
+<<RolloverStrategy-index-nomax,`nomax`>>:: uses the first unused integer not lower than the value of the <<DefaultRolloverStrategy-attr-min,`min`>> attribute.
+
+| [[DefaultRolloverStrategy-attr-min]]min
+| `int`
+| `1`
+|
+Minimum value for the <<conversion-pattern-integer,`%i`>> conversion pattern.
+
+| [[DefaultRolloverStrategy-attr-max]]max
+| `int`
+| `7`
+|
+Maximum value for the <<conversion-pattern-integer,`%i`>> conversion pattern.
+
+This attribute is **ignored** if <<DefaultRolloverStrategy-attr-fileIndex,`fileIndex`>> is set to `nomax`.
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-DefaultRolloverStrategy[{plugin-reference-marker} Plugin reference for `DefaultRolloverStrategy`]
+
+[#DirectWriteRolloverStrategy]
+=== `DirectWriteRolloverStrategy` configuration
+
+The `DirectWriteRolloverStrategy` has a reduced set of configuration options for <<RolloverStrategy-index,incrementing the file index>>:
+
+* the minimum file index is always `1`.
+* the incrementing strategy is always <<RolloverStrategy-index-max,`max`>>.
+* the maximum file index can be configured using the following configuration attribute:
++
+[#DirectWriteRolloverStrategy-attributes]
+.`DirectWriteRolloverStrategy` configuration attributes
+[cols="1m,1,,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[DirectWriteRolloverStrategy-attr-maxFiles]]maxFiles
+| `int`
+| `7`
+| Maximum value for the `%i` conversion pattern.
+
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-DirectWriteRolloverStrategy[{plugin-reference-marker} Plugin reference for `DirectWriteRolloverStrategy`]
+
+[#RolloverStrategy-index]
+=== Incrementing file indexes
+
+During a rollover event, the current log file is moved to the location determined by evaluating
+<<attr-filePattern,`filePattern`>>, using <<DefaultRolloverStrategy-attr-min,`min`>> as value for the <<conversion-pattern-integer,`%i` conversion pattern>>.
+If an old log file is already present in that location, the rolling file appender:
+
+. Tries to increment the value of `%i` using the strategy specified by the <<DefaultRolloverStrategy-attr-fileIndex,`fileIndex` configuration attribute>>.
+. If that fails, it removes the oldest log file and rotates the remaining ones to make place for a new log archive.
+
+There are three strategies available:
+
+[#RolloverStrategy-index-min]
+`min`::
+Using the `min` strategy, the **newest** log file will have index `min` and the oldest one will have index `max`.
++
+[NOTE]
+====
+This is the log rotation strategy used by traditional UNIX tools and by Log4j 1.
+It is **not** the default strategy of Log4j 2.
+====
++
+Assuming `min="1"` and `max="3"` the rotation of the log files is represented in the graph below:
++
+[plantuml]
+....
+@startuml
+class "Initial status" as initial {
+  <color:green>app.log</color>
+}
+class "1st rollover" as first {
+  <color:green>app.log</color>
+  app.1.log
+}
+class "2nd rollover" as second {
+  <color:green>app.log</color>
+  app.1.log
+  app.2.log
+}
+class "3rd rollover" as third {
+  <color:green>app.log</color>
+  app.1.log
+  app.2.log
+  app.3.log
+}
+class "4th rollover" as fourth {
+  <color:green>app.log</color>
+  app.1.log
+  app.2.log
+  app.3.log
+}
+
+object "Delete file" as delete
+
+initial::app.log -> first::app.1.log
+
+first::app.log -> second::app.1.log
+first::app.1.log -> second::app.2.log
+
+second::app.log -> third::app.1.log
+second::app.1.log -> third::app.2.log
+second::app.2.log -> third::app.3.log
+
+third::app.log -> fourth::app.1.log
+third::app.1.log -> fourth::app.2.log
+third::app.2.log -> fourth::app.3.log
+third::app.3.log -[#red]-> delete
+@enduml
+....
+
+[#RolloverStrategy-index-max]
+`max`::
+Using the `max` strategy, the **oldest** log file will have index `min` and the newest one will have index `max`.
++
+[NOTE]
+====
+This is the default strategy since Log4j 2.
+====
++
+Assuming `min="1"` and `max="3"` the rotation of the log files is represented in the graph below:
++
+[plantuml]
+....
+@startuml
+class "Initial status" as initial {
+  <color:green>app.log</color>
+}
+class "1st rollover" as first {
+  <color:green>app.log</color>
+  app.1.log
+}
+class "2nd rollover" as second {
+  <color:green>app.log</color>
+  app.1.log
+  app.2.log
+}
+class "3rd rollover" as third {
+  <color:green>app.log</color>
+  app.1.log
+  app.2.log
+  app.3.log
+}
+class "4th rollover" as fourth {
+  <color:green>app.log</color>
+  app.1.log
+  app.2.log
+  app.3.log
+}
+
+object "Delete file" as delete
+
+initial::app.log -> first::app.1.log
+
+first::app.log -> second::app.2.log
+first::app.1.log -> second::app.1.log
+
+second::app.log -> third::app.3.log
+second::app.1.log -> third::app.1.log
+second::app.2.log -> third::app.2.log
+
+third::app.log -> fourth::app.3.log
+third::app.1.log -[#red]-> delete
+third::app.2.log -> fourth::app.1.log
+third::app.3.log -> fourth::app.2.log
+@enduml
+....
+
+[#RolloverStrategy-index-nomax]
+`nomax`::
++
+Using the `nomax` strategy no files will ever be deleted and newer archive files will be assigned increasing index numbers, starting from `min`.
++
+[plantuml]
+....
+@startuml
+class "Initial status" as initial {
+  <color:green>app.log</color>
+}
+class "1st rollover" as first {
+  <color:green>app.log</color>
+  app.1.log
+}
+class "2nd rollover" as second {
+  <color:green>app.log</color>
+  app.1.log
+  app.2.log
+}
+class "3rd rollover" as third {
+  <color:green>app.log</color>
+  app.1.log
+  app.2.log
+  app.3.log
+}
+class "4th rollover" as fourth {
+  <color:green>app.log</color>
+  app.1.log
+  app.2.log
+  app.3.log
+  app.4.log
+}
+
+initial::app.log -> first::app.1.log
+
+first::app.log -> second::app.2.log
+first::app.1.log -> second::app.1.log
+
+second::app.log -> third::app.3.log
+second::app.1.log -> third::app.1.log
+second::app.2.log -> third::app.2.log
+
+third::app.log -> fourth::app.4.log
+third::app.1.log -> fourth::app.1.log
+third::app.2.log -> fourth::app.2.log
+third::app.3.log -> fourth::app.3.log
+@enduml
+....
+
+[#RolloverStrategy-compress]
+=== Compressing archived files
+
+When the current log file is archived, the rolling file appender can compress it.
+Compression is activated, based on the extension of the archived file name.
+The following extensions are recognized:
+
+[cols="1,1,2"]
+|===
+| Extension | Supports `compressionLevel` | Description
+
+
+| [[RolloverStrategy-compress-zip]]`.zip`
+| {check-mark}
+| ZIP archive using the
+https://docs.oracle.com/javase/8/docs/api/java/util/zip/DeflaterOutputStream.html[DEFLATE]
+algorithm
+
+| [[RolloverStrategy-compress-gz]]`.gz`
+| {check-mark}
+| https://docs.oracle.com/javase/8/docs/api/java/util/zip/GZIPOutputStream.html[GZIP] archive using the DEFLATE algorithm
+
+| [[RolloverStrategy-compress-bz2]]`.bz2`<<commons-compress-dep,^dep^>>
+| {x-mark}
+|https://commons.apache.org/proper/commons-compress/apidocs/org/apache/commons/compress/compressors/bzip2/BZip2CompressorOutputStream.html[BZip2] algorithm
+
+| [[RolloverStrategy-compress-deflate]]`.deflate`<<commons-compress-dep,^dep^>>
+| {x-mark}
+| https://commons.apache.org/proper/commons-compress/apidocs/org/apache/commons/compress/compressors/deflate/DeflateCompressorOutputStream.html[DEFLATE] algorithm
+
+| [[RolloverStrategy-compress-pack200]]`.pack200`<<commons-compress-dep,^dep^>>
+| {x-mark}
+| https://commons.apache.org/proper/commons-compress/apidocs/org/apache/commons/compress/compressors/pack200/package-summary.html[Pack200] algorithm
+
+| [[RolloverStrategy-compress-xz]]`.xz` <<commons-compress-dep,^dep^>>
+| {x-mark}
+| https://commons.apache.org/proper/commons-compress/apidocs/org/apache/commons/compress/compressors/xz/package-summary.html[XZ] algorithm
+
+| [[RolloverStrategy-compress-zst]]`.zst` <<commons-compress-dep,^dep^>>
+| {x-mark}
+| https://commons.apache.org/proper/commons-compress/apidocs/org/apache/commons/compress/compressors/zstandard/package-summary.html[ZStandard] algorithm
+
+|===
+
+If the <<RolloverStrategy-attr-tempCompressedFilePattern,`tempCompressedFilePattern`>> attribute is set, the current log file:
+
+* will be compressed and stored in the location given by `tempCompressedFilePattern`
+* and then it will be moved to the location given by <<attr-filePattern,`filePattern`>>.
+
+[[commons-compress-dep]]
+^dep^::
+Additional dependencies are required to use these compression algorithms:
++
+[tabs]
+====
+Maven::
++
+[source,xml,subs=+attributes]
+----
+<dependency>
+  <groupId>org.apache.commons</groupId>
+  <artifactId>commons-compress</artifactId>
+  <version>{commons-compress-version}</version>
+  <scope>runtime</scope>
+</dependency>
+----
+
+Gradle::
++
+[source,groovy,subs=+attributes]
+----
+runtimeOnly 'org.apache.commons:commons-compress:{commons-compress-version}'
+----
+
+====
++
+The `.xz` and `.zst` extensions require **additional** Commons Compress dependencies.
+See
+https://commons.apache.org/proper/commons-compress/index.html[Commons Compress documentation]
+for more details.
+
+[#AbstractPathAction]
+== Optional actions
+
+The rotation of files and compression is **always** handled automatically by the rolling file appenders.
+Since Log4j 2.6, additional actions can be configured manually.
+
+Log4j Core provides out-of-the-box two actions:
+
+* the <<DeleteAction>> to delete old log files after a rollover,
+* the <<PosixViewAttributeAction>> to change the POSIX permissions of old log files.
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-AbstractPathAction[{plugin-reference-marker} Plugin reference for `AbstractPathAction`]
+
+[#AbstractPathAction-config]
+=== Common action configuration
+
+Both actions support the following configuration attributes:
+
+[#AbstractPathAction-attributes]
+.Common action configuration attributes
+[cols="1m,1,,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[AbstractPathAction-attr-basePath]]basePath
+| https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[`Path`]
+|
+|
+It sets the base directory for the action.
+The action will be limited to files in this directory, and all paths will be relative to this directory.
+
+**Required**
+
+| [[AbstractPathAction-attr-followLinks]]followLinks
+| `boolean`
+| `false`
+a|
+If set to `true`, the action will follow symbolic links.
+
+[WARNING]
+====
+Setting this value to `true` will allow the action to access files outside <<AbstractPathAction-attr-basePath,`basePath`>>, which might introduce a security risk.
+====
+
+| [[AbstractPathAction-attr-maxDepth]]maxDepth
+| `int`
+| `1`
+| The maximum number of directory levels to visit.
+By default, the action does not recurse into subdirectories of <<AbstractPathAction-attr-basePath,`basePath`>>.
+
+|===
+
+[#AbstractPathAction-elements]
+.Common action nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[AbstractPathAction-element-PathCondition]]<<PathCondition,`PathCondition`>>
+| zero or more
+| A set of path conditions.
+The action will only be performed on files for which the condition returns `true`.
+
+|===
+
+[#DeleteAction]
+=== `Delete` action
+
+The `Delete` Action deletes old log files that match the configured condition.
+
+[TIP]
+====
+A limited version of this action is performed automatically to <<RolloverStrategy-index,increment file indexes>>.
+
+You only need an explicit `Delete` Action if you use a <<conversion-pattern-date,`%d` pattern>>.
+====
+
+Besides the <<AbstractPathAction-config,common configuration options>> the `Delete` Action also supports the following options:
+
+[#DeleteAction-attributes]
+.`Delete` Action configuration attributes
+[cols="1m,1,,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[DeleteAction-attr-testMode]]testMode
+| `boolean`
+| `false`
+|
+If `true`, no files will be deleted, but a
+{log4j2-url}/manual/status-logger.html[status logger]
+message of level `INFO` will be issued instead.
+
+|===
+
+[#DeleteAction-elements]
+.`Delete` Action nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[DeleteAction-element-PathCondition]]<<PathCondition,`PathCondition`>>
+| zero or more
+|
+If present, the action will only be performed on files for which the condition returns `true`.
+
+**Required**, unless a <<DeleteAction-element-ScriptCondition,`ScriptCondition`>> is provided, in which case these elements are ignored.
+
+| [[DeleteAction-element-PathSorter]]link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathSorter.html[`PathSorter`]
+| zero or one
+|
+Provides a sorting order for files contained in <<AbstractPathAction-attr-basePath,`basePath`>>.
+
+The default implementation is
+link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathSortByModificationTime.html[`PathSortByModificationTime`],
+which sorts files by ascending modification timestamp.
+
+| [[DeleteAction-element-ScriptCondition]]<<ScriptCondition>>
+| zero or one
+| If present, all the <<DeleteAction-element-PathCondition,nested ``PathCondition``s>> are ignored and the provided script is executed to select the file to delete.
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-DeleteAction[{plugin-reference-marker} Plugin reference for `Delete`]
+
+[#PosixViewAttributeAction]
+=== `PosixViewAttribute` action
+
+This action allows modifying the POSIX attributes (owner, group and permissions) of archive log files.
+
+[NOTE]
+====
+By default, the POSIX attributes are inherited from the current log file.
+
+This action is only necessary if archived log files must have different attributes.
+====
+
+Besides the <<AbstractPathAction-config,common configuration options>> the `PosixViewAttribute` Action also supports the following options.
+
+[#PosixViewAttributeAction-attributes]
+.`PosixViewAttribute` Action configuration attributes
+[cols="1m,1,,5"]
+|===
+| Attribute | Type | Default value | Description
+
+
+| [[PosixViewAttributeAction-attr-filePermissions]]filePermissions
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/PosixFilePermissions.html[`PosixFilePermissions`]
+| `null`
+a|
+If not `null`, it specifies the POSIX file permissions to apply to each created file.
+The permissions must be provided in the format used by
+https://docs.oracle.com/javase/8/docs/api/java/nio/file/attribute/PosixFilePermissions.html#fromString-java.lang.String-[`PosixFilePermissions.fromString()`],
+e.g. `rw-rw----`.
+
+The underlying files system shall support
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[POSIX]
+file attribute view.
+
+| [[PosixViewAttributeAction-attr-fileOwner]]fileOwner
+| `String`
+| `null`
+|
+If not `null`, it specifies the file owner to apply to each created file.
+
+The underlying files system shall support file
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html[owner]
+attribute view.
+
+| [[PosixViewAttributeAction-attr-fileGroup]]fileGroup
+| `String`
+| `null`
+|
+If not `null`, it specifies the file group owner to apply to each created file.
+
+The underlying files system shall support
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[POSIX]
+file attribute view.
+
+|===
+
+[#PosixViewAttributeAction-elements]
+.`PosixViewAttribute` Action nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[PosixViewAttributeAction-element-PathCondition]]<<PathCondition,`PathCondition`>>
+| one or more
+|
+A set of conditions to select the files to modify.
+
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-PosixViewAttributeAction[{plugin-reference-marker} Plugin reference for `PosixViewAttribute`]
+
+[#PathCondition]
+=== Path conditions
+
+To select the files for additional actions, Log4j provides the following path conditions:
+
+[#IfAccumulatedFileSize]
+==== `IfAccumulatedFileSize`
+
+When evaluated on a list of files, this condition sums the size of each file with the size of the preceding files.
+It returns `true` for files that exceed a configurable threshold.
+
+[IMPORTANT]
+====
+The result of this condition depends on the sorting order on files.
+See <<DeleteAction-element-PathSorter,`PathSorter`>> for more information.
+====
+
+[#IfAccumulatedFileSize-attributes]
+.`IfAccumulatedFileSize` configuration attributes
+[cols="1m,1,,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[IfAccumulatedFileSize-attr-exceeds]]exceeds
+| link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/FileSize.html[`FileSize`]
+|
+|
+The threshold size for the condition to match.
+
+Admits the same syntax as the <<SizeBasedTriggeringPolicy-attr-size,`size` attribute of `SizeBasedTriggeringPolicy`>>.
+
+**Required**
+
+|===
+
+.`IfAccumulatedFileSize` nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[IfAccumulatedFileSize-element-PathCondition]]<<PathCondition,`PathCondition`>>
+| zero or more
+| A set of optional nested conditions.
+This condition matches only if **all** the nested conditions also match.
+
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfAccumulatedFileSize[{plugin-reference-marker} Plugin reference for `IfAccumulatedFileSize`]
+
+[#IfAccumulatedFileCount]
+==== `IfAccumulatedFileCount`
+
+When evaluated on a list of files, this condition returns `true` if the 1-based index of a file exceeds a configurable threshold.
+
+[IMPORTANT]
+====
+The result of this condition depends on the sorting order on files.
+See <<DeleteAction-element-PathSorter,`PathSorter`>> for more information.
+====
+
+[#IfAccumulatedFileCount-attributes]
+.`IfAccumulatedFileCount` configuration attributes
+[cols="1m,1,,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[IfAccumulatedFileCount-attr-exceeds]]exceeds
+| `int`
+|
+|
+The threshold for the condition to match.
+
+**Required**
+
+|===
+
+.`IfAccumulatedFileCount` nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[IfAccumulatedFileCount-element-PathCondition]]<<PathCondition,`PathCondition`>>
+| zero or more
+| A set of optional nested conditions.
+This condition matches only if **all** the nested conditions also match.
+
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfAccumulatedFileCount[{plugin-reference-marker} Plugin reference for `IfAccumulatedFileCount`]
+
+[#IfFileName]
+==== `IfFileName`
+
+Matches files based on their path **relative** to the base directory.
+
+[#IfFileName-attributes]
+.`IfFileName` configuration attributes
+[cols="1m,1,,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[IfFileName-attr-glob]]glob
+| String
+|
+|
+Matches the path relative to the base directory using a `glob` pattern.
+
+See
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)[`FileSystem.getPathMatcher()`]
+for the supported `glob` syntax.
+
+**Required**, unless <<IfFileName-attr-regex,`regex`>> is specified.
+
+| [[IfFileName-attr-regex]]regex
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/regex/Pattern.html[`Pattern`]
+|
+|
+Matches the path relative to the directory using a regular expression.
+
+See
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/regex/Pattern.html[`Pattern`]
+for the supported regular expression syntax.
+
+**Required**, unless <<IfFileName-attr-glob,`glob`>> is specified.
+|===
+
+.`IfFileName` nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[IfFileName-element-PathCondition]]<<PathCondition,`PathCondition`>>
+| zero or more
+| A set of optional nested conditions.
+This condition matches only if **all** the nested conditions also match.
+
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfFileName[{plugin-reference-marker} Plugin reference for `IfFileName`]
+
+[#IfLastModified]
+==== `IfLastModified`
+
+Accepts files based on their last modification timestamp.
+
+[#IfLastModified-attributes]
+.`IfLastModified` configuration attributes
+[cols="1m,1,,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[IfLastModified-attr-age]]age
+| link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/Duration.html[`Duration`]
+|
+| The condition accepts files that are as old or older than the specified duration.
+
+**Required**
+|===
+
+.`IfLastModified` nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[IfLastModified-element-PathCondition]]<<PathCondition,`PathCondition`>>
+| zero or more
+| A set of optional nested conditions.
+This condition matches only if **all** the nested conditions also match.
+
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfLastModified[{plugin-reference-marker} Plugin reference for `IfLastModified`]
+
+[#IfNot]
+==== `IfNot`
+
+Negates the result of the nested condition.
+
+.`IfNot` nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[IfNot-element-PathCondition]]<<PathCondition,`PathCondition`>>
+| **one**
+| The path condition to negate.
+
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfNot[{plugin-reference-marker} Plugin reference for `IfNot`]
+
+[#IfAll]
+==== `IfAll`
+
+Accepts a file if all the nested conditions are true.
+
+.`IfAll` nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[IfAll-element-PathCondition]]<<PathCondition,`PathCondition`>>
+| one or more
+| The nested conditions to check.
+
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfAll[{plugin-reference-marker} Plugin reference for `IfAll`]
+
+[#IfAny]
+==== `IfAny`
+
+.`IfAny` nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[IfAny-element-PathCondition]]<<PathCondition,`PathCondition`>>
+| one or more
+| The nested conditions to check.
+
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-IfAny[{plugin-reference-marker} Plugin reference for `IfAny`]
+
+[#ScriptCondition]
+=== `ScriptCondition`
+
+The `ScriptCondition` uses a JSR 223 script to determine a list of matching files.
+
+Its configuration consists of a single nested script element:
+
+.`ScriptCondition` nested elements
+[cols="3,1,4"]
+|===
+| Type | Multiplicity | Description
+
+|
+xref:manual/scripts.adoc#Script[`Script`],
+xref:manual/scripts.adoc#ScriptFile[`ScriptFile`]
+or
+xref:manual/scripts.adoc#ScriptRef[`ScriptRef`]
+| **one**
+| A reference to the script to execute.
+
+See xref:manual/scripts.adoc[Scripts] for more details about scripting.
+|===
+
+The script must return a list of
+link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathWithAttributes.html[`PathWithAttributes`]
+objects and supports the following bindings:
+
+[#ScriptFilter-bindings]
+.Script Bindings
+[cols="1m,1,4"]
+|===
+| Binding name | Type | Description
+
+| [[ScriptFilter-binding-basePath]]basePath
+| https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[`Path`]
+| The path of the base directory.
+
+| [[ScriptFilter-binding-configuration]]configuration
+| xref:manual/configuration.adoc[`Configuration`]
+|
+The `Configuration` object.
+
+| [[ScriptFilter-binding-pathList]]pathList
+| link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathWithAttributes.html[`List<PathWithAttributes>`]
+|
+The list of files contained in the base directory.
+
+The paths are obtained by
+https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html#resolve-java.nio.file.Path-[resolving]
+the relative file names against
+<<ScriptFilter-binding-basePath,`basePath`>>.
+
+| [[ScriptFilter-binding-substitutor]]substitutor
+| link:../../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrSubstitutor.html[`StrSubstitutor`]
+| The `StrSubstitutor` used to replace lookup variables.
+
+| [[ScriptFilter-binding-statusLogger]]statusLogger
+| link:../../javadoc/log4j-core/org/apache/logging/log4j/core/Logger.html[`Logger`]
+| The
+{log4j2-url}/manual/status-logger.html[status logger]
+to be used by diagnostic messages in the script.
+
+| <key>
+| `String`
+| If `<key>` is not one of the above, it will be bound to the value given by
+xref:manual/configuration.adoc#property-substitution[the global `Properties` configuration element.]
+
+|===
+
+For an example of `ScriptCondition` usage, see the <<using-script-condition>> example below.
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-ScriptCondition[{plugin-reference-marker} Plugin reference for `ScriptCondition`]
+
+[#recipes]
+== Configuration recipes
+
+[#logrotate-daily]
+=== `logrotate` equivalent configuration
+
+https://github.com/logrotate/logrotate[`Logrotate`] is a common UNIX utility that rotates log files.
+
+Since a Java application cannot be notified that the log files need to be reloaded `logrotate` can be used with Java application through its `copytruncate` option (see
+https://man7.org/linux/man-pages/man8/logrotate.8.html[`logrotate(8)` man page]).
+A sample `logrotate` configuration file might therefore look like:
+
+[source]
+----
+/var/log/app.log {
+  copytruncate
+  compress
+  rotate 15
+  daily
+  maxsize 100k
+}
+----
+
+This configuration has a problem, which is explained in the documentation of the `copytruncate` option:
+
+[quote]
+Note that there is a very small time slice between copying the file and truncating it, so some logging data might be lost.
+
+Fortunately you can replace the usage of `logrotate` with a rolling file appender.
+An equivalent configuration will look like this:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/logrotate.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/rolling-file/logrotate.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/logrotate.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/rolling-file/logrotate.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/logrotate.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/rolling-file/logrotate.yaml[tag=appender]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/logrotate.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/rolling-file/logrotate.properties[tag=appender]
+----
+====
+
+<1> Equivalent to `compress`: archived files are compressed.
+<2> Equivalent to `rotate 15`: only the `15` latest log files are kept.
+<3> Equivalent to `daily`: logs will be rotated at midnight of each day.
+<4> Equivalent to `maxsize 100k`: logs will be rotated if they exceed 100 kB of size.
+
+[#timestamped]
+=== Timestamped log file names
+
+The following configuration creates one log file every day and deletes those more than 15 days old.
+
+[NOTE]
+====
+Since we have a `%d` pattern in the configuration file, we need to use an explicit <<DeleteAction>>.
+====
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/timestamped.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/rolling-file/timestamped.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/timestamped.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/rolling-file/timestamped.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/timestamped.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/rolling-file/timestamped.yaml[tag=appender]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/timestamped.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/rolling-file/timestamped.properties[tag=appender]
+----
+====
+
+<1> Only the `filePattern` attribute is used, since we use the <<DirectWriteRolloverStrategy,`DirectWriteRolloverStrategy`>>.
+<2> An explicit `Delete` action is provided.
+<3> You can select the files to delete using a regular expression or a simpler `app.*.log.gz` glob pattern.
+
+[#using-script-condition]
+=== Using `ScriptCondition`
+
+If the supplied <<PathCondition,path conditions>> are not sufficient, you can use a <<ScriptCondition>> with an arbitrary script.
+
+The <<timestamped,example above>> can be rewritten into the following Groovy script:
+
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/script-condition.groovy[`script-condition.groovy`]
+[source,groovy]
+----
+include::example$manual/appenders/rolling-file/script-condition.groovy[tag=script]
+----
+
+<1> Adding
+{log4j2-url}/manual/status-logger.html[status logger]
+calls in your script might help in debugging it.
+<2> link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathWithAttributes.html#getPath()[`PathWithAttributes.getPath()`]
+always starts with `basePath`, so we need to relativize it.
+<3> Equivalent to the <<IfLastModified>> condition.
+<4> Equivalent to the <<IfFileName>> condition.
+
+You can use the script in your configuration file as follows:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/script-condition.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/rolling-file/script-condition.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/script-condition.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/rolling-file/script-condition.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/script-condition.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/rolling-file/script-condition.yaml[tag=appender]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/script-condition.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/rolling-file/script-condition.properties[tag=appender]
+----
+====
+
+[#per-month]
+=== Separate folder per month
+
+We can also create separate folders for temporarily related files.
+In the example below, we create a different folder for each month:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/per-month.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/rolling-file/per-month.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/per-month.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/rolling-file/per-month.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/per-month.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/rolling-file/per-month.yaml[tag=appender]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/rolling-file/per-month.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/rolling-file/per-month.properties[tag=appender]
+----
+====
+
+<1> We use two `%d` patterns to specify the folder and file name.
+<2> We increase the recursion depth of the `Delete` action to extend to subfolders of the base directory.
