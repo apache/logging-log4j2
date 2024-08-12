@@ -26,7 +26,6 @@
 * xref:manual/api.adoc[API]
 ** xref:manual/api.adoc#loggers[Loggers]
 *** xref:manual/eventlogging.adoc[]
-*** xref:manual/resource-logger.adoc[]
 *** xref:manual/simple-logger.adoc[]
 *** xref:manual/status-logger.adoc[]
 ** xref:manual/logbuilder.adoc[]
