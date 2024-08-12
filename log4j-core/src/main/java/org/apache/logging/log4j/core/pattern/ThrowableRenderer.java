@@ -27,8 +27,8 @@ import org.apache.logging.log4j.util.Strings;
 class ThrowableRenderer<C extends ThrowableRenderer.Context> {
 
     private static final String CAUSED_BY_CAPTION = "Caused by: ";
+
     private static final String SUPPRESSED_CAPTION = "Suppressed: ";
-    static final String TAB = "\t";
 
     final List<String> ignoredPackageNames;
 
@@ -67,7 +67,7 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
         renderThrowableMessage(buffer, throwable);
         buffer.append(lineSeparator);
         renderStackTraceElements(buffer, throwable, context, prefix, stackTraceElementSuffix);
-        renderSuppressed(buffer, throwable.getSuppressed(), context, stackTraceElementSuffix, prefix + TAB);
+        renderSuppressed(buffer, throwable.getSuppressed(), context, stackTraceElementSuffix, prefix + '\t');
         renderCause(buffer, throwable.getCause(), context, stackTraceElementSuffix, prefix);
     }
 

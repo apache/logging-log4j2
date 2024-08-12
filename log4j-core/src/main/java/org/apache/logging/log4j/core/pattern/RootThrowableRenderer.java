@@ -40,7 +40,7 @@ final class RootThrowableRenderer extends ThrowableRenderer<ThrowableRenderer.Co
         renderThrowableMessage(buffer, throwable);
         buffer.append(lineSeparator);
         renderStackTraceElements(buffer, throwable, context, prefix, stackTraceElementSuffix);
-        renderSuppressed(buffer, throwable.getSuppressed(), context, stackTraceElementSuffix, prefix + TAB);
+        renderSuppressed(buffer, throwable.getSuppressed(), context, stackTraceElementSuffix, prefix + '\t');
     }
 
     @Override
