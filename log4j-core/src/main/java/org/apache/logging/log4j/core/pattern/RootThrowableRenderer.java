@@ -27,16 +27,17 @@ final class RootThrowableRenderer extends ThrowableRenderer<ThrowableRenderer.Co
     }
 
     @Override
-    void renderThrowable(
+    void renderThrowable(StringBuilder buffer, Throwable throwable, Context context, String stackTraceElementSuffix) {
+        renderThrowable(buffer, throwable, context, stackTraceElementSuffix, "");
+    }
+
+    private void renderThrowable(
             final StringBuilder buffer,
             final Throwable throwable,
             final Context context,
             final String stackTraceElementSuffix,
-            final String prefix,
-            final String caption) {
+            final String prefix) {
         renderCause(buffer, throwable.getCause(), context, stackTraceElementSuffix, prefix);
-        buffer.append(prefix);
-        buffer.append(caption);
         renderThrowableMessage(buffer, throwable);
         buffer.append(lineSeparator);
         renderStackTraceElements(buffer, throwable, context, prefix, stackTraceElementSuffix);
@@ -51,8 +52,25 @@ final class RootThrowableRenderer extends ThrowableRenderer<ThrowableRenderer.Co
             final String stackTraceElementSuffix,
             final String prefix) {
         if (cause != null) {
-            renderThrowable(buffer, cause, context, stackTraceElementSuffix, prefix, "");
+            renderThrowable(buffer, cause, context, stackTraceElementSuffix, prefix);
+            buffer.append(prefix);
             buffer.append(WRAPPED_BY_CAPTION);
+        }
+    }
+
+    @Override
+    void renderSuppressed(
+            StringBuilder buffer,
+            Throwable[] suppressedThrowables,
+            Context context,
+            String stackTraceElementSuffix,
+            String prefix) {
+        if (suppressedThrowables != null && suppressedThrowables.length != 0) {
+            buffer.append(prefix);
+            buffer.append(SUPPRESSED_CAPTION);
+            for (final Throwable suppressedThrowable : suppressedThrowables) {
+                renderThrowable(buffer, suppressedThrowable, context, stackTraceElementSuffix, prefix);
+            }
         }
     }
 }

@@ -28,7 +28,7 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
 
     private static final String CAUSED_BY_CAPTION = "Caused by: ";
 
-    private static final String SUPPRESSED_CAPTION = "Suppressed: ";
+    static final String SUPPRESSED_CAPTION = "Suppressed: ";
 
     final List<String> ignoredPackageNames;
 
@@ -45,7 +45,7 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
     final void renderThrowable(
             final StringBuilder buffer, final Throwable throwable, final String stackTraceElementSuffix) {
         C context = createContext(throwable);
-        renderThrowable(buffer, throwable, context, stackTraceElementSuffix, "", "");
+        renderThrowable(buffer, throwable, context, stackTraceElementSuffix);
         StringBuilders.truncateAfterDelimiter(buffer, lineSeparator, maxLineCount);
     }
 
@@ -56,6 +56,15 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
     }
 
     void renderThrowable(
+            final StringBuilder buffer,
+            final Throwable throwable,
+            final C context,
+            final String stackTraceElementSuffix)
+    {
+        renderThrowable(buffer, throwable, context, stackTraceElementSuffix, "", "");
+    }
+
+    private void renderThrowable(
             final StringBuilder buffer,
             final Throwable throwable,
             final C context,
@@ -71,7 +80,7 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
         renderCause(buffer, throwable.getCause(), context, stackTraceElementSuffix, prefix);
     }
 
-    final void renderSuppressed(
+    void renderSuppressed(
             final StringBuilder buffer,
             final Throwable[] suppressedThrowables,
             final C context,
