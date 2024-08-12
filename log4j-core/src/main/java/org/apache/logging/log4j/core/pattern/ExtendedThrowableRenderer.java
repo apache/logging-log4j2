@@ -62,6 +62,7 @@ final class ExtendedThrowableRenderer extends ThrowableRenderer<ExtendedThrowabl
                     buffer, context.ignoredStackTraceElementCount, prefix, lineSeparator);
             context.ignoredStackTraceElementCount = 0;
         }
+        buffer.append(prefix);
         buffer.append("\tat ");
         buffer.append(stackTraceElement.toString());
         final ClassResourceInfo classResourceInfo =
