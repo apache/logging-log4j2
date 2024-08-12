@@ -241,10 +241,13 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
                     final Set<Throwable> visitedThrowables,
                     final Throwable parentThrowable,
                     final Throwable throwable) {
+
+                // Populate metadata of the current throwable
                 final StackTraceElement[] rootTrace = parentThrowable == null ? null : parentThrowable.getStackTrace();
                 final Metadata metadata = populateMetadata(rootTrace, throwable.getStackTrace());
                 metadataByThrowable.put(throwable, metadata);
 
+                // Populate metadata of suppressed exceptions
                 for (final Throwable suppressed : throwable.getSuppressed()) {
                     if (!visitedThrowables.contains(suppressed)) {
                         visitedThrowables.add(suppressed);
@@ -252,6 +255,7 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
                     }
                 }
 
+                // Populate metadata of the causal chain
                 final Throwable cause = throwable.getCause();
                 if (cause != null && !visitedThrowables.contains(cause)) {
                     visitedThrowables.add(cause);
