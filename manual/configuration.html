@@ -510,39 +510,49 @@ That is, for instance, XML file format will be checked last, as a fallback.</p>
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_1_maven" class="tab">
-<p>Maven</p>
+<li id="_tabs_1_log4j2_xml" class="tab">
+<p>log4j2.xml</p>
 </li>
-<li id="_tabs_1_gradle" class="tab">
-<p>Gradle</p>
+<li id="_tabs_1_log4j2_json" class="tab">
+<p>log4j2.json</p>
+</li>
+<li id="_tabs_1_log4j2_yaml" class="tab">
+<p>log4j2.yaml</p>
+</li>
+<li id="_tabs_1_log4j2_properties" class="tab">
+<p>log4j2.properties</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_1_maven--panel" class="tabpanel" aria-labelledby="_tabs_1_maven">
+<div id="_tabs_1_log4j2_xml--panel" class="tabpanel" aria-labelledby="_tabs_1_log4j2_xml">
+<div class="paragraph">
+<p>JPMS users need to add:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">module foo.bar {
+    requires java.xml;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>to their <code>module-info.java</code> descriptor.</p>
+</div>
+</div>
+<div id="_tabs_1_log4j2_json--panel" class="tabpanel" aria-labelledby="_tabs_1_log4j2_json">
 <div id="_tabs_2" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_2_xml" class="tab">
-<p>XML</p>
+<li id="_tabs_2_maven" class="tab">
+<p>Maven</p>
 </li>
-<li id="_tabs_2_json" class="tab">
-<p>JSON</p>
-</li>
-<li id="_tabs_2_yaml" class="tab">
-<p>YAML</p>
-</li>
-<li id="_tabs_2_properties" class="tab">
-<p>Properties</p>
+<li id="_tabs_2_gradle" class="tab">
+<p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_2_xml--panel" class="tabpanel" aria-labelledby="_tabs_2_xml">
-<div class="paragraph">
-<p>No dependency required.</p>
-</div>
-</div>
-<div id="_tabs_2_json--panel" class="tabpanel" aria-labelledby="_tabs_2_json">
+<div id="_tabs_2_maven--panel" class="tabpanel" aria-labelledby="_tabs_2_maven">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
@@ -554,7 +564,30 @@ That is, for instance, XML file format will be checked last, as a fallback.</p>
 </div>
 </div>
 </div>
-<div id="_tabs_2_yaml--panel" class="tabpanel" aria-labelledby="_tabs_2_yaml">
+<div id="_tabs_2_gradle--panel" class="tabpanel" aria-labelledby="_tabs_2_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.core:jackson-databind:2.17.2'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="_tabs_1_log4j2_yaml--panel" class="tabpanel" aria-labelledby="_tabs_1_log4j2_yaml">
+<div id="_tabs_3" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_3_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_3_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_3_maven--panel" class="tabpanel" aria-labelledby="_tabs_3_maven">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
@@ -566,58 +599,19 @@ That is, for instance, XML file format will be checked last, as a fallback.</p>
 </div>
 </div>
 </div>
-<div id="_tabs_2_properties--panel" class="tabpanel" aria-labelledby="_tabs_2_properties">
-<div class="paragraph">
-<p>No dependency required.</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div id="_tabs_1_gradle--panel" class="tabpanel" aria-labelledby="_tabs_1_gradle">
-<div id="_tabs_3" class="openblock tabs is-sync is-loading">
-<div class="content">
-<div class="ulist tablist">
-<ul>
-<li id="_tabs_3_xml" class="tab">
-<p>XML</p>
-</li>
-<li id="_tabs_3_json" class="tab">
-<p>JSON</p>
-</li>
-<li id="_tabs_3_yaml" class="tab">
-<p>YAML</p>
-</li>
-<li id="_tabs_3_properties" class="tab">
-<p>Properties</p>
-</li>
-</ul>
-</div>
-<div id="_tabs_3_xml--panel" class="tabpanel" aria-labelledby="_tabs_3_xml">
-<div class="paragraph">
-<p>No dependency required.</p>
-</div>
-</div>
-<div id="_tabs_3_json--panel" class="tabpanel" aria-labelledby="_tabs_3_json">
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.core:jackson-databind:2.17.2'</code></pre>
-</div>
-</div>
-</div>
-<div id="_tabs_3_yaml--panel" class="tabpanel" aria-labelledby="_tabs_3_yaml">
+<div id="_tabs_3_gradle--panel" class="tabpanel" aria-labelledby="_tabs_3_gradle">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.17.2'</code></pre>
 </div>
 </div>
 </div>
-<div id="_tabs_3_properties--panel" class="tabpanel" aria-labelledby="_tabs_3_properties">
+</div>
+</div>
+</div>
+<div id="_tabs_1_log4j2_properties--panel" class="tabpanel" aria-labelledby="_tabs_1_log4j2_properties">
 <div class="paragraph">
 <p>No dependency required.</p>
-</div>
-</div>
-</div>
 </div>
 </div>
 </div>

@@ -1293,39 +1293,49 @@ rootLogger.appenderRef.0.ref = CONSOLE</code></pre>
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_13_maven" class="tab">
-<p>Maven</p>
+<li id="_tabs_13_log4j2_xml" class="tab">
+<p>log4j2.xml</p>
 </li>
-<li id="_tabs_13_gradle" class="tab">
-<p>Gradle</p>
+<li id="_tabs_13_log4j2_json" class="tab">
+<p>log4j2.json</p>
+</li>
+<li id="_tabs_13_log4j2_yaml" class="tab">
+<p>log4j2.yaml</p>
+</li>
+<li id="_tabs_13_log4j2_properties" class="tab">
+<p>log4j2.properties</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_13_maven--panel" class="tabpanel" aria-labelledby="_tabs_13_maven">
+<div id="_tabs_13_log4j2_xml--panel" class="tabpanel" aria-labelledby="_tabs_13_log4j2_xml">
+<div class="paragraph">
+<p>JPMS users need to add:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">module foo.bar {
+    requires java.xml;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>to their <code>module-info.java</code> descriptor.</p>
+</div>
+</div>
+<div id="_tabs_13_log4j2_json--panel" class="tabpanel" aria-labelledby="_tabs_13_log4j2_json">
 <div id="_tabs_14" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_14_xml" class="tab">
-<p>XML</p>
+<li id="_tabs_14_maven" class="tab">
+<p>Maven</p>
 </li>
-<li id="_tabs_14_json" class="tab">
-<p>JSON</p>
-</li>
-<li id="_tabs_14_yaml" class="tab">
-<p>YAML</p>
-</li>
-<li id="_tabs_14_properties" class="tab">
-<p>Properties</p>
+<li id="_tabs_14_gradle" class="tab">
+<p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_14_xml--panel" class="tabpanel" aria-labelledby="_tabs_14_xml">
-<div class="paragraph">
-<p>No dependency required.</p>
-</div>
-</div>
-<div id="_tabs_14_json--panel" class="tabpanel" aria-labelledby="_tabs_14_json">
+<div id="_tabs_14_maven--panel" class="tabpanel" aria-labelledby="_tabs_14_maven">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
@@ -1337,7 +1347,30 @@ rootLogger.appenderRef.0.ref = CONSOLE</code></pre>
 </div>
 </div>
 </div>
-<div id="_tabs_14_yaml--panel" class="tabpanel" aria-labelledby="_tabs_14_yaml">
+<div id="_tabs_14_gradle--panel" class="tabpanel" aria-labelledby="_tabs_14_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.core:jackson-databind:2.17.2'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="_tabs_13_log4j2_yaml--panel" class="tabpanel" aria-labelledby="_tabs_13_log4j2_yaml">
+<div id="_tabs_15" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_15_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_15_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_15_maven--panel" class="tabpanel" aria-labelledby="_tabs_15_maven">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
@@ -1349,58 +1382,19 @@ rootLogger.appenderRef.0.ref = CONSOLE</code></pre>
 </div>
 </div>
 </div>
-<div id="_tabs_14_properties--panel" class="tabpanel" aria-labelledby="_tabs_14_properties">
-<div class="paragraph">
-<p>No dependency required.</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div id="_tabs_13_gradle--panel" class="tabpanel" aria-labelledby="_tabs_13_gradle">
-<div id="_tabs_15" class="openblock tabs is-sync is-loading">
-<div class="content">
-<div class="ulist tablist">
-<ul>
-<li id="_tabs_15_xml" class="tab">
-<p>XML</p>
-</li>
-<li id="_tabs_15_json" class="tab">
-<p>JSON</p>
-</li>
-<li id="_tabs_15_yaml" class="tab">
-<p>YAML</p>
-</li>
-<li id="_tabs_15_properties" class="tab">
-<p>Properties</p>
-</li>
-</ul>
-</div>
-<div id="_tabs_15_xml--panel" class="tabpanel" aria-labelledby="_tabs_15_xml">
-<div class="paragraph">
-<p>No dependency required.</p>
-</div>
-</div>
-<div id="_tabs_15_json--panel" class="tabpanel" aria-labelledby="_tabs_15_json">
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.core:jackson-databind:2.17.2'</code></pre>
-</div>
-</div>
-</div>
-<div id="_tabs_15_yaml--panel" class="tabpanel" aria-labelledby="_tabs_15_yaml">
+<div id="_tabs_15_gradle--panel" class="tabpanel" aria-labelledby="_tabs_15_gradle">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.17.2'</code></pre>
 </div>
 </div>
 </div>
-<div id="_tabs_15_properties--panel" class="tabpanel" aria-labelledby="_tabs_15_properties">
+</div>
+</div>
+</div>
+<div id="_tabs_13_log4j2_properties--panel" class="tabpanel" aria-labelledby="_tabs_13_log4j2_properties">
 <div class="paragraph">
 <p>No dependency required.</p>
-</div>
-</div>
-</div>
 </div>
 </div>
 </div>
