@@ -115,8 +115,7 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
             renderStackTraceElement(buffer, stackTraceElements[i], context, prefix, stackTraceElementSuffix);
         }
         if (context.ignoredStackTraceElementCount > 0) {
-            renderSuppressedCount(
-                    buffer, context.ignoredStackTraceElementCount, prefix, lineSeparator);
+            renderSuppressedCount(buffer, context.ignoredStackTraceElementCount, prefix, lineSeparator);
         }
         if (metadata.commonElementCount != 0) {
             buffer.append(prefix);
@@ -144,8 +143,7 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
 
         // Render the stack trace element
         if (context.ignoredStackTraceElementCount > 0) {
-            renderSuppressedCount(
-                    buffer, context.ignoredStackTraceElementCount, prefix, lineSeparator);
+            renderSuppressedCount(buffer, context.ignoredStackTraceElementCount, prefix, lineSeparator);
             context.ignoredStackTraceElementCount = 0;
         }
         buffer.append(prefix);

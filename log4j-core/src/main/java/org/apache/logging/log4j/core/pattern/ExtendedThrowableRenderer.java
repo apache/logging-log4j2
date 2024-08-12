@@ -58,8 +58,7 @@ final class ExtendedThrowableRenderer extends ThrowableRenderer<ExtendedThrowabl
 
         // Render the stack trace element
         if (context.ignoredStackTraceElementCount > 0) {
-            renderSuppressedCount(
-                    buffer, context.ignoredStackTraceElementCount, prefix, lineSeparator);
+            renderSuppressedCount(buffer, context.ignoredStackTraceElementCount, prefix, lineSeparator);
             context.ignoredStackTraceElementCount = 0;
         }
         buffer.append(prefix);
