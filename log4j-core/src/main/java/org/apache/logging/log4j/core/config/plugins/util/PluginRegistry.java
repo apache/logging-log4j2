@@ -158,8 +158,8 @@ public class PluginRegistry {
         final PluginCache cache = new PluginCache();
         try {
             final Enumeration<URL> resources = loader.getResources(PluginProcessor.PLUGIN_CACHE_FILE);
-            if (resources == null) {
-                LOGGER.info("Plugin preloads not available from class loader {}", loader);
+            if (!resources.hasMoreElements()) {
+                LOGGER.debug("Plugin descriptors not available from class loader {}", loader);
             } else {
                 cache.loadCacheFiles(resources);
             }
@@ -191,12 +191,9 @@ public class PluginRegistry {
         final int numPlugins = pluginCount;
         LOGGER.debug(() -> {
             final long endTime = System.nanoTime();
-            final StringBuilder sb = new StringBuilder("Took ");
             final DecimalFormat numFormat = new DecimalFormat("#0.000000");
-            sb.append(numFormat.format((endTime - startTime) * 1e-9));
-            sb.append(" seconds to load ").append(numPlugins);
-            sb.append(" plugins from ").append(loader);
-            return sb.toString();
+            return "Took " + numFormat.format((endTime - startTime) * 1e-9) + " seconds to load " + numPlugins
+                    + " plugins from " + loader;
         });
         return newPluginsByCategory;
     }

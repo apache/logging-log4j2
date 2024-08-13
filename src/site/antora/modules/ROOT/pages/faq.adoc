@@ -214,3 +214,116 @@ When you are using Log4j with ProGuard/R8 enabled, you need to add the following
 ----
 -keep,allowoptimization class org.apache.logging.log4j.** { *; }
 ----
+
+[#package-scanning]
+== Why am I receiving warnings about package scanning?
+
+Since Log4j 2.19.1, the package scanning feature has been deprecated (see
+https://issues.apache.org/jira/browse/LOG4J2-3644[LOG4J2-3644]):
+
+* You should remove the `packages` attribute from your
+xref:manual/configuration.adoc[Log4j Core configuration files].
+* You should remove any calls to
+link:javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/util/PluginManager.html#addPackage(java.lang.String)[PluginManager.addPackage()]
+and
+link:javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/util/PluginManager.html#addPackages(java.util.Collection)[PluginManager.addPackages()]
+from your code.
+
+Package scanning has been replaced with Log4j plugin descriptors, which have been available since version 2.0 and widely used by Log4j extension JARs.
+
+If you are developing custom plugins, see xref:manual/plugins.adoc#plugin-registry[Plugin registration] on details about plugin descriptors.
+
+[#plugin-descriptors]
+== Why am I receiving warnings about missing plugin descriptors?
+
+xref:manual/plugins.adoc[Log4j Plugins]
+should be registered in a:
+
+[source]
+----
+META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat
+----
+
+file on the classpath of the Java applications.
+
+Starting with Log4j version `2.24.0`, you will receive a warning if a plugin is not registered properly.
+The common causes for improperly registered plugins are:
+
+* One of the xref:components.adoc[Log4j artifacts] might be corrupted.
+If you are using a single-JAR application, this might be caused by an improper shading configuration.
+See <<shading>> on how to properly shade Log4j artifacts.
+* A custom Log4j plugin has not been properly registered.
+See xref:manual/plugins.adoc#plugin-registry[Registering plugins] for more details.
+
+[#single-jar]
+== How do I create a single-JAR application containing Log4j Core?
+
+There are two ways to create single-JAR applications: you can create
+<<jar-in-jar,JAR-in-JAR executable packages>>
+or
+<<shading,shaded JARs>>.
+See the sections below on how to properly use these techniques with Log4j Core.
+
+[#jar-in-jar]
+=== Jar-in-Jar
+
+The easiest and recommended way to create single-JAR applications containing Log4j Core is to include **unmodified** versions of Log4j artifacts inside the JAR file of your application.
+You can do it with the following build tool plugins:
+
+* https://docs.spring.io/spring-boot/maven-plugin/packaging.html[Spring Boot Maven Plugin],
+* https://docs.spring.io/spring-boot/gradle-plugin/packaging.html[Spring Boot Gradle Plugin],
+* https://github.com/sbt/sbt-onejar[sbt-onejar plugin].
+
+[#shading]
+=== Shading/Shadowing
+
+The shading process unwraps all the files contained in dependency JARs and copies them to the JAR containing the application.
+Since multiple JARs can contain files with the same name, you need to properly resolve the file naming conflicts that arise.
+
+If your application uses Log4j Core, the following conflicts must be resolved:
+
+.Click to list the possible file name conflicts
+[%collapsible]
+====
+`module-info.class`::
+If you are writing a JPMS application, you need to propertly merge these files.
+Otherwise, they should be discarded.
+
+`META-INF/MANIFEST.MF`::
++
+If you are writing a Java SE application, you only need to add:
++
+[source,manifest]
+----
+Multi-Release: true
+----
++
+to your application manifest.
++
+If you are writing an OSGi application, you need to properly merge the OSGi headers.
+
+`META-INF/DEPENDENCIES`::
+`META-INF/LICENSE`::
+`META-INF/NOTICE`::
+Ask your legal department on how to handle these files.
+
+`META-INF/services/*`::
+These files contain
+https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html[`ServiceLoader` descriptors].
+You need to properly merge them by concatenating conflicting files.
+
+`META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat`::
+These files contain Log4j plugin descriptors and need to be properly merged using the appropriate resource transformer for your shading plugin:
+
+https://maven.apache.org/plugins/maven-assembly-plugin/[Maven Assembly Plugin]:::
+https://github.com/sbt/sbt-assembly[SBT Assembly Plugin]:::
+We are not aware of any resource transformers capable of merging Log4j plugin descriptors.
+
+https://maven.apache.org/plugins/maven-shade-plugin/[Maven Shade Plugin]:::
+You need to use the
+https://logging.staged.apache.org/log4j/transform/log4j-transform-maven-shade-plugin-extensions.html#log4j-plugin-cache-transformer[Log4j Plugin Descriptor Transformer].
+
+https://gradleup.com/shadow/[Gradle Shadow Plugin]:::
+You need to use the
+https://github.com/GradleUp/shadow/blob/main/src/main/groovy/com/github/jengelman/gradle/plugins/shadow/transformers/Log4j2PluginsCacheFileTransformer.groovy[`Log4j2PluginsCacheFileTransformer`].
+====
