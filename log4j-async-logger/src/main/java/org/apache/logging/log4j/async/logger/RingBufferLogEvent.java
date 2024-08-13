@@ -120,9 +120,7 @@ public class RingBufferLogEvent implements ReusableLogEvent, ReusableMessage, Ch
         this.marker = aMarker;
         this.fqcn = theFqcn;
         this.location = aLocation;
-        if (mutableContextData != null) {
-            this.contextData = mutableContextData;
-        }
+        this.contextData = mutableContextData;
         this.contextStack = aContextStack;
         this.asyncLogger = anAsyncLogger;
         this.populated = true;

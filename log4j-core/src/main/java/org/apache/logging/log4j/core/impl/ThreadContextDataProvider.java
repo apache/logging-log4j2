@@ -21,6 +21,7 @@ import aQute.bnd.annotation.spi.ServiceProvider;
 import java.util.Map;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.util.ContextDataProvider;
+import org.apache.logging.log4j.util.StringMap;
 
 /**
  * ContextDataProvider for ThreadContext data.
@@ -29,22 +30,12 @@ import org.apache.logging.log4j.core.util.ContextDataProvider;
 public class ThreadContextDataProvider implements ContextDataProvider {
 
     @Override
-    public String get(String key) {
-        return ThreadContext.get(key);
-    }
-
-    @Override
     public Map<String, String> supplyContextData() {
         return ThreadContext.getImmutableContext();
     }
 
     @Override
-    public int size() {
-        return ThreadContext.getContext().size();
-    }
-
-    @Override
-    public void addAll(Map<String, String> map) {
-        map.putAll(ThreadContext.getContext());
+    public StringMap supplyStringMap() {
+        return ThreadContext.getThreadContextMap().getReadOnlyContextData();
     }
 }
