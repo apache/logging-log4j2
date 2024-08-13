@@ -28,8 +28,8 @@ import java.util.Objects;
 
 /**
  * Utility class for working with Java {@link Type}s and derivatives. This class is adapted heavily from the
- * <a href="http://projects.spring.io/spring-framework/">Spring Framework</a>, specifically the
- * <a href="http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/util/TypeUtils.html">TypeUtils</a>
+ * <a href="https://spring.io/projects/spring-framework/">Spring Framework</a>, specifically the
+ * <a href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/util/TypeUtils.html">TypeUtils</a>
  * class.
  *
  * @see java.lang.reflect.Type

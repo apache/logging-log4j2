@@ -21,7 +21,7 @@
 <#if release.date?has_content>Release date:: ${release.date}</#if>
 
 :cyclonedx-sbom-link: https://cyclonedx.org/capabilities/sbom/[CycloneDX Software Bill of Materials (SBOM)]
-:cyclonedx-vdr-link: https://cyclonedx.org/capabilities/vdr[CycloneDX Vulnerability Disclosure Report (VDR)]
+:cyclonedx-vdr-link: https://cyclonedx.org/capabilities/vdr/[CycloneDX Vulnerability Disclosure Report (VDR)]
 
 This releases provides a {cyclonedx-sbom-link} along with each artifact and contains bug fixes addressing issues in the JPMS & OSGi infrastructure overhauled in `2.21.0`, dependency updates, and some other minor fixes and improvements.
 
@@ -33,6 +33,8 @@ Generated SBOMs are attached as artifacts with `cyclonedx` classifier and XML ex
 They contain `vulnerability-assertion` references to a {cyclonedx-vdr-link} that Apache Logging Services uses for all projects it maintains.
 This VDR is accessible through the following URL: https://logging.apache.org/cyclonedx/vdr.xml[]
 
-SBOM generation is streamlined by `logging-parent`, see https://logging.apache.org/logging-parent/latest/#cyclonedx-sbom[its website] for details.
+SBOM generation is streamlined by `logging-parent`, see
+https://logging.apache.org/logging-parent/features.html#cyclonedx-sbom[its website]
+for details.
 
 <#include "../.changelog.adoc.ftl">

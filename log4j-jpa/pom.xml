@@ -32,6 +32,7 @@
   <description>Apache Log4j Java Persistence API Appender.</description>
 
   <properties>
+    <maven.javadoc.skip>false</maven.javadoc.skip>
 
     <!--
       ~ OSGi and JPMS options

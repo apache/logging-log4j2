@@ -1,0 +1,33 @@
+{
+  "Configuration": {
+    "Appenders": {
+      // tag::appender[]
+      "RollingFile": {
+        "name": "FILE",
+        "fileName": "/var/log/app.log",
+        "filePattern": "/var/log/app.log.%i.gz", // <1>
+        "JsonTemplateLayout": {},
+        "DefaultRolloverStrategy": {
+          "max": 15 // <2>
+        },
+        "Policies": {
+          "CronTriggeringPolicy": {
+            "schedule": "0 0 0 * * ?" // <3>
+          },
+          "SizeBasedTriggeringPolicy": {
+            "size": "100k" // <4>
+          }
+        }
+      }
+      // end::appender[]
+    },
+    "Loggers": {
+      "Root": {
+        "level": "INFO",
+        "AppenderRef": {
+          "ref": "FILE"
+        }
+      }
+    }
+  }
+}

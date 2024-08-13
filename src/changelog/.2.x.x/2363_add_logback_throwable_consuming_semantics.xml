@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="https://logging.apache.org/xml/ns"
+       xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="added">
+  <issue id="2363" link="https://github.com/apache/logging-log4j2/issues/2363"/>
+  <description format="asciidoc">
+    Add Logback throwable-consuming semantics as an option in `log4j-slf4j-impl` and `log4j-slf4j2-impl`.
+    Users can enable it by setting the property `log4j2.messageFactory` to `org.apache.logging.slf4j.message.ThrowableConsumingMessageFactory`.
+  </description>
+</entry>

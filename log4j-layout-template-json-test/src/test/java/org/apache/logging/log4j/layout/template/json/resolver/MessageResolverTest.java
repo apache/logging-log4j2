@@ -37,6 +37,7 @@ import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
 import org.apache.logging.log4j.layout.template.json.util.JsonReader;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MultiformatMessage;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StringMapMessage;
@@ -203,7 +204,7 @@ class MessageResolverTest {
     }
 
     @Test
-    void test_custom_Message() {
+    void test_MultiformatMessage() {
 
         // Create the event template
         final String eventTemplate = writeJson(asMap("$resolver", "message"));
@@ -216,7 +217,7 @@ class MessageResolverTest {
 
         // Create the log event with a `TestMessage`
         final LogEvent logEvent = Log4jLogEvent.newBuilder()
-                .setMessage(new TestMessage())
+                .setMessage(new TestMultiformatMessage())
                 .setTimeMillis(System.currentTimeMillis())
                 .build();
 
@@ -225,7 +226,7 @@ class MessageResolverTest {
                 .isEqualTo("bar"));
     }
 
-    private static final class TestMessage implements Message {
+    private static final class TestMultiformatMessage implements MultiformatMessage {
 
         @Override
         public String getFormattedMessage() {
@@ -233,8 +234,16 @@ class MessageResolverTest {
         }
 
         @Override
-        public String getFormat() {
-            return "JSON";
+        public String[] getFormats() {
+            return new String[] {"JSON"};
+        }
+
+        @Override
+        public String getFormattedMessage(final String[] formats) {
+            if (formats.length != 1 || !"JSON".equals(formats[0])) {
+                throw new UnsupportedOperationException();
+            }
+            return getFormattedMessage();
         }
 
         @Override

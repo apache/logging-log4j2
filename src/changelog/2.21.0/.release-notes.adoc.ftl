@@ -21,14 +21,18 @@
 <#if release.date?has_content>Release date:: ${release.date}</#if>
 
 This release primarily focuses on enhancements to our OSGi and JPMS support and contains several bug fixes.
-It will be the first release built and signed by the CI using the https://keyserver.ubuntu.com/pks/lookup?search=077E8893A6DCC33DD4A4D5B256E73BA9A0B592D0&op=index[ASF Logging Services Release Manager GPG key], which is shared in https://www.apache.org/dist/logging/KEYS[KEYS].
+It will be the first release built and signed by the CI using the
+https://keyserver.ubuntu.com/pks/lookup?search=077E8893A6DCC33DD4A4D5B256E73BA9A0B592D0&op=index[ASF Logging Services Release Manager GPG key],
+which is shared in
+https://downloads.apache.org/logging/KEYS[KEYS].
 
 The Log4j 2.21.0 API, as well as the other artifacts, maintains binary compatibility with the previous release.
 
 Apache Log4j 2.21.0 requires Java 8 to run.
 The build requires JDK 11 and generates reproducible binaries.
 
-For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, get support, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, get support, or suggestions for improvement, see
+https://logging.apache.org/log4j/2.x/index.html[the Apache Log4j 2 website].
 
 === OSGi changes
 

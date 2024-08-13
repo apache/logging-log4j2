@@ -1,0 +1,24 @@
+{
+  "Configuration": {
+    "Appenders": {
+      "Console": {
+        "name": "CONSOLE",
+        "JsonTemplateLayout": {}
+      }
+    },
+    "Loggers": {
+      "Root": {
+        "level": "ALL",
+        "AppenderRef": {
+          "ref": "CONSOLE"
+        }
+      }
+    },
+    // tag::filter[]
+    "MutableContextMapFilter": {
+      "configLocation": "https://server.example/configs.json",
+      "pollInterval": 10
+    }
+    // end::filter[]
+  }
+}

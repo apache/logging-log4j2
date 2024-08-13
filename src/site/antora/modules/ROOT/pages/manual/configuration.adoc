@@ -17,100 +17,97 @@
 [#configuration-file]
 = Configuration file
 
-Users can configure Log4j Core using different file formats.
-The `log4j-core` artifact includes XML, JSON, YAML, and Java properties formats factories. 
+Using a configuration file is the most popular and recommended approach for configuring Log4j Core.
+In this page we will examine the composition of a configuration file and how Log4j Core uses it.
 
-As detailed in the table below, some configuration formats require additional dependencies on the classpath.
-
-include::partial$configuration-file-format-deps.adoc[]
-
-[WARNING]
+[TIP]
 ====
-The format of the configuration file changed between Log4j{nbsp}1 and Log4j{nbsp}2.
-Files in the Log4j{nbsp}1 format are ignored by default.
-
-To enable partial support for old configuration formats, see xref:manual/migration.adoc#ConfigurationCompatibility[configuration compatibility].
+If you are looking for a quick start on using Log4j in your application or library, please refer to xref:manual/getting-started.adoc[] instead.
 ====
 
 [id=automatic-configuration]
 == [[AutomaticConfiguration]] Configuration file location
 
-Upon initialization of a new logger context, Log4j assigns it a context name and scans the following **classpath** locations for a configuration file:
+Upon initialization of a new xref:manual/architecture.adoc#LoggerContext[logger context, the anchor of the logging implementation], Log4j Core assigns it a context name and scans the following **classpath** locations for a configuration file in following order:
 
 . Files named `log4j2-test<contextName>.<extension>`
-. Files named `log4j2-test.<extension>`,
+. Files named `log4j2-test.<extension>`
 . Files named `log4j2<contextName>.<extension>`
-. Files named `log4j2.<extension>`,
-. If no configuration file is found, Log4j uses the
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/DefaultConfiguration.html[`DefaultConfiguration`]
-and the xref:manual/status-logger.adoc[status logger] prints a warning.
-The default configuration prints all messages less specific than
-xref:manual/systemproperties.adoc#log4j2.level[`log4j2.level`]
-to the console.
-
-[WARNING]
-====
-The configuration files prefixed by `log4j2-test` should only be used on the test classpath.
-
-If multiple configuration files in the same category are found, Log4j uses a deterministic order to choose one of them (see
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Order.html[`@Order`]).
-
-Nevertheless:
-
-* If you're developing an app, don't use config files with different extensions.
-* If you're developing a library, only add config files to your test classpath.
-====
+. Files named `log4j2.<extension>`
 
 The `<contextName>` and `<extension>` placeholders above have the following meaning
 
-<contextName>:: depends on the runtime environment in which Log4j runs:
-
-* for standalone Java SE applications, it is a random identifier,
-* for web applications, it is derived from the application descriptor.
-See xref:manual/webapp.adoc#configuration[Log4j
- Web application configuration] for more details.
-
-<extension>:: must be one of the file extensions assigned to a configuration file format:
+<contextName>::
+A name derived from the runtime environment:
 +
-[cols="1,1"]
+* For standalone Java SE applications, it is a random identifier.
+* For web applications, it is an identifier derived from the application descriptor.
+See xref:jakarta.adoc#configuration[Log4j Web application configuration] for details.
+
+<extension>::
+A file extension supported by a `ConfigurationFactory`.
+The order in which an extension will be searched for first depends on the order of the associated `ConfigurationFactory`.
+See <<configuration-factories>> for details.
+
+If no configuration file is found, Log4j Core uses the link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/DefaultConfiguration.html[`DefaultConfiguration`] and the xref:manual/status-logger.adoc[status logger] prints a warning.
+The default configuration prints all messages less severe than xref:manual/systemproperties.adoc#log4j2.level[`log4j2.level`] to the console.
+
+You can override the location of the configuration file
+using the xref:manual/systemproperties.adoc#log4j2.configurationFile[`log4j2.configurationFile`
+system property].
+In such a case, Log4j Core will guess the configuration file format from the provided file name,
+or use the default configuration factory if the extension is unknown.
+
+There are certain *best-practices* we strongly recommend you to adapt in your Log4j configuration:
+
+* Files prefixed by `log4j2-test` should only be used on the test classpath.
+* If you are developing an application, don't use multiple Log4j configuration files with same name, but different extensions.
+That is, don't provide both `log4j2.xml` and `log4j2.json` files.
+* If you are developing a library, only add configuration files to your test classpath.
+
+[#configuration-factories]
+=== Predefined ``ConfigurationFactory`` plugins
+
+Log4j Core uses plugins extending from link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html[`ConfigurationFactory`] to determine which configuration file extensions are supported, in which order, and how to read them.
+How this works under the hood and how you can introduce your custom implementations is explained in <<ConfigurationFactory>>.
+
+.Supported configuration file formats by predefined `ConfigurationFactory` plugins
+[%header,cols="1,1m,1"]
 |===
-| Configuration file format | Extension
-
-| XML
-| `xml`
-
-| JSON
-| `json` or `jsn`
-
-| YAML
-| `yaml` or `yml`
-
-|Java properties
-| `properties`
+| File format | Extension | Order
+| XML | xml | 5
+| JSON | json, jsn | 6
+| YAML | yaml, yml | 7
+| Properties | properties | 8
 |===
 
-[NOTE]
-====
-It is also possible to override the location of the configuration file using the
-xref:manual/systemproperties.adoc#log4j2.configurationFile[`log4j2.configurationFile`]
-configuration property.
-In this case, Log4j will guess the configuration file format from the provided configuration file extension or use the default configuration factory if the extension is unknown.
+Note that `ConfigurationFactory` plugins will be employed in descending order.
+That is, for instance, XML file format will be checked last, as a fallback.
 
-See xref:manual/systemproperties.adoc#log4j2.configurationFile[`log4j2.configurationFile`] for details.
-====
+Some `ConfigurationFactory` plugins require additional dependencies on the classpath:
+
+include::partial$configuration-file-format-deps.adoc[]
 
 [id=configuration-syntax]
 == [[ConfigurationSyntax]] Syntax
 
+[NOTE]
+====
+Starting with Log4j 2, the configuration file syntax has been considered part of the public API and has remained stable across significant version upgrades.
+====
+
+[WARNING]
+====
+The syntax of the configuration file changed between Log4j{nbsp}1 and Log4j{nbsp}2.
+Files in the Log4j{nbsp}1 syntax are ignored by default.
+To enable partial support for old configuration syntax, see xref:migrate-from-log4j1.adoc#ConfigurationCompatibility[configuration compatibility].
+====
+
 The Log4j runtime is composed of xref:manual/plugins.adoc[plugins], which are like beans in the Spring Framework and Java EE.
 Appenders, layouts, filters, configuration loaders, and similar components are all accessed as plugins.
 
-All configuration files are represented internally as a tree of
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Node.html[`Node`]s,
-which is translated into a tree of Log4j plugins.
-The tree's root creates a
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html[`Configuration`]
-object.
+All configuration files are represented internally as a tree of link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Node.html[`Node`]s, which is translated into a tree of Log4j plugins.
+The tree's root creates a link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html[`Configuration`] object.
 
 A node is a relatively simple structure representing a single Log4j plugin (see xref:plugin-reference.adoc[] for a complete list), such as an appender, layout, or logger configuration.
 
@@ -139,7 +136,7 @@ Since XML was the original configuration format developed, the mapping from conf
 +
 [NOTE]
 ====
-There is an alternative XML configuration format called "XML strict format" that is activated 
+There is an alternative XML configuration format called "XML strict format" that is activated
 by setting the `strict` attribute of the main `<Configuration>` element to `true`.
 It allows users to use any tag names as long as they provide the plugin type using a `type` property.
 
@@ -247,7 +244,7 @@ We will cover them while <<configuring-loggers, configuring loggers>>.
 [[Appenders]] Appenders::
 xref:manual/appenders.adoc[] are the exit point of the logging pipeline.
 They decide which resource (console, file, database, or similar) the log event is sent to.
-In the examples of this chapter, we will only use the xref:manual/appenders.adoc#consoleappender[console appender] and the xref:manual/appenders.adoc#fileappender[file appender].
+In the examples of this chapter, we will only use the xref:manual/appenders.adoc#ConsoleAppender[console appender] and the xref:manual/appenders/file.adoc[file appender].
 
 Layouts::
 xref:manual/layouts.adoc[] tell appenders how to format the log event: text, JSON, XML, or similar.
@@ -289,11 +286,12 @@ Properties::
 include::example$manual/configuration/main-elements.properties[lines=17..-1]
 ----
 ====
+
 <1> Configures a console appender named `CONSOLE` with a pattern layout.
 <2> Configures a file appender named `MAIN` with a JSON template layout.
 <3> Configures a file appender named `DEBUG_LOG` with a pattern layout.
 <4> Configures the root logger at level `INFO` and connects it to the `CONSOLE` and `MAIN` appenders.
-The `CONSOLE` appender will only log messages less specific than `WARN`.
+The `CONSOLE` appender will only log messages at least as severe as `WARN`.
 <5> Configures a logger named `"org.example"` at level `DEBUG` and connects it to the `DEBUG_LOG` appender.
 The logger is configured to forward messages to its parent (the root appender).
 
@@ -340,12 +338,14 @@ Log4j allows the configuration of custom log-level names.
 +
 See xref:manual/customloglevels.adoc[Custom log level configuration] for details.
 
+[#global-filters]
 Filters::
 +
 Users can add Components to loggers, appender references, appenders, or the global configuration object to provide additional filtering of log events.
 +
 See xref:manual/filters.adoc[Filter configuration] for details.
 
+[#global-properties]
 Properties::
 +
 Represent a set of reusable configuration values for property substitution.
@@ -409,11 +409,6 @@ Overrides the logging level of xref:manual/status-logger.adoc[].
 Since version `2.24.0`, this attribute is deprecated and should be replaced with the xref:manual/status-logger.adoc#log4j2.statusLoggerLevel[log4j2.statusLoggerLevel] configuration property instead.
 ====
 
-[id=configuration-elements-filters]
-=== Filters
-
-See xref:manual/filters.adoc#filters[Filters] for additional filtering capabilities that can be applied to the global configuration object.
-
 [id=configuring-loggers]
 == [[Loggers]] Loggers
 
@@ -441,7 +436,7 @@ Other logger configurations are optional.
 Every
 link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html[`Logger`]
 in your application is assigned to one of these logger configurations (see
-xref:manual/architecture.adoc#loggerconfig[architecture]), which determines the events that will be logged and those that won't.
+xref:manual/architecture.adoc#LoggerConfig[architecture]), which determines the events that will be logged and those that won't.
 
 Let's start with an example of logger configuration:
 
@@ -577,8 +572,8 @@ xref:manual/architecture.adoc#logger-hierarchy[parent logger],
 for `Logger` and `AsyncLogger`.
 |===
 
-Specifies the level threshold that a log event must have to be logged.
-Log events that are more specific than this setting will be filtered out.
+It specifies the level threshold that a log event must have to be logged.
+Log events that are less severe than this setting will be filtered out.
 
 See also xref:manual/filters.adoc#filters[Filters] if you require additional filtering.
 
@@ -625,8 +620,8 @@ Loggers can emit additional context data that will be integrated with other cont
 ====
 The `value` of each property is subject to <<property-substitution,property substitution>> twice:
 
-* when the configuration is loaded,
-* each time a log event is generated.
+* when the configuration is loaded, it is evaluated in the xref:manual/lookups.adoc#global-context[global context].
+* each time a log event is generated, it is evaluated in the xref:manual/lookups.adoc#event-context[context of the event].
 
 Therefore, if you wish to insert a value that changes in time, you must double the `$` sign, as shown in the example below.
 ====
@@ -698,8 +693,8 @@ Specifies the name of the appender to use.
 | Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[`Level`]
 |===
 
-Specifies the level threshold that a log event must have to be logged.
-Log events that are more specific than this setting will be filtered out.
+It specifies the level threshold that a log event must have to be logged.
+Log events that are less severe than this setting will be filtered out.
 
 [id=appenderrefs-elements-filters]
 === Filters
@@ -778,8 +773,8 @@ If `name` starts with a hyphen `-` (e.g. `-variable`), it must be escaped with a
 +
 The most common lookup prefixes are:
 +
-* `sys` for Java system properties (see xref:manual/lookups.adoc#system-properties-lookup[System Properties lookup]),
-* `env` for environment variables (see xref:manual/lookups.adoc#environment-lookup[Environment lookup]).
+* `sys` for Java system properties (see xref:manual/lookups.adoc#SystemPropertiesLookup[System Properties lookup]),
+* `env` for environment variables (see xref:manual/lookups.adoc#EnvironmentLookup[Environment lookup]).
 
 The above expansions have a version with an additional `default` value that is **expanded** if the lookup fails:
 
@@ -816,6 +811,7 @@ The same rule applies to the `name` parameter: if it contains a `${` sequence, i
 =====
 
 If your configuration file contains the following definitions:
+
 [tabs]
 ====
 XML::
@@ -868,9 +864,8 @@ and the OS environment variable `FOO` has a value of `environment`, Log4j will e
 [WARNING]
 =====
 For security reasons, if the **expansion** of a `${...}` expression contains other expressions, these will **not** be expanded.
-The only exception to this rule is the expansion of properties in the `Properties` container.
 
-Properties defined in the `Properties` container can depend on each other.
+Properties defined in the `Properties` container, however, can depend on each other.
 If your configuration contains, for example:
 
 [tabs]
@@ -914,26 +909,45 @@ Therefore, the value of the `logging.file` property will be:
 =====
 
 [id=lazy-property-substitution]
-=== Lazy property substitution
+=== Runtime property substitution
 
-For most attributes, property substitution is performed only once at **configuration time**, but there are two categories of exceptions to this rule:
+For most attributes, property substitution is performed only once at **configuration time**,
+but there are exceptions to this rule: some attributes are **also** evaluated when a component-specific event occurs.
 
-* Some attributes are **also** evaluated when a component-specific event occurs.
-For example
-<<logger-elements-properties,additional context properties>>
-and the `pattern` attribute of the example below are evaluated at each log event, while the `filePattern` attribute of a
-xref:manual/appenders.adoc#rollingfileappender[rolling file appender]
-is evaluated at each rollover.
-+
 In this case:
 
-** If you want property substitution to happen only once, use one dollar sign, e.g., `${date:HH:mm:ss}`.
-** If you want property substitution to happen at each cyclic event, you use two dollar signs, e.g., `$${date:HH:mm:ss}`
+** If you want property substitution to happen at configuration time, use one dollar sign, e.g., `${date:HH:mm:ss}`.
+** If you want property substitution to happen at runtime, you use two dollar signs, e.g., `$${date:HH:mm:ss}`
 
-* Other components defer the evaluation of their child components.
-In this case, you only need one dollar `$` sign.
-+
-This case happens for the children of the `Route` element below:
+The list of attributes that support runtime property substitution is:
+
+* The `value` attribute of <<logger-elements-properties,nested `Property` elements>> of a logger configuration.
+* The
+xref:manual/pattern-layout.adoc#plugin-attr-pattern[`pattern`] attribute of the xref:manual/pattern-layout.adoc[].
+This attribute evaluates lookups in the xref:manual/lookups.adoc#event-context[context of the current log event].
+* Event template attributes of xref:manual/json-template-layout.adoc[].
+See xref:manual/json-template-layout.adoc#property-substitution-in-template[property substitution in JSON Template Layout]
+for more details.
+* The appender attributes listed in xref:manual/appenders.adoc#runtime-evaluation[runtime property substitution in appenders].
+
+[WARNING]
+====
+Certain lookups might behave differently when they are expanded at runtime.
+See xref:manual/lookups.adoc#evaluation-contexts[lookup evaluation contexts] for details.
+====
+
+[NOTE]
+====
+The
+xref:manual/appenders/delegating.adoc#Routes[`Route`] component of the
+xref:manual/appenders/delegating.adoc#RoutingAppender[Routing Appender]
+is a different case altogether.
+The attributes of its children are expanded at runtime, but are not expanded at configuration time.
+
+Inside the `Route` component you **should not** use escaped `$$+{...}+` expressions, but only unescaped `$+{...}+` expressions.
+====
+
+The complete spectrum of behaviors concerning runtime property substitution is given by the routing appender example below:
 
 [tabs]
 ====
@@ -970,9 +984,9 @@ include::example$manual/configuration/routing.properties[tag=appender]
 ----
 ====
 
-<1> The `pattern` attribute is evaluated at configuration time and also each time a log event is routed.
+<1> The `pattern` attribute is evaluated at configuration time, and also each time a log event is routed.
 Therefore, the dollar `$` sign needs to be escaped.
-<2> All the attributes inside the `File` element have a **deferred** evaluation, therefore they need only one `$` sign.
+<2> All the attributes of children of the `Route` element have a **deferred** evaluation. Therefore, they need only one `$` sign.
 
 [id=arbiters]
 == [[Arbiters]] Arbiters
@@ -1072,44 +1086,22 @@ Properties::
 include::example$manual/configuration/arbiters-select.properties[tag=select]
 ----
 ====
+
 <1> If the Java system property `env` has a value of `dev`, a Pattern Layout will be used.
 <2> Otherwise, a JSON Template Layout will be used.
 
 [#CompositeConfiguration]
-== Composite Configuration
+== Composite configuration
 
-Log4j allows multiple configuration files to be used at the same time by specifying them as a list of comma-separated file paths or URLs in the
-xref:manual/systemproperties.adoc#log4j2.configurationFile[`log4j2.configurationFile`]
-configuration property.
+include::partial$manual/composite-configuration.adoc[tag=intro]
 
-These configuration files are merged into a single configuration file using
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy.html[`MergeStrategy`]
-service that can be customized using the
-xref:manual/systemproperties.adoc#log4j2.mergeStrategy[`log4j2.mergeStrategy`]
-configuration property.
+You can provide a list of comma-separated file paths or URLs in xref:manual/systemproperties.adoc#log4j2.configurationFile[the `log4j2.configurationFile` configuration property], where each resource will get read into a `Configuration`, and then eventually combined into a single one using link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/CompositeConfiguration.html[`CompositeConfiguration`].
 
-The default merge strategy will merge the files using the following rules:
-
-. <<global-configuration-attributes>> in later configurations replace those in previous configurations.
-+
-The exception is the `monitorInterval` attribute: the lowest positive value from all the configuration files will be used.
-
-. <<property-substitution,Properties>> from all configurations are aggregated.
-Duplicate properties replace those in previous configurations.
-
-. xref:manual/filters.adoc[Filters] are aggregated under
-xref:manual/filters.adoc#CompositeFilter[CompositeFilter], if more than one filter is defined.
-
-. xref:manual/scripts.adoc[] are aggregated.
-Duplicate definitions replace those in previous configurations.
-
-. xref:manual/appenders.adoc[Appenders] are aggregated.
-Appenders with the same name are **replaced** by those in later configurations, including all their elements.
-
-. <<configuring-loggers,Loggers>> are all aggregated.
-Logger attributes are individually merged, and those in later configurations replace duplicates.
-Appender references on a logger are aggregated, and those in later configurations replace duplicates.
-The strategy merges filters on loggers using the rule above.
+.How does `CompositeConfiguration` work?
+[%collapsible]
+====
+include::partial$manual/composite-configuration.adoc[tag=how]
+====
 
 [id=format-specific-notes]
 == Format specific notes
@@ -1233,3 +1225,39 @@ rootLogger.appenderRef.0.ref = APPENDER
 . All the keys of the form `logger.<name>.appenderRef.<id>`, where `<name>` and `<id>` are arbitrary, are considered appender references.
 
 . To add a filter to a component use a `filter.<id>` prefix instead of just `<id>`.
+
+[#extending]
+== Extending
+
+Log4j Core uses xref:manual/plugins.adoc[plugins] to inject necessary components while reading a configuration file.
+In this section, we will explore extension points users can hook into to customize the way Log4j Core reads configuration files.
+
+[#extending-plugins]
+=== Plugin preliminaries
+
+include::partial$manual/plugin-preliminaries.adoc[]
+
+[#ConfigurationFactory]
+=== Extending `ConfigurationFactory` plugins
+
+Under the hood, Log4j Core uses plugins extending from link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html[`ConfigurationFactory`] to load configuration files.
+This procedure can be summarized as follows:
+
+. Load plugins which extend from link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html[`ConfigurationFactory`] and whose plugin `category` is set to link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html#CATEGORY[`ConfigurationFactory.CATEGORY`]
+. Sort them by link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Order.html[`@Order`] annotation (in decreasing value order), if present
+. Feed <<automatic-configuration,found configuration files>> to `ConfigurationFactory` instances in order, if the file extension is contained by `String[]` returned from link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html#getSupportedTypes()[`ConfigurationFactory#getSupportedTypes()`]
+
+If xref:manual/systemproperties.adoc#log4j2.configurationFactory[the `log4j2.configurationFactory` system property] is defined, it will be used before any other factory implementations.
+
+For an example, see {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/config/json/JsonConfigurationFactory.java[`JsonConfigurationFactory.java`] on how Log4j Core implements JSON-formatted configuration file read.
+
+[TIP]
+====
+Next to introducing new configuration file formats, `ConfigurationFactory` can be used for xref:manual/customconfig.adoc[programmatic configuration] too.
+====
+
+[#extending-config-file-plugins]
+=== Plugins represented in a configuration file
+
+As explained in <<configuration-syntax>>, a configuration file gets parsed into a tree of plugins.
+If your plugin needs to be represented in a configuration file element, some xref:manual/plugins.adoc#core[extra plugin configuration] needs to be administered.

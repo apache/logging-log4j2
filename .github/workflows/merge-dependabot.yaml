@@ -33,11 +33,12 @@ jobs:
     # Temporary use `develocity` branch
     uses: apache/logging-parent/.github/workflows/build-reusable.yaml@develocity
     secrets:
-      GE_ACCESS_TOKEN: ${{ secrets.GE_ACCESS_TOKEN }}
+      DV_ACCESS_TOKEN: ${{ secrets.GE_ACCESS_TOKEN }}
     with:
       java-version: |
         8
         17
+      develocity-enabled: true
       reproducibility-check-enabled: false
 
   merge-dependabot:

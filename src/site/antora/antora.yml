@@ -38,6 +38,7 @@ version: ~
 start_page: index.adoc
 asciidoc:
   attributes:
+    plugin-reference-marker: "&#x1F4D6;"
     # Commons
     antora-examples-url: "https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples"
     project-github-url: "https://github.com/apache/logging-log4j2/tree/2.x"
@@ -45,15 +46,25 @@ asciidoc:
     project-id: "log4j"
     java-target-version: "8"
     java-compiler-version: "[17,18)"
+    log4j-kubernetes-url: "https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md"
     logback-url: "https://logback.qos.ch"
     logging-services-url: "https://logging.apache.org"
-    lmax-disruptor-url: "https://lmax-exchange.github.io/disruptor"
+    lmax-disruptor-url: "https://lmax-exchange.github.io/disruptor/"
     slf4j-url: "https://www.slf4j.org"
     # Dependency versions
+    commons-compress-version: "1.2.3-commons-compress"
     commons-csv-version: "1.2.3-commons-csv"
     commons-logging-version: "1.2.3-commons-logging"
+    conversant-version: "1.2.3-conversant"
     disruptor-version: "1.2.3-disruptor"
+    flume-version: "1.2.3-flume"
     jackson-version: "1.2.3-jackson"
+    jansi-version: "1.2.3-jansi"
+    javax-mail-version: "1.2.3-javax-mail"
+    jctools-version: "1.2.3-jctools"
+    je-version: "1.2.3-je"
+    jeromq-version: "1.2.3-jeromq"
+    kafka-version: "1.2.3-kafka"
     log4j-api-version: "1.2.3-api"
     log4j-core-version: "1.2.3-core"
     log4j-layout-template-json-version: "1.2.3-layout-template-json"

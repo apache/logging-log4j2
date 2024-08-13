@@ -82,7 +82,7 @@ public class MainMapLookup extends MapLookup {
     }
 
     @Override
-    public String lookup(final LogEvent event, final String key) {
+    public String lookup(final LogEvent ignored, final String key) {
         return MAIN_SINGLETON.getMap().get(key);
     }
 

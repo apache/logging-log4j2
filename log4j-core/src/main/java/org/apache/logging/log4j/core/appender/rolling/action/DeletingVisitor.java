@@ -44,7 +44,7 @@ public class DeletingVisitor extends SimpleFileVisitor<Path> {
      * @param basePath used to relativize paths
      * @param pathConditions objects that need to confirm whether a file can be deleted
      * @param testMode if true, files are not deleted but instead a message is printed to the <a
-     *            href="http://logging.apache.org/log4j/2.x/manual/configuration.html#StatusMessages">status logger</a>
+     *            href="https://logging.apache.org/log4j/2.x/manual/status-logger.html">status logger</a>
      *            at INFO level. Users can use this to do a dry run to test if their configuration works as expected.
      */
     public DeletingVisitor(

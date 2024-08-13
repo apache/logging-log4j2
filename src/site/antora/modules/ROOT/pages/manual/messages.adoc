@@ -106,7 +106,7 @@ Due to checks involved, `FormattedMessage` has an extra performance overhead com
 ====
 
 [#LocalizedMessage]
-==== LocalizedMessage
+==== `LocalizedMessage`
 
 link:../javadoc/log4j-api/org/apache/logging/log4j/message/LocalizedMessage.html[`LocalizedMessage`] incorporates a `ResourceBundle`, and allows the message pattern parameter to be the key to the message pattern in the bundle.
 If no bundle is specified, `LocalizedMessage` will attempt to locate a bundle with the name of the `Logger` used to log the event.
@@ -114,7 +114,7 @@ The message retrieved from the bundle will be formatted using a <<FormattedMessa
 
 [WARNING]
 ====
-`LocalizedMessage` is primarily provided for compatibility with {logging-services-url}/log4j/1.x[Log4j 1].
+`LocalizedMessage` is primarily provided for compatibility with {logging-services-url}/log4j/1.x/index.html[Log4j 1].
 We advise you to perform log message localization at the representation layer of your application, e.g., the client UI.
 ====
 
@@ -234,8 +234,8 @@ It supports following formats:
 Some appenders handle ``MapMessage``s differently when there is no layout:
 
 * JMS Appender converts to a JMS `javax.jms.MapMessage`
-* xref:manual/appenders.adoc#JDBCAppender[JDBC Appender] converts to values in an `SQL INSERT` statement
-* xref:manual/appenders.adoc#NoSQLAppenderMongoDB[MongoDB NoSQL provider] converts to fields in a MongoDB object
+* xref:manual/appenders/database.adoc#JdbcAppender[JDBC Appender] converts to values in an `SQL INSERT` statement
+* xref:manual/appenders/database.adoc#MongoDbProvider[MongoDB NoSQL provider] converts to fields in a MongoDB object
 
 [#MapMessage-JsonTemplateLayout]
 ===== JSON Template Layout
@@ -288,11 +288,9 @@ include::example$manual/messages/CustomMessageExample.java[tag=loginFailure]
 [#format-type]
 === Format type
 
-The link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html[`Message`] interface supports the notion of _format_ (e.g., JSON, XML) through its `getFormat()` method of return type `String`.
+You can extend from <<MultiformatMessage>> (and optionally from <<MultiFormatStringBuilderFormattable>>) to implement messages that can format themselves in one or more encodings; JSON, XML, etc.
 Layouts leverage this mechanism to encode a message in a particular format.
-For instance, when xref:manual/json-template-layout.adoc[] figures out that `getFormat()` of a `Message` returns `JSON`, it injects the `Message#getFormattedMessage()` output as is without quoting it.
-This way a message implementation can communicate its support for a particular encoding.
-If you want to support multiple formats, extend from <<MultiformatMessage>>, and optionally from <<MultiFormatStringBuilderFormattable>>, instead.
+For instance, when xref:manual/json-template-layout.adoc[] figures out that the array returned by `getFormats()` of a `MultiformatMessage` contains `JSON`, it injects the `MultiformatMessage#getFormattedMessage({"JSON"})` output as is without quoting it.
 
 [#marker-interfaces]
 === Marker interfaces
@@ -309,7 +307,7 @@ This method will be called during event construction to pass the associated `Log
 ==== `MultiformatMessage`
 
 link:../javadoc/log4j-api/org/apache/logging/log4j/message/MultiformatMessage.html[`MultiformatMessage`] extends from `Message` to support multiple <<format-type,format types>>.
-For example, see {project-github-url}/tree/2.x/log4j-api/src/main/java/org/apache/logging/log4j/message/MapMessage.java[`MapMessage.java`] extending from `MultiformatMessage` to support multiple formats; XML, JSON, etc.
+For example, see {project-github-url}/log4j-api/src/main/java/org/apache/logging/log4j/message/MapMessage.java[`MapMessage.java`] extending from `MultiformatMessage` to support multiple formats; XML, JSON, etc.
 
 [#MultiFormatStringBuilderFormattable]
 ==== `MultiFormatStringBuilderFormattable`

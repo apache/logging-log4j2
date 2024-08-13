@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.jmx;
 
+import static org.apache.logging.log4j.core.jmx.internal.JmxUtil.isJmxDisabled;
+
 import java.lang.management.ManagementFactory;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +60,6 @@ public final class Server {
      */
     public static final String DOMAIN = "org.apache.logging.log4j2";
 
-    private static final String PROPERTY_DISABLE_JMX = "log4j2.disable.jmx";
     private static final String PROPERTY_ASYNC_NOTIF = "log4j2.jmx.notify.async";
     private static final String THREAD_NAME_PREFIX = "jmx.notif";
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
@@ -124,10 +125,6 @@ public final class Server {
             sb.append('\"');
         }
         return sb.toString();
-    }
-
-    private static boolean isJmxDisabled() {
-        return PropertiesUtil.getProperties().getBooleanProperty(PROPERTY_DISABLE_JMX, true);
     }
 
     public static void reregisterMBeansAfterReconfigure() {

@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="changed">
-  <issue id="1936" link="https://github.com/apache/logging-log4j2/pull/1936"/>
+  <issue id="1936" link="https://github.com/apache/logging-log4j2/issues/1936"/>
   <description format="asciidoc">Add logging to `PropertiesUtil` and fix `Duration` parser.</description>
 </entry>

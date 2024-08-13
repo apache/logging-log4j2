@@ -50,7 +50,7 @@ public class DeleteAction extends AbstractPathAction {
      *            means that only the starting file is visited, unless denied by the security manager. A value of
      *            MAX_VALUE may be used to indicate that all levels should be visited.
      * @param testMode if true, files are not deleted but instead a message is printed to the <a
-     *            href="http://logging.apache.org/log4j/2.x/manual/configuration.html#StatusMessages">status logger</a>
+     *            href="https://logging.apache.org/log4j/2.x/manual/status-logger.html">status logger</a>
      *            at INFO level. Users can use this to do a dry run to test if their configuration works as expected.
      * @param sorter sorts
      * @param pathConditions an array of path filters (if more than one, they all need to accept a path before it is
@@ -190,10 +190,10 @@ public class DeleteAction extends AbstractPathAction {
      * @param maxDepth The maxDepth parameter is the maximum number of levels of directories to visit. A value of 0
      *            means that only the starting file is visited, unless denied by the security manager. A value of
      *            MAX_VALUE may be used to indicate that all levels should be visited.
-     * @param testMode if true, files are not deleted but instead a message is printed to the <a
-     *            href="http://logging.apache.org/log4j/2.x/manual/configuration.html#StatusMessages">status logger</a>
-     *            at INFO level. Users can use this to do a dry run to test if their configuration works as expected.
-     *            Default is false.
+     * @param testMode if true, files are not deleted but instead a message is printed to the
+     *                 <a href="https://logging.apache.org/log4j/2.x/manual/status-logger.html">status logger</a>
+     *                 at INFO level. Users can use this to do a dry run to test if their configuration works as expected.
+     *                 Default is false.
      * @param sorterParameter a plugin implementing the {@link PathSorter} interface
      * @param pathConditions an array of path conditions (if more than one, they all need to accept a path before it is
      *            deleted).

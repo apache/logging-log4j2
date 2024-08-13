@@ -1,0 +1,275 @@
+////
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements. See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License. You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+////
+
+= Integrating with service-oriented architectures
+
+In this page we will share certain <<best-practices,best practices>> you can employ in your applications using Log4j Core to integrate them with service-oriented architectures.
+While doing so, we will also try to share guides on some popular scenarios.
+
+[#motivation]
+== Motivation
+
+Most modern software is deployed in https://en.wikipedia.org/wiki/Service-oriented_architecture[service-oriented architectures].
+This is a very broad domain and can be realized in an amazingly large number of ways.
+Nevertheless, they all redefine the notion of an application:
+
+* Deployed in *multiple instances*
+* Situated in *multiple locations*; either in the same rack, or in different data centers located in different continents
+* Hosted by *multiple platforms*; hardware, virtual machine, container, etc.
+* *Polyglot*; a product of multiple programming languages
+* *Scaled* on demand; instances come and go in time
+
+Naturally, logging systems also evolved to accommodate these needs.
+In particular, the old practice of _"monoliths writing logs to files rotated daily"_ has changed in two major angles:
+
+Application delivers logs differently::
+
+Applications no longer write logs to files, but <<structured-encoding,encode them structurally>>, and deliver them to an external system centrally managed.
+Most of the time this is a <<proxy,proxy>> (a library, a sidecar container, etc.) that takes care of discovering the log storage system and determining the right external service to forward the logs to.
+
+Platform stores logs differently::
+
+There is no longer `/var/log/tomcat/catalina.out` combining all logs of a monolith.
+Instead, the software runs in multiple instances, each is implemented in a different language, and instances get scaled (i.e., new ones get started, old ones get stopped) on demand.
+To accommodate this, logs are persisted on a central storage system (Elasticsearch, Google Cloud Logging, etc.) that allows advanced navigation and filtering capabilities.
+
+Log4j Core not only adapts to this evolution, but also strives to provide the best in the class support for that.
+We will explore how to integrate Log4j with service-oriented architectures.
+
+[#best-practices]
+== Best practices
+
+Independent of the service-oriented architecture you choose, there are certain best practices we strongly encourage you to follow:
+
+[#structured-encoding]
+=== Encode logs using a structured layout
+
+We can't emphasize it enough to not use anything, but a xref:manual/layouts.adoc#structured-logging[structured layout] to deliver your logs to an external system.
+We recommend xref:manual/json-template-layout.adoc[] for this purpose:
+
+* JSON Template Layout provides full customizability and contains several predefined layouts for popular log storage services.
+* JSON is accepted by every log storage service.
+* JSON is supported by logging frameworks in other languages.
+This makes it possible to agree on a common log format with non-Java applications.
+
+[#proxy]
+=== Use a proxy for writing logs
+
+Most of the time it is not a good idea to write to the log storage system directly, but instead delegate that task to a proxy.
+This design decouples applications' log target and the log storage system and, as a result, effectively enables each to evolve independently and reliably (i.e., without downtime).
+For instance, this will allow the log storage system to scale or migrate to a new environment while proxies take care of necessary buffering and routing.
+
+This proxy can appear in many forms, for instance:
+
+* *Console* can act as a proxy.
+Logs written to console can be consumed by an external service.
+For example, https://12factor.net/logs[The Twelve-Factor App] and https://kubernetes.io/docs/concepts/cluster-administration/logging/[Kubernetes Logging Architecture] recommends this approach.
+
+* A *library* can act as proxy.
+It can tap into the logging API and forward it to an external service.
+For instance,
+https://docs.datadoghq.com/logs/log_collection/java/?tab=log4j2[Datadog's Java Log Collector] uses this mechanism.
+
+* An external *service* can act as a proxy, which applications can write logs to.
+For example, you can write to https://www.elastic.co/logstash[Logstash], a https://kubernetes.io/docs/concepts/cluster-administration/logging/#sidecar-container-with-a-logging-agent[Kubernetes logging agent sidecar], or a https://redis.io/glossary/redis-queue/[Redis queue] over a socket.
+
+What to use as a proxy depends on your deployment environment.
+You should consult to your colleagues if there is already an established logging proxy convention.
+Otherwise, we strongly encourage you to establish one in collaboration with your system administrators and architects.
+
+[#appender]
+=== Configure your appender correctly
+
+Once you decide on <<proxy,the log proxy>> to use, the choice of appender pretty much becomes self-evident.
+Nevertheless, there are some tips we recommend you to practice:
+
+* *For writing to console*, use a xref:manual/appenders.adoc#ConsoleAppender[Console Appender] and make sure to configure its `direct` attribute to `true` for the maximum efficiency.
+
+* *For writing to an external service*, use a xref:manual/appenders/network.adoc#SocketAppender[Socket Appender] and make sure to set the protocol to TCP and configure the null delimiter of the associated layout.
+For instance, see xref:manual/json-template-layout.adoc#plugin-attr-nullEventDelimiterEnabled[the `nullEventDelimiterEnabled` configuration attribute of JSON Template Layout].
+
+[#file]
+=== Avoid writing to files
+
+As explained in <<motivation>>, in a service-oriented architecture, log files are
+
+* Difficult to maintain – writable volumes must be mounted to the runtime (container, VM, etc.), rotated, and monitored for excessive usage
+* Difficult to use – multiple files need to be manually combined while troubleshooting, no central navigation point
+* Difficult to interoperate – each application needs to be individually configured to produce the same structured log output to enable interleaving of logs from multiple sources while troubleshooting distributed issues
+
+In short, *we don't recommend writing logs to files*.
+
+[#separate-config]
+=== Separate logging configuration from the application
+
+We strongly advise you to separate the logging configuration from the application and couple them in an environment-specific way.
+This will allow you to
+
+* Address environment-specific configurations (e.g., logging verbosity needs of test and production can be different)
+* Ensure Log4j configuration changes applies to all affected Log4j-using software without the need to manually update their Log4j configuration one by one
+
+How to implement this separation pretty much depends on your setup.
+We will share some recommended approaches to give you an idea:
+
+Choosing configuration files during deployment::
++
+--
+Environment-specific xref:manual/configuration.adoc[Log4j configuration files] (`log4j2-common.xml`, `log4j2-local.xml`, `log4j2-test.xml`, `log4j2-prod.xml`, etc.) can be provided in one of following ways:
+
+* Shipped with your software (i.e., accessible in the classpath)
+* Served from an HTTP server
+* A combination of the first two
+
+Depending on the deployment environment, you can selectively activate a subset of them using xref:manual/systemproperties.adoc#log4j2.configurationFile[the `log4j2.configurationFile` configuration property].
+
+[TIP]
+====
+Spring Boot allows you to https://docs.spring.io/spring-boot/reference/features/logging.html[configure the underlying logging system].
+Just like any other Spring Boot configuration, logging-related configuration also can be provided in multiple files split by profiles matching the environment: `application-common.yaml`, `application-local.yaml`, etc.
+https://docs.spring.io/spring-boot/reference/features/external-config.html[Spring Boot's Externalized Configuration System] will automatically load these files depending on the active profile(s).
+====
+--
+
+Mounting configuration files during deployment::
++
+Many service-oriented deployment architectures offer solutions for environment-specific configuration storage; Kubernetes' https://kubernetes.io/docs/concepts/configuration/configmap/[ConfigMap], HashiCorp's https://developer.hashicorp.com/consul/docs/dynamic-app-config/kv[Consul], etc.
+You can leverage these to store environment-specific Log4j configurations and mount them to the associated runtime (container, VM, etc.) at deployment.
+
+[NOTE]
+====
+Log4j Core can poll configuration files for changes (see xref:manual/configuration.adoc#configuration-attribute-monitorInterval[the `monitorInterval` attribute]) and reconfigure the associated logger context.
+You can leverage this mechanism to *dynamically update the Log4j configuration at runtime*.
+
+You need to be careful with this mechanism to not shoot yourself in the foot.
+Imagine publishing an incorrect `log4j2.xml` and rendering the logging setup of your entire cluster useless in seconds.
+Coupling the configuration with the application at deployment and gradually deploying new configurations is a more reliable approach.
+====
+
+[#guides]
+== Guides
+
+In this section, we will share guides on some popular integration scenarios.
+
+[#docker]
+=== Docker
+
+See xref:components.adoc#log4j-docker[Log4j Docker] for Docker-specific Log4j features, e.g., xref:manual/lookups.adoc#DockerLookup[Docker Lookup].
+We also strongly advise you to check https://docs.docker.com/config/containers/logging/[the extensive logging integration] offered by Docker containers.
+
+=== Kubernetes
+
+Log4j Kubernetes (containing xref:manual/lookups.adoc#KubernetesLookup[Kubernetes Lookup]) is distributed as a part of Fabric8's Kubernetes Client, refer to {log4j-kubernetes-url}[its website] for details.
+
+[#ELK]
+=== Elasticsearch & Logstash
+
+Elasticsearch, Logstash, and Kibana (aka. https://www.elastic.co/elastic-stack/[ELK Stack]) is probably the most popular logging system solution.
+In this setup,
+
+* https://www.elastic.co/elasticsearch[Elasticsearch] is used for log storage
+* https://www.elastic.co/logstash[Logstash] is used for transformation and ingestion to Elasticsearch from multiple sources (file, socket, etc.)
+* https://www.elastic.co/kibana[Kibana] is used as a web-based UI to query Elasticsearch
+
+To begin with, JSON is the de facto messaging format used across the entire https://www.elastic.co/platform[Elastic platform].
+Hence, as stated earlier, <<structured-encoding,we strongly advise you to configure a structured encoding>>, i.e., xref:manual/json-template-layout.adoc[].
+
+[#logstash]
+==== Logstash as a proxy
+
+While using ELK stack, there are numerous ways you can write your application logs to Elasticsearch.
+<<proxy,We advise you to always employ a proxy>> while doing so.
+In particular, *we recommend you to use Logstash* for this purpose.
+In a modern software stack, the shape and accessibility of log varies greatly: some write to files (be it legacy or new systems), some doesn't provide a structured encoding, etc.
+Logstash excels at ingesting from a wide range of sources, transforming them into the desired format, and writing them to Elasticsearch.
+
+While setting up Logstash, we recommend you to use https://www.elastic.co/guide/en/logstash/current/plugins-inputs-tcp.html[TCP input plugin] in combination with https://www.elastic.co/guide/en/logstash/current/plugins-outputs-elasticsearch.html[Elasticsearch output plugin] to accept logs over a TCP socket and write them to Elasticsearch:
+
+.An example `logstash.conf` snippet for accepting JSON-encoded log events over TCP and writing them to Elasticsearch
+[source,text]
+----
+input {
+  tcp { //<1>
+    port => 12345 //<2>
+    codec => "json" //<3>
+  }
+}
+
+output {
+
+  # stdout { codec => rubydebug } //<4>
+
+  # Modify the hosts value to reflect where Elasticsearch is installed.
+  elasticsearch { //<5>
+    hosts => ["http://localhost:9200/"] //<6>
+    index => "app-%{application}-%{+YYYYMMdd}" //<7>
+  }
+
+}
+----
+<1> Using https://www.elastic.co/guide/en/logstash/current/plugins-inputs-tcp.html[TCP input plugin] to accept logs from
+<2> Setting the port Logstash will bind to accept TCP connections to 12345 – *adapt the `port`* to your setup
+<3> Setting the payload encoding to JSON
+<4> Uncomment this while troubleshooting your Logstash configuration
+<5> Using https://www.elastic.co/guide/en/logstash/current/plugins-outputs-elasticsearch.html[Elasticsearch output plugin] to write logs to Elasticsearch
+<6> The list of Elasticsearch hosts to connect to
+<7> The name of the Elasticsearch index to write to
+
+Refer to https://www.elastic.co/guide/en/logstash/current/configuration.html[the official documentation] for details on configuring a Logstash pipeline.
+
+For the sake of completeness, see the following Log4j configuration to write to the TCP socket Logstash accepts input from:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/cloud/logstash/log4j2.xml[`log4j2.xml`]
+[source,xml]
+----
+include::example$cloud/logstash/log4j2.xml[tag=socketAppender,indent=0]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/cloud/logstash/log4j2.json[`log4j2.json`]
+[source,json]
+----
+include::example$cloud/logstash/log4j2.json[tag=socketAppender,indent=0]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/cloud/logstash/log4j2.yaml[`log4j2.yaml`]
+[source,xml]
+----
+include::example$cloud/logstash/log4j2.yaml[tag=socketAppender,indent=0]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/cloud/logstash/log4j2.properties[`log4j2.properties`]
+[source,xml]
+----
+include::example$cloud/logstash/log4j2.properties[tag=socketAppender,indent=0]
+----
+====
+
+[NOTE]
+====
+<<file,We don't recommend writing logs to files>>.
+If this is a necessity in your logging setup for some reason, we recommend you to check https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-overview.html[Filebeat].
+It is a data shipper agent for forwarding logs to Logstash, Elasticsearch, etc.
+====

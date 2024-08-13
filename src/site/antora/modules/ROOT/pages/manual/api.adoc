@@ -43,7 +43,11 @@ This page tries to cover the most prominent Log4j API features.
 [TIP]
 ====
 Did you know that Log4j provides specialized APIs for Kotlin and Scala?
-Check out {logging-services-url}/log4j/kotlin[Log4j Kotlin] and {logging-services-url}/log4j/scala[Log4j Scala] projects for details.
+Check out
+{logging-services-url}/log4j/kotlin/index.html[Log4j Kotlin]
+and
+{logging-services-url}/log4j/scala/index.html[Log4j Scala]
+projects for details.
 ====
 
 [#intro]
@@ -85,6 +89,11 @@ include::partial$manual/api-best-practice-use-supplier.adoc[]
 link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html[`Logger`]s are the primary entry point for logging.
 In this section we will introduce you to further details about ``Logger``s.
 
+[TIP]
+====
+Refer to xref:manual/architecture.adoc[] to see where ``Logger``s stand in the big picture.
+====
+
 [#logger-names]
 === Logger names
 
@@ -94,21 +103,11 @@ For example, `org.apache.logging.appender` and `org.apache.logging.filter` both 
 
 In most cases, applications name their loggers by passing the current class's name to `LogManager.getLogger(...)`.
 Because this usage is so common, Log4j provides that as the default when the logger name parameter is either omitted or is null.
-For example, all `Logger`-typed variables below will have a name of `com.mycompany.LoggerNameTest`:
+For example, all `Logger`-typed variables below will have a name of `com.example.LoggerNameTest`:
 
 [source,java]
 ----
-package com.mycompany;
-
-public class LoggerNameTest {
-
-    Logger logger1 = LogManager.getLogger(LoggerNameTest.class);
-
-    Logger logger2 = LogManager.getLogger(LoggerNameTest.class.getName());
-
-    Logger logger3 = LogManager.getLogger();
-
-}
+include::example$manual/api/LoggerNameTest.java[tags=class;!examples]
 ----
 
 [TIP]
@@ -123,14 +122,14 @@ Loggers translate
 
 [source,java]
 ----
-LOGGER.info("Hello, {}!", name)
+include::example$manual/api/LoggerNameTest.java[tag=example1,indent=0]
 ----
 
 calls to the appropriate canonical logging method:
 
 [source,java]
 ----
-LOGGER.log(Level.INFO, messageFactory.createMessage("Hello, {}!", new Object[]{name}));
+include::example$manual/api/LoggerNameTest.java[tag=example2,indent=0]
 ----
 
 Note that how `Hello, {}!` should be encoded given the `\{name}` array as argument completely depends on the link:../javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory.html[`MessageFactory`] employed.
@@ -138,14 +137,9 @@ Log4j allows users to customize this behaviour in several `getLogger()` methods 
 
 [source,java]
 ----
-LogManager
-        .getLogger() // <1>
-        .info("Hello, {}!", name); // <2>
-
-LogManager
-        .getLogger(StringFormatterMessageFactory.INSTANCE) // <3>
-        .info("Hello, %s!", name); // <4>
+include::example$manual/api/LoggerNameTest.java[tag=example3,indent=0]
 ----
+
 <1> Create a logger using the default message factory
 <2> Use default parameter placeholders, that is, `{}` style
 <3> Explicitly provide the message factory, that is, link:../javadoc/log4j-api/org/apache/logging/log4j/message/StringFormatterMessageFactory.html[`StringFormatterMessageFactory`].
@@ -164,11 +158,7 @@ If you need more control over how the parameters are formatted, you can also use
 
 [source,java]
 ----
-Logger logger = LogManager.getFormatterLogger();
-logger.debug("Logging in user %s with birthday %s", user.getName(), user.getBirthdayCalendar());
-logger.debug("Logging in user %1$s with birthday %2$tm %2$te,%2$tY", user.getName(), user.getBirthdayCalendar());
-logger.debug("Integer.MAX_VALUE = %,d", Integer.MAX_VALUE);
-logger.debug("Long.MAX_VALUE = %,d", Long.MAX_VALUE);
+include::example$manual/api/LoggerNameTest.java[tag=formatter,indent=0]
 ----
 
 Loggers returned by `getFormatterLogger()` are referred as *formatter loggers*.
@@ -182,9 +172,7 @@ If your main usage is to use `{}`-style parameters, but occasionally you need fi
 
 [source,java]
 ----
-Logger logger = LogManager.getLogger("Foo");
-logger.debug("Opening connection to {}...", someDataSource);
-logger.printf(Level.INFO, "Hello, %s!", userName);
+include::example$manual/api/LoggerNameTest.java[tag=printf,indent=0]
 ----
 
 [#formatter-perf]
@@ -192,16 +180,6 @@ logger.printf(Level.INFO, "Hello, %s!", userName);
 
 Keep in mind that, contrary to the formatter logger, the default Log4j logger (i.e., `{}`-style parameters) is heavily optimized for several use cases and can operate xref:manual/garbagefree.adoc[garbage-free] when configured correctly.
 You might reconsider your formatter logger usages for latency sensitive applications.
-
-[#resource-logger]
-=== Resource logger
-
-Resource loggers, introduced in Log4j API `2.24.0`, is a special kind of `Logger` that:
-
-* is a regular class member variable that will be garbage collected along with the class instance
-* enriches generated log events with data associated with the resource (i.e., the class instance)
-
-xref:manual/resource-logger.adoc[Read more on resource loggers...]
 
 [#event-logger]
 === Event logger
@@ -241,11 +219,7 @@ The fluent API allows you to log using a fluent interface:
 
 [source,java]
 ----
-logger.atInfo()
-      .withMarker(marker)
-      .withLocation()
-      .withThrowable(exception)
-      .log("Login for user `{}` failed", userId);
+include::example$manual/api/LoggerNameTest.java[tag=fluent,indent=0]
 ----
 
 xref:manual/logbuilder.adoc[Read more on the Fluent API...]
@@ -253,8 +227,7 @@ xref:manual/logbuilder.adoc[Read more on the Fluent API...]
 [#fish-tagging]
 == Fish tagging
 
-Just as a fish can be tagged and have its movement tracked (aka. _fish tagging_ footnote:[Fish tagging is first described by Neil Harrison in the _"Patterns for Logging Diagnostic Messages"_ chapter of https://dl.acm.org/doi/10.5555/273448[_"Pattern Languages of Program Design 3"_ edited by R. Martin, D. Riehle, and F. Buschmann in 1997].]), stamping log events with a common tag or set of data
-elements allows the complete flow of a transaction or a request to be tracked.
+Just as a fish can be tagged and have its movement tracked (aka. _fish tagging_ footnote:[Fish tagging is first described by Neil Harrison in the _"Patterns for Logging Diagnostic Messages"_ chapter of https://dl.acm.org/doi/10.5555/273448[_"Pattern Languages of Program Design 3"_ edited by R. Martin, D. Riehle, and F. Buschmann in 1997].]), stamping log events with a common tag or set of data elements allows the complete flow of a transaction or a request to be tracked.
 You can use them for several purposes, such as:
 
 * Provide extra information while serializing the log event
@@ -278,55 +251,10 @@ Markers are programmatic labels developers can associate to log statements:
 
 [source,java]
 ----
-public class MyApp {
-
-    private static final Logger LOGGER = LogManager.getLogger();
-
-    private static final Marker ACCOUNT_MARKER = MarkerManager.getMarker("ACCOUNT");
-
-    public void removeUser(String userId) {
-        logger.debug(ACCOUNT_MARKER, "Removing user with ID `{}`", userId);
-        // ...
-    }
-
-}
+include::example$manual/api/MyApp.java[tag=class,indent=0]
 ----
 
 xref:manual/markers.adoc[Read more on markers...]
-
-[#scoped-context]
-=== Scoped Context
-
-Just like a https://docs.oracle.com/en/java/javase/22/docs/api/java.base/java/lang/ScopedValue.html[Java's `ScopedValue`], _Scoped Context_ facilitates associating information with a certain block of code and makings this accessible to the rest of the logging system:
-
-[source,java]
-----
-
-private class Worker implements Runnable {
-
-    private static final Logger LOGGER = LogManager.getLogger();
-
-    public void authUser(Request request, Session session) {
-         // ... // <3>
-        ScopedContext
-                .where("ipAddress", request.getRemoteAddr()) // <1>
-                .where("hostName", request.getServerName()) // <1>
-                .where("loginId", session.getAttribute("loginId")) // <1>
-                .run(() -> { // <2>
-                    LOGGER.debug("Authenticating user");
-                    // ...
-                });
-         // ... // <3>
-    }
-
-}
-----
-<1> Associating properties such that they will only be visible to Log4j **within the scope of the `run()` method**.
-These properties can later on be used to, for instance, filter the log event, provide extra information in the layout, etc.
-<2> The block determining the visibility scope of the provided properties.
-<3> Outside the scope of the `run()` method provided properties will not be visible.
-
-xref:manual/scoped-context.adoc[Read more on Scoped Context...]
 
 [#thread-context]
 === Thread Context
@@ -341,21 +269,13 @@ storage:
 
 [source,java]
 ----
-ThreadContext.put("ipAddress", request.getRemoteAddr()); // <1>
-ThreadContext.put("hostName", request.getServerName()); // <1>
-ThreadContext.put("loginId", session.getAttribute("loginId")); // <1>
+include::example$manual/api/LoggerNameTest.java[tag=thread-context1,indent=0]
 
-void performWork() {
-    ThreadContext.push("performWork()"); // <2>
+include::example$manual/api/LoggerNameTest.java[tag=thread-context2,indent=0]
 
-    LOGGER.debug("Performing work"); // <3>
-    // Perform the work
-
-    ThreadContext.pop(); // <4>
-}
-
-ThreadContext.clear(); // <5>
+include::example$manual/api/LoggerNameTest.java[tag=thread-context3,indent=0]
 ----
+
 <1> Adding properties to the thread context map
 <2> Pushing properties to the thread context stack
 <3> Added properties can later on be used to, for instance, filter the log event, provide extra information in the layout, etc.
@@ -385,25 +305,21 @@ Log4j provides several predefined message types to cater for common use cases:
 +
 [source,java]
 ----
-LOGGER.info("foo");
-LOGGER.info(new SimpleMessage("foo"));
+include::example$manual/api/LoggerNameTest.java[tag=string,indent=0]
 ----
 
 * `String`-typed parameterized messages:
 +
 [source,java]
 ----
-LOGGER.info("foo {} {}", "bar", "baz");
-LOGGER.info(new ParameterizedMessage("foo {} {}", new Object[]{"bar", "baz"}));
+include::example$manual/api/LoggerNameTest.java[tag=parameterized,indent=0]
 ----
 
 * `Map`-typed messages:
 +
 [source,java]
 ----
-LOGGER.info(new StringMapMessage()
-    .with("key1", "val1")
-    .with("key2", "val2"));
+include::example$manual/api/LoggerNameTest.java[tag=map,indent=0]
 ----
 
 xref:manual/messages.adoc[Read more on messages...]

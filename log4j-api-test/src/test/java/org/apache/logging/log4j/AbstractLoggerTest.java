@@ -1447,11 +1447,6 @@ public class AbstractLoggerTest {
         }
 
         @Override
-        public String getFormat() {
-            return null;
-        }
-
-        @Override
         public Object[] getParameters() {
             return Constants.EMPTY_OBJECT_ARRAY;
         }

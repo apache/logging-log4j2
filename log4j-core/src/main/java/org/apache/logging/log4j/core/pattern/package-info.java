@@ -18,7 +18,7 @@
  * Provides classes implementing format specifiers in conversion patterns.
  */
 @Export
-@Version("2.22.0")
+@Version("2.24.0")
 package org.apache.logging.log4j.core.pattern;
 
 import org.osgi.annotation.bundle.Export;

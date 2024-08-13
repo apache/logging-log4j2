@@ -149,8 +149,8 @@ Setting this value to `false` may lead to very high CPU utilization when the asy
 
 Specifies the
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/ThreadNameCachingStrategy.html[`ThreadNameCachingStrategy`]
-to use to cache the result of https://docs.oracle
-.com/javase/{java-target-version}/docs/api/java/lang/Thread.html#getName--[`Thread#getName()`].
+to use to cache the result of
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/lang/Thread.html#getName--[`Thread#getName()`].
 
 This setting allows to cache the result of `Thread.getName()` calls and has two values:
 

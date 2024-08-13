@@ -27,12 +27,12 @@ public class EnvironmentLookup extends AbstractLookup {
 
     /**
      * Looks up the value of the environment variable.
-     * @param event The current LogEvent (is ignored by this StrLookup).
+     *
      * @param key  the key to be looked up, may be null
      * @return The value of the environment variable.
      */
     @Override
-    public String lookup(final LogEvent event, final String key) {
+    public String lookup(final LogEvent ignored, final String key) {
         return System.getenv(key);
     }
 }

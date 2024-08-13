@@ -32,9 +32,9 @@ Please refer to {logging-services-url}/support.html[the Support page] instead.
 Log4j uses GitHub extensively:
 
 Source code repository:: {project-github-url}[]
-Issue tracker:: {project-github-url}/issues[]
+Issue tracker:: https://github.com/apache/logging-log4j2/issues[]
 Discussions::
-{project-github-url}/discussions[]
+https://github.com/apache/logging-log4j2/discussions[]
 +
 [TIP]
 ====
@@ -63,7 +63,7 @@ Branch triggering the CI logic to start {logging-services-url}/logging-parent/re
 [#building]
 == How can I build Log4j from sources?
 
-See {project-github-url}/tree/2.x/BUILDING.adoc[the build instructions].
+See {project-github-url}/BUILDING.adoc[the build instructions].
 
 [#contributor]
 == I am **not** a committer. How shall I submit a patch?
@@ -92,13 +92,17 @@ You are strongly advised to spar with another maintainer first (see {logging-ser
 [#release-project]
 == I am a PMC member. How do I make a new release?
 
-All Maven-based Logging Services projects are parented by {logging-services-url}/logging-parent[Logging Parent], which streamlines several project-wide processes, including making a new release.
+All Maven-based Logging Services projects are parented by
+{logging-services-url}/logging-parent/index.html[Logging Parent],
+which streamlines several project-wide processes, including making a new release.
 See {logging-services-url}/logging-parent/release-instructions-project.html[its release instructions for projects].
 
 [#release-xml-schema]
 == I am a PMC member. How do I publish a new XML schema?
 
-All Maven-based Logging Services projects are parented by {logging-services-url}/logging-parent[Logging Parent], which streamlines several project-wide processes, including publishing XML schemas.
+All Maven-based Logging Services projects are parented by
+{logging-services-url}/logging-parent/index.html[Logging Parent],
+which streamlines several project-wide processes, including publishing XML schemas.
 See {logging-services-url}/logging-parent/release-instructions-xml-schema.html[its release instructions for XML schemas].
 
 [WARNING]

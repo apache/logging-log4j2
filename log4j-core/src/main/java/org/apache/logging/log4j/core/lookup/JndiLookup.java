@@ -50,12 +50,11 @@ public class JndiLookup extends AbstractLookup {
     /**
      * Looks up the value of the JNDI resource.
      *
-     * @param event The current LogEvent (is ignored by this StrLookup).
      * @param key the JNDI resource name to be looked up, may be null
      * @return The String value of the JNDI resource.
      */
     @Override
-    public String lookup(final LogEvent event, final String key) {
+    public String lookup(final LogEvent ignored, final String key) {
         if (key == null) {
             return null;
         }

@@ -29,7 +29,7 @@ import org.apache.logging.log4j.util.StringBuilders;
  * values.
  * </p>
  *
- * @see <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a>
+ * @see <a href="https://datatracker.ietf.org/doc/html/rfc5424">RFC 5424</a>
  */
 @AsynchronouslyFormattable
 public class StructuredDataMessage extends MapMessage<StructuredDataMessage, String> {

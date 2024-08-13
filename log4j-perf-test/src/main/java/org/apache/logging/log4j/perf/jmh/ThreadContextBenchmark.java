@@ -27,9 +27,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.ThreadContextBenchmarkAccess;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.impl.ContextData;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
-import org.apache.logging.log4j.core.impl.ThreadContextDataInjector;
 import org.apache.logging.log4j.perf.nogc.OpenHashStringMap;
 import org.apache.logging.log4j.spi.CopyOnWriteOpenHashMapThreadContextMap;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
@@ -168,16 +166,15 @@ public class ThreadContextBenchmark {
     }
 
     @Benchmark
-    public void injectWithoutProperties() {
+    public StringMap injectWithoutProperties() {
         reusableContextData.clear();
-        ContextData.addAll(reusableContextData);
+        return injector.injectContextData(null, reusableContextData);
     }
 
     @Benchmark
-    public void injectWithProperties() {
+    public StringMap injectWithProperties() {
         reusableContextData.clear();
-        ContextData.addAll(reusableContextData);
-        ThreadContextDataInjector.copyProperties(propertyList, reusableContextData);
+        return injector.injectContextData(propertyList, reusableContextData);
     }
 
     @Benchmark

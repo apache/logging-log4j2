@@ -27,28 +27,28 @@ Log4j contains following predefined levels:
 |===
 | Name | Priority
 
-| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#OFF[`OFF`]<<dont-use-in-code,[see note]>>
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html#OFF[`OFF`]<<dont-use-in-code,[see note]>>
 | 0
 
-| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#FATAL[`FATAL`]
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html#FATAL[`FATAL`]
 | 100
 
-| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#ERROR[`ERROR`]
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html#ERROR[`ERROR`]
 | 200
 
-| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#WARN[`WARN`]
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html#WARN[`WARN`]
 | 300
 
-| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#INFO[`INFO`]
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html#INFO[`INFO`]
 | 400
 
-| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#DEBUG[`DEBUG`]
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html#DEBUG[`DEBUG`]
 | 500
 
-| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#TRACE[`TRACE`]
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html#TRACE[`TRACE`]
 | 600
 
-| link:../javadoc/log4j-api/org/apache/logging/log4j/Level#ALL[`ALL`]<<dont-use-in-code,[see note]>>
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html#ALL[`ALL`]<<dont-use-in-code,[see note]>>
 | Integer.MAX_VALUE
 |===
 
@@ -56,14 +56,14 @@ Log4j contains following predefined levels:
 ====
 The `OFF` and `ALL` levels are special: they should not be used to fish-tag log events.
 
-Log4j implementations, such as Log4j Core, can use `OFF` in their configuration files to disable all log statements and `ALL` to enabled them all.
+Log4j API implementations, such as Log4j Core, can use `OFF` in their configuration files to disable all log statements and `ALL` to enabled them all.
 ====
 
 A level is composed of a case-sensitive name and a *priority* (of type `int`), which is used to define an order while comparing two.
 Priority can be used in several contexts to express a filtering capability, for instance:
 
 * `WARN` is _less severe_ than `ERROR`
-* `WARN` is _more specific_ than `ERROR`
+* `WARN` is _less specific_ than `ERROR`
 
 The entry point to log levels are through link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[`Level`].
 Predefined levels are available for Log4j API integrators through link:../javadoc/log4j-api/org/apache/logging/log4j/spi/StandardLevel.html[`StandardLevel`].
@@ -125,7 +125,7 @@ include::example$manual/customloglevels/LevelExample.java[tag=shorthand]
 [#level-selection]
 === Which level to use?
 
-[CAUTION]
+[WARNING]
 ====
 While Log4j API defines a set of standard levels, it does not define the purpose of these levels.
 Many different conventions on which log levels to use coexist in the industry.

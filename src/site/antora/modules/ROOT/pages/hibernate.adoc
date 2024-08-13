@@ -80,5 +80,5 @@ We strongly advise you to *avoid using {hibernate-manual-url}#settings-hibernate
 (It maps to `spring.jpa.show-sql` in Spring Boot.)
 `hibernate.show_sql` writes to the standard error output stream, not to the logging API.
 Logger-based configuration exemplified above gives a finer-grained control over logging and integrates with the logging system.
-https://stackoverflow.com/q/73734494/1278899[Combining `hibernate.show_sql` with logger-based configuration duplicates the logging effort.]
+https://stackoverflow.com/questions/73734494/disabling-hibernate-console-log-in-spring-datajpatest[Combining `hibernate.show_sql` with logger-based configuration duplicates the logging effort.]
 ====

@@ -3,7 +3,7 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
-  <issue id="1366" link="https://github.com/apache/logging-log4j2/pull/1366"/>
+  <issue id="1366" link="https://github.com/apache/logging-log4j2/issues/1366"/>
   <description format="asciidoc">
     Fixed logging of `java.sql.Date` objects by appending it before Log4J tries to call `java.util.Date.toInstant()` on it
   </description>

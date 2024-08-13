@@ -1,0 +1,33 @@
+{
+  "Configuration": {
+    "Appenders": {
+      // tag::appender[]
+      "RollingFile": {
+        "name": "FILE",
+        "filePattern": "/var/log/app.%d{yyyy-MM-dd}.log.gz", // <1>
+        "JsonTemplateLayout": {},
+        "DirectWriteRolloverStrategy": {
+          "Delete": { // <2>
+            "basePath": "/var/log",
+            "IfFileName": {
+              "regex": "app\\.\\d{4}-\\d{2}-\\d{2}\\.log\\.gz" // <3>
+            },
+            "IfLastModified": {
+              "age": "P15D"
+            }
+          }
+        },
+        "TimeBasedTriggeringPolicy": {}
+      }
+      // end::appender[]
+    },
+    "Loggers": {
+      "Root": {
+        "level": "INFO",
+        "AppenderRef": {
+          "ref": "FILE"
+        }
+      }
+    }
+  }
+}

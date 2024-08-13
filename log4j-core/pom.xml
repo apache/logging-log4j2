@@ -70,8 +70,12 @@
       javax.lang.model.*;resolution:=optional,
       javax.tools;resolution:=optional,
       <!-- `java.sql`, which depends on `java.logging` is optional -->
+      java.sql;resolution:=optional,
       javax.sql;resolution:=optional,
       java.util.logging;resolution:=optional,
+      <!-- `java.management` is optional -->
+      java.lang.management;resolution:=optional,
+      javax.management.*;resolution:=optional,
       <!-- `java.naming` is optional -->
       javax.naming;resolution:=optional
     </bnd-extra-package-options>
@@ -88,6 +92,7 @@
       com.fasterxml.jackson.databind;transitive=false,
       com.fasterxml.jackson.dataformat.xml;transitive=false,
       com.fasterxml.jackson.dataformat.yaml;transitive=false,
+      java.management;transitive=false;static=true,
       java.naming;transitive=false,
       org.apache.commons.csv;transitive=false,
       org.fusesource.jansi;transitive=false,

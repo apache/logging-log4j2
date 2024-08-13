@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.net;
 
 /**
- * Enumerates the <a href="https://tools.ietf.org/html/rfc1349">RFC 1349</a> TOS field.
+ * Enumerates the <a href="https://datatracker.ietf.org/doc/html/rfc1349">RFC 1349</a> TOS field.
  *
  * <ul>
  * <li><code>IPTOS_LOWCOST (0x02)</code></li>

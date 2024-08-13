@@ -21,7 +21,6 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.impl.ThreadContextDataInjector;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
-import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 
 /**
@@ -106,19 +105,6 @@ public interface ContextDataInjector {
      * the implementation of this method. It is not safe to pass the returned object to another thread.
      * </p>
      * @return a {@code ReadOnlyStringMap} object reflecting the current state of the context, may not return {@code null}
-     * @deprecated - Methods using this have been converted to call getValue(). Will be removed in 3.0.0.
      */
-    @Deprecated
-    default ReadOnlyStringMap rawContextData() {
-        return new SortedArrayStringMap();
-    }
-
-    /**
-     * Retrieves a key from the context. This avoids having to construct a composite Map when multiple contexts are available.
-     * @param key the key to retrieve.
-     * @return the String value associated with the key.
-     */
-    default String getValue(String key) {
-        return null;
-    }
+    ReadOnlyStringMap rawContextData();
 }

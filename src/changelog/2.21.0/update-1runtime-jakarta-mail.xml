@@ -3,7 +3,7 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="1591" link="https://github.com/apache/logging-log4j2/issues/1591"/>
+  <issue id="1591" link="https://github.com/apache/logging-log4j2/pull/1591"/>
   <description format="asciidoc">
     Update Jakarta Mail API to version https://jakarta.ee/specifications/mail/2.1/changelog/[2.1.2]
   </description>

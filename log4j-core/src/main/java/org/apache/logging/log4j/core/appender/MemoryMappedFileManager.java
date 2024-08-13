@@ -43,13 +43,10 @@ import org.apache.logging.log4j.util.Constants;
  * memory and writes to this memory region.
  * <p>
  *
- * @see <a href="http://www.codeproject.com/Tips/683614/Things-to-Know-about-Memory-Mapped-File-in-Java">
- *      http://www.codeproject.com/Tips/683614/Things-to-Know-about-Memory-Mapped-File-in-Java</a>
+ * @see <a href="https://www.codeproject.com/Tips/683614/Things-to-Know-about-Memory-Mapped-File-in-Java">Things to Know about Memory Mapped File in Java</a>
  * @see <a href="https://bugs.openjdk.org/browse/JDK-6893654">JDK-6893654</a>
  * @see <a href="https://bugs.openjdk.org/browse/JDK-4724038">JDK-4724038</a>
- * @see <a
- *      href="http://stackoverflow.com/questions/9261316/memory-mapped-mappedbytebuffer-or-direct-bytebuffer-for-db-implementation">
- *      http://stackoverflow.com/questions/9261316/memory-mapped-mappedbytebuffer-or-direct-bytebuffer-for-db-implementation</a>
+ * @see <a href="https://stackoverflow.com/questions/9261316/memory-mapped-mappedbytebuffer-or-direct-bytebuffer-for-db-implementation">Memory-Mapped MappedByteBuffer or Direct ByteBuffer for DB Implementation?</a>
  *
  * @since 2.1
  */

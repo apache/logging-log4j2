@@ -68,5 +68,5 @@ Discard:: when the queue is full, it drops the events whose level is equal or le
 |===
 
 Determines the threshold level used by a `Discard` queue full policy.
-Log events whose level is equal or less specific than the threshold level will be discarded during a queue full event.
+Log events whose level is not more severe than the threshold level will be discarded during a queue full event.
 See also <<log4j2.asyncQueueFullPolicy>>.

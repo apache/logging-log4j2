@@ -4,33 +4,36 @@
       "Console": {
         "name": "CONSOLE",
         "ThresholdFilter": {
-          "level": "WARN" // <6>
+          "level": "FATAL" // <6>
         }
       }
     },
     "Loggers": {
       "Root": {
-        "level": "INFO",
+        "level": "OFF",
         "ThresholdFilter": { // <3>
-          "level": "DEBUG"
+          "level": "WARN"
         },
         "AppenderRef": {
           "ref": "CONSOLE",
-          "level": "WARN", // <5>
-          "MarkerFilter": { // <4>
-            "marker": "ALERT",
-            "onMatch": "NEUTRAL",
-            "onMismatch": "DENY"
+          "level": "ERROR", // <4>
+          "MarkerFilter": { // <5>
+            "marker": "SECURITY_ALERT"
           }
         }
       },
       "Logger": {
         "name": "org.example",
-        "level": "TRACE" // <2>
+        "level": "DEBUG", // <2>
+        "ThresholdFilter": { // <3>
+          "level": "INFO"
+        }
       }
     }
   },
   "MarkerFilter": { // <1>
-    "marker": "PRIVATE"
+    "marker": "ALERT",
+    "onMatch": "ACCEPT",
+    "onMismatch": "NEUTRAL"
   }
 }

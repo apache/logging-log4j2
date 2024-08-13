@@ -25,6 +25,8 @@ import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -108,11 +110,13 @@ class JsonTemplateLayoutNullEventDelimiterTest {
 
     private static final class TcpServer extends Thread implements AutoCloseable {
 
+        private final Lock lock = new ReentrantLock();
+
         private final ServerSocket serverSocket;
 
         private final ByteArrayOutputStream outputStream;
 
-        private volatile int totalReadByteCount = 0;
+        private int totalReadByteCount = 0;
 
         private volatile boolean closed = false;
 
@@ -136,9 +140,12 @@ class JsonTemplateLayoutNullEventDelimiterTest {
                         final int readByteCount = inputStream.read(buffer);
                         if (readByteCount != -1) {
                             LOGGER.info("Received bytes {}.", () -> Hex.encodeHex(buffer, 0, readByteCount, false));
-                            synchronized (this) {
+                            lock.lock();
+                            try {
                                 totalReadByteCount += readByteCount;
                                 outputStream.write(buffer, 0, readByteCount);
+                            } finally {
+                                lock.unlock();
                             }
                         } else {
                             break;
@@ -159,16 +166,35 @@ class JsonTemplateLayoutNullEventDelimiterTest {
             return serverSocket.getLocalPort();
         }
 
-        public synchronized byte[] getReceivedBytes() {
-            return outputStream.toByteArray();
+        public byte[] getReceivedBytes() {
+            lock.lock();
+            try {
+                return outputStream.toByteArray();
+            } finally {
+                lock.unlock();
+            }
         }
 
-        public synchronized int getTotalReadByteCount() {
-            return totalReadByteCount;
+        public int getTotalReadByteCount() {
+            lock.lock();
+            try {
+                return totalReadByteCount;
+            } finally {
+                lock.unlock();
+            }
         }
 
         @Override
-        public synchronized void close() {
+        public void close() {
+            lock.lock();
+            try {
+                unsynchronizedClose();
+            } finally {
+                lock.unlock();
+            }
+        }
+
+        private void unsynchronizedClose() {
             if (closed) {
                 throw new IllegalStateException("shutdown has already been invoked");
             }

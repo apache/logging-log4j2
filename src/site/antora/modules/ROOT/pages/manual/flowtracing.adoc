@@ -18,7 +18,7 @@
 = Flow Tracing
 
 xref:manual/api.adoc[Log4j API] provides convenience logging methods to aid the tracking of the data flow through an application, which is referred to as *flow tracing*.
-<<impl,Logging implementations>> can choose to <<log-events,generate specialized log events>> allowing users to handle these messages different from the rest – see <<example>>.
+<<impl,Logging implementations>> can choose to <<impl-log4j-log-events,generate specialized log events>> allowing users to handle these messages different from the rest – see <<example>>.
 
 Flow tracing is known to help with the following use cases:
 

@@ -3,7 +3,7 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="2021" link="https://github.com/apache/logging-log4j2/issues/2021"/>
+  <issue id="2021" link="https://github.com/apache/logging-log4j2/pull/2021"/>
   <description format="asciidoc">
     Bumped the minimum Java version required for the build to Java 17. Runtime requirements remain unchanged.
   </description>
