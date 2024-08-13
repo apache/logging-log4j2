@@ -81,12 +81,12 @@ projectVersion=$(./mvnw \
 # Download the JSON dictionary
 jsonDictPath="$outputDir/json.dict"
 [[ ! -f "$jsonDictPath" || "${FORCE_DOWNLOAD:-}" = "true" ]] && \
-  wget https://raw.githubusercontent.com/google/fuzzing/master/dictionaries/json.dict -O "$jsonDictPath"
+  wget --quiet https://raw.githubusercontent.com/google/fuzzing/master/dictionaries/json.dict -O "$jsonDictPath"
 
 # Download the JSON seed corpus
 jsonSeedCorpusPath="$outputDir/json_seed_corpus.zip"
 if [[ ! -f "$jsonSeedCorpusPath" || "${FORCE_DOWNLOAD:-}" = "true" ]]; then
-  git clone --depth 1 https://github.com/dvyukov/go-fuzz-corpus
+  git clone --quiet --depth 1 https://github.com/dvyukov/go-fuzz-corpus
   zip -q -j "$jsonSeedCorpusPath" go-fuzz-corpus/json/corpus/*
   rm -rf go-fuzz-corpus
 fi
