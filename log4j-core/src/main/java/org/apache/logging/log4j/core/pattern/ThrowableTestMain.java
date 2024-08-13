@@ -23,15 +23,11 @@ public class ThrowableTestMain {
     public static void main(String[] args) {
         Throwable r = createException("r", 1, 3);
         renderException(r, null);
+        renderException(r, new ThrowableRenderer<>(Collections.emptyList(), System.lineSeparator(), Integer.MAX_VALUE));
         renderException(
-                r,
-                new ThrowableRenderer<>(Collections.emptyList(), System.lineSeparator(), Integer.MAX_VALUE));
+                r, new ExtendedThrowableRenderer(Collections.emptyList(), System.lineSeparator(), Integer.MAX_VALUE));
         renderException(
-                r,
-                new ExtendedThrowableRenderer(Collections.emptyList(), System.lineSeparator(), Integer.MAX_VALUE));
-        renderException(
-                r,
-                new RootThrowableRenderer(Collections.emptyList(), System.lineSeparator(), Integer.MAX_VALUE));
+                r, new RootThrowableRenderer(Collections.emptyList(), System.lineSeparator(), Integer.MAX_VALUE));
     }
 
     private static Throwable createException(String name, int depth, int maxDepth) {
@@ -48,7 +44,9 @@ public class ThrowableTestMain {
             System.out.format("%n=== %-25s ==============================%n%n", "Throwable");
             throwable.printStackTrace();
         } else {
-            System.out.format("%n=== %-25s ==============================%n%n", renderer.getClass().getSimpleName());
+            System.out.format(
+                    "%n=== %-25s ==============================%n%n",
+                    renderer.getClass().getSimpleName());
             final StringBuilder stringBuilder = new StringBuilder();
             renderer.renderThrowable(stringBuilder, throwable, "");
             System.out.println(stringBuilder);

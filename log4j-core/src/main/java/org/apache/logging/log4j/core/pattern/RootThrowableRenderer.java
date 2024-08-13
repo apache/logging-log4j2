@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.pattern;
 
 import java.util.List;
+import java.util.Set;
 
 final class RootThrowableRenderer extends ThrowableRenderer<ThrowableRenderer.Context> {
 
@@ -31,21 +32,28 @@ final class RootThrowableRenderer extends ThrowableRenderer<ThrowableRenderer.Co
             final StringBuilder buffer,
             final Throwable throwable,
             final Context context,
+            final Set<Throwable> visitedThrowables,
             final String stackTraceElementSuffix) {
-        renderThrowable(buffer, throwable, context, stackTraceElementSuffix, "");
+        renderThrowable(buffer, throwable, context, visitedThrowables, stackTraceElementSuffix, "");
     }
 
     private void renderThrowable(
             final StringBuilder buffer,
             final Throwable throwable,
             final Context context,
+            final Set<Throwable> visitedThrowables,
             final String stackTraceElementSuffix,
             final String prefix) {
-        renderCause(buffer, throwable.getCause(), context, stackTraceElementSuffix, prefix);
+        if (visitedThrowables.contains(throwable)) {
+            return;
+        }
+        visitedThrowables.add(throwable);
+        renderCause(buffer, throwable.getCause(), context, visitedThrowables, stackTraceElementSuffix, prefix);
         renderThrowableMessage(buffer, throwable);
         buffer.append(lineSeparator);
         renderStackTraceElements(buffer, throwable, context, prefix, stackTraceElementSuffix);
-        renderSuppressed(buffer, throwable.getSuppressed(), context, stackTraceElementSuffix, prefix + '\t');
+        renderSuppressed(
+                buffer, throwable.getSuppressed(), context, visitedThrowables, stackTraceElementSuffix, prefix + '\t');
     }
 
     @Override
@@ -53,10 +61,11 @@ final class RootThrowableRenderer extends ThrowableRenderer<ThrowableRenderer.Co
             final StringBuilder buffer,
             final Throwable cause,
             final Context context,
+            final Set<Throwable> visitedThrowables,
             final String stackTraceElementSuffix,
             final String prefix) {
         if (cause != null) {
-            renderThrowable(buffer, cause, context, stackTraceElementSuffix, prefix);
+            renderThrowable(buffer, cause, context, visitedThrowables, stackTraceElementSuffix, prefix);
             buffer.append(prefix);
             buffer.append(WRAPPED_BY_CAPTION);
         }
@@ -67,13 +76,15 @@ final class RootThrowableRenderer extends ThrowableRenderer<ThrowableRenderer.Co
             final StringBuilder buffer,
             final Throwable[] suppressedThrowables,
             final Context context,
+            final Set<Throwable> visitedThrowables,
             final String stackTraceElementSuffix,
             final String prefix) {
         if (suppressedThrowables != null && suppressedThrowables.length != 0) {
             buffer.append(prefix);
             buffer.append(SUPPRESSED_CAPTION);
             for (final Throwable suppressedThrowable : suppressedThrowables) {
-                renderThrowable(buffer, suppressedThrowable, context, stackTraceElementSuffix, prefix);
+                renderThrowable(
+                        buffer, suppressedThrowable, context, visitedThrowables, stackTraceElementSuffix, prefix);
             }
         }
     }
