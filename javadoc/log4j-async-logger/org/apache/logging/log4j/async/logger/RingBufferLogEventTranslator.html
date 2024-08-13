@@ -143,7 +143,7 @@ implements com.lmax.disruptor.EventTranslator&lt;<a href="RingBufferLogEvent.htm
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setBasicValues(org.apache.logging.log4j.async.logger.AsyncLogger,java.lang.String,org.apache.logging.log4j.Marker,java.lang.String,org.apache.logging.log4j.Level,org.apache.logging.log4j.message.Message,java.lang.Throwable,org.apache.logging.log4j.ThreadContext.ContextStack,java.lang.StackTraceElement,org.apache.logging.log4j.core.time.Clock,org.apache.logging.log4j.core.time.NanoClock,boolean)" class="member-name-link">setBasicValues</a><wbr>(<a href="AsyncLogger.html" title="class in org.apache.logging.log4j.async.logger">AsyncLogger</a>&nbsp;asyncLogger,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setBasicValues(org.apache.logging.log4j.async.logger.AsyncLogger,java.lang.String,org.apache.logging.log4j.Marker,java.lang.String,org.apache.logging.log4j.Level,org.apache.logging.log4j.message.Message,java.lang.Throwable,org.apache.logging.log4j.ThreadContext.ContextStack,java.lang.StackTraceElement,org.apache.logging.log4j.core.time.Clock,org.apache.logging.log4j.core.time.NanoClock,org.apache.logging.log4j.core.ContextDataInjector,boolean)" class="member-name-link">setBasicValues</a><wbr>(<a href="AsyncLogger.html" title="class in org.apache.logging.log4j.async.logger">AsyncLogger</a>&nbsp;asyncLogger,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;loggerName,
  @Nullable org.apache.logging.log4j.Marker&nbsp;marker,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fqcn,
@@ -154,6 +154,7 @@ implements com.lmax.disruptor.EventTranslator&lt;<a href="RingBufferLogEvent.htm
  @Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StackTraceElement.html" title="class or interface in java.lang" class="external-link">StackTraceElement</a>&nbsp;location,
  <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/time/Clock.html" title="class or interface in org.apache.logging.log4j.core.time" class="external-link">Clock</a>&nbsp;clock,
  <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/time/NanoClock.html" title="class or interface in org.apache.logging.log4j.core.time" class="external-link">NanoClock</a>&nbsp;nanoClock,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ContextDataInjector.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ContextDataInjector</a>&nbsp;contextDataInjector,
  boolean&nbsp;includeLocation)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
@@ -244,7 +245,7 @@ implements com.lmax.disruptor.EventTranslator&lt;<a href="RingBufferLogEvent.htm
 </section>
 </li>
 <li>
-<section class="detail" id="setBasicValues(org.apache.logging.log4j.async.logger.AsyncLogger,java.lang.String,org.apache.logging.log4j.Marker,java.lang.String,org.apache.logging.log4j.Level,org.apache.logging.log4j.message.Message,java.lang.Throwable,org.apache.logging.log4j.ThreadContext.ContextStack,java.lang.StackTraceElement,org.apache.logging.log4j.core.time.Clock,org.apache.logging.log4j.core.time.NanoClock,boolean)">
+<section class="detail" id="setBasicValues(org.apache.logging.log4j.async.logger.AsyncLogger,java.lang.String,org.apache.logging.log4j.Marker,java.lang.String,org.apache.logging.log4j.Level,org.apache.logging.log4j.message.Message,java.lang.Throwable,org.apache.logging.log4j.ThreadContext.ContextStack,java.lang.StackTraceElement,org.apache.logging.log4j.core.time.Clock,org.apache.logging.log4j.core.time.NanoClock,org.apache.logging.log4j.core.ContextDataInjector,boolean)">
 <h3>setBasicValues</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setBasicValues</span><wbr><span class="parameters">(<a href="AsyncLogger.html" title="class in org.apache.logging.log4j.async.logger">AsyncLogger</a>&nbsp;asyncLogger,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;loggerName,
@@ -257,6 +258,7 @@ implements com.lmax.disruptor.EventTranslator&lt;<a href="RingBufferLogEvent.htm
  @Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StackTraceElement.html" title="class or interface in java.lang" class="external-link">StackTraceElement</a>&nbsp;location,
  <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/time/Clock.html" title="class or interface in org.apache.logging.log4j.core.time" class="external-link">Clock</a>&nbsp;clock,
  <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/time/NanoClock.html" title="class or interface in org.apache.logging.log4j.core.time" class="external-link">NanoClock</a>&nbsp;nanoClock,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/ContextDataInjector.html" title="class or interface in org.apache.logging.log4j.core" class="external-link">ContextDataInjector</a>&nbsp;contextDataInjector,
  boolean&nbsp;includeLocation)</span></div>
 </section>
 </li>
