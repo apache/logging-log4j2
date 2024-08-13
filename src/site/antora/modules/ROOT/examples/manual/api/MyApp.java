@@ -14,28 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.impl;
+package com.example;
 
-import aQute.bnd.annotation.Resolution;
-import aQute.bnd.annotation.spi.ServiceProvider;
-import java.util.Map;
-import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.util.ContextDataProvider;
-import org.apache.logging.log4j.util.StringMap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 
-/**
- * ContextDataProvider for ThreadContext data.
- */
-@ServiceProvider(value = ContextDataProvider.class, resolution = Resolution.OPTIONAL)
-public class ThreadContextDataProvider implements ContextDataProvider {
+// tag::class[]
+public class MyApp {
 
-    @Override
-    public Map<String, String> supplyContextData() {
-        return ThreadContext.getImmutableContext();
-    }
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    @Override
-    public StringMap supplyStringMap() {
-        return ThreadContext.getThreadContextMap().getReadOnlyContextData();
+    private static final Marker ACCOUNT_MARKER = MarkerManager.getMarker("ACCOUNT");
+
+    public void removeUser(String userId) {
+        logger.debug(ACCOUNT_MARKER, "Removing user with ID `{}`", userId);
+        // ...
     }
 }
+// end::class[]

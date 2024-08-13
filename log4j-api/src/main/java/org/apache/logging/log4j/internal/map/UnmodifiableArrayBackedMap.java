@@ -177,12 +177,12 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
 
     private int numEntries;
 
-    protected UnmodifiableArrayBackedMap(int capacity) {
+    private UnmodifiableArrayBackedMap(int capacity) {
         this.backingArray = new Object[capacity * 2 + 1];
         this.backingArray[0] = 0;
     }
 
-    protected UnmodifiableArrayBackedMap(Object[] backingArray) {
+    private UnmodifiableArrayBackedMap(Object[] backingArray) {
         this.numEntries = (backingArray == null ? 0 : (int) backingArray[0]);
         this.backingArray = backingArray;
     }
