@@ -642,6 +642,178 @@ The generated logger code will take care of the FQCN.</p>
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="package-scanning"><a class="anchor" href="#package-scanning"></a>Why am I receiving warnings about package scanning?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Since Log4j 2.19.1, the package scanning feature has been deprecated (see
+<a href="https://issues.apache.org/jira/browse/LOG4J2-3644">LOG4J2-3644</a>):</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>You should remove the <code>packages</code> attribute from your
+<a href="manual/configuration.html" class="xref page">Log4j Core configuration files</a>.</p>
+</li>
+<li>
+<p>You should remove any calls to
+<a href="javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/util/PluginManager.html#addPackage(java.lang.String)">PluginManager.addPackage()</a>
+and
+<a href="javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/util/PluginManager.html#addPackages(java.util.Collection)">PluginManager.addPackages()</a>
+from your code.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Package scanning has been replaced with Log4j plugin descriptors, which have been available since version 2.0 and widely used by Log4j extension JARs.</p>
+</div>
+<div class="paragraph">
+<p>If you are developing custom plugins, see <a href="manual/plugins.html#plugin-registry" class="xref page">Plugin registration</a> on details about plugin descriptors.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="plugin-descriptors"><a class="anchor" href="#plugin-descriptors"></a>Why am I receiving warnings about missing plugin descriptors?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="manual/plugins.html" class="xref page">Log4j Plugins</a>
+should be registered in a:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>file on the classpath of the Java applications.</p>
+</div>
+<div class="paragraph">
+<p>Starting with Log4j version <code>2.24.0</code>, you will receive a warning if a plugin is not registered properly.
+The common causes for improperly registered plugins are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>One of the <a href="components.html" class="xref page">Log4j artifacts</a> might be corrupted.
+If you are using a single-JAR application, this might be caused by an improper shading configuration.
+See <a href="#shading">Shading/Shadowing</a> on how to properly shade Log4j artifacts.</p>
+</li>
+<li>
+<p>A custom Log4j plugin has not been properly registered.
+See <a href="manual/plugins.html#plugin-registry" class="xref page">Registering plugins</a> for more details.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="single-jar"><a class="anchor" href="#single-jar"></a>How do I create a single-JAR application containing Log4j Core?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>There are two ways to create single-JAR applications: you can create
+<a href="#jar-in-jar">JAR-in-JAR executable packages</a>
+or
+<a href="#shading">shaded JARs</a>.
+See the sections below on how to properly use these techniques with Log4j Core.</p>
+</div>
+<div class="sect2">
+<h3 id="jar-in-jar"><a class="anchor" href="#jar-in-jar"></a>Jar-in-Jar</h3>
+<div class="paragraph">
+<p>The easiest and recommended way to create single-JAR applications containing Log4j Core is to include <strong>unmodified</strong> versions of Log4j artifacts inside the JAR file of your application.
+You can do it with the following build tool plugins:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.spring.io/spring-boot/maven-plugin/packaging.html">Spring Boot Maven Plugin</a>,</p>
+</li>
+<li>
+<p><a href="https://docs.spring.io/spring-boot/gradle-plugin/packaging.html">Spring Boot Gradle Plugin</a>,</p>
+</li>
+<li>
+<p><a href="https://github.com/sbt/sbt-onejar">sbt-onejar plugin</a>.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="shading"><a class="anchor" href="#shading"></a>Shading/Shadowing</h3>
+<div class="paragraph">
+<p>The shading process unwraps all the files contained in dependency JARs and copies them to the JAR containing the application.
+Since multiple JARs can contain files with the same name, you need to properly resolve the file naming conflicts that arise.</p>
+</div>
+<div class="paragraph">
+<p>If your application uses Log4j Core, the following conflicts must be resolved:</p>
+</div>
+<details>
+<summary class="title">Click to list the possible file name conflicts</summary>
+<div class="content">
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>module-info.class</code></dt>
+<dd>
+<p>If you are writing a JPMS application, you need to propertly merge these files.
+Otherwise, they should be discarded.</p>
+</dd>
+<dt class="hdlist1"><code>META-INF/MANIFEST.MF</code></dt>
+<dd>
+<div class="paragraph">
+<p>If you are writing a Java SE application, you only need to add:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-manifest hljs" data-lang="manifest">Multi-Release: true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>to your application manifest.</p>
+</div>
+<div class="paragraph">
+<p>If you are writing an OSGi application, you need to properly merge the OSGi headers.</p>
+</div>
+</dd>
+<dt class="hdlist1"><code>META-INF/DEPENDENCIES</code></dt>
+<dt class="hdlist1"><code>META-INF/LICENSE</code></dt>
+<dt class="hdlist1"><code>META-INF/NOTICE</code></dt>
+<dd>
+<p>Ask your legal department on how to handle these files.</p>
+</dd>
+<dt class="hdlist1"><code>META-INF/services/*</code></dt>
+<dd>
+<p>These files contain
+<a href="https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html"><code>ServiceLoader</code> descriptors</a>.
+You need to properly merge them by concatenating conflicting files.</p>
+</dd>
+<dt class="hdlist1"><code>META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat</code></dt>
+<dd>
+<p>These files contain Log4j plugin descriptors and need to be properly merged using the appropriate resource transformer for your shading plugin:</p>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><a href="https://maven.apache.org/plugins/maven-assembly-plugin/">Maven Assembly Plugin</a></dt>
+<dt class="hdlist1"><a href="https://github.com/sbt/sbt-assembly">SBT Assembly Plugin</a></dt>
+<dd>
+<p>We are not aware of any resource transformers capable of merging Log4j plugin descriptors.</p>
+</dd>
+<dt class="hdlist1"><a href="https://maven.apache.org/plugins/maven-shade-plugin/">Maven Shade Plugin</a></dt>
+<dd>
+<p>You need to use the
+<a href="https://logging.staged.apache.org/log4j/transform/log4j-transform-maven-shade-plugin-extensions.html#log4j-plugin-cache-transformer">Log4j Plugin Descriptor Transformer</a>.</p>
+</dd>
+<dt class="hdlist1"><a href="https://gradleup.com/shadow/">Gradle Shadow Plugin</a></dt>
+<dd>
+<p>You need to use the
+<a href="https://github.com/GradleUp/shadow/blob/main/src/main/groovy/com/github/jengelman/gradle/plugins/shadow/transformers/Log4j2PluginsCacheFileTransformer.groovy"><code>Log4j2PluginsCacheFileTransformer</code></a>.</p>
+</dd>
+</dl>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</details>
+</div>
+</div>
+</div>
 </article>
   </div>
 </main>
