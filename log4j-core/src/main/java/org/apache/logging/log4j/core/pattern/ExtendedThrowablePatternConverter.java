@@ -61,11 +61,13 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
      */
     @Override
     public void format(final LogEvent event, final StringBuilder buffer) {
-        final int len = buffer.length();
-        if (len > 0 && !Character.isWhitespace(buffer.charAt(len - 1))) {
-            buffer.append(' ');
+        if (event.getThrown() != null && options.anyLines()) {
+            final int len = buffer.length();
+            if (len > 0 && !Character.isWhitespace(buffer.charAt(len - 1))) {
+                buffer.append(' ');
+            }
+            renderer.renderThrowable(buffer, event.getThrown(), getSuffix(event));
         }
-        renderer.renderThrowable(buffer, event.getThrown(), getSuffix(event));
     }
 
     @Override

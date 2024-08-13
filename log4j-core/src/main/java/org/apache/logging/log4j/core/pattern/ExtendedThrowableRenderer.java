@@ -47,7 +47,7 @@ final class ExtendedThrowableRenderer extends ThrowableRenderer<ExtendedThrowabl
             final StackTraceElement stackTraceElement,
             final ExtendedContext context,
             final String prefix,
-            final String stackTraceElementSuffix) {
+            final String suffix) {
 
         // Short-circuit on ignored stack trace elements
         final boolean stackTraceElementIgnored = isStackTraceElementIgnored(stackTraceElement, ignoredPackageNames);
@@ -58,7 +58,7 @@ final class ExtendedThrowableRenderer extends ThrowableRenderer<ExtendedThrowabl
 
         // Render the stack trace element
         if (context.ignoredStackTraceElementCount > 0) {
-            renderSuppressedCount(buffer, context.ignoredStackTraceElementCount, prefix, lineSeparator);
+            renderSuppressedCount(buffer, context.ignoredStackTraceElementCount, prefix, suffix, lineSeparator);
             context.ignoredStackTraceElementCount = 0;
         }
         buffer.append(prefix);
@@ -70,7 +70,7 @@ final class ExtendedThrowableRenderer extends ThrowableRenderer<ExtendedThrowabl
             buffer.append(' ');
             buffer.append(classResourceInfo);
         }
-        renderSuffix(buffer, stackTraceElementSuffix);
+        renderSuffix(buffer, suffix);
         buffer.append(lineSeparator);
     }
 
