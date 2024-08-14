@@ -279,4 +279,24 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
     String effectiveLineSeparator(final LogEvent logEvent) {
         return effectiveLineSeparatorProvider.apply(logEvent);
     }
+
+    /**
+     * Returns the formatted suffix pattern.
+     *
+     * @param logEvent the log event to use while formatting the suffix pattern
+     * @return the formatted suffix
+     * @deprecated Use {@link #effectiveLineSeparator(LogEvent)} instead
+     */
+    @Deprecated
+    protected String getSuffix(final LogEvent logEvent) {
+        final String effectiveLineSeparator = effectiveLineSeparator(logEvent);
+        if (options.getSeparator().equals(effectiveLineSeparator)) {
+            return "";
+        }
+        return effectiveLineSeparator.substring(
+                // Skip whitespace prefix:
+                1,
+                // Remove the separator:
+                effectiveLineSeparator.length() - options.getSeparator().length());
+    }
 }
