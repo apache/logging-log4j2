@@ -118,13 +118,13 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         final Throwable t = event.getThrown();
 
         if (subShortOption) {
-            formatSubShortOption(t, getSuffix(event), buffer);
+            formatSubShortOption(t, getLineSeparator(event), buffer);
         } else if (t != null && options.anyLines()) {
             formatOption(t, getSuffix(event), buffer);
         }
     }
 
-    private void formatSubShortOption(final Throwable t, final String suffix, final StringBuilder buffer) {
+    private void formatSubShortOption(final Throwable t, final String lineSeparator, final StringBuilder buffer) {
         StackTraceElement[] trace;
         StackTraceElement throwingMethod = null;
         int len;
@@ -159,10 +159,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
             }
             buffer.append(toAppend);
 
-            if (Strings.isNotBlank(suffix)) {
-                buffer.append(' ');
-                buffer.append(suffix);
-            }
+            buffer.append(lineSeparator);
         }
     }
 
@@ -175,7 +172,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
             buffer.append(' ');
         }
         if (requireAdditionalFormatting(suffix)) {
-            renderer.renderThrowable(buffer, throwable, suffix);
+            renderer.renderThrowable(buffer, throwable, getLineSeparator(suffix));
         } else {
             throwable.printStackTrace(new PrintWriter(new StringBuilderWriter(buffer)));
         }
@@ -191,7 +188,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         return true;
     }
 
-    protected String getSuffix(final LogEvent event) {
+    private String getSuffix(final LogEvent event) {
         return suffixProvider.apply(event);
     }
 
@@ -233,7 +230,29 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
     }
 
     void createRenderer(final ThrowableFormatOptions options) {
-        this.renderer =
-                new ThrowableRenderer<>(options.getIgnorePackages(), options.getSeparator(), options.getLines());
+        this.renderer = new ThrowableRenderer<>(options.getIgnorePackages(), options.getLines());
+    }
+
+    private String getLineSeparator(final String suffix) {
+        final StringBuilder builder = new StringBuilder();
+
+        if (Strings.isNotBlank(suffix)) {
+            builder.append(" ");
+            builder.append(suffix);
+        }
+        builder.append(options.getSeparator());
+        return builder.toString();
+    }
+
+    String getLineSeparator(final LogEvent logEvent) {
+        final StringBuilder builder = new StringBuilder();
+
+        String suffix = getSuffix(logEvent);
+        if (Strings.isNotBlank(suffix)) {
+            builder.append(" ");
+            builder.append(suffix);
+        }
+        builder.append(options.getSeparator());
+        return builder.toString();
     }
 }

@@ -23,8 +23,8 @@ final class RootThrowableRenderer extends ThrowableRenderer<ThrowableRenderer.Co
 
     private static final String WRAPPED_BY_CAPTION = "Wrapped by: ";
 
-    RootThrowableRenderer(final List<String> ignoredPackageNames, final String lineSeparator, final int maxLineCount) {
-        super(ignoredPackageNames, lineSeparator, maxLineCount);
+    RootThrowableRenderer(final List<String> ignoredPackageNames, final int maxLineCount) {
+        super(ignoredPackageNames, maxLineCount);
     }
 
     @Override
@@ -33,8 +33,8 @@ final class RootThrowableRenderer extends ThrowableRenderer<ThrowableRenderer.Co
             final Throwable throwable,
             final Context context,
             final Set<Throwable> visitedThrowables,
-            final String suffix) {
-        renderThrowable(buffer, throwable, context, visitedThrowables, "", suffix);
+            final String lineSeparator) {
+        renderThrowable(buffer, throwable, context, visitedThrowables, "", lineSeparator);
     }
 
     private void renderThrowable(
@@ -43,17 +43,16 @@ final class RootThrowableRenderer extends ThrowableRenderer<ThrowableRenderer.Co
             final Context context,
             final Set<Throwable> visitedThrowables,
             final String prefix,
-            final String suffix) {
+            final String lineSeparator) {
         if (visitedThrowables.contains(throwable)) {
             return;
         }
         visitedThrowables.add(throwable);
-        renderCause(buffer, throwable.getCause(), context, visitedThrowables, prefix, suffix);
+        renderCause(buffer, throwable.getCause(), context, visitedThrowables, prefix, lineSeparator);
         renderThrowableMessage(buffer, throwable);
-        renderSuffix(buffer, suffix);
         buffer.append(lineSeparator);
-        renderStackTraceElements(buffer, throwable, context, prefix, suffix);
-        renderSuppressed(buffer, throwable.getSuppressed(), context, visitedThrowables, prefix + '\t', suffix);
+        renderStackTraceElements(buffer, throwable, context, prefix, lineSeparator);
+        renderSuppressed(buffer, throwable.getSuppressed(), context, visitedThrowables, prefix + '\t', lineSeparator);
     }
 
     @Override
@@ -63,9 +62,9 @@ final class RootThrowableRenderer extends ThrowableRenderer<ThrowableRenderer.Co
             final Context context,
             final Set<Throwable> visitedThrowables,
             final String prefix,
-            final String suffix) {
+            final String lineSeparator) {
         if (cause != null) {
-            renderThrowable(buffer, cause, context, visitedThrowables, prefix, suffix);
+            renderThrowable(buffer, cause, context, visitedThrowables, prefix, lineSeparator);
             buffer.append(prefix);
             buffer.append(WRAPPED_BY_CAPTION);
         }
@@ -78,12 +77,12 @@ final class RootThrowableRenderer extends ThrowableRenderer<ThrowableRenderer.Co
             final Context context,
             final Set<Throwable> visitedThrowables,
             final String prefix,
-            final String suffix) {
+            final String lineSeparator) {
         if (suppressedThrowables != null && suppressedThrowables.length != 0) {
             buffer.append(prefix);
             buffer.append(SUPPRESSED_CAPTION);
             for (final Throwable suppressedThrowable : suppressedThrowables) {
-                renderThrowable(buffer, suppressedThrowable, context, visitedThrowables, prefix, suffix);
+                renderThrowable(buffer, suppressedThrowable, context, visitedThrowables, prefix, lineSeparator);
             }
         }
     }

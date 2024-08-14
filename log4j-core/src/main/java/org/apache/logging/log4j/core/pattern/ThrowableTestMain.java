@@ -25,13 +25,13 @@ public class ThrowableTestMain {
     public static void main(String[] args) {
         Throwable r = createException("r", 1, 3);
         renderException(r);
-        renderException(r, new ThrowableRenderer<>(Collections.emptyList(), System.lineSeparator(), Integer.MAX_VALUE));
+        renderException(r, new ThrowableRenderer<>(Collections.emptyList(), Integer.MAX_VALUE));
         renderException(r, "%ex");
         renderException(
-                r, new ExtendedThrowableRenderer(Collections.emptyList(), System.lineSeparator(), Integer.MAX_VALUE));
+                r, new ExtendedThrowableRenderer(Collections.emptyList(), Integer.MAX_VALUE));
         renderException(r, "%xEx");
         renderException(
-                r, new RootThrowableRenderer(Collections.emptyList(), System.lineSeparator(), Integer.MAX_VALUE));
+                r, new RootThrowableRenderer(Collections.emptyList(), Integer.MAX_VALUE));
         renderException(r, "%rEx");
     }
 
@@ -54,7 +54,7 @@ public class ThrowableTestMain {
                 "%n=== %-25s ==============================%n%n",
                 renderer.getClass().getSimpleName());
         final StringBuilder stringBuilder = new StringBuilder();
-        renderer.renderThrowable(stringBuilder, throwable, "");
+        renderer.renderThrowable(stringBuilder, throwable, System.lineSeparator());
         System.out.println(stringBuilder);
     }
 

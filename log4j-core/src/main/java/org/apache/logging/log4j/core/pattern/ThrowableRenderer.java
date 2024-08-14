@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.logging.log4j.core.util.internal.StringBuilders;
-import org.apache.logging.log4j.util.Strings;
 
 class ThrowableRenderer<C extends ThrowableRenderer.Context> {
 
@@ -32,20 +31,17 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
 
     final List<String> ignoredPackageNames;
 
-    final String lineSeparator;
-
     final int maxLineCount;
 
-    ThrowableRenderer(final List<String> ignoredPackageNames, final String lineSeparator, final int maxLineCount) {
+    ThrowableRenderer(final List<String> ignoredPackageNames, final int maxLineCount) {
         this.ignoredPackageNames = ignoredPackageNames;
-        this.lineSeparator = lineSeparator;
         this.maxLineCount = maxLineCount;
     }
 
     final void renderThrowable(
-            final StringBuilder buffer, final Throwable throwable, final String stackTraceElementSuffix) {
+            final StringBuilder buffer, final Throwable throwable, final String lineSeparator) {
         C context = createContext(throwable);
-        renderThrowable(buffer, throwable, context, new HashSet<>(), stackTraceElementSuffix);
+        renderThrowable(buffer, throwable, context, new HashSet<>(), lineSeparator);
         StringBuilders.truncateAfterDelimiter(buffer, lineSeparator, maxLineCount);
     }
 
@@ -60,8 +56,8 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
             final Throwable throwable,
             final C context,
             final Set<Throwable> visitedThrowables,
-            final String suffix) {
-        renderThrowable(buffer, throwable, context, visitedThrowables, "", suffix, "");
+            final String lineSeparator) {
+        renderThrowable(buffer, throwable, context, visitedThrowables, "", lineSeparator, "");
     }
 
     private void renderThrowable(
@@ -70,7 +66,7 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
             final C context,
             final Set<Throwable> visitedThrowables,
             final String prefix,
-            final String suffix,
+            final String lineSeparator,
             final String caption) {
         if (visitedThrowables.contains(throwable)) {
             return;
@@ -79,11 +75,10 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
         buffer.append(prefix);
         buffer.append(caption);
         renderThrowableMessage(buffer, throwable);
-        renderSuffix(buffer, suffix);
         buffer.append(lineSeparator);
-        renderStackTraceElements(buffer, throwable, context, prefix, suffix);
-        renderSuppressed(buffer, throwable.getSuppressed(), context, visitedThrowables, prefix + '\t', suffix);
-        renderCause(buffer, throwable.getCause(), context, visitedThrowables, prefix, suffix);
+        renderStackTraceElements(buffer, throwable, context, prefix, lineSeparator);
+        renderSuppressed(buffer, throwable.getSuppressed(), context, visitedThrowables, prefix + '\t', lineSeparator);
+        renderCause(buffer, throwable.getCause(), context, visitedThrowables, prefix, lineSeparator);
     }
 
     void renderSuppressed(
@@ -92,10 +87,10 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
             final C context,
             final Set<Throwable> visitedThrowables,
             final String prefix,
-            final String suffix) {
+            final String lineSeparator) {
         for (final Throwable suppressedThrowable : suppressedThrowables) {
             renderThrowable(
-                    buffer, suppressedThrowable, context, visitedThrowables, prefix, suffix, SUPPRESSED_CAPTION);
+                    buffer, suppressedThrowable, context, visitedThrowables, prefix, lineSeparator, SUPPRESSED_CAPTION);
         }
     }
 
@@ -105,9 +100,9 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
             final C context,
             final Set<Throwable> visitedThrowables,
             final String prefix,
-            final String suffix) {
+            final String lineSeparator) {
         if (cause != null) {
-            renderThrowable(buffer, cause, context, visitedThrowables, prefix, suffix, CAUSED_BY_CAPTION);
+            renderThrowable(buffer, cause, context, visitedThrowables, prefix, lineSeparator, CAUSED_BY_CAPTION);
         }
     }
 
@@ -125,22 +120,21 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
             final Throwable throwable,
             final C context,
             final String prefix,
-            final String suffix) {
+            final String lineSeparator) {
         context.ignoredStackTraceElementCount = 0;
         final Context.Metadata metadata = context.metadataByThrowable.get(throwable);
         final StackTraceElement[] stackTraceElements = throwable.getStackTrace();
         for (int i = 0; i < metadata.stackLength; i++) {
-            renderStackTraceElement(buffer, stackTraceElements[i], context, prefix, suffix);
+            renderStackTraceElement(buffer, stackTraceElements[i], context, prefix, lineSeparator);
         }
         if (context.ignoredStackTraceElementCount > 0) {
-            renderSuppressedCount(buffer, context.ignoredStackTraceElementCount, prefix, suffix, lineSeparator);
+            renderSuppressedCount(buffer, context.ignoredStackTraceElementCount, prefix, lineSeparator);
         }
         if (metadata.commonElementCount != 0) {
             buffer.append(prefix);
             buffer.append("\t... ");
             buffer.append(metadata.commonElementCount);
             buffer.append(" more");
-            renderSuffix(buffer, suffix);
             buffer.append(lineSeparator);
         }
     }
@@ -150,7 +144,7 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
             final StackTraceElement stackTraceElement,
             final C context,
             final String prefix,
-            final String suffix) {
+            final String lineSeparator) {
 
         // Short-circuit on ignored stack trace elements
         final boolean stackTraceElementIgnored = isStackTraceElementIgnored(stackTraceElement, ignoredPackageNames);
@@ -161,13 +155,12 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
 
         // Render the stack trace element
         if (context.ignoredStackTraceElementCount > 0) {
-            renderSuppressedCount(buffer, context.ignoredStackTraceElementCount, prefix, suffix, lineSeparator);
+            renderSuppressedCount(buffer, context.ignoredStackTraceElementCount, prefix, lineSeparator);
             context.ignoredStackTraceElementCount = 0;
         }
         buffer.append(prefix);
         buffer.append("\tat ");
         buffer.append(stackTraceElement.toString());
-        renderSuffix(buffer, suffix);
         buffer.append(lineSeparator);
     }
 
@@ -187,7 +180,6 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
             final StringBuilder buffer,
             final int count,
             final String prefix,
-            final String suffix,
             final String lineSeparator) {
         buffer.append(prefix);
         if (count == 1) {
@@ -197,15 +189,7 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
             buffer.append(count);
             buffer.append(" lines");
         }
-        renderSuffix(buffer, suffix);
         buffer.append(lineSeparator);
-    }
-
-    static void renderSuffix(final StringBuilder buffer, final String suffix) {
-        if (Strings.isNotBlank(suffix)) {
-            buffer.append(' ');
-            buffer.append(suffix);
-        }
     }
 
     static class Context {

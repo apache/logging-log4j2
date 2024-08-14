@@ -66,13 +66,12 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
             if (len > 0 && !Character.isWhitespace(buffer.charAt(len - 1))) {
                 buffer.append(' ');
             }
-            renderer.renderThrowable(buffer, event.getThrown(), getSuffix(event));
+            renderer.renderThrowable(buffer, event.getThrown(), getLineSeparator(event));
         }
     }
 
     @Override
     void createRenderer(final ThrowableFormatOptions options) {
-        this.renderer =
-                new ExtendedThrowableRenderer(options.getIgnorePackages(), options.getSeparator(), options.getLines());
+        this.renderer = new ExtendedThrowableRenderer(options.getIgnorePackages(), options.getLines());
     }
 }

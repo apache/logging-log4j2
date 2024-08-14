@@ -32,8 +32,8 @@ import org.apache.logging.log4j.util.StackLocatorUtil;
 final class ExtendedThrowableRenderer extends ThrowableRenderer<ExtendedThrowableRenderer.ExtendedContext> {
 
     ExtendedThrowableRenderer(
-            final List<String> ignoredPackageNames, final String lineSeparator, final int maxLineCount) {
-        super(ignoredPackageNames, lineSeparator, maxLineCount);
+            final List<String> ignoredPackageNames, final int maxLineCount) {
+        super(ignoredPackageNames, maxLineCount);
     }
 
     @Override
@@ -47,7 +47,7 @@ final class ExtendedThrowableRenderer extends ThrowableRenderer<ExtendedThrowabl
             final StackTraceElement stackTraceElement,
             final ExtendedContext context,
             final String prefix,
-            final String suffix) {
+            final String lineSeparator) {
 
         // Short-circuit on ignored stack trace elements
         final boolean stackTraceElementIgnored = isStackTraceElementIgnored(stackTraceElement, ignoredPackageNames);
@@ -58,7 +58,7 @@ final class ExtendedThrowableRenderer extends ThrowableRenderer<ExtendedThrowabl
 
         // Render the stack trace element
         if (context.ignoredStackTraceElementCount > 0) {
-            renderSuppressedCount(buffer, context.ignoredStackTraceElementCount, prefix, suffix, lineSeparator);
+            renderSuppressedCount(buffer, context.ignoredStackTraceElementCount, prefix, lineSeparator);
             context.ignoredStackTraceElementCount = 0;
         }
         buffer.append(prefix);
@@ -70,7 +70,6 @@ final class ExtendedThrowableRenderer extends ThrowableRenderer<ExtendedThrowabl
             buffer.append(' ');
             buffer.append(classResourceInfo);
         }
-        renderSuffix(buffer, suffix);
         buffer.append(lineSeparator);
     }
 
