@@ -31,8 +31,7 @@ import org.apache.logging.log4j.util.StackLocatorUtil;
 
 final class ExtendedThrowableRenderer extends ThrowableRenderer<ExtendedThrowableRenderer.ExtendedContext> {
 
-    ExtendedThrowableRenderer(
-            final List<String> ignoredPackageNames, final int maxLineCount) {
+    ExtendedThrowableRenderer(final List<String> ignoredPackageNames, final int maxLineCount) {
         super(ignoredPackageNames, maxLineCount);
     }
 

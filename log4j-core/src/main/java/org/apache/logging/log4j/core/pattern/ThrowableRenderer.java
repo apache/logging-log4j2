@@ -38,8 +38,7 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
         this.maxLineCount = maxLineCount;
     }
 
-    final void renderThrowable(
-            final StringBuilder buffer, final Throwable throwable, final String lineSeparator) {
+    final void renderThrowable(final StringBuilder buffer, final Throwable throwable, final String lineSeparator) {
         C context = createContext(throwable);
         renderThrowable(buffer, throwable, context, new HashSet<>(), lineSeparator);
         StringBuilders.truncateAfterDelimiter(buffer, lineSeparator, maxLineCount);
@@ -177,10 +176,7 @@ class ThrowableRenderer<C extends ThrowableRenderer.Context> {
     }
 
     static void renderSuppressedCount(
-            final StringBuilder buffer,
-            final int count,
-            final String prefix,
-            final String lineSeparator) {
+            final StringBuilder buffer, final int count, final String prefix, final String lineSeparator) {
         buffer.append(prefix);
         if (count == 1) {
             buffer.append("\t... ");

@@ -84,7 +84,8 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
             rawOption = options[0];
         }
         final List<PatternFormatter> suffixFormatters = new ArrayList<>();
-        this.effectiveLineSeparatorProvider = createEffectiveLineSeparator(this.options.getSeparator(), this.options.getSuffix(), config, suffixFormatters);
+        this.effectiveLineSeparatorProvider = createEffectiveLineSeparator(
+                this.options.getSeparator(), this.options.getSuffix(), config, suffixFormatters);
         this.formatters = Collections.unmodifiableList(suffixFormatters);
         subShortOption = ThrowableFormatOptions.MESSAGE.equalsIgnoreCase(rawOption)
                 || ThrowableFormatOptions.LOCALIZED_MESSAGE.equalsIgnoreCase(rawOption)
@@ -163,7 +164,8 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
     @SuppressFBWarnings(
             value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
             justification = "Formatting a throwable is the main purpose of this class.")
-    private void formatOption(final Throwable throwable, final String effectiveLineSeparator, final StringBuilder buffer) {
+    private void formatOption(
+            final Throwable throwable, final String effectiveLineSeparator, final StringBuilder buffer) {
         final int bufferLength = buffer.length();
         if (bufferLength > 0 && !Character.isWhitespace(buffer.charAt(bufferLength - 1))) {
             buffer.append(' ');
@@ -225,7 +227,10 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
      * @return a lambda that returns the <em>effective</em> line separator by concatenating the formatted {@code suffix} with the {@code separator}
      */
     private static Function<LogEvent, String> createEffectiveLineSeparator(
-            final String separator, final String suffix, final Configuration config, final List<PatternFormatter> suffixFormatters) {
+            final String separator,
+            final String suffix,
+            final Configuration config,
+            final List<PatternFormatter> suffixFormatters) {
         if (suffix != null) {
 
             // Suffix is allowed to be a Pattern Layout conversion pattern, hence we need to parse it

@@ -27,11 +27,9 @@ public class ThrowableTestMain {
         renderException(r);
         renderException(r, new ThrowableRenderer<>(Collections.emptyList(), Integer.MAX_VALUE));
         renderException(r, "%ex");
-        renderException(
-                r, new ExtendedThrowableRenderer(Collections.emptyList(), Integer.MAX_VALUE));
+        renderException(r, new ExtendedThrowableRenderer(Collections.emptyList(), Integer.MAX_VALUE));
         renderException(r, "%xEx");
-        renderException(
-                r, new RootThrowableRenderer(Collections.emptyList(), Integer.MAX_VALUE));
+        renderException(r, new RootThrowableRenderer(Collections.emptyList(), Integer.MAX_VALUE));
         renderException(r, "%rEx");
     }
 
