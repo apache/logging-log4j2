@@ -66,7 +66,7 @@ public final class RootThrowablePatternConverter extends ThrowablePatternConvert
             if (len > 0 && !Character.isWhitespace(buffer.charAt(len - 1))) {
                 buffer.append(' ');
             }
-            renderer.renderThrowable(buffer, event.getThrown(), getLineSeparator(event));
+            renderer.renderThrowable(buffer, event.getThrown(), effectiveLineSeparator(event));
         }
     }
 

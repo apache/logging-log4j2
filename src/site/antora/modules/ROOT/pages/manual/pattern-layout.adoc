@@ -648,10 +648,25 @@ Specifying `%throwable\{none}` or `%throwable\{0}` suppresses output of the exce
 
 Use `{filters(packages)}` where _packages_ is a list of package names to suppress matching stack frames from stack traces.
 
-Use `{suffix(pattern)}` to add the output of _pattern_ at the end of each stack frame.
+You can change the used line separator in multiple ways:
 
-Use a `{separator(...)}` as the end-of-line string, e.g., `separator(\|)`.
-The default value is the `line.separator` system property, which is operating system dependent.
+* Use `{separator(separator)}` to set the separator string literal.
+It defaults to `System.lineSeparator()`.
+The contents of `separator` will be rendered verbatim without being subject to any processing.
+
+* `{suffix(pattern)}` is identical to `{separator(separator)}` with the exception that the provided `pattern` will be processed as a xref:manual/pattern-layout.adoc[] conversion pattern before being rendered.
+
+`{separator(...)}` and `{suffix(pattern)}` get concatenated to produce _the effective line separator_ as follows:
+
+[source,java]
+----
+String effectiveLineSeparator(String separator, String suffix, LogEvent event) {
+    String formattedSuffix = format(suffix, event);
+    return isNotBlank(formattedSuffix)
+           ? (' ' + formattedSuffix + lineSeparator)
+           : lineSeparator;
+}
+----
 
 [WARNING]
 ====

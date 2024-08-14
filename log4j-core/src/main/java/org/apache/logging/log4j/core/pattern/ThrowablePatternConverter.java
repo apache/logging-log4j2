@@ -47,13 +47,11 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
     @Deprecated
     protected final List<PatternFormatter> formatters;
 
-    private final Function<LogEvent, String> suffixProvider;
+    private final Function<LogEvent, String> effectiveLineSeparatorProvider;
 
     private String rawOption;
 
     private final boolean subShortOption;
-
-    private final boolean nonStandardLineSeparator;
 
     private ThrowableRenderer<ThrowableRenderer.Context> renderer;
 
@@ -86,7 +84,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
             rawOption = options[0];
         }
         final List<PatternFormatter> suffixFormatters = new ArrayList<>();
-        this.suffixProvider = createSuffixProvider(this.options.getSuffix(), config, suffixFormatters);
+        this.effectiveLineSeparatorProvider = createEffectiveLineSeparator(this.options.getSeparator(), this.options.getSuffix(), config, suffixFormatters);
         this.formatters = Collections.unmodifiableList(suffixFormatters);
         subShortOption = ThrowableFormatOptions.MESSAGE.equalsIgnoreCase(rawOption)
                 || ThrowableFormatOptions.LOCALIZED_MESSAGE.equalsIgnoreCase(rawOption)
@@ -94,7 +92,6 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
                 || ThrowableFormatOptions.LINE_NUMBER.equalsIgnoreCase(rawOption)
                 || ThrowableFormatOptions.METHOD_NAME.equalsIgnoreCase(rawOption)
                 || ThrowableFormatOptions.CLASS_NAME.equalsIgnoreCase(rawOption);
-        nonStandardLineSeparator = !Strings.LINE_SEPARATOR.equals(this.options.getSeparator());
         createRenderer(this.options);
     }
 
@@ -115,12 +112,12 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
      */
     @Override
     public void format(final LogEvent event, final StringBuilder buffer) {
-        final Throwable t = event.getThrown();
-
+        final Throwable throwable = event.getThrown();
+        final String effectiveLineSeparator = effectiveLineSeparator(event);
         if (subShortOption) {
-            formatSubShortOption(t, getLineSeparator(event), buffer);
-        } else if (t != null && options.anyLines()) {
-            formatOption(t, getSuffix(event), buffer);
+            formatSubShortOption(throwable, effectiveLineSeparator, buffer);
+        } else if (throwable != null && options.anyLines()) {
+            formatOption(throwable, effectiveLineSeparator, buffer);
         }
     }
 
@@ -166,13 +163,14 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
     @SuppressFBWarnings(
             value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
             justification = "Formatting a throwable is the main purpose of this class.")
-    private void formatOption(final Throwable throwable, final String suffix, final StringBuilder buffer) {
-        final int len = buffer.length();
-        if (len > 0 && !Character.isWhitespace(buffer.charAt(len - 1))) {
+    private void formatOption(final Throwable throwable, final String effectiveLineSeparator, final StringBuilder buffer) {
+        final int bufferLength = buffer.length();
+        if (bufferLength > 0 && !Character.isWhitespace(buffer.charAt(bufferLength - 1))) {
             buffer.append(' ');
         }
-        if (requireAdditionalFormatting(suffix)) {
-            renderer.renderThrowable(buffer, throwable, getLineSeparator(suffix));
+        final boolean customRenderingRequired = isCustomRenderingRequired(effectiveLineSeparator);
+        if (customRenderingRequired) {
+            renderer.renderThrowable(buffer, throwable, effectiveLineSeparator);
         } else {
             throwable.printStackTrace(new PrintWriter(new StringBuilderWriter(buffer)));
         }
@@ -188,20 +186,46 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         return true;
     }
 
-    private String getSuffix(final LogEvent event) {
-        return suffixProvider.apply(event);
-    }
-
     public ThrowableFormatOptions getOptions() {
         return options;
     }
 
-    private boolean requireAdditionalFormatting(final String suffix) {
-        return !options.allLines() || nonStandardLineSeparator || Strings.isNotBlank(suffix) || options.hasPackages();
+    private boolean isCustomRenderingRequired(final String effectiveLineSeparator) {
+        return !options.allLines() || !System.lineSeparator().equals(effectiveLineSeparator) || options.hasPackages();
     }
 
-    private static Function<LogEvent, String> createSuffixProvider(
-            final String suffix, final Configuration config, final List<PatternFormatter> suffixFormatters) {
+    /**
+     * Creates a lambda that returns the <em>effective</em> line separator by concatenating the formatted {@code suffix} with the {@code separator}.
+     * <p>
+     * At the beginning, there was only {@code separator} used as a terminator at the end of every rendered line.
+     * Its content was rendered literally without any processing.
+     * </p>
+     * <p>
+     * Later on, {@code suffix} was added in <a href="https://github.com/apache/logging-log4j2/pull/61">#61</a>.
+     * {@code suffix} is functionally identical to {@code separator} with the exception that it contains a Pattern Layout conversion pattern.
+     * In an ideal world, {@code separator} should have been extended to accept patterns.
+     * But without giving it a second of thought, just like almost any other Log4j feature, we cheerfully accepted the feature.
+     * </p>
+     * <p>
+     * Given two overlapping features, how do we determine the <em>effective</em> line separator?
+     * </p>
+     * <pre>{@code
+     * String effectiveLineSeparator(String separator, String suffix, LogEvent event) {
+     *     String formattedSuffix = format(suffix, event);
+     *     return isNotBlank(formattedSuffix)
+     *            ? (' ' + formattedSuffix + lineSeparator)
+     *            : lineSeparator;
+     * }
+     * }</pre>
+     *
+     * @param separator the user-provided {@code separator} option
+     * @param suffix the user-provided {@code suffix} option containing a Pattern Layout conversion pattern
+     * @param config the configuration to create the Pattern Layout conversion pattern parser
+     * @param suffixFormatters the list of pattern formatters to format the suffix
+     * @return a lambda that returns the <em>effective</em> line separator by concatenating the formatted {@code suffix} with the {@code separator}
+     */
+    private static Function<LogEvent, String> createEffectiveLineSeparator(
+            final String separator, final String suffix, final Configuration config, final List<PatternFormatter> suffixFormatters) {
         if (suffix != null) {
 
             // Suffix is allowed to be a Pattern Layout conversion pattern, hence we need to parse it
@@ -218,14 +242,21 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
             // Create the lambda accepting a `LogEvent` to invoke collected formatters
             return logEvent -> {
                 final StringBuilder buffer = new StringBuilder();
+                buffer.append(' ');
                 for (PatternFormatter suffixFormatter : suffixFormatters) {
                     suffixFormatter.format(logEvent, buffer);
                 }
-                return buffer.toString();
+                final boolean blankSuffix = buffer.length() == 1;
+                if (blankSuffix) {
+                    return separator;
+                } else {
+                    buffer.append(separator);
+                    return buffer.toString();
+                }
             };
 
         } else {
-            return logEvent -> Strings.EMPTY;
+            return logEvent -> separator;
         }
     }
 
@@ -233,26 +264,14 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         this.renderer = new ThrowableRenderer<>(options.getIgnorePackages(), options.getLines());
     }
 
-    private String getLineSeparator(final String suffix) {
-        final StringBuilder builder = new StringBuilder();
-
-        if (Strings.isNotBlank(suffix)) {
-            builder.append(" ");
-            builder.append(suffix);
-        }
-        builder.append(options.getSeparator());
-        return builder.toString();
-    }
-
-    String getLineSeparator(final LogEvent logEvent) {
-        final StringBuilder builder = new StringBuilder();
-
-        String suffix = getSuffix(logEvent);
-        if (Strings.isNotBlank(suffix)) {
-            builder.append(" ");
-            builder.append(suffix);
-        }
-        builder.append(options.getSeparator());
-        return builder.toString();
+    /**
+     * Returns the <em>effective</em> line separator by concatenating the formatted {@code suffix} with the {@code separator}.
+     *
+     * @param logEvent the log event to use while formatting the suffix pattern
+     * @return the concatenation of the formatted {@code suffix} with the {@code separator}
+     * @see #createEffectiveLineSeparator(String, String, Configuration, List)
+     */
+    String effectiveLineSeparator(final LogEvent logEvent) {
+        return effectiveLineSeparatorProvider.apply(logEvent);
     }
 }
