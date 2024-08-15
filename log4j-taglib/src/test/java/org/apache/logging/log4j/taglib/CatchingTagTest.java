@@ -79,7 +79,7 @@ public class CatchingTagTest {
         final List<String> events = listApp.getMessages();
         try {
             assertEquals("Incorrect number of messages.", 1, events.size());
-            assertEquals("Incorrect message.", "o.a.l.l.t.CatchingTagTest " + expected, events.get(0));
+            assertEquals("Incorrect message.", "o.a.l.l.t.CatchingTagTest " + expected + "\n", events.get(0));
         } finally {
             listApp.clear();
         }

@@ -105,7 +105,7 @@ public class ThrowablePatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
-        assertEquals(packageName + "ThrowablePatternConverterTest", result, "The class names should be same");
+        assertEquals(packageName + "ThrowablePatternConverterTest\n", result, "The class names should be same");
     }
 
     @Test
@@ -124,7 +124,7 @@ public class ThrowablePatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
-        assertEquals("ThrowablePatternConverterTest.java", result, "The file names should be same");
+        assertEquals("ThrowablePatternConverterTest.java\n", result, "The file names should be same");
     }
 
     @Test
@@ -164,7 +164,7 @@ public class ThrowablePatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
-        assertEquals("I am localized.", result, "The messages should be same");
+        assertEquals("I am localized.\n", result, "The messages should be same");
     }
 
     @Test
@@ -183,7 +183,7 @@ public class ThrowablePatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
-        assertEquals("IllegalArgument", result, "The messages should be same");
+        assertEquals("IllegalArgument\n", result, "The messages should be same");
     }
 
     @Test
@@ -202,7 +202,7 @@ public class ThrowablePatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
-        assertEquals("testShortMethodName", result, "The method names should be same");
+        assertEquals("testShortMethodName\n", result, "The method names should be same");
     }
 
     @Test
