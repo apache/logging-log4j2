@@ -132,7 +132,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#addPropertySource(org.apache.logging.log4j.util.PropertySource)" class="member-name-link">addPropertySource</a><wbr>(<a href="PropertySource.html" title="interface in org.apache.logging.log4j.util">PropertySource</a>&nbsp;propertySource)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Allows a PropertySource to be added after PropertiesUtil has been created.</div>
+<div class="block">Allows a <a href="PropertySource.html" title="interface in org.apache.logging.log4j.util"><code>PropertySource</code></a> to be added after <code>PropertiesUtil</code> has been created.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Properties.html" title="class or interface in java.util" class="external-link">Properties</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#extractSubset(java.util.Properties,java.lang.String)" class="member-name-link">extractSubset</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Properties.html" title="class or interface in java.util" class="external-link">Properties</a>&nbsp;properties,
@@ -277,6 +277,11 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Reloads all properties.</div>
 </div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#removePropertySource(org.apache.logging.log4j.util.PropertySource)" class="member-name-link">removePropertySource</a><wbr>(<a href="PropertySource.html" title="interface in org.apache.logging.log4j.util">PropertySource</a>&nbsp;propertySource)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Removes a <a href="PropertySource.html" title="interface in org.apache.logging.log4j.util"><code>PropertySource</code></a>.</div>
+</div>
 </div>
 </div>
 </div>
@@ -340,10 +345,25 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="addPropertySource(org.apache.logging.log4j.util.PropertySource)">
 <h3>addPropertySource</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">addPropertySource</span><wbr><span class="parameters">(<a href="PropertySource.html" title="interface in org.apache.logging.log4j.util">PropertySource</a>&nbsp;propertySource)</span></div>
-<div class="block">Allows a PropertySource to be added after PropertiesUtil has been created.</div>
+<div class="block">Allows a <a href="PropertySource.html" title="interface in org.apache.logging.log4j.util"><code>PropertySource</code></a> to be added after <code>PropertiesUtil</code> has been created.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>propertySource</code> - the PropertySource to add.</dd>
+<dd><code>propertySource</code> - the <code>PropertySource</code> to add.</dd>
+<dt>Since:</dt>
+<dd>2.19.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="removePropertySource(org.apache.logging.log4j.util.PropertySource)">
+<h3>removePropertySource</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">removePropertySource</span><wbr><span class="parameters">(<a href="PropertySource.html" title="interface in org.apache.logging.log4j.util">PropertySource</a>&nbsp;propertySource)</span></div>
+<div class="block">Removes a <a href="PropertySource.html" title="interface in org.apache.logging.log4j.util"><code>PropertySource</code></a>.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>propertySource</code> - the <code>PropertySource</code> to remove.</dd>
+<dt>Since:</dt>
+<dd>2.24.0</dd>
 </dl>
 </section>
 </li>
