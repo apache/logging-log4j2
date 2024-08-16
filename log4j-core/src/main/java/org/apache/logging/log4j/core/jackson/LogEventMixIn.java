@@ -16,13 +16,26 @@
  */
 package org.apache.logging.log4j.core.jackson;
 
+import static org.apache.logging.log4j.core.jackson.JsonConstants.ELT_CONTEXT_MAP;
+import static org.apache.logging.log4j.core.jackson.JsonConstants.ELT_CONTEXT_STACK;
+import static org.apache.logging.log4j.core.jackson.JsonConstants.ELT_END_OF_BATCH;
+import static org.apache.logging.log4j.core.jackson.JsonConstants.ELT_INSTANT;
+import static org.apache.logging.log4j.core.jackson.JsonConstants.ELT_LEVEL;
+import static org.apache.logging.log4j.core.jackson.JsonConstants.ELT_LOGGER_FQCN;
+import static org.apache.logging.log4j.core.jackson.JsonConstants.ELT_LOGGER_NAME;
+import static org.apache.logging.log4j.core.jackson.JsonConstants.ELT_MARKER;
+import static org.apache.logging.log4j.core.jackson.JsonConstants.ELT_MESSAGE;
+import static org.apache.logging.log4j.core.jackson.JsonConstants.ELT_SOURCE;
+import static org.apache.logging.log4j.core.jackson.JsonConstants.ELT_THREAD;
+import static org.apache.logging.log4j.core.jackson.JsonConstants.ELT_THROWN;
+import static org.apache.logging.log4j.core.jackson.JsonConstants.ELT_TIME_MILLIS;
+
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
@@ -40,75 +53,66 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
 @JacksonXmlRootElement(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_EVENT)
 @JsonFilter("org.apache.logging.log4j.core.impl.Log4jLogEvent")
 @JsonPropertyOrder({
-    "timeMillis",
-    JsonConstants.ELT_INSTANT,
-    "threadName",
-    "level",
-    "loggerName",
-    "marker",
-    "message",
-    "thrown",
-    XmlConstants.ELT_CONTEXT_MAP,
-    JsonConstants.ELT_CONTEXT_STACK,
-    "loggerFQCN",
-    "Source",
-    "endOfBatch"
+    ELT_TIME_MILLIS,
+    ELT_INSTANT,
+    ELT_THREAD,
+    ELT_LEVEL,
+    ELT_LOGGER_NAME,
+    ELT_MARKER,
+    ELT_MESSAGE,
+    ELT_THROWN,
+    ELT_CONTEXT_MAP,
+    ELT_CONTEXT_STACK,
+    ELT_END_OF_BATCH,
+    ELT_LOGGER_FQCN,
+    ELT_SOURCE
 })
-abstract class LogEventJsonMixIn implements LogEvent {
+abstract class LogEventMixIn implements LogEvent {
 
     private static final long serialVersionUID = 1L;
 
-    //    @JsonProperty(JsonConstants.ELT_CONTEXT_MAP)
-    //    @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_CONTEXT_MAP)
-    //    @JsonSerialize(using = MapSerializer.class)
-    //    @JsonDeserialize(using = MapDeserializer.class)
     @Override
     @JsonIgnore
-    //    @JsonProperty(JsonConstants.ELT_CONTEXT_MAP)
-    //    @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_CONTEXT_MAP)
     public abstract Map<String, String> getContextMap();
 
-    @JsonProperty(JsonConstants.ELT_CONTEXT_MAP)
+    @JsonProperty(ELT_CONTEXT_MAP)
     @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_CONTEXT_MAP)
-    @JsonSerialize(using = ContextDataSerializer.class)
-    @JsonDeserialize(using = ContextDataDeserializer.class)
-    // @JsonIgnore
     @Override
     public abstract ReadOnlyStringMap getContextData();
 
-    @JsonProperty(JsonConstants.ELT_CONTEXT_STACK)
+    @JsonProperty(ELT_CONTEXT_STACK)
     @JacksonXmlElementWrapper(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_CONTEXT_STACK)
     @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_CONTEXT_STACK_ITEM)
     @Override
     public abstract ContextStack getContextStack();
 
-    @JsonProperty()
+    @JsonProperty
     @JacksonXmlProperty(isAttribute = true)
     @Override
     public abstract Level getLevel();
 
-    @JsonProperty()
+    @JsonProperty
     @JacksonXmlProperty(isAttribute = true)
     @Override
     public abstract String getLoggerFqcn();
 
-    @JsonProperty()
+    @JsonProperty
     @JacksonXmlProperty(isAttribute = true)
     @Override
     public abstract String getLoggerName();
 
-    @JsonProperty(JsonConstants.ELT_MARKER)
+    @JsonProperty(ELT_MARKER)
     @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_MARKER)
     @Override
     public abstract Marker getMarker();
 
-    @JsonProperty(JsonConstants.ELT_MESSAGE)
+    @JsonProperty(ELT_MESSAGE)
     @JsonDeserialize(using = SimpleMessageDeserializer.class)
     @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_MESSAGE)
     @Override
     public abstract Message getMessage();
 
-    @JsonProperty(JsonConstants.ELT_SOURCE)
+    @JsonProperty(ELT_SOURCE)
     @JsonDeserialize(using = Log4jStackTraceElementDeserializer.class)
     @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_SOURCE)
     @Override
@@ -133,22 +137,22 @@ abstract class LogEventJsonMixIn implements LogEvent {
     @Override
     public abstract Throwable getThrown();
 
-    @JsonProperty(JsonConstants.ELT_THROWN)
+    @JsonProperty(ELT_THROWN)
     @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_THROWN)
     @Override
     public abstract ThrowableProxy getThrownProxy();
 
-    @JsonProperty(value = JsonConstants.ELT_TIME_MILLIS, access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty(value = ELT_TIME_MILLIS, access = JsonProperty.Access.READ_ONLY)
     @JacksonXmlProperty(isAttribute = true)
     @Override
     public abstract long getTimeMillis();
 
-    @JsonProperty(JsonConstants.ELT_INSTANT)
+    @JsonProperty(ELT_INSTANT)
     @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_INSTANT)
     @Override
     public abstract Instant getInstant();
 
-    @JsonProperty()
+    @JsonProperty
     @JacksonXmlProperty(isAttribute = true)
     @Override
     public abstract boolean isEndOfBatch();
@@ -156,10 +160,4 @@ abstract class LogEventJsonMixIn implements LogEvent {
     @JsonIgnore
     @Override
     public abstract boolean isIncludeLocation();
-
-    @Override
-    public abstract void setEndOfBatch(boolean endOfBatch);
-
-    @Override
-    public abstract void setIncludeLocation(boolean locationRequired);
 }
