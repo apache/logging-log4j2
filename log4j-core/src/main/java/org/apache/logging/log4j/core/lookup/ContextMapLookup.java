@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import java.util.Objects;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 /**
  * Looks up keys from the context. By default this is the {@link ThreadContext}, but users may
@@ -41,11 +41,7 @@ public class ContextMapLookup implements StrLookup {
      */
     @Override
     public String lookup(final String key) {
-        return currentContextData().getValue(key);
-    }
-
-    private ReadOnlyStringMap currentContextData() {
-        return injector.rawContextData();
+        return Objects.toString(injector.getValue(key), null);
     }
 
     /**

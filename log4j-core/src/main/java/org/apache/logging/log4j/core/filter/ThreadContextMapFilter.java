@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
@@ -42,7 +43,6 @@ import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.apache.logging.log4j.util.PerformanceSensitive;
-import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringMap;
 
 /**
@@ -115,26 +115,22 @@ public class ThreadContextMapFilter extends MapFilter {
     private Result filter() {
         boolean match = false;
         if (useMap) {
-            ReadOnlyStringMap currentContextData = null;
             final IndexedReadOnlyStringMap map = getStringMap();
             for (int i = 0; i < map.size(); i++) {
-                if (currentContextData == null) {
-                    currentContextData = currentContextData();
-                }
-                final String toMatch = currentContextData.getValue(map.getKeyAt(i));
-                match = toMatch != null && ((List<String>) map.getValueAt(i)).contains(toMatch);
+                final String toMatch = getContextValue(map.getKeyAt(i));
+                match = toMatch != null && map.<List<String>>getValueAt(i).contains(toMatch);
                 if ((!isAnd() && match) || (isAnd() && !match)) {
                     break;
                 }
             }
         } else {
-            match = value.equals(currentContextData().getValue(key));
+            match = value.equals(getContextValue(key));
         }
         return match ? onMatch : onMismatch;
     }
 
-    private ReadOnlyStringMap currentContextData() {
-        return injector.rawContextData();
+    private String getContextValue(final String key) {
+        return Objects.toString(injector.getValue(key), null);
     }
 
     @Override

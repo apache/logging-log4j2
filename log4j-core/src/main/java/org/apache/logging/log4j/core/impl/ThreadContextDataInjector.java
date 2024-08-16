@@ -74,19 +74,33 @@ public class ThreadContextDataInjector {
         return Collections.unmodifiableList(providers);
     }
 
+    private abstract static class AbstractContextDataInjector implements ContextDataInjector {
+
+        final List<ContextDataProvider> providers;
+
+        AbstractContextDataInjector() {
+            this.providers = getProviders();
+        }
+
+        @Override
+        public Object getValue(String key) {
+            for (final ContextDataProvider provider : providers) {
+                final Object value = provider.getValue(key);
+                if (value != null) {
+                    return value;
+                }
+            }
+            return null;
+        }
+    }
+
     /**
      * Default {@code ContextDataInjector} for the legacy {@code Map<String, String>}-based ThreadContext (which is
      * also the ThreadContext implementation used for web applications).
      * <p>
      * This injector always puts key-value pairs into the specified reusable StringMap.
      */
-    public static class ForDefaultThreadContextMap implements ContextDataInjector {
-
-        private final List<ContextDataProvider> providers;
-
-        public ForDefaultThreadContextMap() {
-            providers = getProviders();
-        }
+    public static class ForDefaultThreadContextMap extends AbstractContextDataInjector {
 
         /**
          * Puts key-value pairs from both the specified list of properties as well as the thread context into the
@@ -158,12 +172,7 @@ public class ThreadContextDataInjector {
      * <p>
      * This injector always puts key-value pairs into the specified reusable StringMap.
      */
-    public static class ForGarbageFreeThreadContextMap implements ContextDataInjector {
-        private final List<ContextDataProvider> providers;
-
-        public ForGarbageFreeThreadContextMap() {
-            this.providers = getProviders();
-        }
+    public static class ForGarbageFreeThreadContextMap extends AbstractContextDataInjector {
 
         /**
          * Puts key-value pairs from both the specified list of properties as well as the thread context into the
@@ -199,12 +208,8 @@ public class ThreadContextDataInjector {
      * structure. Otherwise the configuration properties are combined with the thread context key-value pairs into the
      * specified reusable StringMap.
      */
-    public static class ForCopyOnWriteThreadContextMap implements ContextDataInjector {
-        private final List<ContextDataProvider> providers;
+    public static class ForCopyOnWriteThreadContextMap extends AbstractContextDataInjector {
 
-        public ForCopyOnWriteThreadContextMap() {
-            this.providers = getProviders();
-        }
         /**
          * If there are no configuration properties, this injector will return the thread context's internal data
          * structure. Otherwise the configuration properties are combined with the thread context key-value pairs into the
