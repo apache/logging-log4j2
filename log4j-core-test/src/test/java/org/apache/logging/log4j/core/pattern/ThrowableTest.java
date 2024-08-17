@@ -18,6 +18,13 @@ package org.apache.logging.log4j.core.pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.util.Collections;
+import java.util.Objects;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -29,6 +36,8 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.util.StringBuilderWriter;
+import org.junit.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -42,20 +51,23 @@ public class ThrowableTest {
         final Integer depth = 5;
         return Stream.of(
                 // Throwable
-                Arguments.of("%ex", filters, null),
-                Arguments.of("%ex", null, depth),
+                Arguments.of("%ex", filters, null, null, null),
+                Arguments.of("%ex", null, depth, null, null),
+                Arguments.of("%ex", null, null, "I am suffix", "#"),
                 // RootThrowable
-                Arguments.of("%rEx", filters, null),
-                Arguments.of("%rEx", null, depth),
+                Arguments.of("%rEx", filters, null, null, null),
+                Arguments.of("%rEx", null, depth, null, null),
+                Arguments.of("%rEx", null, null, "I am suffix", "#"),
                 // ExtendedThrowable
-                Arguments.of("%xEx", filters, null),
-                Arguments.of("%xEx", null, depth));
+                Arguments.of("%xEx", filters, null, null, null),
+                Arguments.of("%xEx", null, depth, null, null),
+                Arguments.of("%xEx", null, null, "I am suffix", "#"));
     }
 
     @ParameterizedTest
     @MethodSource("testConverter_dataSource")
-    void testConverter(String exceptionPattern, String filters, Integer depth) {
-        final String pattern = buildPattern(exceptionPattern, filters, depth);
+    void testConverter(String exceptionPattern, String filters, Integer depth, String suffix, String lineSeparator) {
+        final String pattern = buildPattern(exceptionPattern, filters, depth, suffix, lineSeparator);
         final ConfigurationBuilder<BuiltConfiguration> configBuilder =
                 ConfigurationBuilderFactory.newConfigurationBuilder();
 
@@ -73,22 +85,118 @@ public class ThrowableTest {
                 loggerContext.start();
                 loggerContext.reconfigure(config);
             }
-            final Throwable cause = new NullPointerException("null pointer");
-            final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
+            final Throwable r = createException("r", 1, 3);
 
             final Logger logger = loggerContext.getLogger(LoggerTest.class);
             final ListAppender appender = loggerContext.getConfiguration().getAppender(appenderName);
-            logger.error("Exception", parent);
+            logger.error("Exception", r);
 
             assertThat(appender.getMessages()).hasSize(1);
             final String message = appender.getMessages().get(0);
             assertThat(message).isNotNull();
             verifyFilters(message, filters);
             verifyDepth(message, depth);
+            verifySuffix(message, suffix, lineSeparator);
         }
     }
 
-    private static String buildPattern(String exceptionPattern, String filters, Integer depth) {
+    static Stream<Arguments> testFull_dataSource() {
+        return Stream.of(
+                Arguments.of(
+                        new ThrowableRenderer<>(Collections.emptyList(), Integer.MAX_VALUE), "ThrowableRenderer.txt"),
+                Arguments.of(
+                        new RootThrowableRenderer(Collections.emptyList(), Integer.MAX_VALUE),
+                        "RootThrowableRenderer.txt"),
+                Arguments.of(
+                        new ExtendedThrowableRenderer(Collections.emptyList(), Integer.MAX_VALUE),
+                        "ExtendedThrowableRenderer.txt"));
+    }
+
+    @ParameterizedTest
+    @MethodSource("testFull_dataSource")
+    void testFull(final ThrowableRenderer<?> renderer, final String expectedFilePath) throws IOException {
+        final Throwable throwable = createException("r", 1, 3);
+        final String expected = getContentFromResource(expectedFilePath);
+        final String actual = render(renderer, throwable);
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    static Stream<Arguments> renderers_dataSource() {
+        return Stream.of(
+                Arguments.of(new ThrowableRenderer<>(Collections.emptyList(), Integer.MAX_VALUE)),
+                Arguments.of(new RootThrowableRenderer(Collections.emptyList(), Integer.MAX_VALUE)),
+                Arguments.of(new ExtendedThrowableRenderer(Collections.emptyList(), Integer.MAX_VALUE)));
+    }
+
+    @ParameterizedTest
+    @MethodSource("renderers_dataSource")
+    void testCircularSuppressedExceptions(final ThrowableRenderer<?> renderer) {
+        final Exception e1 = new Exception();
+        final Exception e2 = new Exception();
+        e2.addSuppressed(e1);
+        e1.addSuppressed(e2);
+
+        render(renderer, e1);
+    }
+
+    @ParameterizedTest
+    @MethodSource("renderers_dataSource")
+    void testCircularSuppressedNestedException(final ThrowableRenderer<?> renderer) {
+        final Exception e1 = new Exception();
+        final Exception e2 = new Exception(e1);
+        e2.addSuppressed(e1);
+        e1.addSuppressed(e2);
+
+        render(renderer, e1);
+    }
+
+    @ParameterizedTest
+    @MethodSource("renderers_dataSource")
+    void testCircularCauseExceptions(final ThrowableRenderer<?> renderer) {
+        final Exception e1 = new Exception();
+        final Exception e2 = new Exception(e1);
+        e1.initCause(e2);
+        render(renderer, e1);
+    }
+
+    /**
+     * Default setting ThrowableRenderer render output should equal to throwable.printStackTrace().
+     */
+    @Test
+    public void testThrowableRenderer() {
+        final Throwable throwable = createException("r", 1, 3);
+        final ThrowableRenderer<?> renderer = new ThrowableRenderer<>(Collections.emptyList(), Integer.MAX_VALUE);
+        String actual = render(renderer, throwable);
+        assertThat(actual).isEqualTo(getStandardThrowableStackTrace(throwable));
+    }
+
+    private static String getContentFromResource(String fileName) throws IOException {
+        fileName = "throwableRenderer/" + fileName;
+        String path = Objects.requireNonNull(
+                        ThrowableTest.class.getClassLoader().getResource(fileName))
+                .getPath();
+        return new String(Files.readAllBytes(FileSystems.getDefault().getPath(path)), StandardCharsets.UTF_8);
+    }
+
+    private static String render(final ThrowableRenderer<?> renderer, final Throwable throwable) {
+        final StringBuilder stringBuilder = new StringBuilder();
+        renderer.renderThrowable(stringBuilder, throwable, System.lineSeparator());
+        return stringBuilder.toString();
+    }
+
+    private static String getStandardThrowableStackTrace(final Throwable throwable) {
+        final StringBuilder buffer = new StringBuilder();
+        final PrintWriter printWriter = new PrintWriter(new StringBuilderWriter(buffer));
+        throwable.printStackTrace(printWriter);
+        return buffer.toString();
+    }
+
+    private static String buildPattern(
+            final String exceptionPattern,
+            final String filters,
+            final Integer depth,
+            final String suffix,
+            final String lineSeparator) {
         final StringBuilder buffer = new StringBuilder("%m");
         buffer.append(exceptionPattern);
         if (filters != null) {
@@ -101,6 +209,18 @@ public class ThrowableTest {
             buffer.append("{");
             buffer.append(depth);
             buffer.append("}");
+        }
+
+        if (suffix != null) {
+            buffer.append("{suffix(");
+            buffer.append(suffix);
+            buffer.append(")}");
+        }
+
+        if (lineSeparator != null) {
+            buffer.append("{separator(");
+            buffer.append(lineSeparator);
+            buffer.append(")}");
         }
         return buffer.toString();
     }
@@ -121,5 +241,22 @@ public class ThrowableTest {
         if (depth != null) {
             assertThat(message).hasLineCount(depth);
         }
+    }
+
+    private static void verifySuffix(final String message, final String suffix, final String lineSeparator) {
+        if (suffix != null && lineSeparator != null) {
+            for (String line : message.split(lineSeparator)) {
+                assertThat(line).endsWith(suffix);
+            }
+        }
+    }
+
+    private static Throwable createException(final String name, int depth, int maxDepth) {
+        Exception r = new Exception(name);
+        if (depth < maxDepth) {
+            r.initCause(createException(name + "_c", depth + 1, maxDepth));
+            r.addSuppressed(createException(name + "_s", depth + 1, maxDepth));
+        }
+        return r;
     }
 }
