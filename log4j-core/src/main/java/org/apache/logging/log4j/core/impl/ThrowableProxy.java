@@ -47,6 +47,7 @@ import org.apache.logging.log4j.util.Strings;
  * TODO: Deserialize: Try to rebuild Throwable if the target exception is in this class loader?
  * </p>
  */
+@Deprecated
 public class ThrowableProxy implements Serializable {
 
     private static final char EOL = Chars.LF;
@@ -423,7 +424,7 @@ public class ThrowableProxy implements Serializable {
      * @param textRenderer The message renderer.
      * @param suffix Append this to the end of each stack frame.
      * @param lineSeparator The end-of-line separator.
-     * @deprecated since 2.24.0. Use {@link #formatExtendedStackTraceTo(StringBuilder, List, TextRenderer, String, String, Integer)}.
+     * @deprecated since 2.24.0. Use {@link #formatExtendedStackTraceTo(StringBuilder, List, TextRenderer, String, String, int)}.
      */
     @Deprecated
     public void formatExtendedStackTraceTo(

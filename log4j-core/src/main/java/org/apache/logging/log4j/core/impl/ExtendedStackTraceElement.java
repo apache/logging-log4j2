@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.pattern.TextRenderer;
  * <li>version</li>
  * </ul>
  */
+@Deprecated
 public final class ExtendedStackTraceElement implements Serializable {
 
     static final ExtendedStackTraceElement[] EMPTY_ARRAY = {};
