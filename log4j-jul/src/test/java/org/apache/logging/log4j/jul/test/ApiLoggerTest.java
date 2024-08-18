@@ -16,15 +16,13 @@
  */
 package org.apache.logging.log4j.jul.test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 
 import java.util.logging.Logger;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.apache.logging.log4j.jul.ApiLoggerAdapter;
-import org.apache.logging.log4j.jul.Constants;
 import org.apache.logging.log4j.jul.LogManager;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -37,17 +35,15 @@ public class ApiLoggerTest extends AbstractLoggerTest {
     @BeforeClass
     public static void setUpClass() {
         System.setProperty("java.util.logging.manager", LogManager.class.getName());
-        System.setProperty(Constants.LOGGER_ADAPTOR_PROPERTY, ApiLoggerAdapter.class.getName());
     }
 
     @AfterClass
     public static void tearDownClass() {
         System.clearProperty("java.util.logging.manager");
-        System.clearProperty(Constants.LOGGER_ADAPTOR_PROPERTY);
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         logger = Logger.getLogger(LOGGER_NAME);
         logger.setFilter(null);
         assertThat(logger.getLevel(), equalTo(java.util.logging.Level.FINE));
@@ -60,7 +56,7 @@ public class ApiLoggerTest extends AbstractLoggerTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         if (eventAppender != null) {
             eventAppender.clear();
         }
@@ -73,18 +69,18 @@ public class ApiLoggerTest extends AbstractLoggerTest {
     }
 
     @Test
-    public void testGetParent() throws Exception {
+    public void testGetParent() {
         final Logger parent = logger.getParent();
         assertNull("No parent logger should be automatically set up using log4j-api", parent);
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testSetParentFails() throws Exception {
+    public void testSetParentFails() {
         logger.setParent(null);
     }
 
     @Test
-    public void testSetLevelFails() throws Exception {
+    public void testSetLevelFails() {
         logger.setLevel(null);
     }
 }
