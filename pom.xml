@@ -339,7 +339,7 @@
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
     <site-commons-compress.version>1.27.0</site-commons-compress.version>
     <site-commons-csv.version>1.11.0</site-commons-csv.version>
-    <site-commons-logging.version>1.3.3</site-commons-logging.version>
+    <site-commons-logging.version>1.3.4</site-commons-logging.version>
     <site-conversant.version>1.2.21</site-conversant.version>
     <site-flume.version>1.11.0</site-flume.version>
     <site-jansi.version>1.18</site-jansi.version>
