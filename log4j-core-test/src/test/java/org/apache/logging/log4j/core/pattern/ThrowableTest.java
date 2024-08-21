@@ -18,13 +18,8 @@ package org.apache.logging.log4j.core.pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.util.Collections;
-import java.util.Objects;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -100,27 +95,6 @@ public class ThrowableTest {
         }
     }
 
-    static Stream<Arguments> testFull_dataSource() {
-        return Stream.of(
-                Arguments.of(
-                        new ThrowableRenderer<>(Collections.emptyList(), Integer.MAX_VALUE), "ThrowableRenderer.txt"),
-                Arguments.of(
-                        new RootThrowableRenderer(Collections.emptyList(), Integer.MAX_VALUE),
-                        "RootThrowableRenderer.txt"),
-                Arguments.of(
-                        new ExtendedThrowableRenderer(Collections.emptyList(), Integer.MAX_VALUE),
-                        "ExtendedThrowableRenderer.txt"));
-    }
-
-    @ParameterizedTest
-    @MethodSource("testFull_dataSource")
-    void testFull(final ThrowableRenderer<?> renderer, final String expectedFilePath) throws IOException {
-        final Throwable throwable = createException("r", 1, 3);
-        final String expected = getContentFromResource(expectedFilePath);
-        final String actual = render(renderer, throwable);
-        assertThat(actual).isEqualTo(expected);
-    }
-
     static Stream<Arguments> renderers_dataSource() {
         return Stream.of(
                 Arguments.of(new ThrowableRenderer<>(Collections.emptyList(), Integer.MAX_VALUE)),
@@ -168,14 +142,6 @@ public class ThrowableTest {
         final ThrowableRenderer<?> renderer = new ThrowableRenderer<>(Collections.emptyList(), Integer.MAX_VALUE);
         String actual = render(renderer, throwable);
         assertThat(actual).isEqualTo(getStandardThrowableStackTrace(throwable));
-    }
-
-    private static String getContentFromResource(String fileName) throws IOException {
-        fileName = "throwableRenderer/" + fileName;
-        String path = Objects.requireNonNull(
-                        ThrowableTest.class.getClassLoader().getResource(fileName))
-                .getPath();
-        return new String(Files.readAllBytes(FileSystems.getDefault().getPath(path)), StandardCharsets.UTF_8);
     }
 
     private static String render(final ThrowableRenderer<?> renderer, final Throwable throwable) {

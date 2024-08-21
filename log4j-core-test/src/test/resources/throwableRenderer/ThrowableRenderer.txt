@@ -1,6 +1,6 @@
 java.lang.Exception: r
-	at org.apache.logging.log4j.core.pattern.ThrowableTest.createException(ThrowableTest.java:245)
-	at org.apache.logging.log4j.core.pattern.ThrowableTest.testFullOutput(ThrowableTest.java:123)
+	at org.apache.logging.log4j.core.pattern.ThrowableFullTest.createException(ThrowableFullTest.java:44)
+	at org.apache.logging.log4j.core.pattern.ThrowableFullTest.testFull(ThrowableFullTest.java:25)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -130,26 +130,26 @@ java.lang.Exception: r
 	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
 	Suppressed: java.lang.Exception: r_s
-		at org.apache.logging.log4j.core.pattern.ThrowableTest.createException(ThrowableTest.java:245)
-		at org.apache.logging.log4j.core.pattern.ThrowableTest.createException(ThrowableTest.java:248)
+		at org.apache.logging.log4j.core.pattern.ThrowableFullTest.createException(ThrowableFullTest.java:44)
+		at org.apache.logging.log4j.core.pattern.ThrowableFullTest.createException(ThrowableFullTest.java:47)
 		... 129 more
 		Suppressed: java.lang.Exception: r_s_s
-			at org.apache.logging.log4j.core.pattern.ThrowableTest.createException(ThrowableTest.java:245)
-			at org.apache.logging.log4j.core.pattern.ThrowableTest.createException(ThrowableTest.java:248)
+			at org.apache.logging.log4j.core.pattern.ThrowableFullTest.createException(ThrowableFullTest.java:44)
+			at org.apache.logging.log4j.core.pattern.ThrowableFullTest.createException(ThrowableFullTest.java:47)
 			... 130 more
 	Caused by: java.lang.Exception: r_s_c
-		at org.apache.logging.log4j.core.pattern.ThrowableTest.createException(ThrowableTest.java:245)
-		at org.apache.logging.log4j.core.pattern.ThrowableTest.createException(ThrowableTest.java:247)
+		at org.apache.logging.log4j.core.pattern.ThrowableFullTest.createException(ThrowableFullTest.java:44)
+		at org.apache.logging.log4j.core.pattern.ThrowableFullTest.createException(ThrowableFullTest.java:46)
 		... 130 more
 Caused by: java.lang.Exception: r_c
-	at org.apache.logging.log4j.core.pattern.ThrowableTest.createException(ThrowableTest.java:245)
-	at org.apache.logging.log4j.core.pattern.ThrowableTest.createException(ThrowableTest.java:247)
+	at org.apache.logging.log4j.core.pattern.ThrowableFullTest.createException(ThrowableFullTest.java:44)
+	at org.apache.logging.log4j.core.pattern.ThrowableFullTest.createException(ThrowableFullTest.java:46)
 	... 129 more
 	Suppressed: java.lang.Exception: r_c_s
-		at org.apache.logging.log4j.core.pattern.ThrowableTest.createException(ThrowableTest.java:245)
-		at org.apache.logging.log4j.core.pattern.ThrowableTest.createException(ThrowableTest.java:248)
+		at org.apache.logging.log4j.core.pattern.ThrowableFullTest.createException(ThrowableFullTest.java:44)
+		at org.apache.logging.log4j.core.pattern.ThrowableFullTest.createException(ThrowableFullTest.java:47)
 		... 130 more
 Caused by: java.lang.Exception: r_c_c
-	at org.apache.logging.log4j.core.pattern.ThrowableTest.createException(ThrowableTest.java:245)
-	at org.apache.logging.log4j.core.pattern.ThrowableTest.createException(ThrowableTest.java:247)
+	at org.apache.logging.log4j.core.pattern.ThrowableFullTest.createException(ThrowableFullTest.java:44)
+	at org.apache.logging.log4j.core.pattern.ThrowableFullTest.createException(ThrowableFullTest.java:46)
 	... 130 more
