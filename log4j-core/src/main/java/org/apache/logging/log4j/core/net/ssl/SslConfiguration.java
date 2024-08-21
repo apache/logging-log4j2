@@ -20,6 +20,11 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.Objects;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
@@ -57,6 +62,41 @@ public class SslConfiguration {
         this.protocol = protocol == null ? SslConfigurationDefaults.PROTOCOL : protocol;
         this.sslContext = this.createSslContext();
         this.verifyHostName = verifyHostName;
+    }
+
+    /**
+     * Creates an identifier based on the contents of the SSL configuration.
+     * 
+     * @return an ID based on the contents of the configuration
+     */
+    public String getId() {
+        ArrayList<String> hashElements = new ArrayList<>();
+        addElementsForHashingFromKeyStore(keyStoreConfig, hashElements);
+        addElementsForHashingFromKeyStore(trustStoreConfig, hashElements);
+        return String.valueOf(Arrays.hashCode(hashElements.toArray()));
+    }
+
+    private void addElementsForHashingFromKeyStore(
+            AbstractKeyStoreConfiguration keyStoreConfiguration, ArrayList<String> hashElements) {
+        final List<String> aliases = new ArrayList<>();
+        try {
+            Enumeration<String> aliasEnumeration =
+                    keyStoreConfiguration.getKeyStore().aliases();
+            while (aliasEnumeration.hasMoreElements()) {
+                aliases.add(aliasEnumeration.nextElement());
+            }
+            aliases.sort(null);
+            for (final String alias : aliases) {
+                final X509Certificate certificate =
+                        (X509Certificate) keyStoreConfiguration.getKeyStore().getCertificate(alias);
+                final String issuer = certificate.getIssuerX500Principal().getName();
+                final String serialNumber = certificate.getSerialNumber().toString();
+                hashElements.add(issuer);
+                hashElements.add(serialNumber);
+            }
+        } catch (KeyStoreException e) {
+            LOGGER.debug("Error encountered reading " + keyStoreConfiguration.getLocation(), e);
+        }
     }
 
     /**
