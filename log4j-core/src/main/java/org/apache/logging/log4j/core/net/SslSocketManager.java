@@ -206,7 +206,7 @@ public class SslSocketManager extends TcpSocketManager {
         if (reconnectDelayMillis == 0) {
             reconnectDelayMillis = DEFAULT_RECONNECTION_DELAY_MILLIS;
         }
-        final String name = "TLS:" + host + ':' + port;
+        final String name = "TLS:" + host + ':' + port + ':' + sslConfig.getId();
         return (SslSocketManager) getManager(
                 name,
                 new SslFactoryData(
