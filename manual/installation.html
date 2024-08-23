@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Installation :: Apache Log4j</title>
     <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/installation.html">
-    <meta name="generator" content="Antora 3.2.0-alpha.4">
+    <meta name="generator" content="Antora 3.2.0-alpha.6">
 <link rel="stylesheet" href="../_/css/site.css">
 <link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
 <!-- `@asciidoctor/tabs` extension styles -->
@@ -1032,7 +1032,7 @@ See <a href="../log4j-jul.html" class="xref page">JUL-to-Log4j bridge</a> for mo
   &lt;dependency&gt;
     &lt;groupId&gt;commons-logging&lt;/groupId&gt;
     &lt;artifactId&gt;commons-logging&lt;/artifactId&gt;
-    &lt;version&gt;1.3.3&lt;/version&gt;
+    &lt;version&gt;1.3.4&lt;/version&gt;
   &lt;/dependency&gt;
 &lt;/dependencyManagement&gt;</code></pre>
 </div>
@@ -1444,7 +1444,7 @@ Since it is embedded in the platform, it only requires the addition of bridges f
   &lt;dependency&gt;
     &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
     &lt;artifactId&gt;slf4j-jdk14&lt;/artifactId&gt;
-    &lt;version&gt;2.0.13&lt;/version&gt;
+    &lt;version&gt;2.0.16&lt;/version&gt;
     &lt;scope&gt;runtime&lt;/scope&gt;
   &lt;/dependency&gt;
 
@@ -1458,7 +1458,7 @@ Since it is embedded in the platform, it only requires the addition of bridges f
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-to-jul' // Log4j-to-JUL bridge
-runtimeOnly 'org.slf4j:slf4j-jdk14:2.0.13' // SLF4J-to-JUL bridge</code></pre>
+runtimeOnly 'org.slf4j:slf4j-jdk14:2.0.16' // SLF4J-to-JUL bridge</code></pre>
 </div>
 </div>
 </div>
