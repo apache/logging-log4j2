@@ -20,7 +20,7 @@
  * executable {@link org.apache.logging.log4j.core.config.plugins.util.PluginManager} class in your build process.
  */
 @Export
-@Version("2.20.1")
+@Version("2.20.2")
 package org.apache.logging.log4j.core.config.plugins.processor;
 
 import org.osgi.annotation.bundle.Export;
