@@ -73,16 +73,25 @@ loadScripts(document, 'script');</script>
 <h1 title="Class Rfc5424Layout.Rfc5424LayoutBuilder" class="title">Class Rfc5424Layout.Rfc5424LayoutBuilder</h1>
 </div>
 <div class="inheritance" title="Inheritance Tree"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">java.lang.Object</a>
+<div class="inheritance"><a href="AbstractLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">org.apache.logging.log4j.core.layout.AbstractLayout.Builder</a>&lt;B&gt;
+<div class="inheritance"><a href="AbstractStringLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">org.apache.logging.log4j.core.layout.AbstractStringLayout.Builder</a>&lt;<a href="Rfc5424Layout.Rfc5424LayoutBuilder.html" title="class in org.apache.logging.log4j.core.layout">Rfc5424Layout.Rfc5424LayoutBuilder</a>&gt;
 <div class="inheritance">org.apache.logging.log4j.core.layout.Rfc5424Layout.Rfc5424LayoutBuilder</div>
 </div>
+</div>
+</div>
 <section class="class-description" id="class-description">
+<dl class="notes">
+<dt>All Implemented Interfaces:</dt>
+<dd><code><a href="../util/Builder.html" title="interface in org.apache.logging.log4j.core.util">Builder</a>&lt;<a href="Rfc5424Layout.html" title="class in org.apache.logging.log4j.core.layout">Rfc5424Layout</a>&gt;</code></dd>
+</dl>
 <dl class="notes">
 <dt>Enclosing class:</dt>
 <dd><a href="Rfc5424Layout.html" title="class in org.apache.logging.log4j.core.layout">Rfc5424Layout</a></dd>
 </dl>
 <hr>
 <div class="type-signature"><span class="modifiers">public static class </span><span class="element-name type-name-label">Rfc5424Layout.Rfc5424LayoutBuilder</span>
-<span class="extends-implements">extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
+<span class="extends-implements">extends <a href="AbstractStringLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">AbstractStringLayout.Builder</a>&lt;<a href="Rfc5424Layout.Rfc5424LayoutBuilder.html" title="class in org.apache.logging.log4j.core.layout">Rfc5424Layout.Rfc5424LayoutBuilder</a>&gt;
+implements <a href="../util/Builder.html" title="interface in org.apache.logging.log4j.core.util">Builder</a>&lt;<a href="Rfc5424Layout.html" title="class in org.apache.logging.log4j.core.layout">Rfc5424Layout</a>&gt;</span></div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -104,7 +113,7 @@ loadScripts(document, 'script');</script>
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button><button id="method-summary-table-tab6" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab6', 3)" class="table-tab">Deprecated Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
@@ -112,16 +121,22 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="Rfc5424Layout.html" title="class in org.apache.logging.log4j.core.layout">Rfc5424Layout</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#build()" class="member-name-link">build</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Builds the object after all configuration has been set.</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="Rfc5424Layout.Rfc5424LayoutBuilder.html" title="class in org.apache.logging.log4j.core.layout">Rfc5424Layout.Rfc5424LayoutBuilder</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAppName(java.lang.String)" class="member-name-link">setAppName</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;appName)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="Rfc5424Layout.Rfc5424LayoutBuilder.html" title="class in org.apache.logging.log4j.core.layout">Rfc5424Layout.Rfc5424LayoutBuilder</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setCharset(java.nio.charset.Charset)" class="member-name-link">setCharset</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html" title="class or interface in java.nio.charset" class="external-link">Charset</a>&nbsp;charset)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="Rfc5424Layout.Rfc5424LayoutBuilder.html" title="class in org.apache.logging.log4j.core.layout">Rfc5424Layout.Rfc5424LayoutBuilder</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setConfig(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfig</a><wbr>(<a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="Rfc5424Layout.Rfc5424LayoutBuilder.html" title="class in org.apache.logging.log4j.core.layout">Rfc5424Layout.Rfc5424LayoutBuilder</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#setConfig(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfig</a><wbr>(<a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Since 2.24.0 use <a href="AbstractLayout.Builder.html#setConfiguration(org.apache.logging.log4j.core.config.Configuration)"><code>AbstractLayout.Builder.setConfiguration(org.apache.logging.log4j.core.config.Configuration)</code></a> instead.</div>
+</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="Rfc5424Layout.Rfc5424LayoutBuilder.html" title="class in org.apache.logging.log4j.core.layout">Rfc5424Layout.Rfc5424LayoutBuilder</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setEin(java.lang.String)" class="member-name-link">setEin</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;ein)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
@@ -174,8 +189,17 @@ loadScripts(document, 'script');</script>
 </div>
 </div>
 <div class="inherited-list">
+<h3 id="methods-inherited-from-class-org.apache.logging.log4j.core.layout.AbstractStringLayout.Builder">Methods inherited from class&nbsp;org.apache.logging.log4j.core.layout.<a href="AbstractStringLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">AbstractStringLayout.Builder</a></h3>
+<code><a href="AbstractStringLayout.Builder.html#getCharset()">getCharset</a>, <a href="AbstractStringLayout.Builder.html#getFooterSerializer()">getFooterSerializer</a>, <a href="AbstractStringLayout.Builder.html#getHeaderSerializer()">getHeaderSerializer</a>, <a href="AbstractStringLayout.Builder.html#setFooterSerializer(org.apache.logging.log4j.core.layout.AbstractStringLayout.Serializer)">setFooterSerializer</a>, <a href="AbstractStringLayout.Builder.html#setHeaderSerializer(org.apache.logging.log4j.core.layout.AbstractStringLayout.Serializer)">setHeaderSerializer</a></code></div>
+<div class="inherited-list">
+<h3 id="methods-inherited-from-class-org.apache.logging.log4j.core.layout.AbstractLayout.Builder">Methods inherited from class&nbsp;org.apache.logging.log4j.core.layout.<a href="AbstractLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">AbstractLayout.Builder</a></h3>
+<code><a href="AbstractLayout.Builder.html#asBuilder()">asBuilder</a>, <a href="AbstractLayout.Builder.html#getConfiguration()">getConfiguration</a>, <a href="AbstractLayout.Builder.html#getFooter()">getFooter</a>, <a href="AbstractLayout.Builder.html#getHeader()">getHeader</a>, <a href="AbstractLayout.Builder.html#setConfiguration(org.apache.logging.log4j.core.config.Configuration)">setConfiguration</a>, <a href="AbstractLayout.Builder.html#setFooter(byte%5B%5D)">setFooter</a>, <a href="AbstractLayout.Builder.html#setHeader(byte%5B%5D)">setHeader</a></code></div>
+<div class="inherited-list">
 <h3 id="methods-inherited-from-class-java.lang.Object">Methods inherited from class&nbsp;java.lang.<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></h3>
 <code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#clone--" title="class or interface in java.lang" class="external-link">clone</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#equals-java.lang.Object-" title="class or interface in java.lang" class="external-link">equals</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#finalize--" title="class or interface in java.lang" class="external-link">finalize</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#getClass--" title="class or interface in java.lang" class="external-link">getClass</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#hashCode--" title="class or interface in java.lang" class="external-link">hashCode</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#notify--" title="class or interface in java.lang" class="external-link">notify</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#notifyAll--" title="class or interface in java.lang" class="external-link">notifyAll</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#toString--" title="class or interface in java.lang" class="external-link">toString</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#wait--" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#wait-long-" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#wait-long-int-" title="class or interface in java.lang" class="external-link">wait</a></code></div>
+<div class="inherited-list">
+<h3 id="methods-inherited-from-class-org.apache.logging.log4j.core.util.Builder">Methods inherited from interface&nbsp;org.apache.logging.log4j.core.util.<a href="../util/Builder.html" title="interface in org.apache.logging.log4j.core.util">Builder</a></h3>
+<code><a href="../util/Builder.html#getErrorPrefix()">getErrorPrefix</a>, <a href="../util/Builder.html#isValid()">isValid</a></code></div>
 </section>
 </li>
 </ul>
@@ -204,7 +228,11 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="setConfig(org.apache.logging.log4j.core.config.Configuration)">
 <h3>setConfig</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="Rfc5424Layout.Rfc5424LayoutBuilder.html" title="class in org.apache.logging.log4j.core.layout">Rfc5424Layout.Rfc5424LayoutBuilder</a></span>&nbsp;<span class="element-name">setConfig</span><wbr><span class="parameters">(<a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config)</span></div>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="Rfc5424Layout.Rfc5424LayoutBuilder.html" title="class in org.apache.logging.log4j.core.layout">Rfc5424Layout.Rfc5424LayoutBuilder</a></span>&nbsp;<span class="element-name">setConfig</span><wbr><span class="parameters">(<a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Since 2.24.0 use <a href="AbstractLayout.Builder.html#setConfiguration(org.apache.logging.log4j.core.config.Configuration)"><code>AbstractLayout.Builder.setConfiguration(org.apache.logging.log4j.core.config.Configuration)</code></a> instead.</div>
+</div>
 </section>
 </li>
 <li>
@@ -295,6 +323,10 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="setCharset(java.nio.charset.Charset)">
 <h3>setCharset</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="Rfc5424Layout.Rfc5424LayoutBuilder.html" title="class in org.apache.logging.log4j.core.layout">Rfc5424Layout.Rfc5424LayoutBuilder</a></span>&nbsp;<span class="element-name">setCharset</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html" title="class or interface in java.nio.charset" class="external-link">Charset</a>&nbsp;charset)</span></div>
+<dl class="notes">
+<dt>Overrides:</dt>
+<dd><code><a href="AbstractStringLayout.Builder.html#setCharset(java.nio.charset.Charset)">setCharset</a></code>&nbsp;in class&nbsp;<code><a href="AbstractStringLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">AbstractStringLayout.Builder</a>&lt;<a href="Rfc5424Layout.Rfc5424LayoutBuilder.html" title="class in org.apache.logging.log4j.core.layout">Rfc5424Layout.Rfc5424LayoutBuilder</a>&gt;</code></dd>
+</dl>
 </section>
 </li>
 <li>
@@ -319,6 +351,15 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="build()">
 <h3>build</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="Rfc5424Layout.html" title="class in org.apache.logging.log4j.core.layout">Rfc5424Layout</a></span>&nbsp;<span class="element-name">build</span>()</div>
+<div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="../util/Builder.html#build()">Builder</a></code></span></div>
+<div class="block">Builds the object after all configuration has been set. This will use default values for any
+ unspecified attributes for the object.</div>
+<dl class="notes">
+<dt>Specified by:</dt>
+<dd><code><a href="../util/Builder.html#build()">build</a></code>&nbsp;in interface&nbsp;<code><a href="../util/Builder.html" title="interface in org.apache.logging.log4j.core.util">Builder</a>&lt;<a href="Rfc5424Layout.html" title="class in org.apache.logging.log4j.core.layout">Rfc5424Layout</a>&gt;</code></dd>
+<dt>Returns:</dt>
+<dd>the configured instance.</dd>
+</dl>
 </section>
 </li>
 </ul>

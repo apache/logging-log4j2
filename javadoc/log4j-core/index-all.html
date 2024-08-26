@@ -6142,6 +6142,10 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/layout/AbstractStringLayout.html#getBytes(java.lang.String)" class="member-name-link">getBytes(String)</a> - Method in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/AbstractStringLayout.html" title="class in org.apache.logging.log4j.core.layout">AbstractStringLayout</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/util/NetUtils.html#getCanonicalLocalHostname()" class="member-name-link">getCanonicalLocalHostname()</a> - Static method in class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/NetUtils.html" title="class in org.apache.logging.log4j.core.util">NetUtils</a></dt>
+<dd>
+<div class="block">This method gets the FQDN of the machine we are running on.</div>
+</dd>
 <dt><a href="org/apache/logging/log4j/core/config/plugins/processor/PluginEntry.html#getCategory()" class="member-name-link">getCategory()</a> - Method in class org.apache.logging.log4j.core.config.plugins.processor.<a href="org/apache/logging/log4j/core/config/plugins/processor/PluginEntry.html" title="class in org.apache.logging.log4j.core.config.plugins.processor">PluginEntry</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/config/plugins/util/PluginType.html#getCategory()" class="member-name-link">getCategory()</a> - Method in class org.apache.logging.log4j.core.config.plugins.util.<a href="org/apache/logging/log4j/core/config/plugins/util/PluginType.html" title="class in org.apache.logging.log4j.core.config.plugins.util">PluginType</a></dt>
@@ -12256,6 +12260,8 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/layout/PatternMatch.html#newBuilder()" class="member-name-link">newBuilder()</a> - Static method in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/PatternMatch.html" title="class in org.apache.logging.log4j.core.layout">PatternMatch</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/layout/Rfc5424Layout.html#newBuilder()" class="member-name-link">newBuilder()</a> - Static method in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/Rfc5424Layout.html" title="class in org.apache.logging.log4j.core.layout">Rfc5424Layout</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/layout/ScriptPatternSelector.html#newBuilder()" class="member-name-link">newBuilder()</a> - Static method in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/ScriptPatternSelector.html" title="class in org.apache.logging.log4j.core.layout">ScriptPatternSelector</a></dt>
 <dd>
 <div class="block">Creates a builder for a custom ScriptPatternSelector.</div>
@@ -14879,7 +14885,11 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/core/filter/mutable/KeyValuePairConfig.html#setConfig(java.util.Map)" class="member-name-link">setConfig(Map&lt;String, String[]&gt;)</a> - Method in class org.apache.logging.log4j.core.filter.mutable.<a href="org/apache/logging/log4j/core/filter/mutable/KeyValuePairConfig.html" title="class in org.apache.logging.log4j.core.filter.mutable">KeyValuePairConfig</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/layout/Rfc5424Layout.Rfc5424LayoutBuilder.html#setConfig(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfig(Configuration)</a> - Method in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/Rfc5424Layout.Rfc5424LayoutBuilder.html" title="class in org.apache.logging.log4j.core.layout">Rfc5424Layout.Rfc5424LayoutBuilder</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Since 2.24.0 use <a href="org/apache/logging/log4j/core/layout/AbstractLayout.Builder.html#setConfiguration(org.apache.logging.log4j.core.config.Configuration)"><code>AbstractLayout.Builder.setConfiguration(org.apache.logging.log4j.core.config.Configuration)</code></a> instead.</div>
+</div>
+</dd>
 <dt><a href="org/apache/logging/log4j/core/filter/MutableThreadContextMapFilter.Builder.html#setConfigLocation(java.lang.String)" class="member-name-link">setConfigLocation(String)</a> - Method in class org.apache.logging.log4j.core.filter.<a href="org/apache/logging/log4j/core/filter/MutableThreadContextMapFilter.Builder.html" title="class in org.apache.logging.log4j.core.filter">MutableThreadContextMapFilter.Builder</a></dt>
 <dd>
 <div class="block">Sets the configuration to use.</div>

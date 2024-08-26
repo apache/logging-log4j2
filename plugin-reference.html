@@ -16155,10 +16155,10 @@ Supports Lookup expressions.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
 </div>
 <div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
 </div></div></td>
 </tr>
 <tr>
@@ -16849,21 +16849,26 @@ The format of the result depends on the <em>conversion pattern</em>.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Rfc5424Layout appName=""
+               charset=""
+               ein=""
                enterpriseNumber=""
+               escapeNL=""
                eventPrefix=""
                exceptionPattern=""
+               excludes=""
                facility=""
+               footer=""
+               header=""
                id=""
                includeMDC=""
-               mdcExcludes=""
+               includeNL=""
+               includes=""
                mdcId=""
-               mdcIncludes=""
                mdcPrefix=""
-               mdcRequired=""
                messageId=""
-               newLine=""
-               newLineEscape=""
-               useTlsMessageFormat=""&gt;
+               required=""
+               useTLSMessageFormat=""&gt;
+    &lt;a-Serializer-implementation/&gt;
     &lt;LoggerFields/&gt;&lt;!-- multiple occurrences allowed --&gt;
 &lt;/Rfc5424Layout&gt;</code></pre>
 </div>
@@ -16894,131 +16899,121 @@ The format of the result depends on the <em>conversion pattern</em>.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>appName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The value to use as the APP-NAME in the RFC 5424 syslog record.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>charset</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Charset?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ein</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>enterpriseNumber</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int?</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Integer?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The IANA enterprise number.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>escapeNL</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>eventPrefix</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The prefix to add to event key names.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>exceptionPattern</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The pattern for formatting exceptions.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>excludes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>facility</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-Facility">Facility</a>?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The Facility is used to try to classify the message.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>footer</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>header</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The default structured data id to use when formatting according to RFC 5424.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeMDC</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Indicates whether data from the ThreadContextMap will be included in the RFC 5424 Syslog record.
-Defaults to "true:.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdcExcludes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeNL</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>includes</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>A comma separated list of MDC keys that should be excluded from the LogEvent.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdcId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The id to use for the MDC Structured Data Element.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdcIncludes</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>A comma separated list of MDC keys that should be included in the FlumeEvent.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdcPrefix</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The prefix to add to MDC key names.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdcRequired</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>A comma separated list of MDC keys that must be present in the MDC.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>messageId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The default value to be used in the MSGID field of RFC 5424 syslog records.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>newLine</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>If true, a newline will be appended to the end of the syslog record.
-The default is false.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>newLineEscape</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>required</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>String that should be used to replace newlines within the message text.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>useTlsMessageFormat</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>useTLSMessageFormat</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>If true the message will be formatted according to RFC 5425.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 </tbody>
 </table>
@@ -17043,11 +17038,14 @@ The default is false.</p>
 </thead>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Serializer?</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>LoggerFields</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-LoggerFields">LoggerFields</a>?</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Container for the KeyValuePairs containing the patterns</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 </tbody>
 </table>
@@ -17454,10 +17452,10 @@ Supports Lookup expressions.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
 </div>
 <div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
 </div></div></td>
 </tr>
 <tr>
@@ -17653,10 +17651,10 @@ Supports Lookup expressions.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
 </div>
 <div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
 </div></div></td>
 </tr>
 <tr>

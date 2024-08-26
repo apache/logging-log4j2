@@ -236,14 +236,17 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isIncludeMdc()" class="member-name-link">isIncludeMdc</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toSerializable(org.apache.logging.log4j.core.LogEvent)" class="member-name-link">toSerializable</a><wbr>(<a href="../LogEvent.html" title="interface in org.apache.logging.log4j.core">LogEvent</a>&nbsp;event)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="Rfc5424Layout.Rfc5424LayoutBuilder.html" title="class in org.apache.logging.log4j.core.layout">Rfc5424Layout.Rfc5424LayoutBuilder</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#newBuilder()" class="member-name-link">newBuilder</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toSerializable(org.apache.logging.log4j.core.LogEvent)" class="member-name-link">toSerializable</a><wbr>(<a href="../LogEvent.html" title="interface in org.apache.logging.log4j.core">LogEvent</a>&nbsp;event)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Formats a <a href="../LogEvent.html" title="interface in org.apache.logging.log4j.core"><code>LogEvent</code></a> in conformance with the RFC 5424 Syslog specification.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toString()" class="member-name-link">toString</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toString()" class="member-name-link">toString</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -409,42 +412,24 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="createLayout(org.apache.logging.log4j.core.net.Facility,java.lang.String,int,boolean,java.lang.String,java.lang.String,java.lang.String,boolean,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,boolean,org.apache.logging.log4j.core.layout.LoggerFields[],org.apache.logging.log4j.core.config.Configuration)">
 <h3>createLayout</h3>
-<div class="member-signature"><span class="annotations"><a href="../config/plugins/PluginFactory.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginFactory</a>
-</span><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="Rfc5424Layout.html" title="class in org.apache.logging.log4j.core.layout">Rfc5424Layout</a></span>&nbsp;<span class="element-name">createLayout</span><wbr><span class="parameters">(<a href="../config/plugins/PluginAttribute.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginAttribute</a>(<a href="../config/plugins/PluginAttribute.html#value()">value</a>="facility",<a href="../config/plugins/PluginAttribute.html#defaultString()">defaultString</a>="LOCAL0")
- <a href="../net/Facility.html" title="enum in org.apache.logging.log4j.core.net">Facility</a>&nbsp;facility,
- <a href="../config/plugins/PluginAttribute.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginAttribute</a>("id")
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="Rfc5424Layout.html" title="class in org.apache.logging.log4j.core.layout">Rfc5424Layout</a></span>&nbsp;<span class="element-name">createLayout</span><wbr><span class="parameters">(<a href="../net/Facility.html" title="enum in org.apache.logging.log4j.core.net">Facility</a>&nbsp;facility,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id,
- <a href="../config/plugins/PluginAttribute.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginAttribute</a>(<a href="../config/plugins/PluginAttribute.html#value()">value</a>="enterpriseNumber",<a href="../config/plugins/PluginAttribute.html#defaultInt()">defaultInt</a>=32473)
  int&nbsp;enterpriseNumber,
- <a href="../config/plugins/PluginAttribute.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginAttribute</a>(<a href="../config/plugins/PluginAttribute.html#value()">value</a>="includeMDC",<a href="../config/plugins/PluginAttribute.html#defaultBoolean()">defaultBoolean</a>=true)
  boolean&nbsp;includeMDC,
- <a href="../config/plugins/PluginAttribute.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginAttribute</a>(<a href="../config/plugins/PluginAttribute.html#value()">value</a>="mdcId",<a href="../config/plugins/PluginAttribute.html#defaultString()">defaultString</a>="mdc")
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mdcId,
- <a href="../config/plugins/PluginAttribute.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginAttribute</a>("mdcPrefix")
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mdcPrefix,
- <a href="../config/plugins/PluginAttribute.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginAttribute</a>("eventPrefix")
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;eventPrefix,
- <a href="../config/plugins/PluginAttribute.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginAttribute</a>("newLine")
  boolean&nbsp;newLine,
- <a href="../config/plugins/PluginAttribute.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginAttribute</a>("newLineEscape")
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;escapeNL,
- <a href="../config/plugins/PluginAttribute.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginAttribute</a>("appName")
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;appName,
- <a href="../config/plugins/PluginAttribute.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginAttribute</a>("messageId")
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;msgId,
- <a href="../config/plugins/PluginAttribute.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginAttribute</a>("mdcExcludes")
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;excludes,
- <a href="../config/plugins/PluginAttribute.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginAttribute</a>("mdcIncludes")
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;includes,
- <a href="../config/plugins/PluginAttribute.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginAttribute</a>("mdcRequired")
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;required,
- <a href="../config/plugins/PluginAttribute.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginAttribute</a>("exceptionPattern")
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;exceptionPattern,
- <a href="../config/plugins/PluginAttribute.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginAttribute</a>("useTlsMessageFormat")
  boolean&nbsp;useTlsMessageFormat,
- <a href="../config/plugins/PluginElement.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginElement</a>("LoggerFields")
  <a href="LoggerFields.html" title="class in org.apache.logging.log4j.core.layout">LoggerFields</a>[]&nbsp;loggerFields,
- <a href="../config/plugins/PluginConfiguration.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginConfiguration</a>
  <a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config)</span></div>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
 <div class="deprecation-comment">Use <a href="Rfc5424Layout.Rfc5424LayoutBuilder.html" title="class in org.apache.logging.log4j.core.layout"><code>instead</code></a></div>
@@ -474,6 +459,13 @@ loadScripts(document, 'script');</script>
 <dt>Returns:</dt>
 <dd>An Rfc5424Layout.</dd>
 </dl>
+</section>
+</li>
+<li>
+<section class="detail" id="newBuilder()">
+<h3>newBuilder</h3>
+<div class="member-signature"><span class="annotations"><a href="../config/plugins/PluginBuilderFactory.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginBuilderFactory</a>
+</span><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="Rfc5424Layout.Rfc5424LayoutBuilder.html" title="class in org.apache.logging.log4j.core.layout">Rfc5424Layout.Rfc5424LayoutBuilder</a></span>&nbsp;<span class="element-name">newBuilder</span>()</div>
 </section>
 </li>
 <li>
