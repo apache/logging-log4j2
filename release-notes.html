@@ -1503,6 +1503,9 @@ Java 6 and Java 7 are no longer supported by the Log4j team.</p>
 <p>Correct default to not include location for <code>AsyncRootLogger</code>s (<a href="https://issues.apache.org/jira/browse/LOG4J2-3487">LOG4J2-3487</a>)</p>
 </li>
 <li>
+<p>Make StatusConsoleListener use SimpleLogger internally. (<a href="https://issues.apache.org/jira/browse/LOG4J2-3584">LOG4J2-3584</a>)</p>
+</li>
+<li>
 <p>Lazily evaluate the level of a SLF4J <code>LogEventBuilder</code> (<a href="https://issues.apache.org/jira/browse/LOG4J2-3598">LOG4J2-3598</a>)</p>
 </li>
 <li>
@@ -1628,9 +1631,6 @@ Java 6 and Java 7 are no longer supported by the Log4j team.</p>
 </li>
 <li>
 <p>Fix ServiceLoaderUtil behavior in the presence of a SecurityManager. (<a href="https://issues.apache.org/jira/browse/LOG4J2-3579">LOG4J2-3579</a>)</p>
-</li>
-<li>
-<p>Make StatusConsoleListener use SimpleLogger internally. (<a href="https://issues.apache.org/jira/browse/LOG4J2-3584">LOG4J2-3584</a>)</p>
 </li>
 <li>
 <p>Fix regression in Rfc5424Layout default values. (<a href="https://issues.apache.org/jira/browse/LOG4J2-3587">LOG4J2-3587</a>)</p>
