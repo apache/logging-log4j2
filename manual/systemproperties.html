@@ -3247,7 +3247,7 @@ implementation to be used by all loggers.</p>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>depends on classpath</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.logging.log4j.jul.ApiLoggerAdapter</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -3255,21 +3255,37 @@ implementation to be used by all loggers.</p>
 <p>Fully qualified class name of the <code>org.apache.logging.log4j.jul.AbstractLoggerAdapter</code> implementation to use.</p>
 </div>
 <div class="paragraph">
-<p>This property allows users to choose between two implementation of the logging bridge:</p>
+<p>This property allows users to choose between two implementations of the logging bridge:</p>
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1">org.apache.logging.log4j.jul.CoreLoggerAdapter</dt>
+<dt class="hdlist1"><code>org.apache.logging.log4j.jul.CoreLoggerAdapter</code></dt>
 <dd>
-<p>The default if <code>log4j-core</code> is found in the class path.
-It allows users to modify the Log4j Core configuration through the JUL <a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/Logger.html"><code>Logger</code></a> interface.</p>
+<p>It allows users to modify the Log4j Core configuration through the JUL <a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/Logger.html"><code>Logger</code></a> interface.
+It requires the usage of the
+<a href="implementation.html" class="xref page">Log4j Core</a>
+implementation.</p>
 </dd>
-<dt class="hdlist1">org.apache.logging.log4j.jul.ApiLoggerAdapter</dt>
+<dt class="hdlist1"><code>org.apache.logging.log4j.jul.ApiLoggerAdapter</code></dt>
 <dd>
-<p>The default if <code>log4j-core</code> cannot be found in the class path.
-It disables the level mutators in the JUL <code>Logger</code> interface.</p>
+<p>It disables the level mutators in the JUL <code>Logger</code> interface.</p>
 </dd>
 </dl>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Since version 2.24.0 the default value changed to <code>ApiLoggerAdapter</code>.
+If you need to modify log levels via JUL, you need to select <code>CoreLoggerAdapter</code> explicitly.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
