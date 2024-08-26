@@ -1453,6 +1453,21 @@ appender.0.layout.type = MessageLayout</code></pre>
 <div class="sect1">
 <h2 id="KafkaAppender"><a class="anchor" href="#KafkaAppender"></a>Kafka Appender</h2>
 <div class="sectionbody">
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>This appender is planned to be removed in the next major release!</strong>
+If you are using this library, please get in touch with the Log4j maintainers using <a href="https://logging.apache.org/support.html">the official support channels</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>The KafkaAppender logs events to an <a href="https://kafka.apache.org/">Apache Kafka</a> topic.
 Each log event is sent as a
@@ -1852,6 +1867,22 @@ logger.0.appenderRef.0.ref = FILE</code></pre>
 <div class="sect1">
 <h2 id="JeroMqAppender"><a class="anchor" href="#JeroMqAppender"></a>ZeroMQ/JeroMQ Appender</h2>
 <div class="sectionbody">
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>This appender is planned to be removed in the next major release!</strong>
+Users should consider switching to
+<a href="https://github.com/fbacchella/loghublog4j2#zmqappender">a third-party <code>ZMQ</code> appender</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>The ZeroMQ appender uses the <a href="https://github.com/zeromq/jeromq">JeroMQ</a> library to send log events to one or more ZeroMQ endpoints.</p>
 </div>
