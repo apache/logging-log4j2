@@ -9091,8 +9091,18 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/util/CronExpression.html#getValue(int,java.lang.String,int)" class="member-name-link">getValue(int, String, int)</a> - Method in class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/CronExpression.html" title="class in org.apache.logging.log4j.core.util">CronExpression</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/ContextDataInjector.html#getValue(java.lang.String)" class="member-name-link">getValue(String)</a> - Method in interface org.apache.logging.log4j.core.<a href="org/apache/logging/log4j/core/ContextDataInjector.html" title="interface in org.apache.logging.log4j.core">ContextDataInjector</a></dt>
+<dd>
+<div class="block">Retrieves a single context data value.</div>
+</dd>
 <dt><a href="org/apache/logging/log4j/core/impl/JdkMapAdapterStringMap.html#getValue(java.lang.String)" class="member-name-link">getValue(String)</a> - Method in class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/JdkMapAdapterStringMap.html" title="class in org.apache.logging.log4j.core.impl">JdkMapAdapterStringMap</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/impl/ThreadContextDataInjector.ForCopyOnWriteThreadContextMap.html#getValue(java.lang.String)" class="member-name-link">getValue(String)</a> - Method in class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/ThreadContextDataInjector.ForCopyOnWriteThreadContextMap.html" title="class in org.apache.logging.log4j.core.impl">ThreadContextDataInjector.ForCopyOnWriteThreadContextMap</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/util/ContextDataProvider.html#getValue(java.lang.String)" class="member-name-link">getValue(String)</a> - Method in interface org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/ContextDataProvider.html" title="interface in org.apache.logging.log4j.core.util">ContextDataProvider</a></dt>
+<dd>
+<div class="block">Retrieves a single context data value.</div>
+</dd>
 <dt><a href="org/apache/logging/log4j/core/lookup/StrSubstitutor.html#getValueDelimiterMatcher()" class="member-name-link">getValueDelimiterMatcher()</a> - Method in class org.apache.logging.log4j.core.lookup.<a href="org/apache/logging/log4j/core/lookup/StrSubstitutor.html" title="class in org.apache.logging.log4j.core.lookup">StrSubstitutor</a></dt>
 <dd>
 <div class="block">Gets the variable default value delimiter matcher currently in use.</div>
@@ -13697,7 +13707,9 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/ContextDataInjector.html#rawContextData()" class="member-name-link">rawContextData()</a> - Method in interface org.apache.logging.log4j.core.<a href="org/apache/logging/log4j/core/ContextDataInjector.html" title="interface in org.apache.logging.log4j.core">ContextDataInjector</a></dt>
 <dd>
-<div class="block">Returns a <code>ReadOnlyStringMap</code> object reflecting the current state of the context.</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Since 2.24.0 use <a href="org/apache/logging/log4j/core/ContextDataInjector.html#getValue(java.lang.String)"><code>ContextDataInjector.getValue(java.lang.String)</code></a> instead.</div>
+</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/impl/ThreadContextDataInjector.ForCopyOnWriteThreadContextMap.html#rawContextData()" class="member-name-link">rawContextData()</a> - Method in class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/ThreadContextDataInjector.ForCopyOnWriteThreadContextMap.html" title="class in org.apache.logging.log4j.core.impl">ThreadContextDataInjector.ForCopyOnWriteThreadContextMap</a></dt>
 <dd>&nbsp;</dd>

@@ -86,8 +86,7 @@ loadScripts(document, 'script');</script>
 </dl>
 <hr>
 <div class="type-signature"><span class="modifiers">public static class </span><span class="element-name type-name-label">ThreadContextDataInjector.ForDefaultThreadContextMap</span>
-<span class="extends-implements">extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
-implements <a href="../ContextDataInjector.html" title="interface in org.apache.logging.log4j.core">ContextDataInjector</a></span></div>
+<span class="extends-implements">extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
 <div class="block">Default <code>ContextDataInjector</code> for the legacy <code>Map&lt;String, String&gt;</code>-based ThreadContext (which is
  also the ThreadContext implementation used for web applications).
  <p>
@@ -119,16 +118,21 @@ implements <a href="../ContextDataInjector.html" title="interface in org.apache.
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html" title="class or interface in org.apache.logging.log4j.util" class="external-link">StringMap</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#injectContextData(java.util.List,org.apache.logging.log4j.util.StringMap)" class="member-name-link">injectContextData</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../config/Property.html" title="class in org.apache.logging.log4j.core.config">Property</a>&gt;&nbsp;props,
- <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html" title="class or interface in org.apache.logging.log4j.util" class="external-link">StringMap</a>&nbsp;ignore)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getValue(java.lang.String)" class="member-name-link">getValue</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Retrieves a single context data value.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html" title="class or interface in org.apache.logging.log4j.util" class="external-link">StringMap</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#injectContextData(java.util.List,org.apache.logging.log4j.util.StringMap)" class="member-name-link">injectContextData</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../config/Property.html" title="class in org.apache.logging.log4j.core.config">Property</a>&gt;&nbsp;props,
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/StringMap.html" title="class or interface in org.apache.logging.log4j.util" class="external-link">StringMap</a>&nbsp;ignore)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Puts key-value pairs from both the specified list of properties as well as the thread context into the
  specified reusable StringMap.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/ReadOnlyStringMap.html" title="class or interface in org.apache.logging.log4j.util" class="external-link">ReadOnlyStringMap</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#rawContextData()" class="member-name-link">rawContextData</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/util/ReadOnlyStringMap.html" title="class or interface in org.apache.logging.log4j.util" class="external-link">ReadOnlyStringMap</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#rawContextData()" class="member-name-link">rawContextData</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns a <code>ReadOnlyStringMap</code> object reflecting the current state of the context.</div>
 </div>
 </div>
@@ -170,8 +174,6 @@ implements <a href="../ContextDataInjector.html" title="interface in org.apache.
 <div class="block">Puts key-value pairs from both the specified list of properties as well as the thread context into the
  specified reusable StringMap.</div>
 <dl class="notes">
-<dt>Specified by:</dt>
-<dd><code><a href="../ContextDataInjector.html#injectContextData(java.util.List,org.apache.logging.log4j.util.StringMap)">injectContextData</a></code>&nbsp;in interface&nbsp;<code><a href="../ContextDataInjector.html" title="interface in org.apache.logging.log4j.core">ContextDataInjector</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>props</code> - list of configuration properties, may be <code>null</code></dd>
 <dd><code>ignore</code> - a <code>StringMap</code> instance from the log event</dd>
@@ -203,10 +205,24 @@ implements <a href="../ContextDataInjector.html" title="interface in org.apache.
  the implementation of this method. It is not safe to pass the returned object to another thread.
  </p></div>
 <dl class="notes">
-<dt>Specified by:</dt>
-<dd><code><a href="../ContextDataInjector.html#rawContextData()">rawContextData</a></code>&nbsp;in interface&nbsp;<code><a href="../ContextDataInjector.html" title="interface in org.apache.logging.log4j.core">ContextDataInjector</a></code></dd>
 <dt>Returns:</dt>
 <dd>a <code>ReadOnlyStringMap</code> object reflecting the current state of the context, may not return <code>null</code></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="getValue(java.lang.String)">
+<h3>getValue</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span>&nbsp;<span class="element-name">getValue</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key)</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="../ContextDataInjector.html#getValue(java.lang.String)">ContextDataInjector</a></code></span></div>
+<div class="block">Retrieves a single context data value.</div>
+<dl class="notes">
+<dt>Specified by:</dt>
+<dd><code><a href="../ContextDataInjector.html#getValue(java.lang.String)">getValue</a></code>&nbsp;in interface&nbsp;<code><a href="../ContextDataInjector.html" title="interface in org.apache.logging.log4j.core">ContextDataInjector</a></code></dd>
+<dt>Parameters:</dt>
+<dd><code>key</code> - The context data key of the value to retrieve.</dd>
+<dt>Returns:</dt>
+<dd>A context data value.</dd>
 </dl>
 </section>
 </li>
