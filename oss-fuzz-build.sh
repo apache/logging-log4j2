@@ -126,6 +126,10 @@ else
   jvmArgs="-Xmx2048m:-Xss1024k"
 fi
 
+# Temporarily increase verbosity to troubleshoot fuzzer failures.
+# See https://github.com/google/oss-fuzz/issues/12349
+set -x
+
 # Run the fuzzer
 LD_LIBRARY_PATH="\$JVM_LD_LIBRARY_PATH":. \\
 jazzer_driver \\
