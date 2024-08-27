@@ -126,15 +126,25 @@ else
   jvmArgs="-Xmx2048m:-Xss1024k"
 fi
 
-# Temporarily increase verbosity to troubleshoot fuzzer failures.
+# Temporarily increase verbosity to troubleshoot fuzzer failures
 # See https://github.com/google/oss-fuzz/issues/12349
 set -x
+
+# Verify the classpath
+classPath="$classPath"
+echo "\$classPath" | sed 's/:/\n/g' | while read classPathFile; do
+  if [[ ! -f "\$classPathFile" ]]; then
+    echo "ERROR: Could not find class path file: \"\$classPathFile\"" 1>&2
+    echo "ERROR: Complete class path: \"\$classPath\"" 1>&2
+    exit 1
+  fi
+done
 
 # Run the fuzzer
 LD_LIBRARY_PATH="\$JVM_LD_LIBRARY_PATH":. \\
 jazzer_driver \\
   --agent_path=jazzer_agent_deploy.jar \\
-  --cp="$classPath" \\
+  --cp="\$classPath" \\
   --target_class="$fqcn" \\
   --jvm_args="\$jvmArgs" \\
   \$@
