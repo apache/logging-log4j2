@@ -18,8 +18,8 @@ package org.apache.logging.log4j.core.jackson;
 
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import org.apache.logging.log4j.core.jackson.Initializers.SetupContextAsEntryListInitializer;
 import org.apache.logging.log4j.core.jackson.Initializers.SetupContextInitializer;
-import org.apache.logging.log4j.core.jackson.Initializers.SetupContextJsonInitializer;
 import org.apache.logging.log4j.core.jackson.Initializers.SimpleModuleInitializer;
 
 /**
@@ -53,9 +53,9 @@ final class Log4jYamlModule extends SimpleModule {
         // Calling super is a MUST!
         super.setupModule(context);
         if (encodeThreadContextAsList) {
-            new SetupContextInitializer().setupModule(context, includeStacktrace, stacktraceAsString);
+            new SetupContextAsEntryListInitializer().setupModule(context, includeStacktrace, stacktraceAsString);
         } else {
-            new SetupContextJsonInitializer().setupModule(context, includeStacktrace, stacktraceAsString);
+            new SetupContextInitializer().setupModule(context, includeStacktrace, stacktraceAsString);
         }
     }
 }

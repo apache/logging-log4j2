@@ -105,8 +105,7 @@ Intended for simple plugins that receive less than a handful of values.
 +
 See {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/layout/CsvParameterLayout.java[`CsvParameterLayout.java`] for an example on `@PluginFactory` usage.
 
-a link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/PluginBuilderFactory.html[`@PluginBuilderFactory`]-annotated static method of return type
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/Builder.html[`Builder<T>`]::
+a link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/PluginBuilderFactory.html[`@PluginBuilderFactory`]-annotated static method of return type link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/Builder.html[`Builder<T>`]::
 What is expected to be received is modelled as fields of a builder class.
 Intended for more sophisticated wiring needs.
 +

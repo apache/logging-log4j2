@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="https://logging.apache.org/xml/ns"
+       xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="changed">
+  <issue id="Spring-33450" link="https://github.com/spring-projects/spring-boot/issues/33450"/>
+  <description format="asciidoc">Ignore exceptions thrown by PropertySources.</description>
+</entry>

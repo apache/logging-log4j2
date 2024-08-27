@@ -190,6 +190,8 @@ The `uuid` column is additionally converted into a `java.util.UUID` before being
 [#CassandraAppender]
 == Cassandra Appender
 
+include::partial$manual/appender-deprecation.adoc[]
+
 The Cassandra Appender writes its output to an
 https://cassandra.apache.org/_/index.html[Apache Cassandra]
 database.
@@ -806,6 +808,8 @@ include::example$manual/appenders/database/jdbc.sql[lines=17..-1]
 [#JpaAppender]
 == JPA Appender
 
+include::partial$manual/appender-deprecation.adoc[]
+
 The JPA Appender writes log events to a relational database table using the
 https://jakarta.ee/specifications/persistence/2.2/[Jakarta Persistence API 2.2].
 To use the appender, you need to:
@@ -1241,6 +1245,12 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-mongodb4_org-apache-lo
 
 [#CouchDbProvider]
 === Apache CouchDB provider
+
+[WARNING]
+====
+*This provider is planned to be removed in the next major release!*
+If you are using this library, please get in touch with the Log4j maintainers using link:{logging-services-url}/support.html[the official support channels].
+====
 
 The `CouchDb` Provider allows using the <<NoSqlAppender>> with an
 https://couchdb.apache.org/[Apache CouchDB database].

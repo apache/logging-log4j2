@@ -30,8 +30,9 @@ content:
 
 runtime:
   log:
-    # Fail on warnings
-    failure_level: warn
+    # Do not fail on errors until we upgrade to `log4j-docgen` 0.10.0,
+    # which has support for table captions.
+    failure_level: fatal
 
 asciidoc:
   attributes:

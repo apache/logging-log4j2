@@ -21,7 +21,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +37,6 @@ public class AsyncQueueFullPolicyFactoryTest {
     public void resetProperties() throws Exception {
         System.clearProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER);
         System.clearProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_DISCARDING_THRESHOLD_LEVEL);
-        PropertiesUtil.getProperties().reload();
     }
 
     @Test

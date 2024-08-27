@@ -105,6 +105,19 @@ public interface ContextDataInjector {
      * the implementation of this method. It is not safe to pass the returned object to another thread.
      * </p>
      * @return a {@code ReadOnlyStringMap} object reflecting the current state of the context, may not return {@code null}
+     * @deprecated Since 2.24.0 use {@link #getValue} instead.
      */
+    @Deprecated
     ReadOnlyStringMap rawContextData();
+
+    /**
+     * Retrieves a single context data value.
+     *
+     * @param key The context data key of the value to retrieve.
+     * @return A context data value.
+     * @since 2.24.0
+     */
+    default Object getValue(final String key) {
+        return rawContextData().getValue(key);
+    }
 }

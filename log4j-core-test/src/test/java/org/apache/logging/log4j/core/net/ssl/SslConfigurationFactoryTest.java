@@ -58,7 +58,6 @@ public class SslConfigurationFactoryTest {
         // Only keystore
         props.clear();
         addKeystoreConfiguration(props);
-        util.reload();
         sslConfiguration = SslConfigurationFactory.createSslConfiguration(util);
         assertNotNull(sslConfiguration);
         assertNotNull(sslConfiguration.getKeyStoreConfig());
@@ -66,7 +65,6 @@ public class SslConfigurationFactoryTest {
         // Only truststore
         props.clear();
         addTruststoreConfiguration(props);
-        util.reload();
         sslConfiguration = SslConfigurationFactory.createSslConfiguration(util);
         assertNotNull(sslConfiguration);
         assertNull(sslConfiguration.getKeyStoreConfig());
@@ -75,7 +73,6 @@ public class SslConfigurationFactoryTest {
         props.clear();
         addKeystoreConfiguration(props);
         addTruststoreConfiguration(props);
-        util.reload();
         sslConfiguration = SslConfigurationFactory.createSslConfiguration(util);
         assertNotNull(sslConfiguration);
         assertNotNull(sslConfiguration.getKeyStoreConfig());

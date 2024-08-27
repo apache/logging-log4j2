@@ -16,9 +16,9 @@
  */
 package org.apache.log4j;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -28,9 +28,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -40,13 +37,15 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.OptionHandler;
 import org.apache.log4j.spi.RootLogger;
 import org.apache.log4j.spi.ThrowableRenderer;
-import org.apache.log4j.spi.ThrowableRendererSupport;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 /**
  * Tests {@link PropertyConfigurator}.
  */
-public class PropertyConfiguratorTest {
+@SetTestProperty(key = "log4j1.compatibility", value = "true")
+class PropertyConfiguratorTest {
 
     /**
      * Mock definition of FilterBasedTriggeringPolicy from extras companion.
@@ -216,7 +215,8 @@ public class PropertyConfiguratorTest {
         }
     }
 
-    private static final String FILTER1_PROPERTIES = "target/test-classes/log4j1-1.2.17/input/filter1.properties";
+    private static final String BAD_ESCAPE_PROPERTIES = "/PropertyConfiguratorTest/badEscape.properties";
+    private static final String FILTER_PROPERTIES = "/PropertyConfiguratorTest/filter.properties";
 
     private static final String CAT_A_NAME = "categoryA";
 
@@ -224,21 +224,21 @@ public class PropertyConfiguratorTest {
 
     private static final String CAT_C_NAME = "categoryC";
 
+    @AfterEach
+    void cleanup() {
+        LogManager.resetConfiguration();
+    }
+
     /**
      * Test for bug 40944. Did not catch IllegalArgumentException on Properties.load and close input stream.
      *
      * @throws IOException if IOException creating properties file.
      */
     @Test
-    public void testBadUnicodeEscape() throws IOException {
-        final String fileName = "target/badescape.properties";
-        try (final FileWriter writer = new FileWriter(fileName)) {
-            writer.write("log4j.rootLogger=\\uXX41");
+    void testBadUnicodeEscape() throws IOException {
+        try (final InputStream is = PropertyConfiguratorTest.class.getResourceAsStream(BAD_ESCAPE_PROPERTIES)) {
+            PropertyConfigurator.configure(is);
         }
-        PropertyConfigurator.configure(fileName);
-        final File file = new File(fileName);
-        assertTrue(file.delete());
-        assertFalse(file.exists());
     }
 
     /**
@@ -247,14 +247,17 @@ public class PropertyConfiguratorTest {
      * @since 1.2.17
      */
     @Test
-    public void testInputStream() throws IOException {
-        final Path file = Paths.get(FILTER1_PROPERTIES);
-        assertTrue(Files.exists(file));
-        try (final InputStream inputStream = Files.newInputStream(file)) {
+    void testInputStream() throws IOException {
+        try (final InputStream inputStream = PropertyConfiguratorTest.class.getResourceAsStream(FILTER_PROPERTIES)) {
             PropertyConfigurator.configure(inputStream);
+
+            final Logger rootLogger = Logger.getRootLogger();
+            assertThat(rootLogger.getLevel()).isEqualTo(Level.INFO);
+            assertThat(rootLogger.getAppender("CONSOLE")).isNotNull();
+            final Logger logger = Logger.getLogger("org.apache.log4j.PropertyConfiguratorTest");
+            assertThat(logger.getLevel()).isEqualTo(Level.DEBUG);
+            assertThat(logger.getAppender("ROLLING")).isNotNull();
         }
-        this.validateNested();
-        LogManager.resetConfiguration();
     }
 
     /**
@@ -319,22 +322,10 @@ public class PropertyConfiguratorTest {
     }
 
     /**
-     * Tests processing of nested objects, see bug 36384.
-     */
-    public void testNested() {
-        try {
-            PropertyConfigurator.configure(FILTER1_PROPERTIES);
-            this.validateNested();
-        } finally {
-            LogManager.resetConfiguration();
-        }
-    }
-
-    /**
      * Test processing of log4j.reset property, see bug 17531.
      */
     @Test
-    public void testReset() {
+    void testReset() {
         final VectorAppender appender = new VectorAppender();
         appender.setName("A1");
         Logger.getRootLogger().addAppender(appender);
@@ -342,23 +333,6 @@ public class PropertyConfiguratorTest {
         properties.put("log4j.reset", "true");
         PropertyConfigurator.configure(properties);
         assertNull(Logger.getRootLogger().getAppender("A1"));
-        LogManager.resetConfiguration();
-    }
-
-    /**
-     * Test of log4j.throwableRenderer support. See bug 45721.
-     */
-    public void testThrowableRenderer() {
-        final Properties properties = new Properties();
-        properties.put("log4j.throwableRenderer", "org.apache.log4j.PropertyConfiguratorTest$MockThrowableRenderer");
-        properties.put("log4j.throwableRenderer.showVersion", "false");
-        PropertyConfigurator.configure(properties);
-        final ThrowableRendererSupport repo = (ThrowableRendererSupport) LogManager.getLoggerRepository();
-        final MockThrowableRenderer renderer = (MockThrowableRenderer) repo.getThrowableRenderer();
-        LogManager.resetConfiguration();
-        //        assertNotNull(renderer);
-        //        assertEquals(true, renderer.isActivated());
-        //        assertEquals(false, renderer.getShowVersion());
     }
 
     /**
@@ -367,7 +341,7 @@ public class PropertyConfiguratorTest {
      * @throws IOException if IOException creating properties file.
      */
     @Test
-    public void testURL() throws IOException {
+    void testURL() throws IOException {
         final File file = new File("target/unclosed.properties");
         try (final FileWriter writer = new FileWriter(file)) {
             writer.write("log4j.rootLogger=debug");
@@ -384,34 +358,25 @@ public class PropertyConfiguratorTest {
      * @throws IOException if IOException creating properties file.
      */
     @Test
-    public void testURLBadEscape() throws IOException {
-        final File file = new File("target/urlbadescape.properties");
-        try (final FileWriter writer = new FileWriter(file)) {
-            writer.write("log4j.rootLogger=\\uXX41");
-        }
-        final URL url = file.toURI().toURL();
-        PropertyConfigurator.configure(url);
-        assertTrue(file.delete());
-        assertFalse(file.exists());
+    void testURLBadEscape() throws IOException {
+        final URL configURL = PropertyConfiguratorTest.class.getResource(BAD_ESCAPE_PROPERTIES);
+        PropertyConfigurator.configure(configURL);
     }
 
-    public void validateNested() {
+    @Test
+    @SetTestProperty(key = "log4j1.compatibility", value = "false")
+    void when_compatibility_disabled_configurator_is_no_op() throws IOException {
+        final Logger rootLogger = Logger.getRootLogger();
         final Logger logger = Logger.getLogger("org.apache.log4j.PropertyConfiguratorTest");
-        final String appenderName = "ROLLING";
-        // Appender OK
-        final Appender appender = logger.getAppender(appenderName);
-        assertNotNull(appender);
-        // Down-cast?
-        //        final RollingFileAppender rfa = (RollingFileAppender) appender;
-        //        assertNotNull(appenderName, rfa);
-        //        final FixedWindowRollingPolicy rollingPolicy = (FixedWindowRollingPolicy) rfa.getRollingPolicy();
-        //        assertEquals("filterBase-test1.log", rollingPolicy.getActiveFileName());
-        //        assertEquals("filterBased-test1.%i", rollingPolicy.getFileNamePattern());
-        //        assertEquals(0, rollingPolicy.getMinIndex());
-        //        assertTrue(rollingPolicy.isActivated());
-        //        final FilterBasedTriggeringPolicy triggeringPolicy = (FilterBasedTriggeringPolicy)
-        // rfa.getTriggeringPolicy();
-        //        final LevelRangeFilter filter = (LevelRangeFilter) triggeringPolicy.getFilter();
-        //        assertTrue(Level.INFO.equals(filter.getLevelMin()));
+        assertThat(logger.getLevel()).isNull();
+        try (final InputStream inputStream = PropertyConfiguratorTest.class.getResourceAsStream(FILTER_PROPERTIES)) {
+            PropertyConfigurator.configure(inputStream);
+
+            assertThat(rootLogger.getAppender("CONSOLE")).isNull();
+            assertThat(rootLogger.getLevel()).isNotEqualTo(Level.INFO);
+
+            assertThat(logger.getAppender("ROLLING")).isNull();
+            assertThat(logger.getLevel()).isNull();
+        }
     }
 }

@@ -77,7 +77,7 @@ import org.osgi.framework.wiring.BundleWiring;
  * </pre>
  *
  * <p>
- * This class was copied and modified from Stripes - http://stripes.mc4j.org/confluence/display/stripes/Home
+ * This class was copied and modified from <a href="http://stripes.mc4j.org/confluence/display/stripes/Home">Stripes</a>.
  * </p>
  */
 public class ResolverUtil {
@@ -179,7 +179,7 @@ public class ResolverUtil {
     public void findInPackage(final Test test, String packageName) {
         packageName = packageName.replace('.', '/');
         final ClassLoader loader = getClassLoader();
-        Enumeration<URL> urls;
+        final Enumeration<URL> urls;
 
         try {
             urls = loader.getResources(packageName);
@@ -397,10 +397,6 @@ public class ResolverUtil {
         }
     }
 
-    /**
-     * @param jarStream
-     * @param source
-     */
     private void close(final JarInputStream jarStream, final Object source) {
         if (jarStream != null) {
             try {
@@ -473,8 +469,8 @@ public class ResolverUtil {
                     resourceMatches.add(url.toURI());
                 }
             }
-        } catch (final Throwable t) {
-            LOGGER.warn("Could not examine class {}", fqn, t);
+        } catch (final Throwable throwable) {
+            LOGGER.debug("Could not scan class `{}`.", fqn, throwable);
         }
     }
 
