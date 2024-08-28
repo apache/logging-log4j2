@@ -77,7 +77,8 @@ loadScripts(document, 'script');</script>
 </div>
 <section class="class-description" id="class-description">
 <hr>
-<div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">Provider</span>
+<div class="type-signature"><span class="annotations">@NullMarked
+</span><span class="modifiers">public class </span><span class="element-name type-name-label">Provider</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
 <div class="block">Service class used to bind the Log4j API with an implementation.
  <p>
@@ -101,26 +102,16 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Field</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>protected static final <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color"><code><a href="#COPY_ON_WRITE_CONTEXT_MAP" class="member-name-link">COPY_ON_WRITE_CONTEXT_MAP</a></code></div>
+<div class="col-second even-row-color"><code><a href="#CURRENT_VERSION" class="member-name-link">CURRENT_VERSION</a></code></div>
 <div class="col-last even-row-color">
-<div class="block">Constant used to select a copy-on-write implementation of <a href="ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi"><code>ThreadContextMap</code></a>.</div>
-</div>
-<div class="col-first odd-row-color"><code>protected static final <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color"><code><a href="#CURRENT_VERSION" class="member-name-link">CURRENT_VERSION</a></code></div>
-<div class="col-last odd-row-color">
 <div class="block">Constant inlined by the compiler</div>
 </div>
-<div class="col-first even-row-color"><code>static final <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color"><code><a href="#FACTORY_PRIORITY" class="member-name-link">FACTORY_PRIORITY</a></code></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><code>static final <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color"><code><a href="#FACTORY_PRIORITY" class="member-name-link">FACTORY_PRIORITY</a></code></div>
+<div class="col-last odd-row-color">
 <div class="block"><span class="deprecated-label">Deprecated.</span>
 <div class="deprecation-comment">since 2.24.0</div>
 </div>
-</div>
-<div class="col-first odd-row-color"><code>protected static final <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color"><code><a href="#GARBAGE_FREE_CONTEXT_MAP" class="member-name-link">GARBAGE_FREE_CONTEXT_MAP</a></code></div>
-<div class="col-last odd-row-color">
-<div class="block">Constant used to select a garbage-free implementation of <a href="ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi"><code>ThreadContextMap</code></a>.</div>
 </div>
 <div class="col-first even-row-color"><code>static final <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color"><code><a href="#LOGGER_CONTEXT_FACTORY" class="member-name-link">LOGGER_CONTEXT_FACTORY</a></code></div>
@@ -129,27 +120,17 @@ loadScripts(document, 'script');</script>
 <div class="deprecation-comment">since 2.24.0</div>
 </div>
 </div>
-<div class="col-first odd-row-color"><code>protected static final <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color"><code><a href="#NO_OP_CONTEXT_MAP" class="member-name-link">NO_OP_CONTEXT_MAP</a></code></div>
+<div class="col-first odd-row-color"><code>static final <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color"><code><a href="#PROVIDER_PROPERTY_NAME" class="member-name-link">PROVIDER_PROPERTY_NAME</a></code></div>
 <div class="col-last odd-row-color">
-<div class="block">Constant used to disable the <a href="ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi"><code>ThreadContextMap</code></a>.</div>
-</div>
-<div class="col-first even-row-color"><code>static final <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color"><code><a href="#PROVIDER_PROPERTY_NAME" class="member-name-link">PROVIDER_PROPERTY_NAME</a></code></div>
-<div class="col-last even-row-color">
 <div class="block">System property used to specify the class name of the provider to use.</div>
 </div>
-<div class="col-first odd-row-color"><code>static final <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color"><code><a href="#THREAD_CONTEXT_MAP" class="member-name-link">THREAD_CONTEXT_MAP</a></code></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><code>static final <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color"><code><a href="#THREAD_CONTEXT_MAP" class="member-name-link">THREAD_CONTEXT_MAP</a></code></div>
+<div class="col-last even-row-color">
 <div class="block"><span class="deprecated-label">Deprecated.</span>
 <div class="deprecation-comment">since 2.24.0</div>
 </div>
-</div>
-<div class="col-first even-row-color"><code>protected static final <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color"><code><a href="#WEB_APP_CONTEXT_MAP" class="member-name-link">WEB_APP_CONTEXT_MAP</a></code></div>
-<div class="col-last even-row-color">
-<div class="block">Constant used to select a web application-safe implementation of <a href="ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi"><code>ThreadContextMap</code></a>.</div>
 </div>
 </div>
 </section>
@@ -162,17 +143,17 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.lang.Integer,java.lang.String)" class="member-name-link">Provider</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;priority,
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.lang.Integer,java.lang.String)" class="member-name-link">Provider</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;priority,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;versions)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(java.lang.Integer,java.lang.String,java.lang.Class)" class="member-name-link">Provider</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;priority,
+<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(java.lang.Integer,java.lang.String,java.lang.Class)" class="member-name-link">Provider</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;priority,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;versions,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="LoggerContextFactory.html" title="interface in org.apache.logging.log4j.spi">LoggerContextFactory</a>&gt;&nbsp;loggerContextFactoryClass)</code></div>
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="LoggerContextFactory.html" title="interface in org.apache.logging.log4j.spi">LoggerContextFactory</a>&gt;&nbsp;loggerContextFactoryClass)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.lang.Integer,java.lang.String,java.lang.Class,java.lang.Class)" class="member-name-link">Provider</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;priority,
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.lang.Integer,java.lang.String,java.lang.Class,java.lang.Class)" class="member-name-link">Provider</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;priority,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;versions,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="LoggerContextFactory.html" title="interface in org.apache.logging.log4j.spi">LoggerContextFactory</a>&gt;&nbsp;loggerContextFactoryClass,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi">ThreadContextMap</a>&gt;&nbsp;threadContextMapClass)</code></div>
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="LoggerContextFactory.html" title="interface in org.apache.logging.log4j.spi">LoggerContextFactory</a>&gt;&nbsp;loggerContextFactoryClass,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi">ThreadContextMap</a>&gt;&nbsp;threadContextMapClass)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(java.util.Properties,java.net.URL,java.lang.ClassLoader)" class="member-name-link">Provider</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Properties.html" title="class or interface in java.util" class="external-link">Properties</a>&nbsp;props,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html" title="class or interface in java.net" class="external-link">URL</a>&nbsp;url,
@@ -199,7 +180,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#equals(java.lang.Object)" class="member-name-link">equals</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;o)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getClassName()" class="member-name-link">getClassName</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Gets the class name of the <a href="LoggerContextFactory.html" title="interface in org.apache.logging.log4j.spi"><code>LoggerContextFactory</code></a> implementation of this Provider.</div>
@@ -212,7 +193,7 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Gets the priority (natural ordering) of this Provider.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getThreadContextMap()" class="member-name-link">getThreadContextMap</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Gets the class name of the <a href="ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi"><code>ThreadContextMap</code></a> implementation of this Provider.</div>
@@ -220,7 +201,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi">ThreadContextMap</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getThreadContextMapInstance()" class="member-name-link">getThreadContextMapInstance</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html" title="class or interface in java.net" class="external-link">URL</a></code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html" title="class or interface in java.net" class="external-link">URL</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getUrl()" class="member-name-link">getUrl</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
 <div class="block"><span class="deprecated-label">Deprecated.</span>
@@ -235,12 +216,12 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#hashCode()" class="member-name-link">hashCode</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="LoggerContextFactory.html" title="interface in org.apache.logging.log4j.spi">LoggerContextFactory</a>&gt;</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="LoggerContextFactory.html" title="interface in org.apache.logging.log4j.spi">LoggerContextFactory</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#loadLoggerContextFactory()" class="member-name-link">loadLoggerContextFactory</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Loads the <a href="LoggerContextFactory.html" title="interface in org.apache.logging.log4j.spi"><code>LoggerContextFactory</code></a> class specified by this Provider.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi">ThreadContextMap</a>&gt;</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi">ThreadContextMap</a>&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#loadThreadContextMap()" class="member-name-link">loadThreadContextMap</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Loads the <a href="ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi"><code>ThreadContextMap</code></a> class specified by this Provider.</div>
@@ -354,89 +335,6 @@ loadScripts(document, 'script');</script>
 </dl>
 </section>
 </li>
-<li>
-<section class="detail" id="NO_OP_CONTEXT_MAP">
-<h3>NO_OP_CONTEXT_MAP</h3>
-<div class="member-signature"><span class="modifiers">protected static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">NO_OP_CONTEXT_MAP</span></div>
-<div class="block">Constant used to disable the <a href="ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi"><code>ThreadContextMap</code></a>.
- <p>
-     <strong>Warning:</strong> the value of this constant does not point to a concrete class name.
- </p></div>
-<dl class="notes">
-<dt>See Also:</dt>
-<dd>
-<ul class="see-list">
-<li><a href="#getThreadContextMap()"><code>getThreadContextMap()</code></a></li>
-<li><a href="../../../../../constant-values.html#org.apache.logging.log4j.spi.Provider.NO_OP_CONTEXT_MAP">Constant Field Values</a></li>
-</ul>
-</dd>
-</dl>
-</section>
-</li>
-<li>
-<section class="detail" id="WEB_APP_CONTEXT_MAP">
-<h3>WEB_APP_CONTEXT_MAP</h3>
-<div class="member-signature"><span class="modifiers">protected static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">WEB_APP_CONTEXT_MAP</span></div>
-<div class="block">Constant used to select a web application-safe implementation of <a href="ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi"><code>ThreadContextMap</code></a>.
- <p>
-     This implementation only binds JRE classes to <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/ThreadLocal.html" title="class or interface in java.lang" class="external-link"><code>ThreadLocal</code></a> variables.
- </p>
- <p>
-     <strong>Warning:</strong> the value of this constant does not point to a concrete class name.
- </p></div>
-<dl class="notes">
-<dt>See Also:</dt>
-<dd>
-<ul class="see-list">
-<li><a href="#getThreadContextMap()"><code>getThreadContextMap()</code></a></li>
-<li><a href="../../../../../constant-values.html#org.apache.logging.log4j.spi.Provider.WEB_APP_CONTEXT_MAP">Constant Field Values</a></li>
-</ul>
-</dd>
-</dl>
-</section>
-</li>
-<li>
-<section class="detail" id="COPY_ON_WRITE_CONTEXT_MAP">
-<h3>COPY_ON_WRITE_CONTEXT_MAP</h3>
-<div class="member-signature"><span class="modifiers">protected static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">COPY_ON_WRITE_CONTEXT_MAP</span></div>
-<div class="block">Constant used to select a copy-on-write implementation of <a href="ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi"><code>ThreadContextMap</code></a>.
- <p>
-     <strong>Warning:</strong> the value of this constant does not point to a concrete class name.
- </p></div>
-<dl class="notes">
-<dt>See Also:</dt>
-<dd>
-<ul class="see-list">
-<li><a href="#getThreadContextMap()"><code>getThreadContextMap()</code></a></li>
-<li><a href="../../../../../constant-values.html#org.apache.logging.log4j.spi.Provider.COPY_ON_WRITE_CONTEXT_MAP">Constant Field Values</a></li>
-</ul>
-</dd>
-</dl>
-</section>
-</li>
-<li>
-<section class="detail" id="GARBAGE_FREE_CONTEXT_MAP">
-<h3>GARBAGE_FREE_CONTEXT_MAP</h3>
-<div class="member-signature"><span class="modifiers">protected static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">GARBAGE_FREE_CONTEXT_MAP</span></div>
-<div class="block">Constant used to select a garbage-free implementation of <a href="ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi"><code>ThreadContextMap</code></a>.
- <p>
-     This implementation must ensure that common operations don't create new object instances. The drawback is
-     the necessity to bind custom classes to <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/ThreadLocal.html" title="class or interface in java.lang" class="external-link"><code>ThreadLocal</code></a> variables.
- </p>
- <p>
-     <strong>Warning:</strong> the value of this constant does not point to a concrete class name.
- </p></div>
-<dl class="notes">
-<dt>See Also:</dt>
-<dd>
-<ul class="see-list">
-<li><a href="#getThreadContextMap()"><code>getThreadContextMap()</code></a></li>
-<li><a href="../../../../../constant-values.html#org.apache.logging.log4j.spi.Provider.GARBAGE_FREE_CONTEXT_MAP">Constant Field Values</a></li>
-</ul>
-</dd>
-</dl>
-</section>
-</li>
 </ul>
 </section>
 </li>
@@ -461,7 +359,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="&lt;init&gt;(java.lang.Integer,java.lang.String)">
 <h3>Provider</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">Provider</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;priority,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">Provider</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;priority,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;versions)</span></div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -475,33 +373,33 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="&lt;init&gt;(java.lang.Integer,java.lang.String,java.lang.Class)">
 <h3>Provider</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">Provider</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;priority,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">Provider</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;priority,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;versions,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="LoggerContextFactory.html" title="interface in org.apache.logging.log4j.spi">LoggerContextFactory</a>&gt;&nbsp;loggerContextFactoryClass)</span></div>
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="LoggerContextFactory.html" title="interface in org.apache.logging.log4j.spi">LoggerContextFactory</a>&gt;&nbsp;loggerContextFactoryClass)</span></div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>priority</code> - A positive number specifying the provider's priority or <code>null</code> if default,</dd>
 <dd><code>versions</code> - Minimal API version required, should be set to <a href="#CURRENT_VERSION"><code>CURRENT_VERSION</code></a>,</dd>
 <dd><code>loggerContextFactoryClass</code> - A public exported implementation of <a href="LoggerContextFactory.html" title="interface in org.apache.logging.log4j.spi"><code>LoggerContextFactory</code></a> or <code>
- null</code> if <code>createLoggerContextFactory()</code> is also implemented.</dd>
+ null</code> if <a href="#getLoggerContextFactory()"><code>getLoggerContextFactory()</code></a> is also implemented.</dd>
 </dl>
 </section>
 </li>
 <li>
 <section class="detail" id="&lt;init&gt;(java.lang.Integer,java.lang.String,java.lang.Class,java.lang.Class)">
 <h3>Provider</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">Provider</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;priority,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">Provider</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;priority,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;versions,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="LoggerContextFactory.html" title="interface in org.apache.logging.log4j.spi">LoggerContextFactory</a>&gt;&nbsp;loggerContextFactoryClass,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi">ThreadContextMap</a>&gt;&nbsp;threadContextMapClass)</span></div>
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="LoggerContextFactory.html" title="interface in org.apache.logging.log4j.spi">LoggerContextFactory</a>&gt;&nbsp;loggerContextFactoryClass,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi">ThreadContextMap</a>&gt;&nbsp;threadContextMapClass)</span></div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>priority</code> - A positive number specifying the provider's priority or <code>null</code> if default,</dd>
 <dd><code>versions</code> - Minimal API version required, should be set to <a href="#CURRENT_VERSION"><code>CURRENT_VERSION</code></a>,</dd>
 <dd><code>loggerContextFactoryClass</code> - A public exported implementation of <a href="LoggerContextFactory.html" title="interface in org.apache.logging.log4j.spi"><code>LoggerContextFactory</code></a> or <code>
- null</code> if <code>createLoggerContextFactory()</code> is also implemented,</dd>
+ null</code> if <a href="#getLoggerContextFactory()"><code>getLoggerContextFactory()</code></a> is also implemented,</dd>
 <dd><code>threadContextMapClass</code> - A public exported implementation of <a href="ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi"><code>ThreadContextMap</code></a> or <code>null</code> if
- <code>createThreadContextMap()</code> is implemented.</dd>
+ <a href="#getThreadContextMapInstance()"><code>getThreadContextMapInstance()</code></a> is implemented.</dd>
 </dl>
 </section>
 </li>
@@ -541,7 +439,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="getClassName()">
 <h3>getClassName</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getClassName</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getClassName</span>()</div>
 <div class="block">Gets the class name of the <a href="LoggerContextFactory.html" title="interface in org.apache.logging.log4j.spi"><code>LoggerContextFactory</code></a> implementation of this Provider.</div>
 <dl class="notes">
 <dt>Returns:</dt>
@@ -558,17 +456,11 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="loadLoggerContextFactory()">
 <h3>loadLoggerContextFactory</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="LoggerContextFactory.html" title="interface in org.apache.logging.log4j.spi">LoggerContextFactory</a>&gt;</span>&nbsp;<span class="element-name">loadLoggerContextFactory</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="LoggerContextFactory.html" title="interface in org.apache.logging.log4j.spi">LoggerContextFactory</a>&gt;</span>&nbsp;<span class="element-name">loadLoggerContextFactory</span>()</div>
 <div class="block">Loads the <a href="LoggerContextFactory.html" title="interface in org.apache.logging.log4j.spi"><code>LoggerContextFactory</code></a> class specified by this Provider.</div>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>the LoggerContextFactory implementation class or <code>null</code> if unspecified or a loader error occurred.</dd>
-<dt>See Also:</dt>
-<dd>
-<ul class="see-list">
-<li><code>createLoggerContextFactory()</code></li>
-</ul>
-</dd>
 </dl>
 </section>
 </li>
@@ -587,45 +479,23 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="getThreadContextMap()">
 <h3>getThreadContextMap</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getThreadContextMap</span>()</div>
-<div class="block">Gets the class name of the <a href="ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi"><code>ThreadContextMap</code></a> implementation of this Provider.
- <p>
-     This method should return one of the internal implementations:
-     <ol>
-         <li><code>null</code> if <a href="#loadThreadContextMap()"><code>loadThreadContextMap()</code></a> is implemented,</li>
-         <li><a href="#NO_OP_CONTEXT_MAP"><code>NO_OP_CONTEXT_MAP</code></a>,</li>
-         <li><a href="#WEB_APP_CONTEXT_MAP"><code>WEB_APP_CONTEXT_MAP</code></a>,</li>
-         <li><a href="#COPY_ON_WRITE_CONTEXT_MAP"><code>COPY_ON_WRITE_CONTEXT_MAP</code></a>,</li>
-         <li><a href="#GARBAGE_FREE_CONTEXT_MAP"><code>GARBAGE_FREE_CONTEXT_MAP</code></a>.</li>
-     </ol>
- </p></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getThreadContextMap</span>()</div>
+<div class="block">Gets the class name of the <a href="ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi"><code>ThreadContextMap</code></a> implementation of this Provider.</div>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>the class name of a ThreadContextMap implementation</dd>
-<dt>See Also:</dt>
-<dd>
-<ul class="see-list">
-<li><a href="#loadThreadContextMap()"><code>loadThreadContextMap()</code></a></li>
-</ul>
-</dd>
 </dl>
 </section>
 </li>
 <li>
 <section class="detail" id="loadThreadContextMap()">
 <h3>loadThreadContextMap</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi">ThreadContextMap</a>&gt;</span>&nbsp;<span class="element-name">loadThreadContextMap</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi">ThreadContextMap</a>&gt;</span>&nbsp;<span class="element-name">loadThreadContextMap</span>()</div>
 <div class="block">Loads the <a href="ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi"><code>ThreadContextMap</code></a> class specified by this Provider.</div>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>the <code>ThreadContextMap</code> implementation class or <code>null</code> if unspecified or a loading error
  occurred.</dd>
-<dt>See Also:</dt>
-<dd>
-<ul class="see-list">
-<li><code>createThreadContextMap()</code></li>
-</ul>
-</dd>
 </dl>
 </section>
 </li>
@@ -645,7 +515,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getUrl()">
 <h3>getUrl</h3>
 <div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html" title="class or interface in java.net" class="external-link">URL</a></span>&nbsp;<span class="element-name">getUrl</span>()</div>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html" title="class or interface in java.net" class="external-link">URL</a></span>&nbsp;<span class="element-name">getUrl</span>()</div>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
 <div class="deprecation-comment">since 2.24.0, without replacement.</div>
 </div>

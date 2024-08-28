@@ -98,15 +98,22 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>class&nbsp;</code></div>
 <div class="col-second even-row-color"><code><a href="../DefaultThreadContextMap.html" class="type-name-link" title="class in org.apache.logging.log4j.spi">DefaultThreadContextMap</a></code></div>
 <div class="col-last even-row-color">
-<div class="block">The actual ThreadContext Map.</div>
+<div class="block">The default implementation of <a href="../ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi"><code>ThreadContextMap</code></a></div>
 </div>
 <div class="col-first odd-row-color"><code>class&nbsp;</code></div>
 <div class="col-second odd-row-color"><code><a href="../NoOpThreadContextMap.html" class="type-name-link" title="class in org.apache.logging.log4j.spi">NoOpThreadContextMap</a></code></div>
 <div class="col-last odd-row-color">
-<div class="block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">since 2.24.0.</div>
+<div class="block"><code>ThreadContextMap</code> implementation used when either of system properties <code>disableThreadContextMap</code> or .</div>
 </div>
 </div>
+<div class="caption"><span>Fields in <a href="../package-summary.html">org.apache.logging.log4j.spi</a> declared as <a href="../ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi">ThreadContextMap</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Field</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>static final <a href="../ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi">ThreadContextMap</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">NoOpThreadContextMap.</span><code><a href="../NoOpThreadContextMap.html#INSTANCE" class="member-name-link">INSTANCE</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 <div class="caption"><span>Methods in <a href="../package-summary.html">org.apache.logging.log4j.spi</a> that return <a href="../ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi">ThreadContextMap</a></span></div>
 <div class="summary-table three-column-summary">
@@ -125,7 +132,7 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="../ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi">ThreadContextMap</a>&gt;</code></div>
+<div class="col-first even-row-color"><code>@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="../ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi">ThreadContextMap</a>&gt;</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">Provider.</span><code><a href="../Provider.html#loadThreadContextMap()" class="member-name-link">loadThreadContextMap</a>()</code></div>
 <div class="col-last even-row-color">
 <div class="block">Loads the <a href="../ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi"><code>ThreadContextMap</code></a> class specified by this Provider.</div>

@@ -123,12 +123,12 @@ loadScripts(document, 'script');</script>
  <a href="../ThreadContext.html" title="class in org.apache.logging.log4j"><code>ThreadContext</code></a>.</div>
 </div>
 <div class="col-first odd-row-color class-summary class-summary-tab1"><a href="CopyOnWrite.html" title="interface in org.apache.logging.log4j.spi">CopyOnWrite</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab1">
-<div class="block">Marker interface indicating that the implementing class is a copy-on-write data structure.</div>
+<div class="col-last odd-row-color class-summary class-summary-tab1">Deprecated.
+<div class="deprecation-comment">Since 2.24.0 no class implements this.</div>
 </div>
 <div class="col-first even-row-color class-summary class-summary-tab2"><a href="DefaultThreadContextMap.html" title="class in org.apache.logging.log4j.spi">DefaultThreadContextMap</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab2">
-<div class="block">The actual ThreadContext Map.</div>
+<div class="block">The default implementation of <a href="ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi"><code>ThreadContextMap</code></a></div>
 </div>
 <div class="col-first odd-row-color class-summary class-summary-tab2"><a href="DefaultThreadContextStack.html" title="class in org.apache.logging.log4j.spi">DefaultThreadContextStack</a></div>
 <div class="col-last odd-row-color class-summary class-summary-tab2">
@@ -198,8 +198,8 @@ loadScripts(document, 'script');</script>
 <div class="block">TODO</div>
 </div>
 <div class="col-first odd-row-color class-summary class-summary-tab2"><a href="NoOpThreadContextMap.html" title="class in org.apache.logging.log4j.spi">NoOpThreadContextMap</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">Deprecated.
-<div class="deprecation-comment">since 2.24.0.</div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block"><code>ThreadContextMap</code> implementation used when either of system properties <code>disableThreadContextMap</code> or .</div>
 </div>
 <div class="col-first even-row-color class-summary class-summary-tab1"><a href="ObjectThreadContextMap.html" title="interface in org.apache.logging.log4j.spi">ObjectThreadContextMap</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab1">

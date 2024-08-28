@@ -52,12 +52,28 @@ loadScripts(document, 'script');</script>
 <h1 title="Deprecated API" class="title">Deprecated API</h1>
 <h2 title="Contents">Contents</h2>
 <ul>
+<li><a href="#interface">Interfaces</a></li>
 <li><a href="#class">Classes</a></li>
 <li><a href="#field">Fields</a></li>
 <li><a href="#method">Methods</a></li>
 <li><a href="#constructor">Constructors</a></li>
 </ul>
 </div>
+<ul class="block-list">
+<li>
+<div id="interface">
+<div class="caption"><span>Deprecated Interfaces</span></div>
+<div class="summary-table two-column-summary">
+<div class="table-header col-first">Interface</div>
+<div class="table-header col-last">Description</div>
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/spi/CopyOnWrite.html" title="interface in org.apache.logging.log4j.spi">org.apache.logging.log4j.spi.CopyOnWrite</a></div>
+<div class="col-last even-row-color">
+<div class="deprecation-comment">Since 2.24.0 no class implements this.</div>
+</div>
+</div>
+</div>
+</li>
+</ul>
 <ul class="block-list">
 <li>
 <div id="class">
@@ -72,11 +88,6 @@ loadScripts(document, 'script');</script>
 <div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/spi/LoggerContextKey.html" title="class in org.apache.logging.log4j.spi">org.apache.logging.log4j.spi.LoggerContextKey</a></div>
 <div class="col-last odd-row-color">
 <div class="deprecation-comment">with no replacement - no longer used</div>
-</div>
-<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/spi/NoOpThreadContextMap.html" title="class in org.apache.logging.log4j.spi">org.apache.logging.log4j.spi.NoOpThreadContextMap</a></div>
-<div class="col-last even-row-color">
-<div class="deprecation-comment">since 2.24.0. Return the <a href="org/apache/logging/log4j/spi/Provider.html#NO_OP_CONTEXT_MAP">"NoOp"</a> constant in
- <a href="org/apache/logging/log4j/spi/Provider.html#getThreadContextMap()"><code>Provider.getThreadContextMap()</code></a> instead.</div>
 </div>
 </div>
 </div>
@@ -220,7 +231,7 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/spi/DefaultThreadContextMap.html#%3Cinit%3E(boolean)">org.apache.logging.log4j.spi.DefaultThreadContextMap<wbr>(boolean)</a></div>
 <div class="col-last odd-row-color">
-<div class="deprecation-comment">Since 2.24.0. See <a href="org/apache/logging/log4j/spi/Provider.html#getThreadContextMap()"><code>Provider.getThreadContextMap()</code></a> on how to obtain a no-op map.</div>
+<div class="deprecation-comment">Since 2.24.0. Use <a href="org/apache/logging/log4j/spi/NoOpThreadContextMap.html" title="class in org.apache.logging.log4j.spi"><code>NoOpThreadContextMap</code></a> for a no-op implementation.</div>
 </div>
 <div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/spi/DefaultThreadContextStack.html#%3Cinit%3E(boolean)">org.apache.logging.log4j.spi.DefaultThreadContextStack<wbr>(boolean)</a></div>
 <div class="col-last even-row-color">

@@ -362,11 +362,13 @@ This is a convenience for environments where either a fully-fledged logging impl
 <div class="sect1">
 <h2 id="config"><a class="anchor" href="#config"></a>Configuration</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="logger"><a class="anchor" href="#logger"></a>Logger</h3>
 <div class="paragraph">
 <p><code>SimpleLogger</code> can be configured using the following system properties:</p>
 </div>
-<div class="sect2">
-<h3 id="log4j2.simplelogLevel"><a class="anchor" href="#log4j2.simplelogLevel"></a><code>log4j2.simplelogLevel</code></h3>
+<div class="sect3">
+<h4 id="log4j2.simplelogLevel"><a class="anchor" href="#log4j2.simplelogLevel"></a><code>log4j2.simplelogLevel</code></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 16.6666%;">
@@ -391,8 +393,8 @@ This is a convenience for environments where either a fully-fledged logging impl
 <p>Default level for new logger instances.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="log4j2.simplelog.loggerName.level"><a class="anchor" href="#log4j2.simplelog.loggerName.level"></a><code>log4j2.simplelog.&lt;loggerName&gt;.level</code></h3>
+<div class="sect3">
+<h4 id="log4j2.simplelog.loggerName.level"><a class="anchor" href="#log4j2.simplelog.loggerName.level"></a><code>log4j2.simplelog.&lt;loggerName&gt;.level</code></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 16.6666%;">
@@ -417,8 +419,8 @@ This is a convenience for environments where either a fully-fledged logging impl
 <p>Log level for a logger instance named <code>&lt;loggerName&gt;</code>.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="log4j2.simplelogShowContextMap"><a class="anchor" href="#log4j2.simplelogShowContextMap"></a><code>log4j2.simplelogShowContextMap</code></h3>
+<div class="sect3">
+<h4 id="log4j2.simplelogShowContextMap"><a class="anchor" href="#log4j2.simplelogShowContextMap"></a><code>log4j2.simplelogShowContextMap</code></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 16.6666%;">
@@ -443,8 +445,8 @@ This is a convenience for environments where either a fully-fledged logging impl
 <p>If <code>true</code>, the full thread context map is included in each log message.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="log4j2.simplelogShowlogname"><a class="anchor" href="#log4j2.simplelogShowlogname"></a><code>log4j2.simplelogShowlogname</code></h3>
+<div class="sect3">
+<h4 id="log4j2.simplelogShowlogname"><a class="anchor" href="#log4j2.simplelogShowlogname"></a><code>log4j2.simplelogShowlogname</code></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 16.6666%;">
@@ -469,8 +471,8 @@ This is a convenience for environments where either a fully-fledged logging impl
 <p>If <code>true</code>, the logger name is included in each log message.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="log4j2.simplelogShowShortLogname"><a class="anchor" href="#log4j2.simplelogShowShortLogname"></a><code>log4j2.simplelogShowShortLogname</code></h3>
+<div class="sect3">
+<h4 id="log4j2.simplelogShowShortLogname"><a class="anchor" href="#log4j2.simplelogShowShortLogname"></a><code>log4j2.simplelogShowShortLogname</code></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 16.6666%;">
@@ -495,8 +497,8 @@ This is a convenience for environments where either a fully-fledged logging impl
 <p>If <code>true</code>, only the last component of a logger name is included in each log message.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="log4j2.simplelogShowdatetime"><a class="anchor" href="#log4j2.simplelogShowdatetime"></a><code>log4j2.simplelogShowdatetime</code></h3>
+<div class="sect3">
+<h4 id="log4j2.simplelogShowdatetime"><a class="anchor" href="#log4j2.simplelogShowdatetime"></a><code>log4j2.simplelogShowdatetime</code></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 16.6666%;">
@@ -521,8 +523,8 @@ This is a convenience for environments where either a fully-fledged logging impl
 <p>If <code>true</code>, a timestamp is included in each log message.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="log4j2.simplelogDateTimeFormat"><a class="anchor" href="#log4j2.simplelogDateTimeFormat"></a><code>log4j2.simplelogDateTimeFormat</code></h3>
+<div class="sect3">
+<h4 id="log4j2.simplelogDateTimeFormat"><a class="anchor" href="#log4j2.simplelogDateTimeFormat"></a><code>log4j2.simplelogDateTimeFormat</code></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 16.6666%;">
@@ -548,8 +550,8 @@ This is a convenience for environments where either a fully-fledged logging impl
 Ignored if <a href="#log4j2.simplelogShowdatetime"><code>log4j2.simplelogShowdatetime</code></a> is <code>false</code>.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="log4j2.simplelogLogFile"><a class="anchor" href="#log4j2.simplelogLogFile"></a><code>log4j2.simplelogLogFile</code></h3>
+<div class="sect3">
+<h4 id="log4j2.simplelogLogFile"><a class="anchor" href="#log4j2.simplelogLogFile"></a><code>log4j2.simplelogLogFile</code></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 16.6666%;">
@@ -589,11 +591,148 @@ Ignored if <a href="#log4j2.simplelogShowdatetime"><code>log4j2.simplelogShowdat
 </dl>
 </div>
 </div>
+</div>
 <div class="sect2">
-<h3 id="_thread_context"><a class="anchor" href="#_thread_context"></a>Thread context</h3>
+<h3 id="thread-context"><a class="anchor" href="#thread-context"></a>Thread context</h3>
 <div class="paragraph">
-<p>Simple Logger supports the same properties as Log4j Core for the configuration of the thread context.
-See <a href="systemproperties.html#properties-thread-context" class="xref page">manual/systemproperties.adoc#properties-thread-context</a> for details.</p>
+<p>For the configuration of the thread context,
+Simple Logger supports a subset of the properties supported by Log4j Core:</p>
+</div>
+<div class="sect3">
+<h4 id="log4j2.disableThreadContext"><a class="anchor" href="#log4j2.disableThreadContext"></a><code>log4j2.disableThreadContext</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_DISABLE_THREAD_CONTEXT</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>If <code>true</code>, the <code>ThreadContext</code> stack and map are disabled.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="log4j2.disableThreadContextStack"><a class="anchor" href="#log4j2.disableThreadContextStack"></a><code>log4j2.disableThreadContextStack</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_DISABLE_THREAD_CONTEXT_STACK</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>If <code>true</code>, the <code>ThreadContext</code> stack is disabled.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="log4j2.disableThreadContextMap"><a class="anchor" href="#log4j2.disableThreadContextMap"></a><code>log4j2.disableThreadContextMap</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_DISABLE_THREAD_CONTEXT_MAP</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>If <code>true</code>, the <code>ThreadContext</code> map is disabled.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="log4j2.threadContextMap"><a class="anchor" href="#log4j2.threadContextMap"></a><code>log4j2.threadContextMap</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_THREAD_CONTEXT_MAP</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html"><code>Class&lt;? extends ThreadContextMap&gt;</code></a></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/DefaultThreadContextMap.html"><code>DefaultThreadContextMap</code></a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Fully specified class name of a custom
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html"><code>ThreadContextMap</code></a>
+implementation class.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="isThreadContextMapInheritable"><a class="anchor" href="#isThreadContextMapInheritable"></a><code>log4j2.isThreadContextMapInheritable</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_IS_THREAD_CONTEXT_MAP_INHERITABLE</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>If <code>true</code> uses an <code>InheritableThreadLocal</code> to copy the thread context map to newly created threads.</p>
+</div>
+<div class="paragraph">
+<p>Note that, as explained in
+<a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/Executors.html#privilegedThreadFactory()">Java&#8217;s <code>Executors#privilegedThreadFactory()</code></a>, when you are dealing with <em>privileged threads</em>, thread context might not get propagated completely.</p>
+</div>
 </div>
 </div>
 </div>

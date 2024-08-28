@@ -84,10 +84,16 @@ loadScripts(document, 'script');</script>
 <div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">DefaultThreadContextMap</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
 implements <a href="ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi">ThreadContextMap</a>, <a href="../util/ReadOnlyStringMap.html" title="interface in org.apache.logging.log4j.util">ReadOnlyStringMap</a></span></div>
-<div class="block">The actual ThreadContext Map. A new ThreadContext Map is created each time it is updated and the Map stored is always
- immutable. This means the Map can be passed to other threads without concern that it will be updated. Since it is
- expected that the Map will be passed to many more log events than the number of keys it contains the performance
- should be much better than if the Map was copied for each event.</div>
+<div class="block">The default implementation of <a href="ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi"><code>ThreadContextMap</code></a>
+ <p>
+      An instance of UnmodifiableArrayBackedMap can be represented as a single <code>Object[]</code>, which can safely
+      be stored on the <code>ThreadLocal</code> with no fear of classloader-related memory leaks.
+  </p>
+  <p>
+      Performance of the underlying <code>UnmodifiableArrayBackedMap</code> exceeds
+      <a href="https://docs.oracle.com/javase/8/docs/api/java/util/HashMap.html" title="class or interface in java.util" class="external-link"><code>HashMap</code></a> in all supported operations other than <code>get()</code>. Note that <code>get()</code> performance scales
+      linearly with the current map size, and callers are advised to minimize this work.
+ </p></div>
 <dl class="notes">
 <dt>See Also:</dt>
 <dd>
@@ -111,7 +117,7 @@ implements <a href="ThreadContextMap.html" title="interface in org.apache.loggin
 <div class="col-first even-row-color"><code>static final <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color"><code><a href="#INHERITABLE_MAP" class="member-name-link">INHERITABLE_MAP</a></code></div>
 <div class="col-last even-row-color">
-<div class="block">Property name ("isThreadContextMapInheritable" ) for selecting <code>InheritableThreadLocal</code> (value "true") or plain
+<div class="block">Property name ("isThreadContextMapInheritable") for selecting <code>InheritableThreadLocal</code> (value "true") or plain
  <code>ThreadLocal</code> (value is not "true") in the implementation.</div>
 </div>
 </div>
@@ -127,7 +133,7 @@ implements <a href="ThreadContextMap.html" title="interface in org.apache.loggin
 <div class="table-header col-last">Description</div>
 <div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E()" class="member-name-link">DefaultThreadContextMap</a>()</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(boolean)" class="member-name-link">DefaultThreadContextMap</a><wbr>(boolean&nbsp;useMap)</code></div>
+<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(boolean)" class="member-name-link">DefaultThreadContextMap</a><wbr>(boolean&nbsp;ignored)</code></div>
 <div class="col-last odd-row-color">
 <div class="block"><span class="deprecated-label">Deprecated.</span>
 <div class="deprecation-comment">Since 2.24.0.</div>
@@ -256,7 +262,7 @@ S&gt;&nbsp;void</code></div>
 <section class="detail" id="INHERITABLE_MAP">
 <h3>INHERITABLE_MAP</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">INHERITABLE_MAP</span></div>
-<div class="block">Property name ("isThreadContextMapInheritable" ) for selecting <code>InheritableThreadLocal</code> (value "true") or plain
+<div class="block">Property name ("isThreadContextMapInheritable") for selecting <code>InheritableThreadLocal</code> (value "true") or plain
  <code>ThreadLocal</code> (value is not "true") in the implementation.</div>
 <dl class="notes">
 <dt>See Also:</dt>
@@ -286,9 +292,9 @@ S&gt;&nbsp;void</code></div>
 <section class="detail" id="&lt;init&gt;(boolean)">
 <h3>DefaultThreadContextMap</h3>
 <div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
-</span><span class="modifiers">public</span>&nbsp;<span class="element-name">DefaultThreadContextMap</span><wbr><span class="parameters">(boolean&nbsp;useMap)</span></div>
+</span><span class="modifiers">public</span>&nbsp;<span class="element-name">DefaultThreadContextMap</span><wbr><span class="parameters">(boolean&nbsp;ignored)</span></div>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Since 2.24.0. See <a href="Provider.html#getThreadContextMap()"><code>Provider.getThreadContextMap()</code></a> on how to obtain a no-op map.</div>
+<div class="deprecation-comment">Since 2.24.0. Use <a href="NoOpThreadContextMap.html" title="class in org.apache.logging.log4j.spi"><code>NoOpThreadContextMap</code></a> for a no-op implementation.</div>
 </div>
 </section>
 </li>

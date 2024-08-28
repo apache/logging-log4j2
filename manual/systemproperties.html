@@ -2084,15 +2084,14 @@ or predefined constant</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WebApp</code></p>
-<p class="tableblock">(GC-free mode: <code>CopyOnWrite</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WebApp</code></p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
 <p>Fully specified class name of a custom
 <a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html"><code>ThreadContextMap</code></a>
-implementation class or one of the predefined constants:</p>
+implementation class or (since version <code>2.24.0</code>) one of the predefined constants:</p>
 </div>
 <div class="dlist">
 <dl>
@@ -2103,10 +2102,6 @@ implementation class or one of the predefined constants:</p>
 <dt class="hdlist1">WebApp</dt>
 <dd>
 <p>a web application-safe implementation, that only binds JRE classes to <code>ThreadLocal</code> to prevent memory leaks,</p>
-</dd>
-<dt class="hdlist1">CopyOnWrite</dt>
-<dd>
-<p>a copy-on-write implementation,</p>
 </dd>
 <dt class="hdlist1">GarbageFree</dt>
 <dd>
