@@ -20,11 +20,6 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.List;
 import java.util.Objects;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
@@ -45,58 +40,29 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 @Plugin(name = "Ssl", category = Core.CATEGORY_NAME, printObject = true)
 public class SslConfiguration {
+
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
-    private final KeyStoreConfiguration keyStoreConfig;
-    private final TrustStoreConfiguration trustStoreConfig;
-    private SSLContext sslContext;
+
     private final String protocol;
+
     private final boolean verifyHostName;
+
+    private final KeyStoreConfiguration keyStoreConfig;
+
+    private final TrustStoreConfiguration trustStoreConfig;
+
+    private final transient SSLContext sslContext;
 
     private SslConfiguration(
             final String protocol,
+            final boolean verifyHostName,
             final KeyStoreConfiguration keyStoreConfig,
-            final TrustStoreConfiguration trustStoreConfig,
-            final boolean verifyHostName) {
+            final TrustStoreConfiguration trustStoreConfig) {
         this.keyStoreConfig = keyStoreConfig;
         this.trustStoreConfig = trustStoreConfig;
         this.protocol = protocol == null ? SslConfigurationDefaults.PROTOCOL : protocol;
-        this.sslContext = this.createSslContext();
         this.verifyHostName = verifyHostName;
-    }
-
-    /**
-     * Creates an identifier based on the contents of the SSL configuration.
-     * 
-     * @return an ID based on the contents of the configuration
-     */
-    public String getId() {
-        ArrayList<String> hashElements = new ArrayList<>();
-        addElementsForHashingFromKeyStore(keyStoreConfig, hashElements);
-        addElementsForHashingFromKeyStore(trustStoreConfig, hashElements);
-        return String.valueOf(Arrays.hashCode(hashElements.toArray()));
-    }
-
-    private void addElementsForHashingFromKeyStore(
-            AbstractKeyStoreConfiguration keyStoreConfiguration, ArrayList<String> hashElements) {
-        final List<String> aliases = new ArrayList<>();
-        try {
-            Enumeration<String> aliasEnumeration =
-                    keyStoreConfiguration.getKeyStore().aliases();
-            while (aliasEnumeration.hasMoreElements()) {
-                aliases.add(aliasEnumeration.nextElement());
-            }
-            aliases.sort(null);
-            for (final String alias : aliases) {
-                final X509Certificate certificate =
-                        (X509Certificate) keyStoreConfiguration.getKeyStore().getCertificate(alias);
-                final String issuer = certificate.getIssuerX500Principal().getName();
-                final String serialNumber = certificate.getSerialNumber().toString();
-                hashElements.add(issuer);
-                hashElements.add(serialNumber);
-            }
-        } catch (KeyStoreException e) {
-            LOGGER.debug("Error encountered reading " + keyStoreConfiguration.getLocation(), e);
-        }
+        this.sslContext = createSslContextWithFallbacks(protocol, keyStoreConfig, trustStoreConfig);
     }
 
     /**
@@ -111,44 +77,49 @@ public class SslConfiguration {
         }
     }
 
-    public SSLSocketFactory createSslSocketFactory() {
-        try {
-            keyStoreConfig.reload();
-            trustStoreConfig.reload();
-        } catch (StoreConfigurationException e) {
-            LOGGER.debug("Exception occurred reloading SSL configuration. Previously read data will be used", e);
-        }
-        sslContext = createSslContext();
-        return sslContext.getSocketFactory();
-    }
-
+    /**
+     * Gets the SSL socket factory of the configured SSL context.
+     *
+     * @return the SSL socket factory of the configured SSL context
+     * @deprecated Use {@link SSLContext#getSocketFactory()} on {@link #getSslContext()}
+     */
+    @Deprecated
     public SSLSocketFactory getSslSocketFactory() {
         return sslContext.getSocketFactory();
     }
 
+    /**
+     * Gets the SSL server socket factory of the configured SSL context.
+     *
+     * @return the SSL server socket factory of the configured SSL context
+     * @deprecated Use {@link SSLContext#getServerSocketFactory()} on {@link #getSslContext()}
+     */
+    @Deprecated
     public SSLServerSocketFactory getSslServerSocketFactory() {
         return sslContext.getServerSocketFactory();
     }
 
-    private SSLContext createSslContext() {
-        SSLContext context = null;
-
+    private static SSLContext createSslContextWithFallbacks(
+            final String protocol,
+            final KeyStoreConfiguration keyStoreConfig,
+            final TrustStoreConfiguration trustStoreConfig) {
+        SSLContext context;
         try {
-            context = createSslContextBasedOnConfiguration();
+            context = createSslContext(protocol, keyStoreConfig, trustStoreConfig);
             LOGGER.debug("Creating SSLContext with the given parameters");
         } catch (final TrustStoreConfigurationException e) {
-            context = createSslContextWithTrustStoreFailure();
+            context = createSslContextWithTrustStoreFailure(protocol, trustStoreConfig);
         } catch (final KeyStoreConfigurationException e) {
-            context = createSslContextWithKeyStoreFailure();
+            context = createSslContextWithKeyStoreFailure(protocol, keyStoreConfig);
         }
         return context;
     }
 
-    private SSLContext createSslContextWithTrustStoreFailure() {
+    private static SSLContext createSslContextWithTrustStoreFailure(
+            final String protocol, final TrustStoreConfiguration trustStoreConfig) {
         SSLContext context;
-
         try {
-            context = createSslContextWithDefaultTrustManagerFactory();
+            context = createSslContextWithDefaultTrustManagerFactory(protocol, trustStoreConfig);
             LOGGER.debug("Creating SSLContext with default truststore");
         } catch (final KeyStoreConfigurationException e) {
             context = createDefaultSslContext();
@@ -157,11 +128,11 @@ public class SslConfiguration {
         return context;
     }
 
-    private SSLContext createSslContextWithKeyStoreFailure() {
+    private static SSLContext createSslContextWithKeyStoreFailure(
+            final String protocol, final KeyStoreConfiguration keyStoreConfig) {
         SSLContext context;
-
         try {
-            context = createSslContextWithDefaultKeyManagerFactory();
+            context = createSslContextWithDefaultKeyManagerFactory(protocol, keyStoreConfig);
             LOGGER.debug("Creating SSLContext with default keystore");
         } catch (final TrustStoreConfigurationException e) {
             context = createDefaultSslContext();
@@ -170,30 +141,28 @@ public class SslConfiguration {
         return context;
     }
 
-    private SSLContext createSslContextBasedOnConfiguration()
-            throws KeyStoreConfigurationException, TrustStoreConfigurationException {
-        return createSslContext(false, false);
-    }
-
-    private SSLContext createSslContextWithDefaultKeyManagerFactory() throws TrustStoreConfigurationException {
+    private static SSLContext createSslContextWithDefaultKeyManagerFactory(
+            final String protocol, final KeyStoreConfiguration keyStoreConfig) throws TrustStoreConfigurationException {
         try {
-            return createSslContext(true, false);
+            return createSslContext(protocol, keyStoreConfig, null);
         } catch (final KeyStoreConfigurationException dummy) {
             LOGGER.debug("Exception occurred while using default keystore. This should be a BUG");
             return null;
         }
     }
 
-    private SSLContext createSslContextWithDefaultTrustManagerFactory() throws KeyStoreConfigurationException {
+    private static SSLContext createSslContextWithDefaultTrustManagerFactory(
+            final String protocol, final TrustStoreConfiguration trustStoreConfig)
+            throws KeyStoreConfigurationException {
         try {
-            return createSslContext(false, true);
+            return createSslContext(protocol, null, trustStoreConfig);
         } catch (final TrustStoreConfigurationException dummy) {
             LOGGER.debug("Exception occurred while using default truststore. This should be a BUG");
             return null;
         }
     }
 
-    private SSLContext createDefaultSslContext() {
+    private static SSLContext createDefaultSslContext() {
         try {
             return SSLContext.getDefault();
         } catch (final NoSuchAlgorithmException e) {
@@ -202,20 +171,22 @@ public class SslConfiguration {
         }
     }
 
-    private SSLContext createSslContext(
-            final boolean loadDefaultKeyManagerFactory, final boolean loadDefaultTrustManagerFactory)
+    private static SSLContext createSslContext(
+            final String protocol,
+            final KeyStoreConfiguration keyStoreConfig,
+            final TrustStoreConfiguration trustStoreConfig)
             throws KeyStoreConfigurationException, TrustStoreConfigurationException {
         try {
             KeyManager[] kManagers = null;
             TrustManager[] tManagers = null;
 
-            final SSLContext newSslContext = SSLContext.getInstance(this.protocol);
-            if (!loadDefaultKeyManagerFactory) {
-                final KeyManagerFactory kmFactory = loadKeyManagerFactory();
+            final SSLContext newSslContext = SSLContext.getInstance(protocol);
+            if (keyStoreConfig != null) {
+                final KeyManagerFactory kmFactory = loadKeyManagerFactory(keyStoreConfig);
                 kManagers = kmFactory.getKeyManagers();
             }
-            if (!loadDefaultTrustManagerFactory) {
-                final TrustManagerFactory tmFactory = loadTrustManagerFactory();
+            if (trustStoreConfig != null) {
+                final TrustManagerFactory tmFactory = loadTrustManagerFactory(trustStoreConfig);
                 tManagers = tmFactory.getTrustManagers();
             }
 
@@ -230,11 +201,8 @@ public class SslConfiguration {
         }
     }
 
-    private TrustManagerFactory loadTrustManagerFactory() throws TrustStoreConfigurationException {
-        if (trustStoreConfig == null) {
-            throw new TrustStoreConfigurationException(new Exception("The trustStoreConfiguration is null"));
-        }
-
+    private static TrustManagerFactory loadTrustManagerFactory(final TrustStoreConfiguration trustStoreConfig)
+            throws TrustStoreConfigurationException {
         try {
             return trustStoreConfig.initTrustManagerFactory();
         } catch (final NoSuchAlgorithmException e) {
@@ -246,11 +214,8 @@ public class SslConfiguration {
         }
     }
 
-    private KeyManagerFactory loadKeyManagerFactory() throws KeyStoreConfigurationException {
-        if (keyStoreConfig == null) {
-            throw new KeyStoreConfigurationException(new Exception("The keyStoreConfiguration is null"));
-        }
-
+    private static KeyManagerFactory loadKeyManagerFactory(final KeyStoreConfiguration keyStoreConfig)
+            throws KeyStoreConfigurationException {
         try {
             return keyStoreConfig.initKeyManagerFactory();
         } catch (final NoSuchAlgorithmException e) {
@@ -280,7 +245,7 @@ public class SslConfiguration {
             @PluginElement("KeyStore") final KeyStoreConfiguration keyStoreConfig,
             @PluginElement("TrustStore") final TrustStoreConfiguration trustStoreConfig) {
         // @formatter:on
-        return new SslConfiguration(protocol, keyStoreConfig, trustStoreConfig, false);
+        return new SslConfiguration(protocol, false, keyStoreConfig, trustStoreConfig);
     }
 
     /**
@@ -300,7 +265,7 @@ public class SslConfiguration {
             @PluginElement("TrustStore") final TrustStoreConfiguration trustStoreConfig,
             @PluginAttribute("verifyHostName") final boolean verifyHostName) {
         // @formatter:on
-        return new SslConfiguration(protocol, keyStoreConfig, trustStoreConfig, verifyHostName);
+        return new SslConfiguration(protocol, verifyHostName, keyStoreConfig, trustStoreConfig);
     }
 
     @Override
@@ -320,19 +285,27 @@ public class SslConfiguration {
             return false;
         }
         final SslConfiguration other = (SslConfiguration) obj;
-        if (!Objects.equals(keyStoreConfig, other.keyStoreConfig)) {
-            return false;
-        }
         if (!Objects.equals(protocol, other.protocol)) {
             return false;
         }
-        if (!Objects.equals(sslContext, other.sslContext)) {
+        if (!Objects.equals(verifyHostName, other.verifyHostName)) {
+            return false;
+        }
+        if (!Objects.equals(keyStoreConfig, other.keyStoreConfig)) {
             return false;
         }
         if (!Objects.equals(trustStoreConfig, other.trustStoreConfig)) {
             return false;
         }
         return true;
+    }
+
+    public String getProtocol() {
+        return protocol;
+    }
+
+    public boolean isVerifyHostName() {
+        return verifyHostName;
     }
 
     public KeyStoreConfiguration getKeyStoreConfig() {
@@ -345,13 +318,5 @@ public class SslConfiguration {
 
     public SSLContext getSslContext() {
         return sslContext;
-    }
-
-    public String getProtocol() {
-        return protocol;
-    }
-
-    public boolean isVerifyHostName() {
-        return verifyHostName;
     }
 }

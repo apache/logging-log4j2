@@ -100,7 +100,8 @@ public class HttpURLConnectionManager extends HttpManager {
                     header.getName(), header.evaluate(getConfiguration().getStrSubstitutor()));
         }
         if (sslConfiguration != null) {
-            ((HttpsURLConnection) urlConnection).setSSLSocketFactory(sslConfiguration.getSslSocketFactory());
+            ((HttpsURLConnection) urlConnection)
+                    .setSSLSocketFactory(sslConfiguration.getSslContext().getSocketFactory());
         }
         if (isHttps && !verifyHostname) {
             ((HttpsURLConnection) urlConnection).setHostnameVerifier(LaxHostnameVerifier.INSTANCE);

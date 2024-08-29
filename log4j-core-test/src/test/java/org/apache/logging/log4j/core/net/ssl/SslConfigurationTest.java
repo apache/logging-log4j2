@@ -59,7 +59,7 @@ class SslConfigurationTest {
 
     @Test
     void testCreateSslSocketFactory() throws StoreConfigurationException {
-        assertNotNull(createTestSslConfigurationFiles().createSslSocketFactory());
+        assertNotNull(createTestSslConfigurationFiles().getSslContext().getSocketFactory());
     }
 
     @Test
@@ -67,7 +67,7 @@ class SslConfigurationTest {
         assertNotNull(createTestSslConfigurationFiles().getProtocol());
         assertNotNull(createTestSslConfigurationFiles().getKeyStoreConfig());
         assertNotNull(createTestSslConfigurationFiles().getSslContext());
-        assertNotNull(createTestSslConfigurationFiles().getSslSocketFactory());
+        assertNotNull(createTestSslConfigurationFiles().getSslContext().getSocketFactory());
         assertNotNull(createTestSslConfigurationFiles().getTrustStoreConfig());
     }
 
@@ -76,7 +76,7 @@ class SslConfigurationTest {
         assertNotNull(createTestSslConfigurationResources().getProtocol());
         assertNotNull(createTestSslConfigurationResources().getKeyStoreConfig());
         assertNotNull(createTestSslConfigurationResources().getSslContext());
-        assertNotNull(createTestSslConfigurationResources().getSslSocketFactory());
+        assertNotNull(createTestSslConfigurationResources().getSslContext().getSocketFactory());
         assertNotNull(createTestSslConfigurationResources().getTrustStoreConfig());
     }
 
@@ -90,14 +90,14 @@ class SslConfigurationTest {
     @Test
     void emptyConfigurationDoesNotCauseNullSSLSocketFactory() {
         final SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null, null);
-        final SSLSocketFactory factory = sc.getSslSocketFactory();
+        final SSLSocketFactory factory = sc.getSslContext().getSocketFactory();
         assertNotNull(factory);
     }
 
     @Test
     void emptyConfigurationHasDefaultTrustStore() throws IOException {
         final SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null, null);
-        final SSLSocketFactory factory = sc.getSslSocketFactory();
+        final SSLSocketFactory factory = sc.getSslContext().getSocketFactory();
         try {
             try (final SSLSocket clientSocket = (SSLSocket) factory.createSocket(TLS_TEST_HOST, TLS_TEST_PORT)) {
                 assertNotNull(clientSocket);
@@ -112,7 +112,7 @@ class SslConfigurationTest {
         final TrustStoreConfiguration tsc = new TrustStoreConfiguration(
                 TestConstants.TRUSTSTORE_FILE, new MemoryPasswordProvider(TestConstants.NULL_PWD), null, null);
         final SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null, tsc);
-        final SSLSocketFactory factory = sc.getSslSocketFactory();
+        final SSLSocketFactory factory = sc.getSslContext().getSocketFactory();
         try {
             try (final SSLSocket clientSocket = (SSLSocket) factory.createSocket(TLS_TEST_HOST, TLS_TEST_PORT)) {
                 try (final OutputStream os = clientSocket.getOutputStream()) {
@@ -129,7 +129,7 @@ class SslConfigurationTest {
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(
                 TestConstants.KEYSTORE_FILE, new MemoryPasswordProvider(TestConstants.NULL_PWD), null, null);
         final SslConfiguration sslConf = SslConfiguration.createSSLConfiguration(null, ksc, null);
-        final SSLSocketFactory factory = sslConf.getSslSocketFactory();
+        final SSLSocketFactory factory = sslConf.getSslContext().getSocketFactory();
         assertNotNull(factory);
     }
 }

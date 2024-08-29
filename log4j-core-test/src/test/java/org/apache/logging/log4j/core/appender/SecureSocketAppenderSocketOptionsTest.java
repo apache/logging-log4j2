@@ -86,7 +86,7 @@ public class SecureSocketAppenderSocketOptionsTest {
                 null, // key store type
                 null); // algorithm
         sslConfiguration = SslConfiguration.createSSLConfiguration(null, ksc, tsc);
-        serverSocketFactory = sslConfiguration.getSslServerSocketFactory();
+        serverSocketFactory = sslConfiguration.getSslContext().getServerSocketFactory();
     }
 
     @Test
