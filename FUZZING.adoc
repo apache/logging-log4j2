@@ -42,62 +42,46 @@ Below we will try to answer some frequently asked questions.
 [source,bash]
 ----
 git clone --depth 1 https://github.com/google/oss-fuzz
-cd oss-fuzz/projects/log4j2
 ----
 
 . Build the container image:
 +
 [source,bash]
 ----
-docker build -t oss-fuzz-log4j2 .
+export PROJECT_NAME=log4j2
+python infra/helper.py build_image $PROJECT_NAME
 ----
 
 . Run the container image to build the Log4j project and generate runner scripts along with dependencies:
 +
 [source,bash]
 ----
-export LOG4J_FUZZ_DIR="/path/to/store/generated/fuzzers" #<1>
-docker run -it \
-  -e FUZZING_LANGUAGE=java \
-  -v "$LOG4J_FUZZ_DIR":/out \
-  --network host \
-  oss-fuzz-log4j2
+python infra/helper.py build_fuzzers \
+  --sanitizer address --engine libfuzzer --architecture x86_64 \
+  $PROJECT_NAME
 ----
-<1> Directory where the generated runner scripts will be dumped to.
 
 . List generated runner scripts:
 +
 [source,bash]
 ----
-ls -al "$LOG4J_FUZZ_DIR"
+ls -al "build/out/$PROJECT_NAME"
+----
+
+. Check one of the generated runner scripts:
++
+[source,bash]
+----
+python infra/helper.py check_build \
+  --sanitizer address --engine libfuzzer --architecture x86_64 \
+  $PROJECT_NAME log4j-core-fuzz-test-PatternLayoutFuzzer
 ----
 
 . Execute one of the generated runner scripts:
 +
 [source,bash]
 ----
-docker run -it \
-  -e FUZZING_LANGUAGE=java \
-  -v "$LOG4J_FUZZ_DIR":/out \
-  oss-fuzz-log4j2 \
-  /out/log4j-core-fuzz-test-PatternLayoutFuzzer
-----
-+
-OSS-Fuzz accepts passing fuzzing dictionary and corpus in `<runnerScript>.dict` and `<runnerScript>_seed_corpus.zip` named files, respectively.
-You can execute a runner script with these input too:
-+
-[source,bash]
-----
-# Unpack the corpus packaged for OSS-Fuzz infrastructure
-unzip \
-  -q $LOG4J_FUZZ_DIR/log4j-layout-template-json-fuzz-test-JsonTemplateLayoutCodecFuzzer_seed_corpus.zip \
-  -d $LOG4J_FUZZ_DIR/log4j-layout-template-json-fuzz-test-JsonTemplateLayoutCodecFuzzer_seed_corpus
-
-docker run -it \
-  -e FUZZING_LANGUAGE=java \
-  -v "$LOG4J_FUZZ_DIR":/out \
-  oss-fuzz-log4j2 \
-  /out/log4j-layout-template-json-fuzz-test-JsonTemplateLayoutCodecFuzzer \
-  -dict=/out/log4j-layout-template-json-fuzz-test-JsonTemplateLayoutCodecFuzzer.dict \
-  /out/log4j-layout-template-json-fuzz-test-JsonTemplateLayoutCodecFuzzer_seed_corpus
+python infra/helper.py run_fuzzer \
+  --sanitizer address --engine libfuzzer --architecture x86_64 \
+  $PROJECT_NAME log4j-core-fuzz-test-PatternLayoutFuzzer
 ----
