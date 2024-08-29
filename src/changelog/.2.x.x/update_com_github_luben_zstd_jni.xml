@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="https://logging.apache.org/xml/ns"
+       xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="updated">
+  <issue id="2901" link="https://github.com/apache/logging-log4j2/pull/2901"/>
+  <description format="asciidoc">Update `com.github.luben:zstd-jni` to version `1.5.6-5`</description>
+</entry>
