@@ -53,8 +53,8 @@ mkdir -p "$outputDir"
 cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
 
 # To contain all Maven dependencies under `$outputDir`, explicitly provide the Maven local repository.
-# I presume(!?) this helps with caching and reproducibility.
-export MAVEN_OPTS="-Dmaven.repo.local=$outputDir/.m2"
+# I presume(!?) this helps with caching and reproducibility too.
+export MAVEN_OPTS="-Dmaven.repo.local=$outputDir/m2"
 
 # Make Maven executions scripting friendly
 export MAVEN_ARGS="--batch-mode --no-transfer-progress --errors"
@@ -126,16 +126,17 @@ else
   jvmArgs="-Xmx2048m:-Xss1024k"
 fi
 
-# Temporarily increase verbosity to troubleshoot fuzzer failures
-# See https://github.com/google/oss-fuzz/issues/12349
-set -x
-
 # Verify the classpath
 classPath="$classPath"
-echo "\$classPath" | sed 's/:/\n/g' | while read classPathFile; do
-  if [[ ! -f "\$classPathFile" ]]; then
-    echo "ERROR: Could not find class path file: \"\$classPathFile\"" 1>&2
-    echo "ERROR: Complete class path: \"\$classPath\"" 1>&2
+echo "\$classPath" | sed 's/:/\n/g' | while read classPathFilePath; do
+  if [[ ! -f "\$classPathFilePath" ]]; then
+    echo "ERROR: Could not find class path file: \"\$classPathFilePath\""
+    echo "ERROR: Complete class path: \"\$classPath\""
+    echo "DEBUG: \"ls\" output"
+    ls -al | sed "s/^/DEBUG: /g"
+    classPathFileName=\$(basename "\$classPathFilePath")
+    echo "DEBUG: \"find\" output"
+    find / -name "\$classPathFileName" 2>/dev/null | sed "s/^/DEBUG: /g"
     exit 1
   fi
 done
