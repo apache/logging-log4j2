@@ -60,12 +60,7 @@ public final class MarkerManager {
      * @throws IllegalArgumentException if the argument is {@code null}
      */
     public static Marker getMarker(final String name) {
-        Marker result = MARKERS.get(name);
-        if (result == null) {
-            MARKERS.putIfAbsent(name, new Log4jMarker(name));
-            result = MARKERS.get(name);
-        }
-        return result;
+        return MARKERS.computeIfAbsent(name, Log4jMarker::new);
     }
 
     /**
