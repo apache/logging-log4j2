@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.net.TcpSocketManager;
 import org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.StoreConfigurationException;
-import org.apache.logging.log4j.core.net.ssl.TestConstants;
+import org.apache.logging.log4j.core.net.ssl.SslKeyStoreConstants;
 import org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration;
 import org.apache.logging.log4j.core.test.AvailablePortFinder;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
@@ -71,16 +71,16 @@ public class SecureSocketAppenderSocketOptionsTest {
 
     public static void initServerSocketFactory() throws StoreConfigurationException {
         final KeyStoreConfiguration ksc = KeyStoreConfiguration.createKeyStoreConfiguration(
-                TestConstants.KEYSTORE_FILE, // file
-                TestConstants.KEYSTORE_PWD(), // password
+                SslKeyStoreConstants.KEYSTORE_FILE_PATH, // file
+                SslKeyStoreConstants.KEYSTORE_PWD(), // password
                 null, // passwordEnvironmentVariable
                 null, // passwordFile
                 null, // key store type
                 null); // algorithm
 
         final TrustStoreConfiguration tsc = TrustStoreConfiguration.createKeyStoreConfiguration(
-                TestConstants.TRUSTSTORE_FILE, // file
-                TestConstants.TRUSTSTORE_PWD(), // password
+                SslKeyStoreConstants.TRUSTSTORE_FILE_PATH, // file
+                SslKeyStoreConstants.TRUSTSTORE_PWD(), // password
                 null, // passwordEnvironmentVariable
                 null, // passwordFile
                 null, // key store type
