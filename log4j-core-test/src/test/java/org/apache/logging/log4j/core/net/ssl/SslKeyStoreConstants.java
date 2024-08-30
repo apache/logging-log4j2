@@ -29,7 +29,7 @@ public final class SslKeyStoreConstants {
     public static final String TRUSTSTORE_FILE_RESOURCE = RESOURCE_ROOT + "trustStore.jks";
 
     public static char[] TRUSTSTORE_PWD() {
-        return "someSecret".toCharArray();
+        return "aTrustStoreSecret".toCharArray();
     }
 
     public static final String TRUSTSTORE_TYPE = "JKS";
@@ -41,7 +41,7 @@ public final class SslKeyStoreConstants {
     public static final String KEYSTORE_FILE_RESOURCE = RESOURCE_ROOT + "keyStore.jks";
 
     public static char[] KEYSTORE_PWD() {
-        return "someSecret".toCharArray();
+        return "aKeyStoreSecret".toCharArray();
     }
 
     public static final String KEYSTORE_TYPE = "JKS";
@@ -51,7 +51,7 @@ public final class SslKeyStoreConstants {
     public static final String KEYSTORE_P12_FILE_PATH = PATH + "keyStore.p12";
 
     public static char[] KEYSTORE_P12_PWD() {
-        return "someSecret".toCharArray();
+        return "aKeyStoreSecret".toCharArray();
     }
 
     public static final String KEYSTORE_P12_TYPE = "PKCS12";

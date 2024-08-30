@@ -23,7 +23,9 @@ mkdir tmp
 cd tmp
 
 # Constants
-password="someSecret"
+caPassword="aCaSecret"
+keyStorePassword="aKeyStoreSecret"
+trustStorePassword="aTrustStoreSecret"
 keySize=2048
 validDays=$[365 * 10]
 
@@ -34,7 +36,7 @@ cat >ca.cfg <<EOF
 [ req ]
 distinguished_name = CA_DN
 prompt             = no
-output_password    = $password
+output_password    = $caPassword
 default_bits       = $keySize
 
 [ CA_DN ]
@@ -48,7 +50,7 @@ openssl req -config ca.cfg -new -x509 -nodes -keyout ca.key -out ca.crt -days $v
 ### Trust store ###############################################################
 
 # Create the trust store and import the certificate
-keytool -keystore trustStore.jks -storetype JKS -importcert -file ca.crt -keypass "$password" -storepass "$password" -alias log4j2-cacert -noprompt
+keytool -keystore trustStore.jks -storetype JKS -importcert -file ca.crt -keypass "$trustStorePassword" -storepass "$trustStorePassword" -alias log4j2-cacert -noprompt
 
 # Copy the result
 cp -f trustStore.jks ../
@@ -56,25 +58,25 @@ cp -f trustStore.jks ../
 ### Client key store (JKS) ####################################################
 
 # Create the key store and import the certificate
-keytool -keystore keyStore.jks  -storetype JKS -alias log4j2-ca -importcert -file ca.crt -keypass "$password" -storepass "$password" -noprompt
+keytool -keystore keyStore.jks  -storetype JKS -alias log4j2-ca -importcert -file ca.crt -keypass "$keyStorePassword" -storepass "$keyStorePassword" -noprompt
 
 # Create the private key in the key store
-keytool -genkeypair -keyalg RSA -alias client -keystore keyStore.jks -storepass "$password" -keypass "$password" -validity $validDays -keysize $keySize -dname "CN=client.log4j2, C=US" 
+keytool -genkeypair -keyalg RSA -alias client -keystore keyStore.jks -storepass "$keyStorePassword" -keypass "$keyStorePassword" -validity $validDays -keysize $keySize -dname "CN=client.log4j2, C=US" 
 
 # Create a signing request for the client
-keytool -keystore keyStore.jks -alias client -certreq -file client.csr -keypass "$password" -storepass "$password"
+keytool -keystore keyStore.jks -alias client -certreq -file client.csr -keypass "$keyStorePassword" -storepass "$keyStorePassword"
 
 # Sign the client certificate
-openssl x509 -req -CA ca.crt -CAkey ca.key -in client.csr -out client.crt_signed -days $validDays -CAcreateserial -passin pass:"$password" 
+openssl x509 -req -CA ca.crt -CAkey ca.key -in client.csr -out client.crt_signed -days $validDays -CAcreateserial -passin pass:"$caPassword"
 
 # Verify the client's signed certificate
 openssl verify -CAfile ca.crt client.crt_signed
 
 # Import the client's signed certificate to the key store
-keytool -keystore keyStore.jks -alias client -importcert -file client.crt_signed -keypass "$password" -storepass "$password" -noprompt
+keytool -keystore keyStore.jks -alias client -importcert -file client.crt_signed -keypass "$keyStorePassword" -storepass "$keyStorePassword" -noprompt
 
 # Verify the key store
-keytool -list -keystore keyStore.jks -storepass "$password"
+keytool -list -keystore keyStore.jks -storepass "$keyStorePassword"
 
 # Copy the result
 cp -f keyStore.jks ../
@@ -82,7 +84,7 @@ cp -f keyStore.jks ../
 ### Client key store (P12) ####################################################
 
 # Convert the key store to P12
-keytool -importkeystore -srckeystore keyStore.jks -destkeystore keyStore.p12 -srcstoretype JKS -deststoretype PKCS12 -srcstorepass "$password" -deststorepass "$password"
+keytool -importkeystore -srckeystore keyStore.jks -destkeystore keyStore.p12 -srcstoretype JKS -deststoretype PKCS12 -srcstorepass "$keyStorePassword" -deststorepass "$keyStorePassword"
 
 # Copy the result
 cp -f keyStore.p12 ../
@@ -93,7 +95,7 @@ cp -f keyStore.p12 ../
 # To workaround this limitation, we will
 # 1. Convert from P12 to PEM
 # 2. Convert from PEM to P12 without the password
-openssl pkcs12 -in keyStore.p12 -out keyStore.pem -nodes -passin pass:"$password"
+openssl pkcs12 -in keyStore.p12 -out keyStore.pem -nodes -passin pass:"$keyStorePassword"
 openssl pkcs12 -export -in keyStore.pem -out keyStore-nopass.p12 -passout pass:
 
 # Copy the result
