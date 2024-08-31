@@ -53,7 +53,7 @@ mkdir -p "$outputDir"
 cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
 
 # To contain all Maven dependencies under `$outputDir`, explicitly provide the Maven local repository.
-# I presume(!?) this helps with caching and reproducibility too.
+# `.`-prefixed files are not copied by OSS-Fuzz, don't use them!
 export MAVEN_OPTS="-Dmaven.repo.local=$outputDir/m2"
 
 # Make Maven executions scripting friendly
@@ -140,6 +140,10 @@ echo "\$classPath" | sed 's/:/\n/g' | while read classPathFilePath; do
     exit 1
   fi
 done
+
+# Dump some debugging aid
+export
+java -version
 
 # Run the fuzzer
 LD_LIBRARY_PATH="\$JVM_LD_LIBRARY_PATH":. \\
