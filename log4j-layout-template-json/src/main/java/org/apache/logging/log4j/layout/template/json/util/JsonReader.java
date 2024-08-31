@@ -282,6 +282,10 @@ public final class JsonReader {
                         final String message = String.format(
                                 "was expecting an object key at index %d: %s", readTokenStartIndex, readToken);
                         throw new IllegalArgumentException(message);
+                    } else if (object.containsKey(key)) {
+                        final String message =
+                                String.format("found duplicate object key at index %d: %s", readTokenStartIndex, key);
+                        throw new IllegalArgumentException(message);
                     }
                 } else {
                     expectDelimiter(Delimiter.OBJECT_END, readToken);

@@ -14,14 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.spi;
+package org.apache.logging.log4j.core.impl;
+
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.util.ProviderUtil;
 
 /**
- * Marker interface indicating that the implementing class is a copy-on-write data structure.
+ * <p>
+ * Utility class to access package protected methods in {@code ThreadContext}.
+ * </p>
  *
- * @see ReadOnlyThreadContextMap#getReadOnlyContextData()
+ * @see ThreadContext
  * @since 2.7
- * @deprecated Since 2.24.0 no class implements this.
  */
-@Deprecated
-public interface CopyOnWrite {}
+public final class ThreadContextTestAccess {
+    private ThreadContextTestAccess() { // prevent instantiation
+    }
+
+    public static void init() {
+        final Log4jProvider provider = (Log4jProvider) ProviderUtil.getProvider();
+        provider.resetThreadContextMap();
+        ThreadContext.init();
+    }
+}

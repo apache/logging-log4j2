@@ -29,7 +29,6 @@ import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.perf.nogc.OpenHashStringMap;
-import org.apache.logging.log4j.spi.CopyOnWriteOpenHashMapThreadContextMap;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.GarbageFreeOpenHashMapThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextMap;
@@ -71,26 +70,19 @@ import org.openjdk.jmh.annotations.Warmup;
 @State(Scope.Benchmark)
 public class ThreadContextBenchmark {
     private static final String DEFAULT_CONTEXT_MAP = "Default";
-    private static final String COPY_OPENHASH_MAP = "CopyOpenHash";
-    private static final String COPY_ARRAY_MAP = "CopySortedArray";
     private static final String NO_GC_OPENHASH_MAP = "NoGcOpenHash";
     private static final String NO_GC_ARRAY_MAP = "NoGcSortedArray";
     private static final Map<String, Class<? extends ThreadContextMap>> IMPLEMENTATIONS = new HashMap<>();
 
     static {
         IMPLEMENTATIONS.put(DEFAULT_CONTEXT_MAP, DefaultThreadContextMap.class);
-        IMPLEMENTATIONS.put(COPY_OPENHASH_MAP, CopyOnWriteOpenHashMapThreadContextMap.class);
-        IMPLEMENTATIONS.put(
-                COPY_ARRAY_MAP,
-                CopyOnWriteOpenHashMapThreadContextMap.SUPER); // CopyOnWriteSortedArrayThreadContextMap.class);
         IMPLEMENTATIONS.put(NO_GC_OPENHASH_MAP, GarbageFreeOpenHashMapThreadContextMap.class);
         IMPLEMENTATIONS.put(
                 NO_GC_ARRAY_MAP,
                 GarbageFreeOpenHashMapThreadContextMap.SUPER); // GarbageFreeSortedArrayThreadContextMap.class);
     }
 
-    @Param({"Default", "CopyOpenHash", "CopySortedArray", "NoGcOpenHash", "NoGcSortedArray"})
-    // @Param({ "Default", }) // for legecyInject benchmarks
+    @Param({"Default", "NoGcOpenHash", "NoGcSortedArray"})
     public String threadContextMapAlias;
 
     @Param({"5", "50", "500"})

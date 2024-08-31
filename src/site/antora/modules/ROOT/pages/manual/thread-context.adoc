@@ -120,9 +120,25 @@ executor.submit(() -> {
 [#config]
 == Configuration
 
-You can configure thread context using following properties:
+Since the thread context is inherently linked to the logging implementation, its configuration options depend on the logging implementation used:
 
-include::partial$manual/systemproperties/properties-thread-context.adoc[leveloffset=+1]
+Simple Logger::
++
+See xref:manual/simple-logger.adoc#thread-context[Thread context configuration of Simple Logger].
+
+Log4j Core::
++
+See xref:manual/systemproperties.adoc#properties-thread-context[Thread context configuration of Log4j Core].
+
+Log4j API to SLF4J bridge::
++
+All `ThreadContext` method calls are translated into equivalent
+https://www.slf4j.org/api/org/slf4j/MDC.html[`org.slf4j.MDC`]
+method calls.
+
+JUL::
++
+All `ThreadContext` method calls are a no-op.
 
 [#extending]
 == Extending

@@ -352,17 +352,17 @@ public class UnmodifiableArrayBackedMapTest {
         UnmodifiableArrayBackedMap newMap;
 
         originalMap = UnmodifiableArrayBackedMap.EMPTY_MAP;
-        newMap = UnmodifiableArrayBackedMap.getInstance(originalMap.getBackingArray());
+        newMap = UnmodifiableArrayBackedMap.getMap(originalMap.getBackingArray());
         assertEquals(originalMap, newMap);
 
         originalMap = UnmodifiableArrayBackedMap.EMPTY_MAP.copyAndPutAll(getTestParameters());
-        newMap = UnmodifiableArrayBackedMap.getInstance(originalMap.getBackingArray());
+        newMap = UnmodifiableArrayBackedMap.getMap(originalMap.getBackingArray());
         assertEquals(originalMap, newMap);
 
         originalMap = UnmodifiableArrayBackedMap.EMPTY_MAP
                 .copyAndPutAll(getTestParameters())
                 .copyAndRemove("1");
-        newMap = UnmodifiableArrayBackedMap.getInstance(originalMap.getBackingArray());
+        newMap = UnmodifiableArrayBackedMap.getMap(originalMap.getBackingArray());
         assertEquals(originalMap, newMap);
     }
 

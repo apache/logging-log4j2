@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.impl;
 
 import static java.util.Arrays.asList;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
-import static org.apache.logging.log4j.ThreadContext.getThreadContextMap;
 import static org.apache.logging.log4j.core.impl.ContextDataInjectorFactory.createInjector;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
@@ -33,8 +32,9 @@ import java.util.Collection;
 import java.util.concurrent.ExecutionException;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
-import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
-import org.apache.logging.log4j.test.ThreadContextUtilityClass;
+import org.apache.logging.log4j.spi.ThreadContextMap;
+import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.ProviderUtil;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.junit.After;
@@ -50,26 +50,23 @@ public class ThreadContextDataInjectorTest {
     @Parameters(name = "{0}")
     public static Collection<String[]> threadContextMapClassNames() {
         return asList(new String[][] {
-            {
-                "org.apache.logging.log4j.spi.CopyOnWriteSortedArrayThreadContextMap",
-                "org.apache.logging.log4j.spi.CopyOnWriteSortedArrayThreadContextMap"
-            },
-            {
-                "org.apache.logging.log4j.spi.GarbageFreeSortedArrayThreadContextMap",
-                "org.apache.logging.log4j.spi.GarbageFreeSortedArrayThreadContextMap"
-            },
-            {"org.apache.logging.log4j.spi.DefaultThreadContextMap", null}
+            {"org.apache.logging.log4j.core.context.internal.GarbageFreeSortedArrayThreadContextMap"},
+            {"org.apache.logging.log4j.spi.DefaultThreadContextMap"}
         });
     }
 
     @Parameter
     public String threadContextMapClassName;
 
-    @Parameter(value = 1)
-    public String readOnlythreadContextMapClassName;
+    private static void resetThreadContextMap() {
+        PropertiesUtil.getProperties().reload();
+        final Log4jProvider provider = (Log4jProvider) ProviderUtil.getProvider();
+        provider.resetThreadContextMap();
+        ThreadContext.init();
+    }
 
     @Before
-    public void before() {
+    public void before() throws ReflectiveOperationException {
         System.setProperty("log4j2.threadContextMap", threadContextMapClassName);
     }
 
@@ -82,13 +79,11 @@ public class ThreadContextDataInjectorTest {
     }
 
     private void testContextDataInjector() {
-        final ReadOnlyThreadContextMap readOnlythreadContextMap = getThreadContextMap();
+        final ThreadContextMap threadContextMap = ProviderUtil.getProvider().getThreadContextMapInstance();
         assertThat(
                 "thread context map class name",
-                (readOnlythreadContextMap == null)
-                        ? null
-                        : readOnlythreadContextMap.getClass().getName(),
-                is(equalTo(readOnlythreadContextMapClassName)));
+                threadContextMap.getClass().getName(),
+                is(equalTo(threadContextMapClassName)));
 
         final ContextDataInjector contextDataInjector = createInjector();
         final StringMap stringMap = contextDataInjector.injectContextData(null, new SortedArrayStringMap());
@@ -121,8 +116,8 @@ public class ThreadContextDataInjectorTest {
 
     private void prepareThreadContext(final boolean isThreadContextMapInheritable) {
         System.setProperty("log4j2.isThreadContextMapInheritable", Boolean.toString(isThreadContextMapInheritable));
-        ThreadContextUtilityClass.reset();
-        ThreadContext.remove("baz");
+        resetThreadContextMap();
+        ThreadContext.clearMap();
         ThreadContext.put("foo", "bar");
     }
 
