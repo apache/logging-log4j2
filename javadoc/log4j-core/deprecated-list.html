@@ -256,20 +256,24 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color"></div>
 <div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/config/LoggerConfig.RootLogger.Builder.html#setIncludeLocation(java.lang.String)">org.apache.logging.log4j.core.config.LoggerConfig.RootLogger.Builder.setIncludeLocation<wbr>(String)</a></div>
 <div class="col-last odd-row-color"></div>
-<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/impl/ReusableLogEventFactory.html#release(org.apache.logging.log4j.core.LogEvent)">org.apache.logging.log4j.core.impl.ReusableLogEventFactory.release<wbr>(LogEvent)</a></div>
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/ContextDataInjector.html#rawContextData()">org.apache.logging.log4j.core.ContextDataInjector.rawContextData()</a></div>
 <div class="col-last even-row-color">
+<div class="deprecation-comment">Since 2.24.0 use <a href="org/apache/logging/log4j/core/ContextDataInjector.html#getValue(java.lang.String)"><code>ContextDataInjector.getValue(java.lang.String)</code></a> instead.</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/impl/ReusableLogEventFactory.html#release(org.apache.logging.log4j.core.LogEvent)">org.apache.logging.log4j.core.impl.ReusableLogEventFactory.release<wbr>(LogEvent)</a></div>
+<div class="col-last odd-row-color">
 <div class="deprecation-comment">use <a href="org/apache/logging/log4j/core/impl/ReusableLogEventFactory.html#recycle(org.apache.logging.log4j.core.LogEvent)"><code>ReusableLogEventFactory.recycle(LogEvent)</code></a></div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/layout/Rfc5424Layout.html#createLayout(org.apache.logging.log4j.core.net.Facility,java.lang.String,int,boolean,java.lang.String,java.lang.String,java.lang.String,boolean,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,boolean,org.apache.logging.log4j.core.layout.LoggerFields%5B%5D,org.apache.logging.log4j.core.config.Configuration)">org.apache.logging.log4j.core.layout.Rfc5424Layout.createLayout<wbr>(Facility, String, int, boolean, String, String, String, boolean, String, String, String, String, String, String, String, boolean, LoggerFields[], Configuration)</a></div>
-<div class="col-last odd-row-color">
-<div class="deprecation-comment">Use <a href="org/apache/logging/log4j/core/layout/Rfc5424Layout.Rfc5424LayoutBuilder.html" title="class in org.apache.logging.log4j.core.layout"><code>instead</code></a></div>
-</div>
-<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/net/UrlConnectionFactory.html#createConnection(java.net.URL,long,org.apache.logging.log4j.core.net.ssl.SslConfiguration,org.apache.logging.log4j.core.util.AuthorizationProvider)">org.apache.logging.log4j.core.net.UrlConnectionFactory.createConnection<wbr>(URL, long, SslConfiguration, AuthorizationProvider)</a></div>
-<div class="col-last even-row-color"></div>
-<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/time/ClockFactory.html#clock(org.apache.logging.log4j.kit.env.PropertyEnvironment)">org.apache.logging.log4j.core.time.ClockFactory.clock<wbr>(PropertyEnvironment)</a></div>
-<div class="col-last odd-row-color"></div>
-<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/time/ClockFactory.html#getClock()">org.apache.logging.log4j.core.time.ClockFactory.getClock()</a></div>
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/layout/Rfc5424Layout.Rfc5424LayoutBuilder.html#setConfig(org.apache.logging.log4j.core.config.Configuration)">org.apache.logging.log4j.core.layout.Rfc5424Layout.Rfc5424LayoutBuilder.setConfig<wbr>(Configuration)</a></div>
 <div class="col-last even-row-color">
+<div class="deprecation-comment">Since 2.24.0 use <a href="org/apache/logging/log4j/core/layout/AbstractLayout.Builder.html#setConfiguration(org.apache.logging.log4j.core.config.Configuration)"><code>AbstractLayout.Builder.setConfiguration(org.apache.logging.log4j.core.config.Configuration)</code></a> instead.</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/net/UrlConnectionFactory.html#createConnection(java.net.URL,long,org.apache.logging.log4j.core.net.ssl.SslConfiguration,org.apache.logging.log4j.core.util.AuthorizationProvider)">org.apache.logging.log4j.core.net.UrlConnectionFactory.createConnection<wbr>(URL, long, SslConfiguration, AuthorizationProvider)</a></div>
+<div class="col-last odd-row-color"></div>
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/time/ClockFactory.html#clock(org.apache.logging.log4j.kit.env.PropertyEnvironment)">org.apache.logging.log4j.core.time.ClockFactory.clock<wbr>(PropertyEnvironment)</a></div>
+<div class="col-last even-row-color"></div>
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/time/ClockFactory.html#getClock()">org.apache.logging.log4j.core.time.ClockFactory.getClock()</a></div>
+<div class="col-last odd-row-color">
 <div class="deprecation-comment">use dependency injection instead to obtain a <a href="org/apache/logging/log4j/core/time/Clock.html" title="interface in org.apache.logging.log4j.core.time"><code>Clock</code></a> instance</div>
 </div>
 </div>

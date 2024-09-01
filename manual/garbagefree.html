@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Garbage-free logging :: Apache Log4j</title>
     <link rel="canonical" href="https://logging.apache.org/log4j/3.x/manual/garbagefree.html">
-    <meta name="generator" content="Antora 3.2.0-alpha.4">
+    <meta name="generator" content="Antora 3.2.0-alpha.6">
 <link rel="stylesheet" href="../_/css/site.css">
 <link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
 <!-- `@asciidoctor/tabs` extension styles -->
@@ -783,8 +783,7 @@ or predefined constant</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WebApp</code></p>
-<p class="tableblock">(GC-free mode: <code>CopyOnWrite</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WebApp</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -802,10 +801,6 @@ implementation class or one of the predefined constants:</p>
 <dt class="hdlist1">WebApp</dt>
 <dd>
 <p>a web application-safe implementation, that only binds JRE classes to <code>ThreadLocal</code> to prevent memory leaks,</p>
-</dd>
-<dt class="hdlist1">CopyOnWrite</dt>
-<dd>
-<p>a copy-on-write implementation,</p>
 </dd>
 <dt class="hdlist1">GarbageFree</dt>
 <dd>

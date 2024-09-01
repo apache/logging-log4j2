@@ -2323,12 +2323,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Creates a KeyStoreConfiguration.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/layout/Rfc5424Layout.html#createLayout(org.apache.logging.log4j.core.net.Facility,java.lang.String,int,boolean,java.lang.String,java.lang.String,java.lang.String,boolean,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,boolean,org.apache.logging.log4j.core.layout.LoggerFields%5B%5D,org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">createLayout(Facility, String, int, boolean, String, String, String, boolean, String, String, String, String, String, String, String, boolean, LoggerFields[], Configuration)</a> - Static method in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/Rfc5424Layout.html" title="class in org.apache.logging.log4j.core.layout">Rfc5424Layout</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use <a href="org/apache/logging/log4j/core/layout/Rfc5424Layout.Rfc5424LayoutBuilder.html" title="class in org.apache.logging.log4j.core.layout"><code>instead</code></a></div>
-</div>
-</dd>
 <dt><a href="org/apache/logging/log4j/core/config/CustomLevelConfig.html#createLevel(java.lang.String,int)" class="member-name-link">createLevel(String, int)</a> - Static method in class org.apache.logging.log4j.core.config.<a href="org/apache/logging/log4j/core/config/CustomLevelConfig.html" title="class in org.apache.logging.log4j.core.config">CustomLevelConfig</a></dt>
 <dd>
 <div class="block">Creates a CustomLevelConfig object.</div>
@@ -4954,6 +4948,10 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/layout/AbstractStringLayout.html#getBytes(java.lang.String)" class="member-name-link">getBytes(String)</a> - Method in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/AbstractStringLayout.html" title="class in org.apache.logging.log4j.core.layout">AbstractStringLayout</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/util/NetUtils.html#getCanonicalLocalHostname()" class="member-name-link">getCanonicalLocalHostname()</a> - Static method in class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/NetUtils.html" title="class in org.apache.logging.log4j.core.util">NetUtils</a></dt>
+<dd>
+<div class="block">This method gets the FQDN of the machine we are running on.</div>
+</dd>
 <dt><a href="org/apache/logging/log4j/core/impl/ThrowableProxy.html#getCauseProxy()" class="member-name-link">getCauseProxy()</a> - Method in class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/ThrowableProxy.html" title="class in org.apache.logging.log4j.core.impl">ThrowableProxy</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/impl/ThrowableProxy.html#getCauseStackTraceAsString(java.lang.String)" class="member-name-link">getCauseStackTraceAsString(String)</a> - Method in class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/ThrowableProxy.html" title="class in org.apache.logging.log4j.core.impl">ThrowableProxy</a></dt>
@@ -7246,8 +7244,18 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Returns the value.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/core/ContextDataInjector.html#getValue(java.lang.String)" class="member-name-link">getValue(String)</a> - Method in interface org.apache.logging.log4j.core.<a href="org/apache/logging/log4j/core/ContextDataInjector.html" title="interface in org.apache.logging.log4j.core">ContextDataInjector</a></dt>
+<dd>
+<div class="block">Retrieves a single context data value.</div>
+</dd>
 <dt><a href="org/apache/logging/log4j/core/impl/JdkMapAdapterStringMap.html#getValue(java.lang.String)" class="member-name-link">getValue(String)</a> - Method in class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/JdkMapAdapterStringMap.html" title="class in org.apache.logging.log4j.core.impl">JdkMapAdapterStringMap</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/impl/ThreadContextDataInjector.ForCopyOnWriteThreadContextMap.html#getValue(java.lang.String)" class="member-name-link">getValue(String)</a> - Method in class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/ThreadContextDataInjector.ForCopyOnWriteThreadContextMap.html" title="class in org.apache.logging.log4j.core.impl">ThreadContextDataInjector.ForCopyOnWriteThreadContextMap</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/util/ContextDataProvider.html#getValue(java.lang.String)" class="member-name-link">getValue(String)</a> - Method in interface org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/ContextDataProvider.html" title="interface in org.apache.logging.log4j.core.util">ContextDataProvider</a></dt>
+<dd>
+<div class="block">Retrieves a single context data value.</div>
+</dd>
 <dt><a href="org/apache/logging/log4j/core/lookup/StrSubstitutor.html#getValueDelimiterMatcher()" class="member-name-link">getValueDelimiterMatcher()</a> - Method in class org.apache.logging.log4j.core.lookup.<a href="org/apache/logging/log4j/core/lookup/StrSubstitutor.html" title="class in org.apache.logging.log4j.core.lookup">StrSubstitutor</a></dt>
 <dd>
 <div class="block">Gets the variable default value delimiter matcher currently in use.</div>
@@ -9807,6 +9815,8 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/layout/PatternMatch.html#newBuilder()" class="member-name-link">newBuilder()</a> - Static method in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/PatternMatch.html" title="class in org.apache.logging.log4j.core.layout">PatternMatch</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/layout/Rfc5424Layout.html#newBuilder()" class="member-name-link">newBuilder()</a> - Static method in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/Rfc5424Layout.html" title="class in org.apache.logging.log4j.core.layout">Rfc5424Layout</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/layout/SyslogLayout.html#newBuilder()" class="member-name-link">newBuilder()</a> - Static method in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/SyslogLayout.html" title="class in org.apache.logging.log4j.core.layout">SyslogLayout</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/net/SocketAddress.html#newBuilder()" class="member-name-link">newBuilder()</a> - Static method in class org.apache.logging.log4j.core.net.<a href="org/apache/logging/log4j/core/net/SocketAddress.html" title="class in org.apache.logging.log4j.core.net">SocketAddress</a></dt>
@@ -10962,7 +10972,9 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/ContextDataInjector.html#rawContextData()" class="member-name-link">rawContextData()</a> - Method in interface org.apache.logging.log4j.core.<a href="org/apache/logging/log4j/core/ContextDataInjector.html" title="interface in org.apache.logging.log4j.core">ContextDataInjector</a></dt>
 <dd>
-<div class="block">Returns a <code>ReadOnlyStringMap</code> object reflecting the current state of the context.</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Since 2.24.0 use <a href="org/apache/logging/log4j/core/ContextDataInjector.html#getValue(java.lang.String)"><code>ContextDataInjector.getValue(java.lang.String)</code></a> instead.</div>
+</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/impl/ThreadContextDataInjector.ForCopyOnWriteThreadContextMap.html#rawContextData()" class="member-name-link">rawContextData()</a> - Method in class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/ThreadContextDataInjector.ForCopyOnWriteThreadContextMap.html" title="class in org.apache.logging.log4j.core.impl">ThreadContextDataInjector.ForCopyOnWriteThreadContextMap</a></dt>
 <dd>&nbsp;</dd>
@@ -11921,7 +11933,11 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/core/config/LoggerConfig.RootLogger.Builder.html#setConfig(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfig(Configuration)</a> - Method in class org.apache.logging.log4j.core.config.<a href="org/apache/logging/log4j/core/config/LoggerConfig.RootLogger.Builder.html" title="class in org.apache.logging.log4j.core.config">LoggerConfig.RootLogger.Builder</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/layout/Rfc5424Layout.Rfc5424LayoutBuilder.html#setConfig(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfig(Configuration)</a> - Method in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/Rfc5424Layout.Rfc5424LayoutBuilder.html" title="class in org.apache.logging.log4j.core.layout">Rfc5424Layout.Rfc5424LayoutBuilder</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Since 2.24.0 use <a href="org/apache/logging/log4j/core/layout/AbstractLayout.Builder.html#setConfiguration(org.apache.logging.log4j.core.config.Configuration)"><code>AbstractLayout.Builder.setConfiguration(org.apache.logging.log4j.core.config.Configuration)</code></a> instead.</div>
+</div>
+</dd>
 <dt><a href="org/apache/logging/log4j/core/filter/MutableThreadContextMapFilter.Builder.html#setConfigLocation(java.lang.String)" class="member-name-link">setConfigLocation(String)</a> - Method in class org.apache.logging.log4j.core.filter.<a href="org/apache/logging/log4j/core/filter/MutableThreadContextMapFilter.Builder.html" title="class in org.apache.logging.log4j.core.filter">MutableThreadContextMapFilter.Builder</a></dt>
 <dd>
 <div class="block">Sets the configuration to use.</div>

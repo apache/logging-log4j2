@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Plugin reference :: Apache Log4j</title>
     <link rel="canonical" href="https://logging.apache.org/log4j/3.x/plugin-reference.html">
-    <meta name="generator" content="Antora 3.2.0-alpha.4">
+    <meta name="generator" content="Antora 3.2.0-alpha.6">
 <link rel="stylesheet" href="./_/css/site.css">
 <link rel="icon" href="./_/../_images/favicon.ico" type="image/x-icon">
 <!-- `@asciidoctor/tabs` extension styles -->
@@ -958,9 +958,6 @@ NOTE: The Log4j API supports custom levels, the following list contains only the
 <p><a href="#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-dbcp2-appender-PoolingDriverConnectionSource">PoolingDriverConnectionSource</a></p>
 </li>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender">FlumeAppender</a></p>
-</li>
-<li>
 <p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DataSourceConnectionSource">DataSourceConnectionSource</a></p>
 </li>
 <li>
@@ -1062,9 +1059,6 @@ When resources require locking (e.g., through <code>org.apache.logging.log4j.cor
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-RoutingAppender">RoutingAppender</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender">FlumeAppender</a></p>
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-JdbcAppender">JdbcAppender</a></p>
@@ -1391,9 +1385,6 @@ In most circumstances, implementation classes should store their <code>org.apach
 <p><a href="#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-dbcp2-appender-PoolingDriverConnectionSource">PoolingDriverConnectionSource</a></p>
 </li>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender">FlumeAppender</a></p>
-</li>
-<li>
 <p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DataSourceConnectionSource">DataSourceConnectionSource</a></p>
 </li>
 <li>
@@ -1532,9 +1523,6 @@ In most circumstances, implementation classes should store their <code>org.apach
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-RoutingAppender">RoutingAppender</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender">FlumeAppender</a></p>
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-JdbcAppender">JdbcAppender</a></p>
@@ -2591,7 +2579,12 @@ This attribute is ignored if <code>immediateFlush</code> is set to <code>true</c
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Property</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property">Property</a>?</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>A generic list of key/value properties</p>
+</div>
+<div class="paragraph">
+<p>The meaning of these properties depends on the component.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"></td>
@@ -9301,9 +9294,6 @@ A filter may choose to support being called only from the context or only from a
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig-RootLogger">RootLogger</a></p>
 </li>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender">FlumeAppender</a></p>
-</li>
-<li>
 <p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-JdbcAppender">JdbcAppender</a></p>
 </li>
 <li>
@@ -9756,9 +9746,6 @@ DENY.</p>
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig-RootLogger">RootLogger</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender">FlumeAppender</a></p>
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-JdbcAppender">JdbcAppender</a></p>
@@ -11743,21 +11730,26 @@ The format of the result depends on the <em>conversion pattern</em>.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Rfc5424Layout appName=""
+               charset=""
+               ein=""
                enterpriseNumber=""
+               escapeNL=""
                eventPrefix=""
                exceptionPattern=""
+               excludes=""
                facility=""
+               footer=""
+               header=""
                id=""
                includeMDC=""
-               mdcExcludes=""
+               includeNL=""
+               includes=""
                mdcId=""
-               mdcIncludes=""
                mdcPrefix=""
-               mdcRequired=""
                messageId=""
-               newLine=""
-               newLineEscape=""
-               useTlsMessageFormat=""&gt;
+               required=""
+               useTLSMessageFormat=""&gt;
+    &lt;a-Serializer-implementation/&gt;
     &lt;LoggerFields/&gt;&lt;!-- multiple occurrences allowed --&gt;
 &lt;/Rfc5424Layout&gt;</code></pre>
 </div>
@@ -11788,131 +11780,121 @@ The format of the result depends on the <em>conversion pattern</em>.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>appName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The value to use as the APP-NAME in the RFC 5424 syslog record.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>charset</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Charset?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ein</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>enterpriseNumber</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int?</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Integer?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The IANA enterprise number.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>escapeNL</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>eventPrefix</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The prefix to add to event key names.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>exceptionPattern</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The pattern for formatting exceptions.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>excludes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>facility</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-Facility">Facility</a>?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The Facility is used to try to classify the message.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>footer</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>header</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The default structured data id to use when formatting according to RFC 5424.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeMDC</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Indicates whether data from the ThreadContextMap will be included in the RFC 5424 Syslog record.
-Defaults to "true:.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdcExcludes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeNL</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>includes</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>A comma separated list of MDC keys that should be excluded from the LogEvent.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdcId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The id to use for the MDC Structured Data Element.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdcIncludes</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>A comma separated list of MDC keys that should be included in the FlumeEvent.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdcPrefix</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The prefix to add to MDC key names.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdcRequired</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>A comma separated list of MDC keys that must be present in the MDC.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>messageId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The default value to be used in the MSGID field of RFC 5424 syslog records.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>newLine</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>If true, a newline will be appended to the end of the syslog record.
-The default is false.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>newLineEscape</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>required</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>String that should be used to replace newlines within the message text.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>useTlsMessageFormat</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>useTLSMessageFormat</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>If true the message will be formatted according to RFC 5425.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 </tbody>
 </table>
@@ -11937,11 +11919,14 @@ The default is false.</p>
 </thead>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Serializer?</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>LoggerFields</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-LoggerFields">LoggerFields</a>?</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Container for the KeyValuePairs containing the patterns</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 </tbody>
 </table>
@@ -16138,381 +16123,6 @@ toString(), or to output the value of a specific key within the property bundle 
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;docker/&gt;</code></pre>
 </div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="org-apache-logging-log4j_log4j-flume-ng"><a class="anchor" href="#org-apache-logging-log4j_log4j-flume-ng"></a><code>org.apache.logging.log4j:log4j-flume-ng</code></h3>
-<div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-Agent"><a class="anchor" href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-Agent"></a>Agent</h4>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Class</dt>
-<dd>
-<p><code>org.apache.logging.log4j.flume.appender.Agent</code></p>
-</dd>
-<dt class="hdlist1">Provider</dt>
-<dd>
-<p><code>org.apache.logging.log4j:log4j-flume-ng</code></p>
-</dd>
-</dl>
-</div>
-<div class="paragraph">
-<p>Agent Specification for FlumeAvroAppender.</p>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-Agent_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-Agent_XML-snippet"></a>XML snippet</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Agent host=""
-       port=""/&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-Agent-attributes"><a class="anchor" href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-Agent-attributes"></a>Attributes</h5>
-<div class="paragraph">
-<p>Optional attributes are denoted by <code>?</code>-suffixed types.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 62.5%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>host</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The host name.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>port</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The port number.</p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender"><a class="anchor" href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender"></a>Flume</h4>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Class</dt>
-<dd>
-<p><code>org.apache.logging.log4j.flume.appender.FlumeAppender</code></p>
-</dd>
-<dt class="hdlist1">Provider</dt>
-<dd>
-<p><code>org.apache.logging.log4j:log4j-flume-ng</code></p>
-</dd>
-</dl>
-</div>
-<div class="paragraph">
-<p>An Appender that uses the Avro protocol to route events to Flume.</p>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender_XML-snippet"></a>XML snippet</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Flume agentRetries=""
-       batchSize=""
-       compress=""
-       connectTimeoutMillis=""
-       dataDir=""
-       embedded=""
-       eventPrefix=""
-       hosts=""
-       ignoreExceptions=""
-       lockTimeoutRetries=""
-       maxDelayMillis=""
-       mdcExcludes=""
-       mdcIncludes=""
-       mdcPrefix=""
-       mdcRequired=""
-       name=""
-       requestTimeoutMillis=""
-       type=""&gt;
-    &lt;a-Filter-implementation/&gt;
-    &lt;a-Layout-implementation/&gt;
-    &lt;Property/&gt;&lt;!-- multiple occurrences allowed --&gt;
-    &lt;Agent/&gt;&lt;!-- multiple occurrences allowed --&gt;
-    &lt;a-FlumeEventFactory-implementation/&gt;
-&lt;/Flume&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender-attributes"><a class="anchor" href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender-attributes"></a>Attributes</h5>
-<div class="paragraph">
-<p>Optional attributes are denoted by <code>?</code>-suffixed types.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 62.5%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>agentRetries</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The number of times to retry an agent before failing to the next agent.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>batchSize</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Number of events to include in a batch.
-Defaults to 1.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>compress</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>If true the event body will be compressed.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>connectTimeoutMillis</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The amount of time in milliseconds to wait before a connection times out.
-Minimum is 1000.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dataDir</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The directory where the Flume FileChannel should write its data.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>embedded</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>true if the embedded agent manager should be used.
-otherwise the Avro manager will be used.
-*Note:*<em>The embedded attribute is deprecated in favor of specifying the type attribute.</em></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>eventPrefix</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The prefix to add to event key names.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hosts</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ignoreExceptions</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>If <code>"true"</code> (default) exceptions encountered when appending events are logged; otherwise they are propagated to the caller.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>lockTimeoutRetries</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Times to retry a lock timeout when writing to Berkeley DB.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>maxDelayMillis</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The maximum number of milliseconds to wait for a complete batch.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdcExcludes</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>A comma separated list of MDC elements to exclude.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdcIncludes</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>A comma separated list of MDC elements to include.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdcPrefix</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The prefix to add to MDC key names.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdcRequired</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>A comma separated list of MDC elements that are required.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The name of the Appender.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>requestTimeoutMillis</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The amount of time in milliseconds to wait before a request times out.
-Minimum is 1000.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Avro (default), Embedded, or Persistent.</p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender_components"><a class="anchor" href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender_components"></a>Nested components</h5>
-<div class="paragraph">
-<p>Optional components are denoted by <code>?</code>-suffixed types.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 71.4286%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Tag</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Property</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property">Property</a>?</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Properties to pass to the embedded agent.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Filter">Filter</a>?</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>A Filter to filter events.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Layout">Layout</a>?</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The layout to format the event.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Agent</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-Agent">Agent</a>?</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>An array of Agents.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeEventFactory">FlumeEventFactory</a>?</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The factory to use to create Flume events.</p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeEventFactory"><a class="anchor" href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeEventFactory"></a><code>org.apache.logging.log4j.flume.appender.FlumeEventFactory</code></h4>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Class</dt>
-<dd>
-<p><code>org.apache.logging.log4j.flume.appender.FlumeEventFactory</code></p>
-</dd>
-<dt class="hdlist1">Provider</dt>
-<dd>
-<p><code>org.apache.logging.log4j:log4j-flume-ng</code></p>
-</dd>
-</dl>
-</div>
-<div class="paragraph">
-<p>Factory to create Flume events.</p>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeEventFactory_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeEventFactory_implementations"></a>Known implementations</h5>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender">FlumeAppender</a></p>
-</li>
-</ul>
 </div>
 </div>
 </div>
