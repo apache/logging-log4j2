@@ -343,9 +343,9 @@
     <site-je.version>18.3.12</site-je.version>
     <site-jeromq.version>0.6.0</site-jeromq.version>
     <site-kafka.version>3.8.0</site-kafka.version>
-    <site-log4j-api.version>2.23.1</site-log4j-api.version>
-    <site-log4j-core.version>2.23.1</site-log4j-core.version>
-    <site-log4j-layout-template-json.version>2.23.1</site-log4j-layout-template-json.version>
+    <site-log4j-api.version>2.24.0</site-log4j-api.version>
+    <site-log4j-core.version>2.24.0</site-log4j-core.version>
+    <site-log4j-layout-template-json.version>2.24.0</site-log4j-layout-template-json.version>
     <site-logback.version>1.5.5</site-logback.version>
     <site-slf4j.version>2.0.16</site-slf4j.version>
 
@@ -712,27 +712,6 @@
              We need these `<dependency>` entries to trick `dependabot` to update the version properties automatically.
              No, we cannot use `${project.version}`, because it is not released yet. -->
         <dependencies>
-
-          <!-- Log4j component dependencies.
-               No, we cannot use `${project.version}`, because it is not released yet. -->
-
-          <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>${site-log4j-api.version}</version>
-          </dependency>
-
-          <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>${site-log4j-core.version}</version>
-          </dependency>
-
-          <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-layout-template-json</artifactId>
-            <version>${site-log4j-layout-template-json.version}</version>
-          </dependency>
 
           <!-- Other dependencies -->
 

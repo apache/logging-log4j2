@@ -16,17 +16,110 @@
 ////
 
 = Download
+:dist-url: https://downloads.apache.org/logging/log4j/{log4j-core-version}
 
-You can manually download all published Log4j distributions, verify them, and see their licensing information by following the instructions in {logging-services-url}/download.html[the Download page] of {logging-services-url}[Logging Services].
+Apache Log4j is distributed under the
+https://www.apache.org/licenses/LICENSE-2.0[Apache License, version 2.0].
+You can find the download links of the official <<source-distribution,source>> and <<binary-distribution,binary distributions>> below.
 
-* Are you looking for **the Log4j installation instructions**? Proceed to xref:manual/installation.adoc[].
-* Are you looking for the list of changes associated with a particular release? Proceed to xref:release-notes.adoc[].
+See also the {logging-services-url}/download.html[Logging Services download page] for instruction on how to validate the downloaded files.
+
+[TIP]
+====
+* Are you looking for **the Log4j installation instructions**?
+Proceed to xref:manual/installation.adoc[].
+* Are you looking for the list of changes associated with a particular release?
+Proceed to xref:release-notes.adoc[].
+====
+
+[#source-distribution]
+== Source distribution
+
+You can download the source code of the latest Apache Log4j release using the links below:
+
+.Source distribution files
+[cols="2h,5"]
+|===
+
+| Source distribution archive
+| {dist-url}/apache-log4j-{log4j-core-version}-src.zip[apache-log4j-{log4j-core-version}-src.zip]
+
+| Checksum
+| {dist-url}/apache-log4j-{log4j-core-version}-src.zip.sha256[apache-log4j-{log4j-core-version}-src.zip.sha256]
+
+| Signature
+| {dist-url}/apache-log4j-{log4j-core-version}-src.zip.asc[apache-log4j-{log4j-core-version}-src.zip.asc]
+
+| PGP keys
+| https://downloads.apache.org/logging/KEYS[KEYS]
+|===
+
+[#binary-distribution]
+== Binary distribution
+
+A set of binaries of Apache Log4j is available through two main distribution channels:
+
+ASF Nexus Repository::
++
+All the binary artifacts are available on the Apache Software Foundation
+https://repository.apache.org/content/repositories/releases/[`repository.apache.org` Nexus repository].
+Its content is mirrored to the
+https://repo.maven.apache.org/maven2[Maven Central repository].
++
+See xref:components.adoc[] for more information on the GAV coordinates of the artifacts.
+
+Binary distribution archive::
++
+All the artifacts in the ASF Nexus repository are also available in a single ZIP archive:
++
+.Binary distribution files
+[cols="2h,5"]
+|===
+
+| Source distribution archive
+| {dist-url}/apache-log4j-{log4j-core-version}-bin.zip[apache-log4j-{log4j-core-version}-bin.zip]
+
+| Checksum
+| {dist-url}/apache-log4j-{log4j-core-version}-bin.zip.sha256[apache-log4j-{log4j-core-version}-src.bin.sha256]
+
+| Signature
+| {dist-url}/apache-log4j-{log4j-core-version}-bin.zip.asc[apache-log4j-{log4j-core-version}-src.bin.asc]
+
+| PGP keys
+| https://downloads.apache.org/logging/KEYS[KEYS]
+|===
+
+[NOTE]
+====
+The authenticity of the Apache Log4j binary release is independently verified by the
+https://github.com/jvm-repo-rebuild/reproducible-central[Reproducible Builds for Maven Central Repository]
+project.
+You can check the reproducibility status of the artifacts on their
+https://github.com/jvm-repo-rebuild/reproducible-central/blob/master/content/org/apache/logging/log4j/log4j/README.md[`org.apache.logging.log4j:log4j` RB check] page.
+====
+
+[#sbom]
+== Software Bill of Materials (SBOM)
+
+Each Apache Log4j artifact is accompanied by a Software Bill of Materials in
+https://cyclonedx.org/[CycloneDX format].
+The SBOMs are published to the ASF Nexus repository with `cyclonedx` as classifier and `xml` as type and are also available in the binary distribution archive.
+
+See also {logging-services-url}/download.html#sbom[Apache Logging Services SBOMs].
+
+[IMPORTANT]
+====
+Since Apache Log4j is a software library, the contents of the SBOMs constitute only a **suggested** list of component versions known to work with Apache Log4j.
+These versions are used by our unit tests.
+
+The **effective** list of components included in an application containing Apache Log4j can only be determined by the producer of the application.
+====
 
 [#older]
 == Older releases
 
 Are you looking for old versions of Log4j?
-While we recommend to always use the latest version, you can find the older versions here:
+While we recommend always using the latest version, you can find the older versions here:
 
 * {logging-services-url}/log4j/1.x/index.html[Log4j 1.x (End of Life, Java 1.4)]
 * {logging-services-url}/log4j/2.3.x/index.html[Log4j 2.3.x (Java 6)]

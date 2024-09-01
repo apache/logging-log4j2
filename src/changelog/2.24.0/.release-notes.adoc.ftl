@@ -46,14 +46,15 @@ If such a functionality is required, it must be explicitly enabled.
 The following Log4j Core additional modules have been removed:
 
 `log4j-flume-ng`::
-The module has been moved to the Flume project and follows the Apache Flume release lifecycle.
+The module is no longer part of the release process and will follow its own release lifecycle.
+Please manage your dependencies using xref:components.adoc#log4j-bom[`log4j-bom`] to always use its latest version.
 
 `log4j-kubernetes`::
 The module has been moved to the https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md[Fabric8.io Kubernetes project] and follows the Fabric8.io release lifecycle.
 
 `log4j-mongodb3`::
 The module based on MongoDB Java client version 3.x has been removed.
-Please migrate to `log4j-mongodb` (client version 5.x) or `log4j-mongodb4` (client version 4.x).
+Please migrate to xref:components.adoc#log4j-mongodb[`log4j-mongodb`] (client version 5.x) or xref:components.adoc#log4j-mongodb4[`log4j-mongodb4`] (client version 4.x).
 
 === JMX changes
 
