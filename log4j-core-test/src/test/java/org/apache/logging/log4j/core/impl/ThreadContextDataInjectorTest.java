@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.impl;
 import static java.util.Arrays.asList;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import static org.apache.logging.log4j.core.impl.ContextDataInjectorFactory.createInjector;
+import static org.apache.logging.log4j.core.test.TestConstants.THREAD_CONTEXT_MAP_TYPE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.empty;
@@ -33,7 +34,6 @@ import java.util.concurrent.ExecutionException;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.spi.ThreadContextMap;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ProviderUtil;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
@@ -58,7 +58,6 @@ public class ThreadContextDataInjectorTest {
     public String threadContextMapClassName;
 
     private static void resetThreadContextMap() {
-        PropertiesUtil.getProperties().reload();
         final Log4jProvider provider = (Log4jProvider) ProviderUtil.getProvider();
         provider.resetThreadContextMap();
         ThreadContext.init();
@@ -66,7 +65,7 @@ public class ThreadContextDataInjectorTest {
 
     @Before
     public void before() throws ReflectiveOperationException {
-        System.setProperty("log4j2.threadContextMap", threadContextMapClassName);
+        System.setProperty(THREAD_CONTEXT_MAP_TYPE, threadContextMapClassName);
     }
 
     @After

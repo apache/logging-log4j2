@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.perf.appender;
 
-import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -24,7 +23,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.layout.SerializedLayout;
 
 /**
  * This appender is primarily used for testing.
@@ -35,9 +33,9 @@ import org.apache.logging.log4j.core.layout.SerializedLayout;
 public class StringAppender extends AbstractAppender {
     private String message;
 
-    public StringAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout) {
+    public StringAppender(final String name, final Filter filter, final Layout layout) {
         super(name, filter, layout, true, Property.EMPTY_ARRAY);
-        if (layout != null && !(layout instanceof SerializedLayout)) {
+        if (layout != null) {
             final byte[] bytes = layout.getHeader();
             if (bytes != null) {
                 message = new String(bytes);
@@ -47,17 +45,8 @@ public class StringAppender extends AbstractAppender {
 
     @Override
     public void append(final LogEvent event) {
-        final Layout<? extends Serializable> layout = getLayout();
-        if (layout instanceof SerializedLayout) {
-            final byte[] header = layout.getHeader();
-            final byte[] content = layout.toByteArray(event);
-            final byte[] record = new byte[header.length + content.length];
-            System.arraycopy(header, 0, record, 0, header.length);
-            System.arraycopy(content, 0, record, header.length, content.length);
-            message = new String(record);
-        } else {
-            message = new String(layout.toByteArray(event));
-        }
+        final Layout layout = getLayout();
+        message = new String(layout.toByteArray(event));
     }
 
     @Override
@@ -75,8 +64,7 @@ public class StringAppender extends AbstractAppender {
         return message;
     }
 
-    public static StringAppender createAppender(
-            final String name, final Layout<? extends Serializable> layout, final Filter filter) {
+    public static StringAppender createAppender(final String name, final Layout layout, final Filter filter) {
         return new StringAppender(name, filter, layout);
     }
 

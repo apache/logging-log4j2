@@ -96,7 +96,7 @@ public class AsyncThreadContextTest {
         }
 
         void init() {
-            props.setProperty("log4j2.threadContextMap", threadContextMap);
+            props.setProperty("log4j.threadContext.map.type", threadContextMap);
             ThreadContextTestAccess.init();
         }
 

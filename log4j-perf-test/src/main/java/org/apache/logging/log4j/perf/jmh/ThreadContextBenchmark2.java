@@ -155,8 +155,8 @@ public class ThreadContextBenchmark2 {
             context = (LoggerContext) LogManager.getContext(false);
             Configuration config = context.getConfiguration();
             PatternLayout layout = PatternLayout.newBuilder()
-                    .withConfiguration(config)
-                    .withPattern("%X %m%n")
+                    .setConfiguration(config)
+                    .setPattern("%X %m%n")
                     .build();
             appender = StringAppender.createAppender("String", layout, null);
             appender.start();
@@ -193,8 +193,8 @@ public class ThreadContextBenchmark2 {
             context = (LoggerContext) LogManager.getContext(false);
             Configuration config = context.getConfiguration();
             PatternLayout layout = PatternLayout.newBuilder()
-                    .withConfiguration(config)
-                    .withPattern("%X %m%n")
+                    .setConfiguration(config)
+                    .setPattern("%X %m%n")
                     .build();
             appender = StringAppender.createAppender("String", layout, null);
             appender.start();
