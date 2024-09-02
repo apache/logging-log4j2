@@ -182,6 +182,24 @@ for more information.
 
 include::partial$components/log4j-flume-ng.adoc[]
 
+[#log4j-jansi]
+== `log4j-jansi`
+
+|===
+| JPMS module
+| `org.apache.logging.log4j.jansi`
+|===
+
+The `log4j-jansi` artifact contains an extension for the
+xref:manual/appenders.adoc#ConsoleAppender[Console Appender]
+that uses the
+https://fusesource.github.io/jansi/[JAnsi library]
+to handle ANSI escapes.
+
+See xref:manual/systemproperties.adoc#log4j.console.jansiEnabled[`log4j.console.jansiEnabled`] for more details.
+
+include::partial$components/log4j-jansi.adoc[]
+
 [#log4j-jctools]
 == `log4j-jctools`
 

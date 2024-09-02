@@ -14,20 +14,28 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-[id=log4j.console.jansiEnabled]
-== `log4j.console.jansiEnabled`
 
-[cols="1h,5"]
-|===
-| Env. variable | `LOG4J_CONSOLE_JANSI_ENABLED`
-| Type          | `boolean`
-| Default value | `true`
-|===
+[tabs]
+====
+Maven::
++
+We assume you use xref:components.adoc#log4j-bom[`log4j-bom`] for dependency management.
++
+[source,xml]
+----
+<dependency>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-jansi</artifactId>
+  <scope>runtime</scope>
+</dependency>
+----
 
-If the
-xref:components.adoc#log4j-jansi[`log4j-jansi`]
-extension is available and this value is `true`, the
-xref:manual/appenders.adoc#ConsoleAppender[Console Appender]
-will use the
-https://fusesource.github.io/jansi/[JAnsi library]
-to handle ANSI escapes.
+Gradle::
++
+We assume you use xref:components.adoc#log4j-bom[`log4j-bom`] for dependency management.
++
+[source,groovy]
+----
+runtimeOnly 'org.apache.logging.log4j:log4j-jansi'
+----
+====

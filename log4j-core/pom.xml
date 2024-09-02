@@ -45,12 +45,9 @@
       org.jspecify.*;resolution:=optional,
       <!-- External optional dependencies -->
       com.conversantmedia.util.concurrent;resolution:=optional;
-      com.lmax.disruptor.*;resolution:=optional,
       org.apache.commons.compress.*;resolution:=optional,
-      org.fusesource.jansi;resolution:=optional,
-      org.jspecify.annotations.*;resolution:=optional,
       <!-- Optional Java modules -->
-      <!-- java.management -->
+      <!-- java.management: used by ProcessIdPatternConverter -->
       java.lang.management;resolution:=optional,
       javax.management.*;resolution:=optional,
       <!-- java.sql -->
@@ -65,12 +62,10 @@
     <bnd-extra-module-options>
       <!-- Optional dependencies can not be transitive -->
       com.conversantmedia.disruptor;transitive=false,
-      com.lmax.disruptor;transitive=false,
       java.management;transitive=false,
       java.sql;transitive=false,
       java.xml;transitive=false,
-      jdk.unsupported;transitive=false,
-      org.fusesource.jansi;transitive=false,
+      jdk.unsupported;transitive=false
     </bnd-extra-module-options>
 
     <log4j.docgen.pluginDescriptorsDir>${log4j.docgen.pluginDescriptorsDir.phase1}</log4j.docgen.pluginDescriptorsDir>
@@ -119,12 +114,7 @@
       <artifactId>disruptor</artifactId>
       <optional>true</optional>
     </dependency>
-    <!-- Required for console color support in Windows -->
-    <dependency>
-      <groupId>org.fusesource.jansi</groupId>
-      <artifactId>jansi</artifactId>
-      <optional>true</optional>
-    </dependency>
+
   </dependencies>
 
 </project>

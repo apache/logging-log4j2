@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import static java.lang.Boolean.TRUE;
-
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
@@ -27,20 +25,17 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.impl.CoreProperties;
 import org.apache.logging.log4j.core.pattern.FormattingInfo;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.core.pattern.RegexReplacement;
-import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.kit.recycler.Recycler;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -577,7 +572,7 @@ public final class PatternLayout extends AbstractStringLayout {
         private boolean alwaysWriteExceptions = true;
 
         @PluginBuilderAttribute
-        private boolean disableAnsi = !useAnsiEscapeCodes();
+        private boolean disableAnsi;
 
         @PluginBuilderAttribute
         private boolean noConsoleNoAnsi;
@@ -589,16 +584,6 @@ public final class PatternLayout extends AbstractStringLayout {
         private String footer;
 
         private Builder() {}
-
-        private boolean useAnsiEscapeCodes() {
-            final PropertyEnvironment properties = PropertyEnvironment.getGlobal();
-            final boolean isPlatformSupportsAnsi =
-                    !PropertiesUtil.getProperties().isOsWindows();
-            final boolean isJansiRequested = TRUE.equals(PropertyEnvironment.getGlobal()
-                    .getProperty(CoreProperties.ConsoleProperties.class)
-                    .jansiEnabled());
-            return isPlatformSupportsAnsi || isJansiRequested;
-        }
 
         /**
          * @param pattern

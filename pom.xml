@@ -241,6 +241,7 @@
     <module>log4j-csv</module>
     <module>log4j-docker</module>
     <module>log4j-gc-test</module>
+    <module>log4j-jansi</module>
     <module>log4j-jctools</module>
     <module>log4j-jdbc</module>
     <module>log4j-jdbc-dbcp2</module>
@@ -434,6 +435,12 @@
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-iostreams</artifactId>
         <version>${log4j-api.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jansi</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>

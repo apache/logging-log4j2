@@ -209,7 +209,13 @@ The optional footer to include at the bottom of each log file
 |Default value |`false`
 |===
 
-If `true`, do not output ANSI escape codes
+If `true`, do not output ANSI escape codes.
+
+[NOTE]
+====
+If you use a Console Appender in xref:manual/appenders.adoc#ConsoleAppender-jansi[`JANSI` mode], you should keep this setting at its default `false` value.
+The JAnsi library will take care of stripping ANSI Escape if the output of the console is not a terminal.
+====
 
 [#plugin-attr-noConsoleNoAnsi]
 ==== `noConsoleNoAnsi`

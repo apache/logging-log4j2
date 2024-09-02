@@ -108,12 +108,6 @@ public final class CoreProperties {
             @Log4jProperty(defaultValue = "5000") long waitMillisBeforeStopOldConfig) {}
 
     /**
-     * Properties to tune console output.
-     */
-    @Log4jProperty(name = "console")
-    public record ConsoleProperties(@Nullable Boolean jansiEnabled) {}
-
-    /**
      * Properties to tune garbage collection.
      */
     @Log4jProperty(name = "gc")

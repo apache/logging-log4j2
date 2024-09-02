@@ -234,38 +234,38 @@ This setting might be useful in multi-application environments.
 Some application servers modify `System.out` and `System.err` to always point to the currently running application.
 ====
 
+[#ConsoleAppender-jansi]
 `JANSI`::
-If the application is running on Windows and the
-https://fusesource.github.io/jansi/[JANSI library]
-is available, the Console appender will use JANSI to emulate ANSI sequence support.
-This mode can be enabled by setting the
+If the
+xref:components.adoc#log4j-jansi[`log4j-jansi` extension]
+is available, the Console appender will use the
+https://fusesource.github.io/jansi/[JAnsi library]
+to handle ANSI escapes.
+The library:
++
+--
+* Implement ANSI escape handling on old Windows consoles.
+* Strips ANSI escape codes if process output is being redirected and not attached to a terminal
+--
++
+See https://github.com/fusesource/jansi?tab=readme-ov-file#features[Features of JAnsi] for more details.
++
+[TIP]
+====
+Support for ANSI escape sequences was added to Windows 10 console around 2017.
+See
+https://superuser.com/questions/413073/windows-console-with-ansi-colors-handling[Windows console with ANSI colors handling]
+for more details.
+====
++
+The `JANSI` mode can be disabled by setting the
 xref:manual/systemproperties.adoc#log4j.console.jansiEnabled[`log4j.console.jansiEnabled`]
-configuration attribute to `true`.
+configuration attribute to `false`.
+Additional runtime dependencies are required to use JAnsi:
 +
-Additional runtime dependencies are required to use JANSI:
-+
-[tabs]
-====
-Maven::
-+
-[source,xml,subs="+attributes"]
-----
-<dependency>
-  <groupId>org.fusesource.jansi</groupId>
-  <artifactId>jansi</artifactId>
-  <version>{jansi-version}</version>
-</dependency>
-
-----
-
-Gradle::
-+
-[source,groovy,subs="+attributes"]
-----
-runtimeOnly 'org.fusesource.jansi:jansi:{jansi-version}'
-----
-
-====
+--
+include::partial$components/log4j-jansi.adoc[]
+--
 
 [#ConsoleAppender-attributes]
 .Console Appender configuration attributes
