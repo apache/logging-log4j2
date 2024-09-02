@@ -52,6 +52,9 @@ mkdir -p "$outputDir"
 # Switch to the script directory
 cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
 
+# Record the Git commit ID
+commitId=$(git rev-parse HEAD)
+
 # To contain all Maven dependencies under `$outputDir`, explicitly provide the Maven local repository.
 # `.`-prefixed files are not copied by OSS-Fuzz, don't use them!
 export MAVEN_OPTS="-Dmaven.repo.local=$outputDir/m2"
@@ -120,6 +123,9 @@ for module in *-fuzz-test; do
 #
 
 # OSS-Fuzz detects fuzzers by checking the presence of the magical "LLVMFuzzerTestOneInput" word, hence this line.
+
+# Report the build
+echo "Produced using the commit ID: $commitId"
 
 # Switch to the script directory
 cd -- "\$(dirname -- "\${BASH_SOURCE[0]}")"
