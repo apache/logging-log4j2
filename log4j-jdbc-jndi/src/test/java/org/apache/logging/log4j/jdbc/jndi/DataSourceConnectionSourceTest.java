@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.jdbc.appender;
+package org.apache.logging.log4j.jdbc.jndi;
 
 import static org.apache.logging.log4j.core.test.TestConstants.JNDI_ENABLE_JDBC;
 import static org.junit.Assert.assertEquals;
@@ -22,13 +22,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
+import static org.mockito.BDDMockito.mock;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.apache.logging.log4j.jdbc.appender.internal.JndiUtil;
 import org.apache.logging.log4j.jndi.test.junit.JndiRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -45,7 +44,7 @@ public class DataSourceConnectionSourceTest {
         return new Object[][] {{"java:/comp/env/jdbc/Logging01"}, {"java:/comp/env/jdbc/Logging02"}};
     }
 
-    private static final String CONFIG = "log4j-fatalOnly.xml";
+    private static final String CONFIG = "DataSourceConnectionSourceTest.xml";
 
     @Rule
     public final RuleChain rules;
@@ -54,7 +53,8 @@ public class DataSourceConnectionSourceTest {
     private final String jndiURL;
 
     public DataSourceConnectionSourceTest(final String jndiURL) {
-        this.rules = RuleChain.outerRule(new JndiRule(JndiUtil.JNDI_MANAGER_NAME, jndiURL, dataSource))
+        this.rules = RuleChain.outerRule(
+                        new JndiRule(DataSourceConnectionSource.JNDI_MANAGER_NAME, jndiURL, dataSource))
                 .around(new LoggerContextRule(CONFIG));
         this.jndiURL = jndiURL;
     }

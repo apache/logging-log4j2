@@ -33,7 +33,7 @@ import org.junit.Test;
 
 public class FactoryMethodConnectionSourceTest {
     private static final ThreadLocal<Object> holder = new ThreadLocal<>();
-    private static final String CONFIG = "log4j-fatalOnly.xml";
+    private static final String CONFIG = "FactoryMethodConnectionSourceTest.xml";
 
     @ClassRule
     public static LoggerContextRule ctx = new LoggerContextRule(CONFIG);

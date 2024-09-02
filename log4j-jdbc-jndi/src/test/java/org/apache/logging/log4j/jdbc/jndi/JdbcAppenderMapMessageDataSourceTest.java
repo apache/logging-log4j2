@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.jdbc.appender;
+package org.apache.logging.log4j.jdbc.jndi;
 
 import static org.apache.logging.log4j.core.test.TestConstants.JNDI_ENABLE_JDBC;
 import static org.junit.Assert.assertFalse;
@@ -34,7 +34,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.core.util.Throwables;
-import org.apache.logging.log4j.jdbc.appender.internal.JndiUtil;
 import org.apache.logging.log4j.jndi.test.junit.JndiRule;
 import org.apache.logging.log4j.message.MapMessage;
 import org.junit.Assert;
@@ -73,12 +72,11 @@ public class JdbcAppenderMapMessageDataSourceTest {
         // @formatter:off
         this.rules = RuleChain.emptyRuleChain()
                 .around(new JndiRule(
-                        JndiUtil.JNDI_MANAGER_NAME,
+                        DataSourceConnectionSource.JNDI_MANAGER_NAME,
                         "java:/comp/env/jdbc/TestDataSourceAppender",
                         createMockDataSource()))
                 .around(jdbcRule)
-                .around(new LoggerContextRule(
-                        "org/apache/logging/log4j/jdbc/appender/log4j2-data-source-map-message.xml"));
+                .around(new LoggerContextRule("JdbcAppenderMapMessageDataSourceTest.xml"));
         // @formatter:on
         this.jdbcRule = jdbcRule;
     }

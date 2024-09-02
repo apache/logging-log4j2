@@ -131,15 +131,15 @@ The purpose of the sections below is to remove IDE errors while editing configur
 == `AbstractDriverManagerConnectionSource`
 [#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-ColumnConfig]
 == Column
-[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-ConnectionSource]
+[#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-ConnectionSource]
 == `ConnectionSource`
-[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-DataSourceConnectionSource]
+[#org-apache-logging-log4j_log4j-jdbc-jndi_org-apache-logging-log4j-jdbc-jndi-DataSourceConnectionSource]
 == DataSource
-[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-DriverManagerConnectionSource]
+[#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DriverManagerConnectionSource]
 == DriverManager
-[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-FactoryMethodConnectionSource]
+[#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-FactoryMethodConnectionSource]
 == ConnectionFactory
-[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-JdbcAppender]
+[#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-JdbcAppender]
 == JDBC
 [#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-FailoverAppender]
 == Failover
@@ -711,9 +711,9 @@ The purpose of the sections below is to remove IDE errors while editing configur
 == Servlet
 [#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-WebLookup]
 == web
-[#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-core-appender-db-jdbc-PoolableConnectionFactoryConfig]
+[#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-dbcp2-appender-PoolableConnectionFactoryConfig]
 == PoolableConnectionFactory
-[#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-core-appender-db-jdbc-PoolingDriverConnectionSource]
+[#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-dbcp2-appender-PoolingDriverConnectionSource]
 == PoolingDriver
 [#org-apache-logging-log4j_log4j-jpa_org-apache-logging-log4j-core-appender-db-jpa-JpaAppender]
 == JPA

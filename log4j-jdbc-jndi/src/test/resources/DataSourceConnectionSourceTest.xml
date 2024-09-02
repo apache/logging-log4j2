@@ -15,19 +15,13 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="OFF" name="Log4jTest">
-
-  <Appenders>
-    <Console name="STDOUT">
-      <PatternLayout pattern="%m%n"/>
-    </Console>
-  </Appenders>
-
+<Configuration xmlns="https://logging.apache.org/xml/ns"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="
+                   https://logging.apache.org/xml/ns
+                   https://logging.apache.org/xml/ns/log4j-config-3.xsd">
+  <Appenders/>
   <Loggers>
-
-    <Root level="fatal">
-      <AppenderRef ref="STDOUT"/>
-    </Root>
+    <Root level="OFF"/>
   </Loggers>
-
 </Configuration>

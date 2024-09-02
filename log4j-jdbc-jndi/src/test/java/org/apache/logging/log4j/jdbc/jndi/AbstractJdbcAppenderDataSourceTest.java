@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.jdbc.appender;
+package org.apache.logging.log4j.jdbc.jndi;
 
 import static org.apache.logging.log4j.core.test.TestConstants.JNDI_ENABLE_JDBC;
 import static org.junit.Assert.assertEquals;
@@ -34,14 +34,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.core.util.Throwables;
-import org.apache.logging.log4j.jdbc.appender.internal.JndiUtil;
 import org.apache.logging.log4j.jndi.test.junit.JndiRule;
 import org.h2.util.IOUtils;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 /**
@@ -62,23 +60,19 @@ public abstract class AbstractJdbcAppenderDataSourceTest {
     protected AbstractJdbcAppenderDataSourceTest(final JdbcRule jdbcRule) {
         this.rules = RuleChain.emptyRuleChain()
                 .around(new JndiRule(
-                        JndiUtil.JNDI_MANAGER_NAME,
+                        DataSourceConnectionSource.JNDI_MANAGER_NAME,
                         "java:/comp/env/jdbc/TestDataSourceAppender",
                         createMockDataSource()))
                 .around(jdbcRule)
-                .around(new LoggerContextRule("org/apache/logging/log4j/jdbc/appender/log4j2-data-source.xml"));
+                .around(new LoggerContextRule("AbstractJdbcAppenderDataSourceTest.xml"));
         this.jdbcRule = jdbcRule;
     }
 
     private DataSource createMockDataSource() {
         try {
             final DataSource dataSource = mock(DataSource.class);
-            given(dataSource.getConnection()).willAnswer(new Answer<Connection>() {
-                @Override
-                public Connection answer(final InvocationOnMock invocation) throws Throwable {
-                    return jdbcRule.getConnectionSource().getConnection();
-                }
-            });
+            given(dataSource.getConnection()).willAnswer((Answer<Connection>)
+                    invocation -> jdbcRule.getConnectionSource().getConnection());
             return dataSource;
         } catch (final SQLException e) {
             Throwables.rethrow(e);

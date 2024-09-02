@@ -14,13 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.jdbc.appender;
+package org.apache.logging.log4j.jdbc.jndi;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import javax.naming.NamingException;
 import javax.sql.DataSource;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.jdbc.appender.internal.JndiUtil;
+import org.apache.logging.log4j.jdbc.appender.AbstractConnectionSource;
+import org.apache.logging.log4j.jndi.JndiManager;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
@@ -29,11 +31,14 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
 /**
- * A {@link JdbcAppender} connection source that uses a {@link DataSource} to connect to the database.
+ * A {@link org.apache.logging.log4j.jdbc.appender.JdbcAppender} connection source that uses a {@link DataSource} to connect to the database.
  */
 @Configurable(elementType = "connectionSource", printObject = true)
 @Plugin("DataSource")
 public final class DataSourceConnectionSource extends AbstractConnectionSource {
+    private static final String DOC_URL =
+            "https://logging.staged.apache.org/log4j/3.x/manual/systemproperties.html#properties-jndi-support";
+    static final String JNDI_MANAGER_NAME = "org.apache.logging.log4j.jdbc.jndi.DataSourceConnectionSource";
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final DataSource dataSource;
@@ -62,8 +67,10 @@ public final class DataSourceConnectionSource extends AbstractConnectionSource {
      */
     @PluginFactory
     public static DataSourceConnectionSource createConnectionSource(@PluginAttribute final String jndiName) {
-        if (!JndiUtil.isJndiJdbcEnabled()) {
-            LOGGER.error("JNDI must be enabled by setting log4j2.enableJndiJdbc=true");
+        if (!JndiManager.isJndiJdbcEnabled()) {
+            LOGGER.error(
+                    "JNDI must be enabled by setting `log4j.jndi.enableJdbc=\"true\"`\nSee {} for more details.",
+                    DOC_URL);
             return null;
         }
         if (Strings.isEmpty(jndiName)) {
@@ -71,11 +78,16 @@ public final class DataSourceConnectionSource extends AbstractConnectionSource {
             return null;
         }
 
-        final DataSource dataSource = JndiUtil.getDataSource(jndiName);
-        if (dataSource == null) {
-            return null;
+        try {
+            final DataSource dataSource =
+                    JndiManager.getDefaultManager(JNDI_MANAGER_NAME).lookup(jndiName);
+            if (dataSource != null) {
+                return new DataSourceConnectionSource(jndiName, dataSource);
+            }
+            LOGGER.error("Failed to retrieve JNDI data source with name {}.", jndiName);
+        } catch (final NamingException e) {
+            LOGGER.error("Failed to retrieve JNDI data source with name {}.", jndiName, e);
         }
-
-        return new DataSourceConnectionSource(jndiName, dataSource);
+        return null;
     }
 }

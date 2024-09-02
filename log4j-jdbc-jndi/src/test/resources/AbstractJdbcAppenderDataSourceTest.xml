@@ -15,23 +15,28 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="ERROR">
-
+<Configuration xmlns="https://logging.apache.org/xml/ns"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="
+                   https://logging.apache.org/xml/ns
+                   https://logging.apache.org/xml/ns/log4j-config-3.xsd">
   <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%C{1.} %m %level MDC%X%n"/>
     </Console>
     <Jdbc name="databaseAppender" tableName="dsLogEntry" ignoreExceptions="false">
       <DataSource jndiName="java:/comp/env/jdbc/TestDataSourceAppender" />
-      <ColumnMapping name="Id" />
-      <ColumnMapping name="ColumnA" />
-      <ColumnMapping name="ColumnB" />
-      <MessageLayout />
+      <Column name="eventDate" isEventTimestamp="true" />
+      <Column name="literalColumn" literal="'Literal Value of Data Source'" />
+      <Column name="level" pattern="%level" />
+      <Column name="logger" pattern="%logger" />
+      <Column name="message" pattern="%message" isUnicode="false" />
+      <Column name="exception" pattern="%ex{full}" isClob="true" />
     </Jdbc>
   </Appenders>
 
   <Loggers>
-    <Logger name="org.apache.logging.log4j.jdbc.appender" level="debug" additivity="false">
+    <Logger name="org.apache.logging.log4j.jdbc.jndi" level="debug" additivity="false">
       <AppenderRef ref="databaseAppender" />
     </Logger>
 

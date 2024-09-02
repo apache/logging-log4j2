@@ -15,23 +15,26 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="OFF">
-
+<Configuration xmlns="https://logging.apache.org/xml/ns"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="
+                   https://logging.apache.org/xml/ns
+                   https://logging.apache.org/xml/ns/log4j-config-3.xsd">
   <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%C{1.} %m %level MDC%X%n"/>
     </Console>
     <Jdbc name="databaseAppender" tableName="dsMappingLogEntry" ignoreExceptions="false">
-      <DriverManager connectionString="jdbc:h2:mem:Log4j" userName="sa" password="" />
+      <DriverManager connectionString="jdbc:h2:mem:Log4j_perm;DB_CLOSE_DELAY=-1" userName="sa" password="" />
       <ColumnMapping name="level" pattern="%level" />
       <ColumnMapping name="logger" pattern="%logger" />
-      <ColumnMapping name="message" pattern="%message" />
+      <ColumnMapping name="message" literal="'Hello World!'" />
       <ColumnMapping name="exception" pattern="%ex{full}" />
     </Jdbc>
   </Appenders>
 
   <Loggers>
-    <Logger name="org.apache.logging.log4j.jdbc.appender.JdbcAppenderColumnMappingPatternTest" level="DEBUG" additivity="false">
+    <Logger name="org.apache.logging.log4j.jdbc.appender.JdbcAppenderColumnMappingLiteralTest" level="DEBUG" additivity="false">
       <AppenderRef ref="databaseAppender" />
     </Logger>
 

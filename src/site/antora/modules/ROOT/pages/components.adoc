@@ -224,6 +224,23 @@ include::partial$components/log4j-jdbc.adoc[]
 The `log4j-jdbc-dbcp2` artifact contains a data source for the
 xref:manual/appenders/database.adoc#JdbcAppender[JDBC Appender]
 that uses
+https://docs.oracle.com/javase/tutorial/jndi/overview/index.html[JNDI].
+
+See xref:manual/appenders/database.adoc#DataSourceConnectionSource[`DataSource` connection source] for more details.
+
+include::partial$components/log4j-jdbc-jndi.adoc[]
+
+[#log4j-jdbc-jndi]
+== `log4j-jdbc-jndi`
+
+|===
+| JPMS module
+| `org.apache.logging.log4j.jdbc.jndi`
+|===
+
+The `log4j-jdbc-jndi` artifact contains a data source for the
+xref:manual/appenders/database.adoc#JdbcAppender[JDBC Appender]
+that uses
 https://commons.apache.org/proper/commons-dbcp/[Apache Commons DBCP].
 
 See xref:manual/appenders/database.adoc#PoolingDriverConnectionSource[`PoolingDriver` connection source] for more details.
