@@ -94,7 +94,7 @@ fi
 # Build and fuzz environments are different: https://google.github.io/oss-fuzz/further-reading/fuzzer-environment/
 # Package the Java runtime along with the fuzzers.
 javaHomeFileName="jvm"
-cp -r "$JAVA_HOME" "$outputDir/$javaHomeFileName"
+cp -rL "$JAVA_HOME" "$outputDir/$javaHomeFileName"
 
 # Iterate over fuzzers
 for module in *-fuzz-test; do
