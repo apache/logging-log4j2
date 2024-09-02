@@ -91,6 +91,11 @@ if [[ ! -f "$jsonSeedCorpusPath" || "${FORCE_DOWNLOAD:-}" = "true" ]]; then
   rm -rf go-fuzz-corpus
 fi
 
+# Build and fuzz environments are different: https://google.github.io/oss-fuzz/further-reading/fuzzer-environment/
+# Package the Java runtime along with the fuzzers.
+javaHomeFileName="jvm"
+cp -r "$JAVA_HOME" "$outputDir/$javaHomeFileName"
+
 # Iterate over fuzzers
 for module in *-fuzz-test; do
 
@@ -141,9 +146,14 @@ echo "\$classPath" | sed 's/:/\n/g' | while read classPathFilePath; do
   fi
 done
 
+# Employ the Java runtime
+export JAVA_HOME="\$PWD/$javaHomeFileName"
+export JVM_LD_LIBRARY_PATH="\$JAVA_HOME/lib/server"
+export PATH="\$JAVA_HOME/bin:\$PATH"
+java -version
+
 # Dump some debugging aid
 export
-java -version
 
 # Run the fuzzer
 LD_LIBRARY_PATH="\$JVM_LD_LIBRARY_PATH":. \\
