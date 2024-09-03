@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.util;
 
-import static org.apache.logging.log4j.LogManager.FACTORY_PROPERTY_NAME;
 import static org.apache.logging.log4j.spi.Provider.PROVIDER_PROPERTY_NAME;
 
 import aQute.bnd.annotation.Cardinality;
@@ -34,10 +33,10 @@ import java.util.ServiceLoader;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
+import org.apache.logging.log4j.simple.internal.SimpleProvider;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
-import org.apache.logging.log4j.spi.NoOpThreadContextMap;
 import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -72,19 +71,17 @@ public final class ProviderUtil {
      */
     static final Lock STARTUP_LOCK = new ReentrantLock();
 
-    private static final String API_VERSION = "Log4jAPIVersion";
     private static final String[] COMPATIBLE_API_VERSIONS = {"2.6.0"};
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static volatile Provider PROVIDER;
-    private static final Provider FALLBACK_PROVIDER = new SimpleProvider();
 
     private ProviderUtil() {}
 
     static void addProvider(final Provider provider) {
         if (validVersion(provider.getVersions())) {
             PROVIDERS.add(provider);
-            LOGGER.debug("Loaded Provider {}", provider);
+            LOGGER.debug("Loaded provider:\n{}", provider);
         } else {
             LOGGER.warn("Ignoring provider for incompatible version {}:\n{}", provider.getVersions(), provider);
         }
@@ -100,6 +97,7 @@ public final class ProviderUtil {
     @SuppressFBWarnings(
             value = "URLCONNECTION_SSRF_FD",
             justification = "Uses a fixed URL that ends in 'META-INF/log4j-provider.properties'.")
+    @SuppressWarnings("deprecation")
     static void loadProvider(final URL url, final ClassLoader cl) {
         try {
             final Properties props = PropertiesUtil.loadClose(url.openStream(), url);
@@ -178,32 +176,37 @@ public final class ProviderUtil {
     /**
      * Used to test the public {@link #getProvider()} method.
      */
+    @SuppressWarnings("deprecation")
     static Provider selectProvider(
             final PropertiesUtil properties, final Collection<Provider> providers, final Logger statusLogger) {
         Provider selected = null;
         // 1. Select provider using "log4j.provider" property
         final String providerClass = properties.getStringProperty(PROVIDER_PROPERTY_NAME);
         if (providerClass != null) {
-            try {
-                selected = LoaderUtil.newInstanceOf(providerClass);
-            } catch (final Exception e) {
-                statusLogger.error(
-                        "Unable to create provider {}.\nFalling back to default selection process.", PROVIDER, e);
+            if (SimpleProvider.class.getName().equals(providerClass)) {
+                selected = new SimpleProvider();
+            } else {
+                try {
+                    selected = LoaderUtil.newInstanceOf(providerClass);
+                } catch (final Exception e) {
+                    statusLogger.error(
+                            "Unable to create provider {}.\nFalling back to default selection process.", PROVIDER, e);
+                }
             }
         }
         // 2. Use deprecated "log4j2.loggerContextFactory" property to choose the provider
-        final String factoryClassName = properties.getStringProperty(FACTORY_PROPERTY_NAME);
+        final String factoryClassName = properties.getStringProperty(LogManager.FACTORY_PROPERTY_NAME);
         if (factoryClassName != null) {
             if (selected != null) {
                 statusLogger.warn(
                         "Ignoring {} system property, since {} was set.",
-                        FACTORY_PROPERTY_NAME,
+                        LogManager.FACTORY_PROPERTY_NAME,
                         PROVIDER_PROPERTY_NAME);
                 // 2a. Scan the known providers for one matching the logger context factory class name.
             } else {
                 statusLogger.warn(
                         "Usage of the {} property is deprecated. Use the {} property instead.",
-                        FACTORY_PROPERTY_NAME,
+                        LogManager.FACTORY_PROPERTY_NAME,
                         PROVIDER_PROPERTY_NAME);
                 for (final Provider provider : providers) {
                     if (factoryClassName.equals(provider.getClassName())) {
@@ -225,14 +228,14 @@ public final class ProviderUtil {
                         statusLogger.error(
                                 "Class {} specified in the {} system property does not extend {}",
                                 factoryClassName,
-                                FACTORY_PROPERTY_NAME,
+                                LogManager.FACTORY_PROPERTY_NAME,
                                 LoggerContextFactory.class.getName());
                     }
                 } catch (final Exception e) {
                     statusLogger.error(
                             "Unable to create class {} specified in the {} system property",
                             factoryClassName,
-                            FACTORY_PROPERTY_NAME,
+                            LogManager.FACTORY_PROPERTY_NAME,
                             e);
                 }
             }
@@ -253,7 +256,7 @@ public final class ProviderUtil {
                             .collect(Collectors.joining("\n", "Log4j API found multiple logging providers:\n", "")));
                     break;
             }
-            selected = providers.stream().max(comparator).orElse(FALLBACK_PROVIDER);
+            selected = providers.stream().max(comparator).orElseGet(SimpleProvider::new);
         }
         statusLogger.info("Using provider:\n{}", selected);
         return selected;
@@ -270,11 +273,5 @@ public final class ProviderUtil {
             }
         }
         return false;
-    }
-
-    private static final class SimpleProvider extends Provider {
-        private SimpleProvider() {
-            super(null, CURRENT_VERSION, SimpleLoggerContextFactory.class, NoOpThreadContextMap.class);
-        }
     }
 }

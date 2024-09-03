@@ -17,11 +17,10 @@
 package org.apache.logging.log4j.simple;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.PrintStream;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.simple.internal.SimpleProvider;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
@@ -35,10 +34,6 @@ public class SimpleLoggerContext implements LoggerContext {
 
     /** Singleton instance. */
     static final SimpleLoggerContext INSTANCE = new SimpleLoggerContext();
-
-    private static final String SYSTEM_OUT = "system.out";
-
-    private static final String SYSTEM_ERR = "system.err";
 
     /** The default format to use when formatting dates */
     protected static final String DEFAULT_DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm:ss:SSS zzz";
@@ -79,34 +74,15 @@ public class SimpleLoggerContext implements LoggerContext {
             value = "PATH_TRAVERSAL_OUT",
             justification = "Opens a file retrieved from configuration (Log4j properties)")
     public SimpleLoggerContext() {
-        props = new PropertiesUtil("log4j2.simplelog.properties");
-
-        showContextMap = props.getBooleanProperty(SYSTEM_PREFIX + "showContextMap", false);
-        showLogName = props.getBooleanProperty(SYSTEM_PREFIX + "showlogname", false);
-        showShortName = props.getBooleanProperty(SYSTEM_PREFIX + "showShortLogname", true);
-        showDateTime = props.getBooleanProperty(SYSTEM_PREFIX + "showdatetime", false);
-        final String lvl = props.getStringProperty(SYSTEM_PREFIX + "level");
-        defaultLevel = Level.toLevel(lvl, Level.ERROR);
-
-        dateTimeFormat = showDateTime
-                ? props.getStringProperty(
-                        SimpleLoggerContext.SYSTEM_PREFIX + "dateTimeFormat", DEFAULT_DATE_TIME_FORMAT)
-                : null;
-
-        final String fileName = props.getStringProperty(SYSTEM_PREFIX + "logFile", SYSTEM_ERR);
-        PrintStream ps;
-        if (SYSTEM_ERR.equalsIgnoreCase(fileName)) {
-            ps = System.err;
-        } else if (SYSTEM_OUT.equalsIgnoreCase(fileName)) {
-            ps = System.out;
-        } else {
-            try {
-                ps = new PrintStream(new FileOutputStream(fileName));
-            } catch (final FileNotFoundException fnfe) {
-                ps = System.err;
-            }
-        }
-        this.stream = ps;
+        final SimpleProvider.Config config = SimpleProvider.Config.INSTANCE;
+        props = config.props;
+        showContextMap = config.showContextMap;
+        showLogName = config.showLogName;
+        showShortName = config.showShortName;
+        showDateTime = config.showDateTime;
+        defaultLevel = config.defaultLevel;
+        dateTimeFormat = config.dateTimeFormat;
+        stream = config.stream;
     }
 
     @Override
