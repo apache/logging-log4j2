@@ -25,6 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.appender.internal.DefaultConsoleStreamSupplier;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
@@ -169,12 +170,19 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             final Layout layout = getOrCreateLayout(target.getDefaultCharset());
 
             final Configuration configuration = getConfiguration();
-            final PropertyEnvironment propertyEnvironment = configuration.getLoggerContext() != null
-                    ? configuration.getLoggerContext().getEnvironment()
-                    : PropertyEnvironment.getGlobal();
+            final PropertyEnvironment propertyEnvironment;
+            final List<ConsoleStreamSupplier> suppliers;
+            if (configuration != null) {
+                propertyEnvironment = configuration.getLoggerContext() != null
+                        ? configuration.getLoggerContext().getEnvironment()
+                        : PropertyEnvironment.getGlobal();
 
-            final List<ConsoleStreamSupplier> suppliers =
-                    configuration.getComponent(new @Namespace(ConsoleStreamSupplier.NAMESPACE) Key<>() {});
+                suppliers = configuration.getComponent(new @Namespace(ConsoleStreamSupplier.NAMESPACE) Key<>() {});
+            } else {
+                propertyEnvironment = PropertyEnvironment.getGlobal();
+                suppliers = List.of(new DefaultConsoleStreamSupplier());
+            }
+
             final OutputStream stream = suppliers.stream()
                     .map(s -> s.getOutputStream(follow, direct, target, propertyEnvironment))
                     .filter(Objects::nonNull)

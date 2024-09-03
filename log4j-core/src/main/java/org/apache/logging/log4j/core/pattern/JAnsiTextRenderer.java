@@ -23,6 +23,7 @@ import static org.apache.logging.log4j.core.pattern.AnsiEscape.WHITE;
 import static org.apache.logging.log4j.core.pattern.AnsiEscape.YELLOW;
 import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -165,39 +166,41 @@ public final class JAnsiTextRenderer implements TextRenderer {
     private final Map<String, String> styleMap;
 
     public JAnsiTextRenderer(final String[] formats, final Map<String, String> defaultStyleMap) {
-        final Map<String, String> map;
         // The format string is a list of whitespace-separated expressions:
         // Key=AnsiEscape(,AnsiEscape)*
         if (formats.length > 1) {
             final String stylesStr = formats[1];
-            map = AnsiEscape.createMap(
+            final Map<String, String> map = AnsiEscape.createMap(
                     stylesStr.split("\\s", -1), new String[] {"BeginToken", "EndToken", "Style"}, ",");
-        } else {
-            map = defaultStyleMap;
-        }
 
-        // Handle the special tokens
-        beginToken = Objects.toString(map.remove("BeginToken"), BEGIN_TOKEN);
-        beginTokenLen = beginToken.length();
-        endToken = Objects.toString(map.remove("EndToken"), END_TOKEN);
-        endTokenLen = endToken.length();
-        final String predefinedStyle = map.remove("Style");
+            // Handle the special tokens
+            beginToken = Objects.toString(map.remove("BeginToken"), BEGIN_TOKEN);
+            endToken = Objects.toString(map.remove("EndToken"), END_TOKEN);
+            final String predefinedStyle = map.remove("Style");
 
-        // Create style map
-        final Map<String, String> styleMap = new HashMap<>(map.size());
-        if (predefinedStyle != null) {
-            final Map<String, String> predefinedMap = PREFEDINED_STYLE_MAPS.get(predefinedStyle);
-            if (predefinedMap != null) {
-                map.putAll(predefinedMap);
-            } else {
-                LOGGER.warn(
-                        "Unknown predefined map name {}, pick one of {}",
-                        predefinedStyle,
-                        PREFEDINED_STYLE_MAPS.keySet());
+            // Create style map
+            final Map<String, String> styleMap = new HashMap<>(map.size() + defaultStyleMap.size());
+            defaultStyleMap.forEach((k, v) -> styleMap.put(toRootUpperCase(k), v));
+            if (predefinedStyle != null) {
+                final Map<String, String> predefinedMap = PREFEDINED_STYLE_MAPS.get(predefinedStyle);
+                if (predefinedMap != null) {
+                    map.putAll(predefinedMap);
+                } else {
+                    LOGGER.warn(
+                            "Unknown predefined map name {}, pick one of {}",
+                            predefinedStyle,
+                            PREFEDINED_STYLE_MAPS.keySet());
+                }
             }
+            styleMap.putAll(map);
+            this.styleMap = Collections.unmodifiableMap(styleMap);
+        } else {
+            beginToken = BEGIN_TOKEN;
+            endToken = END_TOKEN;
+            this.styleMap = Collections.unmodifiableMap(defaultStyleMap);
         }
-        styleMap.putAll(map);
-        this.styleMap = styleMap;
+        beginTokenLen = beginToken.length();
+        endTokenLen = endToken.length();
     }
 
     /**

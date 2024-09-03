@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -135,7 +136,7 @@ final class ThrowableFormatOptionsTest {
         final Map<String, String> styleMap = jansiRenderer.getStyleMap();
         // We have defaults
         assertFalse(styleMap.isEmpty());
-        assertNotNull(styleMap.get("Name"));
+        assertNotNull(styleMap.get(toRootUpperCase("Name")));
     }
 
     /**
@@ -150,7 +151,7 @@ final class ThrowableFormatOptionsTest {
         assertInstanceOf(JAnsiTextRenderer.class, textRenderer);
         final JAnsiTextRenderer jansiRenderer = (JAnsiTextRenderer) textRenderer;
         final Map<String, String> styleMap = jansiRenderer.getStyleMap();
-        assertThat(styleMap.get("Warning")).isEqualTo(AnsiEscape.createSequence("RED"));
+        assertThat(styleMap.get(toRootUpperCase("Warning"))).isEqualTo(AnsiEscape.createSequence("RED"));
     }
 
     /**
@@ -168,9 +169,9 @@ final class ThrowableFormatOptionsTest {
         assertInstanceOf(JAnsiTextRenderer.class, textRenderer);
         final JAnsiTextRenderer jansiRenderer = (JAnsiTextRenderer) textRenderer;
         final Map<String, String> styleMap = jansiRenderer.getStyleMap();
-        assertThat(styleMap.get("Warning")).isEqualTo(AnsiEscape.createSequence("RED"));
-        assertThat(styleMap.get("Key")).isEqualTo(AnsiEscape.createSequence("BLUE"));
-        assertThat(styleMap.get("Value")).isEqualTo(AnsiEscape.createSequence("CYAN"));
+        assertThat(styleMap.get(toRootUpperCase("Warning"))).isEqualTo(AnsiEscape.createSequence("RED"));
+        assertThat(styleMap.get(toRootUpperCase("Key"))).isEqualTo(AnsiEscape.createSequence("BLUE"));
+        assertThat(styleMap.get(toRootUpperCase("Value"))).isEqualTo(AnsiEscape.createSequence("CYAN"));
     }
 
     /**
@@ -188,9 +189,10 @@ final class ThrowableFormatOptionsTest {
         assertInstanceOf(JAnsiTextRenderer.class, textRenderer);
         final JAnsiTextRenderer jansiRenderer = (JAnsiTextRenderer) textRenderer;
         final Map<String, String> styleMap = jansiRenderer.getStyleMap();
-        assertThat(styleMap.get("Warning")).isEqualTo(AnsiEscape.createSequence("RED"));
-        assertThat(styleMap.get("Warning")).isEqualTo(AnsiEscape.createSequence("BLUE", "BG_RED"));
-        assertThat(styleMap.get("Warning")).isEqualTo(AnsiEscape.createSequence("CYAN", "BG_BLACK", "UNDERLINE"));
+        assertThat(styleMap.get(toRootUpperCase("Warning"))).isEqualTo(AnsiEscape.createSequence("RED"));
+        assertThat(styleMap.get(toRootUpperCase("Key"))).isEqualTo(AnsiEscape.createSequence("BLUE", "BG_RED"));
+        assertThat(styleMap.get(toRootUpperCase("Value")))
+                .isEqualTo(AnsiEscape.createSequence("CYAN", "BG_BLACK", "UNDERLINE"));
     }
 
     /**
