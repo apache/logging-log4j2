@@ -15,16 +15,19 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="OFF">
+<Configuration xmlns="https://logging.apache.org/xml/ns"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="
+                   https://logging.apache.org/xml/ns
+                   https://logging.apache.org/xml/ns/log4j-config-3.xsd">
   <Appenders>
-    <Console name="Console" target="SYSTEM_OUT">
-      <PatternLayout pattern="%style{%d}{white} %style{[%t]} %style{%-5level:}{yellow} %style{%msg{ansi}{KeyStyle=white ValueStyle=cyan,bold}%n%throwable}{green}" />
+    <Console name="CONSOLE">
+      <PatternLayout pattern="%style{%d}{white} %style{[%t]} %style{%-5level:}{yellow} %style{%msg{ansi}{KeyStyle=white ValueStyle=cyan,bold}%n%throwable}{green}"/>
     </Console>
   </Appenders>
   <Loggers>
-    <Logger name="org.foo" level="DEBUG" />
-    <Root level="TRACE">
-      <AppenderRef ref="Console" />
+    <Root level="INFO">
+      <AppenderRef ref="CONSOLE"/>
     </Root>
   </Loggers>
 </Configuration>

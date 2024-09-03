@@ -25,7 +25,7 @@ import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.fusesource.jansi.AnsiConsole;
+import org.jline.jansi.AnsiConsole;
 import org.jspecify.annotations.Nullable;
 
 /**
