@@ -33,18 +33,15 @@ import org.apache.logging.log4j.core.util.NetUtils;
  */
 public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> {
 
-    private KeyStore keyStore;
     private final String keyStoreType;
+
+    private final transient KeyStore keyStore;
 
     public AbstractKeyStoreConfiguration(
             final String location, final PasswordProvider passwordProvider, final String keyStoreType)
             throws StoreConfigurationException {
         super(location, passwordProvider);
         this.keyStoreType = keyStoreType == null ? SslConfigurationDefaults.KEYSTORE_TYPE : keyStoreType;
-        this.keyStore = this.load();
-    }
-
-    public void reload() throws StoreConfigurationException {
         this.keyStore = this.load();
     }
 
@@ -118,7 +115,7 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
         }
     }
 
-    private InputStream openInputStream(final String filePathOrUri) {
+    private static InputStream openInputStream(final String filePathOrUri) {
         return ConfigurationSource.fromUri(NetUtils.toURI(filePathOrUri)).getInputStream();
     }
 
@@ -130,7 +127,6 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + ((keyStore == null) ? 0 : keyStore.hashCode());
         result = prime * result + ((keyStoreType == null) ? 0 : keyStoreType.hashCode());
         return result;
     }
@@ -147,9 +143,6 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
             return false;
         }
         final AbstractKeyStoreConfiguration other = (AbstractKeyStoreConfiguration) obj;
-        if (!Objects.equals(keyStore, other.keyStore)) {
-            return false;
-        }
         if (!Objects.equals(keyStoreType, other.keyStoreType)) {
             return false;
         }

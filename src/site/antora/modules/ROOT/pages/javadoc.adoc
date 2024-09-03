@@ -29,4 +29,10 @@ The table below contains links to the Javadoc API Documentation for the componen
 
 | link:javadoc/log4j-jakarta-web/index.html[Log4j Web]
 | Tools to use Log4j Core in Jakarta EE applications.
+
+| link:javadoc/log4j-flume-ng/index.html[Log4j Flume]
+| Tools to use Log4j Core with Apache Flume.
+
+| link:javadoc/log4j-jpa/index.html[Log4j JPA]
+| Tools to use Log4j Core with the Java Persistence API.
 |===

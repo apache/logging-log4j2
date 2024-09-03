@@ -1,0 +1,95 @@
+{
+  "level": "WARN",
+  "loggerName": "com.example.application.MyClass",
+  "message": "Something happened that you might want to know about.",
+  "source": {
+    "className": "com.example.application.MyClass",
+    "methodName": "exampleMethod",
+    "fileName": "MyClass.java",
+    "lineNumber": 81
+  },
+  "marker": {
+    "name": "SomeMarker",
+    "parent": {
+      "name": "SomeParentMarker"
+    }
+  },
+  "threadName": "Thread-1",
+  "millis": 1368844166761,
+  "date": "2013-05-18T02:29:26.761Z",
+  "thrown": {
+    "type": "java.sql.SQLException",
+    "message": "Could not insert record. Connection lost.",
+    "stackTrace": [
+      {
+        "className": "org.example.sql.driver.PreparedStatement$1",
+        "methodName": "responder",
+        "fileName": "PreparedStatement.java",
+        "lineNumber": 1049
+      },
+      {
+        "className": "org.example.sql.driver.PreparedStatement",
+        "methodName": "executeUpdate",
+        "fileName": "PreparedStatement.java",
+        "lineNumber": 738
+      },
+      {
+        "className": "com.example.application.MyClass",
+        "methodName": "exampleMethod",
+        "fileName": "MyClass.java",
+        "lineNumber": 81
+      },
+      {
+        "className": "com.example.application.MainClass",
+        "methodName": "main",
+        "fileName": "MainClass.java",
+        "lineNumber": 52
+      }
+    ],
+    "cause": {
+      "type": "java.io.IOException",
+      "message": "Connection lost.",
+      "stackTrace": [
+        {
+          "className": "java.nio.channels.SocketChannel",
+          "methodName": "write",
+          "fileName": null,
+          "lineNumber": -1
+        },
+        {
+          "className": "org.example.sql.driver.PreparedStatement$1",
+          "methodName": "responder",
+          "fileName": "PreparedStatement.java",
+          "lineNumber": 1032
+        },
+        {
+          "className": "org.example.sql.driver.PreparedStatement",
+          "methodName": "executeUpdate",
+          "fileName": "PreparedStatement.java",
+          "lineNumber": 738
+        },
+        {
+          "className": "com.example.application.MyClass",
+          "methodName": "exampleMethod",
+          "fileName": "MyClass.java",
+          "lineNumber": 81
+        },
+        {
+          "className": "com.example.application.MainClass",
+          "methodName": "main",
+          "fileName": "MainClass.java",
+          "lineNumber": 52
+        }
+      ]
+    }
+  },
+  "contextMap": {
+    "ID": "86c3a497-4e67-4eed-9d6a-2e5797324d7b",
+    "username": "JohnDoe"
+  },
+  "contextStack": [
+    "topItem",
+    "anotherItem",
+    "bottomItem"
+  ]
+}

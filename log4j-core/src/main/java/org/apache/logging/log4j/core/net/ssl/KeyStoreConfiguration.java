@@ -161,7 +161,7 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
      * Extension Reference Guide for information about these names.
      * @return a new KeyStoreConfiguration
      * @throws StoreConfigurationException Thrown if this call cannot load the KeyStore.
-     * @deprecated Use createKeyStoreConfiguration(String, char[], String, String)
+     * @deprecated Use {@link #createKeyStoreConfiguration(String, char[], String, String, String, String)}
      */
     @Deprecated
     public static KeyStoreConfiguration createKeyStoreConfiguration(

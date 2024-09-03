@@ -1,0 +1,278 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= File appenders
+:check-mark: &#x2713;
+:x-mark: &#x2717;
+
+Log4j Core provides multiple appenders that store log messages in a file.
+These appenders differ in the way they access the file system and might provide different performance characteristics.
+
+[NOTE]
+====
+File appenders do not offer a mechanism for external applications to force it to reopen the log file.
+External log archiving tools such as
+https://github.com/logrotate/logrotate[`logrotate`]
+will therefore need to copy the current log file and **then** truncate it.
+Log events emitted during this operation will be lost.
+
+If you want to rotate your log files, use xref:manual/appenders/rolling-file.adoc[a rolling file appender] instead.
+====
+
+[#appenders]
+== Appenders
+
+Log4j Core provides three file appender implementations:
+
+`File`::
+The `File` Appender uses
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/io/FileOutputStream.html[`FileOutputStream`]
+to access log files.
+
+`RandomAccessFile`::
+The `RandomAccessFile` Appender uses
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/io/RandomAccessFile.html[`RandomAccessFile`]
+to access log files.
+
+`MemoryMappedFile`::
+The `MemoryMappedFile` Appender maps log files into a
+https://docs.oracle.com/javase/8/docs/api/java/nio/MappedByteBuffer.html[`MappedByteBuffer`].
++
+Instead of making system calls to write to disk, this appender can simply change the program's local memory, which is orders of magnitude faster.
+
+[NOTE]
+====
+Two appenders, even from different logger contexts, share a common
+xref:manual/architecture.adoc#AbstractManager[`FileManager`]
+if they use the same value <<attr-fileName,`fileName` attribute>>.
+
+Sharing a `FileManager` guarantees that multiple appenders will access the log file sequentially, but requires most of the remaining configuration parameters to be the same.
+====
+
+[#common-configuration]
+=== Common configuration
+
+[#attributes]
+.Common configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+4+h| Required
+
+| [[attr-fileName]]fileName
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[`Path`]
+|
+| The path to the current log file
+If the folder containing the file does not exist, it will be created.
+
+| [[attr-name]]name
+| `String`
+|
+| The name of the appender.
+
+4+h| Optional
+
+| [[attr-bufferSize]]bufferSize
+| `int`
+| xref:manual/systemproperties.adoc#log4j2.encoderByteBufferSize[`8192`]
+a|
+The size of the
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/ByteBuffer.html[`ByteBuffer`]
+internally used by the appender.
+
+See xref:manual/appenders.adoc#buffering[Buffering] for more details.
+
+| [[attr-ignoreExceptions]]ignoreExceptions
+| `boolean`
+| `true`
+| If `false`, logging exception will be forwarded to the caller of the logging statement.
+Otherwise, they will be ignored.
+
+Logging exceptions are always also logged to xref:manual/status-logger.adoc[]
+
+| [[attr-immediateFlush]]immediateFlush
+| `boolean`
+| `true`
+|
+If set to `true`, the appender will flush its internal buffer after each event.
+
+See xref:manual/appenders.adoc#buffering[Buffering] for more details.
+
+|===
+
+[#elements]
+.Common nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[element-Filter]]xref:manual/filters.adoc[`Filter`]
+| zero or one
+|
+Allows filtering log events just before they are formatted and sent.
+
+See also xref:manual/filters.adoc#appender-stage[appender filtering stage].
+
+| [[element-Layout]]xref:manual/layouts.adoc[`Layout`]
+| zero or one
+|
+Formats log events.
+
+See xref:manual/layouts.adoc[] for more information.
+
+|===
+
+[#FileAppender]
+=== `File` configuration
+
+The `File` Appender provides the following configuration options, beyond the <<common-configuration,common ones>>:
+
+[#FileAppender-attributes]
+.`File` configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[FileAppender-attr-append]]append
+| `boolean`
+| `true`
+|
+If `true`, the log file will be opened in
+https://docs.oracle.com/javase/8/docs/api/java/nio/file/StandardOpenOption.html#APPEND[`APPEND` mode].
+
+On most systems this guarantees atomic writes to the end of the file, even if the file is opened by multiple applications.
+
+| [[FileAppender-attr-bufferedIo]]bufferedIo
+| `boolean`
+| `true`
+|
+If set to `true`, Log4j Core will format each log event in an internal buffer, before sending it to the underlying resource.
+
+See xref:manual/appenders.adoc#buffering[Buffering] for more details.
+
+| [[FileAppender-attr-createOnDemand]]createOnDemand
+| boolean
+| `false`
+|
+The appender creates the file on-demand. The
+appender only creates the file when a log event passes all filters and
+is routed to this appender. Defaults to false.
+
+| [[FileAppender-attr-filePermissions]]filePermissions
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/PosixFilePermissions.html[`PosixFilePermissions`]
+| `null`
+a|
+If not `null`, it specifies the POSIX file permissions to apply to each created file.
+The permissions must be provided in the format used by
+https://docs.oracle.com/javase/8/docs/api/java/nio/file/attribute/PosixFilePermissions.html#fromString-java.lang.String-[`PosixFilePermissions.fromString()`],
+e.g. `rw-rw----`.
+
+The underlying files system shall support
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[POSIX]
+file attribute view.
+
+| [[FileAppender-attr-fileOwner]]fileOwner
+| `String`
+| `null`
+|
+If not `null`, it specifies the file owner to apply to each created file.
+
+The underlying files system shall support file
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html[owner]
+attribute view.
+
+| [[FileAppender-attr-fileGroup]]fileGroup
+| `String`
+| `null`
+|
+If not `null`, it specifies the file group owner to apply to each created file.
+
+The underlying files system shall support
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[POSIX]
+file attribute view.
+
+| [[FileAppender-attr-locking]]locking
+| `boolean`
+| `false`
+|
+If `true`, Log4j will lock the log file at **each** log event.
+
+Note that the effects of this setting depend on the Operating System: some systems like most POSIX OSes do not offer mandatory locking, but only advisory file locking.
+
+This setting can also reduce the performance of the appender.
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-FileAppender[{plugin-reference-marker} Plugin reference for `File`]
+
+[#RandomAccessFileAppender]
+=== `RandomAccessFile` configuration
+
+The `RandomAccessFile` Appender provides the following configuration options, beyond the <<common-configuration,common ones>>:
+
+[#RandomAccessFileAppender-attributes]
+.`RollingRandomAccessFile` configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[RandomAccessFileAppender-attr-append]]append
+| `boolean`
+| `true`
+|
+If `true`, the appender starts writing at the end of the file.
+
+This setting does not give the same atomicity guarantees as for the
+<<FileAppender-attr-append,`RollingFile` Appender>>.
+The log file cannot be opened by multiple applications at the same time.
+|===
+
+Unlike the <<FileAppender,`File` appender>>, this appender always uses an internal buffer of size <<attr-bufferSize,`bufferSize`>>.
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-RandomAccessFileAppender[{plugin-reference-marker} Plugin reference for `RandomAccessFile`]
+
+[#MemoryMappedFileAppender]
+=== `MemoryMappedFile` configuration
+
+The `MemoryMappedFile` Appender provides the following configuration options, beyond the <<common-configuration,common ones>>:
+
+[#MemoryMappedFileAppender-attributes]
+.`RollingRandomAccessFile` configuration attributes
+[cols="1m,1,2,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[MemoryMappedFileAppender-attr-append]]append
+| `boolean`
+| `true`
+|
+If `true`, the appender starts writing at the end of the file.
+
+This setting does not give the same atomicity guarantees as for the
+<<FileAppender-attr-append,`RollingFile` Appender>>.
+The log file cannot be opened by multiple applications at the same time.
+
+| [[MemoryMappedFileAppender-attr-regionLength]]regionLength
+| `int`
+| `32 &times; 1024 &times; 1024`
+|
+It specifies the size measured in bytes of the memory mapped log file buffer.
+|===
+
+Unlike other file appenders, this appender always uses a memory mapped buffer of size <<MemoryMappedFileAppender-attr-regionLength,`regionLength`>> as its internal buffer.
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-MemoryMappedFileAppender[{plugin-reference-marker} Plugin reference for `MemoryMappedFile`]

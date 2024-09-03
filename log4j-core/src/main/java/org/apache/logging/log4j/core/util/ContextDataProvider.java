@@ -26,15 +26,6 @@ import org.apache.logging.log4j.util.StringMap;
 public interface ContextDataProvider {
 
     /**
-     * Returns the key for a value from the context data.
-     * @param key the key to locate.
-     * @return the value or null if it is not found.
-     */
-    default String get(String key) {
-        return null;
-    }
-
-    /**
      * Returns a Map containing context data to be injected into the event or null if no context data is to be added.
      * <p>
      *     Thread-safety note: The returned object can safely be passed off to another thread: future changes in the
@@ -51,41 +42,21 @@ public interface ContextDataProvider {
      *     underlying context data will not be reflected in the returned object.
      * </p>
      * @return the context data in a StringMap.
-     * @deprecated No longer used since 2.24.0. Will be removed in 3.0.0.
      */
-    @Deprecated
     default StringMap supplyStringMap() {
         return new JdkMapAdapterStringMap(supplyContextData(), true);
     }
 
     /**
-     * Returns the number of items in this context.
-     * @return the number of items in the context.
+     * Retrieves a single context data value.
+     * <p>
+     *     This method avoids the overhead of copying the entire context data, when only a single value is needed.
+     * </p>
+     * @param key The context data key of the value to retrieve.
+     * @return A context data value.
+     * @since 2.24.0
      */
-    default int size() {
-        Map<String, String> contextMap = supplyContextData();
-        return contextMap != null ? contextMap.size() : 0;
-    }
-
-    /**
-     * Add all the keys in the current context to the provided Map.
-     * @param map the StringMap to add the keys and values to.
-     */
-    default void addAll(Map<String, String> map) {
-        Map<String, String> contextMap = supplyContextData();
-        if (contextMap != null) {
-            map.putAll(contextMap);
-        }
-    }
-
-    /**
-     * Add all the keys in the current context to the provided StringMap.
-     * @param map the StringMap to add the keys and values to.
-     */
-    default void addAll(StringMap map) {
-        Map<String, String> contextMap = supplyContextData();
-        if (contextMap != null) {
-            contextMap.forEach(map::putValue);
-        }
+    default Object getValue(final String key) {
+        return supplyContextData().get(key);
     }
 }

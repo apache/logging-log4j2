@@ -36,7 +36,7 @@
     (Refer to the `log4j-to-slf4j` artifact for forwarding the Log4j API to SLF4J.)</description>
 
   <properties>
-    <slf4j2.version>2.0.9</slf4j2.version>
+    <slf4j2.version>2.0.16</slf4j2.version>
   </properties>
 
   <dependencyManagement>

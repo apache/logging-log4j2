@@ -25,7 +25,6 @@ import javax.naming.Reference;
 import javax.naming.Referenceable;
 import javax.naming.StringRefAddr;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.util.Strings;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -149,11 +148,6 @@ public class JndiRestrictedLookupTest {
         @Override
         public String getFormattedMessage() {
             return message;
-        }
-
-        @Override
-        public String getFormat() {
-            return Strings.EMPTY;
         }
 
         @Override

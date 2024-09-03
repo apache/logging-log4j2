@@ -184,7 +184,7 @@ The `log4j-to-slf4j` logging bridge delegates `ThreadContext` calls to {slf4j-ur
 The `log4j-to-jul` logging bridge ignores all `ThreadContext` method calls.
 ====
 
-include::partial$manual/systemproperties/properties-thread-context.adoc[leveloffset=+2]
+include::partial$manual/systemproperties/properties-thread-context-core.adoc[leveloffset=+2]
 
 [id=properties-transport-security]
 === Transport security
@@ -247,7 +247,7 @@ Log4j provides the following implementations:
 |===
 | Name | Priority | Naming Convention | Module | Description
 
-| SpringPropertySource
+| [[SpringPropertySource]]SpringPropertySource
 | -100
 | standard
 | log4j-spring

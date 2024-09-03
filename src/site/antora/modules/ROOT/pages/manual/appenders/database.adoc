@@ -1,0 +1,1508 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Database appenders
+
+Log4j Core provides multiple appenders to send log events directly to your database.
+
+[#common-concerns]
+== Common concerns
+
+[#ColumnMapping]
+=== Column mapping
+
+Since relational databases and some NoSQL databases split data into columns, Log4j Core provides a reusable
+link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/db/ColumnMapping.html[`ColumnMapping`]
+configuration element to allow specifying the content of each column.
+
+The Column Mapping element supports the following configuration properties:
+
+[#ColumnMapping-attributes]
+.`ColumnMapping` configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+4+h| Required
+
+| [[ColumnMapping-attr-name]]name
+| `String`
+|
+| The name of the column.
+
+4+h| Optional
+
+| [[ColumnMapping-attr-columnType]]columnType
+| `Class<?>`
+| `String`
+a|
+It specifies the Java type that will be stored in the column.
+
+If set to:
+
+`org.apache.logging.log4j.util.ReadOnlyStringMap`::
+`org.apache.logging.log4j.spi.ThreadContextMap`::
+The column will be filled with the contents of the log event's xref:manual/thread-context.adoc#mdc[context map].
+
+`org.apache.logging.log4j.spi.ThreadContextStack`::
+The column will be filled with the contents of the log event's xref:manual/thread-context.adoc#ndc[context stack].
+
+`java.util.Date`::
+The column will be filled with the log event's timestamp.
+
+For any other value:
+
+. The log event will be formatted using the <<ColumnMapping-element-Layout,nested `Layout`>>.
+. The resulting `String` will be converted to the specified type using a
+link:../../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/convert/TypeConverter.html[`TypeConverter`].
+See the
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-plugins-convert-TypeConverter[plugin reference]
+for a list of available type converters.
+
+| [[ColumnMapping-attr-type]]type
+| `Class<?>`
+| `String`
+|
+**Deprecated**: since `2.21.0` use <<ColumnMapping-attr-columnType,`columnType`>> instead.
+
+| [[ColumnMapping-attr-literal]]literal
+| `String`
+|
+a|
+If set, the value will be added **directly** in the insert statement of the database-specific query language.
+
+[WARNING]
+====
+This value is added as-is, without any validation.
+Never use user-provided data to determine its value.
+====
+
+| [[ColumnMapping-attr-parameter]]parameter
+| `String`
+|
+a|
+It specifies the database-specific parameter marker to use.
+Otherwise, the default parameter marker for the database language will be used.
+
+[WARNING]
+====
+This value is added as-is, without any validation.
+Never use user-provided data to determine its value.
+====
+
+| [[ColumnMapping-attr-pattern]]pattern
+| `String`
+|
+|
+This is a shortcut configuration attribute to set the
+<<ColumnMapping-element-Layout,nested `Layout` element>>
+to a xref:manual/pattern-layout.adoc[`PatternLayout`]
+instance with the specified `pattern` property.
+
+| [[ColumnMapping-attr-source]]source
+| `String`
+| <<ColumnMapping-attr-name,`name`>>
+a|
+It specifies which key of a xref:manual/messages.adoc#MapMessage[`MapMessage`] will be stored in the column.
+This attribute is used only if:
+
+* The <<ColumnMapping-element-Layout,nested `Layout` element>>
+is a
+link:../../javadoc/log4j-core/org/apache/logging/log4j/core/layout/MessageLayout.html[`MessageLayout`].
+* The message being logged is a `MapMessage`
+|===
+
+[#ColumnMapping-elements]
+.`ColumnMapping` nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[ColumnMapping-element-Layout]]xref:manual/layouts.adoc[`Layout`]
+| zero or one
+|
+Formats the value to store in the column.
+
+See xref:manual/layouts.adoc[] for more information.
+
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-ColumnMapping[Plugin reference for `ColumnMapping`]
+
+An example column mapping might look like this:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/column-mapping.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/database/column-mapping.xml[tag=mapping]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/column-mapping.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/database/column-mapping.json[tag=mapping]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/column-mapping.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/database/column-mapping.yaml[tag=mapping]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/column-mapping.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/database/column-mapping.properties[tag=mapping]
+----
+====
+
+<1> A database-specific expression is added literally to the `INSERT` statement.
+<2> A xref:manual/pattern-layout.adoc[] with the specified pattern is used for these columns.
+The `uuid` column is additionally converted into a `java.util.UUID` before being sent to the JDBC driver.
+<3> Three special column types are replaced with the log event timestamp, context map, and context stack.
+<4> A xref:manual/json-template-layout.adoc[] is used to format this column.
+<5> If the global layout of the appender returns a `MapMessage`, the value for key `resourceId` will be put into the `resource` column.
+
+[#CassandraAppender]
+== Cassandra Appender
+
+include::partial$manual/appender-deprecation.adoc[]
+
+The Cassandra Appender writes its output to an
+https://cassandra.apache.org/_/index.html[Apache Cassandra]
+database.
+The appender supports the following configuration properties:
+
+[#CassandraAppender-attributes]
+.Cassandra Appender configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+4+h| Required
+
+| [[CassandraAppender-attr-name]]name
+| `String`
+|
+| The name of the Appender.
+
+4+h| Optional
+
+| [[CassandraAppender-attr-batched]]batched
+| `boolean`
+| `false`
+| Whether to use batch statements to write log messages to Cassandra.
+
+| [[CassandraAppender-attr-batchType]]batchType
+| https://docs.datastax.com/en/drivers/java/3.0/com/datastax/driver/core/BatchStatement.Type.html[BatchStatement.Type]
+| https://docs.datastax.com/en/drivers/java/3.0/com/datastax/driver/core/BatchStatement.Type.html#LOGGED[`LOGGED`]
+| The batch type to use when using batched writes.
+
+| [[CassandraAppender-attr-bufferSize]]bufferSize
+| `int`
+| `0`
+|
+The number of log messages to buffer or batch before writing.
+If `0`, buffering is disabled.
+
+| [[CassandraAppender-attr-clusterName]]clusterName
+| `String`
+|
+| The name of the Cassandra cluster to connect to.
+
+| [[CassandraAppender-attr-ignoreExceptions]]ignoreExceptions
+| `boolean`
+| `true`
+| If `false`, logging exception will be forwarded to the caller of the logging statement.
+Otherwise, they will be ignored.
+
+| [[CassandraAppender-attr-keyspace]]keyspace
+| String
+|
+| The name of the keyspace containing the table that log messages will be written to.
+
+| password
+| `String`
+|
+| The password to use (along with the username) to connect to Cassandra.
+
+| table
+| `String`
+|
+| The name of the table to write log messages to.
+
+| useClockForTimestampGenerator
+| `boolean`
+| `false`
+| Whether to use the configured `org.apache.logging.log4j.core.util.Clock` as a timestamp generator.
+
+| `username`
+| `String`
+|
+| The username to use to connect to Cassandra. By default, no username or password is used.
+
+| useTls
+| `boolean`
+| `true`
+| Whether to use TLS/SSL to connect to Cassandra. This is `false` by default.
+|===
+
+[#CassandraAppender-elements]
+.Cassandra Appender nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[CassandraAppender-element-Filter]]xref:manual/filters.adoc[`Filter`]
+| zero or one
+|
+Allows filtering log events just before they are formatted and sent.
+
+See also xref:manual/filters.adoc#appender-stage[appender filtering stage].
+
+| [[CassandraAppender-element-ColumnMapping]]<<ColumnMapping,`ColumnMapping`>>
+| one or more
+a|
+A list of <<ColumnMapping,column mapping>> configurations.
+The following database-specific restrictions apply:
+
+* the <<ColumnMapping-attr-name,`name` attribute>> must be a valid
+https://cassandra.apache.org/doc/stable/cassandra/cql/definitions.html#identifiers[CQL identifier].
+* the <<ColumnMapping-attr-literal,`literal` attribute>> must be a valid
+https://cassandra.apache.org/doc/stable/cassandra/cql/definitions.html#terms[CQL term].
+* the <<ColumnMapping-attr-parameter,`parameter` attribute>> has a fixed value of `?`.
+
+| [[CassandraAppender-element-SocketAddress]]<<SocketAddress,`SocketAddress`>>
+| one or more
+| A list of Cassandra node addresses to connect to.
+If absent, `localhost:9042` will be used.
+
+See <<SocketAddress>> for the configuration syntax.
+|===
+
+Additional runtime dependencies are required for using the Cassandra Appender:
+
+include::partial$components/log4j-cassandra.adoc[]
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-cassandra_org-apache-logging-log4j-cassandra-CassandraAppender[{plugin-reference-marker} Plugin reference for `Cassandra`]
+
+[#SocketAddress]
+=== Socket Addresses
+
+The address of the Cassandra server is specified using the `SocketAddress` element, which supports the following configuration options:
+
+[#SocketAddress-attributes]
+.`SocketAddress` configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[SocketAddress-attr-host]]host
+| https://docs.oracle.com/javase/8/docs/api/java/net/InetAddress.html[`InetAddress`]
+| `localhost`
+| The host to connect to.
+
+| [[SocketAddress-attr-port]]port
+| `int`
+| `0`
+| The port to connect to.
+
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-SocketAddress[{plugin-reference-marker} Plugin reference for `SocketAddress`]
+
+[#CassandraAppender-examples]
+=== Configuration examples
+
+Here is an example Cassandra Appender configuration:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/cassandra.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/database/cassandra.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/cassandra.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/database/cassandra.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/cassandra.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/database/cassandra.yaml[tag=appender]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/cassandra.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/database/cassandra.properties[tag=appender]
+----
+====
+
+<1> Enables buffering.
+Messages are sent in batches of 10.
+<2> Multiple server addresses can be used.
+<3> An example of column mapping.
+See <<ColumnMapping>> for more details.
+
+The example above uses the following table schema:
+
+[source,sql]
+----
+include::example$manual/appenders/database/cassandra.sql[lines=17..-1]
+----
+
+[#JdbcAppender]
+== JDBC Appender
+
+The JDBCAppender writes log events to a relational database table using standard JDBC.
+It can be configured to get JDBC connections from different <<ConnectionSource,connection sources>>.
+
+If batch statements are supported by the configured JDBC driver and
+<<JdbcAppender-attr-bufferSize,`bufferSize`>>
+is configured to be a positive number, then log events will be batched.
+
+[NOTE]
+====
+The appender gets a new connection for each batch of log events.
+The connection source **must** be backed by a connection pool, otherwise the performance will suffer greatly.
+====
+
+[#JdbcAppender-attributes]
+.JDBC Appender configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+4+h| Required
+
+| [[JdbcAppender-attr-name]]name
+| `String`
+|
+| The name of the Appender.
+
+| [[JdbcAppender-attr-tableName]]tableName
+| `String`
+|
+| The name of the table to use.
+
+4+h| Optional
+
+| [[JdbcAppender-attr-bufferSize]]bufferSize
+| `int`
+| `0`
+|
+The number of log messages to batch before writing.
+If `0`, batching is disabled.
+
+| [[JdbcAppender-attr-ignoreExceptions]]ignoreExceptions
+| `boolean`
+| `true`
+| If `false`, logging exception will be forwarded to the caller of the logging statement.
+Otherwise, they will be ignored.
+
+| [[JdbcAppender-attr-immediateFail]]immediateFail
+| `boolean`
+| `false`
+|
+When set to `true`, log events will not wait to try to reconnect and will fail immediately if the JDBC resources are not available.
+
+| [[JdbcAppender-attr-reconnectIntervalMillis]]reconnectIntervalMillis
+| `long`
+| `5000`
+|
+If set to a value greater than 0, after an error, the `JdbcDatabaseManager` will attempt to reconnect to the database after waiting the specified number of milliseconds.
+
+If the reconnecting fails then an exception will be thrown and can be caught by the application if
+<<JdbcAppender-attr-ignoreExceptions,`ignoreExceptions`>>
+is set to `false`.
+|===
+
+[#JdbcAppender-elements]
+.JDBC Appender nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[JdbcAppender-element-Filter]]xref:manual/filters.adoc[`Filter`]
+| zero or one
+|
+Allows filtering log events just before they are formatted and sent.
+
+See also xref:manual/filters.adoc#appender-stage[appender filtering stage].
+
+| [[JdbcAppender-element-ColumnMapping]]<<ColumnMapping,`ColumnMapping`>>
+| zero or more
+a|
+A list of <<ColumnMapping,column mapping>> configurations.
+The following database-specific restrictions apply:
+
+* the <<ColumnMapping-attr-name,`name` attribute>> must be a valid SQL identifier.
+* the <<ColumnMapping-attr-literal,`literal` attribute>> must be a valid SQL term.
+* the <<ColumnMapping-attr-parameter,`parameter` attribute>> must be a valid SQL term containing a `?` placeholder.
+
+**Required**, unless <<JdbcAppender-element-ColumnConfig,`ColumnConfig`>> is used.
+
+| [[JdbcAppender-element-ColumnConfig]]xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-ColumnConfig[`ColumnConfig`]
+| zero or more
+| **Deprecated**: an older mechanism to define <<JdbcAppender-element-ColumnMapping,column mappings>>.
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-ColumnConfig[{plugin-reference-marker} Plugin reference for `ColumnConfig`]
+
+| [[JdbcAppender-element-ConnectionSource]]<<ConnectionSource,`ConnectionSource`>>
+| **one**
+|
+It specifies how to retrieve JDBC
+https://docs.oracle.com/javase/8/docs/api/java/sql/Connection.html[`Connection`]
+objects.
+
+See <<ConnectionSource>> for more details.
+
+| [[JdbcAppender-element-Layout]]<<JdbcAppender-MapMessage,`Layout`>>
+| zero or one
+|
+An optional
+link:../../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html[`Layout<? extends Message>`]
+implementation that formats a log event as
+xref:manual/messages.adoc[log `Message`].
+
+If supplied ``MapMessage``s will be treated in a special way.
+
+See <<JdbcAppender-MapMessage>> for more details.
+
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-JdbcAppender[{plugin-reference-marker} Plugin reference for `JDBC`]
+
+[#ConnectionSource]
+=== Connection Sources
+
+When configuring the JDBC Appender, you must specify an implementation of
+link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/db/jdbc/ConnectionSource.html[`ConnectionSource`]
+that the appender will use to get
+https://docs.oracle.com/javase/8/docs/api/java/sql/Connection.html[`Connection`] objects.
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-ConnectionSource[{plugin-reference-marker} Plugin reference for `ConnectionSource`]
+
+The following connection sources are available out-of-the-box:
+
+[#DataSourceConnectionSource]
+==== `DataSource`
+
+This connection source uses JNDI to locate a JDBC
+https://docs.oracle.com/javase/8/docs/api/javax/sql/DataSource.html[`DataSource`].
+
+[IMPORTANT]
+====
+As of Log4j `2.17.0` you need to enable the `DataSource` connection source **explicitly** by setting the
+xref:manual/systemproperties.adoc#log4j2.enableJndiJdbc[`log4j2.enableJndiJdbc`]
+configuration property to `true`.
+====
+
+[#DataSourceConnectionSource-attributes]
+.`DataSource` configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[DataSourceConnectionSource-attr-jndiName]]jndiName
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Name.html[`Name`]
+|
+|
+It specifies the JNDI name of a JDBC
+https://docs.oracle.com/javase/8/docs/api/javax/sql/DataSource.html[`DataSource`].
+
+Only the `java:` JNDI protocol is supported.
+
+**Required**
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-DataSourceConnectionSource[{plugin-reference-marker} Plugin reference for `DataSource`]
+
+[#FactoryMethodConnectionSource]
+==== `ConnectionFactory`
+
+This connection source can use any factory method.
+The method must:
+
+* Be `public` and `static`.
+* Have an empty parameter list.
+* Return either
+https://docs.oracle.com/javase/8/docs/api/java/sql/Connection.html[`Connection`]
+or
+https://docs.oracle.com/javase/8/docs/api/javax/sql/DataSource.html[`DataSource`].
+
+[#FactoryMethodConnectionSource-attributes]
+.`ConnectionFactory` configuration attributes
+[cols="1m,2,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[FactoryMethodConnectionSource-attr-class]]class
+| `Class<?>`
+|
+|
+The fully qualified class name of the class containing the factory method.
+
+**Required**
+
+| [[FactoryMethodConnectionSource-attr-method]]method
+| `String`
+|
+|
+The name of the factory method.
+
+**Required**
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-FactoryMethodConnectionSource[{plugin-reference-marker} Plugin reference for `ConnectionFactory`]
+
+[#DriverManagerConnectionSource]
+==== `DriverManager`
+
+This connection source uses
+https://docs.oracle.com/javase/8/docs/api/java/sql/DriverManager.html[`DriverManager`]
+to directly create connections using a JDBC
+https://docs.oracle.com/javase/8/docs/api/java/sql/Driver.html[`Driver`].
+
+[TIP]
+====
+This configuration source is useful during development, but we don't recommend it in production.
+Unless the JDBC driver provides connection pooling, the performance of the appender will suffer.
+
+See <<PoolingDriverConnectionSource,`PoolingDriver`>> for a variant of this connection source that uses a connection pool.
+====
+
+[#DriverManagerConnectionSource-attributes]
+.`DriverManager` configuration attributes
+[cols="1m,2,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[DriverManagerConnectionSource-attr-connectionString]]connectionString
+| `String`
+|
+|
+The driver-specific JDBC connection string.
+
+**Required**
+
+| [[DriverManagerConnectionSource-attr-driverClassName]]driverClassName
+| `String`
+| _autodetected_
+|
+The fully qualified class name of the JDBC driver to use.
+
+JDBC 4.0 drivers can be automatically detected by `DriverManager`.
+See
+https://docs.oracle.com/javase/8/docs/api/java/sql/DriverManager.html[`DriverManager`]
+for more details.
+
+| [[DriverManagerConnectionSource-attr-userName]]userName
+| `String`
+|
+|
+The username to use to connect to the database.
+
+| [[DriverManagerConnectionSource-attr-password]]password
+| `String`
+|
+|
+The password to use to connect to the database.
+|===
+
+[#DriverManagerConnectionSource-elements]
+.`DriverManager` nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[DriverManagerConnectionSource-element-Property]]xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property[`Property`]
+| zero or more
+|
+A list of key/value pairs to pass to `DriverManager`.
+
+If supplied, the <<DriverManagerConnectionSource-attr-userName,`userName`>> and <<DriverManagerConnectionSource-attr-password,`password`>> attributes will be ignored.
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-DriverManagerConnectionSource[{plugin-reference-marker} Plugin reference for `DriverManager`]
+
+[#PoolingDriverConnectionSource]
+==== `PoolingDriver`
+
+The `PoolingDriver` uses
+https://commons.apache.org/proper/commons-dbcp/[Apache Commons DBCP 2]
+to configure a JDBC connection pool.
+
+[#PoolingDriverConnectionSource-attributes]
+.`PoolingDriver` configuration attributes
+[cols="1m,2,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[PoolingDriverConnectionSource-attr-connectionString]]connectionString
+| `String`
+|
+|
+The driver-specific JDBC connection string.
+
+**Required**
+
+| [[PoolingDriverConnectionSource-attr-driverClassName]]driverClassName
+| `String`
+| _autodetected_
+|
+The fully qualified class name of the JDBC driver to use.
+
+JDBC 4.0 drivers can be automatically detected by `DriverManager`.
+See
+https://docs.oracle.com/javase/8/docs/api/java/sql/DriverManager.html[`DriverManager`]
+for more details.
+
+| [[PoolingDriverConnectionSource-attr-userName]]userName
+| `String`
+|
+|
+The username to use to connect to the database.
+
+| [[PoolingDriverConnectionSource-attr-password]]password
+| `String`
+|
+|
+The password to use to connect to the database.
+
+| [[PoolingDriverConnectionSource-attr-poolName]]poolName
+| `String`
+| `example`
+|
+
+|===
+
+[#PoolingDriverConnectionSource-elements]
+.`PoolingDriver` nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[PoolingDriverConnectionSource-element-Property]]xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property[`Property`]
+| zero or more
+|
+A list of key/value pairs to pass to `DriverManager`.
+
+If supplied, the <<DriverManagerConnectionSource-attr-userName,`userName`>> and <<DriverManagerConnectionSource-attr-password,`password`>> attributes will be ignored.
+
+| [[PoolingDriverConnectionSource-element-PoolingConnectionFactoryConfig]]xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-core-appender-db-jdbc-PoolableConnectionFactoryConfig[`PoolableConnectionFactory`]
+| zero or one
+|
+Allows finely tuning the configuration of the DBCP 2 connection pool.
+The available parameters are the same as those provided by DBCP 2.
+See
+https://commons.apache.org/proper/commons-dbcp/configuration.html[DBCP 2 configuration] for more details.
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-core-appender-db-jdbc-PoolableConnectionFactoryConfig[{plugin-reference-marker} Plugin reference for `PoolableConnectionFactory`]
+|===
+
+Additional runtime dependencies are required for using `PoolingDriver`:
+
+include::partial$components/log4j-jdbc-dbcp2.adoc[]
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-core-appender-db-jdbc-PoolingDriverConnectionSource[{plugin-reference-marker} Plugin reference for `PoolingDriver`]
+
+[#JdbcAppender-MapMessage]
+=== Map Message handling
+
+If the optional <<JdbcAppender-element-Layout,nested element of type `Layout<? Extends Message>`>> is provided, log events containing messages of type
+xref:manual/messages.adoc#MapMessage[`MapMessage`]
+will be treated specially.
+For each <<ColumnMapping,column mapping>> (except those containing literals) the <<ColumnMapping-attr-source,`source`>> attribute will be used as key to the value in `MapMessage` that will be stored in column <<ColumnMapping-attr-name,`name`>>.
+
+[#JdbcAppender-examples]
+=== Configuration examples
+
+Here is an example JDBC Appender configuration:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/jdbc.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/database/jdbc.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/jdbc.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/database/jdbc.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/jdbc.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/database/jdbc.yaml[tag=appender]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/jdbc.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/database/jdbc.properties[tag=appender]
+----
+====
+
+<1> Enables buffering.
+Messages are sent in batches of 10.
+<2> A <<DataSourceConnectionSource,`JNDI` data source>> is used.
+<3> An example of column mapping.
+See <<ColumnMapping>> for more details.
+
+The example above uses the following table schema:
+
+[source,sql]
+----
+include::example$manual/appenders/database/jdbc.sql[lines=17..-1]
+----
+
+[#JpaAppender]
+== JPA Appender
+
+include::partial$manual/appender-deprecation.adoc[]
+
+The JPA Appender writes log events to a relational database table using the
+https://jakarta.ee/specifications/persistence/2.2/[Jakarta Persistence API 2.2].
+To use the appender, you need to:
+
+* configure your JPA persistence unit.
+See <<JpaAppender-persistence>> below.
+* configure the JPA Appender.
+See <<JpaAppender-configuration>> below.
+
+[IMPORTANT]
+====
+Due to breaking changes in the underlying API, the JPA Appender cannot be used with Jakarta Persistence API 3.0 or later.
+====
+
+[#JpaAppender-persistence]
+=== Persistence configuration
+
+To store log events using JPA, you need to implement a JPA Entity that extends the
+link:../../javadoc/log4j-jpa/org/apache/logging/log4j/core/appender/db/jpa/AbstractLogEventWrapperEntity.html[`AbstractLogEventWrapperEntity`]
+class.
+To help you with the implementation, Log4j provides a
+link:../../javadoc/log4j-jpa/org/apache/logging/log4j/core/appender/db/jpa/BasicLogEventEntity.html[`BasicLogEventEntity`]
+class that only lacks an identity field.
+
+A simple `AbstractLogEventWrapperEntity` implementation might look like:
+
+.Snippet from a {antora-examples-url}/manual/appenders/database/LogEventEntity.java[`LogEventEntity.java`]
+[source,java]
+----
+include::example$manual/appenders/database/LogEventEntity.java[tags=!setter;entity]
+----
+
+For performance reasons, we recommend creating a **separate** persistence unit for logging.
+This allows you to optimize the unit for logging purposes.
+The definition of the persistence unit should look like the example below:
+
+[source,xml]
+----
+include::example$manual/appenders/database/persistence.xml[lines=1;18..-1]
+----
+
+<1> Specify you JPA provider.
+<2> A non-JTA source should be used for performance.
+<3> If your log event entity extends `BasicLogEventEntity`, you need to declare these converters.
+<4> Declare your log event entity.
+<5> Cache sharing should be set to `NONE`.
+
+[#JpaAppender-configuration]
+=== Appender configuration
+
+The JPA appender supports these configuration options:
+
+[#JpaAppender-attributes]
+.JPA Appender configuration attributes
+[cols="1m,2,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+4+h| Required
+
+| [[JpaAppender-attr-name]]name
+| `String`
+|
+| The name of the Appender.
+
+| [[JpaAppender-attr-tableName]]tableName
+| `String`
+|
+| The name of the table to use.
+
+| [[JpaAppender-attr-persistenceUnit]]persistenceUnitName
+| `String`
+|
+| The name of the persistence unit to use.
+
+| [[JpaAppender-attr-entityClassName]]entityClassName
+| `Class<?>`
+|
+| The fully qualified name of the entity class to use.
+
+The type must extend
+link:../../javadoc/log4j-jpa/org/apache/logging/log4j/core/appender/db/jpa/AbstractLogEventWrapperEntity.html[`AbstractLogEventWrapperEntity`].
+
+4+h| Optional
+
+| [[JpaAppender-attr-bufferSize]]bufferSize
+| `int`
+| `0`
+|
+The number of log messages to batch before writing.
+If `0`, batching is disabled.
+
+| [[JpaAppender-attr-ignoreExceptions]]ignoreExceptions
+| `boolean`
+| `true`
+| If `false`, logging exception will be forwarded to the caller of the logging statement.
+Otherwise, they will be ignored.
+
+|===
+
+[#JpaAppender-elements]
+.JPA Appender nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[JpaAppender-element-Filter]]xref:manual/filters.adoc[`Filter`]
+| zero or one
+|
+Allows filtering log events just before they are formatted and sent.
+
+See also xref:manual/filters.adoc#appender-stage[appender filtering stage].
+
+|===
+
+Additional runtime dependencies are required for using the JPA Appender:
+
+include::partial$components/log4j-jpa.adoc[]
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-jpa_org-apache-logging-log4j-core-appender-db-jpa-JpaAppender[{plugin-reference-marker} Plugin reference for `JPA`]
+
+[#JpaAppender-examples]
+=== Configuration examples
+
+Using the persistence unit from section <<JpaAppender-persistence>>, the JPA appender can be easily configured as:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/jpa.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/database/jpa.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/jpa.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/database/jpa.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/jpa.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/database/jpa.yaml[tag=appender]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/jpa.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/database/jpa.properties[tag=appender]
+----
+====
+
+[#NoSqlAppender]
+== NoSQL Appender
+
+The NoSQL Appender writes log events to a
+https://en.wikipedia.org/wiki/Document-oriented_database#Implementations[document-oriented NoSQL database]
+using an internal lightweight provider interface.
+It supports the following configuration options:
+
+[#NoSqlAppender-attributes]
+.NoSQL Appender configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+4+h| Required
+
+| [[NoSqlAppender-attr-name]]name
+| `String`
+|
+| The name of the Appender.
+
+4+h| Optional
+
+| [[NoSqlAppender-attr-bufferSize]]bufferSize
+| `int`
+| `0`
+|
+The number of log messages to batch before writing to the database.
+If `0`, batching is disabled.
+
+| [[NoSqlAppender-attr-ignoreExceptions]]ignoreExceptions
+| `boolean`
+| `true`
+| If `false`, logging exception will be forwarded to the caller of the logging statement.
+Otherwise, they will be ignored.
+
+|===
+
+[#NoSqlAppender-elements]
+.NoSQL Appender nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[NoSqlAppender-element-Filter]]xref:manual/filters.adoc[`Filter`]
+| zero or one
+|
+Allows filtering log events just before they are formatted and sent.
+
+See also xref:manual/filters.adoc#appender-stage[appender filtering stage].
+
+| [[NoSqlAppender-element-KeyValuePair]]xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-util-KeyValuePair[`KeyValuePair`]
+| Zero or more
+a| Adds a simple key/value field to the NoSQL object.
+
+The `value` attribute of the pair supports
+xref:manual/configuration.adoc#lazy-property-substitution[runtime property substitution]
+using the
+xref:manual/lookups.adoc#event-context[current event as context].
+
+| [[NoSqlAppender-element-Layout]]<<NoSqlAppender-formatting,`Layout`>>
+| zero or one
+|
+An optional
+link:../../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html[`Layout<? extends MapMessage>`]
+implementation that formats a log event as
+xref:manual/messages.adoc#MapMessage[`MapMessage`].
+
+See <<NoSqlAppender-formatting>> for more details.
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-nosql-NoSqlAppender[{plugin-reference-marker} Plugin reference for `NoSQL`]
+
+[#NoSqlAppender-formatting]
+=== Formatting
+
+This appender transforms log events into NoSQL documents in two ways:
+
+* If the optional <<NoSqlAppender-element-Layout,`Layout`>> configuration element is provided, the
+xref:manual/messages.adoc#MapMessage[`MapMessage`] returned by the layout will be converted into its NoSQL document.
+* Otherwise, a default conversion will be applied.
+You enhance the format with additional top level key/value pairs using nested
+<<NoSqlAppender-element-KeyValuePair,`KeyValuePair`>> configuration elements.
++
+.Click to see an example of default log event formatting
+[%collapsible]
+====
+[source,json]
+----
+include::example$manual/appenders/database/nosql-log-event.json[]
+----
+====
+
+[#NoSqlProvider]
+=== Providers
+
+The NoSQL Appender only handles the conversion of log events into NoSQL documents, and it delegates database-specific tasks to a NoSQL provider.
+NoSQL providers are Log4j plugins that implement the
+link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/nosql/NoSqlProvider.html[`NoSqlProvider`]
+interface.
+Log4j Core currently provides the following providers:
+
+* Multiple providers for different versions of the
+https://www.mongodb.com/[MongoDB database].
+See <<NoSQLProvider-MongoDB>> below for more details.
+* A provider for the
+https://couchdb.apache.org/[Apache CouchDB database].
+See <<CouchDbProvider>> below for more details.
+
+[#NoSQLProvider-MongoDB]
+=== MongoDB Providers
+
+Starting with version 2.11.0, Log4j supplies providers for the
+https://www.mongodb.com/[MongoDB]
+NoSQL database engine, based on the
+https://www.mongodb.com/docs/drivers/java/sync/current/[MongoDB synchronous Java driver].
+The choice of the provider to use depends on:
+
+* the major version of the MongoDB Java driver your application uses: Log4j supports all major versions starting from version 2.
+* the type of driver API used: either the _Legacy API_ or the _Modern API_.
+See https://www.mongodb.com/docs/drivers/java/sync/current/legacy/[MongoDB documentation]
+for the difference between APIs.
+
+[NOTE]
+====
+The list of dependencies of your application provides a hint as to which driver API your application is using.
+If your application contains any one of these dependencies, it might use the **Legacy API**:
+
+* `org.mongodb:mongo-java-driver`
+* `org.mongodb:mongodb-driver-legacy`
+
+If you application only uses `org.mongodb:mongodb-driver-sync`, it uses the **Modern API**.
+====
+
+[WARNING]
+====
+The version of the MongoDB Java driver is not the same as the version of the MongoDB server.
+See
+https://www.mongodb.com/docs/drivers/java/sync/current/compatibility/[MongoDB compatibility matrix]
+for more information.
+====
+
+In order to use a Log4j MongoDB appender you need to add the following dependencies to your application:
+
+.MongoDB providers compatibility table
+[cols="2,2,2,5"]
+|===
+| Driver version | Driver API | Log4j artifact | Notes
+
+| `2.x`
+| Legacy
+| https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-mongodb2[`log4j-mongodb2`]
+| Reached end-of-support.
+
+Last released version: `2.12.4`
+
+| [[NoSQLAppenderMongoDB3]]`3.x`
+| Legacy
+| https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-mongodb3[`log4j-mongodb3`]
+| Reached end-of-support.
+
+Last released version: `2.23.1`
+
+| `4.x`
+| Modern
+| https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-mongodb4[`log4j-mongodb4`]
+|
+
+| `5.x` or later
+| Modern
+| https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-mongodb[`log4j-mongodb`]
+|
+|===
+
+[TIP]
+====
+If you are note sure, which implementation to choose, `log4j-mongodb` is the recommended choice.
+====
+
+[#MongoDbProvider]
+==== MongoDb Provider (current)
+
+The `MongoDb` provider is based on the
+https://www.mongodb.com/docs/drivers/java/sync/current/[current version of the MongoDB Java driver].
+It supports the following configuration options:
+
+[#MongoDbProvider-attributes]
+.MongoDb Provider configuration attributes
+[cols="1m,1,2,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[MongoDbProvider-attr-connection]]connection
+| https://mongodb.github.io/mongo-java-driver/5.1/apidocs/mongodb-driver-core/com/mongodb/ConnectionString.html[`ConnectionString`]
+|
+|
+It specifies the connection URI used to reach the server.
+
+See
+https://www.mongodb.com/docs/drivers/java/sync/current/fundamentals/connection/connect/#connection-uri[Connection URI documentation]
+for its format.
+
+**Required**
+
+| [[MongoDbProvider-attr-capped]]capped
+| `boolean`
+| `false`
+|
+If `true`, a
+https://www.mongodb.com/docs/manual/core/capped-collections/[capped collection]
+will be used.
+
+| [[MongoDbProvider-attr-collectionSize]]collectionSize
+| `long`
+| `512 MiB`
+|
+It specifies the capped collection size of bytes.
+
+|===
+
+Additional runtime dependencies are required to use the `MongoDb` provider:
+
+include::partial$components/log4j-mongodb.adoc[]
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider[{plugin-reference-marker} Plugin reference for `MongoDb`]
+
+[#MongoDb4Provider]
+==== MongoDb4 Provider (deprecated)
+
+The `log4j-mongodb4` module is deprecated in favor of the <<MongoDbProvider,current `MongoDB` provider>>.
+It supports the following configuration attributes:
+
+[#MongoDb4Provider-attributes]
+.MongoDb4 provider configuration attributes
+[cols="1m,1,2,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[MongoDb4Provider-attr-connection]]connection
+| https://mongodb.github.io/mongo-java-driver/5.1/apidocs/mongodb-driver-core/com/mongodb/ConnectionString.html[`ConnectionString`]
+|
+|
+It specifies the connection URI used to reach the server.
+
+See
+https://www.mongodb.com/docs/drivers/java/sync/current/fundamentals/connection/connect/#connection-uri[Connection URI documentation]
+for its format.
+
+**Required**
+
+| [[MongoDb4Provider-attr-capped]]capped
+| `boolean`
+| `false`
+|
+If `true`, a
+https://www.mongodb.com/docs/manual/core/capped-collections/[capped collection]
+will be used.
+
+| [[MongoDb4Provider-attr-collectionSize]]collectionSize
+| `long`
+| `512 MiB`
+|
+It specifies the capped collection size of bytes.
+
+|===
+
+Additional runtime dependencies are required to use the `MongoDb4` provider:
+
+include::partial$components/log4j-mongodb4.adoc[]
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-mongodb4-MongoDb4Provider[{plugin-reference-marker} Plugin reference for `MongoDb4`]
+
+[#CouchDbProvider]
+=== Apache CouchDB provider
+
+[WARNING]
+====
+*This provider is planned to be removed in the next major release!*
+If you are using this library, please get in touch with the Log4j maintainers using link:{logging-services-url}/support.html[the official support channels].
+====
+
+The `CouchDb` Provider allows using the <<NoSqlAppender>> with an
+https://couchdb.apache.org/[Apache CouchDB database].
+The provider can be configured by:
+
+* either providing some <<CouchDbProvider-attr-standard,standard configuration attributes>>,
+* or providing a <<CouchDbProvider-attr-factory,factory method>>.
+
+[#CouchDbProvider-attributes]
+.CouchDb provider configuration attributes
+[cols="1m,1,2,5"]
+|===
+| Attribute | Type | Default value | Description
+
+
+4+h| [[CouchDbProvider-attr-standard]]Standard configuration attributes
+
+| [[CouchDbProvider-attr-protocol]]protocol
+| _enumeration_
+| `http`
+a|
+It specifies the protocol to use to connect to the server.
+Can be one of:
+
+* `http`
+* `https`
+
+| [[CouchDbProvider-attr-server]]server
+| `String`
+| `localhost`
+|
+The host name of the CouchDB server.
+
+| [[CouchDbProvider-attr-port]]port
+| `int`
+a|
+`80` (`http`)
+`443` (`https`)
+|
+It specifies the TCP port to use.
+
+| [[CouchDbProvider-attr-databaseName]]databaseName
+| `String`
+|
+|
+The name of the database to connect to.
+
+| [[CouchDbProvider-attr-username]]username
+| `String`
+|
+|
+The username for authentication.
+
+| [[CouchDbProvider-attr-password]]password
+| `String`
+|
+|
+The password for authentication.
+
+4+h| [[CouchDbProvider-attr-factory]]Factory method configuration attributes
+
+| [[CouchDbProvider-attr-factoryClassName]]factoryClassName
+| `Class<?>`
+|
+a|
+The fully qualified class name that contains a factory method that returns either a
+https://javadoc.io/static/org.lightcouch/lightcouch/0.2.0/org/lightcouch/CouchDbClient.html[`CouchDbClient`]
+or
+https://javadoc.io/static/org.lightcouch/lightcouch/0.2.0/org/lightcouch/CouchDbProperties.html[`CouchDbProperties`]
+object.
+
+The class must be public.
+
+| [[CouchDbProvider-attr-factoryMethodName]]factoryMethodName
+| `String`
+|
+a|
+The name of the factory method.
+The method:
+
+* Must be `public` and `static`.
+* Have an empty parameter list.
+* Returns either a
+https://javadoc.io/static/org.lightcouch/lightcouch/0.2.0/org/lightcouch/CouchDbClient.html[`CouchDbClient`]
+or
+https://javadoc.io/static/org.lightcouch/lightcouch/0.2.0/org/lightcouch/CouchDbProperties.html[`CouchDbProperties`]
+object.
+
+|===
+
+Additional runtime dependencies are required to use the `CouchDb` provider:
+
+include::partial$components/log4j-couchdb.adoc[]
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-couchdb-CouchDbProvider[{plugin-reference-marker} Plugin reference for `CouchDb`]
+
+[#NoSqlAppender-examples]
+=== Configuration examples
+
+To connect the NoSQL Appender to a MongoDB database, you only need to provide a connection string:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/nosql-mongo.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/database/nosql-mongo.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/nosql-mongo.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/database/nosql-mongo.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/nosql-mongo.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/database/nosql-mongo.yaml[tag=appender]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/nosql-mongo.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/database/nosql-mongo.properties[tag=appender]
+----
+====
+
+[NOTE]
+=====
+Make sure to not let `org.bson`, `com.mongodb` log to a MongoDB database on a `DEBUG` level, since that will cause recursive logging:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/nosql-mongo.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/database/nosql-mongo.xml[tag=loggers]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/nosql-mongo.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/database/nosql-mongo.json[tag=loggers]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/nosql-mongo.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/database/nosql-mongo.yaml[tag=loggers]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/nosql-mongo.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/database/nosql-mongo.properties[tag=loggers]
+----
+====
+
+<1> Remember to set the xref:manual/configuration.adoc#logger-attributes-additivity[`additivity`] configuration attribute to `false`.
+=====
+
+A similar configuration for an Apache CouchDB database looks like:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/nosql-couch.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/database/nosql-couch.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/nosql-couch.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/database/nosql-couch.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/nosql-couch.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/database/nosql-couch.yaml[tag=appender]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/nosql-couch.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/database/nosql-couch.properties[tag=appender]
+----
+====
+
+You can define additional fields to the NoSQL document using <<NoSqlAppender-element-KeyValuePair,`KeyValuePair` elements>>, for example:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/nosql-mongo-keys.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/database/nosql-mongo-keys.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/nosql-mongo-keys.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/database/nosql-mongo-keys.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/nosql-mongo-keys.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/database/nosql-mongo-keys.yaml[tag=appender]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/database/nosql-mongo-keys.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/database/nosql-mongo-keys.properties[tag=appender]
+----
+====
+
+<1> This lookup is evaluated at configuration time and gives the time when Log4j was most recently reconfigured.
+<2> This lookup is evaluated at runtime and gives the current date.
+See xref:manual/configuration.adoc#lazy-property-substitution[runtime lookup evaluation] for more details.

@@ -32,7 +32,7 @@ import org.apache.logging.log4j.util.Strings;
  * </p>
  */
 @JsonPropertyOrder({"key", "value"})
-final class MapEntry {
+public final class MapEntry {
 
     @JsonProperty
     @JacksonXmlProperty(isAttribute = true)

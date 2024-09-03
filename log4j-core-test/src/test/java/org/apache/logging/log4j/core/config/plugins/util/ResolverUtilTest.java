@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.core.config.plugins.util.PluginRegistry.PluginTest;
+import org.apache.logging.log4j.core.test.Compiler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -90,7 +91,7 @@ public class ResolverUtilTest {
     private void testExtractPathFromJarUrlNotDecodedIfFileExists(final String existingFile)
             throws MalformedURLException, UnsupportedEncodingException, URISyntaxException {
         URL url = ResolverUtilTest.class.getResource(existingFile);
-        if (!url.getProtocol().equals("jar")) {
+        if (!"jar".equals(url.getProtocol())) {
             // create fake jar: URL that resolves to existing file
             url = new URL("jar:" + url.toExternalForm() + "!/some/entry");
         }
@@ -170,7 +171,9 @@ public class ResolverUtilTest {
                 .replaceAll("customplugin", "customplugin" + suffix);
         Files.write(f.toPath(), content.getBytes());
 
-        PluginManagerPackagesTest.compile(f);
+        // compile generated source
+        // (switch off annotation processing: no need to create Log4j2Plugins.dat)
+        Compiler.compile(f, "-proc:none");
     }
 
     static void createJar(final URI jarURI, final File workDir, final File f) throws Exception {

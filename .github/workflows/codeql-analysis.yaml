@@ -30,7 +30,7 @@ permissions: read-all
 jobs:
 
   analyze:
-    uses: apache/logging-parent/.github/workflows/codeql-analysis-reusable.yaml@rel/11.1.0
+    uses: apache/logging-parent/.github/workflows/codeql-analysis-reusable.yaml@rel/11.2.0
     with:
       java-version: |
         8

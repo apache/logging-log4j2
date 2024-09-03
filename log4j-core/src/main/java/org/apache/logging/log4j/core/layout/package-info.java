@@ -22,7 +22,7 @@
  * {@link org.apache.logging.log4j.core.Layout#ELEMENT_TYPE layout}.
  */
 @Export
-@Version("2.20.1")
+@Version("2.24.0")
 package org.apache.logging.log4j.core.layout;
 
 import org.osgi.annotation.bundle.Export;

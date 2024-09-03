@@ -1,0 +1,932 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Network Appenders
+
+This section guides you through xref:manual/appenders.adoc[appenders] that use simple network protocols to transmit log events to a remote host.
+
+[#common-configuration]
+== Common concerns
+
+[#tls-configuration]
+=== TLS Configuration
+
+All network appenders support TLS (formerly known as SSL) connections.
+The TLS layer can be configured:
+
+* Either globally using configuration properties.
+See xref:manual/systemproperties.adoc#properties-transport-security[Transport Security]
+for more details.
+* Or by providing a nested <<SslConfiguration,`SSL`>> Log4j component.
+
+[#SslConfiguration]
+==== `Ssl`
+
+The `Ssl` component supports the following configuration options:
+
+[#SslConfiguration-attributes]
+.`Ssl` configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[SslConfiguration-attr-protocol]]protocol
+| `String`
+| `TLS`
+a|
+It specifies the
+https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#SSLContext[`SSLContext` algorithm]
+that https://docs.oracle.com/javase/8/docs/technotes/guides/security/jsse/JSSERefGuide.html[JSSE] will use.
+
+[NOTE]
+====
+This setting can only be used to reduce the highest version of TLS to be used.
+
+To disable older TLS versions, see
+https://docs.oracle.com/javase/8/docs/technotes/guides/security/jsse/JSSERefGuide.html#InstallationAndCustomization[JSSE documentation].
+====
+
+| [[SslConfiguration-attr-verifyHostName]]verifyHostName
+| `boolean`
+| `false`
+|
+If `true`, the host name in X509 certificate will be compared to the requested host name.
+In the case of a mismatch, the connection will fail.
+
+See also
+xref:manual/systemproperties.adoc#log4j2.sslVerifyHostName[`log4j2.sslVerifyHostName`].
+|===
+
+[#SslConfiguration-elements]
+.`Ssl` nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[SslConfiguration-element-KeyStore]]<<KeyStoreConfiguration,`KeyStore`>>
+| zero or one
+|
+It specifies the
+https://docs.oracle.com/javase/8/docs/api/java/security/KeyStore.html[`KeyStore`]
+to use for TLS client authentication.
+
+| [[SslConfiguration-element-TrustStore]]<<TrustStoreConfiguration,`TrustStore`>>
+| zero or one
+|
+It specifies the trust roots to use for TLS server authentication.
+
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-ssl-SslConfiguration[{plugin-reference-marker} Plugin reference for `SSL`]
+
+[#KeyStoreConfiguration]
+==== KeyStore
+
+The `KeyStore` is meant to contain your private keys and certificates, and determines which authentication credentials to send to the remote host.
+
+[#KeyStoreConfiguration-attributes]
+.`KeyStore` configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[KeyStoreConfiguration-attr-location]]location
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[`Path`] or
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/URI.html[`URI`]
+|
+|
+The location of the private key store.
+
+See also xref:manual/systemproperties.adoc#log4j2.keyStoreLocation[`log4j2.keyStoreLocation`].
+
+| [[KeyStoreConfiguration-attr-password]]password
+| `String`
+| `null`
+|
+The password for the private key store.
+
+See also xref:manual/systemproperties.adoc#log4j2.keyStorePassword[`log4j2.keyStorePassword`].
+
+| [[KeyStoreConfiguration-attr-passwordEnvironmentVariable]]passwordEnvironmentVariable
+| `String`
+| `null`
+|
+The name of the environment variable that contains the password for the private key store.
+
+See also xref:manual/systemproperties.adoc#log4j2.keyStorePasswordEnvironmentVariable[`log4j2.keyStorePasswordEnvironmentVariable`].
+
+| [[KeyStoreConfiguration-attr-passwordFile]]passwordFile
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[`Path`]
+| `null`
+|
+The name of a file that contains the password for the private key store.
+
+See also xref:manual/systemproperties.adoc#log4j2.keyStorePasswordFile[`log4j2.keyStorePasswordFile`].
+
+| [[KeyStoreConfiguration-attr-type]]type
+| https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/security/StandardNames.html#KeyStore[`KeyStore`]
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/security/KeyStore.html#getDefaultType--[_JVM dependent_]
+|
+The type of private key store.
+See https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/security/StandardNames.html#KeyStore[`KeyStore` standard types].
+
+See also xref:manual/systemproperties.adoc#log4j2.keyStoreType[`log4j2.keyStoreType`].
+
+| [[KeyStoreConfiguration-attr-keyManagerFactoryAlgorithm]]keyManagerFactoryAlgorithm
+| https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory[`KeyManagerFactory`]
+|https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/net/ssl/KeyManagerFactory.html#getDefaultAlgorithm--[_JVM dependent_]
+|
+Name of the https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/net/ssl/KeyManagerFactory.html[`KeyManagerFactory`] implementation to use for the private key store.
+See https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory[`KeyManagerFactory` standard names].
+
+See also xref:manual/systemproperties.adoc#log4j2.keyStoreKeyManagerFactoryAlgorithm[`log4j2.keyStoreKeyManagerFactoryAlgorithm`].
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-ssl-KeyStoreConfiguration[{plugin-reference-marker} Plugin reference for `KeyStore`]
+
+[#TrustStoreConfiguration]
+==== TrustStore
+
+The trust store is meant to contain the CA certificates you are willing to trust when a remote party presents its certificate.
+It determines whether the remote authentication credentials (and thus the connection) should be trusted.
+
+[#TrustStoreConfiguration-attributes]
+.`TrustStore` configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[TrustStoreConfiguration-attr-location]]location
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[`Path`] or
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/URI.html[`URI`]
+|
+|
+The location of the trust store.
+
+See also xref:manual/systemproperties.adoc#log4j2.trustStoreLocation[`log4j2.trustStoreLocation`].
+
+| [[TrustStoreConfiguration-attr-password]]password
+| `String`
+| `null`
+|
+The password for the trust store.
+
+See also xref:manual/systemproperties.adoc#log4j2.trustStorePassword[`log4j2.trustStorePassword`].
+
+| [[TrustStoreConfiguration-attr-passwordEnvironmentVariable]]passwordEnvironmentVariable
+| `String`
+| `null`
+|
+The name of the environment variable that contains the password for the trust store.
+
+See also xref:manual/systemproperties.adoc#log4j2.trustStorePasswordEnvironmentVariable[`log4j2.trustStorePasswordEnvironmentVariable`].
+
+| [[TrustStoreConfiguration-attr-passwordFile]]passwordFile
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[`Path`]
+| `null`
+|
+The name of a file that contains the password for the trust store.
+
+See also xref:manual/systemproperties.adoc#log4j2.trustStorePasswordFile[`log4j2.trustStorePasswordFile`].
+
+| [[TrustStoreConfiguration-attr-type]]type
+| https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/security/StandardNames.html#KeyStore[`KeyStore`]
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/security/KeyStore.html#getDefaultType--[_JVM dependent_]
+|
+The type of trust store.
+See https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/security/StandardNames.html#KeyStore[`KeyStore` standard types].
+
+See also xref:manual/systemproperties.adoc#log4j2.trustStoreType[`log4j2.trustStoreType`].
+
+| [[TrustStoreConfiguration-attr-keyManagerFactoryAlgorithm]]keyManagerFactoryAlgorithm
+| https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory[`KeyManagerFactory`]
+|https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/net/ssl/KeyManagerFactory.html#getDefaultAlgorithm--[_JVM dependent_]
+|
+Name of the https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/net/ssl/KeyManagerFactory.html[`KeyManagerFactory`] implementation to use for the trust store.
+See https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory[`KeyManagerFactory` standard names].
+
+See also xref:manual/systemproperties.adoc#log4j2.trustStoreKeyManagerFactoryAlgorithm[`log4j2.trustStoreKeyManagerFactoryAlgorithm`].
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-ssl-TrustStoreConfiguration[{plugin-reference-marker} Plugin reference for `TrustStore`]
+
+[#SslConfiguration-examples]
+==== TLS configuration example
+
+This is an example of TLS configuration:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/network/ssl.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/network/ssl.xml[tag=ssl]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/network/ssl.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/network/ssl.json[tag=ssl]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/network/ssl.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/network/ssl.yaml[tag=ssl]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/network/ssl.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/network/ssl.properties[tag=ssl]
+----
+====
+
+[#HttpAppender]
+== HTTP Appender
+
+The HTTP Appender sends log events over HTTP, by wrapping them in an HTTP request.
+The `Content-Type` HTTP header is set based on the
+link:../../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html#getContentType()[`getContentType()`]
+method of the
+<<HttpAppender-element-Layout,nested layout>>.
+Additional headers can be configured using the nested
+<<HttpAppender-element-Property,`Property` elements>>.
+
+If the appender receives a response with status code different from `2xx`, an exception is thrown.
+See also <<HttpAppender-attr-ignoreExceptions,`ignoreExceptions`>> configuration attribute.
+
+[NOTE]
+====
+The implementation uses
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/HttpURLConnection.html[`HttpURLConnection`]
+under the hood.
+====
+
+[#HttpAppender-attributes]
+.HTTP Appender configuration attributes
+[cols="1m,1,1,5"]
+|===
+| Attribute | Type | Default value | Description
+
+4+h| Required
+
+| [[HttpAppender-attr-name]]name
+| `String`
+|
+| The name of the appender.
+
+| [[HttpAppender-attr-url]]url
+| https://docs.oracle.com/javase/8/docs/api/java/net/URL.html[`URL`]
+|
+| The URL of the HTTP server.
+Only the `http` and `https` schemas are supported.
+
+4+h| Optional
+
+| [[HttpAppender-attr-connectTimeoutMillis]]connectTimeoutMillis
+| `int`
+| `0`
+|
+The connect timeout in milliseconds.
+If `0` the timeout is infinite.
+
+| [[HttpAppender-attr-readTimeoutMillis]]readTimeoutMillis
+| `int`
+| `0`
+|The socket read timeout in milliseconds.
+If `0` the timeout is infinite.
+
+| [[HttpAppender-attr-ignoreExceptions]]ignoreExceptions
+| `boolean`
+| `true`
+| If `false`, logging exception will be forwarded to the caller of the logging statement.
+Otherwise, they will be ignored.
+
+Logging exceptions are always also logged to xref:manual/status-logger.adoc[]
+
+| [[HttpAppender-attr-method]]method
+| `String`
+| `POST`
+| The HTTP method to use.
+
+| [[HttpAppender-attr-verifyHostName]]verifyHostName
+| `boolean`
+| `true`
+|
+If `true`, the host name in X509 certificate will be compared to the requested host name.
+In the case of a mismatch, the connection will fail.
+
+|===
+
+[#HttpAppender-elements]
+.HTTP Appender nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[HttpAppender-element-Filter]]xref:manual/filters.adoc[`Filter`]
+| zero or one
+|
+Allows filtering log events just before they are formatted and sent.
+
+See also xref:manual/filters.adoc#appender-stage[appender filtering stage].
+
+| [[HttpAppender-element-Layout]]xref:manual/layouts.adoc[`Layout`]
+| **one**
+|
+Formats log events.
+The choice of the layout is also responsible for the `Content-Type` header of HTTP requests.
+
+See xref:manual/layouts.adoc[] for more information.
+
+| [[HttpAppender-element-Property]]xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property[`Property`]
+| zero or more
+| Additional HTTP headers to use.
+
+The values support
+xref:manual/configuration.adoc#lazy-property-substitution[runtime property substitution]
+and are evaluated in a
+xref:manual/lookups.adoc#global-context[_global context_].
+
+| [[HttpAppender-element-SslConfiguration]]<<SslConfiguration,`SSL`>>
+| zero or one
+|
+It specifies the TLS parameters to use.
+See <<tls-configuration>> for more details.
+
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-HttpAppender[{plugin-reference-marker} Plugin reference for `HTTP`]
+
+[#HttpAppender-examples]
+=== Configuration examples
+
+Here is a sample Http Appender configuration snippet:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/network/http.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/network/http.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/network/http.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/network/http.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/network/http.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/network/http.yaml[tag=appender]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/network/http.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/network/http.properties[tag=appender]
+----
+====
+
+<1> This HTTP header is evaluated once at configuration time.
+<2> This HTTP header is evaluated at each log event.
+
+[#SmtpAppender]
+== SMTP Appender
+
+The SMTP writes log events to an e-mail service using
+https://jakarta.ee/specifications/mail/1.6/[Jakarta Mail 1.6 or higher].
+
+[IMPORTANT]
+====
+Unlike what happens with
+xref:manual/filters.adoc#appender-stage[most appenders], the SMTP does **not** discard log events that are denied by the
+<<SmtpAppender-element-Filter,`Filter`>> element.
+
+All the log events received by the appender are added to a cyclic log event buffer as context.
+If the filter accepts a message, an e-mail is sent.
+====
+
+[#SmtpAppender-attributes]
+.SMTP Appender configuration attributes
+[cols="1m,1,2,5"]
+|===
+| Attribute | Type | Default value | Description
+
+4+h| Required
+
+| [[SmtpAppender-attr-name]]name
+| `String`
+|
+| The name of the appender.
+
+4+h| Optional
+
+| [[SmtpAppender-attr-bufferSize]]bufferSize
+| `int`
+| `512`
+|
+The maximum number of log events to be buffered for inclusion in a single message.
+
+| [[SmtpAppender-attr-ignoreExceptions]]ignoreExceptions
+| `boolean`
+| `true`
+| If `false`, logging exception will be forwarded to the caller of the logging statement.
+Otherwise, they will be ignored.
+
+Logging exceptions are always also logged to xref:manual/status-logger.adoc[]
+
+| [[SmtpAppender-attr-smtpDebug]]smtpDebug
+| `boolean`
+| `false`
+|
+When set to `true` turns on the session debugging.
+In the reference implementation of Jakarta Mail
+(https://projects.eclipse.org/projects/ee4j.angus[Eclipse Angus])
+this will cause log messages to be printed on `System.out`.
+
+See the javadoc of
+https://jakarta.ee/specifications/mail/2.1/apidocs/jakarta.mail/jakarta/mail/session#setDebug(boolean)[`Session.setDebug()`]
+for more details.
+
+| [[SmtpAppender-attr-]]smtpProtocol
+| `String`
+| `smtp`
+a|
+The Jakarta Mail transport protocol.
+Most implementations provide:
+
+`smtp`::
+SMTP
+
+`smtps`::
+SMTP over TLS
+
+| [[SmtpAppender-attr-smtpHost]]smtpHost
+| `String`
+| `localhost`
+|
+The SMTP hostname to send to.
+
+| [[SmtpAppender-attr-Port]]smtpPort
+| `int`
+a|
+`25`:: for `smtp`
+`465`:: for `smtps`
+|The SMTP port to send to.
+
+| [[SmtpAppender-attr-smtpUsername]]smtpUsername
+| `String`
+|
+|
+The username used to authenticate against the SMTP server.
+
+| [[SmtpAppender-attr-smtpPassword]]smtpPassword
+| `String`
+|
+|The password used to authenticate against the SMTP server.
+
+
+4+h| https://datatracker.ietf.org/doc/html/rfc5322[RFC 822 message] fields
+
+| [[SmtpAppender-attr-from]]from
+| https://jakarta.ee/specifications/mail/2.1/apidocs/jakarta.mail/jakarta/mail/internet/internetaddress[`InternetAddress[\]`]
+|
+|
+A list of
+https://datatracker.ietf.org/doc/html/rfc2822#section-3.6.2[sender e-mail addresses].
+
+See
+https://datatracker.ietf.org/doc/html/rfc2822#section-3.4[RFC2822 Address Specification]
+for the format.
+
+| [[SmtpAppender-attr-replyTo]]replyTo
+| https://jakarta.ee/specifications/mail/2.1/apidocs/jakarta.mail/jakarta/mail/internet/internetaddress[`InternetAddress[\]`]
+|
+|
+A list of
+https://datatracker.ietf.org/doc/html/rfc2822#section-3.6.2[reply-to e-mail addresses].
+
+See
+https://datatracker.ietf.org/doc/html/rfc2822#section-3.4[RFC2822 Address Specification]
+for the format.
+
+| [[SmtpAppender-attr-to]]to
+| https://jakarta.ee/specifications/mail/2.1/apidocs/jakarta.mail/jakarta/mail/internet/internetaddress[`InternetAddress[\]`]
+|
+|
+A list of
+https://datatracker.ietf.org/doc/html/rfc2822#section-3.6.3[recipient e-mail addresses].
+
+See
+https://datatracker.ietf.org/doc/html/rfc2822#section-3.4[RFC2822 Address Specification]
+for the format.
+
+**Required**, if <<SmtpAppender-attr-cc,`cc`>> and <<SmtpAppender-attr-bcc,`bcc`>> are empty.
+
+| [[SmtpAppender-attr-cc]]cc
+| https://jakarta.ee/specifications/mail/2.1/apidocs/jakarta.mail/jakarta/mail/internet/internetaddress[`InternetAddress[\]`]
+|
+|
+A list of
+https://datatracker.ietf.org/doc/html/rfc2822#section-3.6.3[CC e-mail addresses].
+
+See
+https://datatracker.ietf.org/doc/html/rfc2822#section-3.4[RFC2822 Address Specification]
+for the format.
+
+**Required**, if <<SmtpAppender-attr-to,`to`>> and <<SmtpAppender-attr-bcc,`bcc`>> are empty.
+
+| [[SmtpAppender-attr-bcc]]bcc
+| https://jakarta.ee/specifications/mail/2.1/apidocs/jakarta.mail/jakarta/mail/internet/internetaddress[`InternetAddress[\]`]
+|
+|
+A list of
+https://datatracker.ietf.org/doc/html/rfc2822#section-3.6.3[BCC e-mail addresses].
+
+See
+https://datatracker.ietf.org/doc/html/rfc2822#section-3.4[RFC2822 Address Specification]
+for the format.
+
+**Required**, if <<SmtpAppender-attr-to,`to`>> and <<SmtpAppender-attr-cc,`cc`>> are empty.
+
+| [[SmtpAppender-attr-subject]]subject
+| `String`
+|
+|
+It specifies the subject field of the RFC 822 message.
+
+This field can contain
+xref:manual/pattern-layout.adoc#converters[pattern converters].
+|===
+
+[#SmtpAppender-elements]
+.HTTP Appender nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[SmtpAppender-element-Filter]]xref:manual/filters.adoc[`Filter`]
+| zero or one
+a|
+A filter that decides which events trigger an e-mail and which events are buffered for context.
+
+If absent, a
+xref:manual/filters.adoc#ThresholdFilter[`ThresholdFilter`]
+with default parameters will be used.
+
+| [[SmtpAppender-element-Layout]]xref:manual/layouts.adoc[`Layout`]
+| **one**
+|
+Formats log events.
+The choice of the layout is also responsible for the `Content-Type` header of e-mail message.
+
+See xref:manual/layouts.adoc[] for more information.
+
+| [[SmtpAppender-element-SslConfiguration]]<<SslConfiguration,`SSL`>>
+| zero or one
+|
+It specifies the TLS parameters to use.
+See <<tls-configuration>> for more details.
+
+|===
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-SmtpAppender[{plugin-reference-marker} Plugin reference for `SMTP`]
+
+Additional runtime dependencies are required to use the SMTP appender:
+
+include::partial$features/appender-smtp.adoc[]
+
+[#SmtpAppender-examples]
+=== Configuration examples
+
+Here is an example of SMTP Appender configuration:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/network/smtp.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/network/smtp.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/network/smtp.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/network/smtp.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/network/smtp.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/network/smtp.yaml[tag=appender]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/network/smtp.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/network/smtp.properties[tag=appender]
+----
+====
+
+<1> The `subject` attribute can use xref:manual/pattern-layout.adoc#converters[pattern converters].
+<2> An e-mail will be sent for each `AUDIT` log event.
+Additional log events will be kept for context.
+
+[#SocketAppender]
+== Socket Appender
+
+The Socket Appender that writes its output to a remote destination using TCP or UDP sockets.
+You can optionally secure communication with <<tls-configuration,TLS>>.
+
+[NOTE]
+====
+The TCP and TLS variants write to the socket as a stream and do not expect a response from the target destination.
+When the target server closes its connection, some log events may continue to appear as delivered until a
+https://docs.oracle.com/javase/8/docs/api/java/net/SocketException.html[`SocketException`]
+is raised, causing those events to be lost.
+
+If guaranteed delivery is required, a protocol that requires acknowledgments must be used.
+====
+
+[#SocketAppender-attributes]
+.Socket Appender configuration attributes
+[cols="1m,1,2,5"]
+|===
+| Attribute | Type | Default value | Description
+
+4+h| Required
+
+| [[SocketAppender-attr-host]]host
+| `String`
+|
+|
+The name or address of the system that is listening for log events.
+
+| [[SocketAppender-attr-name]]name
+| `String`
+|
+| The name of the appender.
+
+4+h| Optional
+
+| [[SocketAppender-attr-bufferedIo]]bufferedIo
+| `boolean`
+| `true`
+|
+If set to `true`, Log4j Core will format each log event in an internal buffer, before sending it to the underlying resource.
+
+See xref:manual/appenders.adoc#buffering[Buffering] for more details.
+
+| [[SocketAppender-attr-bufferSize]]bufferSize
+| `int`
+| xref:manual/systemproperties.adoc#log4j2.encoderByteBufferSize[`8192`]
+a|
+The size of the
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/ByteBuffer.html[`ByteBuffer`]
+internally used by the appender.
+
+See xref:manual/appenders.adoc#buffering[Buffering] for more details.
+
+| [[SocketAppender-attr-ignoreExceptions]]ignoreExceptions
+| `boolean`
+| `true`
+| If `false`, logging exception will be forwarded to the caller of the logging statement.
+Otherwise, they will be ignored.
+
+Logging exceptions are always also logged to xref:manual/status-logger.adoc[]
+
+| immediateFail
+| boolean
+| `true`
+|
+When set to `true`, log events will not wait to try to reconnect and will fail immediately if the socket is not
+available.
+
+| [[SocketAppender-attr-immediateFlush]]immediateFlush
+| `boolean`
+| `true`
+|
+If set to `true`, the appender will flush its internal buffer after each event.
+
+See xref:manual/appenders.adoc#buffering[Buffering] for more details.
+
+| [[SocketAppender-attr-port]]port
+| `int`
+a|
+`4560`:: for `TCP`
+`6514`:: for `SSL`
+_no default_:: for `UDP`
+|
+The port on the host that is listening for log events.
+
+**Required**
+
+| [[SocketAppender-attr-protocol]]protocol
+| _enumeration_
+| `TCP`
+|
+The network protocol to use: `UDP`, `TCP` or `SSL`.
+
+| [[SocketAppender-attr-connectTimeoutMillis]]connectTimeoutMillis
+| `int`
+| `0`
+|
+The connect timeout in milliseconds.
+If `0` the timeout is infinite.
+
+| [[SocketAppender-attr-readTimeoutMillis]]readTimeoutMillis
+| `int`
+| `0`
+|The socket read timeout in milliseconds.
+If `0` the timeout is infinite.
+|===
+
+[#SocketAppender-elements]
+.Socket Appender nested elements
+[cols="1m,1,4"]
+|===
+| Type | Multiplicity | Description
+
+| [[SocketAppender-element-Filter]]xref:manual/filters.adoc[`Filter`]
+| zero or one
+|
+Allows filtering log events just before they are formatted and sent.
+
+See also xref:manual/filters.adoc#appender-stage[appender filtering stage].
+
+| [[SocketAppender-element-Layout]]xref:manual/layouts.adoc[`Layout`]
+| zero or one
+|
+Formats log events.
+
+See xref:manual/layouts.adoc[] for more information.
+
+| [[SocketAppender-element-SslConfiguration]]<<SslConfiguration,`SSL`>>
+| zero or one
+|
+It specifies the TLS parameters to use.
+See <<tls-configuration>> for more details.
+
+|===
+
+[#SocketAppender-examples]
+=== Configuration examples
+
+The following example appends log events to a Syslog server using a TLS connection and the RFC5424 log event format:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/network/socket.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/network/socket.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/network/socket.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/network/socket.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/network/socket.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/network/socket.yaml[tag=appender]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/network/socket.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/network/socket.properties[tag=appender]
+----
+====
+
+[#SyslogAppender]
+== Syslog Appender
+
+The Syslog Appender is a utility Log4j plugin to combine a <<SocketAppender>> with either a
+xref:manual/layouts.adoc#SyslogLayout[Syslog Layout]
+or
+xref:manual/layouts.adoc#RFC5424Layout[Rfc5424 Layout]
+to provide a functionality similar to the
+https://man7.org/linux/man-pages/man3/syslog.3.html[UNIX `syslog` function].
+
+It has a single configuration property to select the layout to use:
+
+[#SyslogAppender-attributes]
+.Configuration attributes specific to Syslog Appender
+[cols="1m,1,2,5"]
+|===
+| Attribute | Type | Default value | Description
+
+| [[SyslogAppender-attr-format]]format
+| _enumeration_
+| `BSD`
+a|
+It determines the layout to use:
+
+`BSD`::
+Uses the legacy xref:manual/layouts.adoc#SyslogLayout[Syslog Layout].
+
+`RFC5242`::
+Uses the xref:manual/layouts.adoc#RFC5424Layout[Rfc5424 Layout].
+
+|===
+
+All the remaining configuration attributes and nested elements are inherited from
+<<SocketAppender,Socket Appender>> and the chosen layout.
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-SyslogAppender[{plugin-reference-marker} Plugin reference for `Syslog`]
+
+[#SyslogAppender-examples]
+=== Configuration examples
+
+The following configuration snippet creates the same appender as the <<SocketAppender-examples,Socket Appender example above>>:
+
+[tabs]
+====
+XML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/network/syslog.xml[`log4j2.xml`]
+[source,xml,indent=0]
+----
+include::example$manual/appenders/network/syslog.xml[tag=appender]
+----
+
+JSON::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/network/syslog.json[`log4j2.json`]
+[source,json,indent=0]
+----
+include::example$manual/appenders/network/syslog.json[tag=appender]
+----
+
+YAML::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/network/syslog.yaml[`log4j2.yaml`]
+[source,yaml,indent=0]
+----
+include::example$manual/appenders/network/syslog.yaml[tag=appender]
+----
+
+Properties::
++
+.Snippet from an example {antora-examples-url}/manual/appenders/network/syslog.properties[`log4j2.properties`]
+[source,properties,indent=0]
+----
+include::example$manual/appenders/network/syslog.properties[tag=appender]
+----
+====
+
+<1> By setting the `format` attribute to `RFC5424`, the xref:manual/layouts.adoc#RFC5424Layout[`Rfc5424Layout`] will be used.
+The remaining attributes are either attributes of <<SocketAppender,Socket Appender>> or the `Rfc5424Layout`.

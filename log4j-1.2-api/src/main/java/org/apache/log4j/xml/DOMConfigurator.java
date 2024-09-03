@@ -32,14 +32,17 @@ import java.util.Properties;
 import javax.xml.parsers.FactoryConfigurationError;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.config.PropertySetter;
+import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
 import org.apache.logging.log4j.core.util.IOUtils;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.w3c.dom.Element;
 
 /**
@@ -66,20 +69,34 @@ import org.w3c.dom.Element;
  */
 public class DOMConfigurator {
 
+    private static boolean isFullCompatibilityEnabled() {
+        return PropertiesUtil.getProperties().getBooleanProperty(ConfigurationFactory.LOG4J1_EXPERIMENTAL);
+    }
+
+    private static void warnFullCompatibilityDisabled() {
+        LogLog.warn(
+                "Ignoring `DOMConfigurator` call, since `log4j1.compatibility` is not enabled.\n"
+                        + "See https://logging.staged.apache.org/log4j/2.x/migrate-from-log4j1.html#log4j1.compatibility for details.");
+    }
+
     public static void configure(final Element element) {}
 
     @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN", justification = "The filename comes from a system property.")
     public static void configure(final String fileName) throws FactoryConfigurationError {
-        final Path path = Paths.get(fileName);
-        try (final InputStream inputStream = Files.newInputStream(path)) {
-            final ConfigurationSource source = new ConfigurationSource(inputStream, path);
-            final LoggerContext context = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
-            Configuration configuration;
-            configuration = new XmlConfigurationFactory().getConfiguration(context, source);
-            LogManager.getRootLogger().removeAllAppenders();
-            Configurator.reconfigure(configuration);
-        } catch (final IOException e) {
-            throw new FactoryConfigurationError(e);
+        if (isFullCompatibilityEnabled()) {
+            final Path path = Paths.get(fileName);
+            try (final InputStream inputStream = Files.newInputStream(path)) {
+                final ConfigurationSource source = new ConfigurationSource(inputStream, path);
+                final LoggerContext context = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
+                Configuration configuration;
+                configuration = new XmlConfigurationFactory().getConfiguration(context, source);
+                LogManager.getRootLogger().removeAllAppenders();
+                Configurator.reconfigure(configuration);
+            } catch (final IOException e) {
+                throw new FactoryConfigurationError(e);
+            }
+        } else {
+            warnFullCompatibilityDisabled();
         }
     }
 
@@ -93,9 +110,13 @@ public class DOMConfigurator {
     }
 
     public static void configureAndWatch(final String fileName, final long delay) {
-        final XMLWatchdog xdog = new XMLWatchdog(fileName);
-        xdog.setDelay(delay);
-        xdog.start();
+        if (isFullCompatibilityEnabled()) {
+            final XMLWatchdog xdog = new XMLWatchdog(fileName);
+            xdog.setDelay(delay);
+            xdog.start();
+        } else {
+            warnFullCompatibilityDisabled();
+        }
     }
 
     public static Object parseElement(
@@ -111,8 +132,7 @@ public class DOMConfigurator {
 
     private void doConfigure(final ConfigurationSource source) {
         final LoggerContext context = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
-        Configuration configuration;
-        configuration = new XmlConfigurationFactory().getConfiguration(context, source);
+        final Configuration configuration = new XmlConfigurationFactory().getConfiguration(context, source);
         Configurator.reconfigure(configuration);
     }
 
@@ -120,21 +140,29 @@ public class DOMConfigurator {
 
     public void doConfigure(final InputStream inputStream, final LoggerRepository repository)
             throws FactoryConfigurationError {
-        try {
-            doConfigure(new ConfigurationSource(inputStream));
-        } catch (final IOException e) {
-            throw new FactoryConfigurationError(e);
+        if (isFullCompatibilityEnabled()) {
+            try {
+                doConfigure(new ConfigurationSource(inputStream));
+            } catch (final IOException e) {
+                throw new FactoryConfigurationError(e);
+            }
+        } else {
+            warnFullCompatibilityDisabled();
         }
     }
 
     public void doConfigure(final Reader reader, final LoggerRepository repository) throws FactoryConfigurationError {
-        try {
-            final StringWriter sw = new StringWriter();
-            IOUtils.copy(reader, sw);
-            doConfigure(new ConfigurationSource(
-                    new ByteArrayInputStream(sw.toString().getBytes(StandardCharsets.UTF_8))));
-        } catch (final IOException e) {
-            throw new FactoryConfigurationError(e);
+        if (isFullCompatibilityEnabled()) {
+            try {
+                final StringWriter sw = new StringWriter();
+                IOUtils.copy(reader, sw);
+                doConfigure(new ConfigurationSource(
+                        new ByteArrayInputStream(sw.toString().getBytes(StandardCharsets.UTF_8))));
+            } catch (final IOException e) {
+                throw new FactoryConfigurationError(e);
+            }
+        } else {
+            warnFullCompatibilityDisabled();
         }
     }
 
@@ -143,13 +171,17 @@ public class DOMConfigurator {
     }
 
     public void doConfigure(final URL url, final LoggerRepository repository) {
-        try {
-            final URLConnection connection = UrlConnectionFactory.createConnection(url);
-            try (final InputStream inputStream = connection.getInputStream()) {
-                doConfigure(new ConfigurationSource(inputStream, url));
+        if (isFullCompatibilityEnabled()) {
+            try {
+                final URLConnection connection = UrlConnectionFactory.createConnection(url);
+                try (final InputStream inputStream = connection.getInputStream()) {
+                    doConfigure(new ConfigurationSource(inputStream, url));
+                }
+            } catch (final IOException e) {
+                throw new FactoryConfigurationError(e);
             }
-        } catch (final IOException e) {
-            throw new FactoryConfigurationError(e);
+        } else {
+            warnFullCompatibilityDisabled();
         }
     }
 }

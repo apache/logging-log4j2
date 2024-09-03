@@ -32,14 +32,13 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MessageFormatMessage;
 import org.apache.logging.log4j.message.ParameterizedMessage;
+import org.apache.logging.log4j.message.StringFormattedMessage;
+import org.apache.logging.log4j.message.StructuredDataMessage;
 
 /**
- * This filter returns the onMatch result if the message matches the regular expression.
- *
- * The "useRawMsg" attribute can be used to indicate whether the regular expression should be applied to the result of
- * calling Message.getMessageFormat (true) or Message.getFormattedMessage() (false). The default is false.
- *
+ * A filter that matches the given regular expression pattern against messages.
  */
 @Plugin(name = "RegexFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
 public final class RegexFilter extends AbstractFilter {
@@ -78,16 +77,27 @@ public final class RegexFilter extends AbstractFilter {
         if (msg == null) {
             return onMismatch;
         }
-        final String text = useRawMessage ? msg.getFormat() : msg.getFormattedMessage();
+        final String text = targetMessageTest(msg);
         return filter(text);
     }
 
     @Override
     public Result filter(final LogEvent event) {
-        final String text = useRawMessage
-                ? event.getMessage().getFormat()
-                : event.getMessage().getFormattedMessage();
+        final String text = targetMessageTest(event.getMessage());
         return filter(text);
+    }
+
+    // While `Message#getFormat()` is broken in general, it still makes sense for certain types.
+    // Hence, suppress the deprecation warning.
+    @SuppressWarnings("deprecation")
+    private String targetMessageTest(final Message message) {
+        return useRawMessage
+                        && (message instanceof ParameterizedMessage
+                                || message instanceof StringFormattedMessage
+                                || message instanceof MessageFormatMessage
+                                || message instanceof StructuredDataMessage)
+                ? message.getFormat()
+                : message.getFormattedMessage();
     }
 
     private Result filter(final String msg) {
@@ -114,7 +124,7 @@ public final class RegexFilter extends AbstractFilter {
      * @param patternFlags
      *        An array of Strings where each String is a {@link Pattern#compile(String, int)} compilation flag.
      * @param useRawMsg
-     *        If true, the raw message will be used, otherwise the formatted message will be used.
+     *        If {@code true}, for {@link ParameterizedMessage}, {@link StringFormattedMessage}, and {@link MessageFormatMessage}, the message format pattern; for {@link StructuredDataMessage}, the message field will be used as the match target.
      * @param match
      *        The action to perform when a match occurs.
      * @param mismatch

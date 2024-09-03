@@ -50,7 +50,7 @@ public interface PropertySource {
      *
      * @param action action to perform on each key/value pair
      */
-    default void forEach(BiConsumer<String, String> action) {}
+    default void forEach(final BiConsumer<String, String> action) {}
 
     /**
      * Returns the list of all property names.
@@ -68,7 +68,7 @@ public interface PropertySource {
      * @param tokens list of property name tokens
      * @return a normalized property name using the given tokens
      */
-    default CharSequence getNormalForm(Iterable<? extends CharSequence> tokens) {
+    default CharSequence getNormalForm(final Iterable<? extends CharSequence> tokens) {
         return null;
     }
 
@@ -78,7 +78,7 @@ public interface PropertySource {
      * @return The value or null;
      * @since 2.13.0
      */
-    default String getProperty(String key) {
+    default String getProperty(final String key) {
         return null;
     }
 
@@ -88,7 +88,7 @@ public interface PropertySource {
      * @return The value or null;
      * @since 2.13.0
      */
-    default boolean containsProperty(String key) {
+    default boolean containsProperty(final String key) {
         return false;
     }
 
@@ -99,6 +99,8 @@ public interface PropertySource {
      */
     class Comparator implements java.util.Comparator<PropertySource>, Serializable {
         private static final long serialVersionUID = 1L;
+
+        static final Comparator INSTANCE = new Comparator();
 
         @Override
         public int compare(final PropertySource o1, final PropertySource o2) {

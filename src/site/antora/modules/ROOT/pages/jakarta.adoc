@@ -34,7 +34,7 @@ but events related to the application emitted by a **shared** library (e.g. JPA 
 To diagnose a problem with the application, you might need to look into multiple log files.
 Separate log files::
 Each application must use a **different** log file to prevent problems with concurrent access to the same file by multiple applications.
-Problems may arise, especially if xref:manual/appenders.adoc#rollingfileappender[rolling file appender] is used.
+Problems may arise, especially if a xref:manual/appenders/rolling-file.adoc[rolling file appender] is used.
 Lifecycle::
 Web applications have a different lifecycle from the application server.
 Additional care is required to stop Log4j Core when the application is stopped.
@@ -73,7 +73,7 @@ an additional **Log4j Web** artifact is provided.
 
 To install Log4j Web in your web application, you need to add it as a runtime dependency:
 
-include::partial$manual/dependencies-log4j-jakarta-web.adoc[]
+include::partial$features/servlet-support.adoc[]
 
 If you are writing a Servlet 3.0 or later application, Apache Log4j Web will register a
 https://jakarta.ee/specifications/servlet/5.0/apidocs/jakarta/servlet/servletcontainerinitializer[`ServletContainerInitializer`]
@@ -267,11 +267,17 @@ include::example$manual/webapp/AsyncServlet.java[tag=manual]
 [#log4j-taglib]
 === Logging in JavaServer Pages
 
+[WARNING]
+====
+*The Log4j Tag library is planned to be removed in the next major release!*
+If you are using this library, please get in touch with the Log4j maintainers using link:{logging-services-url}/support.html[the official support channels].
+====
+
 To help users add logging statements to JavaServer Pages, Log4j provides a JSP tag library modeled after the
 https://web.archive.org/web/20140215182415/http://jakarta.apache.org/taglibs/log/[Jakarta Commons Log Tag library].
 To use it, you need to add the following runtime dependency to your web application project:
 
-include::partial$manual/dependencies-log4j-taglib.adoc[]
+include::partial$components/log4j-taglib.adoc[]
 
 and add the following declaration to your JSP pages:
 
@@ -540,7 +546,7 @@ include::example$manual/webapp/log4j2-single.properties[tag=global]
 
 * Logging events to a separate appender for each application.
 In this case, you can use
-xref:manual/appenders.adoc#RoutingAppender[routing appender]
+xref:manual/appenders/delegating.adoc#RoutingAppender[routing appender]
 to separate the events.
 This kind of configuration might be used on the development server together with the
 xref:manual/pattern-layout.adoc[human-friendly Pattern Layout]:

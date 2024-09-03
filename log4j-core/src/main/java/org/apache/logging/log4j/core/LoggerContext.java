@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.apache.logging.log4j.core.jmx.internal.JmxUtil.isJmxDisabled;
 import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.SHUTDOWN_HOOK_MARKER;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -370,12 +371,7 @@ public class LoggerContext extends AbstractLifeCycle
             }
 
             this.setStopping();
-            try {
-                Server.unregisterLoggerContext(getName()); // LOG4J2-406, LOG4J2-500
-            } catch (final LinkageError | Exception e) {
-                // LOG4J2-1506 Hello Android, GAE
-                LOGGER.error("Unable to unregister MBeans", e);
-            }
+            unregisterJmxBeans();
             if (shutdownCallback != null) {
                 shutdownCallback.cancel();
                 shutdownCallback = null;
@@ -405,6 +401,17 @@ public class LoggerContext extends AbstractLifeCycle
         }
         LOGGER.debug("Stopped LoggerContext[name={}, {}] with status {}", getName(), this, true);
         return true;
+    }
+
+    private void unregisterJmxBeans() {
+        if (!isJmxDisabled()) {
+            try {
+                Server.unregisterLoggerContext(getName()); // LOG4J2-406, LOG4J2-500
+            } catch (final LinkageError | Exception error) {
+                // LOG4J2-1506 Hello Android, GAE
+                LOGGER.error("Unable to unregister MBeans", error);
+            }
+        }
     }
 
     /**
@@ -638,18 +645,25 @@ public class LoggerContext extends AbstractLifeCycle
 
             firePropertyChangeEvent(new PropertyChangeEvent(this, PROPERTY_CONFIG, prev, config));
 
-            try {
-                Server.reregisterMBeansAfterReconfigure();
-            } catch (final LinkageError | Exception e) {
-                // LOG4J2-716: Android has no java.lang.management
-                LOGGER.error("Could not reconfigure JMX", e);
-            }
+            registerJmxBeans();
+
             // AsyncLoggers update their nanoClock when the configuration changes
             Log4jLogEvent.setNanoClock(configuration.getNanoClock());
 
             return prev;
         } finally {
             configLock.unlock();
+        }
+    }
+
+    private static void registerJmxBeans() {
+        if (!isJmxDisabled()) {
+            try {
+                Server.reregisterMBeansAfterReconfigure();
+            } catch (final LinkageError | Exception error) {
+                // LOG4J2-716: Android has no java.lang.management
+                LOGGER.error("Could not reconfigure JMX", error);
+            }
         }
     }
 

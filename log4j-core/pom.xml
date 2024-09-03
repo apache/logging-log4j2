@@ -53,6 +53,8 @@
       -->
     <bnd-multi-release>true</bnd-multi-release>
     <bnd-extra-package-options>
+      <!-- Annotations only -->
+      org.jspecify.*;resolution:=optional,
       <!-- External optional dependencies -->
       com.conversantmedia.util.concurrent;resolution:=optional;
       com.fasterxml.jackson.*;resolution:=optional,
@@ -70,8 +72,12 @@
       javax.lang.model.*;resolution:=optional,
       javax.tools;resolution:=optional,
       <!-- `java.sql`, which depends on `java.logging` is optional -->
+      java.sql;resolution:=optional,
       javax.sql;resolution:=optional,
       java.util.logging;resolution:=optional,
+      <!-- `java.management` is optional -->
+      java.lang.management;resolution:=optional,
+      javax.management.*;resolution:=optional,
       <!-- `java.naming` is optional -->
       javax.naming;resolution:=optional
     </bnd-extra-package-options>
@@ -88,6 +94,7 @@
       com.fasterxml.jackson.databind;transitive=false,
       com.fasterxml.jackson.dataformat.xml;transitive=false,
       com.fasterxml.jackson.dataformat.yaml;transitive=false,
+      java.management;transitive=false;static=true,
       java.naming;transitive=false,
       org.apache.commons.csv;transitive=false,
       org.fusesource.jansi;transitive=false,
@@ -121,6 +128,11 @@
       <artifactId>javax.mail-api</artifactId>
       <scope>provided</scope>
       <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.jspecify</groupId>
+      <artifactId>jspecify</artifactId>
+      <scope>provided</scope>
     </dependency>
     <!-- Used for OSGi bundle support -->
     <dependency>

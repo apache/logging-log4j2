@@ -15,15 +15,13 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="off" packages="customplugin">
+<Configuration packages="customplugin">
   <Appenders>
-    <List name="List">
-      <FixedString fixedString="abc123XYZ" />
-    </List>
+    <Console name="CONSOLE"/>
   </Appenders>
   <Loggers>
-    <Root level="trace">
-      <AppenderRef ref="List" />
+    <Root level="INFO">
+      <AppenderRef ref="CONSOLE" />
     </Root>
   </Loggers>
 </Configuration>

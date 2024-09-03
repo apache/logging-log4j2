@@ -49,7 +49,6 @@
     <bnd-extra-module-options>
       <!-- Non-transitive static modules -->
       junit;transitive=false,
-      org.assertj.core;transitive=false,
       org.hamcrest;transitive=false,
       org.junit.jupiter.api;transitive=false,
       org.junitpioneer;transitive=false,
@@ -73,10 +72,6 @@
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -113,6 +108,10 @@
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
     </dependency>
     <!-- Required for JSON support -->
     <dependency>

@@ -32,7 +32,7 @@ Check out the xref:manual/performance.adoc[Performance] page for details.
 
 Extensibility::
 Log4j contains a fully-fledged xref:manual/plugins.adoc[plugin support] that users can leverage to extend functionality.
-You can easily add your components (layouts, appenders, filters, etc.) or customize existing ones (e.g., adding new directives to xref:manual/extending.adoc#PatternConverters[Pattern Layout] or xref:manual/json-template-layout.adoc#extending[JSON Template Layout]).
+You can easily add your components (layouts, appenders, filters, etc.) or customize existing ones (e.g., adding new directives to xref:manual/pattern-layout.adoc#extending[Pattern Layout] or xref:manual/json-template-layout.adoc#extending[JSON Template Layout]).
 Check out the xref:manual/extending.adoc[Extending Log4j] page.
 
 Powerful API::

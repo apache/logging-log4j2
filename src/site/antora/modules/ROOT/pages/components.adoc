@@ -1,0 +1,585 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Components
+
+The Log4j 2 distribution contains the following artifacts:
+
+[#log4j-bom]
+== `log4j-bom`
+
+A public Bill-of-Materials that manages all the versions of Log4j artifacts.
+You can import the BOM in your build tool of preference:
+
+include::partial$components/log4j-bom.adoc[]
+
+[#log4j]
+== `log4j`
+
+A private Bill-of-Materials used during the compilation and testing of the project.
+
+[CAUTION]
+====
+Do not use this artifact, since it also manages versions of **third-party** projects.
+Use <<log4j-bom>> instead.
+====
+
+[#log4j-12-api]
+== `log4j-1.2-api`
+
+[cols="1h,5"]
+|===
+| JPMS module
+| `org.apache.log4j`
+|===
+
+The `log4j-1.2-api` artifact contains several tools to help users migrate from Log4j 1 to Log4j 2.
+
+See xref:migrate-from-log4j1.adoc#option-1-use-the-log4j-1-x-bridge-log4j-1-2-api[Log4j 1 to Log4j 2 Bridge] for details.
+
+include::partial$components/log4j-1.2-api.adoc[]
+
+[#log4j-api]
+== `log4j-api`
+
+[cols="1h,5"]
+|===
+| JPMS module
+| `org.apache.logging.log4j`
+|===
+
+The `log4j-api` artifact contains the xref:manual/api.adoc[].
+
+See xref:manual/api.adoc[] for more details.
+
+include::partial$components/log4j-api.adoc[]
+
+[#log4j-api-test]
+== `log4j-api-test`
+
+[cols="1h,5"]
+|===
+| JPMS module
+| `org.apache.logging.log4j.test`
+|===
+
+The `log4j-api-test` artifact contains test fixtures useful to test Log4j API implementations.
+
+include::partial$components/log4j-api-test.adoc[]
+
+[#log4j-appserver]
+== `log4j-appserver`
+
+[cols="1h,5"]
+|===
+| JPMS module
+| `org.apache.logging.log4j.appserver`
+|===
+
+The `log4j-appserver` artifact contains:
+
+* A bridge from Tomcat JULI to the Log4j API.
+See xref:jakarta.adoc#replace-tomcat[Replacing Tomcat logging system] for more information.
+* A bridge from Jetty 9 logging API to the Log4j API.
+See xref:jakarta.adoc#replace-jetty[Replacing Jetty logging system] for more information
+
+include::partial$components/log4j-appserver.adoc[]
+
+[#log4j-cassandra]
+== `log4j-cassandra`
+
+[cols="1h,5"]
+|===
+| JPMS module
+| `org.apache.logging.log4j.cassandra`
+|===
+
+The `log4j-cassandra` artifact contains an xref:manual/appenders.adoc[appender] for the
+https://cassandra.apache.org/_/index.html[Apache Cassandra]
+database.
+
+See xref:manual/appenders/database.adoc#CassandraAppender[Cassandra Appender] for more information.
+
+include::partial$components/log4j-cassandra.adoc[]
+
+[#log4j-core]
+== `log4j-core`
+
+[cols="1h,5"]
+|===
+| JPMS module
+| `org.apache.logging.log4j.core`
+|===
+
+The `log4j-core` artifact contains the reference implementation of the xref:manual/api.adoc[].
+
+See xref:manual/implementation.adoc[] for more details.
+
+include::partial$components/log4j-core.adoc[]
+
+[#log4j-core-test]
+== `log4j-core-test`
+
+[cols="1h,5"]
+|===
+| JPMS module
+| `org.apache.logging.log4j.core.test`
+|===
+
+The `log4j-core-test` artifact contains test fixtures useful to xref:manual/extending.adoc[extend the reference implementation].
+
+include::partial$components/log4j-core-test.adoc[]
+
+[#log4j-couchdb]
+== `log4j-couchdb`
+
+[cols="1h,5"]
+|===
+| JPMS module
+| `org.apache.logging.log4j.couchdb`
+|===
+
+The `log4j-couchdb` artifact contains a provider to connect the
+xref:manual/appenders/database.adoc#NoSqlAppender[NoSQL Appender]
+with the
+https://couchdb.apache.org/[Apache CouchDB]
+database.
+
+See
+xref:manual/appenders/database.adoc#CouchDbProvider[CouchDB provider]
+for more information.
+
+include::partial$components/log4j-couchdb.adoc[]
+
+[#log4j-docker]
+== `log4j-docker`
+
+[cols="1h,5"]
+|===
+| JPMS module
+| `org.apache.logging.log4j.docker`
+|===
+
+The `log4j-docker` artifact contains a xref:manual/lookups.adoc[lookup] for applications running in a
+https://www.docker.com/[Docker container]
+
+See xref:manual/lookups.adoc#DockerLookup[Docker lookup] for more information.
+
+include::partial$components/log4j-docker.adoc[]
+
+[#log4j-flume-ng]
+== `log4j-flume-ng`
+
+[cols="1h,5"]
+|===
+| JPMS module
+| `org.apache.logging.log4j.flume`
+|===
+
+The `log4j-flume-ng` artifact contains an xref:manual/appenders.adoc[appender] for the
+https://flume.apache.org/[Apache Flume]
+log data collection service.
+
+See
+xref:manual/appenders/message-queue.adoc#FlumeAppender[Flume Appender]
+for more information.
+
+include::partial$components/log4j-flume-ng.adoc[]
+
+[#log4j-iostreams]
+== `log4j-iostreams`
+
+[cols="1h,5"]
+|===
+| JPMS module
+| `org.apache.logging.log4j.iostreams`
+|===
+
+The `log4j-iostreams` artifact is an extension of the xref:manual/api.adoc[] to connect with legacy stream-based logging methods.
+
+See xref:log4j-iostreams.adoc[] for more information.
+
+include::partial$components/log4j-iostreams.adoc[]
+
+[#log4j-jakarta-smtp]
+== `log4j-jakarta-smtp`
+
+|===
+| JPMS module
+| `org.apache.logging.log4j.jakarta.smtp`
+|===
+
+The `log4j-jakarta-smtp` contains an xref:manual/appenders.adoc[appender] for the
+https://jakarta.ee/specifications/mail/2.0/[Jakarta Mail 2.0 API]
+and later versions.
+
+See xref:manual/appenders/network.adoc#SmtpAppender[SMTP Appender] for more information.
+
+include::partial$components/log4j-jakarta-smtp.adoc[]
+
+[#log4j-jakarta-web]
+== `log4j-jakarta-web`
+
+|===
+| JPMS module
+| `org.apache.logging.log4j.jakarta.web`
+|===
+
+The `log4j-jakarta-web` contains multiple utils to run your applications in a
+https://jakarta.ee/specifications/servlet/5.0/[Jakarta Servlet 5.0]
+or later environment:
+
+* It synchronizes the lifecycle of Log4j Core and your application.
+See xref:jakarta.adoc#log4j-jakarta-web[Integrating with web applications] for more details.
+
+* It contains a xref:manual/lookups.adoc[lookup] for the data contained in a Servlet context.
+See xref:manual/lookups.adoc#WebLookup[Web Lookup] for more details.
+
+* It contains an xref:manual/appenders.adoc[appender] to forward log event to a Servlet.
+See xref:manual/appenders.adoc#ServletAppender[Servlet Appender] for more details.
+
+[IMPORTANT]
+====
+Don't deploy this artifact together with <<log4j-web>>.
+====
+
+include::partial$components/log4j-jakarta-web.adoc[]
+
+[#log4j-jcl]
+== `log4j-jcl`
+
+|===
+| JPMS module
+| `org.apache.logging.log4j.jcl`
+|===
+
+The `log4j-jcl` artifact contains a bridge from
+https://commons.apache.org/proper/commons-logging/[Apache Commons Logging]
+and the
+xref:manual/api.adoc[].
+
+See xref:manual/installation.adoc#impl-core-bridge-jcl[Installing JCL-to-Log4j API bridge] for more details.
+
+include::partial$components/log4j-jcl.adoc[]
+
+[#log4j-jdbc-dbcp2]
+== `log4j-jdbc-dbcp2`
+
+|===
+| JPMS module
+| `org.apache.logging.log4j.jdbc.dbcp2`
+|===
+
+The `log4j-jdbc-dbcp2` artifact contains a data source for the
+xref:manual/appenders/database.adoc#JdbcAppender[JDBC Appender]
+that uses
+https://commons.apache.org/proper/commons-dbcp/[Apache Commons DBCP].
+
+See xref:manual/appenders/database.adoc#PoolingDriverConnectionSource[`PoolingDriver` connection source] for more details.
+
+include::partial$components/log4j-jdbc-dbcp2.adoc[]
+
+[#log4j-jpa]
+== `log4j-jpa`
+
+|===
+| JPMS module
+| `org.apache.logging.log4j.jpa`
+|===
+
+The `log4j-jpa` artifact contains an xref:manual/appenders.adoc[appender] for the
+https://jakarta.ee/specifications/persistence/2.2/[Jakarta Persistence 2.2 API]
+or Java Persistence API.
+
+See xref:manual/appenders/database.adoc#JpaAppender[JPA Appender] for more details.
+
+include::partial$components/log4j-jpa.adoc[]
+
+[#log4j-jpl]
+== `log4j-jpl`
+
+|===
+| JPMS module
+| `org.apache.logging.log4j.jpl`
+|===
+
+The `log4j-jpl` artifact contains a bridge from
+https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/System.Logger.html[`System.Logger`]
+to the xref:manual/api.adoc[].
+
+See xref:manual/installation.adoc#impl-core-bridge-jpl[Installing the JPL-to-Log4j API bridge] for more details.
+
+include::partial$components/log4j-jpl.adoc[]
+
+[#log4j-jul]
+== `log4j-jul`
+
+|===
+| JPMS module
+| `org.apache.logging.log4j.jul`
+|===
+
+The `log4j-jul` artifact contains a bridge from
+https://docs.oracle.com/javase/8/docs/api/java/util/logging/package-summary.html[`java.util.logging`]
+to the xref:manual/api.adoc[].
+
+See xref:manual/installation.adoc#impl-core-bridge-jul[Installing the JUL-to-Log4j API bridge] for more details.
+
+[IMPORTANT]
+====
+Don't deploy this artifact together with <<log4j-to-jul>>.
+====
+
+include::partial$components/log4j-jul.adoc[]
+
+[#log4j-json-template-layout]
+== `log4j-json-template-layout`
+
+|===
+| JPMS module
+| `org.apache.logging.log4j.json.template.layout`
+|===
+
+The `log4j-json-template-layout` contains a highly extensible and configurable
+xref:manual/layouts.adoc[layout]
+to format log events as JSON.
+
+See xref:manual/json-template-layout.adoc[] for details.
+
+include::partial$components/log4j-json-template-layout.adoc[]
+
+[#log4j-mongodb]
+== `log4j-mongodb`
+
+[cols="1h,5"]
+|===
+| JPMS module
+| `org.apache.logging.log4j.mongodb`
+|===
+
+The `log4j-mongodb` artifact contains a provider to connect the
+xref:manual/appenders/database.adoc#NoSqlAppender[NoSQL Appender]
+with the
+https://www.mongodb.com/[MongoDB]
+database.
+It is based on the latest version of the Java driver.
+
+See
+xref:manual/appenders/database.adoc#MongoDbProvider[MongoDb provider]
+for more information.
+
+include::partial$components/log4j-mongodb.adoc[]
+
+[#log4j-mongodb4]
+== `log4j-mongodb4`
+
+[cols="1h,5"]
+|===
+| JPMS module
+| `org.apache.logging.log4j.mongodb4`
+|===
+
+The `log4j-mongodb` artifact contains a provider to connect the
+xref:manual/appenders/database.adoc#NoSqlAppender[NoSQL Appender]
+with the
+https://www.mongodb.com/[MongoDB]
+database.
+It is based on version 4.x of the Java driver.
+
+See
+xref:manual/appenders/database.adoc#MongoDb4Provider[MongoDb4 provider]
+for more information.
+
+include::partial$components/log4j-mongodb4.adoc[]
+
+[#log4j-slf4j2-impl]
+== `log4j-slf4j2-impl`
+
+[cols="1h,5"]
+|===
+| JPMS module
+| `org.apache.logging.log4j.slf4j2.impl`
+|===
+
+The `log4j-slf4j2-impl` artifact contains a bridge from
+https://www.slf4j.org/[SLF4J 2 API]
+to the xref:manual/api.adoc[].
+
+See xref:manual/installation.adoc#impl-core-bridge-slf4j[Installing the SLF4J-to-Log4j API bridge] for more details.
+
+[IMPORTANT]
+====
+Don't deploy this artifact together with either <<log4j-slf4j-impl>> or <<log4j-to-slf4j>>.
+====
+
+include::partial$components/log4j-slf4j2-impl.adoc[]
+
+[#log4j-slf4j-impl]
+== `log4j-slf4j-impl`
+
+[cols="1h,5"]
+|===
+| JPMS module
+| `org.apache.logging.log4j.slf4j.impl`
+|===
+
+The `log4j-slf4j-impl` artifact contains a bridge from
+https://www.slf4j.org/[SLF4J 1 API]
+to the xref:manual/api.adoc[].
+
+See xref:manual/installation.adoc#impl-core-bridge-slf4j[Installing the SLF4J-to-Log4j API bridge] for more details.
+
+[IMPORTANT]
+====
+Don't deploy this artifact together with either <<log4j-slf4j2-impl>> or <<log4j-to-slf4j>>.
+====
+
+include::partial$components/log4j-slf4j-impl.adoc[]
+
+[#log4j-spring-boot]
+== `log4j-spring-boot`
+
+[cols="1h,5"]
+|===
+| JPMS module
+| `org.apache.logging.log4j.spring.boot`
+|===
+
+The `log4j-spring-boot` artifact contains multiple utils to integrate with
+https://spring.io/projects/spring-framework[Spring Framework 5.x]
+or earlier versions and
+https://spring.io/projects/spring-boot[Spring Boot 2.x]
+or earlier versions.
+
+* It provides a xref:manual/systemproperties.adoc#property-sources[property source].
+See xref:manual/systemproperties.adoc#SpringPropertySource[Spring Property source] for more details.
+* It provides a xref:manual/lookups.adoc[lookup].
+See xref:manual/lookups.adoc#SpringBootLookup[Spring lookup] for more details.
+* It provides an xref:manual/configuration.adoc#arbiters[arbiter].
+See xref:log4j-spring-boot.adoc[Spring arbiter] for more details.
+* It provides an alternative
+https://docs.spring.io/spring-boot/api/java/org/springframework/boot/logging/LoggingSystem.html[`LoggingSystem`]
+implementation.
+See xref:log4j-spring-boot.adoc[] for more details.
+
+include::partial$components/log4j-spring-boot.adoc[]
+
+[#log4j-spring-cloud-config-client]
+== `log4j-spring-cloud-config-client`
+
+[cols="1h,5"]
+|===
+| JPMS module
+| `org.apache.logging.log4j.spring.cloud.config.client`
+|===
+
+The `log4j-spring-cloud-config-client` provides utils to integrate with
+https://spring.io/projects/spring-cloud-config[Spring Cloud Config 3.x]
+or earlier versions.
+
+See xref:log4j-spring-cloud-config-client.adoc[] for more details.
+
+include::partial$components/log4j-spring-cloud-config-client.adoc[]
+
+[#log4j-taglib]
+== `log4j-taglib`
+
+[cols="1h,5"]
+|===
+| JPMS module
+| `org.apache.logging.log4j.taglib`
+|===
+
+The `log4j-taglib` provides a
+https://jakarta.ee/specifications/pages/2.3/[Jakarta Servlet Pages 2.3]
+or earlier library that logs to the xref:manual/api.adoc[].
+
+See xref:jakarta.adoc#log4j-taglib[Log4j Taglib] for more details.
+
+include::partial$components/log4j-taglib.adoc[]
+
+[#log4j-to-jul]
+== `log4j-to-jul`
+
+|===
+| JPMS module
+| `org.apache.logging.log4j.to.jul`
+|===
+
+The `log4j-jul` artifact contains an implementation of the
+xref:manual/api.adoc[]
+that logs to
+https://docs.oracle.com/javase/8/docs/api/java/util/logging/package-summary.html[`java.util.logging`].
+
+See xref:manual/installation.adoc#impl-jul[Installing JUL] for more details.
+
+[IMPORTANT]
+====
+Don't deploy this artifact together with <<log4j-jul>>.
+====
+
+include::partial$components/log4j-to-jul.adoc[]
+
+[#log4j-to-slf4j]
+== `log4j-to-slf4j`
+
+|===
+| JPMS module
+| `org.apache.logging.log4j.to.slf4j`
+|===
+
+The `log4j-jul` artifact contains an implementation of the
+xref:manual/api.adoc[]
+that logs to
+https://www.slf4j.org/[SLF4J API].
+
+See xref:manual/installation.adoc#impl-logback[Installing Logback] for more details.
+
+[IMPORTANT]
+====
+Don't deploy this artifact together with either <<log4j-slf4j-impl>> or <<log4j-slf4j2-impl>>.
+====
+
+include::partial$components/log4j-to-slf4j.adoc[]
+
+[#log4j-web]
+== `log4j-web`
+
+|===
+| JPMS module
+| `org.apache.logging.log4j.web`
+|===
+
+The `log4j-jakarta-web` contains multiple utils to run your applications in a
+https://jakarta.ee/specifications/servlet/5.0/[Jakarta Servlet 4.0]
+or Java EE Servlet environment:
+
+* It synchronizes the lifecycle of Log4j Core and your application.
+See xref:jakarta.adoc#log4j-jakarta-web[Integrating with web applications] for more details.
+
+* It contains a lookup for the data contained in a Servlet context.
+See xref:manual/lookups.adoc#WebLookup[Web Lookup] for more details.
+
+* It contains an xref:manual/appenders.adoc[appender] to forward log event to a Servlet.
+See xref:manual/appenders.adoc#ServletAppender[Servlet Appender] for more details.
+
+[IMPORTANT]
+====
+Don't deploy this artifact together with <<log4j-jakarta-web>>.
+====
+
+include::partial$components/log4j-web.adoc[]

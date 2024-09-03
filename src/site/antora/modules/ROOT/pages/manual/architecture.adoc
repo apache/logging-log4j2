@@ -781,7 +781,7 @@ that handles the low-level access to the external resource and an `Appender` tha
 
 Managers that share the same resource are shared between appenders regardless of the `Configuration` or `LoggerContext` of the appenders.
 For example
-xref:manual/appenders.adoc#FileAppender[`FileAppender`]s
+xref:manual/appenders/file.adoc[file appenders]s
 with the same `fileName` attribute all share the same
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/FileManager.html[`FileManager`].
 

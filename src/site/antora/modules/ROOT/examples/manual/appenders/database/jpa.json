@@ -1,0 +1,21 @@
+{
+  "Configuration": {
+    "Appenders": {
+      // tag::appender[]
+      "JPA": {
+        "name": "JPA",
+        "persistenceUnitName": "logging",
+        "entityClassName": "com.example.logging.LogEventEntity"
+      }
+      // end::appender[]
+    },
+    "Loggers": {
+      "Root": {
+        "level": "INFO",
+        "AppenderRef": {
+          "ref": "JPA"
+        }
+      }
+    }
+  }
+}

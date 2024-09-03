@@ -22,6 +22,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.jul.Constants;
+import org.apache.logging.log4j.jul.CoreLoggerAdapter;
 import org.apache.logging.log4j.jul.LogManager;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.After;
@@ -56,11 +58,13 @@ public class CoreLoggerTest extends AbstractLoggerTest {
     @BeforeClass
     public static void setUpClass() {
         System.setProperty("java.util.logging.manager", LogManager.class.getName());
+        System.setProperty(Constants.LOGGER_ADAPTOR_PROPERTY, CoreLoggerAdapter.class.getName());
     }
 
     @AfterClass
     public static void tearDownClass() {
         System.clearProperty("java.util.logging.manager");
+        System.clearProperty(Constants.LOGGER_ADAPTOR_PROPERTY);
     }
 
     @Before
