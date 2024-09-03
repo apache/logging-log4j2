@@ -29,7 +29,7 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
-import org.fusesource.jansi.AnsiConsole;
+import org.jline.jansi.AnsiConsole;
 import org.junit.jupiter.api.Test;
 
 public class JansiConsoleStreamSupplierTest {
