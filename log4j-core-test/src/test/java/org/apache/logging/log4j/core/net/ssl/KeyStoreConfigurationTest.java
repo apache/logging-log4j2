@@ -57,7 +57,7 @@ public class KeyStoreConfigurationTest {
     public void loadNotEmptyConfigurationDeprecated() throws StoreConfigurationException {
         @SuppressWarnings("deprecation")
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(
-                SslKeyStoreConstants.KEYSTORE_FILE_PATH,
+                SslKeyStoreConstants.KEYSTORE_LOCATION,
                 SslKeyStoreConstants.KEYSTORE_PWD(),
                 SslKeyStoreConstants.KEYSTORE_TYPE,
                 null);
@@ -69,15 +69,15 @@ public class KeyStoreConfigurationTest {
     static Stream<Arguments> configurations() {
         final Stream.Builder<Arguments> builder = Stream.builder();
         builder.add(Arguments.of(
-                        SslKeyStoreConstants.KEYSTORE_FILE_PATH,
+                        SslKeyStoreConstants.KEYSTORE_LOCATION,
                         (Supplier<char[]>) SslKeyStoreConstants::KEYSTORE_PWD,
                         SslKeyStoreConstants.KEYSTORE_TYPE))
                 .add(Arguments.of(
-                        SslKeyStoreConstants.KEYSTORE_P12_FILE_PATH,
+                        SslKeyStoreConstants.KEYSTORE_P12_LOCATION,
                         (Supplier<char[]>) SslKeyStoreConstants::KEYSTORE_P12_PWD,
                         SslKeyStoreConstants.KEYSTORE_P12_TYPE))
                 .add(Arguments.of(
-                        SslKeyStoreConstants.KEYSTORE_P12_NOPASS_FILE_PATH,
+                        SslKeyStoreConstants.KEYSTORE_P12_NOPASS_LOCATION,
                         (Supplier<char[]>) SslKeyStoreConstants::KEYSTORE_P12_NOPASS_PWD,
                         SslKeyStoreConstants.KEYSTORE_P12_NOPASS_TYPE));
         if (OS.WINDOWS.isCurrentOs()) {
@@ -103,7 +103,7 @@ public class KeyStoreConfigurationTest {
     public void returnTheSameKeyStoreAfterMultipleLoadsDeprecated() throws StoreConfigurationException {
         @SuppressWarnings("deprecation")
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(
-                SslKeyStoreConstants.KEYSTORE_FILE_PATH,
+                SslKeyStoreConstants.KEYSTORE_LOCATION,
                 SslKeyStoreConstants.KEYSTORE_PWD(),
                 SslKeyStoreConstants.KEYSTORE_TYPE,
                 null);
@@ -115,7 +115,7 @@ public class KeyStoreConfigurationTest {
     @Test
     public void returnTheSameKeyStoreAfterMultipleLoads() throws StoreConfigurationException {
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(
-                SslKeyStoreConstants.KEYSTORE_FILE_PATH,
+                SslKeyStoreConstants.KEYSTORE_LOCATION,
                 new MemoryPasswordProvider(SslKeyStoreConstants.KEYSTORE_PWD()),
                 SslKeyStoreConstants.KEYSTORE_TYPE,
                 null);
@@ -129,25 +129,25 @@ public class KeyStoreConfigurationTest {
     public void wrongPasswordDeprecated() {
         assertThrows(
                 StoreConfigurationException.class,
-                () -> new KeyStoreConfiguration(SslKeyStoreConstants.KEYSTORE_FILE_PATH, "wrongPassword!", null, null));
+                () -> new KeyStoreConfiguration(SslKeyStoreConstants.KEYSTORE_LOCATION, "wrongPassword!", null, null));
     }
 
     static Stream<Arguments> wrongConfigurations() {
         final Stream.Builder<Arguments> builder = Stream.builder();
         builder.add(Arguments.of(
-                        SslKeyStoreConstants.KEYSTORE_FILE_PATH,
+                        SslKeyStoreConstants.KEYSTORE_LOCATION,
                         (Supplier<char[]>) SslKeyStoreConstants::KEYSTORE_P12_NOPASS_PWD,
                         SslKeyStoreConstants.KEYSTORE_TYPE))
                 .add(Arguments.of(
-                        SslKeyStoreConstants.KEYSTORE_FILE_PATH,
+                        SslKeyStoreConstants.KEYSTORE_LOCATION,
                         (Supplier<char[]>) () -> "wrongPassword!".toCharArray(),
                         SslKeyStoreConstants.KEYSTORE_TYPE))
                 .add(Arguments.of(
-                        SslKeyStoreConstants.KEYSTORE_P12_FILE_PATH,
+                        SslKeyStoreConstants.KEYSTORE_P12_LOCATION,
                         (Supplier<char[]>) SslKeyStoreConstants::KEYSTORE_P12_NOPASS_PWD,
                         SslKeyStoreConstants.KEYSTORE_P12_TYPE))
                 .add(Arguments.of(
-                        SslKeyStoreConstants.KEYSTORE_P12_FILE_PATH,
+                        SslKeyStoreConstants.KEYSTORE_P12_LOCATION,
                         (Supplier<char[]>) SslKeyStoreConstants::KEYSTORE_P12_NOPASS_PWD,
                         SslKeyStoreConstants.KEYSTORE_P12_TYPE));
         if (OS.WINDOWS.isCurrentOs()) {

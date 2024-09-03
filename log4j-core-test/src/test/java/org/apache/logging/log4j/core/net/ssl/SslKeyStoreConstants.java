@@ -18,15 +18,11 @@ package org.apache.logging.log4j.core.net.ssl;
 
 public final class SslKeyStoreConstants {
 
-    public static final String RESOURCE_ROOT = "org/apache/logging/log4j/core/net/ssl/";
-
-    public static final String PATH = "src/test/resources/" + RESOURCE_ROOT;
+    private static final String PATH = "src/test/resources/org/apache/logging/log4j/core/net/ssl/";
 
     /// Trust store (JKS) /////////////////////////////////////////////////////
 
-    public static final String TRUSTSTORE_FILE_PATH = PATH + "trustStore.jks";
-
-    public static final String TRUSTSTORE_FILE_RESOURCE = RESOURCE_ROOT + "trustStore.jks";
+    public static final String TRUSTSTORE_LOCATION = PATH + "trustStore.jks";
 
     public static char[] TRUSTSTORE_PWD() {
         return "aTrustStoreSecret".toCharArray();
@@ -36,9 +32,7 @@ public final class SslKeyStoreConstants {
 
     /// Trust store #2 (JKS) //////////////////////////////////////////////////
 
-    public static final String TRUSTSTORE2_FILE_PATH = PATH + "trustStore2.jks";
-
-    public static final String TRUSTSTORE2_FILE_RESOURCE = RESOURCE_ROOT + "trustStore2.jks";
+    public static final String TRUSTSTORE2_LOCATION = PATH + "trustStore2.jks";
 
     public static char[] TRUSTSTORE2_PWD() {
         return "aTrustStoreSecret2".toCharArray();
@@ -48,9 +42,7 @@ public final class SslKeyStoreConstants {
 
     /// Key store (JKS) ///////////////////////////////////////////////////////
 
-    public static final String KEYSTORE_FILE_PATH = PATH + "keyStore.jks";
-
-    public static final String KEYSTORE_FILE_RESOURCE = RESOURCE_ROOT + "keyStore.jks";
+    public static final String KEYSTORE_LOCATION = PATH + "keyStore.jks";
 
     public static char[] KEYSTORE_PWD() {
         return "aKeyStoreSecret".toCharArray();
@@ -60,9 +52,7 @@ public final class SslKeyStoreConstants {
 
     /// Key store #2 (JKS) ////////////////////////////////////////////////////
 
-    public static final String KEYSTORE2_FILE_PATH = PATH + "keyStore2.jks";
-
-    public static final String KEYSTORE2_FILE_RESOURCE = RESOURCE_ROOT + "keyStore2.jks";
+    public static final String KEYSTORE2_LOCATION = PATH + "keyStore2.jks";
 
     public static char[] KEYSTORE2_PWD() {
         return "aKeyStoreSecret2".toCharArray();
@@ -72,7 +62,7 @@ public final class SslKeyStoreConstants {
 
     /// Key store (P12) ///////////////////////////////////////////////////////
 
-    public static final String KEYSTORE_P12_FILE_PATH = PATH + "keyStore.p12";
+    public static final String KEYSTORE_P12_LOCATION = PATH + "keyStore.p12";
 
     public static char[] KEYSTORE_P12_PWD() {
         return "aKeyStoreSecret".toCharArray();
@@ -82,7 +72,7 @@ public final class SslKeyStoreConstants {
 
     /// Key store (P12 without password) //////////////////////////////////////
 
-    public static final String KEYSTORE_P12_NOPASS_FILE_PATH = PATH + "keyStore-nopass.p12";
+    public static final String KEYSTORE_P12_NOPASS_LOCATION = PATH + "keyStore-nopass.p12";
 
     public static char[] KEYSTORE_P12_NOPASS_PWD() {
         return new char[0];

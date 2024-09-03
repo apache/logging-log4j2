@@ -74,13 +74,13 @@ public class SocketAppenderSslSocketOptionsTest {
 
     private static final String KEYSTORE_TYPE = SslKeyStoreConstants.KEYSTORE_TYPE;
 
-    private static final String KEYSTORE_FILE_PATH = SslKeyStoreConstants.KEYSTORE_FILE_PATH;
+    private static final String KEYSTORE_LOCATION = SslKeyStoreConstants.KEYSTORE_LOCATION;
 
     private static final char[] KEYSTORE_PWD = SslKeyStoreConstants.KEYSTORE_PWD();
 
     private static final String TRUSTSTORE_TYPE = SslKeyStoreConstants.TRUSTSTORE_TYPE;
 
-    private static final String TRUSTSTORE_FILE_PATH = SslKeyStoreConstants.TRUSTSTORE_FILE_PATH;
+    private static final String TRUSTSTORE_LOCATION = SslKeyStoreConstants.TRUSTSTORE_LOCATION;
 
     private static final char[] TRUSTSTORE_PWD = SslKeyStoreConstants.TRUSTSTORE_PWD();
 
@@ -90,7 +90,7 @@ public class SocketAppenderSslSocketOptionsTest {
 
         // Create the SSL context
         final SSLContext sslContext = SslContexts.createSslContext(
-                KEYSTORE_TYPE, KEYSTORE_FILE_PATH, KEYSTORE_PWD, TRUSTSTORE_TYPE, TRUSTSTORE_FILE_PATH, TRUSTSTORE_PWD);
+                KEYSTORE_TYPE, KEYSTORE_LOCATION, KEYSTORE_PWD, TRUSTSTORE_TYPE, TRUSTSTORE_LOCATION, TRUSTSTORE_PWD);
 
         // Create the server
         try (final LineReadingTcpServer server = new LineReadingTcpServer(sslContext.getServerSocketFactory())) {
@@ -169,12 +169,12 @@ public class SocketAppenderSslSocketOptionsTest {
         final ComponentBuilder<?> keyStoreComponentBuilder = configBuilder
                 .newComponent("KeyStore")
                 .addAttribute("type", KEYSTORE_TYPE)
-                .addAttribute("location", KEYSTORE_FILE_PATH)
+                .addAttribute("location", KEYSTORE_LOCATION)
                 .addAttribute("passwordFile", keyStorePasswordFilePath);
         final ComponentBuilder<?> trustStoreComponentBuilder = configBuilder
                 .newComponent("TrustStore")
                 .addAttribute("type", TRUSTSTORE_TYPE)
-                .addAttribute("location", TRUSTSTORE_FILE_PATH)
+                .addAttribute("location", TRUSTSTORE_LOCATION)
                 .addAttribute("passwordFile", trustStorePasswordFilePath);
         final ComponentBuilder<?> sslComponentBuilder = configBuilder
                 .newComponent("Ssl")

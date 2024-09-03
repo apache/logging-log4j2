@@ -46,7 +46,6 @@ import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.net.TcpSocketManager;
 import org.apache.logging.log4j.core.net.TcpSocketManager.HostResolver;
 import org.apache.logging.log4j.core.net.ssl.SslKeyStoreConstants;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.CleanupMode;
@@ -156,32 +155,32 @@ public class SocketAppenderReconnectTest {
 
         // Create the 1st `SSLContext`
         final String keyStore1Type = SslKeyStoreConstants.KEYSTORE_TYPE;
-        final String keyStore1FilePath = SslKeyStoreConstants.KEYSTORE_FILE_PATH;
+        final String keyStore1Location = SslKeyStoreConstants.KEYSTORE_LOCATION;
         final char[] keyStore1Password = SslKeyStoreConstants.KEYSTORE_PWD();
         final String trustStore1Type = SslKeyStoreConstants.TRUSTSTORE_TYPE;
-        final String trustStore1FilePath = SslKeyStoreConstants.TRUSTSTORE_FILE_PATH;
+        final String trustStore1Location = SslKeyStoreConstants.TRUSTSTORE_LOCATION;
         final char[] trustStore1Password = SslKeyStoreConstants.TRUSTSTORE_PWD();
         final SSLContext sslContext1 = createSslContext(
                 keyStore1Type,
-                keyStore1FilePath,
+                keyStore1Location,
                 keyStore1Password,
                 trustStore1Type,
-                trustStore1FilePath,
+                trustStore1Location,
                 trustStore1Password);
 
         // Create the 2nd `SSLContext`
         final String keyStore2Type = SslKeyStoreConstants.KEYSTORE2_TYPE;
-        final String keyStore2FilePath = SslKeyStoreConstants.KEYSTORE2_FILE_PATH;
+        final String keyStore2Location = SslKeyStoreConstants.KEYSTORE2_LOCATION;
         final char[] keyStore2Password = SslKeyStoreConstants.KEYSTORE2_PWD();
         final String trustStore2Type = SslKeyStoreConstants.TRUSTSTORE2_TYPE;
-        final String trustStore2FilePath = SslKeyStoreConstants.TRUSTSTORE2_FILE_PATH;
+        final String trustStore2Location = SslKeyStoreConstants.TRUSTSTORE2_LOCATION;
         final char[] trustStore2Password = SslKeyStoreConstants.TRUSTSTORE2_PWD();
         final SSLContext sslContext2 = createSslContext(
                 keyStore2Type,
-                keyStore2FilePath,
+                keyStore2Location,
                 keyStore2Password,
                 trustStore2Type,
-                trustStore2FilePath,
+                trustStore2Location,
                 trustStore2Password);
 
         // Ensure that store types are identical.
@@ -193,7 +192,7 @@ public class SocketAppenderReconnectTest {
         @SuppressWarnings("UnnecessaryLocalVariable")
         final String keyStoreType = keyStore1Type;
         final Path keyStoreFilePath = tempDir.resolve("keyStore");
-        Files.write(keyStoreFilePath, Files.readAllBytes(Paths.get(keyStore1FilePath)));
+        Files.write(keyStoreFilePath, Files.readAllBytes(Paths.get(keyStore1Location)));
         final Path keyStorePasswordFilePath = tempDir.resolve("keyStorePassword");
         Files.write(keyStorePasswordFilePath, new String(keyStore1Password).getBytes(StandardCharsets.UTF_8));
 
@@ -201,7 +200,7 @@ public class SocketAppenderReconnectTest {
         @SuppressWarnings("UnnecessaryLocalVariable")
         final String trustStoreType = trustStore1Type;
         final Path trustStoreFilePath = tempDir.resolve("trustStore");
-        Files.write(trustStoreFilePath, Files.readAllBytes(Paths.get(trustStore1FilePath)));
+        Files.write(trustStoreFilePath, Files.readAllBytes(Paths.get(trustStore1Location)));
         final Path trustStorePasswordFilePath = tempDir.resolve("trustStorePassword");
         Files.write(trustStorePasswordFilePath, new String(trustStore1Password).getBytes(StandardCharsets.UTF_8));
 
@@ -245,21 +244,18 @@ public class SocketAppenderReconnectTest {
                 loggerContext.getConfiguration().getAppender(APPENDER_NAME).setHandler(errorHandler);
 
                 // Verify the initial working state on the 1st server
-                final StatusLogger statusLogger = StatusLogger.getLogger();
-                statusLogger.trace("---------------- verify 1");
                 verifyLoggingSuccess(loggerContext, server1, errorHandler);
 
                 // Stop the 1st server and start the 2nd one (using different SSL configuration!) on the same port
-                statusLogger.trace("---------------- start-stop");
                 server1.close();
                 server2.start("2nd", port);
 
                 // Stage the key store files using the 2nd `SSLContext`
-                Files.write(keyStoreFilePath, Files.readAllBytes(Paths.get(keyStore2FilePath)));
+                Files.write(keyStoreFilePath, Files.readAllBytes(Paths.get(keyStore2Location)));
                 Files.write(keyStorePasswordFilePath, new String(keyStore2Password).getBytes(StandardCharsets.UTF_8));
 
                 // Stage the trust store files using the 2nd `SSLContext`
-                Files.write(trustStoreFilePath, Files.readAllBytes(Paths.get(trustStore2FilePath)));
+                Files.write(trustStoreFilePath, Files.readAllBytes(Paths.get(trustStore2Location)));
                 Files.write(
                         trustStorePasswordFilePath, new String(trustStore2Password).getBytes(StandardCharsets.UTF_8));
 

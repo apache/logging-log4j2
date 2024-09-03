@@ -35,12 +35,12 @@ class SslConfigurationTest {
 
     private static SslConfiguration createTestSslConfigurationResources() throws StoreConfigurationException {
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(
-                SslKeyStoreConstants.KEYSTORE_FILE_RESOURCE,
+                SslKeyStoreConstants.KEYSTORE_LOCATION,
                 new MemoryPasswordProvider(SslKeyStoreConstants.KEYSTORE_PWD()),
                 SslKeyStoreConstants.KEYSTORE_TYPE,
                 null);
         final TrustStoreConfiguration tsc = new TrustStoreConfiguration(
-                SslKeyStoreConstants.TRUSTSTORE_FILE_RESOURCE,
+                SslKeyStoreConstants.TRUSTSTORE_LOCATION,
                 new MemoryPasswordProvider(SslKeyStoreConstants.TRUSTSTORE_PWD()),
                 null,
                 null);
@@ -49,21 +49,16 @@ class SslConfigurationTest {
 
     private static SslConfiguration createTestSslConfigurationFiles() throws StoreConfigurationException {
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(
-                SslKeyStoreConstants.KEYSTORE_FILE_PATH,
+                SslKeyStoreConstants.KEYSTORE_LOCATION,
                 new MemoryPasswordProvider(SslKeyStoreConstants.KEYSTORE_PWD()),
                 SslKeyStoreConstants.KEYSTORE_TYPE,
                 null);
         final TrustStoreConfiguration tsc = new TrustStoreConfiguration(
-                SslKeyStoreConstants.TRUSTSTORE_FILE_PATH,
+                SslKeyStoreConstants.TRUSTSTORE_LOCATION,
                 new MemoryPasswordProvider(SslKeyStoreConstants.TRUSTSTORE_PWD()),
                 SslKeyStoreConstants.TRUSTSTORE_TYPE,
                 null);
         return SslConfiguration.createSSLConfiguration(null, ksc, tsc);
-    }
-
-    @Test
-    void testCreateSslSocketFactory() throws StoreConfigurationException {
-        assertNotNull(createTestSslConfigurationFiles().getSslContext().getSocketFactory());
     }
 
     @Test
@@ -114,7 +109,7 @@ class SslConfigurationTest {
     @Test
     void connectionFailsWithoutValidServerCertificate() throws IOException, StoreConfigurationException {
         final TrustStoreConfiguration tsc = new TrustStoreConfiguration(
-                SslKeyStoreConstants.TRUSTSTORE_FILE_PATH,
+                SslKeyStoreConstants.TRUSTSTORE_LOCATION,
                 new MemoryPasswordProvider(SslKeyStoreConstants.NULL_PWD),
                 null,
                 null);
@@ -135,7 +130,7 @@ class SslConfigurationTest {
     @UsingStatusListener // Suppresses `StatusLogger` output, unless there is a failure
     void loadKeyStoreWithoutPassword() throws StoreConfigurationException {
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(
-                SslKeyStoreConstants.KEYSTORE_P12_NOPASS_FILE_PATH,
+                SslKeyStoreConstants.KEYSTORE_P12_NOPASS_LOCATION,
                 new MemoryPasswordProvider(SslKeyStoreConstants.NULL_PWD),
                 SslKeyStoreConstants.KEYSTORE_P12_NOPASS_TYPE,
                 null);

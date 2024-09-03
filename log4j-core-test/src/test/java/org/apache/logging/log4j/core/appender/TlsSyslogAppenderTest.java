@@ -79,9 +79,9 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest {
 
     private void initServerSocketFactory() throws StoreConfigurationException {
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(
-                SslKeyStoreConstants.KEYSTORE_FILE_PATH, SslKeyStoreConstants::KEYSTORE_PWD, null, null);
+                SslKeyStoreConstants.KEYSTORE_LOCATION, SslKeyStoreConstants::KEYSTORE_PWD, null, null);
         final TrustStoreConfiguration tsc = new TrustStoreConfiguration(
-                SslKeyStoreConstants.TRUSTSTORE_FILE_PATH, SslKeyStoreConstants::TRUSTSTORE_PWD, null, null);
+                SslKeyStoreConstants.TRUSTSTORE_LOCATION, SslKeyStoreConstants::TRUSTSTORE_PWD, null, null);
         sslConfiguration = SslConfiguration.createSSLConfiguration(null, ksc, tsc);
         serverSocketFactory = sslConfiguration.getSslContext().getServerSocketFactory();
     }

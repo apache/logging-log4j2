@@ -46,7 +46,7 @@ public class TrustStoreConfigurationTest {
     public void loadConfigurationDeprecated() throws StoreConfigurationException {
         @SuppressWarnings("deprecation")
         final TrustStoreConfiguration ksc = new TrustStoreConfiguration(
-                SslKeyStoreConstants.TRUSTSTORE_FILE_PATH, SslKeyStoreConstants.TRUSTSTORE_PWD(), null, null);
+                SslKeyStoreConstants.TRUSTSTORE_LOCATION, SslKeyStoreConstants.TRUSTSTORE_PWD(), null, null);
         final KeyStore ks = ksc.getKeyStore();
         assertNotNull(ks);
     }
@@ -54,7 +54,7 @@ public class TrustStoreConfigurationTest {
     @Test
     public void loadConfiguration() throws StoreConfigurationException {
         final TrustStoreConfiguration ksc = new TrustStoreConfiguration(
-                SslKeyStoreConstants.TRUSTSTORE_FILE_PATH,
+                SslKeyStoreConstants.TRUSTSTORE_LOCATION,
                 new MemoryPasswordProvider(SslKeyStoreConstants.TRUSTSTORE_PWD()),
                 null,
                 null);
@@ -66,7 +66,7 @@ public class TrustStoreConfigurationTest {
     public void returnTheSameKeyStoreAfterMultipleLoadsDeprecated() throws StoreConfigurationException {
         @SuppressWarnings("deprecation")
         final TrustStoreConfiguration ksc = new TrustStoreConfiguration(
-                SslKeyStoreConstants.TRUSTSTORE_FILE_PATH, SslKeyStoreConstants.TRUSTSTORE_PWD(), null, null);
+                SslKeyStoreConstants.TRUSTSTORE_LOCATION, SslKeyStoreConstants.TRUSTSTORE_PWD(), null, null);
         final KeyStore ks = ksc.getKeyStore();
         final KeyStore ks2 = ksc.getKeyStore();
         assertSame(ks, ks2);
@@ -75,7 +75,7 @@ public class TrustStoreConfigurationTest {
     @Test
     public void returnTheSameKeyStoreAfterMultipleLoads() throws StoreConfigurationException {
         final TrustStoreConfiguration ksc = new TrustStoreConfiguration(
-                SslKeyStoreConstants.TRUSTSTORE_FILE_PATH,
+                SslKeyStoreConstants.TRUSTSTORE_LOCATION,
                 new MemoryPasswordProvider(SslKeyStoreConstants.TRUSTSTORE_PWD()),
                 null,
                 null);
@@ -90,7 +90,7 @@ public class TrustStoreConfigurationTest {
         assertThrows(
                 StoreConfigurationException.class,
                 () -> new TrustStoreConfiguration(
-                        SslKeyStoreConstants.TRUSTSTORE_FILE_PATH, "wrongPassword!".toCharArray(), null, null));
+                        SslKeyStoreConstants.TRUSTSTORE_LOCATION, "wrongPassword!".toCharArray(), null, null));
     }
 
     @Test
@@ -98,7 +98,7 @@ public class TrustStoreConfigurationTest {
         assertThrows(
                 StoreConfigurationException.class,
                 () -> new TrustStoreConfiguration(
-                        SslKeyStoreConstants.TRUSTSTORE_FILE_PATH,
+                        SslKeyStoreConstants.TRUSTSTORE_LOCATION,
                         new MemoryPasswordProvider("wrongPassword!".toCharArray()),
                         null,
                         null));

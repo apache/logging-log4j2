@@ -41,12 +41,12 @@ public class SslConfigurationFactoryTest {
     private static final String keyStoreType = "log4j2.keyStoreType";
 
     private static void addKeystoreConfiguration(final Properties props) {
-        props.setProperty(keyStoreLocation, SslKeyStoreConstants.KEYSTORE_FILE_RESOURCE);
+        props.setProperty(keyStoreLocation, SslKeyStoreConstants.KEYSTORE_LOCATION);
         props.setProperty(keyStoreType, SslKeyStoreConstants.KEYSTORE_TYPE);
     }
 
     private static void addTruststoreConfiguration(final Properties props) {
-        props.setProperty(trustStorelocation, SslKeyStoreConstants.TRUSTSTORE_FILE_RESOURCE);
+        props.setProperty(trustStorelocation, SslKeyStoreConstants.TRUSTSTORE_LOCATION);
         props.setProperty(trustStoreKeyStoreType, SslKeyStoreConstants.TRUSTSTORE_TYPE);
     }
 

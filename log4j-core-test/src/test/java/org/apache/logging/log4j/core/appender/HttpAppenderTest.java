@@ -159,7 +159,7 @@ class HttpAppenderTest {
             .options(wireMockConfig()
                     .dynamicPort()
                     .dynamicHttpsPort()
-                    .keystorePath(SslKeyStoreConstants.KEYSTORE_FILE_PATH)
+                    .keystorePath(SslKeyStoreConstants.KEYSTORE_LOCATION)
                     .keystorePassword(String.valueOf(SslKeyStoreConstants.KEYSTORE_PWD()))
                     .keyManagerPassword(String.valueOf(SslKeyStoreConstants.KEYSTORE_PWD()))
                     .keystoreType(SslKeyStoreConstants.KEYSTORE_TYPE))
@@ -206,14 +206,14 @@ class HttpAppenderTest {
                 .setSslConfiguration(SslConfiguration.createSSLConfiguration(
                         null,
                         KeyStoreConfiguration.createKeyStoreConfiguration(
-                                SslKeyStoreConstants.KEYSTORE_FILE_PATH,
+                                SslKeyStoreConstants.KEYSTORE_LOCATION,
                                 SslKeyStoreConstants.KEYSTORE_PWD(),
                                 null,
                                 null,
                                 SslKeyStoreConstants.KEYSTORE_TYPE,
                                 null),
                         TrustStoreConfiguration.createKeyStoreConfiguration(
-                                SslKeyStoreConstants.TRUSTSTORE_FILE_PATH,
+                                SslKeyStoreConstants.TRUSTSTORE_LOCATION,
                                 SslKeyStoreConstants.TRUSTSTORE_PWD(),
                                 null,
                                 null,
