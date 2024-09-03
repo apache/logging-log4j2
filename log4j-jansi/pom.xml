@@ -28,6 +28,20 @@
   <name>Apache Log4j Core: JANSI support</name>
   <description>Support for JANSI library for Log4j Core.</description>
 
+  <properties>
+    <jline.version>3.26.3</jline.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.jline</groupId>
+        <artifactId>jansi-core</artifactId>
+        <version>${jline.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
 
     <dependency>
@@ -46,8 +60,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.fusesource.jansi</groupId>
-      <artifactId>jansi</artifactId>
+      <groupId>org.jline</groupId>
+      <artifactId>jansi-core</artifactId>
     </dependency>
 
     <dependency>
