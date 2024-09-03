@@ -55,7 +55,7 @@ dump_review_kit() {
     wget -q -O - https://raw.githubusercontent.com/apache/logging-parent/main/.github/release-review-kit.txt \
         | sed -n '/-----8<-----~( cut here )~-----8<-----/,$p' \
         | tail -n +2 \
-        | sed -r 's!^!    !g'
+        | sed -r -e "s/@PROJECT_DIST_DIR@/$PROJECT_DIST_DIR/g" -e "s/@PROJECT_VERSION@/$PROJECT_VERSION/g" -e 's!^!    !g'
 }
 
 dump_release_notes() {
@@ -77,7 +77,7 @@ Website: $PROJECT_STAGING_SITE-$PROJECT_VERSION
 GitHub: $PROJECT_REPO
 Commit: $COMMIT_ID
 Distribution: $PROJECT_DIST_DIR
-Nexus: https://repository.apache.org/content/repositories/orgapachelogging-1113
+Nexus: https://repository.apache.org/content/repositories/orgapachelogging-<CHECK>
 Signing key: 0x077e8893a6dcc33dd4a4d5b256e73ba9a0b592d0
 
 Please download, test, and cast your votes on this mailing list.
