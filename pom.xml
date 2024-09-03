@@ -365,6 +365,8 @@
     <log4j.docgen.pluginDescriptorsDir.phase1>${maven.multiModuleProjectDirectory}/target/plugin-descriptors/phase1</log4j.docgen.pluginDescriptorsDir.phase1>
     <log4j.docgen.pluginDescriptorsDir.phase2>${maven.multiModuleProjectDirectory}/target/plugin-descriptors/phase2</log4j.docgen.pluginDescriptorsDir.phase2>
 
+    <!-- Downgrade temporarily Maven Surefire, since it breaks tests statistics on `ge.apache.org` -->
+    <version.maven-surefire>3.2.5</version.maven-surefire>
   </properties>
 
   <dependencyManagement>
@@ -603,7 +605,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.2.5</version>
         <configuration>
           <forkCount>1C</forkCount>
           <reuseForks>false</reuseForks>
