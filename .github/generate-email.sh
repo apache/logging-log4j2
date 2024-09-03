@@ -37,12 +37,13 @@ fail_for_invalid_args() {
 
 # Constants
 PROJECT_NAME="Apache Log4j"
-PROJECT_SITE="https://logging.apache.org/log4j"
+PROJECT_ID="log4j"
+PROJECT_SITE="https://logging.apache.org/$PROJECT_ID"
 PROJECT_STAGING_SITE="${PROJECT_SITE/apache.org/staged.apache.org}"
 PROJECT_REPO="https://github.com/apache/logging-log4j2"
-PROJECT_DIST_DIR="https://dist.apache.org/repos/dist/dev/logging/log4j"
 PROJECT_VERSION="$2"
 COMMIT_ID="$3"
+PROJECT_DIST_URL="https://dist.apache.org/repos/dist/dev/logging/$PROJECT_ID/$PROJECT_VERSION"
 
 # Check release notes file
 RELEASE_NOTES_FILE="$SCRIPT_DIR/../target/generated-site/antora/modules/ROOT/pages/_release-notes/$PROJECT_VERSION.adoc"
@@ -55,13 +56,17 @@ dump_review_kit() {
     wget -q -O - https://raw.githubusercontent.com/apache/logging-parent/main/.github/release-review-kit.txt \
         | sed -n '/-----8<-----~( cut here )~-----8<-----/,$p' \
         | tail -n +2 \
-        | sed -r -e "s/@PROJECT_DIST_DIR@/$PROJECT_DIST_DIR/g" -e "s/@PROJECT_VERSION@/$PROJECT_VERSION/g" -e 's!^!    !g'
+        | sed -e "s|^|    |g
+                  s|@PROJECT_ID@|$PROJECT_ID|g
+                  s|@PROJECT_VERSION@|$PROJECT_VERSION|g
+                  s|@PROJECT_DIST_URL@|$PROJECT_DIST_URL|g
+                  s|@COMMIT_ID@|${COMMIT_ID:0:8}|g"
 }
 
 dump_release_notes() {
     awk "f{print} /^Release date::/{f=1}" "$RELEASE_NOTES_FILE" \
-        | sed -r 's!'$PROJECT_REPO'/(issues|pull)/[0-9]+\[([0-9]+)\]!#\2!g' \
-        | sed -r 's!https://github.com/([^/]+)/([^/]+)/(pull|issues)/([0-9]+)\[(\1/\2#\4)\]!\5!g'
+        | sed -r -e 's|'$PROJECT_REPO'/(issues|pull)/[0-9]+\[([0-9]+)\]|#\2|g
+                     s|https://github.com/([^/]+)/([^/]+)/(pull|issues)/([0-9]+)\[(\1/\2#\4)\]|\5|g'
 }
 
 case $1 in
@@ -76,8 +81,8 @@ This is a vote to release the $PROJECT_NAME \`$PROJECT_VERSION\`.
 Website: $PROJECT_STAGING_SITE-$PROJECT_VERSION
 GitHub: $PROJECT_REPO
 Commit: $COMMIT_ID
-Distribution: $PROJECT_DIST_DIR
-Nexus: https://repository.apache.org/content/repositories/orgapachelogging-<CHECK>
+Distribution: $PROJECT_DIST_URL
+Nexus: https://repository.apache.org/content/repositories/orgapachelogging-<FIXME>
 Signing key: 0x077e8893a6dcc33dd4a4d5b256e73ba9a0b592d0
 
 Please download, test, and cast your votes on this mailing list.
