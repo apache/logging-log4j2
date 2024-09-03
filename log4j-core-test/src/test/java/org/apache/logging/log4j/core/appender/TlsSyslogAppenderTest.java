@@ -25,8 +25,8 @@ import org.apache.logging.log4j.core.appender.SyslogAppender.Builder;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
-import org.apache.logging.log4j.core.net.ssl.StoreConfigurationException;
 import org.apache.logging.log4j.core.net.ssl.SslKeyStoreConstants;
+import org.apache.logging.log4j.core.net.ssl.StoreConfigurationException;
 import org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration;
 import org.apache.logging.log4j.core.test.net.mock.MockSyslogServerFactory;
 import org.apache.logging.log4j.core.test.net.ssl.TlsSyslogMessageFormat;
@@ -78,10 +78,10 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest {
     }
 
     private void initServerSocketFactory() throws StoreConfigurationException {
-        final KeyStoreConfiguration ksc =
-                new KeyStoreConfiguration(SslKeyStoreConstants.KEYSTORE_FILE_PATH, SslKeyStoreConstants::KEYSTORE_PWD, null, null);
-        final TrustStoreConfiguration tsc =
-                new TrustStoreConfiguration(SslKeyStoreConstants.TRUSTSTORE_FILE_PATH, SslKeyStoreConstants::TRUSTSTORE_PWD, null, null);
+        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(
+                SslKeyStoreConstants.KEYSTORE_FILE_PATH, SslKeyStoreConstants::KEYSTORE_PWD, null, null);
+        final TrustStoreConfiguration tsc = new TrustStoreConfiguration(
+                SslKeyStoreConstants.TRUSTSTORE_FILE_PATH, SslKeyStoreConstants::TRUSTSTORE_PWD, null, null);
         sslConfiguration = SslConfiguration.createSSLConfiguration(null, ksc, tsc);
         serverSocketFactory = sslConfiguration.getSslContext().getServerSocketFactory();
     }

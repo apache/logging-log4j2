@@ -14,8 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.net;
+package org.apache.logging.log4j.core.appender;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.ErrorHandler;
 import org.apache.logging.log4j.core.LogEvent;
@@ -23,21 +26,20 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 /**
  * {@link ErrorHandler} implementation buffering invocations in the form of {@link StatusData}.
  */
-public final class BufferingErrorHandler implements ErrorHandler {
+final class BufferingErrorHandler implements ErrorHandler {
 
     private final List<StatusData> statusDataBuffer = Collections.synchronizedList(new ArrayList<>());
+
+    BufferingErrorHandler() {}
 
     private void addStatusData(final String message, final Throwable throwable) {
         final StackTraceElement caller = StackLocatorUtil.getStackTraceElement(3);
         final String threadName = Thread.currentThread().getName();
-        final StatusData statusData = new StatusData(caller, Level.ERROR, new SimpleMessage(message), throwable, threadName);
+        final StatusData statusData =
+                new StatusData(caller, Level.ERROR, new SimpleMessage(message), throwable, threadName);
         statusDataBuffer.add(statusData);
     }
 

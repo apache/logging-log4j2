@@ -33,6 +33,7 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -220,6 +221,8 @@ public class SslSocketManager extends TcpSocketManager {
         // e.g., change in the SSL certificate content, even though the certificate file locations are still the same.
         // See #2767 and LOG4J2-2988 for details.
         final String sslConfigId = createSslConfigurationId(sslConfig);
+        StatusLogger.getLogger().trace("---------------- sslConfig: {}", sslConfig);
+        StatusLogger.getLogger().trace("---------------- sslConfigId: {}", sslConfigId);
         final String name = String.format("%s:%s:%d:%s", sslConfig.getProtocol(), host, port, sslConfigId);
 
         return (SslSocketManager) getManager(

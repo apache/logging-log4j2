@@ -22,7 +22,7 @@ public final class SslKeyStoreConstants {
 
     public static final String PATH = "src/test/resources/" + RESOURCE_ROOT;
 
-    /// Trust store ///////////////////////////////////////////////////////////
+    /// Trust store (JKS) /////////////////////////////////////////////////////
 
     public static final String TRUSTSTORE_FILE_PATH = PATH + "trustStore.jks";
 
@@ -34,10 +34,22 @@ public final class SslKeyStoreConstants {
 
     public static final String TRUSTSTORE_TYPE = "JKS";
 
-    /// Key store /////////////////////////////////////////////////////////////
+    /// Trust store #2 (JKS) //////////////////////////////////////////////////
+
+    public static final String TRUSTSTORE2_FILE_PATH = PATH + "trustStore2.jks";
+
+    public static final String TRUSTSTORE2_FILE_RESOURCE = RESOURCE_ROOT + "trustStore2.jks";
+
+    public static char[] TRUSTSTORE2_PWD() {
+        return "aTrustStoreSecret2".toCharArray();
+    }
+
+    public static final String TRUSTSTORE2_TYPE = "JKS";
+
+    /// Key store (JKS) ///////////////////////////////////////////////////////
 
     public static final String KEYSTORE_FILE_PATH = PATH + "keyStore.jks";
-    
+
     public static final String KEYSTORE_FILE_RESOURCE = RESOURCE_ROOT + "keyStore.jks";
 
     public static char[] KEYSTORE_PWD() {
@@ -45,6 +57,18 @@ public final class SslKeyStoreConstants {
     }
 
     public static final String KEYSTORE_TYPE = "JKS";
+
+    /// Key store #2 (JKS) ////////////////////////////////////////////////////
+
+    public static final String KEYSTORE2_FILE_PATH = PATH + "keyStore2.jks";
+
+    public static final String KEYSTORE2_FILE_RESOURCE = RESOURCE_ROOT + "keyStore2.jks";
+
+    public static char[] KEYSTORE2_PWD() {
+        return "aKeyStoreSecret2".toCharArray();
+    }
+
+    public static final String KEYSTORE2_TYPE = "JKS";
 
     /// Key store (P12) ///////////////////////////////////////////////////////
 

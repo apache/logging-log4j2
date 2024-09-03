@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.security.KeyStore;
-
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 
@@ -46,8 +45,8 @@ public class TrustStoreConfigurationTest {
     @Test
     public void loadConfigurationDeprecated() throws StoreConfigurationException {
         @SuppressWarnings("deprecation")
-        final TrustStoreConfiguration ksc =
-                new TrustStoreConfiguration(SslKeyStoreConstants.TRUSTSTORE_FILE_PATH, SslKeyStoreConstants.TRUSTSTORE_PWD(), null, null);
+        final TrustStoreConfiguration ksc = new TrustStoreConfiguration(
+                SslKeyStoreConstants.TRUSTSTORE_FILE_PATH, SslKeyStoreConstants.TRUSTSTORE_PWD(), null, null);
         final KeyStore ks = ksc.getKeyStore();
         assertNotNull(ks);
     }
@@ -55,7 +54,10 @@ public class TrustStoreConfigurationTest {
     @Test
     public void loadConfiguration() throws StoreConfigurationException {
         final TrustStoreConfiguration ksc = new TrustStoreConfiguration(
-                SslKeyStoreConstants.TRUSTSTORE_FILE_PATH, new MemoryPasswordProvider(SslKeyStoreConstants.TRUSTSTORE_PWD()), null, null);
+                SslKeyStoreConstants.TRUSTSTORE_FILE_PATH,
+                new MemoryPasswordProvider(SslKeyStoreConstants.TRUSTSTORE_PWD()),
+                null,
+                null);
         final KeyStore ks = ksc.getKeyStore();
         assertNotNull(ks);
     }
@@ -63,8 +65,8 @@ public class TrustStoreConfigurationTest {
     @Test
     public void returnTheSameKeyStoreAfterMultipleLoadsDeprecated() throws StoreConfigurationException {
         @SuppressWarnings("deprecation")
-        final TrustStoreConfiguration ksc =
-                new TrustStoreConfiguration(SslKeyStoreConstants.TRUSTSTORE_FILE_PATH, SslKeyStoreConstants.TRUSTSTORE_PWD(), null, null);
+        final TrustStoreConfiguration ksc = new TrustStoreConfiguration(
+                SslKeyStoreConstants.TRUSTSTORE_FILE_PATH, SslKeyStoreConstants.TRUSTSTORE_PWD(), null, null);
         final KeyStore ks = ksc.getKeyStore();
         final KeyStore ks2 = ksc.getKeyStore();
         assertSame(ks, ks2);
@@ -73,7 +75,10 @@ public class TrustStoreConfigurationTest {
     @Test
     public void returnTheSameKeyStoreAfterMultipleLoads() throws StoreConfigurationException {
         final TrustStoreConfiguration ksc = new TrustStoreConfiguration(
-                SslKeyStoreConstants.TRUSTSTORE_FILE_PATH, new MemoryPasswordProvider(SslKeyStoreConstants.TRUSTSTORE_PWD()), null, null);
+                SslKeyStoreConstants.TRUSTSTORE_FILE_PATH,
+                new MemoryPasswordProvider(SslKeyStoreConstants.TRUSTSTORE_PWD()),
+                null,
+                null);
         final KeyStore ks = ksc.getKeyStore();
         final KeyStore ks2 = ksc.getKeyStore();
         assertSame(ks, ks2);

@@ -16,8 +16,24 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.containing;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.put;
+import static com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
+
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
@@ -39,23 +55,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.extension.RegisterExtension;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.containing;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.put;
-import static com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThrows;
 
 /* Fails often on Windows, for example:
 [ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:2.20.1:test (default-test) on project log4j-core: There are test failures.
@@ -153,7 +152,7 @@ class HttpAppenderTest {
             .withHeader("Content-Type", "application/json")
             .withBody("{\"status\":\"error\"}");
 
-    private final static JavaLookup JAVA_LOOKUP = new JavaLookup();
+    private static final JavaLookup JAVA_LOOKUP = new JavaLookup();
 
     @RegisterExtension
     static final WireMockExtension WIRE_MOCK = WireMockExtension.newInstance()
@@ -166,7 +165,8 @@ class HttpAppenderTest {
                     .keystoreType(SslKeyStoreConstants.KEYSTORE_TYPE))
             .build();
 
-    private static URL wireMockUrl(final String path, final boolean secure, final boolean portMangled) throws MalformedURLException {
+    private static URL wireMockUrl(final String path, final boolean secure, final boolean portMangled)
+            throws MalformedURLException {
         final String scheme = secure ? "https" : "http";
         int port = secure ? WIRE_MOCK.getHttpsPort() : WIRE_MOCK.getPort();
         if (portMangled) {

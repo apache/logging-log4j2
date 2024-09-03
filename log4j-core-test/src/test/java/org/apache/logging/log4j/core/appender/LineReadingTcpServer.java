@@ -14,11 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.net;
+package org.apache.logging.log4j.core.appender;
 
 import static org.awaitility.Awaitility.await;
 
 import java.io.BufferedReader;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -32,11 +33,11 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
+import javax.net.ServerSocketFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLHandshakeException;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import javax.net.ssl.SSLContext;
 
 /**
  * A simple TCP server implementation reading the accepted connection's input stream into a blocking queue of lines.
@@ -48,17 +49,11 @@ import javax.net.ssl.SSLContext;
  * You need to pass the {@link ServerSocketFactory} obtained from {@link SSLContext#getServerSocketFactory()} to the appropriate constructor.
  * </p>
  */
-public final class LineReadingTcpServer implements AutoCloseable {
+final class LineReadingTcpServer implements AutoCloseable {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final ServerSocketFactory serverSocketFactory;
-
-    @FunctionalInterface
-    public interface ServerSocketFactory {
-
-        ServerSocket create(int port) throws IOException;
-    }
 
     private volatile boolean running;
 
@@ -70,15 +65,15 @@ public final class LineReadingTcpServer implements AutoCloseable {
 
     private final BlockingQueue<String> lines = new LinkedBlockingQueue<>();
 
-    public LineReadingTcpServer() {
-        this(ServerSocket::new);
+    LineReadingTcpServer() {
+        this(ServerSocketFactory.getDefault());
     }
 
-    public LineReadingTcpServer(final ServerSocketFactory serverSocketFactory) {
+    LineReadingTcpServer(final ServerSocketFactory serverSocketFactory) {
         this.serverSocketFactory = serverSocketFactory;
     }
 
-    public synchronized void start(final String name, final int port) throws IOException {
+    synchronized void start(final String name, final int port) throws IOException {
         if (!running) {
             running = true;
             serverSocket = createServerSocket(port);
@@ -87,7 +82,7 @@ public final class LineReadingTcpServer implements AutoCloseable {
     }
 
     private ServerSocket createServerSocket(final int port) throws IOException {
-        final ServerSocket serverSocket = serverSocketFactory.create(port);
+        final ServerSocket serverSocket = serverSocketFactory.createServerSocket(port);
         serverSocket.setReuseAddress(true);
         serverSocket.setSoTimeout(0); // Zero indicates `accept()` will block indefinitely
         await("server socket binding")
@@ -132,7 +127,7 @@ public final class LineReadingTcpServer implements AutoCloseable {
             }
         }
 
-        // Read from the client.
+        // Read from the client
         try (final InputStream clientInputStream = clientSocket.getInputStream();
                 final InputStreamReader clientReader =
                         new InputStreamReader(clientInputStream, StandardCharsets.UTF_8);
@@ -143,6 +138,11 @@ public final class LineReadingTcpServer implements AutoCloseable {
                     break;
                 }
                 lines.put(line);
+            }
+        } catch (final SSLHandshakeException | EOFException error) {
+            // Ignore `EOFException`s
+            if (!(error.getCause() instanceof EOFException)) {
+                throw error;
             }
         }
 
@@ -174,9 +174,12 @@ public final class LineReadingTcpServer implements AutoCloseable {
         synchronized (this) {
             if (running) {
                 running = false;
-                // `acceptClient()` might have closed the client socket due to a connection failure and haven't created a new one yet. Hence, here we double-check if the client connection is in place.
+                // `acceptClient()` might have closed the client socket due to a connection failure and haven't created
+                // a new one yet. Hence, here we double-check if the client connection is in place.
                 if (clientSocket != null && !clientSocket.isClosed()) {
-                    // Interrupting a thread is not sufficient to unblock operations waiting on socket I/O: https://stackoverflow.com/a/4426050/1278899 Hence, here we close the client socket to unblock the read from the client socket.
+                    // Interrupting a thread is not sufficient to unblock operations waiting on socket I/O:
+                    // https://stackoverflow.com/a/4426050/1278899 Hence, here we close the client socket to unblock the
+                    // read from the client socket.
                     clientSocket.close();
                 }
                 serverSocket.close();
@@ -187,21 +190,28 @@ public final class LineReadingTcpServer implements AutoCloseable {
             }
         }
 
-        // We wait for the termination of the reader thread outside the synchronized block. Otherwise, there is a chance of deadlock with this `join()` and the synchronized block inside the `acceptClient()`.
+        // We wait for the termination of the reader thread outside the synchronized block. Otherwise, there is a chance
+        // of deadlock with this `join()` and the synchronized block inside the `acceptClient()`.
         if (stoppedReaderThread != null) {
             stoppedReaderThread.join();
         }
     }
 
-    public ServerSocket getServerSocket() {
+    ServerSocket getServerSocket() {
         return serverSocket;
     }
 
-    public List<String> pollLines(@SuppressWarnings("SameParameterValue") final int count)
-            throws InterruptedException, TimeoutException {
+    List<String> pollLines(@SuppressWarnings("SameParameterValue") final int count) throws InterruptedException {
         final List<String> polledLines = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
-            final String polledLine = pollLine();
+            final String polledLine;
+            try {
+                polledLine = pollLine();
+            } catch (final TimeoutException timeout) {
+                final String message =
+                        String.format("timeout while polling for line %d (total needed: %d)", (i + 1), count);
+                throw new RuntimeException(message, timeout);
+            }
             polledLines.add(polledLine);
         }
         return polledLines;

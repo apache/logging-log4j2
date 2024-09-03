@@ -25,7 +25,6 @@ import java.security.KeyStore;
 import java.util.Collections;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.OS;
@@ -50,14 +49,18 @@ public class KeyStoreConfigurationTest {
     public void loadEmptyConfiguration() {
         assertThrows(
                 StoreConfigurationException.class,
-                () -> new KeyStoreConfiguration(null, new MemoryPasswordProvider(SslKeyStoreConstants.NULL_PWD), null, null));
+                () -> new KeyStoreConfiguration(
+                        null, new MemoryPasswordProvider(SslKeyStoreConstants.NULL_PWD), null, null));
     }
 
     @Test
     public void loadNotEmptyConfigurationDeprecated() throws StoreConfigurationException {
         @SuppressWarnings("deprecation")
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(
-                SslKeyStoreConstants.KEYSTORE_FILE_PATH, SslKeyStoreConstants.KEYSTORE_PWD(), SslKeyStoreConstants.KEYSTORE_TYPE, null);
+                SslKeyStoreConstants.KEYSTORE_FILE_PATH,
+                SslKeyStoreConstants.KEYSTORE_PWD(),
+                SslKeyStoreConstants.KEYSTORE_TYPE,
+                null);
         final KeyStore ks = ksc.getKeyStore();
         assertNotNull(ks);
         checkKeystoreConfiguration(ksc);
@@ -100,7 +103,10 @@ public class KeyStoreConfigurationTest {
     public void returnTheSameKeyStoreAfterMultipleLoadsDeprecated() throws StoreConfigurationException {
         @SuppressWarnings("deprecation")
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(
-                SslKeyStoreConstants.KEYSTORE_FILE_PATH, SslKeyStoreConstants.KEYSTORE_PWD(), SslKeyStoreConstants.KEYSTORE_TYPE, null);
+                SslKeyStoreConstants.KEYSTORE_FILE_PATH,
+                SslKeyStoreConstants.KEYSTORE_PWD(),
+                SslKeyStoreConstants.KEYSTORE_TYPE,
+                null);
         final KeyStore ks = ksc.getKeyStore();
         final KeyStore ks2 = ksc.getKeyStore();
         assertSame(ks, ks2);

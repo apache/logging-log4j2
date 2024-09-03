@@ -60,9 +60,10 @@ public class SslConfiguration {
             final TrustStoreConfiguration trustStoreConfig) {
         this.keyStoreConfig = keyStoreConfig;
         this.trustStoreConfig = trustStoreConfig;
-        this.protocol = protocol == null ? SslConfigurationDefaults.PROTOCOL : protocol;
+        final String effectiveProtocol = protocol == null ? SslConfigurationDefaults.PROTOCOL : protocol;
+        this.protocol = effectiveProtocol;
         this.verifyHostName = verifyHostName;
-        this.sslContext = createSslContextWithFallbacks(protocol, keyStoreConfig, trustStoreConfig);
+        this.sslContext = createSslContextWithFallbacks(effectiveProtocol, keyStoreConfig, trustStoreConfig);
     }
 
     /**

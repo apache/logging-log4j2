@@ -24,8 +24,6 @@ cd tmp
 
 # Constants
 caPassword="aCaSecret"
-keyStorePassword="aKeyStoreSecret"
-trustStorePassword="aTrustStoreSecret"
 keySize=2048
 validDays=$[365 * 10]
 
@@ -41,47 +39,77 @@ default_bits       = $keySize
 
 [ CA_DN ]
 C  = US
-CN = log4j2-ca
+CN = log4j-ca
 EOF
 
 # Create the CA key and certificate
 openssl req -config ca.cfg -new -x509 -nodes -keyout ca.key -out ca.crt -days $validDays
 
-### Trust store ###############################################################
+### Trust store (JKS) #########################################################
 
-# Create the trust store and import the certificate
-keytool -keystore trustStore.jks -storetype JKS -importcert -file ca.crt -keypass "$trustStorePassword" -storepass "$trustStorePassword" -alias log4j2-cacert -noprompt
+generateJksTrustStore() {
 
-# Copy the result
-cp -f trustStore.jks ../
+  # Receive arguments
+  local storeFileName="$1"
+  local storePassword="$2"
 
-### Client key store (JKS) ####################################################
+  # Create the trust store and import the CA certificate
+  keytool -keystore "$storeFileName" -storetype JKS -importcert -file ca.crt -alias log4j-ca -keypass "$storePassword" -storepass "$storePassword" -noprompt
 
-# Create the key store and import the certificate
-keytool -keystore keyStore.jks  -storetype JKS -alias log4j2-ca -importcert -file ca.crt -keypass "$keyStorePassword" -storepass "$keyStorePassword" -noprompt
+  # Copy the result
+  cp -f "$storeFileName" ../
 
-# Create the private key in the key store
-keytool -genkeypair -keyalg RSA -alias client -keystore keyStore.jks -storepass "$keyStorePassword" -keypass "$keyStorePassword" -validity $validDays -keysize $keySize -dname "CN=client.log4j2, C=US" 
+}
 
-# Create a signing request for the client
-keytool -keystore keyStore.jks -alias client -certreq -file client.csr -keypass "$keyStorePassword" -storepass "$keyStorePassword"
+# Create the primary trust store
+keyStorePassword="aTrustStoreSecret"
+generateJksTrustStore trustStore.jks "$keyStorePassword"
 
-# Sign the client certificate
-openssl x509 -req -CA ca.crt -CAkey ca.key -in client.csr -out client.crt_signed -days $validDays -CAcreateserial -passin pass:"$caPassword"
+# Create the secondary trust store
+generateJksTrustStore trustStore2.jks "${keyStorePassword}2"
 
-# Verify the client's signed certificate
-openssl verify -CAfile ca.crt client.crt_signed
+### Key store (JKS) ###########################################################
 
-# Import the client's signed certificate to the key store
-keytool -keystore keyStore.jks -alias client -importcert -file client.crt_signed -keypass "$keyStorePassword" -storepass "$keyStorePassword" -noprompt
+generateJksKeyStore() {
 
-# Verify the key store
-keytool -list -keystore keyStore.jks -storepass "$keyStorePassword"
+  # Receive arguments
+  local storeFileName="$1"
+  local storePassword="$2"
 
-# Copy the result
-cp -f keyStore.jks ../
+  # Create the key store and import the CA certificate
+  keytool -keystore "$storeFileName" -storetype JKS -importcert -file ca.crt -alias log4j-ca -keypass "$storePassword" -storepass "$storePassword" -noprompt
 
-### Client key store (P12) ####################################################
+  # Create the private key in the key store
+  keytool -genkeypair -keyalg RSA -alias log4j-client -keystore "$storeFileName" -storepass "$storePassword" -keypass "$storePassword" -validity $validDays -keysize $keySize -dname "CN=log4j-client, C=US"
+
+  # Create a signing request for the client
+  keytool -keystore "$storeFileName" -alias log4j-client -certreq -file "$storeFileName-client.csr" -keypass "$storePassword" -storepass "$storePassword"
+
+  # Sign the client certificate
+  openssl x509 -req -CA ca.crt -CAkey ca.key -in "$storeFileName-client.csr" -out "$storeFileName-client.crt_signed" -days $validDays -CAcreateserial -passin pass:"$caPassword"
+
+  # Verify the client's signed certificate
+  openssl verify -CAfile ca.crt "$storeFileName-client.crt_signed"
+
+  # Import the client's signed certificate to the key store
+  keytool -keystore "$storeFileName" -alias log4j-client -importcert -file "$storeFileName-client.crt_signed" -keypass "$storePassword" -storepass "$storePassword" -noprompt
+
+  # Verify the key store
+  keytool -list -keystore "$storeFileName" -storepass "$storePassword"
+
+  # Copy the result
+  cp -f "$storeFileName" ../  
+
+}
+
+# Create the primary key store
+keyStorePassword="aKeyStoreSecret"
+generateJksKeyStore keyStore.jks "$keyStorePassword"
+
+# Create the secondary key store
+generateJksKeyStore keyStore2.jks "${keyStorePassword}2"
+
+### Key store (P12) ###########################################################
 
 # Convert the key store to P12
 keytool -importkeystore -srckeystore keyStore.jks -destkeystore keyStore.p12 -srcstoretype JKS -deststoretype PKCS12 -srcstorepass "$keyStorePassword" -deststorepass "$keyStorePassword"
@@ -89,7 +117,7 @@ keytool -importkeystore -srckeystore keyStore.jks -destkeystore keyStore.p12 -sr
 # Copy the result
 cp -f keyStore.p12 ../
 
-### Client key store (P12 without password) ###################################
+### Key store (P12, no password) ##############################################
 
 # Both `keytool` and `openssl` require password for JKS and P12 key store types.
 # To workaround this limitation, we will
