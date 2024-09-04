@@ -48,8 +48,7 @@ git clone --depth 1 https://github.com/google/oss-fuzz
 +
 [source,bash]
 ----
-export PROJECT_NAME=log4j2
-python infra/helper.py build_image $PROJECT_NAME
+python infra/helper.py build_image log4j2
 ----
 
 . Run the container image to build the Log4j project and generate runner scripts along with dependencies:
@@ -58,14 +57,14 @@ python infra/helper.py build_image $PROJECT_NAME
 ----
 python infra/helper.py build_fuzzers \
   --sanitizer address --engine libfuzzer --architecture x86_64 \
-  $PROJECT_NAME
+  log4j2
 ----
 
 . List generated runner scripts:
 +
 [source,bash]
 ----
-ls -al "build/out/$PROJECT_NAME"
+ls -al build/out/log4j2
 ----
 
 . Check one of the generated runner scripts:
@@ -74,7 +73,7 @@ ls -al "build/out/$PROJECT_NAME"
 ----
 python infra/helper.py check_build \
   --sanitizer address --engine libfuzzer --architecture x86_64 \
-  $PROJECT_NAME log4j-core-fuzz-test-PatternLayoutFuzzer
+  log4j2 log4j-core-fuzz-test-PatternLayoutFuzzer
 ----
 
 . Execute one of the generated runner scripts:
@@ -83,5 +82,24 @@ python infra/helper.py check_build \
 ----
 python infra/helper.py run_fuzzer \
   --sanitizer address --engine libfuzzer --architecture x86_64 \
-  $PROJECT_NAME log4j-core-fuzz-test-PatternLayoutFuzzer
+  log4j2 log4j-core-fuzz-test-PatternLayoutFuzzer
 ----
+
+[#view]
+=== How can I view fuzzing failures detected by OSS-Fuzz?
+
+The system running fuzzers registered to OSS-Fuzz is called *ClusterFuzz*, which provides https://oss-fuzz.com/[a web interface] for maintainers to monitor the fuzzing results.
+Tests outputs and <<#reproduce,reproduction>> inputs for failed tests are stored in https://console.cloud.google.com/storage/browser/log4j2-logs.clusterfuzz-external.appspot.com[a Google Cloud Storage bucket].
+Access to both the web interface and the bucket is restricted, and only allowed to https://github.com/google/oss-fuzz/blob/master/projects/log4j2/project.yaml[those configured for the project].
+
+[#reproduce]
+=== How can I reproduce fuzzing failures detected by OSS-Fuzz?
+
+Download the associated `.testcase` file from the https://console.cloud.google.com/storage/browser/log4j2-logs.clusterfuzz-external.appspot.com[the Google Cloud Storage bucket], and run the following command:
+
+[source,bash]
+----
+python infra/helper.py reproduce log4j2 <FUZZ-TARGET-NAME> <TESTCASE-FILE-PATH>
+----
+
+Refer to https://google.github.io/oss-fuzz/advanced-topics/reproducing/[the related OSS-Fuzz documentation] for details.
