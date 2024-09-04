@@ -41,7 +41,7 @@ Below we will try to answer some frequently asked questions.
 +
 [source,bash]
 ----
-git clone --depth 1 https://github.com/google/oss-fuzz
+git clone --depth 1 https://github.com/google/oss-fuzz google-oss-fuzz && cd $_
 ----
 
 . Build the container image:
