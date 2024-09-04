@@ -161,6 +161,10 @@ java -version
 # Dump some debugging aid
 export
 
+# Create a temporary file for capturing the command output
+cmdOutputFile=\$(mktemp "$module-$className-XXX.out")
+trap 'rm -f -- "'\$cmdOutputFile'"' EXIT
+
 # Run the fuzzer
 LD_LIBRARY_PATH="\$JVM_LD_LIBRARY_PATH":. \\
 jazzer_driver \\
@@ -168,7 +172,16 @@ jazzer_driver \\
   --cp="\$classPath" \\
   --target_class="$fqcn" \\
   --jvm_args="\$jvmArgs" \\
-  \$@
+  \$@ \\
+  2>&1 | tee "\$cmdOutputFile" || {
+    retCode=\$?;
+    if grep -q "A fatal error has been detected by the Java Runtime Environment" "\$cmdOutputFile"; then
+      echo "Detected JRE crash; exiting with success, since it doesn't qualify as a fuzzing failure."
+      exit 0
+    else
+      exit \$retCode
+    fi
+  }
 EOF
     chmod +x "$scriptPath"
 
