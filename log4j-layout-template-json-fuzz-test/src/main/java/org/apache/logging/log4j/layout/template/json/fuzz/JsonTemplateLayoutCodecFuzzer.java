@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.layout.template.json.fuzz;
 
 import static org.apache.logging.log4j.fuzz.JsonUtil.assertValidJson;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.code_intelligence.jazzer.api.FuzzedDataProvider;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
@@ -28,13 +29,32 @@ import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 
 public final class JsonTemplateLayoutCodecFuzzer {
 
+    private static final int MAX_STRING_LENGTH = JsonTemplateLayoutDefaults.getMaxStringLength();
+
     public static void fuzzerTestOneInput(final FuzzedDataProvider dataProvider) {
+        final boolean encodeFirst = dataProvider.consumeBoolean();
+        if (encodeFirst) {
+            encodeThenDecode(dataProvider);
+        } else {
+            decodeThenEncode(dataProvider);
+        }
+    }
+
+    private static void encodeThenDecode(final FuzzedDataProvider dataProvider) {
+        final String expectedString = dataProvider.consumeString(MAX_STRING_LENGTH);
+        final String json = encodeJson(expectedString);
+        final Object actualString = JsonReader.read(json);
+        assertThat(actualString).isEqualTo(expectedString);
+    }
+
+    private static void decodeThenEncode(final FuzzedDataProvider dataProvider) {
         final Object object = decodeJson(dataProvider);
-        encodeJson(object);
+        final String json = encodeJson(object);
+        assertValidJson(json);
     }
 
     private static Object decodeJson(final FuzzedDataProvider dataProvider) {
-        final String expectedJson = dataProvider.consumeRemainingAsString();
+        final String expectedJson = dataProvider.consumeString(MAX_STRING_LENGTH);
         try {
             return JsonReader.read(expectedJson);
         } catch (final Exception ignored) {
@@ -44,13 +64,12 @@ public final class JsonTemplateLayoutCodecFuzzer {
         }
     }
 
-    private static void encodeJson(final Object object) {
+    private static String encodeJson(final Object object) {
         final JsonWriter jsonWriter = JsonWriter.newBuilder()
-                .setMaxStringLength(JsonTemplateLayoutDefaults.getMaxStringLength())
+                .setMaxStringLength(MAX_STRING_LENGTH)
                 .setTruncatedStringSuffix(JsonTemplateLayoutDefaults.getTruncatedStringSuffix())
                 .build();
         jsonWriter.writeValue(object);
-        final String actualJson = jsonWriter.getStringBuilder().toString();
-        assertValidJson(actualJson);
+        return jsonWriter.getStringBuilder().toString();
     }
 }
