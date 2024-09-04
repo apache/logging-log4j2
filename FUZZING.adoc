@@ -95,11 +95,12 @@ Access to both the web interface and the bucket is restricted, and only allowed 
 [#reproduce]
 === How can I reproduce fuzzing failures detected by OSS-Fuzz?
 
-Download the associated `.testcase` file from the https://console.cloud.google.com/storage/browser/log4j2-logs.clusterfuzz-external.appspot.com[the Google Cloud Storage bucket], and run the following command:
+Download the associated `.testcase` file from https://console.cloud.google.com/storage/browser/log4j2-logs.clusterfuzz-external.appspot.com[the Google Cloud Storage bucket], and run the following command:
 
 [source,bash]
 ----
-python infra/helper.py reproduce log4j2 <FUZZ-TARGET-NAME> <TESTCASE-FILE-PATH>
+python infra/helper.py reproduce \
+  log4j2 <FUZZ-TARGET-NAME> <TESTCASE-FILE-PATH>
 ----
 
 Refer to https://google.github.io/oss-fuzz/advanced-topics/reproducing/[the related OSS-Fuzz documentation] for details.
