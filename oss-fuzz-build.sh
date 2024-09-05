@@ -196,7 +196,7 @@ EOF
     chmod +x "$scriptPath"
 
     # Execute fuzzer setup scripts
-    grep "^// FUZZER-SETUP-SCRIPT " "$fuzzer" | while read _ _ setupScript; do
+    { grep "^// FUZZER-SETUP-SCRIPT " "$fuzzer" || :; } | while read _ _ setupScript; do
       eval $setupScript
     done
 
