@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.spi;
 
+import org.apache.logging.log4j.core.context.internal.GarbageFreeSortedArrayThreadContextMap;
 import org.apache.logging.log4j.core.impl.CoreProperties.ThreadContextProperties;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.perf.nogc.OpenHashStringMap;

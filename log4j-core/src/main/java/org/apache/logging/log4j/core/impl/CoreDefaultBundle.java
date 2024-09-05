@@ -24,6 +24,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.async.AsyncQueueFullPolicy;
 import org.apache.logging.log4j.core.async.AsyncQueueFullPolicyFactory;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -58,8 +60,10 @@ import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.SingletonFactory;
 import org.apache.logging.log4j.plugins.condition.ConditionalOnMissingBinding;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
+import org.apache.logging.log4j.spi.CopyOnWrite;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.Provider;
+import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.ServiceLoaderUtil;
 import org.jspecify.annotations.Nullable;
@@ -73,6 +77,7 @@ import org.jspecify.annotations.Nullable;
  * @see ConfigurationFactory
  * @see MergeStrategy
  * @see InterpolatorFactory
+ * @see ContextDataInjector
  * @see LogEventFactory
  * @see StrSubstitutor
  */
@@ -169,9 +174,25 @@ public final class CoreDefaultBundle {
 
     @SingletonFactory
     @ConditionalOnMissingBinding
+    public ContextDataInjector defaultContextDataInjector() {
+        final ReadOnlyThreadContextMap threadContextMap = ThreadContext.getThreadContextMap();
+        if (threadContextMap != null) {
+            return threadContextMap instanceof CopyOnWrite
+                    ? new ThreadContextDataInjector.ForCopyOnWriteThreadContextMap()
+                    : new ThreadContextDataInjector.ForGarbageFreeThreadContextMap();
+        }
+        // for non StringMap-based context maps
+        return new ThreadContextDataInjector.ForDefaultThreadContextMap();
+    }
+
+    @SingletonFactory
+    @ConditionalOnMissingBinding
     public LogEventFactory reusableLogEventFactory(
-            final Clock clock, final NanoClock nanoClock, final RecyclerFactory recyclerFactory) {
-        return new ReusableLogEventFactory(clock, nanoClock, recyclerFactory);
+            final ContextDataInjector injector,
+            final Clock clock,
+            final NanoClock nanoClock,
+            final RecyclerFactory recyclerFactory) {
+        return new ReusableLogEventFactory(injector, clock, nanoClock, recyclerFactory);
     }
 
     @SingletonFactory

@@ -40,14 +40,12 @@ public class ResourceBundleLookup extends AbstractLookup {
      *
      * For example: "com.domain.messages:MyKey".
      *
-     * @param event
-     *            The current LogEvent.
      * @param key
      *            the key to be looked up, may be null
      * @return The value associated with the key.
      */
     @Override
-    public String lookup(final LogEvent event, final String key) {
+    public String lookup(final LogEvent ignored, final String key) {
         if (key == null) {
             return null;
         }

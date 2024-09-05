@@ -1,0 +1,11 @@
+{
+  "configs": {
+    "clientId": [
+      "1234"
+    ],
+    "userId": [
+      "alice",
+      "bob"
+    ]
+  }
+}

@@ -20,6 +20,7 @@ import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.ReusableLogEvent;
 import org.apache.logging.log4j.core.config.Property;
@@ -37,13 +38,18 @@ import org.apache.logging.log4j.plugins.Inject;
  */
 public class ReusableLogEventFactory implements LogEventFactory {
 
+    private final ContextDataInjector injector;
     private final Clock clock;
     private final NanoClock nanoClock;
     private final Recycler<MutableLogEvent> recycler;
 
     @Inject
     public ReusableLogEventFactory(
-            final Clock clock, final NanoClock nanoClock, final RecyclerFactory recyclerFactory) {
+            final ContextDataInjector injector,
+            final Clock clock,
+            final NanoClock nanoClock,
+            final RecyclerFactory recyclerFactory) {
+        this.injector = injector;
         this.clock = clock;
         this.nanoClock = nanoClock;
         this.recycler = recyclerFactory.create(() -> {
@@ -114,12 +120,7 @@ public class ReusableLogEventFactory implements LogEventFactory {
         result.initTime(clock, nanoClock);
         result.setThrown(t);
         result.setSource(location);
-        if (properties != null && !properties.isEmpty()) {
-            for (Property property : properties) {
-                result.getContextData().putValue(property.getName(), property.getValue());
-            }
-        }
-        ContextData.addAll(result.getContextData());
+        result.setContextData(injector.injectContextData(properties, result.getContextData()));
         result.setContextStack(
                 ThreadContext.getDepth() == 0 ? ThreadContext.EMPTY_STACK : ThreadContext.cloneStack()); // mutable copy
         result.setThreadName(Thread.currentThread().getName());

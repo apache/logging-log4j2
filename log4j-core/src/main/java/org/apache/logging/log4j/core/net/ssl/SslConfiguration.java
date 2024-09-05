@@ -217,7 +217,7 @@ public class SslConfiguration {
     /**
      * Creates an SslConfiguration from a KeyStoreConfiguration and a TrustStoreConfiguration.
      *
-     * @param protocol The protocol, see http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#SSLContext
+     * @param protocol The protocol, see <a href="https://docs.oracle.com/en/java/javase/17/docs/specs/security/standard-names.html#sslcontext-algorithms">SSLContext Algorithms</a>
      * @param keyStoreConfig The KeyStoreConfiguration.
      * @param trustStoreConfig The TrustStoreConfiguration.
      * @return a new SslConfiguration
@@ -235,7 +235,7 @@ public class SslConfiguration {
     /**
      * Creates an SslConfiguration from a KeyStoreConfiguration and a TrustStoreConfiguration.
      *
-     * @param protocol The protocol, see http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#SSLContext
+     * @param protocol The protocol, see <a href="https://docs.oracle.com/en/java/javase/17/docs/specs/security/standard-names.html#sslcontext-algorithms">SSLContext Algorithms</a>
      * @param keyStoreConfig The KeyStoreConfiguration.
      * @param trustStoreConfig The TrustStoreConfiguration.
      * @param verifyHostName whether or not to perform host name verification

@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="2478" link="https://github.com/apache/logging-log4j2/pull/2478"/>
-  <description format="asciidoc">Update `org.graalvm.truffle:truffle-api` to version `24.0.1`</description>
+  <issue id="2749" link="https://github.com/apache/logging-log4j2/pull/2749"/>
+  <description format="asciidoc">Update `org.graalvm.truffle:truffle-api` to version `24.0.2`</description>
 </entry>

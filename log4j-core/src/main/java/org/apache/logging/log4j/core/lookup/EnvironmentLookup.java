@@ -27,17 +27,13 @@ import org.apache.logging.log4j.plugins.Plugin;
 public class EnvironmentLookup extends AbstractLookup {
 
     /**
-     * Looks up the value of the given environment variable.
+     * Looks up the value of the environment variable.
      *
-     * @param event
-     *            The current LogEvent (ignored by this StrLookup).
-     * @param key
-     *            the key to look up, may be null
-     * @return the string value of the variable, or <code>null</code> if the variable is not defined in the system
-     *         environment
+     * @param key  the key to be looked up, may be null
+     * @return The value of the environment variable.
      */
     @Override
-    public String lookup(final LogEvent event, final String key) {
+    public String lookup(final LogEvent ignored, final String key) {
         // getenv throws NullPointerException if <code>name</code> is <code>null</code>
         return key != null ? System.getenv(key) : null;
     }

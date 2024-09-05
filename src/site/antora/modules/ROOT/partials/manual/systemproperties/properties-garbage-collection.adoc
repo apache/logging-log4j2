@@ -24,7 +24,9 @@
 | Default value | `true`
 |===
 
-If `true`, garbage-aware layouts will directly encode log events into https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html[`ByteBuffer`]s provided by appenders.
+If `true`, garbage-aware layouts will directly encode log events into
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/nio/ByteBuffer.html[`ByteBuffer`]s
+provided by appenders.
 
 This prevents allocating temporary `String` and `char[]` instances.
 
@@ -39,7 +41,7 @@ This prevents allocating temporary `String` and `char[]` instances.
 |===
 
 The size in bytes of the
-https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html[`ByteBuffer`]s
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/nio/ByteBuffer.html[`ByteBuffer`]s
 stored in `ThreadLocal` fields by layouts and
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder.html[`StringBuilderEncoder`]s.
 
@@ -56,7 +58,7 @@ This setting is only used if <<log4j.gc.enableDirectEncoders>> is set to `true`.
 |===
 
 The size in ``char``s of the
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/ByteBuffer.html[`ByteBuffer`]s
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/nio/ByteBuffer.html[`ByteBuffer`]s
 stored in `ThreadLocal` fields
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder.html[`StringBuilderEncoder`]s.
 

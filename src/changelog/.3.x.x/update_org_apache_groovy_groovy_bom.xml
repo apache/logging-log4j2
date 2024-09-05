@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="2457" link="https://github.com/apache/logging-log4j2/pull/2457"/>
-  <description format="asciidoc">Update `org.apache.groovy:groovy-bom` to version `4.0.21`</description>
+  <issue id="2699" link="https://github.com/apache/logging-log4j2/pull/2699"/>
+  <description format="asciidoc">Update `org.apache.groovy:groovy-bom` to version `4.0.22`</description>
 </entry>

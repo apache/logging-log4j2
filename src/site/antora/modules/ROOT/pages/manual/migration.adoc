@@ -53,11 +53,11 @@ The following `log4j-core` features were moved to their own modules or were remo
 |===
 | Log4j 2 feature | Log4j 3 module
 
-| xref:manual/appenders.adoc#BlockingQueueFactory[Asynchronous appender: JCTools-based queue]
-| {sonatype-url}/log4j-jctools[`log4j-jctools`]
+| xref:manual/appenders/delegating.adoc#BlockingQueueFactory[Asynchronous appender: JCTools-based queue]
+| xref:components.adoc#log4j-jctools[`log4j-jctools`]
 
 | xref:manual/async.adoc[Asynchronous logger]
-| {sonatype-url}/log4j-async-logger[`log4j-async-logger`]
+| xref:components.adoc#log4j-async-logger[`log4j-async-logger`]
 
 | {log4j2-url}/manual/appenders.html#CassandraAppender[Cassandra appender]
 | _removed without replacement_
@@ -67,13 +67,13 @@ footnote:removal[If you are using these components, and you can help us to maint
 | _removed without replacement_ footnote:removal[]
 
 | xref:manual/configuration.adoc#configuration-with-properties[Configuration file: Java properties format]
-| {sonatype-url}/log4j-config-properties[`log4j-config-properties`]
+| xref:components.adoc#log4j-config-properties[`log4j-config-properties`]
 
 | xref:manual/configuration.adoc#configuration-with-yaml[Configuration file: YAML format]
-| {sonatype-url}/log4j-config-yaml[`log4j-config-yaml`]
+| xref:components.adoc#log4j-config-yaml[`log4j-config-yaml`]
 
 | xref:manual/layouts.adoc#CSVLayouts[CSV layouts]
-| {sonatype-url}/log4j-csv[`log4j-csv`]
+| xref:components.adoc#log4j-csv[`log4j-csv`]
 
 | {log4j2-url}/manual/layouts.html#GELFLayout[GELF layout]
 | replaced by
@@ -82,14 +82,14 @@ and the included
 xref:manual/json-template-layout.adoc#event-templates[`GelfLayout.json`]
 template
 
-| xref:manual/appenders.adoc#JDBCAppender[JDBC appender]
-| {sonatype-url}/log4j-jdbc[`log4j-jdbc`]
+| xref:manual/appenders/database.adoc#JdbcAppender[JDBC appender]
+| xref:components.adoc#log4j-jdbc[`log4j-jdbc`]
 
-| xref:manual/appenders.adoc#JDBCPoolingDriver[JDBC appender: DBCP 2 connection source]
-| {sonatype-url}/log4j-jdbc-dbcp2[`log4j-jdbc-dbcp2`]
+| xref:manual/appenders/database.adoc#PoolingDriverConnectionSource[JDBC appender: DBCP 2 connection source]
+| xref:components.adoc#log4j-jdbc-dbcp2[`log4j-jdbc-dbcp2`]
 
-| xref:manual/appenders.adoc#JDBCDataSource[JDBC appender: JNDI connection source]
-| {sonatype-url}/log4j-jndi[`log4j-jndi`]
+| xref:manual/appenders/database.adoc#DataSourceConnectionSource[JDBC appender: JNDI connection source]
+| xref:components.adoc#log4j-jndi[`log4j-jndi`]
 
 | {log4j2-url}/manual/appenders.html#JeroMQAppender[JeroMQ appender]
 | replaced by external
@@ -100,7 +100,7 @@ module
 | _removed without replacement_ footnote:removal[]
 
 | xref:manual/lookups.adoc#JndiLookup[JNDI lookup]
-| {sonatype-url}/log4j-jndi[`log4j-jndi`]
+| xref:components.adoc#log4j-jndi[`log4j-jndi`]
 
 | {log4j2-url}/manual/appenders.html#JPAAppender[JPA appender]
 | _removed without replacement_ footnote:removal[]
@@ -117,7 +117,7 @@ https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md[
 module
 
 | xref:manual/scripts.adoc[Scripting support]
-| {sonatype-url}/log4j-script[`log4j-script`]
+| xref:components.adoc#log4j-script[`log4j-script`]
 
 | {log4j2-url}/manual/webapp.html[Servlet application support: Java EE version]
 | _removed without replacement_ footnote:removal[]

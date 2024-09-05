@@ -1,0 +1,135 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to you under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.logging.log4j.core.impl;
+
+import static java.util.Arrays.asList;
+import static java.util.concurrent.Executors.newSingleThreadExecutor;
+import static org.apache.logging.log4j.core.impl.ContextDataInjectorFactory.createInjector;
+import static org.apache.logging.log4j.core.test.TestConstants.THREAD_CONTEXT_MAP_TYPE;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+
+import java.util.Collection;
+import java.util.concurrent.ExecutionException;
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.ContextDataInjector;
+import org.apache.logging.log4j.spi.ThreadContextMap;
+import org.apache.logging.log4j.util.ProviderUtil;
+import org.apache.logging.log4j.util.SortedArrayStringMap;
+import org.apache.logging.log4j.util.StringMap;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+
+@RunWith(Parameterized.class)
+public class ThreadContextDataInjectorTest {
+    @Parameters(name = "{0}")
+    public static Collection<String[]> threadContextMapClassNames() {
+        return asList(new String[][] {
+            {"org.apache.logging.log4j.core.context.internal.GarbageFreeSortedArrayThreadContextMap"},
+            {"org.apache.logging.log4j.spi.DefaultThreadContextMap"}
+        });
+    }
+
+    @Parameterized.Parameter
+    public String threadContextMapClassName;
+
+    private static void resetThreadContextMap() {
+        final Log4jProvider provider = (Log4jProvider) ProviderUtil.getProvider();
+        provider.resetThreadContextMap();
+        ThreadContext.init();
+    }
+
+    @Before
+    public void before() throws ReflectiveOperationException {
+        System.setProperty(THREAD_CONTEXT_MAP_TYPE, threadContextMapClassName);
+    }
+
+    @After
+    public void after() {
+        ThreadContext.remove("foo");
+        ThreadContext.remove("baz");
+    }
+
+    private void testContextDataInjector() {
+        final ThreadContextMap threadContextMap = ProviderUtil.getProvider().getThreadContextMapInstance();
+        assertThat(
+                "thread context map class name",
+                threadContextMap.getClass().getName(),
+                is(equalTo(threadContextMapClassName)));
+
+        final ContextDataInjector contextDataInjector = createInjector();
+        final StringMap stringMap = contextDataInjector.injectContextData(null, new SortedArrayStringMap());
+
+        assertThat("thread context map", ThreadContext.getContext(), allOf(hasEntry("foo", "bar"), not(hasKey("baz"))));
+        assertThat("context map", stringMap.toMap(), allOf(hasEntry("foo", "bar"), not(hasKey("baz"))));
+
+        if (!stringMap.isFrozen()) {
+            stringMap.clear();
+            assertThat(
+                    "thread context map",
+                    ThreadContext.getContext(),
+                    allOf(hasEntry("foo", "bar"), not(hasKey("baz"))));
+            assertThat("context map", stringMap.toMap().entrySet(), is(empty()));
+        }
+
+        ThreadContext.put("foo", "bum");
+        ThreadContext.put("baz", "bam");
+
+        assertThat(
+                "thread context map",
+                ThreadContext.getContext(),
+                allOf(hasEntry("foo", "bum"), hasEntry("baz", "bam")));
+        if (stringMap.isFrozen()) {
+            assertThat("context map", stringMap.toMap(), allOf(hasEntry("foo", "bar"), not(hasKey("baz"))));
+        } else {
+            assertThat("context map", stringMap.toMap().entrySet(), is(empty()));
+        }
+    }
+
+    private void prepareThreadContext(final boolean isThreadContextMapInheritable) {
+        System.setProperty("log4j2.isThreadContextMapInheritable", Boolean.toString(isThreadContextMapInheritable));
+        resetThreadContextMap();
+        ThreadContext.clearMap();
+        ThreadContext.put("foo", "bar");
+    }
+
+    @Test
+    public void testThreadContextImmutability() {
+        prepareThreadContext(false);
+        testContextDataInjector();
+    }
+
+    @Test
+    public void testInheritableThreadContextImmutability() throws Throwable {
+        prepareThreadContext(true);
+        try {
+            newSingleThreadExecutor().submit(this::testContextDataInjector).get();
+        } catch (ExecutionException ee) {
+            throw ee.getCause();
+        }
+    }
+}

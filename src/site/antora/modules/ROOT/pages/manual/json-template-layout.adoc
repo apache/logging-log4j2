@@ -39,47 +39,7 @@ While running tests or developing locally, you can use xref:manual/pattern-layou
 
 Adding `log4j-layout-template-json` artifact to your list of dependencies is enough to enable access to JSON Template Layout in your Log4j configuration:
 
-[tabs]
-====
-Maven::
-+
-[source,xml,subs="+attributes"]
-----
-<project>
-
-  <!-- Assuming `log4j-bom` is imported --><!--1-->
-
-  <dependency>
-
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-layout-template-json</artifactId>
-      <scope>runtime</scope><!--2-->
-    </dependency>
-
-  </dependency>
-
-</project>
-----
-
-Gradle::
-+
-[source,groovy,subs="+attributes"]
-----
-dependencies {
-
-  // Assuming `log4j-bom` is imported <1>
-
-  runtimeOnly // <2>
-    'org.apache.logging.log4j:log4j-slf4j2-impl'
-
-}
-----
-====
-<1> Assuming you xref:manual/installation.adoc#bom[imported `org.apache.logging.log4j:log4j-bom`]
-<2> For applications, logging implementation dependencies are required at _runtime_.
-If you want to use JSON Template Layout for tests, you need to switch the scope to _test_.
-See xref:manual/installation.adoc[] for details.
+include::partial$components/log4j-json-template-layout.adoc[]
 
 JSON Template Layout is primarily configured through an *event template* describing the structure log events should be JSON-encoded in.
 Event templates themselves are also JSON documents, where objects containing `$resolver` members, such as,
@@ -457,7 +417,7 @@ The **default event template** modelling https://www.elastic.co/guide/en/ecs/cur
 Models https://github.com/logstash/log4j-jsonevent-layout[Logstash `json_event` pattern for Log4j]
 
 {project-github-url}/tree/2.x/log4j-layout-template-json/src/main/resources/GelfLayout.json[`GelfLayout.json`]::
-Models https://docs.graylog.org/en/3.1/pages/gelf.html#gelf-payload-specification[the Graylog Extended Log Format (GELF) payload specification] with additional `_thread` and `_logger` fields.
+Models https://go2docs.graylog.org/current/getting_in_log_data/gelf.html#GELFPayloadSpecification[the Graylog Extended Log Format (GELF) payload specification] with additional `_thread` and `_logger` fields.
 +
 [TIP]
 ====
@@ -931,7 +891,7 @@ Resolve the logger's fully qualified class name:
 [#event-template-resolver-main]
 ===== `main`
 
-Performs xref:manual/lookups.adoc#AppMainArgsLookup[Main Argument Lookup] for the given `index` or `key`
+Performs xref:manual/lookups.adoc#MainMapLookup[Main Argument Lookup] for the given `index` or `key`
 
 .`main` event template resolver grammar
 [source]
@@ -1658,13 +1618,13 @@ xref:manual/lookups.adoc[] are intended as a very generic, convenience utility t
 |xref:manual/lookups.adoc#LowerLookup[Lower Lookup]
 |<<event-template-resolver-caseConverter>>
 
-|xref:manual/lookups.adoc#AppMainArgsLookup[Main Arguments Lookup]
+|xref:manual/lookups.adoc#MainMapLookup[Main Arguments Lookup]
 |<<event-template-resolver-main>>
 
 |xref:manual/lookups.adoc#MapLookup[Map Lookup]
 |<<event-template-resolver-map>>
 
-|xref:manual/lookups.adoc#marker-lookup[Marker Lookup]
+|xref:manual/lookups.adoc#MarkerLookup[Marker Lookup]
 |<<event-template-resolver-marker>>
 
 |xref:manual/lookups.adoc#UpperLookup[Upper Lookup]

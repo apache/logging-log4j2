@@ -41,6 +41,8 @@
       ~ OSGi and JPMS options
       -->
     <bnd-extra-package-options>
+      <!-- Annotations only -->
+      org.jspecify.*;resolution:=optional,
       <!-- External optional dependencies -->
       com.conversantmedia.util.concurrent;resolution:=optional;
       com.lmax.disruptor.*;resolution:=optional,
@@ -75,6 +77,11 @@
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>org.jspecify</groupId>
+      <artifactId>jspecify</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.framework</artifactId>

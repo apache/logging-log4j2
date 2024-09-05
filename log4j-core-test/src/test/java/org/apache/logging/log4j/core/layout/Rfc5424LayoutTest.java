@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -23,6 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -34,10 +37,8 @@ import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationProcessor;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
@@ -63,9 +64,10 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 @UsingAnyThreadContext
 @ConfigurationFactoryType(BasicConfigurationFactory.class)
-public class Rfc5424LayoutTest {
-    LoggerContext ctx = LoggerContext.getContext();
-    Logger root = ctx.getRootLogger();
+class Rfc5424LayoutTest {
+    private final LoggerContext ctx = LoggerContext.getContext();
+    private final Configuration CONFIGURATION = ctx.getConfiguration();
+    private final Logger root = ctx.getRootLogger();
 
     private static final String PROCESSID = ProcessIdUtil.getProcessId();
     private static final String line1 =
@@ -96,30 +98,24 @@ public class Rfc5424LayoutTest {
      * Test case for MDC conversion pattern.
      */
     @Test
-    public void testLayout() throws Exception {
+    void testLayout() {
         for (final Appender appender : root.getAppenders().values()) {
             root.removeAppender(appender);
         }
         // set up appender
-        final AbstractStringLayout layout = Rfc5424Layout.createLayout(
-                Facility.LOCAL0,
-                "Event",
-                3692,
-                true,
-                "RequestContext",
-                null,
-                null,
-                true,
-                null,
-                "ATM",
-                null,
-                "key1, key2, locale",
-                null,
-                "loginId",
-                null,
-                true,
-                null,
-                new DefaultConfiguration());
+        final AbstractStringLayout layout = Rfc5424Layout.newBuilder()
+                .setFacility(Facility.LOCAL0)
+                .setId("Event")
+                .setEin("3692")
+                .setIncludeMDC(true)
+                .setMdcId("RequestContext")
+                .setIncludeNL(true)
+                .setAppName("ATM")
+                .setExcludes("key1, key2, locale")
+                .setRequired("loginId")
+                .setUseTLSMessageFormat(true)
+                .setConfiguration(CONFIGURATION)
+                .build();
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
 
         appender.start();
@@ -157,7 +153,7 @@ public class Rfc5424LayoutTest {
             assertTrue(list.get(3).endsWith(line4), "Expected line 4 to end with: " + line4 + " Actual " + list.get(3));
 
             for (final String frame : list) {
-                int length = -1;
+                int length;
                 final int frameLength = frame.length();
                 final int firstSpacePosition = frame.indexOf(' ');
                 final String messageLength = frame.substring(0, firstSpacePosition);
@@ -188,30 +184,24 @@ public class Rfc5424LayoutTest {
      * Test case for MDC conversion pattern.
      */
     @Test
-    public void testCollection() throws Exception {
+    void testCollection() {
         for (final Appender appender : root.getAppenders().values()) {
             root.removeAppender(appender);
         }
         // set up appender
-        final AbstractStringLayout layout = Rfc5424Layout.createLayout(
-                Facility.LOCAL0,
-                "Event",
-                3692,
-                true,
-                "RequestContext",
-                null,
-                null,
-                true,
-                null,
-                "ATM",
-                null,
-                "key1, key2, locale",
-                null,
-                "loginId",
-                null,
-                true,
-                null,
-                new DefaultConfiguration());
+        final AbstractStringLayout layout = Rfc5424Layout.newBuilder()
+                .setFacility(Facility.LOCAL0)
+                .setId("Event")
+                .setEin("3692")
+                .setIncludeMDC(true)
+                .setMdcId("RequestContext")
+                .setIncludeNL(true)
+                .setAppName("ATM")
+                .setExcludes("key1, key2, locale")
+                .setRequired("loginId")
+                .setUseTLSMessageFormat(true)
+                .setConfiguration(CONFIGURATION)
+                .build();
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
 
         appender.start();
@@ -254,7 +244,7 @@ public class Rfc5424LayoutTest {
                     "Expected line to end with: " + collectionEndOfLine + " Actual " + result);
 
             for (final String frame : list) {
-                int length = -1;
+                int length;
                 final int frameLength = frame.length();
                 final int firstSpacePosition = frame.indexOf(' ');
                 final String messageLength = frame.substring(0, firstSpacePosition);
@@ -278,30 +268,25 @@ public class Rfc5424LayoutTest {
      * Test case for escaping newlines and other SD PARAM-NAME special characters.
      */
     @Test
-    public void testEscape() throws Exception {
+    void testEscape() {
         for (final Appender appender : root.getAppenders().values()) {
             root.removeAppender(appender);
         }
         // set up layout/appender
-        final AbstractStringLayout layout = Rfc5424Layout.createLayout(
-                Facility.LOCAL0,
-                "Event",
-                3692,
-                true,
-                "RequestContext",
-                null,
-                null,
-                true,
-                "#012",
-                "ATM",
-                null,
-                "key1, key2, locale",
-                null,
-                "loginId",
-                null,
-                true,
-                null,
-                new DefaultConfiguration());
+        final AbstractStringLayout layout = Rfc5424Layout.newBuilder()
+                .setFacility(Facility.LOCAL0)
+                .setId("Event")
+                .setEin("3692")
+                .setIncludeMDC(true)
+                .setMdcId("RequestContext")
+                .setIncludeNL(true)
+                .setEscapeNL("#012")
+                .setAppName("ATM")
+                .setExcludes("key1, key2, locale")
+                .setRequired("loginId")
+                .setUseTLSMessageFormat(true)
+                .setConfiguration(CONFIGURATION)
+                .build();
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
 
         appender.start();
@@ -359,30 +344,25 @@ public class Rfc5424LayoutTest {
      * Test case for MDC exception conversion pattern.
      */
     @Test
-    public void testException() throws Exception {
+    void testException() {
         for (final Appender appender : root.getAppenders().values()) {
             root.removeAppender(appender);
         }
         // set up layout/appender
-        final AbstractStringLayout layout = Rfc5424Layout.createLayout(
-                Facility.LOCAL0,
-                "Event",
-                3692,
-                true,
-                "RequestContext",
-                null,
-                null,
-                true,
-                null,
-                "ATM",
-                null,
-                "key1, key2, locale",
-                null,
-                "loginId",
-                "%xEx",
-                true,
-                null,
-                new DefaultConfiguration());
+        final AbstractStringLayout layout = Rfc5424Layout.newBuilder()
+                .setFacility(Facility.LOCAL0)
+                .setId("Event")
+                .setEin("3692")
+                .setIncludeMDC(true)
+                .setMdcId("RequestContext")
+                .setIncludeNL(true)
+                .setAppName("ATM")
+                .setExcludes("key1, key2, locale")
+                .setRequired("loginId")
+                .setExceptionPattern("%xEx")
+                .setUseTLSMessageFormat(true)
+                .setConfiguration(CONFIGURATION)
+                .build();
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
@@ -414,7 +394,7 @@ public class Rfc5424LayoutTest {
      * Test case for MDC logger field inclusion.
      */
     @Test
-    public void testMDCLoggerFields() {
+    void testMDCLoggerFields() {
         final LoggerFields[] loggerFields = new LoggerFields[] {
             LoggerFields.createLoggerFields(
                     new KeyValuePair[] {new KeyValuePair("source", "%C.%M")}, null, null, false),
@@ -423,25 +403,19 @@ public class Rfc5424LayoutTest {
         };
 
         // set up layout/appender
-        final AbstractStringLayout layout = Rfc5424Layout.createLayout(
-                Facility.LOCAL0,
-                "Event",
-                3692,
-                true,
-                "RequestContext",
-                null,
-                null,
-                true,
-                null,
-                "ATM",
-                null,
-                "key1, key2, locale",
-                null,
-                null,
-                null,
-                true,
-                loggerFields,
-                new DefaultConfiguration());
+        final AbstractStringLayout layout = Rfc5424Layout.newBuilder()
+                .setFacility(Facility.LOCAL0)
+                .setId("Event")
+                .setEin("3692")
+                .setIncludeMDC(true)
+                .setMdcId("RequestContext")
+                .setIncludeNL(true)
+                .setAppName("ATM")
+                .setExcludes("key1, key2, locale")
+                .setUseTLSMessageFormat(true)
+                .setLoggerFields(loggerFields)
+                .setConfiguration(CONFIGURATION)
+                .build();
         final LogEvent event = Log4jLogEvent.newBuilder()
                 .setLevel(Level.INFO)
                 .setMessage(new SimpleMessage("starting logger fields test"))
@@ -452,7 +426,7 @@ public class Rfc5424LayoutTest {
     }
 
     @Test
-    public void testLoggerFields() {
+    void testLoggerFields() {
         final String[] expectedToContain = new String[] {
             "[BAZ@32473 baz=\"org.apache.logging.log4j.core.layout.Rfc5424LayoutTest.testLoggerFields\"]",
             "[RequestContext@3692 bar=\"org.apache.logging.log4j.core.layout.Rfc5424LayoutTest.testLoggerFields\"]",
@@ -470,25 +444,19 @@ public class Rfc5424LayoutTest {
             LoggerFields.createLoggerFields(new KeyValuePair[] {new KeyValuePair("bar", "%C.%M")}, null, null, false)
         };
 
-        final StringLayout layout = Rfc5424Layout.createLayout(
-                Facility.LOCAL0,
-                "Event",
-                3692,
-                true,
-                "RequestContext",
-                null,
-                null,
-                true,
-                null,
-                "ATM",
-                null,
-                "key1, key2, locale",
-                null,
-                null,
-                null,
-                false,
-                loggerFields,
-                new DefaultConfiguration());
+        final AbstractStringLayout layout = Rfc5424Layout.newBuilder()
+                .setFacility(Facility.LOCAL0)
+                .setId("Event")
+                .setEin("3692")
+                .setIncludeMDC(true)
+                .setMdcId("RequestContext")
+                .setIncludeNL(true)
+                .setAppName("ATM")
+                .setExcludes("key1, key2, locale")
+                .setUseTLSMessageFormat(false)
+                .setLoggerFields(loggerFields)
+                .setConfiguration(CONFIGURATION)
+                .build();
         final LogEvent event = Log4jLogEvent.newBuilder()
                 .setLevel(Level.INFO)
                 .setMessage(new SimpleMessage("starting logger fields test"))
@@ -502,7 +470,7 @@ public class Rfc5424LayoutTest {
     }
 
     @Test
-    public void testDiscardEmptyLoggerFields() {
+    void testDiscardEmptyLoggerFields() {
         final String mdcId = "RequestContext";
 
         for (final Appender appender : root.getAppenders().values()) {
@@ -525,25 +493,19 @@ public class Rfc5424LayoutTest {
             LoggerFields.createLoggerFields(new KeyValuePair[] {new KeyValuePair("bar", "%C.%M")}, null, null, false)
         };
 
-        final AbstractStringLayout layout = Rfc5424Layout.createLayout(
-                Facility.LOCAL0,
-                "Event",
-                3692,
-                true,
-                mdcId,
-                null,
-                null,
-                true,
-                null,
-                "ATM",
-                null,
-                "key1, key2, locale",
-                null,
-                null,
-                null,
-                false,
-                loggerFields,
-                new DefaultConfiguration());
+        final AbstractStringLayout layout = Rfc5424Layout.newBuilder()
+                .setFacility(Facility.LOCAL0)
+                .setId("Event")
+                .setEin("3692")
+                .setIncludeMDC(true)
+                .setMdcId(mdcId)
+                .setIncludeNL(true)
+                .setAppName("ATM")
+                .setExcludes("key1, key2, locale")
+                .setUseTLSMessageFormat(false)
+                .setLoggerFields(loggerFields)
+                .setConfiguration(CONFIGURATION)
+                .build();
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
@@ -555,7 +517,7 @@ public class Rfc5424LayoutTest {
         try {
 
             final List<String> list = appender.getMessages();
-            assertTrue(list.size() > 0, "Not enough list entries");
+            assertFalse(list.isEmpty(), "Not enough list entries");
             final String message = list.get(0);
             assertFalse(message.contains("SD-ID"), "SD-ID should have been discarded");
             assertTrue(message.contains("BAZ"), "BAZ should have been included");
@@ -568,7 +530,7 @@ public class Rfc5424LayoutTest {
     }
 
     @Test
-    public void testSubstituteStructuredData() {
+    void testSubstituteStructuredData() {
         final String mdcId = "RequestContext";
 
         final String expectedToContain = String.format("ATM %s MSG-ID - Message", PROCESSID);
@@ -577,25 +539,19 @@ public class Rfc5424LayoutTest {
             root.removeAppender(appender);
         }
 
-        final AbstractStringLayout layout = Rfc5424Layout.createLayout(
-                Facility.LOCAL0,
-                "Event",
-                3692,
-                false,
-                mdcId,
-                null,
-                null,
-                true,
-                null,
-                "ATM",
-                "MSG-ID",
-                "key1, key2, locale",
-                null,
-                null,
-                null,
-                false,
-                null,
-                new DefaultConfiguration());
+        final AbstractStringLayout layout = Rfc5424Layout.newBuilder()
+                .setFacility(Facility.LOCAL0)
+                .setId("Event")
+                .setEin("3692")
+                .setIncludeMDC(false)
+                .setMdcId(mdcId)
+                .setIncludeNL(true)
+                .setAppName("ATM")
+                .setMessageId("MSG-ID")
+                .setExcludes("key1, key2, locale")
+                .setUseTLSMessageFormat(false)
+                .setConfiguration(CONFIGURATION)
+                .build();
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
@@ -606,7 +562,7 @@ public class Rfc5424LayoutTest {
 
         try {
             final List<String> list = appender.getMessages();
-            assertTrue(list.size() > 0, "Not enough list entries");
+            assertFalse(list.isEmpty(), "Not enough list entries");
             final String message = list.get(0);
             assertTrue(message.contains(expectedToContain), "Not the expected message received");
             appender.clear();
@@ -622,25 +578,18 @@ public class Rfc5424LayoutTest {
             root.removeAppender(appender);
         }
         // set up appender
-        final AbstractStringLayout layout = Rfc5424Layout.createLayout(
-                Facility.LOCAL0,
-                "Event",
-                3692,
-                true,
-                "RequestContext",
-                null,
-                null,
-                true,
-                null,
-                "ATM",
-                null,
-                "key1, key2, locale",
-                null,
-                null,
-                null,
-                true,
-                null,
-                new DefaultConfiguration());
+        final AbstractStringLayout layout = Rfc5424Layout.newBuilder()
+                .setFacility(Facility.LOCAL0)
+                .setId("Event")
+                .setEin("3692")
+                .setIncludeMDC(true)
+                .setMdcId("RequestContext")
+                .setIncludeNL(true)
+                .setAppName("ATM")
+                .setExcludes("key1, key2, locale")
+                .setUseTLSMessageFormat(true)
+                .setConfiguration(CONFIGURATION)
+                .build();
 
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
@@ -651,7 +600,7 @@ public class Rfc5424LayoutTest {
         root.info("Hello {}", "World");
         try {
             final List<String> list = appender.getMessages();
-            assertTrue(list.size() > 0, "Not enough list entries");
+            assertFalse(list.isEmpty(), "Not enough list entries");
             final String message = list.get(0);
             assertTrue(
                     message.contains("Hello World"), "Incorrect message. Expected - Hello World, Actual - " + message);
@@ -668,7 +617,7 @@ public class Rfc5424LayoutTest {
         }
 
         final AbstractStringLayout layout = new Rfc5424Layout.Rfc5424LayoutBuilder()
-                .setConfig(new DefaultConfiguration())
+                .setConfiguration(CONFIGURATION)
                 .setFacility(Facility.LOCAL0)
                 .setId("Event")
                 .setEin("1234.56.7")
@@ -688,7 +637,7 @@ public class Rfc5424LayoutTest {
         root.info("Hello {}", "World");
         try {
             final List<String> list = appender.getMessages();
-            assertTrue(list.size() > 0, "Not enough list entries");
+            assertFalse(list.isEmpty(), "Not enough list entries");
             final String message = list.get(0);
             assertTrue(
                     message.contains("Hello World"), "Incorrect message. Expected - Hello World, Actual - " + message);
@@ -702,7 +651,7 @@ public class Rfc5424LayoutTest {
     public void testLayoutBuilderDefaultValues() {
         final Configuration configuration = ctx.getConfiguration();
         final Rfc5424Layout layout = new Rfc5424Layout.Rfc5424LayoutBuilder()
-                .setConfig(configuration)
+                .setConfiguration(configuration)
                 .build();
         checkDefaultValues(layout);
 
@@ -724,7 +673,7 @@ public class Rfc5424LayoutTest {
         assertNotNull(layout);
         assertEquals(Facility.LOCAL0, layout.getFacility());
         assertEquals(String.valueOf(Rfc5424Layout.DEFAULT_ENTERPRISE_NUMBER), layout.getEnterpriseNumber());
-        assertEquals(true, layout.isIncludeMdc());
+        assertTrue(layout.isIncludeMdc());
         assertEquals(Rfc5424Layout.DEFAULT_MDCID, layout.getMdcId());
         assertEquals(Rfc5424Layout.DEFAULT_ID, layout.getDefaultId());
     }
@@ -733,7 +682,7 @@ public class Rfc5424LayoutTest {
     @ValueSource(strings = {"123456789", "0", "2147483647", "123.45.6.78.9", "0.0.0.0.0.0.0.0.0.0.0.0.0.0"})
     void testLayoutBuilderValidEids(final String eid) {
         final AbstractStringLayout layout = new Rfc5424Layout.Rfc5424LayoutBuilder()
-                .setConfig(new DefaultConfiguration())
+                .setConfiguration(CONFIGURATION)
                 .setEin(eid)
                 .build();
 
@@ -744,10 +693,18 @@ public class Rfc5424LayoutTest {
     @ValueSource(strings = {"abc", "someEid", "-1"})
     void testLayoutBuilderInvalidEids(final String eid) {
         final AbstractStringLayout layout = new Rfc5424Layout.Rfc5424LayoutBuilder()
-                .setConfig(new DefaultConfiguration())
+                .setConfiguration(CONFIGURATION)
                 .setEin(eid)
                 .build();
 
         assertNull(layout);
+    }
+
+    @Test
+    void testFQDN() throws UnknownHostException {
+        final String fqdn = InetAddress.getLocalHost().getCanonicalHostName();
+        final Rfc5424Layout layout =
+                Rfc5424Layout.newBuilder().setConfiguration(CONFIGURATION).build();
+        assertThat(layout.getLocalHostName()).isEqualTo(fqdn);
     }
 }

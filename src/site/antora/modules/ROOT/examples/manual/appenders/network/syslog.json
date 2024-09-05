@@ -1,0 +1,36 @@
+{
+  "Configuration": {
+    "Appenders": {
+      // tag::appender[]
+      "Syslog": {
+        "name": "SYSLOG",
+        "host": "syslog.local",
+        "port": 6514,
+        "format": "RFC5424", // <1>
+        "appName": "myApp",
+        "facility": "DAEMON",
+        "id": "Log4j",
+        "newLineEscape": "\\n",
+        "Ssl": {
+          "KeyStore": {
+            "location": "keystore.p12",
+            "password": "${env:KEYSTORE_PASSWORD}"
+          },
+          "TrustStore": {
+            "location": "truststore.p12",
+            "password": "${env:TRUSTSTORE_PASSWORD}"
+          }
+        }
+      }
+      // end::appender[]
+    },
+    "Loggers": {
+      "Root": {
+        "level": "INFO",
+        "AppenderRef": {
+          "ref": "SYSLOG"
+        }
+      }
+    }
+  }
+}

@@ -20,6 +20,7 @@ import java.util.Objects;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.ReusableLogEvent;
 import org.apache.logging.log4j.core.config.LoggerConfig;
@@ -83,6 +84,7 @@ public class Log4jLogEvent implements LogEvent {
         private boolean endOfBatch = false;
         private long nanoTime;
         private Clock clock;
+        private ContextDataInjector contextDataInjector;
 
         public Builder() {
             initDefaultContextData();
@@ -236,6 +238,11 @@ public class Log4jLogEvent implements LogEvent {
             return this;
         }
 
+        public Builder setContextDataInjector(final ContextDataInjector contextDataInjector) {
+            this.contextDataInjector = contextDataInjector;
+            return this;
+        }
+
         @Override
         public Log4jLogEvent build() {
             initTimeFields();
@@ -272,8 +279,8 @@ public class Log4jLogEvent implements LogEvent {
         }
 
         private void initDefaultContextData() {
-            contextData = ContextDataFactory.createContextData();
-            ContextData.addAll(contextData);
+            contextDataInjector = ContextDataInjectorFactory.createInjector();
+            contextData = contextDataInjector.injectContextData(null, ContextDataFactory.createContextData());
         }
     }
 

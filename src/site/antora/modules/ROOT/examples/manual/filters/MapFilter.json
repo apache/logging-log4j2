@@ -1,0 +1,38 @@
+{
+  "Configuration": {
+    "monitorInterval": 10,
+    "Appenders": {
+      "Console": {
+        "name": "CONSOLE",
+        "JsonTemplateLayout": {}
+      }
+    },
+    "Loggers": {
+      "Root": {
+        "level": "ALL",
+        "AppenderRef": {
+          "ref": "CONSOLE"
+        }
+      }
+    },
+    // tag::filter[]
+    "MapFilter": {
+      "operator": "AND",
+      "KeyValuePair": [
+        {
+          "key": "eventType",
+          "value": "authentication"
+        },
+        {
+          "key": "eventId",
+          "value": "login"
+        },
+        {
+          "key": "eventId",
+          "value": "logout"
+        }
+      ]
+    }
+    // end::filter[]
+  }
+}

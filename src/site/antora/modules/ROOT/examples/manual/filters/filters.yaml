@@ -18,24 +18,24 @@ Configuration:
   Appenders:
     Console:
       name: "CONSOLE"
-      ThresholdFilter: # <6>
-        level: "WARN"
+      ThresholdFilter: # <7>
+        level: "FATAL"
   Loggers:
     Root:
-      level: "INFO"
-      ThreadsholdFilter: # <3>
-        level: "DEBUG"
+      level: "OFF"
+      ThresholdFilter: # <4>
+        level: "WARN"
       AppenderRef:
         ref: "CONSOLE"
-        level: "WARN" # <5>
-        MarkerFilter: # <4>
-          marker: "ALERT"
-          onMatch: "NEUTRAL"
-          onMismatch: "DENY"
+        level: "ERROR" # <5>
+        MarkerFilter: # <6>
+          marker: "SECURITY_ALERT"
       Logger:
         name: "org.example"
-        level: "TRACE" # <2>
-        ThresholdFilter:
-          level: "TRACE" # <3>
+        level: "DEBUG" # <2>
+        ThresholdFilter: # <3>
+          level: "INFO"
   MarkerFilter: # <1>
-    marker: "PRIVATE"
+    marker: "ALERT"
+    onMatch: "ACCEPT"
+    onMismatch: "NEUTRAL"

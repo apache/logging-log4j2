@@ -21,10 +21,12 @@ import aQute.bnd.annotation.spi.ServiceProvider;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.spi.ThreadContextMap;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Bind the Log4j API to SLF4J.
  */
+@NullMarked
 @ServiceProvider(value = Provider.class, resolution = Resolution.OPTIONAL)
 public class SLF4JProvider extends Provider {
 
@@ -32,7 +34,7 @@ public class SLF4JProvider extends Provider {
     private static final ThreadContextMap THREAD_CONTEXT_MAP = new MDCContextMap();
 
     public SLF4JProvider() {
-        super(15, CURRENT_VERSION);
+        super(15, CURRENT_VERSION, SLF4JLoggerContextFactory.class, MDCContextMap.class);
     }
 
     @Override

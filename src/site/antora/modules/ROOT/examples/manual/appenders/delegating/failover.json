@@ -1,0 +1,33 @@
+{
+  "Configuration": {
+    "Appenders": {
+      // tag::appenders[]
+      "File": {
+        "name": "FILE",
+        "fileName": "app.log",
+        "ignoreExceptions": false // <1>
+      },
+      "Console": {
+        "name": "CONSOLE"
+      },
+      "Failover": {
+        "name": "FAILOVER",
+        "primary": "FILE",
+        "Failovers": {
+          "AppenderRef": {
+            "ref": "CONSOLE"
+          }
+        }
+      }
+      // end::appenders[]
+    },
+    "Loggers": {
+      "Root": {
+        "level": "INFO",
+        "AppenderRef": {
+          "ref": "FAILOVER"
+        }
+      }
+    }
+  }
+}

@@ -31,7 +31,7 @@ implementation used to timestamp log events.
 This must be the fully qualified class name of the implementation or one of these predefined constants:
 
 SystemClock:: uses the best available system clock as time source.
-See https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/Clock.html#systemDefaultZone--[`Clock.systemDefaultZone()`] for details.
+See https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/time/Clock.html#systemDefaultZone()[`Clock.systemDefaultZone()`] for details.
 
 SystemMillisClock:: same as `SystemClock`, but truncates the result to a millisecond.
 

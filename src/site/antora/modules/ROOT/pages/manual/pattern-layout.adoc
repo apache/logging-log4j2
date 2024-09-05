@@ -135,6 +135,11 @@ Pattern Layout plugin configuration accepts the following attributes:
 A composite pattern string of one or more <<converters>>.
 `pattern` and <<plugin-attr-patternSelector>> are mutually exclusive, that is, only one can be specified.
 
+This attribute supports
+xref:manual/configuration.adoc#lazy-property-substitution[runtime property substitution]
+using an
+xref:manual/lookups.adoc#event-context[event evaluation context].
+
 [WARNING]
 ====
 If the provided pattern does not contain an exception converter and <<plugin-attr-alwaysWriteExceptions>> is not disabled, an implicit <<converter-exception-extended,`%xEX`>> is appended to the pattern.
@@ -230,7 +235,9 @@ This performs a function similar to <<converter-replace,the `replace` converter>
 
 It supports following attributes:
 
-`regex`:: A https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html[Java-compliant regular expression] to match the resulting string
+`regex`:: A
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/util/regex/Pattern.html[Java-compliant regular expression]
+to match the resulting string
 
 `replacement`:: The string to replace any matched substrings with
 
@@ -389,7 +396,8 @@ d{pattern}
 date{pattern}
 ----
 
-The date conversion specifier may be followed by a set of braces containing a date and time pattern string per https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html[`SimpleDateFormat`].
+The date conversion specifier may be followed by a set of braces containing a date and time pattern string per
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/text/SimpleDateFormat.html[`SimpleDateFormat`].
 The predefined _named_ formats are:
 
 [%header,cols="2m,3m"]
@@ -443,7 +451,8 @@ The predefined _named_ formats are:
 |1351866842781
 |===
 
-You can also use a set of braces containing a time zone id per https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)[`java.util.TimeZone#getTimeZone(String)`].
+You can also use a set of braces containing a time zone id per
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/util/TimeZone.html#getTimeZone(java.lang.String)[`java.util.TimeZone#getTimeZone(String)`].
 If no date format specifier is given then the `DEFAULT` format is used.
 
 You can also define custom date formats, see following examples:
@@ -476,7 +485,9 @@ While the time unit is milliseconds, the granularity depends on the platform.
 This is an efficient way to output the event time because only a conversion from `long` to `String` takes place, there is no `Date` formatting involved.
 
 There is also limited support for timestamps more precise than milliseconds when running on Java 9 or later.
-Note that not all https://docs.oracle.com/javase/9/docs/api/java/time/format/DateTimeFormatter.html[`DateTimeFormatter`] formats are supported.
+Note that not all
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/time/format/DateTimeFormatter.html[`DateTimeFormatter`]
+formats are supported.
 Only timestamps in the formats mentioned in the table above may use the _nano-of-second_ pattern letter `n` instead of the _fraction-of-second_ pattern letter `S`.
 
 Users may revert to a millisecond-precision clock when running on Java 9 by setting xref:manual/systemproperties.adoc#log4j.configuration.clock[the `log4j.configuration.clock` system property] to `SystemMillisClock`.
@@ -850,7 +861,7 @@ See xref:manual/layouts.adoc#LocationInformation[this section of the layouts pag
 
 Outputs location information of the caller which generates the logging event
 
-.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/LocationPatternConverter.html[`LocationPatternConverter`] specifier grammar
+.`LocationPatternConverter` specifier grammar
 [source,text]
 ----
 l
@@ -987,7 +998,7 @@ If no additional sub-option is specified, then all map entries are output using 
 
 Outputs the result of evaluating the given pattern and truncating the result
 
-.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/MaxLegthConverter.html[`MaxLengthConverter`] specifier grammar
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/MaxLengthConverter.html[`MaxLengthConverter`] specifier grammar
 [source,text]
 ----
 maxLen{pattern}{length}
@@ -1324,7 +1335,7 @@ threadPriority
 
 Includes either a random or a time-based UUID
 
-.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/UuidConverter.html[`UuidConverter`] specifier grammar
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/UuidPatternConverter.html[`UuidPatternConverter`] specifier grammar
 [source,text]
 ----
 u{RANDOM|TIME}
@@ -1570,7 +1581,9 @@ If your terminal supports 24-bit colors, you can specify:
 ==== ANSI styling on Windows
 
 ANSI escape sequences are supported natively on many platforms, but not by default on Windows.
-To enable ANSI support add the http://jansi.fusesource.org/[Jansi] dependency to your application, and set xref:manual/systemproperties.adoc#log4j.console.jansiEnabled[the `log4j.console.jansiEnabled` system property] to `false`.
+To enable ANSI support add the
+http://fusesource.github.io/jansi/[Jansi]
+dependency to your application, and set xref:manual/systemproperties.adoc#log4j.console.jansiEnabled[the `log4j.console.jansiEnabled` system property] to `true`.
 This allows Log4j to use Jansi to add ANSI escape codes when writing to the console.
 
 [NOTE]
@@ -1592,33 +1605,33 @@ Format modifiers to control such things as field width, padding, left, and right
 |Pattern
 |Comment
 
-|<<converter-logger,%c\{precision} +
-%logger\{precision}>>
+|xref:#converter-logger[%c\{precision} +
+%logger\{precision}]
 |
 
-|<<converter-date,%d +
-%date>>
+|xref:#converter-date[%d +
+%date]
 |Only the predefined date formats (`DEFAULT`, `ISO8601`, `UNIX`, `UNIX_MILLIS`, etc.) are garbage-free
 
-|<<converter-encode,%enc\{pattern} +
-%encode\{pattern}>>
+|xref:#converter-encode[%enc\{pattern} +
+%encode\{pattern}]
 |
 
-|<<converter-equals,%equals\{pattern}\{test}\{substitution} +
-%equalsIgnoreCase\{pattern}\{test}\{substitution}>>
+|xref:#converter-equals[%equals\{pattern}\{test}\{substitution} +
+%equalsIgnoreCase\{pattern}\{test}\{substitution}]
 |
 
 |<<converter-highlight,%highlight\{pattern}\{style}>>
 |Granted nested pattern is garbage-free
 
-|<<converter-map,%K\{key} +
+|xref:#converter-map[%K\{key} +
 %map\{key} +
-%MAP\{key}>>
+%MAP\{key}]
 |
 
-|<<converter-message,%m +
+|xref:#converter-message[%m +
 %msg +
-%message>>
+%message]
 |
 
 |<<converter-marker,%marker>>
@@ -1627,54 +1640,54 @@ Format modifiers to control such things as field width, padding, left, and right
 |<<converter-marker,%markerSimpleName>>
 |
 
-|<<converter-max-len,%maxLen +
-%maxLength>>
+|xref:#converter-max-len[%maxLen +
+%maxLength]
 |
 
 |%n
 |
 
-|<<converter-nano,%N +
-%nano>>
+|xref:#converter-nano[%N +
+%nano]
 |
 
-|<<converter-not-empty,%notEmpty\{pattern} +
+|xref:#converter-not-empty[%notEmpty\{pattern} +
 %varsNotEmpty\{pattern} +
-%variablesNotEmpty\{pattern}>>
+%variablesNotEmpty\{pattern}]
 |
 
-|<<converter-level,%p +
-%level>>
+|xref:#converter-level[%p +
+%level]
 |
 
-|<<converter-relative,%r +
-%relative>>
+|xref:#converter-relative[%r +
+%relative]
 |
 
-|<<converter-seq,%sn +
-%sequenceNumber>>
+|xref:#converter-seq[%sn +
+%sequenceNumber]
 |
 
 |<<converter-style,%style\{pattern}{ANSI style}>>
 |
 
-|<<converter-thread-id,%T +
+|xref:#converter-thread-id[%T +
 %tid +
-%threadId>>
+%threadId]
 |
 
-|<<converter-thread-name,%t +
+|xref:#converter-thread-name[%t +
 %tn +
 %thread +
-%threadName>>
+%threadName]
 |
 
 |<<converter-thread-priority,%tp>>
 |
 
-|<<converter-thread-context-map[%X{key,,key2...\} +
+|<<converter-thread-context-map,%X{key,,key2...\>>} +
 %mdc{key[,key2...\]} +
-%MDC{key[,key2...\]}>>
+%MDC{key[,key2...\]}]
 |
 
 |literal text
@@ -1722,7 +1735,7 @@ xref:manual/lookups.adoc[] are intended as a very generic, convenience utility t
 |xref:manual/lookups.adoc#MapLookup[Map Lookup]
 |<<converter-map>>
 
-|xref:manual/lookups.adoc#marker-lookup[Marker Lookup]
+|xref:manual/lookups.adoc#MarkerLookup[Marker Lookup]
 |<<converter-marker>>
 |===
 =====
@@ -1760,7 +1773,7 @@ Furthermore, the converter must also specify the `@ConverterKeys` annotation to 
 ====
 Unlike most other plugins, **pattern converters do not use a `@PluginFactory`**.
 Instead, each converter is required to provide a static `newInstance(String[])` factory method.
-The `String[]` argument denotes the values that are specified within the curly braces that following the conversion specifier.
+The `String[]` argument denots the the values that are specified within the curly braces that following the conversion specifier.
 ====
 
 Refer to following sources for simple examples:

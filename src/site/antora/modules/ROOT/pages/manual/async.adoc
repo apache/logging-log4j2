@@ -23,7 +23,7 @@ Log4j offers out-of-the-box two different asynchronous logging solutions:
 Asynchronous appender::
 A classical queue-based asynchronous appender, which is available since Log4j 1.
 +
-See xref:manual/appenders.adoc#AsyncAppender[Asynchronous appender] for more details.
+See xref:manual/appenders/delegating.adoc#AsyncAppender[Asynchronous appender] for more details.
 
 Asynchronous loggers::
 Asynchronous loggers are a new feature available since Log4j 2.
@@ -48,7 +48,7 @@ include::partial$manual/async-trade-offs.adoc[leveloffset=+1]
 In order to use async loggers, you need to add `log4j-async-logger` to you application's dependencies, by adding the
 following dependency to your build tool:
 
-include::partial$manual/dependencies-log4j-async-logger.adoc[]
+include::partial$features/async-logger.adoc[]
 
 [#configuration]
 == Configuration

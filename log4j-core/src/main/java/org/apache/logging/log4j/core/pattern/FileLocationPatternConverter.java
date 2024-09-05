@@ -60,4 +60,9 @@ public final class FileLocationPatternConverter extends LogEventPatternConverter
             output.append(element.getFileName());
         }
     }
+
+    @Override
+    public boolean requiresLocation() {
+        return true;
+    }
 }

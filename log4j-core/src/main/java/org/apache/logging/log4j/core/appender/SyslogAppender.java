@@ -130,6 +130,7 @@ public class SyslogAppender extends SocketAppender {
                                 .setExceptionPattern(exceptionPattern)
                                 .setUseTLSMessageFormat(useTlsMessageFormat)
                                 .setLoggerFields(loggerFields)
+                                .setConfiguration(configuration)
                                 .build()
                         :
                         // @formatter:off

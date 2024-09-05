@@ -20,6 +20,7 @@ import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.ReusableLogEvent;
@@ -29,7 +30,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.ReliabilityStrategy;
-import org.apache.logging.log4j.core.impl.ContextData;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.NanoClock;
 import org.apache.logging.log4j.kit.logger.AbstractLogger;
@@ -71,6 +72,7 @@ public class AsyncLogger extends Logger {
     // immediate inlining instead of waiting until they are designated "hot enough".
 
     private final Clock clock; // not reconfigurable
+    private final ContextDataInjector contextDataInjector; // not reconfigurable
 
     private final Recycler<RingBufferLogEventTranslator> translatorRecycler;
     private final AsyncLoggerDisruptor loggerDisruptor;
@@ -103,6 +105,7 @@ public class AsyncLogger extends Logger {
         includeLocation = privateConfig.loggerConfig.isIncludeLocation();
         nanoClock = configuration.getNanoClock();
         clock = configuration.getComponent(Clock.KEY);
+        contextDataInjector = configuration.getComponent(ContextDataInjector.KEY);
     }
 
     /*
@@ -211,6 +214,7 @@ public class AsyncLogger extends Logger {
                 location,
                 clock,
                 nanoClock,
+                contextDataInjector,
                 requiresLocation());
     }
 
@@ -251,8 +255,7 @@ public class AsyncLogger extends Logger {
 
     @SuppressWarnings("ForLoopReplaceableByForEach") // Avoid iterator allocation
     private void onPropertiesPresent(final ReusableLogEvent event, final List<Property> properties) {
-        StringMap contextData = event.getContextData();
-        ContextData.addAll(contextData);
+        final StringMap contextData = getContextData(event);
         for (int i = 0, size = properties.size(); i < size; i++) {
             final Property prop = properties.get(i);
             if (contextData.getValue(prop.getName()) != null) {
@@ -263,6 +266,17 @@ public class AsyncLogger extends Logger {
                     : prop.getValue();
             contextData.putValue(prop.getName(), value);
         }
+        event.setContextData(contextData);
+    }
+
+    private static StringMap getContextData(final ReusableLogEvent event) {
+        final StringMap contextData = event.getContextData();
+        if (contextData.isFrozen()) {
+            final StringMap temp = ContextDataFactory.createContextData();
+            temp.putAll(contextData);
+            return temp;
+        }
+        return contextData;
     }
 
     // package-protected for tests

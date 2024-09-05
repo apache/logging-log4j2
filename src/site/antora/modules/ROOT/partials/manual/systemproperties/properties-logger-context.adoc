@@ -97,7 +97,8 @@ link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/ShutdownCallbackRe
 implementation.
 Integrators can use this to customize the shutdown order of the JVM.
 
-The default implementation executes all shutdown actions in a separate `Thread` registered through https://docs.oracle.com/javase/{java-target-version}/docs/api/java/lang/Runtime.html#addShutdownHook-java.lang.Thread-[`Runtime#addShutdownHook()`].
+The default implementation executes all shutdown actions in a separate `Thread` registered through
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/lang/Runtime.html#addShutdownHook(java.lang.Thread)[`Runtime#addShutdownHook()`].
 
 [id=log4j.loggerContext.stacktraceOnStart]
 == `log4j.loggerContext.stacktraceOnStart`

@@ -25,11 +25,12 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.ThreadContextBenchmarkAccess;
+import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.impl.ContextData;
+import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.test.TestConstants;
 import org.apache.logging.log4j.perf.nogc.OpenHashStringMap;
-import org.apache.logging.log4j.spi.CopyOnWriteOpenHashMapThreadContextMap;
+import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.GarbageFreeOpenHashMapThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
@@ -69,25 +70,20 @@ import org.openjdk.jmh.annotations.Warmup;
 @Fork(1)
 @State(Scope.Benchmark)
 public class ThreadContextBenchmark {
-    private static final String COPY_OPENHASH_MAP = "CopyOpenHash";
-    private static final String COPY_ARRAY_MAP = "CopySortedArray";
+    private static final String DEFAULT_CONTEXT_MAP = "Default";
     private static final String NO_GC_OPENHASH_MAP = "NoGcOpenHash";
     private static final String NO_GC_ARRAY_MAP = "NoGcSortedArray";
     private static final Map<String, Class<? extends ThreadContextMap>> IMPLEMENTATIONS = new HashMap<>();
 
     static {
-        IMPLEMENTATIONS.put(COPY_OPENHASH_MAP, CopyOnWriteOpenHashMapThreadContextMap.class);
-        IMPLEMENTATIONS.put(
-                COPY_ARRAY_MAP,
-                CopyOnWriteOpenHashMapThreadContextMap.SUPER); // CopyOnWriteSortedArrayThreadContextMap.class);
+        IMPLEMENTATIONS.put(DEFAULT_CONTEXT_MAP, DefaultThreadContextMap.class);
         IMPLEMENTATIONS.put(NO_GC_OPENHASH_MAP, GarbageFreeOpenHashMapThreadContextMap.class);
         IMPLEMENTATIONS.put(
                 NO_GC_ARRAY_MAP,
                 GarbageFreeOpenHashMapThreadContextMap.SUPER); // GarbageFreeSortedArrayThreadContextMap.class);
     }
 
-    @Param({"Default", "CopyOpenHash", "CopySortedArray", "NoGcOpenHash", "NoGcSortedArray"})
-    // @Param({ "Default", }) // for legecyInject benchmarks
+    @Param({"Default", "NoGcOpenHash", "NoGcSortedArray"})
     public String threadContextMapAlias;
 
     @Param({"5", "50", "500"})
@@ -98,6 +94,7 @@ public class ThreadContextBenchmark {
     private String[] values;
     private List<Property> propertyList;
 
+    private ContextDataInjector injector;
     private StringMap reusableContextData;
 
     @Setup
@@ -106,6 +103,9 @@ public class ThreadContextBenchmark {
                 TestConstants.THREAD_CONTEXT_MAP_TYPE,
                 IMPLEMENTATIONS.get(threadContextMapAlias).getName());
         ThreadContextBenchmarkAccess.init();
+
+        injector = ContextDataInjectorFactory.createInjector();
+        System.out.println(threadContextMapAlias + ": Injector = " + injector);
 
         reusableContextData =
                 threadContextMapAlias.contains("Array") ? new SortedArrayStringMap() : new OpenHashStringMap<>();
@@ -161,18 +161,13 @@ public class ThreadContextBenchmark {
     @Benchmark
     public StringMap injectWithoutProperties() {
         reusableContextData.clear();
-        ContextData.addAll(reusableContextData);
-        return reusableContextData;
+        return injector.injectContextData(null, reusableContextData);
     }
 
     @Benchmark
     public StringMap injectWithProperties() {
         reusableContextData.clear();
-        for (Property property : propertyList) {
-            reusableContextData.putValue(property.getName(), property.getValue());
-        }
-        ContextData.addAll(reusableContextData);
-        return reusableContextData;
+        return injector.injectContextData(propertyList, reusableContextData);
     }
 
     @Benchmark

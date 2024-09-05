@@ -44,7 +44,9 @@ We recommend xref:manual/json-template-layout.adoc[] for structured logging purp
 [#charset]
 === Character encoding
 
-All <<collection,predefined layouts>> produce `String` that eventually get converted into a `byte` using the https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/charset/Charset.html[`Charset`] configured.
+All <<collection,predefined layouts>> produce `String` that eventually get converted into a `byte` using the
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/nio/charset/Charset.html[`Charset`]
+configured.
 While doing so, unless an explicit encoding configuration is stated, they use `UTF-8` by default.
 If you want all your log events to be formatted in a certain character encoding that is different from what the employed layout defaults to, make sure to configure the layout's character encoding as needed.
 
@@ -205,27 +207,7 @@ Both `CsvParameterLayout` and `CsvLogEventLayout` are configured with the follow
 
 Additional runtime dependencies are required for using CSV layouts:
 
-[tabs]
-====
-Maven::
-+
-[source,xml,subs="+attributes"]
-----
-<dependency>
-  <groupId>org.apache.commons</groupId>
-  <artifactId>commons-csv</artifactId>
-  <version>{commons-csv-version}</version>
-  <scope>runtime</scope>
-</dependency>
-----
-
-Gradle::
-+
-[source,groovy,subs="+attributes"]
-----
-runtimeOnly 'org.apache.commons:commons-csv:{commons-csv-version}'
-----
-====
+include::partial$features/layout-csv.adoc[]
 
 [#HTMLLayout]
 === HTML Layout
@@ -271,8 +253,11 @@ For other valid values, refer to xref:manual/pattern-layout.adoc#converter-date[
 |timezone
 |String
 |The time zone ID of the log event.
-If not specified, this layout uses the https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html#getDefault()[`TimeZone.getDefault()`] as the default.
-You can use time zone IDs supported by https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)[`TimeZone.getTimeZone(String)`].
+If not specified, this layout uses the
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/util/TimeZone.html#getDefault()[`TimeZone.getDefault()`]
+as the default.
+You can use time zone IDs supported by
+https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/util/TimeZone.html#getTimeZone(java.lang.String)[`TimeZone.getTimeZone(String)`].
 
 |title
 |String
@@ -357,6 +342,17 @@ Good news is JSON Template Layout is perfectly production-ready without any conf
 It bundles several predefined event templates modeling popular JSON-based log formats.
 
 Read more on xref:manual/json-template-layout.adoc[]...
+
+[#MessageLayout]
+=== Message Layout
+
+`MessageLayout` is a special layout that extracts the
+{log4j2-url}/manual/messages.html[`Message`]
+contained in a log event.
+It is currently only useful with the
+xref:manual/appenders/database.adoc#JdbcAppender[JDBC Appender].
+
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-MessageLayout[{plugin-reference-marker} Plugin reference for `MessageLayout`]
 
 [id=pattern-layout]
 === [[PatternLayout]] Pattern Layout
@@ -477,8 +473,10 @@ This attribute only applies to RFC 5424 Syslog records.
 
 |mdcRequired
 |String
-|A comma-separated list of {log4j2-url}/manual/thread-context.html[] map (aka, MDC) keys that must be present.
-If a key is not present, a link:../javadoc/log4j-core/org/apache/logging/log4j/LoggingException.html[`LoggingException`] will be thrown.
+|A comma-separated list of {log4j2-url}/manual/thread-context.html[`ThreadContext`] map (aka, MDC) keys that must be present.
+If a key is not present, a
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/LoggingException.html[`LoggingException`]
+will be thrown.
 This attribute only applies to RFC 5424 Syslog records.
 
 |messageId
