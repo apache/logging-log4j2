@@ -29,7 +29,14 @@ import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 
 public final class JsonTemplateLayoutCodecFuzzer {
 
-    private static final int MAX_STRING_LENGTH = JsonTemplateLayoutDefaults.getMaxStringLength();
+    // Choosing a reasonable JSON document length sufficing following needs:
+    //
+    // 1. Long enough to give fuzzer room to try breaking stuff
+    //
+    // 2. Short enough to avoid stack overflows, which are interpreted as fuzzer failures, though they are not.
+    //    Consider a JSON document containing more than 1024 nested objects.
+    //    This triggers a stack overflow, which is expected, hence nothing to signal.
+    private static final int MAX_STRING_LENGTH = 1024;
 
     public static void fuzzerTestOneInput(final FuzzedDataProvider dataProvider) {
         final boolean encodeFirst = dataProvider.consumeBoolean();
