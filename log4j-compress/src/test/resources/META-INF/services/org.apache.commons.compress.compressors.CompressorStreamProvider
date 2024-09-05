@@ -1,0 +1,4 @@
+##
+# BND does not register services in the `src/test` folder automatically,
+# therefore, we need a manual registration
+org.apache.logging.log4j.compress.commons.CustomCompressorStreamProvider

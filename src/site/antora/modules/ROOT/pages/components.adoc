@@ -53,6 +53,23 @@ See xref:manual/async.adoc[asynchronous loggers] for more details.
 
 include::partial$components/log4j-async-logger.adoc[]
 
+[#log4j-compress]
+== `log4j-compress`
+
+[cols="1h,5"]
+|===
+| JPMS module
+| `org.apache.logging.log4j.compress`
+|===
+
+The `log4j-compress` artifact provides additional compression algorithms.
+Having this artifact in the classpath makes these automatically accessible to
+xref:manual/appenders/rolling-file.adoc[].
+See
+xref:manual/appenders/rolling-file.adoc#RolloverStrategy-compress-commons[Compressing archived files] for more details.
+
+include::partial$components/log4j-compress.adoc[]
+
 [#log4j-config-jackson]
 == `log4j-config-jackson`
 

@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,10 +32,10 @@ import java.nio.file.WatchService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-import org.apache.commons.compress.compressors.CompressorStreamFactory;
-import org.apache.commons.compress.utils.IOUtils;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
+import java.util.zip.GZIPInputStream;
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
@@ -50,10 +49,10 @@ import org.junit.jupiter.api.condition.OS;
 /**
  * LOG4J2-1766.
  */
-@UsingStatusListener
-public class RollingAppenderTempCompressedFilePatternTest {
+@UsingStatusListener // Disables status logger unless an error occurs
+class RollingAppenderTempCompressedFilePatternTest {
 
-    private static Logger LOGGER = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     @TempLoggingDir
     private static Path loggingPath;
@@ -61,13 +60,13 @@ public class RollingAppenderTempCompressedFilePatternTest {
     @Test
     @DisabledOnOs(value = OS.MAC, disabledReason = "FileWatcher isn't fast enough to work properly.")
     @LoggerContextSource
-    public void testAppender(final LoggerContext context) throws Exception {
+    void testAppender(final LoggerContext context) throws Exception {
         final Logger logger = context.getLogger(getClass());
         final Path logsDir = loggingPath.resolve("logs");
         final Path tmpDir = loggingPath.resolve("tmp");
         Files.createDirectories(tmpDir);
         try (final WatchService watcher = FileSystems.getDefault().newWatchService()) {
-            WatchKey key = tmpDir.register(watcher, StandardWatchEventKinds.ENTRY_CREATE);
+            tmpDir.register(watcher, StandardWatchEventKinds.ENTRY_CREATE);
 
             final List<String> messages = new ArrayList<>();
             for (int i = 0; i < 500; ++i) {
@@ -82,49 +81,42 @@ public class RollingAppenderTempCompressedFilePatternTest {
                         getClass().getSimpleName());
             }
 
-            int gzippedFiles = 0;
-            final List<Path> files = StreamSupport.stream(
-                            Files.newDirectoryStream(logsDir).spliterator(), false)
-                    .collect(Collectors.toList());
-            for (final Path file : files) {
-                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                final FileExtension ext =
-                        FileExtension.lookupForFile(file.getFileName().toString());
-                if (ext != null) {
-                    gzippedFiles++;
-                }
-                try (final InputStream fis = Files.newInputStream(file);
-                        final InputStream in = ext != null
-                                ? new CompressorStreamFactory()
-                                        .createCompressorInputStream(toRootLowerCase(ext.name()), fis)
-                                : fis) {
-                    assertThat(in).as("compressed input stream").isNotNull();
-                    assertDoesNotThrow(() -> IOUtils.copy(in, baos));
-                }
-                final String text = baos.toString(Charset.defaultCharset());
-                final String[] lines = text.split("[\\r\\n]+");
-                for (final String line : lines) {
-                    messages.remove(line);
-                }
+            AtomicInteger fileCount = new AtomicInteger();
+            AtomicInteger gzippedFileCount = new AtomicInteger();
+            try (final DirectoryStream<Path> files = Files.newDirectoryStream(logsDir)) {
+                files.forEach(file -> assertDoesNotThrow(() -> {
+                    fileCount.incrementAndGet();
+                    final boolean isGzipped = file.getFileName().toString().endsWith(".gz");
+                    if (isGzipped) {
+                        gzippedFileCount.incrementAndGet();
+                        try (InputStream fileInput = Files.newInputStream(file);
+                                InputStream input = new GZIPInputStream(fileInput)) {
+                            IOUtils.readLines(input, Charset.defaultCharset()).forEach(messages::remove);
+                        }
+                    } else {
+                        try (Stream<String> lines = Files.lines(file, Charset.defaultCharset())) {
+                            lines.forEach(messages::remove);
+                        }
+                    }
+                }));
             }
             assertThat(messages).as("Lost messages").isEmpty();
-            assertThat(files).as("Log files").hasSizeGreaterThan(16);
-            assertThat(gzippedFiles).as("Compressed log file count").isGreaterThan(16);
+            assertThat(fileCount).as("Log file file count").hasValueGreaterThan(16);
+            assertThat(gzippedFileCount).as("Compressed log file count").hasValueGreaterThan(16);
 
-            int temporaryFilesCreated = 0;
-            key = watcher.take();
+            int temporaryFileCount = 0;
+            WatchKey key = watcher.take();
 
             for (final WatchEvent<?> event : key.pollEvents()) {
-                final WatchEvent<Path> ev = (WatchEvent<Path>) event;
-                final Path filename = ev.context();
+                final Path filename = (Path) event.context();
                 if (filename.toString().endsWith(".tmp")) {
-                    temporaryFilesCreated++;
+                    temporaryFileCount++;
                 }
             }
-            assertThat(temporaryFilesCreated)
-                    .as("Temporary files created")
+            assertThat(temporaryFileCount)
+                    .as("Temporary file count")
                     .isGreaterThan(0)
-                    .isEqualTo(gzippedFiles);
+                    .isEqualTo(gzippedFileCount.get());
         }
     }
 }

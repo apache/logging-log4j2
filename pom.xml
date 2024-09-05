@@ -233,6 +233,7 @@
     <!-- Last comes the rest of the modules in alphabetical order.
          Note that modules here must have a corresponding entry in `dependencyManagement > dependencies` block below! -->
     <module>log4j-async-logger</module>
+    <module>log4j-compress</module>
     <module>log4j-config-jackson</module>
     <module>log4j-config-properties</module>
     <module>log4j-config-yaml</module>
@@ -338,7 +339,6 @@
     <!-- Skipping `maven-site-plugin` globally. -->
     <maven.site.skip>true</maven.site.skip>
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
-    <site-commons-compress.version>1.27.1</site-commons-compress.version>
     <site-commons-csv.version>1.11.0</site-commons-csv.version>
     <site-commons-logging.version>1.3.4</site-commons-logging.version>
     <site-conversant.version>1.2.21</site-conversant.version>
@@ -389,6 +389,12 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-async-logger</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-compress</artifactId>
         <version>${project.version}</version>
       </dependency>
 
@@ -781,12 +787,6 @@
           </dependency>
 
           <!-- Other dependencies -->
-
-          <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-compress</artifactId>
-            <version>${site-commons-compress.version}</version>
-          </dependency>
 
           <dependency>
             <groupId>org.apache.commons</groupId>

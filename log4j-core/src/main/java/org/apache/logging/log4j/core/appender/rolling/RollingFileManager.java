@@ -43,6 +43,7 @@ import org.apache.logging.log4j.core.appender.FileManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.rolling.action.AbstractAction;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
+import org.apache.logging.log4j.core.appender.rolling.action.CompressActionFactory;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.FileUtils;
@@ -266,8 +267,8 @@ public class RollingFileManager extends FileManager {
         return directWrite;
     }
 
-    public FileExtension getFileExtension() {
-        return patternProcessor.getFileExtension();
+    public CompressActionFactory getCompressActionFactory() {
+        return patternProcessor.getCompressActionFactory();
     }
 
     // override to make visible for unit tests

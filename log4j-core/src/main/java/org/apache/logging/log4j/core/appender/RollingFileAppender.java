@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.zip.Deflater;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -126,12 +125,10 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
             if (strategy == null) {
                 if (fileName != null) {
                     strategy = DefaultRolloverStrategy.newBuilder()
-                            .setCompressionLevelStr(String.valueOf(Deflater.DEFAULT_COMPRESSION))
                             .setConfig(getConfiguration())
                             .build();
                 } else {
                     strategy = DirectWriteRolloverStrategy.newBuilder()
-                            .setCompressionLevelStr(String.valueOf(Deflater.DEFAULT_COMPRESSION))
                             .setConfig(getConfiguration())
                             .build();
                 }

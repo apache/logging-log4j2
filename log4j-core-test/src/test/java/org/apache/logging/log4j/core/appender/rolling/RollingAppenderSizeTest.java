@@ -16,24 +16,19 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
-import org.apache.commons.compress.compressors.CompressorStreamFactory;
-import org.apache.commons.compress.utils.IOUtils;
-import org.apache.commons.io.FileUtils;
+import java.util.zip.GZIPInputStream;
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
@@ -41,34 +36,27 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 @UsingStatusListener
-public class RollingAppenderSizeTest {
+@NullMarked
+class RollingAppenderSizeTest {
 
-    private static long DEFAULT_SHUTDOWN_MS = 500;
+    private static final long DEFAULT_SHUTDOWN_MS = 500;
 
-    private static final Pattern MESSAGE_PATTERN = Pattern.compile("This is test message numer \\d+.");
-
-    private static final List<String> FILE_EXTENSIONS = Arrays.asList("gz", "zip", "bz2", "deflate", "pack200", "xz");
-
-    static Stream<Arguments> parameters() {
-        return FILE_EXTENSIONS.stream().flatMap(fileExtension -> {
-            return Stream.of(Arguments.of(fileExtension, true), Arguments.of(fileExtension, false));
-        });
-    }
+    private static final String MESSAGE = "This is test message number {}.";
+    private static final Pattern MESSAGE_PATTERN = Pattern.compile("This is test message number \\d+.");
 
     @TempLoggingDir
     private static Path loggingPath;
 
     private static RollingFileAppender createRollingFileAppender(
-            final String fileExtension, final boolean createOnDemand) {
-        final Path folder = loggingPath.resolve(fileExtension);
-        final String fileName = folder.resolve("rollingtest.log").toString();
+            final Path perTestFolder, final boolean createOnDemand) {
+        final String fileName = perTestFolder.resolve("rollingtest.log").toString();
         final String filePattern =
-                folder.resolve("rollingtest-%i.log." + fileExtension).toString();
+                perTestFolder.resolve("rollingtest-%i.log.gz").toString();
         final RollingFileAppender appender = RollingFileAppender.newBuilder()
                 .setName("RollingFile")
                 .setFileName(fileName)
@@ -81,73 +69,63 @@ public class RollingAppenderSizeTest {
         return appender;
     }
 
-    private static LogEvent createEvent(final String pattern, final Object p0) {
+    private static LogEvent createEvent(final Integer number) {
         return Log4jLogEvent.newBuilder()
-                .setMessage(new ParameterizedMessage(pattern, p0))
+                .setMessage(new ParameterizedMessage(MESSAGE, number))
                 .build();
     }
 
     @ParameterizedTest
-    @MethodSource("parameters")
-    public void testIsCreateOnDemand(final String fileExtension, final boolean createOnDemand) throws IOException {
-        final Path extensionFolder = loggingPath.resolve(fileExtension);
+    @ValueSource(booleans = {true, false})
+    void testIsCreateOnDemand(final boolean createOnDemand) {
+        Path perTestFolder = loggingPath.resolve(Boolean.toString(createOnDemand));
         RollingFileAppender appender = null;
         try {
-            appender = createRollingFileAppender(fileExtension, createOnDemand);
+            appender = createRollingFileAppender(perTestFolder, createOnDemand);
             final RollingFileManager manager = appender.getManager();
             assertThat(manager).isNotNull().extracting("createOnDemand").isEqualTo(createOnDemand);
 
         } finally {
-            appender.stop(DEFAULT_SHUTDOWN_MS, TimeUnit.MILLISECONDS);
-            FileUtils.deleteDirectory(extensionFolder.toFile());
+            if (appender != null && appender.isStarted()) {
+                appender.stop(DEFAULT_SHUTDOWN_MS, TimeUnit.MILLISECONDS);
+            }
         }
     }
 
     @ParameterizedTest
-    @MethodSource("parameters")
-    public void testAppender(final String fileExtension, final boolean createOnDemand) throws Exception {
-        final Path extensionFolder = loggingPath.resolve(fileExtension);
+    @ValueSource(booleans = {true, false})
+    void testAppender(final boolean createOnDemand) throws IOException {
+        Path perTestFolder = loggingPath.resolve(Boolean.toString(createOnDemand));
         RollingFileAppender appender = null;
         try {
-            appender = createRollingFileAppender(fileExtension, createOnDemand);
-            final Path currentLog = extensionFolder.resolve("rollingtest.log");
+            appender = createRollingFileAppender(perTestFolder, createOnDemand);
+            final Path currentLog = perTestFolder.resolve("rollingtest.log");
             if (createOnDemand) {
                 assertThat(currentLog).as("file created on demand").doesNotExist();
             }
             for (int i = 0; i < 500; ++i) {
-                appender.append(createEvent("This is test message numer {}.", i));
+                appender.append(createEvent(i));
             }
             appender.stop(DEFAULT_SHUTDOWN_MS, TimeUnit.MILLISECONDS);
 
-            assertThat(extensionFolder).isDirectoryContaining("glob:**/*." + fileExtension);
+            assertThat(perTestFolder).isDirectoryContaining("glob:**/*.gz");
 
-            final FileExtension ext = FileExtension.lookup(fileExtension);
-            if (ext == null || FileExtension.ZIP == ext || FileExtension.PACK200 == ext) {
-                return; // Apache Commons Compress cannot deflate zip? TODO test decompressing these
-                // formats
-            }
-
-            for (final Path file : Files.newDirectoryStream(extensionFolder)) {
-                if (file.getFileName().endsWith(fileExtension)) {
-                    try (final InputStream fis = Files.newInputStream(file);
-                            final InputStream in = new CompressorStreamFactory()
-                                    .createCompressorInputStream(toRootLowerCase(ext.name()), fis)) {
-                        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        assertThat(in).as("compressed input stream").isNotNull();
-                        assertDoesNotThrow(() -> IOUtils.copy(in, baos));
-                        final String text = new String(baos.toByteArray(), Charset.defaultCharset());
-                        final String[] lines = text.split("[\\r\\n]+");
-                        assertThat(lines)
-                                .allMatch(message ->
-                                        MESSAGE_PATTERN.matcher(message).matches());
+            try (DirectoryStream<Path> files = Files.newDirectoryStream(perTestFolder)) {
+                assertThat(files).allSatisfy(file -> {
+                    if (file.getFileName().endsWith(".gz")) {
+                        try (final InputStream fileInput = Files.newInputStream(file);
+                                final InputStream input = new GZIPInputStream(fileInput)) {
+                            List<String> lines = IOUtils.readLines(input, Charset.defaultCharset());
+                            assertThat(lines)
+                                    .allMatch(m -> MESSAGE_PATTERN.matcher(m).matches());
+                        }
                     }
-                }
+                });
             }
         } finally {
-            if (appender.isStarted()) {
+            if (appender != null && appender.isStarted()) {
                 appender.stop(DEFAULT_SHUTDOWN_MS, TimeUnit.MILLISECONDS);
             }
-            FileUtils.deleteDirectory(extensionFolder.toFile());
         }
     }
 }
