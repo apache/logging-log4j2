@@ -85,6 +85,8 @@ projectVersion=$(./mvnw \
   -Denforcer.skip \
   install
 
+set -x
+
 # Download the JSON dictionary
 jsonDictPath="$outputDir/json.dict"
 [[ ! -f "$jsonDictPath" || "${FORCE_DOWNLOAD:-}" = "true" ]] && \
