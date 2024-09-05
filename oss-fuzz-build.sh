@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/bash
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -13,6 +13,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+# Enable strict mode
+set -euo pipefail
+IFS=$'\n\t'
 
 # Read command line arguments
 if [[ "$#" -ne 1 || -z "${JVM_LD_LIBRARY_PATH:-}" ]]; then
@@ -123,6 +127,10 @@ for module in *-fuzz-test; do
 #
 
 # OSS-Fuzz detects fuzzers by checking the presence of the magical "LLVMFuzzerTestOneInput" word, hence this line.
+
+# Enable strict mode
+set -euo pipefail
+IFS=\$'\n\t'
 
 # Report the build
 echo "Produced using the commit ID: $commitId"
