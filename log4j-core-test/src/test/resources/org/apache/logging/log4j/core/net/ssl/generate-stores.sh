@@ -38,7 +38,6 @@ output_password    = $caPassword
 default_bits       = $keySize
 
 [ CA_DN ]
-C  = US
 CN = log4j-ca
 EOF
 
@@ -80,7 +79,7 @@ generateJksKeyStore() {
   keytool -keystore "$storeFileName" -storetype JKS -importcert -file ca.crt -alias log4j-ca -keypass "$storePassword" -storepass "$storePassword" -noprompt
 
   # Create the private key in the key store
-  keytool -genkeypair -keyalg RSA -alias log4j-client -keystore "$storeFileName" -storepass "$storePassword" -keypass "$storePassword" -validity $validDays -keysize $keySize -dname "CN=log4j-client, C=US"
+  keytool -genkeypair -keyalg RSA -alias log4j-client -keystore "$storeFileName" -storepass "$storePassword" -keypass "$storePassword" -validity $validDays -keysize $keySize -dname "CN=log4j-client"
 
   # Create a signing request for the client
   keytool -keystore "$storeFileName" -alias log4j-client -certreq -file "$storeFileName-client.csr" -keypass "$storePassword" -storepass "$storePassword"
