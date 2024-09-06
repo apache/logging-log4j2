@@ -958,9 +958,6 @@ NOTE: The Log4j API supports custom levels, the following list contains only the
 <p><a href="#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-dbcp2-appender-PoolingDriverConnectionSource">PoolingDriverConnectionSource</a></p>
 </li>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DataSourceConnectionSource">DataSourceConnectionSource</a></p>
-</li>
-<li>
 <p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DriverManagerConnectionSource">DriverManagerConnectionSource</a></p>
 </li>
 <li>
@@ -968,6 +965,9 @@ NOTE: The Log4j API supports custom levels, the following list contains only the
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-JdbcAppender">JdbcAppender</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-jdbc-jndi_org-apache-logging-log4j-jdbc-jndi-DataSourceConnectionSource">DataSourceConnectionSource</a></p>
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-script_org-apache-logging-log4j-script-appender-ScriptAppenderSelector">ScriptAppenderSelector</a></p>
@@ -1385,9 +1385,6 @@ In most circumstances, implementation classes should store their <code>org.apach
 <p><a href="#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-dbcp2-appender-PoolingDriverConnectionSource">PoolingDriverConnectionSource</a></p>
 </li>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DataSourceConnectionSource">DataSourceConnectionSource</a></p>
-</li>
-<li>
 <p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DriverManagerConnectionSource">DriverManagerConnectionSource</a></p>
 </li>
 <li>
@@ -1395,6 +1392,9 @@ In most circumstances, implementation classes should store their <code>org.apach
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-JdbcAppender">JdbcAppender</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-jdbc-jndi_org-apache-logging-log4j-jdbc-jndi-DataSourceConnectionSource">DataSourceConnectionSource</a></p>
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-script_org-apache-logging-log4j-script-appender-ScriptAppenderSelector">ScriptAppenderSelector</a></p>
@@ -2579,12 +2579,7 @@ This attribute is ignored if <code>immediateFlush</code> is set to <code>true</c
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Property</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property">Property</a>?</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>A generic list of key/value properties</p>
-</div>
-<div class="paragraph">
-<p>The meaning of these properties depends on the component.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"></td>
@@ -16233,65 +16228,6 @@ toString(), or to output the value of a specific key within the property bundle 
 </div>
 </div>
 <div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DataSourceConnectionSource"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DataSourceConnectionSource"></a>DataSource</h4>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Class</dt>
-<dd>
-<p><code>org.apache.logging.log4j.jdbc.appender.DataSourceConnectionSource</code></p>
-</dd>
-<dt class="hdlist1">Provider</dt>
-<dd>
-<p><code>org.apache.logging.log4j:log4j-jdbc</code></p>
-</dd>
-</dl>
-</div>
-<div class="paragraph">
-<p>A <a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-JdbcAppender">JdbcAppender</a> connection source that uses a <code>javax.sql.DataSource</code> to connect to the database.</p>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DataSourceConnectionSource_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DataSourceConnectionSource_XML-snippet"></a>XML snippet</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;DataSource jndiName=""/&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DataSourceConnectionSource-attributes"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DataSourceConnectionSource-attributes"></a>Attributes</h5>
-<div class="paragraph">
-<p>Optional attributes are denoted by <code>?</code>-suffixed types.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 62.5%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jndiName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The full JNDI path where the data source is bound.
-Must start with java:/comp/env or environment-equivalent.</p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect3">
 <h4 id="org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DriverManagerConnectionSource"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DriverManagerConnectionSource"></a>DriverManager</h4>
 <div class="dlist">
 <dl>
@@ -16630,7 +16566,7 @@ This appender can be reconfigured at run time.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-jdbc-appender-ConnectionSource">ConnectionSource</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-jdbc-jndi_org-apache-logging-log4j-jdbc-appender-ConnectionSource">ConnectionSource</a></code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p>The connections source from which database connections should be retrieved.</p>
 </div></div></td>
@@ -16941,40 +16877,6 @@ This appender can be reconfigured at run time.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-jdbc-appender-AbstractConnectionSource"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-jdbc-appender-AbstractConnectionSource"></a><code>org.apache.logging.log4j.jdbc.appender.AbstractConnectionSource</code></h4>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Class</dt>
-<dd>
-<p><code>org.apache.logging.log4j.jdbc.appender.AbstractConnectionSource</code></p>
-</dd>
-<dt class="hdlist1">Provider</dt>
-<dd>
-<p><code>org.apache.logging.log4j:log4j-jdbc-dbcp2</code></p>
-</dd>
-</dl>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-jdbc-appender-AbstractConnectionSource_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-jdbc-appender-AbstractConnectionSource_implementations"></a>Known implementations</h5>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-dbcp2-appender-PoolingDriverConnectionSource">PoolingDriverConnectionSource</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DataSourceConnectionSource">DataSourceConnectionSource</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DriverManagerConnectionSource">DriverManagerConnectionSource</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-FactoryMethodConnectionSource">FactoryMethodConnectionSource</a></p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect3">
 <h4 id="org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-jdbc-appender-AbstractDriverManagerConnectionSource"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-jdbc-appender-AbstractDriverManagerConnectionSource"></a><code>org.apache.logging.log4j.jdbc.appender.AbstractDriverManagerConnectionSource</code></h4>
 <div class="dlist">
 <dl>
@@ -17002,8 +16904,45 @@ This appender can be reconfigured at run time.</p>
 </div>
 </div>
 </div>
+</div>
+<div class="sect2">
+<h3 id="org-apache-logging-log4j_log4j-jdbc-jndi"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc-jndi"></a><code>org.apache.logging.log4j:log4j-jdbc-jndi</code></h3>
 <div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-jdbc-appender-ConnectionSource"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-jdbc-appender-ConnectionSource"></a><code>org.apache.logging.log4j.jdbc.appender.ConnectionSource</code></h4>
+<h4 id="org-apache-logging-log4j_log4j-jdbc-jndi_org-apache-logging-log4j-jdbc-appender-AbstractConnectionSource"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc-jndi_org-apache-logging-log4j-jdbc-appender-AbstractConnectionSource"></a><code>org.apache.logging.log4j.jdbc.appender.AbstractConnectionSource</code></h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Class</dt>
+<dd>
+<p><code>org.apache.logging.log4j.jdbc.appender.AbstractConnectionSource</code></p>
+</dd>
+<dt class="hdlist1">Provider</dt>
+<dd>
+<p><code>org.apache.logging.log4j:log4j-jdbc-jndi</code></p>
+</dd>
+</dl>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-jdbc-jndi_org-apache-logging-log4j-jdbc-appender-AbstractConnectionSource_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc-jndi_org-apache-logging-log4j-jdbc-appender-AbstractConnectionSource_implementations"></a>Known implementations</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-dbcp2-appender-PoolingDriverConnectionSource">PoolingDriverConnectionSource</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DriverManagerConnectionSource">DriverManagerConnectionSource</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-FactoryMethodConnectionSource">FactoryMethodConnectionSource</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-jdbc-jndi_org-apache-logging-log4j-jdbc-jndi-DataSourceConnectionSource">DataSourceConnectionSource</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="org-apache-logging-log4j_log4j-jdbc-jndi_org-apache-logging-log4j-jdbc-appender-ConnectionSource"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc-jndi_org-apache-logging-log4j-jdbc-appender-ConnectionSource"></a><code>org.apache.logging.log4j.jdbc.appender.ConnectionSource</code></h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Class</dt>
@@ -17012,19 +16951,16 @@ This appender can be reconfigured at run time.</p>
 </dd>
 <dt class="hdlist1">Provider</dt>
 <dd>
-<p><code>org.apache.logging.log4j:log4j-jdbc-dbcp2</code></p>
+<p><code>org.apache.logging.log4j:log4j-jdbc-jndi</code></p>
 </dd>
 </dl>
 </div>
 <div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-jdbc-appender-ConnectionSource_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-jdbc-appender-ConnectionSource_implementations"></a>Known implementations</h5>
+<h5 id="org-apache-logging-log4j_log4j-jdbc-jndi_org-apache-logging-log4j-jdbc-appender-ConnectionSource_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc-jndi_org-apache-logging-log4j-jdbc-appender-ConnectionSource_implementations"></a>Known implementations</h5>
 <div class="ulist">
 <ul>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-dbcp2-appender-PoolingDriverConnectionSource">PoolingDriverConnectionSource</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DataSourceConnectionSource">DataSourceConnectionSource</a></p>
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DriverManagerConnectionSource">DriverManagerConnectionSource</a></p>
@@ -17032,8 +16968,70 @@ This appender can be reconfigured at run time.</p>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-FactoryMethodConnectionSource">FactoryMethodConnectionSource</a></p>
 </li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-jdbc-jndi_org-apache-logging-log4j-jdbc-jndi-DataSourceConnectionSource">DataSourceConnectionSource</a></p>
+</li>
 </ul>
 </div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="org-apache-logging-log4j_log4j-jdbc-jndi_org-apache-logging-log4j-jdbc-jndi-DataSourceConnectionSource"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc-jndi_org-apache-logging-log4j-jdbc-jndi-DataSourceConnectionSource"></a>DataSource</h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Class</dt>
+<dd>
+<p><code>org.apache.logging.log4j.jdbc.jndi.DataSourceConnectionSource</code></p>
+</dd>
+<dt class="hdlist1">Provider</dt>
+<dd>
+<p><code>org.apache.logging.log4j:log4j-jdbc-jndi</code></p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>A <code>org.apache.logging.log4j.jdbc.jndi.org.apache.logging.log4j.jdbc.appender.JdbcAppender</code> connection source that uses a <code>javax.sql.DataSource</code> to connect to the database.</p>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-jdbc-jndi_org-apache-logging-log4j-jdbc-jndi-DataSourceConnectionSource_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc-jndi_org-apache-logging-log4j-jdbc-jndi-DataSourceConnectionSource_XML-snippet"></a>XML snippet</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;DataSource jndiName=""/&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-jdbc-jndi_org-apache-logging-log4j-jdbc-jndi-DataSourceConnectionSource-attributes"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc-jndi_org-apache-logging-log4j-jdbc-jndi-DataSourceConnectionSource-attributes"></a>Attributes</h5>
+<div class="paragraph">
+<p>Optional attributes are denoted by <code>?</code>-suffixed types.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jndiName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The full JNDI path where the data source is bound.
+Must start with java:/comp/env or environment-equivalent.</p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>

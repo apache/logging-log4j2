@@ -864,7 +864,7 @@ implementation that formats a log event as
 </tbody>
 </table>
 <div class="paragraph">
-<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-JdbcAppender" class="xref page">&#x1F4D6; Plugin reference for <code>JDBC</code></a></p>
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-JdbcAppender" class="xref page">&#x1F4D6; Plugin reference for <code>JDBC</code></a></p>
 </div>
 <div class="paragraph">
 <p>Additional runtime dependencies are required to use the JDBC Appender:</p>
@@ -916,7 +916,7 @@ that the appender will use to get
 <a href="https://docs.oracle.com/javase/8/docs/api/java/sql/Connection.html"><code>Connection</code></a> objects.</p>
 </div>
 <div class="paragraph">
-<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-ConnectionSource" class="xref page">&#x1F4D6; Plugin reference for <code>ConnectionSource</code></a></p>
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-ConnectionSource" class="xref page">&#x1F4D6; Plugin reference for <code>ConnectionSource</code></a></p>
 </div>
 <div class="paragraph">
 <p>The following connection sources are available out-of-the-box:</p>
@@ -994,7 +994,7 @@ configuration property to <code>true</code>.</p>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
-  &lt;artifactId&gt;log4j-jndi&lt;/artifactId&gt;
+  &lt;artifactId&gt;log4j-jdbc-jndi&lt;/artifactId&gt;
   &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
@@ -1006,14 +1006,14 @@ configuration property to <code>true</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-jndi'</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-jdbc-jndi'</code></pre>
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="paragraph">
-<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-DataSourceConnectionSource" class="xref page">&#x1F4D6; Plugin reference for <code>DataSource</code></a></p>
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-jdbc-jndi_org-apache-logging-log4j-jdbc-jndi-DataSourceConnectionSource" class="xref page">&#x1F4D6; Plugin reference for <code>DataSource</code></a></p>
 </div>
 </div>
 <div class="sect3">
@@ -1072,7 +1072,7 @@ or
 </tbody>
 </table>
 <div class="paragraph">
-<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-FactoryMethodConnectionSource" class="xref page">&#x1F4D6; Plugin reference for <code>ConnectionFactory</code></a></p>
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-FactoryMethodConnectionSource" class="xref page">&#x1F4D6; Plugin reference for <code>ConnectionFactory</code></a></p>
 </div>
 </div>
 <div class="sect3">
@@ -1173,7 +1173,7 @@ for more details.</p></td>
 </tbody>
 </table>
 <div class="paragraph">
-<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-DriverManagerConnectionSource" class="xref page">&#x1F4D6; Plugin reference for <code>DriverManager</code></a></p>
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DriverManagerConnectionSource" class="xref page">&#x1F4D6; Plugin reference for <code>DriverManager</code></a></p>
 </div>
 </div>
 <div class="sect3">
@@ -1259,13 +1259,13 @@ for more details.</p></td>
 <p class="tableblock">If supplied, the <a href="#DriverManagerConnectionSource-attr-userName"><code>userName</code></a> and <a href="#DriverManagerConnectionSource-attr-password"><code>password</code></a> attributes will be ignored.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PoolingDriverConnectionSource-element-PoolingConnectionFactoryConfig"></a><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-core-appender-db-jdbc-PoolableConnectionFactoryConfig" class="xref page"><code>PoolableConnectionFactory</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PoolingDriverConnectionSource-element-PoolingConnectionFactoryConfig"></a><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-dbcp2-appender-PoolableConnectionFactoryConfig" class="xref page"><code>PoolableConnectionFactory</code></a></code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Allows finely tuning the configuration of the DBCP 2 connection pool.
 The available parameters are the same as those provided by DBCP 2.
 See
 <a href="https://commons.apache.org/proper/commons-dbcp/configuration.html">DBCP 2 configuration</a> for more details.</p>
-<p class="tableblock"><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-core-appender-db-jdbc-PoolableConnectionFactoryConfig" class="xref page">&#x1F4D6; Plugin reference for <code>PoolableConnectionFactory</code></a></p></td>
+<p class="tableblock"><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-dbcp2-appender-PoolableConnectionFactoryConfig" class="xref page">&#x1F4D6; Plugin reference for <code>PoolableConnectionFactory</code></a></p></td>
 </tr>
 </tbody>
 </table>
@@ -1311,7 +1311,7 @@ See
 </div>
 </div>
 <div class="paragraph">
-<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-core-appender-db-jdbc-PoolingDriverConnectionSource" class="xref page">&#x1F4D6; Plugin reference for <code>PoolingDriver</code></a></p>
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-dbcp2-appender-PoolingDriverConnectionSource" class="xref page">&#x1F4D6; Plugin reference for <code>PoolingDriver</code></a></p>
 </div>
 </div>
 </div>
