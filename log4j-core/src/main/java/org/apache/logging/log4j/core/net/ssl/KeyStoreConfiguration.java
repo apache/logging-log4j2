@@ -176,6 +176,10 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
                 location, (password == null ? null : password.toCharArray()), keyStoreType, keyManagerFactoryAlgorithm);
     }
 
+    /**
+     * @deprecated Planned to be removed in the next major release
+     */
+    @Deprecated
     public KeyManagerFactory initKeyManagerFactory()
             throws NoSuchAlgorithmException, UnrecoverableKeyException, KeyStoreException {
         final KeyManagerFactory kmFactory = KeyManagerFactory.getInstance(this.keyManagerFactoryAlgorithm);

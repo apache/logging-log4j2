@@ -172,6 +172,10 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
                 trustManagerFactoryAlgorithm);
     }
 
+    /**
+     * @deprecated Planned to be removed in the next major release
+     */
+    @Deprecated
     public TrustManagerFactory initTrustManagerFactory() throws NoSuchAlgorithmException, KeyStoreException {
         final TrustManagerFactory tmFactory = TrustManagerFactory.getInstance(this.trustManagerFactoryAlgorithm);
         tmFactory.init(this.getKeyStore());
