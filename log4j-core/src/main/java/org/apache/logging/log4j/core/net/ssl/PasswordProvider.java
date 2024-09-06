@@ -26,6 +26,7 @@ package org.apache.logging.log4j.core.net.ssl;
  * is no longer needed.
  * </p>
  */
+@FunctionalInterface
 public interface PasswordProvider {
 
     /**

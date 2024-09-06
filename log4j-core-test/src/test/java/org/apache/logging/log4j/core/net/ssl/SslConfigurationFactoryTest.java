@@ -22,54 +22,102 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import org.apache.logging.log4j.core.impl.CoreProperties.KeyManagerFactoryProperties;
 import org.apache.logging.log4j.core.impl.CoreProperties.KeyStoreProperties;
 import org.apache.logging.log4j.core.impl.CoreProperties.TransportSecurityProperties;
-import org.apache.logging.log4j.core.test.net.ssl.TestConstants;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-public class SslConfigurationFactoryTest {
+import java.util.stream.Stream;
 
-    private static KeyStoreProperties createKeyStoreProps() {
-        return new KeyStoreProperties(
-                new KeyManagerFactoryProperties(null),
-                TestConstants.KEYSTORE_FILE_RESOURCE,
-                null,
-                null,
-                null,
-                TestConstants.KEYSTORE_TYPE);
-    }
-
-    private static KeyStoreProperties createTrustStoreProps() {
-        return new KeyStoreProperties(
-                new KeyManagerFactoryProperties(null),
-                TestConstants.TRUSTSTORE_FILE_RESOURCE,
-                null,
-                null,
-                null,
-                TestConstants.KEYSTORE_TYPE);
-    }
+@UsingStatusListener // Suppresses `StatusLogger` output, unless there is a failure
+class SslConfigurationFactoryTest {
 
     @Test
-    public void testStaticConfiguration() {
-        final KeyStoreProperties keyStore = createKeyStoreProps();
-        final KeyStoreProperties trustStore = createTrustStoreProps();
+    void testStaticConfiguration() {
+
+        // Case 1: Empty configuration
         final TransportSecurityProperties transportSecurity = TransportSecurityProperties.defaultValue();
-        // No keystore and truststore -> no SslConfiguration
         SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration(transportSecurity);
         assertNull(sslConfiguration);
-        // Only keystore
+
+        // Case 2: Only key store
+        final KeyStoreProperties keyStore = new KeyStoreProperties(
+                new KeyManagerFactoryProperties(null),
+                SslKeyStoreConstants.KEYSTORE_LOCATION,
+                null,
+                null,
+                null,
+                SslKeyStoreConstants.KEYSTORE_TYPE);
         sslConfiguration = SslConfigurationFactory.getSslConfiguration(transportSecurity.withKeyStore(keyStore));
         assertNotNull(sslConfiguration);
         assertNotNull(sslConfiguration.getKeyStoreConfig());
         assertNull(sslConfiguration.getTrustStoreConfig());
-        // Only truststore
+
+        // Case 3: Only trust store
+        final KeyStoreProperties trustStore = new KeyStoreProperties(
+                new KeyManagerFactoryProperties(null),
+                SslKeyStoreConstants.TRUSTSTORE_LOCATION,
+                null,
+                null,
+                null,
+                SslKeyStoreConstants.TRUSTSTORE_TYPE);
         sslConfiguration = SslConfigurationFactory.getSslConfiguration(transportSecurity.withTrustStore(trustStore));
         assertNotNull(sslConfiguration);
         assertNull(sslConfiguration.getKeyStoreConfig());
         assertNotNull(sslConfiguration.getTrustStoreConfig());
-        // Both
+
+        // Case 4: Both key and trust stores
         sslConfiguration = SslConfigurationFactory.getSslConfiguration(
                 transportSecurity.withKeyStore(keyStore).withTrustStore(trustStore));
         assertNotNull(sslConfiguration);
         assertNotNull(sslConfiguration.getKeyStoreConfig());
         assertNotNull(sslConfiguration.getTrustStoreConfig());
+    }
+
+    static Stream<Arguments> windowsKeystoreConfigs() {
+        final String[] emptyOrNull = {"", null};
+        final Stream.Builder<Arguments> builder = Stream.builder();
+        for (final String location : emptyOrNull) {
+            for (final String password : emptyOrNull) {
+                builder.add(Arguments.of(location, password));
+            }
+        }
+        return builder.build();
+    }
+
+    @EnabledOnOs(OS.WINDOWS)
+    @ParameterizedTest
+    @MethodSource("windowsKeystoreConfigs")
+    public void testPasswordLessStores(final String location, final String password) {
+
+        // Create the configuration
+        final KeyStoreProperties keyStore = new KeyStoreProperties(
+                new KeyManagerFactoryProperties(null),
+                location,
+                password.toCharArray(),
+                null,
+                null,
+                SslKeyStoreConstants.WINDOWS_KEYSTORE_TYPE);
+        final KeyStoreProperties trustStore = new KeyStoreProperties(
+                new KeyManagerFactoryProperties(null),
+                location,
+                password.toCharArray(),
+                null,
+                null,
+                SslKeyStoreConstants.WINDOWS_TRUSTSTORE_TYPE);
+        final TransportSecurityProperties transportSecurity = TransportSecurityProperties.defaultValue().withKeyStore(keyStore).withTrustStore(trustStore);
+
+        // Verify the configuration
+        final SslConfiguration config = SslConfigurationFactory.getSslConfiguration(transportSecurity);
+        assertNotNull(config);
+        final KeyStoreConfiguration keyStoreConfig = config.getKeyStoreConfig();
+        assertNotNull(keyStoreConfig);
+        KeyStoreConfigurationTest.checkKeystoreConfiguration(keyStoreConfig);
+        final TrustStoreConfiguration trustStoreConfig = config.getTrustStoreConfig();
+        assertNotNull(trustStoreConfig);
+        KeyStoreConfigurationTest.checkKeystoreConfiguration(trustStoreConfig);
     }
 }
