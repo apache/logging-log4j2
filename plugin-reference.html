@@ -763,9 +763,9 @@ This means that even with immediateFlush=false, there will never be any items le
 </div>
 </div>
 <div class="sect2">
-<h3 id="org-apache-logging-log4j_log4j-core"><a class="anchor" href="#org-apache-logging-log4j_log4j-core"></a><code>org.apache.logging.log4j:log4j-core</code></h3>
+<h3 id="org-apache-logging-log4j_log4j-conversant"><a class="anchor" href="#org-apache-logging-log4j_log4j-conversant"></a><code>org.apache.logging.log4j:log4j-conversant</code></h3>
 <div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-core_com-conversantmedia-util-concurrent-SpinPolicy"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_com-conversantmedia-util-concurrent-SpinPolicy"></a><code>com.conversantmedia.util.concurrent.SpinPolicy</code></h4>
+<h4 id="org-apache-logging-log4j_log4j-conversant_com-conversantmedia-util-concurrent-SpinPolicy"><a class="anchor" href="#org-apache-logging-log4j_log4j-conversant_com-conversantmedia-util-concurrent-SpinPolicy"></a><code>com.conversantmedia.util.concurrent.SpinPolicy</code></h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Class</dt>
@@ -774,11 +774,70 @@ This means that even with immediateFlush=false, there will never be any items le
 </dd>
 <dt class="hdlist1">Provider</dt>
 <dd>
-<p><code>org.apache.logging.log4j:log4j-core</code></p>
+<p><code>org.apache.logging.log4j:log4j-conversant</code></p>
 </dd>
 </dl>
 </div>
 </div>
+<div class="sect3">
+<h4 id="org-apache-logging-log4j_log4j-conversant_org-apache-logging-log4j-conversant-DisruptorBlockingQueueFactory"><a class="anchor" href="#org-apache-logging-log4j_log4j-conversant_org-apache-logging-log4j-conversant-DisruptorBlockingQueueFactory"></a>DisruptorBlockingQueue</h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Class</dt>
+<dd>
+<p><code>org.apache.logging.log4j.conversant.DisruptorBlockingQueueFactory</code></p>
+</dd>
+<dt class="hdlist1">Provider</dt>
+<dd>
+<p><code>org.apache.logging.log4j:log4j-conversant</code></p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>A <a href="#org-apache-logging-log4j_log4j-jctools_org-apache-logging-log4j-core-async-BlockingQueueFactory">BlockingQueueFactory</a> based on Conversant Disruptor BlockingQueue.</p>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-conversant_org-apache-logging-log4j-conversant-DisruptorBlockingQueueFactory_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-conversant_org-apache-logging-log4j-conversant-DisruptorBlockingQueueFactory_XML-snippet"></a>XML snippet</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;DisruptorBlockingQueue spinPolicy=""/&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-conversant_org-apache-logging-log4j-conversant-DisruptorBlockingQueueFactory-attributes"><a class="anchor" href="#org-apache-logging-log4j_log4j-conversant_org-apache-logging-log4j-conversant-DisruptorBlockingQueueFactory-attributes"></a>Attributes</h5>
+<div class="paragraph">
+<p>Optional attributes are denoted by <code>?</code>-suffixed types.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spinPolicy</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-conversant_com-conversantmedia-util-concurrent-SpinPolicy">SpinPolicy</a>?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="org-apache-logging-log4j_log4j-core"><a class="anchor" href="#org-apache-logging-log4j_log4j-core"></a><code>org.apache.logging.log4j:log4j-core</code></h3>
 <div class="sect3">
 <h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-Level"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-Level"></a><code>org.apache.logging.log4j.Level</code></h4>
 <div class="dlist">
@@ -2579,7 +2638,12 @@ This attribute is ignored if <code>immediateFlush</code> is set to <code>true</c
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Property</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property">Property</a>?</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>A generic list of key/value properties</p>
+</div>
+<div class="paragraph">
+<p>The meaning of these properties depends on the component.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"></td>
@@ -7107,72 +7171,19 @@ The pattern should contain one or more substitution patterns of the form "$${[ke
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-ArrayBlockingQueueFactory">ArrayBlockingQueueFactory</a></p>
+<p><a href="#org-apache-logging-log4j_log4j-conversant_org-apache-logging-log4j-conversant-DisruptorBlockingQueueFactory">DisruptorBlockingQueueFactory</a></p>
 </li>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-DisruptorBlockingQueueFactory">DisruptorBlockingQueueFactory</a></p>
+<p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-ArrayBlockingQueueFactory">ArrayBlockingQueueFactory</a></p>
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-LinkedTransferQueueFactory">LinkedTransferQueueFactory</a></p>
 </li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-jctools_org-apache-logging-log4j-jctools-JCToolsBlockingQueueFactory">JCToolsBlockingQueueFactory</a></p>
+</li>
 </ul>
 </div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-DisruptorBlockingQueueFactory"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-DisruptorBlockingQueueFactory"></a>DisruptorBlockingQueue</h4>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Class</dt>
-<dd>
-<p><code>org.apache.logging.log4j.core.async.DisruptorBlockingQueueFactory</code></p>
-</dd>
-<dt class="hdlist1">Provider</dt>
-<dd>
-<p><code>org.apache.logging.log4j:log4j-core</code></p>
-</dd>
-</dl>
-</div>
-<div class="paragraph">
-<p>Factory for creating instances of <code>com.conversantmedia.util.concurrent.DisruptorBlockingQueue</code>.</p>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-DisruptorBlockingQueueFactory_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-DisruptorBlockingQueueFactory_XML-snippet"></a>XML snippet</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;DisruptorBlockingQueue spinPolicy=""/&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-DisruptorBlockingQueueFactory-attributes"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-DisruptorBlockingQueueFactory-attributes"></a>Attributes</h5>
-<div class="paragraph">
-<p>Optional attributes are denoted by <code>?</code>-suffixed types.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 62.5%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spinPolicy</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_com-conversantmedia-util-concurrent-SpinPolicy">SpinPolicy</a>?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
-</tr>
-</tbody>
-</table>
 </div>
 </div>
 <div class="sect3">
@@ -16119,6 +16130,80 @@ toString(), or to output the value of a specific key within the property bundle 
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;docker/&gt;</code></pre>
 </div>
 </div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="org-apache-logging-log4j_log4j-jctools"><a class="anchor" href="#org-apache-logging-log4j_log4j-jctools"></a><code>org.apache.logging.log4j:log4j-jctools</code></h3>
+<div class="sect3">
+<h4 id="org-apache-logging-log4j_log4j-jctools_org-apache-logging-log4j-jctools-JCToolsBlockingQueueFactory"><a class="anchor" href="#org-apache-logging-log4j_log4j-jctools_org-apache-logging-log4j-jctools-JCToolsBlockingQueueFactory"></a>JCToolsBlockingQueue</h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Class</dt>
+<dd>
+<p><code>org.apache.logging.log4j.jctools.JCToolsBlockingQueueFactory</code></p>
+</dd>
+<dt class="hdlist1">Provider</dt>
+<dd>
+<p><code>org.apache.logging.log4j:log4j-jctools</code></p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>A <a href="#org-apache-logging-log4j_log4j-jctools_org-apache-logging-log4j-core-async-BlockingQueueFactory">BlockingQueueFactory</a> based on JCTools.</p>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-jctools_org-apache-logging-log4j-jctools-JCToolsBlockingQueueFactory_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-jctools_org-apache-logging-log4j-jctools-JCToolsBlockingQueueFactory_XML-snippet"></a>XML snippet</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;JCToolsBlockingQueue waitStrategy=""/&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-jctools_org-apache-logging-log4j-jctools-JCToolsBlockingQueueFactory-attributes"><a class="anchor" href="#org-apache-logging-log4j_log4j-jctools_org-apache-logging-log4j-jctools-JCToolsBlockingQueueFactory-attributes"></a>Attributes</h5>
+<div class="paragraph">
+<p>Optional attributes are denoted by <code>?</code>-suffixed types.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>waitStrategy</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-jctools_org-apache-logging-log4j-jctools-JCToolsBlockingQueueFactory-WaitStrategy">WaitStrategy</a>?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="org-apache-logging-log4j_log4j-jctools_org-apache-logging-log4j-jctools-JCToolsBlockingQueueFactory-WaitStrategy"><a class="anchor" href="#org-apache-logging-log4j_log4j-jctools_org-apache-logging-log4j-jctools-JCToolsBlockingQueueFactory-WaitStrategy"></a><code>org.apache.logging.log4j.jctools.JCToolsBlockingQueueFactory.WaitStrategy</code></h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Class</dt>
+<dd>
+<p><code>org.apache.logging.log4j.jctools.JCToolsBlockingQueueFactory.WaitStrategy</code></p>
+</dd>
+<dt class="hdlist1">Provider</dt>
+<dd>
+<p><code>org.apache.logging.log4j:log4j-jctools</code></p>
+</dd>
+</dl>
 </div>
 </div>
 </div>

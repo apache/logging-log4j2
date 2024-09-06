@@ -977,8 +977,8 @@ The class needs to have a public zero-argument constructor.</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Synchronizes access to the Disruptor ring buffer for blocking enqueue operations when the queue is full.
-Users encountered excessive CPU utilization with Disruptor v3.4.2 when the application was logging more than the underlying appender could keep up with and the ring buffer became full, especially when the number of application threads vastly outnumbered the number of cores.
+<p>Synchronizes access to the LMAX Disruptor ring buffer for blocking enqueue operations when the queue is full.
+Users encountered excessive CPU utilization with LMAX Disruptor v3.4.2 when the application was logging more than the underlying appender could keep up with and the ring buffer became full, especially when the number of application threads vastly outnumbered the number of cores.
 CPU utilization is significantly reduced by restricting access to the enqueue operation.
 Setting this value to <code>false</code> may lead to very high CPU utilization when the async logging queue is full.</p>
 </div>

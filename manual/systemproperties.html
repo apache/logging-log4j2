@@ -1376,7 +1376,7 @@ utility class can be used by users to format primitive values without incurring 
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2C+1</code> (<code>C</code> denoting the number of available processors)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2C</code> rounded to the next power of <code>2</code> (<code>C</code> denoting the number of available processors)</p></td>
 </tr>
 </tbody>
 </table>
@@ -1416,6 +1416,40 @@ For a thread local recycler, it corresponds to the per-thread buffer size.</p>
 </div>
 <div class="paragraph">
 <p>If missing or the selection fails, the default will be used.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="log4j.recycler.conversant.spinPolicy"><a class="anchor" href="#log4j.recycler.conversant.spinPolicy"></a><code>log4j.recycler.conversant.spinPolicy</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Env. variable</th>
+<th class="tableblock halign-left valign-top"><code>LOG4J_RECYCLER_CONVERSANT_SPIN_POLICY</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://javadoc.io/doc/com.conversantmedia/disruptor/latest/com.conversantmedia.disruptor/com/conversantmedia/util/concurrent/SpinPolicy.html"><code>SpinPolicy</code></a></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://javadoc.io/doc/com.conversantmedia/disruptor/latest/com.conversantmedia.disruptor/com/conversantmedia/util/concurrent/SpinPolicy.html#WAITING"><code>WAITING</code></a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Denotes the strategy adopted by the Conversant Disruptor, when the queue is fully used.
+This configuration property is only used if the
+<a href="garbagefree.html#recyclers-conversant" class="xref page"><code>conversant-disrutor</code> recycler</a>
+is used.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="https://javadoc.io/doc/com.conversantmedia/disruptor/latest/com.conversantmedia.disruptor/com/conversantmedia/util/concurrent/SpinPolicy.html">Conversant Disruptor Javadoc</a> for details.</p>
 </div>
 </div>
 </div>
@@ -2492,8 +2526,8 @@ The class needs to have a public zero-argument constructor.</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Synchronizes access to the Disruptor ring buffer for blocking enqueue operations when the queue is full.
-Users encountered excessive CPU utilization with Disruptor v3.4.2 when the application was logging more than the underlying appender could keep up with and the ring buffer became full, especially when the number of application threads vastly outnumbered the number of cores.
+<p>Synchronizes access to the LMAX Disruptor ring buffer for blocking enqueue operations when the queue is full.
+Users encountered excessive CPU utilization with LMAX Disruptor v3.4.2 when the application was logging more than the underlying appender could keep up with and the ring buffer became full, especially when the number of application threads vastly outnumbered the number of cores.
 CPU utilization is significantly reduced by restricting access to the enqueue operation.
 Setting this value to <code>false</code> may lead to very high CPU utilization when the async logging queue is full.</p>
 </div>

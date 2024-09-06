@@ -722,7 +722,7 @@ utility class can be used by users to format primitive values without incurring 
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2C+1</code> (<code>C</code> denoting the number of available processors)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2C</code> rounded to the next power of <code>2</code> (<code>C</code> denoting the number of available processors)</p></td>
 </tr>
 </tbody>
 </table>
@@ -762,6 +762,40 @@ For a thread local recycler, it corresponds to the per-thread buffer size.</p>
 </div>
 <div class="paragraph">
 <p>If missing or the selection fails, the default will be used.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="log4j.recycler.conversant.spinPolicy"><a class="anchor" href="#log4j.recycler.conversant.spinPolicy"></a><code>log4j.recycler.conversant.spinPolicy</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Env. variable</th>
+<th class="tableblock halign-left valign-top"><code>LOG4J_RECYCLER_CONVERSANT_SPIN_POLICY</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://javadoc.io/doc/com.conversantmedia/disruptor/latest/com.conversantmedia.disruptor/com/conversantmedia/util/concurrent/SpinPolicy.html"><code>SpinPolicy</code></a></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://javadoc.io/doc/com.conversantmedia/disruptor/latest/com.conversantmedia.disruptor/com/conversantmedia/util/concurrent/SpinPolicy.html#WAITING"><code>WAITING</code></a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Denotes the strategy adopted by the Conversant Disruptor, when the queue is fully used.
+This configuration property is only used if the
+<a href="#recyclers-conversant"><code>conversant-disrutor</code> recycler</a>
+is used.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="https://javadoc.io/doc/com.conversantmedia/disruptor/latest/com.conversantmedia.disruptor/com/conversantmedia/util/concurrent/SpinPolicy.html">Conversant Disruptor Javadoc</a> for details.</p>
 </div>
 </div>
 <div class="sect3">
@@ -940,8 +974,7 @@ In case there is a problem, the <a href="#log4j.gc.enableDirectEncoders"><code>l
 <div class="ulist">
 <ul>
 <li>
-<p><a href="filters.html#CompositeFilter" class="xref page"><code>CompositeFilter</code></a> (adding and removing element filters creates temporary
-objects for thread safety)</p>
+<p><a href="filters.html#CompositeFilter" class="xref page"><code>CompositeFilter</code></a> (adding and removing element filters creates temporary objects for thread safety)</p>
 </li>
 <li>
 <p><a href="filters.html#DynamicThresholdFilter" class="xref page"><code>DynamicThresholdFilter</code></a></p>
@@ -992,7 +1025,8 @@ Hence, you can easily implement custom recyclers and inject them using the <code
 <p>Sorts providers (the lower <code>order</code> value will come first)</p>
 </li>
 <li>
-<p>If <a href="#log4j.recycler.factory"><code>log4j.recycler.factory</code></a> is provided, the first provider whose name matching with this property value will be used. Otherwise, the first provider will be used.</p>
+<p>If <a href="#log4j.recycler.factory"><code>log4j.recycler.factory</code></a> is provided, the first provider whose name matching with this property value will be used.
+Otherwise, the first provider will be used.</p>
 </li>
 </ol>
 </div>
@@ -1037,7 +1071,7 @@ Intended as a test utility.)</p>
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Module</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>log4j-kit</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../components.html#log4j-kit" class="xref page"><code>log4j-kit</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Name</p></th>
@@ -1068,7 +1102,7 @@ If pool runs out of capacity (see <a href="#log4j.recycler.capacity"><code>log4j
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Module</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>log4j-kit</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../components.html#log4j-kit" class="xref page"><code>log4j-kit</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Name</p></th>
@@ -1095,7 +1129,7 @@ If pool runs out of capacity (see <a href="#log4j.recycler.capacity"><code>log4j
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Module</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>log4j-jctools</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../components.html#log4j-jctools" class="xref page"><code>log4j-jctools</code></a></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Name</p></th>
@@ -1110,6 +1144,47 @@ If pool runs out of capacity (see <a href="#log4j.recycler.capacity"><code>log4j
 <div class="paragraph">
 <p>Pools objects in a fixed-size JCTools MPMC queue.
 If pool runs out of capacity (see <a href="#log4j.recycler.capacity"><code>log4j.recycler.capacity</code></a>), it will start creating fresh instances for new requests.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="recyclers-conversant"><a class="anchor" href="#recyclers-conversant"></a>Conversant Disruptor recycler</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Module</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../components.html#log4j-conversant" class="xref page"><code>log4j-conversant</code></a></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Name</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>conversant-disruptor</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Order</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">600</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Pools objects in a fixed-size ring buffer.
+If pool runs out of capacity (see <a href="#log4j.recycler.capacity"><code>log4j.recycler.capacity</code></a>), a spin policy is applied (see <a href="#log4j.recycler.conversant.spinPolicy"><code>log4j.recycler.conversant.spinPolicy</code></a>).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The capacity of this recycler <strong>must</strong> be at least 8 and a power of 2.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -1167,18 +1242,13 @@ or
 <div class="sect2">
 <h3 id="codeImpact"><a class="anchor" href="#codeImpact"></a>Avoiding autoboxing</h3>
 <div class="paragraph">
-<p>We made an effort to make logging garbage-free without requiring code
-changes in existing applications, but there is one area where this was
-not possible. When logging primitive values (i.e. int, double, boolean,
-etc.) the JVM autoboxes these primitive values to their Object wrapper
-equivalents, creating garbage.</p>
+<p>We made an effort to make logging garbage-free without requiring code changes in existing applications, but there is one area where this was not possible.
+When logging primitive values (i.e. int, double, boolean, etc.) the JVM autoboxes these primitive values to their Object wrapper equivalents, creating garbage.</p>
 </div>
 <div class="paragraph">
-<p>Log4j provides an <code>Unbox</code> utility to prevent autoboxing of primitive
-parameters. This utility contains a thread-local pool of reused
-<code>StringBuilder`s. The `Unbox.box(primitive)</code> methods write directly into
-a StringBuilder, and the resulting text will be copied into the final
-log message text without creating temporary objects.</p>
+<p>Log4j provides an <code>Unbox</code> utility to prevent autoboxing of primitive parameters.
+This utility contains a thread-local pool of reused
+<code>StringBuilder`s. The `Unbox.box(primitive)</code> methods write directly into a StringBuilder, and the resulting text will be copied into the final log message text without creating temporary objects.</p>
 </div>
 <div class="listingblock">
 <div class="content">
