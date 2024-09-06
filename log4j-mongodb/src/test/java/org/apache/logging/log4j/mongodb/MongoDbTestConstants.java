@@ -18,7 +18,6 @@ package org.apache.logging.log4j.mongodb;
 
 public class MongoDbTestConstants {
 
-    public static final String PROP_NAME_PORT = "MongoDBTestPort";
-    static final String COLLECTION_NAME = "testCollection";
+    public static final String PROP_NAME_PORT = "log4j.mongo.port";
     static final String DATABASE_NAME = "testDb";
 }

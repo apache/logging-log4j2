@@ -16,36 +16,36 @@
  */
 package org.apache.logging.log4j.mongodb;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.message.MapMessage;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.bson.Document;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @UsingMongoDb
-@LoggerContextSource("log4j2-mongodb-map-message.xml")
-public class MongoDbMapMessageTest {
+@LoggerContextSource("MongoDbAuthFailureIT.xml")
+// Print debug status logger output upon failure
+@UsingStatusListener
+class MongoDbAuthFailureIT {
 
     @Test
-    public void test(final LoggerContext ctx, final MongoClient mongoClient) {
-        final Logger logger = ctx.getLogger(MongoDbMapMessageTest.class);
-        final MapMessage<?, Object> mapMessage = new MapMessage<>();
-        mapMessage.with("SomeName", "SomeValue");
-        mapMessage.with("SomeInt", 1);
-        logger.info(mapMessage);
+    void test(final LoggerContext ctx, final MongoClient mongoClient) {
+        final Logger logger = ctx.getLogger(MongoDbAuthFailureIT.class);
+        logger.info("Hello log");
         final MongoDatabase database = mongoClient.getDatabase(MongoDbTestConstants.DATABASE_NAME);
-        Assertions.assertNotNull(database);
-        final MongoCollection<Document> collection = database.getCollection(MongoDbTestConstants.COLLECTION_NAME);
-        Assertions.assertNotNull(collection);
+        assertNotNull(database);
+        final MongoCollection<Document> collection =
+                database.getCollection(getClass().getSimpleName());
+        ;
+        assertNotNull(collection);
         final Document first = collection.find().first();
-        Assertions.assertNotNull(first);
-        final String firstJson = first.toJson();
-        Assertions.assertEquals("SomeValue", first.getString("SomeName"), firstJson);
-        Assertions.assertEquals(Integer.valueOf(1), first.getInteger("SomeInt"), firstJson);
+        assertNull(first);
     }
 }
