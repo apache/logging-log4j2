@@ -52,6 +52,13 @@ To remedy this, you can execute the following:
 printf '127.0.0.1 %s\n::1 %s\n' `hostname` `hostname` | sudo tee -a /etc/hosts
 ----
 
+[#docker]
+=== Docker tests
+
+Certain tests use Docker to spawn necessary external services.
+Docker tests are configured using the `docker` Maven profile, which is activated by default for the CI environment.
+You can locally enable this profile by passing a `-P docker` argument to your `./mvnw` commands.
+
 [#website]
 == Building the website
 
