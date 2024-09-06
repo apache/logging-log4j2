@@ -2913,13 +2913,13 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/core/net/ssl/KeyStoreConfiguration.html#createKeyStoreConfiguration(java.lang.String,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">createKeyStoreConfiguration(String, String, String, String)</a> - Static method in class org.apache.logging.log4j.core.net.ssl.<a href="org/apache/logging/log4j/core/net/ssl/KeyStoreConfiguration.html" title="class in org.apache.logging.log4j.core.net.ssl">KeyStoreConfiguration</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use createKeyStoreConfiguration(String, char[], String, String)</div>
+<div class="deprecation-comment">Use <a href="org/apache/logging/log4j/core/net/ssl/KeyStoreConfiguration.html#createKeyStoreConfiguration(java.lang.String,char%5B%5D,java.lang.String,java.lang.String,java.lang.String,java.lang.String)"><code>KeyStoreConfiguration.createKeyStoreConfiguration(String, char[], String, String, String, String)</code></a></div>
 </div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/net/ssl/TrustStoreConfiguration.html#createKeyStoreConfiguration(java.lang.String,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">createKeyStoreConfiguration(String, String, String, String)</a> - Static method in class org.apache.logging.log4j.core.net.ssl.<a href="org/apache/logging/log4j/core/net/ssl/TrustStoreConfiguration.html" title="class in org.apache.logging.log4j.core.net.ssl">TrustStoreConfiguration</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use createKeyStoreConfiguration(String, char[], String, String)</div>
+<div class="deprecation-comment">Use <a href="org/apache/logging/log4j/core/net/ssl/TrustStoreConfiguration.html#createKeyStoreConfiguration(java.lang.String,char%5B%5D,java.lang.String,java.lang.String,java.lang.String,java.lang.String)"><code>TrustStoreConfiguration.createKeyStoreConfiguration(String, char[], String, String, String, String)</code></a></div>
 </div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/layout/MessageLayout.html#createLayout()" class="member-name-link">createLayout()</a> - Static method in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/MessageLayout.html" title="class in org.apache.logging.log4j.core.layout">MessageLayout</a></dt>
@@ -8696,9 +8696,17 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/core/net/ssl/SslConfiguration.html#getSslContext()" class="member-name-link">getSslContext()</a> - Method in class org.apache.logging.log4j.core.net.ssl.<a href="org/apache/logging/log4j/core/net/ssl/SslConfiguration.html" title="class in org.apache.logging.log4j.core.net.ssl">SslConfiguration</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/net/ssl/SslConfiguration.html#getSslServerSocketFactory()" class="member-name-link">getSslServerSocketFactory()</a> - Method in class org.apache.logging.log4j.core.net.ssl.<a href="org/apache/logging/log4j/core/net/ssl/SslConfiguration.html" title="class in org.apache.logging.log4j.core.net.ssl">SslConfiguration</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use <a href="https://docs.oracle.com/javase/8/docs/api/javax/net/ssl/SSLContext.html#getServerSocketFactory--" title="class or interface in javax.net.ssl" class="external-link"><code>SSLContext.getServerSocketFactory()</code></a> on <a href="org/apache/logging/log4j/core/net/ssl/SslConfiguration.html#getSslContext()"><code>SslConfiguration.getSslContext()</code></a></div>
+</div>
+</dd>
 <dt><a href="org/apache/logging/log4j/core/net/ssl/SslConfiguration.html#getSslSocketFactory()" class="member-name-link">getSslSocketFactory()</a> - Method in class org.apache.logging.log4j.core.net.ssl.<a href="org/apache/logging/log4j/core/net/ssl/SslConfiguration.html" title="class in org.apache.logging.log4j.core.net.ssl">SslConfiguration</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use <a href="https://docs.oracle.com/javase/8/docs/api/javax/net/ssl/SSLContext.html#getSocketFactory--" title="class or interface in javax.net.ssl" class="external-link"><code>SSLContext.getSocketFactory()</code></a> on <a href="org/apache/logging/log4j/core/net/ssl/SslConfiguration.html#getSslContext()"><code>SslConfiguration.getSslContext()</code></a></div>
+</div>
+</dd>
 <dt><a href="org/apache/logging/log4j/core/impl/ThrowableProxy.html#getStackTrace()" class="member-name-link">getStackTrace()</a> - Method in class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/ThrowableProxy.html" title="class in org.apache.logging.log4j.core.impl">ThrowableProxy</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/impl/ExtendedStackTraceElement.html#getStackTraceElement()" class="member-name-link">getStackTraceElement()</a> - Method in class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/ExtendedStackTraceElement.html" title="class in org.apache.logging.log4j.core.impl">ExtendedStackTraceElement</a></dt>
@@ -9642,7 +9650,11 @@ loadScripts(document, 'script');</script>
 <div class="block">Object is in its initial state and not yet initialized.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/net/ssl/KeyStoreConfiguration.html#initKeyManagerFactory()" class="member-name-link">initKeyManagerFactory()</a> - Method in class org.apache.logging.log4j.core.net.ssl.<a href="org/apache/logging/log4j/core/net/ssl/KeyStoreConfiguration.html" title="class in org.apache.logging.log4j.core.net.ssl">KeyStoreConfiguration</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Planned to be removed in the next major release</div>
+</div>
+</dd>
 <dt><a href="org/apache/logging/log4j/core/impl/ThreadContextDataInjector.html#initServiceProviders()" class="member-name-link">initServiceProviders()</a> - Static method in class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/ThreadContextDataInjector.html" title="class in org.apache.logging.log4j.core.impl">ThreadContextDataInjector</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
@@ -9650,7 +9662,11 @@ loadScripts(document, 'script');</script>
 </div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/net/ssl/TrustStoreConfiguration.html#initTrustManagerFactory()" class="member-name-link">initTrustManagerFactory()</a> - Method in class org.apache.logging.log4j.core.net.ssl.<a href="org/apache/logging/log4j/core/net/ssl/TrustStoreConfiguration.html" title="class in org.apache.logging.log4j.core.net.ssl">TrustStoreConfiguration</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Planned to be removed in the next major release</div>
+</div>
+</dd>
 <dt><a href="org/apache/logging/log4j/core/ContextDataInjector.html#injectContextData(java.util.List,org.apache.logging.log4j.util.StringMap)" class="member-name-link">injectContextData(List&lt;Property&gt;, StringMap)</a> - Method in interface org.apache.logging.log4j.core.<a href="org/apache/logging/log4j/core/ContextDataInjector.html" title="interface in org.apache.logging.log4j.core">ContextDataInjector</a></dt>
 <dd>
 <div class="block">Returns a <code>StringMap</code> object initialized with the specified properties and the appropriate

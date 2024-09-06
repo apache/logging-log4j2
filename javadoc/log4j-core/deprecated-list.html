@@ -518,23 +518,39 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/net/ssl/KeyStoreConfiguration.html#createKeyStoreConfiguration(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration.createKeyStoreConfiguration<wbr>(String, String, String, String)</a></div>
 <div class="col-last odd-row-color">
-<div class="deprecation-comment">Use createKeyStoreConfiguration(String, char[], String, String)</div>
+<div class="deprecation-comment">Use <a href="org/apache/logging/log4j/core/net/ssl/KeyStoreConfiguration.html#createKeyStoreConfiguration(java.lang.String,char%5B%5D,java.lang.String,java.lang.String,java.lang.String,java.lang.String)"><code>KeyStoreConfiguration.createKeyStoreConfiguration(String, char[], String, String, String, String)</code></a></div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/net/ssl/StoreConfiguration.html#getPassword()">org.apache.logging.log4j.core.net.ssl.StoreConfiguration.getPassword()</a></div>
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/net/ssl/KeyStoreConfiguration.html#initKeyManagerFactory()">org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration.initKeyManagerFactory()</a></div>
 <div class="col-last even-row-color">
-<div class="deprecation-comment">Use getPasswordAsCharArray()</div>
+<div class="deprecation-comment">Planned to be removed in the next major release</div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/net/ssl/StoreConfiguration.html#setPassword(java.lang.String)">org.apache.logging.log4j.core.net.ssl.StoreConfiguration.setPassword<wbr>(String)</a></div>
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/net/ssl/SslConfiguration.html#getSslServerSocketFactory()">org.apache.logging.log4j.core.net.ssl.SslConfiguration.getSslServerSocketFactory()</a></div>
+<div class="col-last odd-row-color">
+<div class="deprecation-comment">Use <a href="https://docs.oracle.com/javase/8/docs/api/javax/net/ssl/SSLContext.html#getServerSocketFactory--" title="class or interface in javax.net.ssl" class="external-link"><code>SSLContext.getServerSocketFactory()</code></a> on <a href="org/apache/logging/log4j/core/net/ssl/SslConfiguration.html#getSslContext()"><code>SslConfiguration.getSslContext()</code></a></div>
+</div>
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/net/ssl/SslConfiguration.html#getSslSocketFactory()">org.apache.logging.log4j.core.net.ssl.SslConfiguration.getSslSocketFactory()</a></div>
+<div class="col-last even-row-color">
+<div class="deprecation-comment">Use <a href="https://docs.oracle.com/javase/8/docs/api/javax/net/ssl/SSLContext.html#getSocketFactory--" title="class or interface in javax.net.ssl" class="external-link"><code>SSLContext.getSocketFactory()</code></a> on <a href="org/apache/logging/log4j/core/net/ssl/SslConfiguration.html#getSslContext()"><code>SslConfiguration.getSslContext()</code></a></div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/net/ssl/StoreConfiguration.html#getPassword()">org.apache.logging.log4j.core.net.ssl.StoreConfiguration.getPassword()</a></div>
 <div class="col-last odd-row-color">
 <div class="deprecation-comment">Use getPasswordAsCharArray()</div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/net/ssl/TrustStoreConfiguration.html#createKeyStoreConfiguration(java.lang.String,char%5B%5D,java.lang.String,java.lang.String)">org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration.createKeyStoreConfiguration<wbr>(String, char[], String, String)</a></div>
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/net/ssl/StoreConfiguration.html#setPassword(java.lang.String)">org.apache.logging.log4j.core.net.ssl.StoreConfiguration.setPassword<wbr>(String)</a></div>
+<div class="col-last even-row-color">
+<div class="deprecation-comment">Use getPasswordAsCharArray()</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/net/ssl/TrustStoreConfiguration.html#createKeyStoreConfiguration(java.lang.String,char%5B%5D,java.lang.String,java.lang.String)">org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration.createKeyStoreConfiguration<wbr>(String, char[], String, String)</a></div>
+<div class="col-last odd-row-color">
+<div class="deprecation-comment">Use <a href="org/apache/logging/log4j/core/net/ssl/TrustStoreConfiguration.html#createKeyStoreConfiguration(java.lang.String,char%5B%5D,java.lang.String,java.lang.String,java.lang.String,java.lang.String)"><code>TrustStoreConfiguration.createKeyStoreConfiguration(String, char[], String, String, String, String)</code></a></div>
+</div>
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/net/ssl/TrustStoreConfiguration.html#createKeyStoreConfiguration(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration.createKeyStoreConfiguration<wbr>(String, String, String, String)</a></div>
 <div class="col-last even-row-color">
 <div class="deprecation-comment">Use <a href="org/apache/logging/log4j/core/net/ssl/TrustStoreConfiguration.html#createKeyStoreConfiguration(java.lang.String,char%5B%5D,java.lang.String,java.lang.String,java.lang.String,java.lang.String)"><code>TrustStoreConfiguration.createKeyStoreConfiguration(String, char[], String, String, String, String)</code></a></div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/net/ssl/TrustStoreConfiguration.html#createKeyStoreConfiguration(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration.createKeyStoreConfiguration<wbr>(String, String, String, String)</a></div>
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/net/ssl/TrustStoreConfiguration.html#initTrustManagerFactory()">org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration.initTrustManagerFactory()</a></div>
 <div class="col-last odd-row-color">
-<div class="deprecation-comment">Use createKeyStoreConfiguration(String, char[], String, String)</div>
+<div class="deprecation-comment">Planned to be removed in the next major release</div>
 </div>
 <div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/net/SslSocketManager.html#getSocketManager(org.apache.logging.log4j.core.net.ssl.SslConfiguration,java.lang.String,int,int,int,boolean,org.apache.logging.log4j.core.Layout,int)">org.apache.logging.log4j.core.net.SslSocketManager.getSocketManager<wbr>(SslConfiguration, String, int, int, int, boolean, Layout&lt;? extends Serializable&gt;, int)</a></div>
 <div class="col-last even-row-color">
