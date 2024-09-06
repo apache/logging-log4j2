@@ -123,7 +123,7 @@ public class SslConfiguration {
             context = createSslContextWithDefaultTrustManagerFactory(protocol, trustStoreConfig);
             LOGGER.debug("Creating SSLContext with default truststore");
         } catch (final KeyStoreConfigurationException e) {
-            context = createDefaultSslContext();
+            context = createDefaultSslContext(protocol);
             LOGGER.debug("Creating SSLContext with default configuration");
         }
         return context;
@@ -136,7 +136,7 @@ public class SslConfiguration {
             context = createSslContextWithDefaultKeyManagerFactory(protocol, keyStoreConfig);
             LOGGER.debug("Creating SSLContext with default keystore");
         } catch (final TrustStoreConfigurationException e) {
-            context = createDefaultSslContext();
+            context = createDefaultSslContext(protocol);
             LOGGER.debug("Creating SSLContext with default configuration");
         }
         return context;
@@ -163,12 +163,19 @@ public class SslConfiguration {
         }
     }
 
-    private static SSLContext createDefaultSslContext() {
+    private static SSLContext createDefaultSslContext(final String protocol) {
         try {
             return SSLContext.getDefault();
-        } catch (final NoSuchAlgorithmException e) {
-            LOGGER.error("Failed to create an SSLContext with default configuration", e);
-            return null;
+        } catch (final NoSuchAlgorithmException defaultContextError) {
+            LOGGER.error("Failed to create an `SSLContext` using the default configuration, falling back to creating an empty one", defaultContextError);
+            try {
+                final SSLContext emptyContext = SSLContext.getInstance(protocol);
+                emptyContext.init(new KeyManager[0], new TrustManager[0], null);
+                return emptyContext;
+            } catch (final Exception emptyContextError) {
+                LOGGER.error("Failed to create an empty `SSLContext`", emptyContextError);
+                return null;
+            }
         }
     }
 
@@ -234,8 +241,8 @@ public class SslConfiguration {
     /**
      * Creates an SslConfiguration from a KeyStoreConfiguration and a TrustStoreConfiguration.
      *
-     * @param protocol The protocol, see <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#SSLContext">SSLContext Algorithms</a>
-     * @param keyStoreConfig The KeyStoreConfiguration.
+     * @param protocol         The protocol, see <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#SSLContext">SSLContext Algorithms</a>
+     * @param keyStoreConfig   The KeyStoreConfiguration.
      * @param trustStoreConfig The TrustStoreConfiguration.
      * @return a new SslConfiguration
      */
