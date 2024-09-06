@@ -14,33 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.mongodb;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+package org.apache.logging.log4j.mongodb4;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.bson.Document;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 
-@UsingMongoDb
-@LoggerContextSource("log4j2-mongodb-auth-failure.xml")
-public class MongoDbAuthFailureTest {
+abstract class AbstractMongoDb4CappedIT {
 
-    @Test
-    public void test(final LoggerContext ctx, final MongoClient mongoClient) {
-        final Logger logger = ctx.getLogger(MongoDbAuthFailureTest.class);
+    protected void test(final LoggerContext ctx, final MongoClient mongoClient) {
+        final Logger logger = ctx.getLogger(AbstractMongoDb4CappedIT.class);
         logger.info("Hello log");
-        final MongoDatabase database = mongoClient.getDatabase(MongoDbTestConstants.DATABASE_NAME);
-        assertNotNull(database);
-        final MongoCollection<Document> collection = database.getCollection(MongoDbTestConstants.DATABASE_NAME);
-        assertNotNull(collection);
+        final MongoDatabase database = mongoClient.getDatabase(MongoDb4TestConstants.DATABASE_NAME);
+        Assertions.assertNotNull(database);
+        final MongoCollection<Document> collection =
+                database.getCollection(getClass().getSimpleName());
+        Assertions.assertNotNull(collection);
         final Document first = collection.find().first();
-        assertNull(first);
+        Assertions.assertNotNull(first);
+        Assertions.assertEquals("Hello log", first.getString("message"), first.toJson());
     }
 }

@@ -26,21 +26,25 @@ import com.mongodb.client.MongoDatabase;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.bson.Document;
 import org.junit.jupiter.api.Test;
 
 @UsingMongoDb4
-@LoggerContextSource("log4j2-mongodb-additional-fields.xml")
-public class MongoDb4AdditionalFieldsTest {
+@LoggerContextSource("MongoDb4AdditionalFields.xml")
+// Print debug status logger output upon failure
+@UsingStatusListener
+class MongoDb4AdditionalFieldsIT {
 
     @Test
-    public void test(final LoggerContext ctx, final MongoClient mongoClient) {
-        final Logger logger = ctx.getLogger(MongoDb4AdditionalFieldsTest.class);
+    void test(final LoggerContext ctx, final MongoClient mongoClient) {
+        final Logger logger = ctx.getLogger(MongoDb4AdditionalFieldsIT.class);
         logger.info("Hello log 1");
         logger.info("Hello log 2", new RuntimeException("Hello ex 2"));
         final MongoDatabase database = mongoClient.getDatabase(MongoDb4TestConstants.DATABASE_NAME);
         assertNotNull(database);
-        final MongoCollection<Document> collection = database.getCollection(MongoDb4TestConstants.COLLECTION_NAME);
+        final MongoCollection<Document> collection =
+                database.getCollection(getClass().getSimpleName());
         assertNotNull(collection);
         final FindIterable<Document> found = collection.find();
         final Document first = found.first();
