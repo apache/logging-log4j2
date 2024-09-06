@@ -29,6 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -37,7 +38,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
@@ -76,7 +76,7 @@ public class SocketAppenderReconnectTest {
 
             // Initialize the logger context
             final Configuration config = createConfiguration(port, null);
-            try (final LoggerContext loggerContext = Configurator.initialize(config)) {
+            try (final LoggerContext loggerContext = createStartedLoggerContext(config)) {
 
                 // Configure the error handler
                 final BufferingErrorHandler errorHandler = new BufferingErrorHandler();
@@ -119,7 +119,7 @@ public class SocketAppenderReconnectTest {
                         // Passing an invalid port, since the resolution is supposed to be performed by the mocked host
                         // resolver anyway.
                         0, null);
-                try (final LoggerContext loggerContext = Configurator.initialize(config)) {
+                try (final LoggerContext loggerContext = createStartedLoggerContext(config)) {
 
                     // Configure the error handler
                     final BufferingErrorHandler errorHandler = new BufferingErrorHandler();
@@ -237,7 +237,7 @@ public class SocketAppenderReconnectTest {
 
             // Initialize the logger context
             final Configuration config1 = createConfiguration(port, appenderComponentBuilderTransformer);
-            try (final LoggerContext loggerContext = Configurator.initialize(config1)) {
+            try (final LoggerContext loggerContext = createStartedLoggerContext(config1)) {
 
                 // Configure the error handler
                 final BufferingErrorHandler errorHandler = new BufferingErrorHandler();
@@ -322,6 +322,16 @@ public class SocketAppenderReconnectTest {
                 .add(transformedAppenderComponentBuilder)
                 .add(configBuilder.newRootLogger(Level.ALL).add(configBuilder.newAppenderRef(APPENDER_NAME)))
                 .build(false);
+    }
+
+    private static final AtomicInteger LOGGER_CONTEXT_COUNTER = new AtomicInteger();
+
+    private static LoggerContext createStartedLoggerContext(final Configuration configuration) {
+        final String name = String.format(
+                "%s-%02d", SocketAppenderReconnectTest.class.getSimpleName(), LOGGER_CONTEXT_COUNTER.getAndIncrement());
+        final LoggerContext loggerContext = new LoggerContext(name);
+        loggerContext.start(configuration);
+        return loggerContext;
     }
 
     private static void verifyLoggingSuccess(
