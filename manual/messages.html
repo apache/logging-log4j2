@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Messages :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/messages.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.6">
+<link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
+<!-- `@asciidoctor/tabs` extension styles -->
+<link rel="stylesheet" href="../_/css/vendor/tabs.css">
+<style>
+  /* Swap colors of `IMPORTANT` and `WARNING` blocks */ 
+  .doc .admonitionblock.important .icon { background-color: #f70; }
+  .doc .admonitionblock.warning .icon { background-color: #e40046; }
+  /* Default `h4`, `h5`, and `h6` are smaller than the normal text, fix header font sizing: */
+  .doc h1 { font-size: 1.9rem; }
+  .doc h2 { font-size: 1.7rem; }
+  .doc h3 { font-size: 1.5rem; font-weight: 400; }
+  .doc h4 { font-size: 1.3rem; font-weight: 500; }
+  .doc h5 { font-size: 1.1rem; font-weight: 500; text-decoration: underline; }
+  .doc h6 { font-size: 0.9rem; font-weight: 500; text-decoration: underline; }
+  /* Default `code`, `pre`, and `.colist` (source code annotations) fonts are too big, adjust them: */
+  .doc .colist>table code, .doc p code, .doc thead code { font-size: 0.8em; }
+  .doc pre { font-size: 0.7rem; }
+  .doc .colist { font-size: 0.75rem; }
+  /* Make links more visible: */
+  .doc a { text-decoration: underline; }
+  .doc a code { text-decoration: underline; color: #1565c0; }
+  /* Tab header fonts aren't rendered good, adjusting the font weight: */
+  .tablist > ul li { font-weight: 500; }
+  /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
+  .toc .toc-menu li[data-level="4"] a {
+    padding-left: 2.75rem;
+  }
+  /* Replace the default highlight.js color for strings from red (unnecessarily signaling something negative) to green: */
+  .hljs-string {
+    color: #0f8532;
+  }
+</style>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <img src="../_/../_images/logo-small-white.png" alt="Apache Log4j"/>
+      </div>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://logging.apache.org">a subproject of&nbsp;<strong>Apache Logging Services</strong></a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ROOT" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Home</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../download.html">Download</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../release-notes.html">Release Notes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="https://logging.apache.org/support.html">Support</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Manual</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="getting-started.html">Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="installation.html">Installation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html">API</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html#loggers">Loggers</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="eventlogging.html">Event Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="simple-logger.html">Simple Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="status-logger.html">Status Logger</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="logbuilder.html">Fluent API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html#fish-tagging">Fish tagging</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="customloglevels.html">Levels</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="markers.html">Markers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="thread-context.html">Thread Context</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="messages.html">Messages</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="implementation.html">Implementation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="config-intro.html">Configuration</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="configuration.html">Configuration file</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="systemproperties.html">Configuration properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="customconfig.html">Programmatic configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="appenders.html">Appenders</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/file.html">File appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/rolling-file.html">Rolling file appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/database.html">Database appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/network.html">Network Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/message-queue.html">Message queue appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/delegating.html">Delegating Appenders</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="pattern-layout.html">Pattern Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="filters.html">Filters</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="scripts.html">Scripts</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="jmx.html">JMX</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="extending.html">Extending</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="plugins.html">Plugins</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="performance.html">Performance</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="async.html">Asynchronous loggers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="garbagefree.html">Garbage-free logging</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">References</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../plugin-reference.html">Plugin reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../javadoc.html">Java API reference</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Resources</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../faq.html">F.A.Q.</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-log4j1.html">Migrating from Log4j 1</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-logback.html">Migrating from Logback</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-slf4j.html">Migrating from SLF4J</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../hibernate.html">Integrating with Hibernate</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../jakarta.html">Integrating with Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../soa.html">Integrating with service-oriented architectures</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../development.html">Development</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../components.html">Components</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-boot.html">Log4j Spring Boot Support</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-jul.html">JUL-to-Log4j bridge</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-to-jul.html">Log4j-to-JUL bridge</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Related projects</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jakarta/index.html">Log4j Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jmx-gui/index.html">Log4j JMX GUI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/kotlin/index.html">Log4j Kotlin</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/scala/index.html">Log4j Scala</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/tools/index.html">Log4j Tools</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/transform/index.html">Log4j Transformation Tools</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="index.html">Manual</a></li>
+    <li><a href="api.html">API</a></li>
+    <li><a href="messages.html">Messages</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/manual/messages.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="4">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Messages</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Unlike other logging APIs, which either restrict the description of log events to (possibly interpolated) Java <code>String</code>s or allow generic Java <code>Object</code>s, the Log4j API encapsulates every log message into the logging-specific <a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html"><code>Message</code></a> interface, before passing it to the logging implementation.
+Such an approach opens to developers a wide range of customization possibilities.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Log messages</strong> are often used interchangeably with <strong>log events</strong>.
+While this simplification holds for several cases, it is not technically correct.
+A log event, capturing the logging context (level, logger name, instant, etc.) along with the log message, is generated by the logging implementation (e.g., Log4j Core) when a user issues a log using a <a href="api.html#loggers" class="xref page">logger</a>, e.g., <code>LOGGER.info("Hello, world!")</code>.
+Hence, <strong>log events are compound objects containing log messages</strong>.</p>
+</div>
+<details>
+<summary class="title">Click for an introduction to log event fields</summary>
+<div class="content">
+<div class="paragraph">
+<p>Log events contain fields that can be classified into three categories:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Some fields are provided explicitly, in a <a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html"><code>Logger</code></a> method call.
+The most important are the log level and the log message, which is a description of what happened, and it is addressed to humans.</p>
+</li>
+<li>
+<p>Some fields are contextual (e.g., <a href="thread-context.html" class="xref page">Thread Context</a>) and are either provided explicitly by developers of other parts of the application, or is injected by Java instrumentation.</p>
+</li>
+<li>
+<p>The last category of fields is those that are computed automatically by the logging implementation employed.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>For clarity&#8217;s sake let us look at a log event formatted as JSON:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  <i class="conum" data-value="1"></i><b>(1)</b>
+  "log.level": "INFO",
+  "message": "Unable to insert data into my_table.",
+  "error.type": "java.lang.RuntimeException",
+  "error.message": null,
+  "error.stack_trace": [
+    {
+      "class": "com.example.Main",
+      "method": "doQuery",
+      "file.name": "Main.java",
+      "file.line": 36
+    },
+    {
+      "class": "com.example.Main",
+      "method": "main",
+      "file.name": "Main.java",
+      "file.line": 25
+    }
+  ],
+  "marker": "SQL",
+  "log.logger": "com.example.Main",
+  <i class="conum" data-value="2"></i><b>(2)</b>
+  "tags": [
+    "SQL query"
+  ],
+  "labels": {
+    "span_id": "3df85580-f001-4fb2-9e6e-3066ed6ddbb1",
+    "trace_id": "1b1f8fc9-1a0c-47b0-a06f-af3c1dd1edf9"
+  },
+  <i class="conum" data-value="3"></i><b>(3)</b>
+  "@timestamp": "2024-05-23T09:32:24.163Z",
+  "log.origin.class": "com.example.Main",
+  "log.origin.method": "doQuery",
+  "log.origin.file.name": "Main.java",
+  "log.origin.file.line": 36,
+  "process.thread.id": 1,
+  "process.thread.name": "main",
+  "process.thread.priority": 5
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Explicitly supplied fields:
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>log.level</code></dt>
+<dd>
+<p>The <a href="customloglevels.html" class="xref page">level</a> of the event, either explicitly provided as an argument to the logger call, or implied by the name of the logger method</p>
+</dd>
+<dt class="hdlist1"><code>message</code></dt>
+<dd>
+<p>The <strong>log message</strong> that describes what happened</p>
+</dd>
+<dt class="hdlist1"><code>error.*</code></dt>
+<dd>
+<p>An <em>optional</em> <code>Throwable</code> explicitly passed as an argument to the logger call</p>
+</dd>
+<dt class="hdlist1"><code>marker</code></dt>
+<dd>
+<p>An <em>optional</em> <a href="markers.html" class="xref page">marker</a> explicitly passed as an argument to the logger call</p>
+</dd>
+<dt class="hdlist1"><code>log.logger</code></dt>
+<dd>
+<p>The <a href="api.html#logger-names" class="xref page">logger name</a> provided explicitly to <code>LogManager.getLogger()</code> or inferred by Log4j API</p>
+</dd>
+</dl>
+</div></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Contextual fields:
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>tags</code></dt>
+<dd>
+<p>The <a href="thread-context.html" class="xref page">Thread Context</a> stack</p>
+</dd>
+<dt class="hdlist1"><code>labels</code></dt>
+<dd>
+<p>The <a href="thread-context.html" class="xref page">Thread Context</a> map</p>
+</dd>
+</dl>
+</div></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Logging backend specific fields.
+In case you are using Log4j Core, the following fields can be automatically generated:
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>@timestamp</code></dt>
+<dd>
+<p>The instant of the logger call</p>
+</dd>
+<dt class="hdlist1"><code>log.origin.*</code></dt>
+<dd>
+<p>The <a href="layouts.html#LocationInformation" class="xref page">location</a> of the logger call in the source code</p>
+</dd>
+<dt class="hdlist1"><code>process.thread.*</code></dt>
+<dd>
+<p>The name of the Java thread, where the logger is called</p>
+</dd>
+</dl>
+</div></td>
+</tr>
+</table>
+</div>
+</div>
+</details>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="usage"><a class="anchor" href="#usage"></a>Usage</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>While internally Log4j uses <code>Message</code> objects, the <code>Logger</code> interface provides various shortcut methods to create the most commonly used messages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>To create a <a href="#SimpleMessage"><code>SimpleMessage</code></a> from a <code>String</code> argument, the following logger calls are equivalent:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.error("Houston, we have a problem.", exception);
+LOGGER.error(new SimpleMessage("Houston, we have a problem."), exception);</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>To create a <a href="#ParameterizedMessage"><code>ParameterizedMessage</code></a> from a format <code>String</code> and an array of object parameters, the following logger calls are equivalent:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.error("Unable process user with ID `{}`", userId, exception);
+LOGGER.error(new ParameterizedMessage("Unable process user with ID `{}`", userId), exception);</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>In most cases, this is sufficient.</strong></p>
+</div>
+<div class="paragraph">
+<p>Nex to use cases sufficed with <code>String</code>-based messages, the <a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html"><code>Message</code></a> interface abstraction also allows users to log custom objects.
+This effectively provides logging convenience in certain use cases.
+For instance, imagine a scenario that uses a domain event to signal authentication failures:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">record LoginFailureEvent(String userName, InetSocketAddress remoteAddress) {}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When the developer wants to log a message reporting the event, we can see that the string construction becomes more challenging to read:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.info(
+        "Connection closed by authenticating user {} {} port {} [preauth]",
+        event.userName(),
+        event.remoteAddress().getHostName(),
+        event.remoteAddress().getPort());</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By extending the <code>Message</code> interface, developers can simplify the reporting of a login failure:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">record LoginFailureEvent(String userName, InetSocketAddress remoteAddress) implements Message { <i class="conum" data-value="1"></i><b>(1)</b>
+    @Override
+    public String getFormattedMessage() { <i class="conum" data-value="2"></i><b>(2)</b>
+        return "Connection closed by authenticating user " + userName() + " "
+                + remoteAddress().getHostName() + " port " + remoteAddress().getPort() + " [preauth]";
+    }
+    // Other methods
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Domain model needs to implement the <code>Message</code> interface</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>getFormattedMessage()</code> provides the <code>String</code> to be logged</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>As a result, logging of <code>LoginFailureEvent</code> instances can be simplified as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.info(event);</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="collection"><a class="anchor" href="#collection"></a>Collection</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This section explains predefined Log4j <code>Message</code> implementations addressing certain use cases.
+We will group this collection into following titles:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#collection-string">Types intended for plain <code>String</code>-based messages</a></p>
+</li>
+<li>
+<p><a href="#collection-structured">Types intended for structured logging</a></p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="collection-string"><a class="anchor" href="#collection-string"></a>String-based types</h3>
+<div class="paragraph">
+<p>This section explains message types intended for human-readable <code>String</code>-typed output.</p>
+</div>
+<div class="sect3">
+<h4 id="FormattedMessage"><a class="anchor" href="#FormattedMessage"></a><code>FormattedMessage</code></h4>
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/FormattedMessage.html"><code>FormattedMessage</code></a> is intended as a generic entry point to actual message implementations that use pattern-based formatting.
+It works as follows:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>If the input is a valid <a href="https://docs.oracle.com/javase/8/docs/api/java/text/MessageFormat.html"><code>MessageFormat</code></a> pattern, use <a href="#MessageFormatMessage"><code>MessageFormatMessage</code></a></p>
+</li>
+<li>
+<p>If the input is a valid <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html#syntax"><code>String.format()</code> pattern</a>, use <a href="#StringFormattedMessage"><code>StringFormattedMessage</code></a></p>
+</li>
+<li>
+<p>Otherwise, use <a href="#ParameterizedMessage"><code>ParameterizedMessage</code></a></p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Due to checks involved, <code>FormattedMessage</code> has an extra performance overhead compared to directly using a concrete <code>Message</code> implementation.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="LocalizedMessage"><a class="anchor" href="#LocalizedMessage"></a><code>LocalizedMessage</code></h4>
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/LocalizedMessage.html"><code>LocalizedMessage</code></a> incorporates a <code>ResourceBundle</code>, and allows the message pattern parameter to be the key to the message pattern in the bundle.
+If no bundle is specified, <code>LocalizedMessage</code> will attempt to locate a bundle with the name of the <code>Logger</code> used to log the event.
+The message retrieved from the bundle will be formatted using a <a href="#FormattedMessage"><code>FormattedMessage</code></a>.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><code>LocalizedMessage</code> is primarily provided for compatibility with <a href="https://logging.apache.org/log4j/1.x/index.html">Log4j 1</a>.
+We advise you to perform log message localization at the representation layer of your application, e.g., the client UI.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="MessageFormatMessage"><a class="anchor" href="#MessageFormatMessage"></a><code>MessageFormatMessage</code></h4>
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/MessageFormatMessage.html"><code>MessageFormatMessage</code></a> formats its input using <a href="https://docs.oracle.com/javase/8/docs/api/java/text/MessageFormat.html">Java&#8217;s <code>MessageFormat</code></a>.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>While <code>MessageFormatMessage</code> offers more flexibility compared to <a href="#ParameterizedMessage"><code>ParameterizedMessage</code></a>,
+the latter is engineered for performance, e.g., it is <a href="garbagefree.html" class="xref page">garbage-free</a>.
+You are recommended to use <code>ParameterizedMessage</code> for performance-sensitive setups.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="ObjectMessage"><a class="anchor" href="#ObjectMessage"></a><code>ObjectMessage</code></h4>
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ObjectMessage.html"><code>ObjectMessage</code></a> is a wrapper <code>Message</code> implementation to log custom domain model instances.
+It formats an input <code>Object</code> by calling its <code>toString()</code> method.
+If the object is found to be extending from <a href="#StringBuilderFormattable"><code>StringBuilderFormattable</code></a>, it uses <code>formatTo(StringBuilder)</code> instead.</p>
+</div>
+<div class="paragraph">
+<p><code>ObjectMessage</code> can be thought as a convenience for <a href="#ParameterizedMessage"><code>ParameterizedMessage</code></a> such that the following message instances are analogous:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>new ObjectMessage(obj)</code></p>
+</li>
+<li>
+<p><code>new ParameterizedMessage("{}", obj)</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>That is,</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>They will both be formatted in the same way</p>
+</li>
+<li>
+<p><code>Message#getParameters()</code> will return an <code>Object[]</code> containing only <code>obj</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Hence, <code>ObjectMessage</code> is intended more as a marker interface to indicate the single value it encapsulates.</p>
+</div>
+<div id="ReusableObjectMessage" class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableObjectMessage.html"><code>ReusableObjectMessage</code></a> provides functionally equivalent to <a href="#ObjectMessage"><code>ObjectMessage</code></a>, plus methods to replace its content to enable <a href="garbagefree.html" class="xref page">Garbage-free logging</a>.
+When garbage-free logging is enabled, <a href="api.html#loggers" class="xref page">loggers</a> will use this instead of <a href="#ObjectMessage"><code>ObjectMessage</code></a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="ParameterizedMessage"><a class="anchor" href="#ParameterizedMessage"></a><code>ParameterizedMessage</code></h4>
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ParameterizedMessage.html"><code>ParameterizedMessage</code></a> accepts a formatting pattern containing <code>{}</code> placeholders and a list of arguments.
+It formats the message such that each <code>{}</code> placeholder in the pattern is replaced with the corresponding argument.</p>
+</div>
+<div id="ReusableParameterizedMessage" class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableParameterizedMessage.html"><code>ReusableParameterizedMessage</code></a> provides functionally equivalent to <a href="#ParameterizedMessage"><code>ParameterizedMessage</code></a>, plus methods to replace its content to enable <a href="garbagefree.html" class="xref page">Garbage-free logging</a>.
+When garbage-free logging is enabled, <a href="api.html#loggers" class="xref page">loggers</a> will use this instead of <a href="#ParameterizedMessage"><code>ParameterizedMessage</code></a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="SimpleMessage"><a class="anchor" href="#SimpleMessage"></a><code>SimpleMessage</code></h4>
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/SimpleMessage.html"><code>SimpleMessage</code></a> encapsulates a <code>String</code> or <code>CharSequence</code> that requires no formatting.</p>
+</div>
+<div id="ReusableSimpleMessage" class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableSimpleMessage.html"><code>ReusableSimpleMessage</code></a> provides functionally equivalent to <a href="#SimpleMessage"><code>SimpleMessage</code></a>, plus methods to replace its content to enable <a href="garbagefree.html" class="xref page">Garbage-free logging</a>.
+When garbage-free logging is enabled, <a href="api.html#loggers" class="xref page">loggers</a> will use this instead of <a href="#SimpleMessage"><code>SimpleMessage</code></a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="StringFormattedMessage"><a class="anchor" href="#StringFormattedMessage"></a><code>StringFormattedMessage</code></h4>
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/StringFormattedMessage.html"><code>StringFormattedMessage</code></a> accepts a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html#syntax">format string</a> and a list of arguments.
+It formats the message using <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html#format(java.lang.String,%20java.lang.Object&#8230;&#8203;)"><code>java.lang.String#format()</code></a>.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>While <code>StringFormattedMessage</code> offers more flexibility compared to <a href="#ParameterizedMessage"><code>ParameterizedMessage</code></a>,
+the latter is engineered for performance, e.g., it is <a href="garbagefree.html" class="xref page">garbage-free</a>.
+You are recommended to use <code>ParameterizedMessage</code> for performance-sensitive setups.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="ThreadDumpMessage"><a class="anchor" href="#ThreadDumpMessage"></a><code>ThreadDumpMessage</code></h4>
+<div class="paragraph">
+<p>If a <a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ThreadDumpMessage.html"><code>ThreadDumpMessage</code></a> is logged, Log4j generates stack traces for all threads.
+These stack traces will include any held locks.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="collection-structured"><a class="anchor" href="#collection-structured"></a>Structured types</h3>
+<div class="paragraph">
+<p>Log4j strives to provide top of the class support for <strong>structured logging</strong>.
+It complements <a href="layouts.html#structured-logging" class="xref page">structured layouts</a> with message types allowing users to create structured messages effectively resulting in an end-to-end structured logging experience.
+This section will introduce the predefined structured message types.</p>
+</div>
+<details>
+<summary class="title">What is <strong>structured logging</strong>?</summary>
+<div class="content">
+<div class="paragraph">
+<p>In almost any modern production deployment, logs are no more written to files read by engineers while troubleshooting, but forwarded to log ingestion systems (Elasticsearch, Google Cloud Logging, etc.) for several observability use cases ranging from logging to metrics.
+This necessitates the applications to <em>structure</em> their logs in a machine-readable way ready to be delivered to an external system.
+This act of encoding logs following a certain structure is called <strong>structured logging</strong>.</p>
+</div>
+</div>
+</details>
+<div class="sect3">
+<h4 id="MapMessage"><a class="anchor" href="#MapMessage"></a><code>MapMessage</code></h4>
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html"><code>MapMessage</code></a> is a <code>Message</code> implementation that models a Java <code>Map</code> with <code>String</code>-typed keys and values.
+<strong>It is an ideal generic message type for passing structured data.</strong></p>
+</div>
+<div class="paragraph">
+<p><code>MapMessage</code> implements <a href="../javadoc/log4j-api/org/apache/logging/log4j/message/MultiformatMessage.html"><code>MultiformatMessage</code></a> to facilitate encoding of its content in multiple formats.
+It supports following formats:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Format</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>XML</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">format as XML</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>JSON</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">format as JSON</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>JAVA</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">format as <code>Map#toString()</code> (the default)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>JAVA_UNQUOTED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">format as <code>Map#toString()</code>, but without quotes</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Some appenders handle <code>MapMessage</code>s differently when there is no layout:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>JMS Appender converts to a JMS <code>javax.jms.MapMessage</code></p>
+</li>
+<li>
+<p><a href="appenders/database.html#JdbcAppender" class="xref page">JDBC Appender</a> converts to values in an <code>SQL INSERT</code> statement</p>
+</li>
+<li>
+<p><a href="appenders/database.html#MongoDbProvider" class="xref page">MongoDB NoSQL provider</a> converts to fields in a MongoDB object</p>
+</li>
+</ul>
+</div>
+<div class="sect4">
+<h5 id="MapMessage-JsonTemplateLayout"><a class="anchor" href="#MapMessage-JsonTemplateLayout"></a>JSON Template Layout</h5>
+<div class="paragraph">
+<p><a href="json-template-layout.html" class="xref page">JSON Template Layout</a> has a specialized handling for <code>MapMessage</code>s to properly encode them as JSON objects.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="StructuredDataMessage"><a class="anchor" href="#StructuredDataMessage"></a><code>StructuredDataMessage</code></h4>
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html"><code>StructuredDataMessage</code></a> formats its content in a way compliant with <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6">the Syslog message format described in RFC 5424</a>.</p>
+</div>
+<div class="sect4">
+<h5 id="StructuredDataMessage-Rfc5424Layout"><a class="anchor" href="#StructuredDataMessage-Rfc5424Layout"></a>RFC 5424 Layout</h5>
+<div class="paragraph">
+<p><code>StructuredDataMessage</code> is mostly intended to be used in combination with <a href="layouts.html#RFC5424Layout" class="xref page">RFC 5424 Layout</a>, which has specialized handling for <code>StructuredDataMessage</code>s.
+By combining two, users can have complete control on how their message is encoded in a way compliant with RFC 5424, while RFC 5424 Layout will make sure the rest of the information attached to the log event is properly injected.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="StructuredDataMessage-JsonTemplateLayout"><a class="anchor" href="#StructuredDataMessage-JsonTemplateLayout"></a>JSON Template Layout</h5>
+<div class="paragraph">
+<p>Since <code>StructuredDataMessage</code> extends from <a href="#MapMessage"><code>MapMessage</code></a>, which <a href="json-template-layout.html" class="xref page">JSON Template Layout</a> has a specialized handling for, <code>StructuredDataMessage</code>s will be properly encoded by JSON Template Layout too.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="performance"><a class="anchor" href="#performance"></a>Performance</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As explained in <a href="#usage">Usage</a>, <code>SimpleMessage</code> and <code>ParameterizedMessage</code> instances are created indirectly while interacting with <code>Logger</code> methods; <code>info()</code>, <code>error()</code>, etc.
+In a modern JVM, the allocation cost difference between these <code>Message</code> instances and plain <code>String</code> objects is marginal.
+If you observe this cost to be significant enough for your use case, you can enable <a href="garbagefree.html" class="xref page">Garbage-free logging</a>.
+This will effectively cause <code>Message</code> instances to be recycled and avoid creating pressure on the garbage collector.
+In such a scenario, if you also have custom message types, consider implementing <a href="#StringBuilderFormattable"><code>StringBuilderFormattable</code></a> and introducing a message recycling mechanism.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="extending"><a class="anchor" href="#extending"></a>Extending</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If <a href="#collection">predefined message types</a> fall short of addressing your needs, you can extend from the <a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html"><code>Message</code></a> interface to either create your own message types or make your domain models take control of the message formatting.</p>
+</div>
+<details>
+<summary class="title">Example custom message class</summary>
+<div class="content">
+<div class="listingblock">
+<div class="title">Snippet from <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/messages/CustomMessageExample.java"><code>CustomMessageExample.java</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">record LoginFailureEvent(String userName, InetSocketAddress remoteAddress)
+        implements Message, StringBuilderFormattable { <i class="conum" data-value="1"></i><b>(1)</b>
+
+    @Override
+    public void formatTo(StringBuilder buffer) { <i class="conum" data-value="2"></i><b>(2)</b>
+        buffer.append("Connection closed by authenticating user ")
+                .append(userName())
+                .append(" ")
+                .append(remoteAddress().getHostName())
+                .append(" port ")
+                .append(remoteAddress().getPort())
+                .append(" [preauth]");
+    }
+
+    @Override
+    public String getFormattedMessage() { <i class="conum" data-value="3"></i><b>(3)</b>
+        StringBuilder buffer = new StringBuilder();
+        formatTo(buffer);
+        return buffer.toString();
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Extending from both <code>Message</code> and <a href="#StringBuilderFormattable"><code>StringBuilderFormattable</code></a> interfaces</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Formats the message directly into a <code>StringBuilder</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td><code>getFormattedMessage()</code> reuses <code>formatTo()</code></td>
+</tr>
+</table>
+</div>
+</div>
+</details>
+<div class="sect2">
+<h3 id="format-type"><a class="anchor" href="#format-type"></a>Format type</h3>
+<div class="paragraph">
+<p>You can extend from <a href="#MultiformatMessage"><code>MultiformatMessage</code></a> (and optionally from <a href="#MultiFormatStringBuilderFormattable"><code>MultiFormatStringBuilderFormattable</code></a>) to implement messages that can format themselves in one or more encodings; JSON, XML, etc.
+Layouts leverage this mechanism to encode a message in a particular format.
+For instance, when <a href="json-template-layout.html" class="xref page">JSON Template Layout</a> figures out that the array returned by <code>getFormats()</code> of a <code>MultiformatMessage</code> contains <code>JSON</code>, it injects the <code>MultiformatMessage#getFormattedMessage({"JSON"})</code> output as is without quoting it.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="marker-interfaces"><a class="anchor" href="#marker-interfaces"></a>Marker interfaces</h3>
+<div class="paragraph">
+<p>There are certain Log4j API interfaces that you can <em>optionally</em> extend from in your <code>Message</code> implementations to enable associated features:</p>
+</div>
+<div class="sect3">
+<h4 id="LoggerNameAwareMessage"><a class="anchor" href="#LoggerNameAwareMessage"></a><code>LoggerNameAwareMessage</code></h4>
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/LoggerNameAwareMessage.html"><code>LoggerNameAwareMessage</code></a> is a marker interface with a <code>setLoggerName(String)</code> method.
+This method will be called during event construction to pass the associated <code>Logger</code> to the <code>Message</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="MultiformatMessage"><a class="anchor" href="#MultiformatMessage"></a><code>MultiformatMessage</code></h4>
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/MultiformatMessage.html"><code>MultiformatMessage</code></a> extends from <code>Message</code> to support multiple <a href="#format-type">format types</a>.
+For example, see <a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-api/src/main/java/org/apache/logging/log4j/message/MapMessage.java"><code>MapMessage.java</code></a> extending from <code>MultiformatMessage</code> to support multiple formats; XML, JSON, etc.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="MultiFormatStringBuilderFormattable"><a class="anchor" href="#MultiFormatStringBuilderFormattable"></a><code>MultiFormatStringBuilderFormattable</code></h4>
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/util/MultiFormatStringBuilderFormattable.html"><code>MultiFormatStringBuilderFormattable</code></a> extends <a href="#StringBuilderFormattable"><code>StringBuilderFormattable</code></a> to support multiple <a href="#format-type">format types</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="StringBuilderFormattable"><a class="anchor" href="#StringBuilderFormattable"></a><code>StringBuilderFormattable</code></h4>
+<div class="paragraph">
+<p>Many <a href="layouts.html" class="xref page">layouts</a> recycle <code>StringBuilder</code>s to encode log events <a href="garbagefree.html" class="xref page">without generating garbage</a>, and this effectively results in significant <a href="performance.html" class="xref page">performance</a> benefits.
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/util/StringBuilderFormattable.html"><code>StringBuilderFormattable</code></a> is the primary interface facilitating the formatting of objects to a <code>StringBuilder</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="TimestampMessage"><a class="anchor" href="#TimestampMessage"></a><code>TimestampMessage</code></h4>
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/TimestampMessage.html"><code>TimestampMessage</code></a> provides a <code>getTimestamp()</code> method that will be called during log event construction to determine the instant instead of using the current timestamp.
+<code>Message</code> implementations that want to control the timestamp of the log event they are encapsulated in, they can extend from <code>TimestampMessage</code>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>
+    Copyright © 1999-2024 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
+  </p>
+  <p>
+    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+    Other names may be trademarks of their respective owners.
+  </p>
+</footer>
+<script id="site-script" src="../_/js/site.js" data-ui-root-path="../_"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+<!-- `@asciidoctor/tabs` extension scripts -->
+<script async src="../_/js/vendor/tabs.js"></script>
+  </body>
+</html>

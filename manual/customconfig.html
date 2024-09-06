@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Programmatic configuration :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/customconfig.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.6">
+<link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
+<!-- `@asciidoctor/tabs` extension styles -->
+<link rel="stylesheet" href="../_/css/vendor/tabs.css">
+<style>
+  /* Swap colors of `IMPORTANT` and `WARNING` blocks */ 
+  .doc .admonitionblock.important .icon { background-color: #f70; }
+  .doc .admonitionblock.warning .icon { background-color: #e40046; }
+  /* Default `h4`, `h5`, and `h6` are smaller than the normal text, fix header font sizing: */
+  .doc h1 { font-size: 1.9rem; }
+  .doc h2 { font-size: 1.7rem; }
+  .doc h3 { font-size: 1.5rem; font-weight: 400; }
+  .doc h4 { font-size: 1.3rem; font-weight: 500; }
+  .doc h5 { font-size: 1.1rem; font-weight: 500; text-decoration: underline; }
+  .doc h6 { font-size: 0.9rem; font-weight: 500; text-decoration: underline; }
+  /* Default `code`, `pre`, and `.colist` (source code annotations) fonts are too big, adjust them: */
+  .doc .colist>table code, .doc p code, .doc thead code { font-size: 0.8em; }
+  .doc pre { font-size: 0.7rem; }
+  .doc .colist { font-size: 0.75rem; }
+  /* Make links more visible: */
+  .doc a { text-decoration: underline; }
+  .doc a code { text-decoration: underline; color: #1565c0; }
+  /* Tab header fonts aren't rendered good, adjusting the font weight: */
+  .tablist > ul li { font-weight: 500; }
+  /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
+  .toc .toc-menu li[data-level="4"] a {
+    padding-left: 2.75rem;
+  }
+  /* Replace the default highlight.js color for strings from red (unnecessarily signaling something negative) to green: */
+  .hljs-string {
+    color: #0f8532;
+  }
+</style>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <img src="../_/../_images/logo-small-white.png" alt="Apache Log4j"/>
+      </div>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://logging.apache.org">a subproject of&nbsp;<strong>Apache Logging Services</strong></a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ROOT" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Home</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../download.html">Download</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../release-notes.html">Release Notes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="https://logging.apache.org/support.html">Support</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Manual</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="getting-started.html">Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="installation.html">Installation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html">API</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html#loggers">Loggers</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="eventlogging.html">Event Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="simple-logger.html">Simple Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="status-logger.html">Status Logger</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="logbuilder.html">Fluent API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html#fish-tagging">Fish tagging</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="customloglevels.html">Levels</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="markers.html">Markers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="thread-context.html">Thread Context</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="messages.html">Messages</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="implementation.html">Implementation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="config-intro.html">Configuration</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="configuration.html">Configuration file</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="systemproperties.html">Configuration properties</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="customconfig.html">Programmatic configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="appenders.html">Appenders</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/file.html">File appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/rolling-file.html">Rolling file appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/database.html">Database appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/network.html">Network Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/message-queue.html">Message queue appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/delegating.html">Delegating Appenders</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="pattern-layout.html">Pattern Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="filters.html">Filters</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="scripts.html">Scripts</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="jmx.html">JMX</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="extending.html">Extending</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="plugins.html">Plugins</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="performance.html">Performance</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="async.html">Asynchronous loggers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="garbagefree.html">Garbage-free logging</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">References</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../plugin-reference.html">Plugin reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../javadoc.html">Java API reference</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Resources</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../faq.html">F.A.Q.</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-log4j1.html">Migrating from Log4j 1</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-logback.html">Migrating from Logback</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-slf4j.html">Migrating from SLF4J</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../hibernate.html">Integrating with Hibernate</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../jakarta.html">Integrating with Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../soa.html">Integrating with service-oriented architectures</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../development.html">Development</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../components.html">Components</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-boot.html">Log4j Spring Boot Support</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-jul.html">JUL-to-Log4j bridge</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-to-jul.html">Log4j-to-JUL bridge</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Related projects</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jakarta/index.html">Log4j Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jmx-gui/index.html">Log4j JMX GUI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/kotlin/index.html">Log4j Kotlin</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/scala/index.html">Log4j Scala</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/tools/index.html">Log4j Tools</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/transform/index.html">Log4j Transformation Tools</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="index.html">Manual</a></li>
+    <li><a href="implementation.html">Implementation</a></li>
+    <li><a href="config-intro.html">Configuration</a></li>
+    <li><a href="customconfig.html">Programmatic configuration</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/manual/customconfig.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="4">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Programmatic configuration</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Next to <a href="configuration.html" class="xref page">configuration files</a>, Log4j Core can be configured programmatically too.
+In this page, we will explore utilities helping with programmatic configuration and demonstrate how they can be leveraged for certain use cases.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="prelim"><a class="anchor" href="#prelim"></a>Preliminaries</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To begin with, we strongly encourage you to check out the <a href="architecture.html" class="xref page">Architecture</a> page first.
+Let&#8217;s repeat some basic definitions of particular interest:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><a href="architecture.html#LoggerContext" class="xref page"><code>LoggerContext</code></a></dt>
+<dd>
+<p>It is the anchor of the logging system.
+Generally there is one, statically-accessible, global <code>LoggerContext</code> for most applications.
+But there can be multiple <code>LoggerContext</code>s, for instance, to use in tests, in Java EE web applications, etc.</p>
+</dd>
+<dt class="hdlist1"><a href="architecture.html#Configuration" class="xref page"><code>Configuration</code></a></dt>
+<dd>
+<p>It encapsulates a Log4j Core configuration (properties, appenders, loggers, etc.) and is associated with a <code>LoggerContext</code>.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="tooling"><a class="anchor" href="#tooling"></a>Tooling</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For programmatic configuration, Log4j Core essentially provides the following tooling:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><a href="#ConfigurationBuilder"><code>ConfigurationBuilder</code></a></dt>
+<dd>
+<p>for declaratively creating a <code>Configuration</code></p>
+</dd>
+<dt class="hdlist1"><a href="#Configurator"><code>Configurator</code></a></dt>
+<dd>
+<p>for associating a <code>Configuration</code> with a <code>LoggerContext</code></p>
+</dd>
+<dt class="hdlist1"><a href="#ConfigurationFactory"> <code>ConfigurationFactory</code></a></dt>
+<dd>
+<p>for registering a <code>Configuration</code> factory to <a href="configuration.html" class="xref page">the configuration file mechanism</a></p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>In short, we will create <code>Configuration</code>s using <code>ConfigurationBuilder</code>, and activate them using <code>Configurator</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="ConfigurationBuilder"><a class="anchor" href="#ConfigurationBuilder"></a><code>ConfigurationBuilder</code></h3>
+<div class="paragraph">
+<p><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/builder/api/ConfigurationBuilder.html"><code>ConfigurationBuilder</code></a> interface models a fluent API to programmatically create <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html"><code>Configuration</code></a>s.
+If you have ever created a <a href="configuration.html" class="xref page">Log4j Core configuration file</a>, consider <code>ConfigurationBuilder</code> as a convenience utility to model the very same declarative configuration structure programmatically.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s show <code>ConfigurationBuilder</code> usage with an example.
+Consider the following Log4j Core configuration file:</p>
+</div>
+<div id="_tabs_1" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_1_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_1_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_1_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_1_xml--panel" class="tabpanel" aria-labelledby="_tabs_1_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/customconfig/ConfigurationBuilder/log4j2.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Appenders&gt;
+  &lt;Console name="CONSOLE"&gt;
+    &lt;JsonTemplateLayout/&gt;
+  &lt;/Console&gt;
+&lt;/Appenders&gt;
+
+&lt;Loggers&gt;
+  &lt;Root level="WARN"&gt;
+    &lt;AppenderRef ref="CONSOLE"/&gt;
+  &lt;/Root&gt;
+&lt;/Loggers&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_json--panel" class="tabpanel" aria-labelledby="_tabs_1_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/customconfig/ConfigurationBuilder/log4j2.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Appenders": {
+  "Console": {
+    "name": "CONSOLE",
+    "JsonTemplateLayout": {}
+  }
+},
+"Loggers": {
+  "Root": {
+    "level": "WARN",
+    "AppenderRef": {
+      "ref": "CONSOLE"
+    }
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_yaml--panel" class="tabpanel" aria-labelledby="_tabs_1_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/customconfig/ConfigurationBuilder/log4j2.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Appenders:
+  Console:
+    name: "CONSOLE"
+    JsonTemplateLayout: {}
+
+Loggers:
+  Root:
+    level: "WARN"
+    AppenderRef:
+      ref: "CONSOLE"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_properties--panel" class="tabpanel" aria-labelledby="_tabs_1_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/customconfig/ConfigurationBuilder/log4j2.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = Console
+appender.0.name = CONSOLE
+appender.0.layout.type = JsonTemplateLayout
+
+rootLogger.level = WARN
+rootLogger.appenderRef.0.ref = CONSOLE</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Above Log4j Core configuration can be programmatically built using <code>ConfigurationBuilder</code> as follows:</p>
+</div>
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/customconfig/Usage.java"><code>Usage.java</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">ConfigurationBuilder&lt;BuiltConfiguration&gt; configBuilder =
+        ConfigurationBuilderFactory.newConfigurationBuilder(); <i class="conum" data-value="1"></i><b>(1)</b>
+Configuration configuration = configBuilder
+        .add(
+                configBuilder <i class="conum" data-value="2"></i><b>(2)</b>
+                        .newAppender("CONSOLE", "List")
+                        .add(configBuilder.newLayout("JsonTemplateLayout")))
+        .add(
+                configBuilder <i class="conum" data-value="3"></i><b>(3)</b>
+                        .newRootLogger(Level.WARN)
+                        .add(configBuilder.newAppenderRef("CONSOLE")))
+        .build(false); <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The default <code>ConfigurationBuilder</code> instance is obtained using <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/builder/api/ConfigurationBuilderFactory.html#newConfigurationBuilder()"><code>ConfigurationBuilderFactory.newConfigurationBuilder()</code></a> static method</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Add the appender along with the layout</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Add the root logger along with a level and appender reference</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Create the configuration, but <strong>don&#8217;t initialize</strong> it
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>It is a good practice to not initialize <code>Configuration</code>s when they are constructed.
+This task should ideally be delegated to <a href="#Configurator"><code>Configurator</code></a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div></td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><code>ConfigurationBuilder</code> has convenience methods for the base components that can be configured such as loggers, appenders, filters, properties, etc.
+Though there are cases where the provided convenience methods fall short of:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Custom <a href="plugins.html#core" class="xref page">plugins that are declared to be represented in a configuration</a></p>
+</li>
+<li>
+<p>Custom subcomponents (e.g., a <a href="appenders/rolling-file.html#TriggeringPolicy" class="xref page">triggering policy</a> for <a href="appenders/rolling-file.html#RollingFileAppender" class="xref page">rolling file appenders</a>)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For those, you can use the generic <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/builder/api/ConfigurationBuilder.html#newComponent()"><code>ConfigurationBuilder#newComponent()</code></a> method.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-core-test/src/test/java/org/apache/logging/log4j/core/config/Configurator1Test.java"><code>Configurator1Test.java</code></a> for examples on <code>ConfigurationBuilder</code>, <code>newComponent()</code>, etc. usage.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="Configurator"><a class="anchor" href="#Configurator"></a><code>Configurator</code></h3>
+<div class="paragraph">
+<p><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configurator.html"><code>Configurator</code></a> is a programmatic interface to associate a <code>Configuration</code> with either new, or an existing <code>LoggerContext</code>.</p>
+</div>
+<div class="sect3">
+<h4 id="Configurator-initialize"><a class="anchor" href="#Configurator-initialize"></a>Obtaining a <code>LoggerContext</code></h4>
+<div class="paragraph">
+<p>You can use <code>Configurator</code> to obtain a <code>LoggerContext</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/customconfig/Usage.java"><code>Usage.java</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Configuration configuration = createConfiguration();
+try (LoggerContext loggerContext = Configurator.initialize(configuration)) {
+    // Use `LoggerContext`...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>initialize()</code> will either return the <code>LoggerContext</code> currently associated with the caller, or create a new one.
+This is a convenient way to create isolated <code>LoggerContext</code>s for tests, etc.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Configurator-reconfigure"><a class="anchor" href="#Configurator-reconfigure"></a>Reconfiguring the active <code>LoggerContext</code></h4>
+<div class="paragraph">
+<p>You can use <code>Configurator</code> to reconfigure the active <code>LoggerContext</code> as follows:</p>
+</div>
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/customconfig/Usage.java"><code>Usage.java</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Configuration configuration = createConfiguration();
+Configurator.reconfigure(configuration);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Using the <code>Configurator</code> in this manner allows the application control over when Log4j is initialized.
+However, should any logging be attempted before <code>Configurator.initialize()</code> is called then the default configuration will be used for those log events.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="ConfigurationFactory"><a class="anchor" href="#ConfigurationFactory"></a><a id="Example"></a> <code>ConfigurationFactory</code></h3>
+<div class="paragraph">
+<p><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html"><code>ConfigurationFactory</code></a> interface, which is mainly used by <a href="configuration.html#automatic-configuration" class="xref page">the configuration file mechanism</a> to load a <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html"><code>Configuration</code></a>, can be leveraged to inject a custom <code>Configuration</code>.
+You need to</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="configuration.html#ConfigurationFactory" class="xref page">Create a custom <code>ConfigurationFactory</code> plugin</a></p>
+</li>
+<li>
+<p>Assign it a higher priority (i.e., higher <code>@Order</code> value)</p>
+</li>
+<li>
+<p>Support all configuration file types (i.e. return <code>*</code> from <code>getSupportedTypes()</code>)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Consider the example below:</p>
+</div>
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/customconfig/ExampleConfigurationFactory.java"><code>ExampleConfigurationFactory.java</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Order(100)
+@Plugin(name = "ExampleConfigurationFactory", category = ConfigurationFactory.CATEGORY)
+public class ExampleConfigurationFactory extends ConfigurationFactory {
+
+    @Override
+    public Configuration getConfiguration(LoggerContext loggerContext, ConfigurationSource source) { <i class="conum" data-value="1"></i><b>(1)</b>
+        // Return a `Configuration`...
+    }
+
+    @Override
+    public Configuration getConfiguration(LoggerContext loggerContext, String name, URI configLocation) {
+        // Return a `Configuration`...
+    }
+
+    @Override
+    public String[] getSupportedTypes() {
+        return new String[] {"*"};
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>getConfiguration(LoggerContext, ConfigurationSource)</code> is only called if <code>ConfigurationSource</code> is not null.
+This is possible if the <code>Configuration</code> is provided programmatically.
+Hence, you are encouraged to implement <code>getConfiguration(LoggerContext, String, URI)</code> overload too.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guides"><a class="anchor" href="#guides"></a>How-to guides</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this section we will share guides on programmatically configuring Log4j Core for certain use cases.</p>
+</div>
+<div class="sect2">
+<h3 id="load-config-file"><a class="anchor" href="#load-config-file"></a>Loading a configuration file</h3>
+<div class="paragraph">
+<p><a href="#ConfigurationFactory"> <code>ConfigurationFactory</code></a> provides the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html#getInstance()"><code>getInstance()</code></a> method returning a meta-<code>ConfigurationFactory</code> that combines the behaviour of all available <code>ConfigurationFactory</code> implementations, including <a href="configuration.html#configuration-factories" class="xref page">the predefined ones</a>; <code>XmlConfigurationFactory</code>, <code>JsonConfigurationFactory</code>, etc.
+You can use this <code>getInstance()</code> method to load a configuration file programmatically, granted that the input file format is supported by at least one of the available <code>ConfigurationFactory</code> plugins:</p>
+</div>
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/customconfig/Usage.java"><code>Usage.java</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">ConfigurationFactory.getInstance()
+        .getConfiguration(
+                null, <i class="conum" data-value="1"></i><b>(1)</b>
+                null, <i class="conum" data-value="2"></i><b>(2)</b>
+                URI.create("uri://to/my/log4j2.xml")); <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Passing the <code>LoggerContext</code> argument as null, since this is the first time we are instantiating this <code>Configuration</code>, and it is not associated with a <code>LoggerContext</code> yet</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Passing the configuration name argument as null, since it is not used when the configuration source location is provided</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>URI pointing to the configuration file; <code><a href="file://path/to/log4j2.xml" class="bare">file://path/to/log4j2.xml</a></code>, <code>classpath:log4j2.xml</code>, etc.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="CompositeConfiguration"><a class="anchor" href="#CompositeConfiguration"></a>Combining multiple configurations</h3>
+<div class="paragraph">
+<p>There are occasions where multiple configurations might need to be combined.
+For instance,</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>You have a common Log4j Core configuration that should always be present, and an environment-specific one that extends the common one depending on the environment (test, production, etc.) the application is running on.</p>
+</li>
+<li>
+<p>You develop a framework, and it contains a predefined Log4j Core configuration.
+Yet you want to allow users to extend it whenever necessary.</p>
+</li>
+<li>
+<p>You collect Log4j Core configurations from multiple sources.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You can programmatically combine multiple configurations into a single one using <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/CompositeConfiguration.html"><code>CompositeConfiguration</code></a>:</p>
+</div>
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/customconfig/Usage.java"><code>Usage.java</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">ConfigurationFactory configFactory = ConfigurationFactory.getInstance();
+AbstractConfiguration commonConfig = (AbstractConfiguration) <i class="conum" data-value="2"></i><b>(2)</b>
+        configFactory.getConfiguration(null, null, URI.create("classpath:log4j2-common.xml")); <i class="conum" data-value="1"></i><b>(1)</b>
+AbstractConfiguration appConfig = (AbstractConfiguration) <i class="conum" data-value="2"></i><b>(2)</b>
+        configFactory.getConfiguration(null, null, URI.create("classpath:log4j2-app.xml")); <i class="conum" data-value="1"></i><b>(1)</b>
+AbstractConfiguration runtimeConfig = ConfigurationBuilderFactory.newConfigurationBuilder()
+        // ...
+        .build(false); <i class="conum" data-value="3"></i><b>(3)</b>
+return new CompositeConfiguration(Arrays.asList(commonConfig, appConfig, runtimeConfig)); <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Loading a common, and an application-specific configuration from file</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Casting them to <code>AbstractConfiguration</code>, the type required by <code>CompositeConfiguration</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Programmatically creating an uninitialized configuration.
+Note that no casting is needed.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Creating a <code>CompositeConfiguration</code> using all three configurations created.
+Note that passed configuration order matters!</td>
+</tr>
+</table>
+</div>
+<details>
+<summary class="title">How does <code>CompositeConfiguration</code> work?</summary>
+<div class="content">
+<div class="paragraph">
+<p><code>CompositeConfiguration</code> merges multiple configurations into a single one using a <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy.html"><code>MergeStrategy</code></a>, which can be customized using <a href="systemproperties.html#log4j2.mergeStrategy" class="xref page">the <code>log4j2.mergeStrategy</code> configuration property</a>.
+The default merge strategy works as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="configuration.html#global-configuration-attributes" class="xref page">Global configuration attributes</a> in later configurations replace those in previous configurations.
+The only exception is the <code>monitorInterval</code> attribute: the lowest positive value from all the configuration files will be used.</p>
+</li>
+<li>
+<p><a href="configuration.html#property-substitution" class="xref page">Properties</a> are aggregated.
+Duplicate properties override those in previous configurations.</p>
+</li>
+<li>
+<p><a href="filters.html" class="xref page">Filters</a> are aggregated under <a href="filters.html#CompositeFilter" class="xref page"><code>CompositeFilter</code></a>, if more than one filter is defined.</p>
+</li>
+<li>
+<p><a href="scripts.html" class="xref page">Scripts</a> are aggregated.
+Duplicate definitions override those in previous configurations.</p>
+</li>
+<li>
+<p><a href="appenders.html" class="xref page">Appenders</a> are aggregated.
+Appenders with the same name are <strong>overridden</strong> by those in later configurations, including all their elements.</p>
+</li>
+<li>
+<p><a href="configuration.html#configuring-loggers" class="xref page">Loggers</a> are aggregated.
+Logger attributes are individually merged, and those in later configurations replace duplicates.
+Appender references on a logger are aggregated, and those in later configurations replace duplicates.
+The strategy merges filters on loggers using the rule above.</p>
+</li>
+</ul>
+</div>
+</div>
+</details>
+</div>
+<div class="sect2">
+<h3 id="Hybrid"><a class="anchor" href="#Hybrid"></a><a id="AddingToCurrent"></a> <a id="AppendingToWritersAndOutputStreams"></a> Modifying configuration components</h3>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>We strongly advise against programmatically modifying components of a configuration!</strong>
+This section will explain what it is, and why you should avoid it.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>It is unfortunately common that users modify components (appenders, filters, etc.) of a configuration programmatically as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LoggerContext context = LoggerContext.getContext(false);
+Configuration config = context.getConfiguration();
+PatternLayout layout = PatternLayout.createDefaultLayout(config);
+Appender appender = createCustomAppender();
+appender.start();
+config.addAppender(appender);
+updateLoggers(appender, config);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This approach is prone several problems:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Your code relies on Log4j Core internals which don&#8217;t have any backward compatibility guarantees.
+You not only risk breaking your build at a minor Log4j Core version upgrade, but also make the life of Log4j maintainers trying to evolve the project extremely difficult.</p>
+</li>
+<li>
+<p>You move out from the safety zone, where Log4j Core takes care of components' life cycle (initialization, reconfiguration, etc.), and step into a minefield seriously undermining the reliability of your logging setup.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If you happen to have code programmatically modifying components of a configuration, we advise you to migrate to other declarative approaches shared in this page.
+In case of need, feel free to ask for help in <a href="https://logging.apache.org/support.html#discussions-user">user support channels</a>.</p>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>
+    Copyright © 1999-2024 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
+  </p>
+  <p>
+    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+    Other names may be trademarks of their respective owners.
+  </p>
+</footer>
+<script id="site-script" src="../_/js/site.js" data-ui-root-path="../_"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+<!-- `@asciidoctor/tabs` extension scripts -->
+<script async src="../_/js/vendor/tabs.js"></script>
+  </body>
+</html>

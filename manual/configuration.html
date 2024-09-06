@@ -1,0 +1,3261 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Configuration file :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/configuration.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.6">
+<link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
+<!-- `@asciidoctor/tabs` extension styles -->
+<link rel="stylesheet" href="../_/css/vendor/tabs.css">
+<style>
+  /* Swap colors of `IMPORTANT` and `WARNING` blocks */ 
+  .doc .admonitionblock.important .icon { background-color: #f70; }
+  .doc .admonitionblock.warning .icon { background-color: #e40046; }
+  /* Default `h4`, `h5`, and `h6` are smaller than the normal text, fix header font sizing: */
+  .doc h1 { font-size: 1.9rem; }
+  .doc h2 { font-size: 1.7rem; }
+  .doc h3 { font-size: 1.5rem; font-weight: 400; }
+  .doc h4 { font-size: 1.3rem; font-weight: 500; }
+  .doc h5 { font-size: 1.1rem; font-weight: 500; text-decoration: underline; }
+  .doc h6 { font-size: 0.9rem; font-weight: 500; text-decoration: underline; }
+  /* Default `code`, `pre`, and `.colist` (source code annotations) fonts are too big, adjust them: */
+  .doc .colist>table code, .doc p code, .doc thead code { font-size: 0.8em; }
+  .doc pre { font-size: 0.7rem; }
+  .doc .colist { font-size: 0.75rem; }
+  /* Make links more visible: */
+  .doc a { text-decoration: underline; }
+  .doc a code { text-decoration: underline; color: #1565c0; }
+  /* Tab header fonts aren't rendered good, adjusting the font weight: */
+  .tablist > ul li { font-weight: 500; }
+  /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
+  .toc .toc-menu li[data-level="4"] a {
+    padding-left: 2.75rem;
+  }
+  /* Replace the default highlight.js color for strings from red (unnecessarily signaling something negative) to green: */
+  .hljs-string {
+    color: #0f8532;
+  }
+</style>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <img src="../_/../_images/logo-small-white.png" alt="Apache Log4j"/>
+      </div>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://logging.apache.org">a subproject of&nbsp;<strong>Apache Logging Services</strong></a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ROOT" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Home</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../download.html">Download</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../release-notes.html">Release Notes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="https://logging.apache.org/support.html">Support</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Manual</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="getting-started.html">Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="installation.html">Installation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html">API</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html#loggers">Loggers</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="eventlogging.html">Event Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="simple-logger.html">Simple Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="status-logger.html">Status Logger</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="logbuilder.html">Fluent API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html#fish-tagging">Fish tagging</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="customloglevels.html">Levels</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="markers.html">Markers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="thread-context.html">Thread Context</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="messages.html">Messages</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="implementation.html">Implementation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="config-intro.html">Configuration</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="configuration.html">Configuration file</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="systemproperties.html">Configuration properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="customconfig.html">Programmatic configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="appenders.html">Appenders</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/file.html">File appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/rolling-file.html">Rolling file appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/database.html">Database appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/network.html">Network Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/message-queue.html">Message queue appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/delegating.html">Delegating Appenders</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="pattern-layout.html">Pattern Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="filters.html">Filters</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="scripts.html">Scripts</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="jmx.html">JMX</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="extending.html">Extending</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="plugins.html">Plugins</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="performance.html">Performance</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="async.html">Asynchronous loggers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="garbagefree.html">Garbage-free logging</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">References</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../plugin-reference.html">Plugin reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../javadoc.html">Java API reference</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Resources</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../faq.html">F.A.Q.</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-log4j1.html">Migrating from Log4j 1</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-logback.html">Migrating from Logback</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-slf4j.html">Migrating from SLF4J</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../hibernate.html">Integrating with Hibernate</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../jakarta.html">Integrating with Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../soa.html">Integrating with service-oriented architectures</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../development.html">Development</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../components.html">Components</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-boot.html">Log4j Spring Boot Support</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-jul.html">JUL-to-Log4j bridge</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-to-jul.html">Log4j-to-JUL bridge</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Related projects</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jakarta/index.html">Log4j Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jmx-gui/index.html">Log4j JMX GUI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/kotlin/index.html">Log4j Kotlin</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/scala/index.html">Log4j Scala</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/tools/index.html">Log4j Tools</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/transform/index.html">Log4j Transformation Tools</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="index.html">Manual</a></li>
+    <li><a href="implementation.html">Implementation</a></li>
+    <li><a href="config-intro.html">Configuration</a></li>
+    <li><a href="configuration.html">Configuration file</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/manual/configuration.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="4">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Configuration file</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Using a configuration file is the most popular and recommended approach for configuring Log4j Core.
+In this page we will examine the composition of a configuration file and how Log4j Core uses it.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you are looking for a quick start on using Log4j in your application or library, please refer to <a href="getting-started.html" class="xref page">Getting started</a> instead.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="automatic-configuration"><a class="anchor" href="#automatic-configuration"></a><a id="AutomaticConfiguration"></a> Configuration file location</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Upon initialization of a new <a href="architecture.html#LoggerContext" class="xref page">logger context, the anchor of the logging implementation</a>, Log4j Core assigns it a context name and scans the following <strong>classpath</strong> locations for a configuration file in following order:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Files named <code>log4j2-test&lt;contextName&gt;.&lt;extension&gt;</code></p>
+</li>
+<li>
+<p>Files named <code>log4j2-test.&lt;extension&gt;</code></p>
+</li>
+<li>
+<p>Files named <code>log4j2&lt;contextName&gt;.&lt;extension&gt;</code></p>
+</li>
+<li>
+<p>Files named <code>log4j2.&lt;extension&gt;</code></p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The <code>&lt;contextName&gt;</code> and <code>&lt;extension&gt;</code> placeholders above have the following meaning</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">&lt;contextName&gt;</dt>
+<dd>
+<p>A name derived from the runtime environment:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>For standalone Java SE applications, it is a random identifier.</p>
+</li>
+<li>
+<p>For web applications, it is an identifier derived from the application descriptor.
+See <a href="../jakarta.html#configuration" class="xref page">Log4j Web application configuration</a> for details.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">&lt;extension&gt;</dt>
+<dd>
+<p>A file extension supported by a <code>ConfigurationFactory</code>.
+The order in which an extension will be searched for first depends on the order of the associated <code>ConfigurationFactory</code>.
+See <a href="#configuration-factories">Predefined <code>ConfigurationFactory</code> plugins</a> for details.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>If no configuration file is found, Log4j Core uses the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/DefaultConfiguration.html"><code>DefaultConfiguration</code></a> and the <a href="status-logger.html" class="xref page">status logger</a> prints a warning.
+The default configuration prints all messages less severe than <a href="systemproperties.html#log4j2.level" class="xref page"><code>log4j2.level</code></a> to the console.</p>
+</div>
+<div class="paragraph">
+<p>You can override the location of the configuration file
+using the <a href="systemproperties.html#log4j2.configurationFile" class="xref page"><code>log4j2.configurationFile</code>
+system property</a>.
+In such a case, Log4j Core will guess the configuration file format from the provided file name,
+or use the default configuration factory if the extension is unknown.</p>
+</div>
+<div class="paragraph">
+<p>There are certain <strong>best-practices</strong> we strongly recommend you to adapt in your Log4j configuration:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Files prefixed by <code>log4j2-test</code> should only be used on the test classpath.</p>
+</li>
+<li>
+<p>If you are developing an application, don&#8217;t use multiple Log4j configuration files with same name, but different extensions.
+That is, don&#8217;t provide both <code>log4j2.xml</code> and <code>log4j2.json</code> files.</p>
+</li>
+<li>
+<p>If you are developing a library, only add configuration files to your test classpath.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="configuration-factories"><a class="anchor" href="#configuration-factories"></a>Predefined <code>ConfigurationFactory</code> plugins</h3>
+<div class="paragraph">
+<p>Log4j Core uses plugins extending from <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html"><code>ConfigurationFactory</code></a> to determine which configuration file extensions are supported, in which order, and how to read them.
+How this works under the hood and how you can introduce your custom implementations is explained in <a href="#ConfigurationFactory">Extending <code>ConfigurationFactory</code> plugins</a>.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Supported configuration file formats by predefined <code>ConfigurationFactory</code> plugins</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">File format</th>
+<th class="tableblock halign-left valign-top">Extension</th>
+<th class="tableblock halign-left valign-top">Order</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">XML</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>xml</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JSON</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>json, jsn</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">YAML</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>yaml, yml</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">7</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Properties</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>properties</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Note that <code>ConfigurationFactory</code> plugins will be employed in descending order.
+That is, for instance, XML file format will be checked last, as a fallback.</p>
+</div>
+<div class="paragraph">
+<p>Some <code>ConfigurationFactory</code> plugins require additional dependencies on the classpath:</p>
+</div>
+<div id="_tabs_1" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_log4j2_xml" class="tab">
+<p>log4j2.xml</p>
+</li>
+<li id="_tabs_1_log4j2_json" class="tab">
+<p>log4j2.json</p>
+</li>
+<li id="_tabs_1_log4j2_yaml" class="tab">
+<p>log4j2.yaml</p>
+</li>
+<li id="_tabs_1_log4j2_properties" class="tab">
+<p>log4j2.properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_1_log4j2_xml--panel" class="tabpanel" aria-labelledby="_tabs_1_log4j2_xml">
+<div class="paragraph">
+<p>JPMS users need to add:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">module foo.bar {
+    requires java.xml;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>to their <code>module-info.java</code> descriptor.</p>
+</div>
+</div>
+<div id="_tabs_1_log4j2_json--panel" class="tabpanel" aria-labelledby="_tabs_1_log4j2_json">
+<div id="_tabs_2" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_2_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_2_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_2_maven--panel" class="tabpanel" aria-labelledby="_tabs_2_maven">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;
+    &lt;artifactId&gt;jackson-databind&lt;/artifactId&gt;
+    &lt;version&gt;2.17.2&lt;/version&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_2_gradle--panel" class="tabpanel" aria-labelledby="_tabs_2_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.core:jackson-databind:2.17.2'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="_tabs_1_log4j2_yaml--panel" class="tabpanel" aria-labelledby="_tabs_1_log4j2_yaml">
+<div id="_tabs_3" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_3_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_3_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_3_maven--panel" class="tabpanel" aria-labelledby="_tabs_3_maven">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.fasterxml.jackson.dataformat&lt;/groupId&gt;
+    &lt;artifactId&gt;jackson-dataformat-yaml&lt;/artifactId&gt;
+    &lt;version&gt;2.17.2&lt;/version&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_3_gradle--panel" class="tabpanel" aria-labelledby="_tabs_3_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.17.2'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="_tabs_1_log4j2_properties--panel" class="tabpanel" aria-labelledby="_tabs_1_log4j2_properties">
+<div class="paragraph">
+<p>No dependency required.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configuration-syntax"><a class="anchor" href="#configuration-syntax"></a><a id="ConfigurationSyntax"></a> Syntax</h2>
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Starting with Log4j 2, the configuration file syntax has been considered part of the public API and has remained stable across significant version upgrades.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The syntax of the configuration file changed between Log4j&#160;1 and Log4j&#160;2.
+Files in the Log4j&#160;1 syntax are ignored by default.
+To enable partial support for old configuration syntax, see <a href="../migrate-from-log4j1.html#ConfigurationCompatibility" class="xref page">configuration compatibility</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The Log4j runtime is composed of <a href="plugins.html" class="xref page">plugins</a>, which are like beans in the Spring Framework and Java EE.
+Appenders, layouts, filters, configuration loaders, and similar components are all accessed as plugins.</p>
+</div>
+<div class="paragraph">
+<p>All configuration files are represented internally as a tree of <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Node.html"><code>Node</code></a>s, which is translated into a tree of Log4j plugins.
+The tree&#8217;s root creates a <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html"><code>Configuration</code></a> object.</p>
+</div>
+<div class="paragraph">
+<p>A node is a relatively simple structure representing a single Log4j plugin (see <a href="../plugin-reference.html" class="xref page">Plugin reference</a> for a complete list), such as an appender, layout, or logger configuration.</p>
+</div>
+<div class="paragraph">
+<p>Each node has:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>a set of simple string key-value pairs called <strong>attributes</strong>.
+Attributes are <strong>matched by name</strong> against the list of available configuration options of a Log4j plugin.</p>
+</li>
+<li>
+<p>The <strong>plugin type</strong> attribute specifies the kind of Log4j plugin we want to instantiate.</p>
+</li>
+<li>
+<p>A set of child nodes called <strong>nested elements</strong>.
+They are <strong>matched by type</strong> against the list of nested components a plugin accepts.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Log4j maps the concepts above to the specifics of the configuration format as follows:</p>
+</div>
+<div id="_tabs_4" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_4_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_4_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_4_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_4_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_4_xml--panel" class="tabpanel" aria-labelledby="_tabs_4_xml">
+<div class="paragraph">
+<p>Since XML was the original configuration format developed, the mapping from configuration nodes and XML elements is trivial:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Each configuration node is represented by an XML element.</p>
+</li>
+<li>
+<p>Each configuration attribute is represented by an XML attribute.</p>
+</li>
+<li>
+<p>The <strong>plugin type</strong> of a node is equal to the name of the XML tag.</p>
+</li>
+<li>
+<p>Each configuration nested element is represented by a nested XML element.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>There is an alternative XML configuration format called "XML strict format" that is activated
+by setting the <code>strict</code> attribute of the main <code>&lt;Configuration&gt;</code> element to <code>true</code>.
+It allows users to use any tag names as long as they provide the plugin type using a <code>type</code> property.</p>
+</div>
+<div class="paragraph">
+<p>The <em>XML strict format</em> was conceived as a simplified XML format that can be validated by an XML schema but has fallen into disuse: nowadays, the automatically generated schemas published at <a href="https://logging.apache.org/xml/ns/" class="bare">https://logging.apache.org/xml/ns/</a>
+offer a better alternative and allow users to use a more concise syntax.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div id="_tabs_4_json--panel" class="tabpanel" aria-labelledby="_tabs_4_json">
+<div class="paragraph">
+<p>In the JSON configuration format:</p>
+</div>
+<div id="configuration-with-json" class="exampleblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Each configuration node is represented by a JSON object,</p>
+</li>
+<li>
+<p>JSON properties of type string, number, or boolean are mapped to node attributes.</p>
+</li>
+<li>
+<p>JSON properties of type object or array represent nested configuration elements.</p>
+</li>
+<li>
+<p>The <strong>plugin type</strong> of a JSON object is given by:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>the value of the <code>type</code> key, if present,</p>
+</li>
+<li>
+<p>or the key associated with the JSON object otherwise.</p>
+</li>
+<li>
+<p>If the JSON object representing the node is part of an array, the key associated with the JSON array is used.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you need to specify multiple plugins of the same type, you can use JSON arrays.
+The snippet below represents two plugins of type <code>File</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "File": [
+    {
+      "name": "file1"
+    },
+    {
+      "name": "file2"
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="_tabs_4_yaml--panel" class="tabpanel" aria-labelledby="_tabs_4_yaml">
+<div class="paragraph">
+<p>In the YAML configuration format:</p>
+</div>
+<div id="configuration-with-yaml" class="exampleblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>A YAML mapping represents each configuration node,</p>
+</li>
+<li>
+<p>YAML properties of scalar type are mapped to node attributes.</p>
+</li>
+<li>
+<p>YAML properties of collection type are used to represent nested configuration elements.</p>
+</li>
+<li>
+<p>The <strong>plugin type</strong> of a YAML mapping is given by:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>the value of the <code>type</code> key, if present,</p>
+</li>
+<li>
+<p>or the key associated with the YAML mapping otherwise.</p>
+</li>
+<li>
+<p>If the YAML mapping representing the node is part of a YAML block sequence, the key associated with the YAML sequence is used.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you need to specify multiple plugins of the same type, you can use YAML block sequences.
+The snippet below represents two plugins of type <code>File</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">File:
+  - name: file1
+  - name: file2</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="_tabs_4_properties--panel" class="tabpanel" aria-labelledby="_tabs_4_properties">
+<div class="paragraph">
+<p>In the Java properties configuration format:</p>
+</div>
+<div id="configuration-with-properties" class="exampleblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Properties that share a common prefix (e.g., <code>appender.foo</code>) are mapped to a subtree of the configuration node tree.</p>
+</li>
+<li>
+<p>Configuration attributes are specified by appending the property&#8217;s name (e.g., <code>name</code>) to the prefix of the node, separated by a dot (e.g., <code>appender.foo.name</code>).</p>
+</li>
+<li>
+<p>The <strong>plugin type</strong> must be specified as an attribute named <code>type</code>.</p>
+</li>
+<li>
+<p>Nested elements are created by:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Choosing an arbitrary id for the nested component (e.g., <code>&lt;0&gt;</code>)</p>
+</li>
+<li>
+<p>Appending the id to the prefix of the parent component (e.g., <code>appender.foo.&lt;0&gt;</code>)</p>
+</li>
+<li>
+<p>Specifying the type of the nested plugin by assigning a <code>type</code> attribute (e.g., <code>appender.foo.&lt;0&gt;.type</code>)</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Nested components use the assigned ID for sorting purposes only.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>See also <a href="#format-specific-notes">Format specific notes</a> for exceptions to the rules above.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="main-configuration-elements"><a class="anchor" href="#main-configuration-elements"></a>Main configuration elements</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Log4j Core&#8217;s logging pipeline is quite complex (see <a href="architecture.html" class="xref page">Architecture</a>), but most users only require these elements:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Loggers</dt>
+<dd>
+<p><a href="api.html#loggers" class="xref page">Loggers</a> are the entry point of the logging pipeline, which is directly used in the code.
+Their configuration must specify which level of messages they log and to which appenders they send the messages.
+We will cover them while <a href="#configuring-loggers">configuring loggers</a>.</p>
+</dd>
+</dl>
+</div>
+<div id="configuring-appenders" class="dlist">
+<dl>
+<dt class="hdlist1"><a id="Appenders"></a> Appenders</dt>
+<dd>
+<p><a href="appenders.html" class="xref page">Appenders</a> are the exit point of the logging pipeline.
+They decide which resource (console, file, database, or similar) the log event is sent to.
+In the examples of this chapter, we will only use the <a href="appenders.html#ConsoleAppender" class="xref page">console appender</a> and the <a href="appenders/file.html" class="xref page">file appender</a>.</p>
+</dd>
+<dt class="hdlist1">Layouts</dt>
+<dd>
+<p><a href="layouts.html" class="xref page">Layouts</a> tell appenders how to format the log event: text, JSON, XML, or similar.
+In the examples of this chapter, we will only use <a href="pattern-layout.html" class="xref page">Pattern Layout</a> and <a href="json-template-layout.html" class="xref page">JSON Template Layout</a>.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>A moderately complex configuration might look like this:</p>
+</div>
+<div id="_tabs_5" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_5_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_5_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_5_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_5_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_5_xml--panel" class="tabpanel" aria-labelledby="_tabs_5_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/main-elements.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Configuration xmlns="https://logging.apache.org/xml/ns"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="
+                   https://logging.apache.org/xml/ns
+                   https://logging.apache.org/xml/ns/log4j-config-2.xsd"&gt;
+  &lt;Appenders&gt;
+    &lt;Console name="CONSOLE"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+      &lt;PatternLayout pattern="%p - %m%n"/&gt;
+    &lt;/Console&gt;
+    &lt;File name="MAIN" fileName="logs/main.log"&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+      &lt;JsonTemplateLayout/&gt;
+    &lt;/File&gt;
+    &lt;File name="DEBUG_LOG" fileName="logs/debug.log"&gt; <i class="conum" data-value="3"></i><b>(3)</b>
+      &lt;PatternLayout pattern="%d [%t] %p %c - %m%n"/&gt;
+    &lt;/File&gt;
+  &lt;/Appenders&gt;
+  &lt;Loggers&gt;
+    &lt;Root level="INFO"&gt; <i class="conum" data-value="4"></i><b>(4)</b>
+      &lt;AppenderRef ref="CONSOLE" level="WARN"/&gt;
+      &lt;AppenderRef ref="MAIN"/&gt;
+    &lt;/Root&gt;
+    &lt;Logger name="org.example" level="DEBUG"&gt; <i class="conum" data-value="5"></i><b>(5)</b>
+      &lt;AppenderRef ref="DEBUG_LOG"/&gt;
+    &lt;/Logger&gt;
+  &lt;/Loggers&gt;
+&lt;/Configuration&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_5_json--panel" class="tabpanel" aria-labelledby="_tabs_5_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/main-elements.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "Configuration": {
+    "Appenders": {
+      "Console": { <i class="conum" data-value="1"></i><b>(1)</b>
+        "name": "CONSOLE",
+        "PatternLayout": {
+          "pattern": "%p - %m%n"
+        }
+      },
+      "File": [
+        { <i class="conum" data-value="2"></i><b>(2)</b>
+          "name": "MAIN",
+          "fileName": "logs/main.log",
+          "JsonTemplateLayout": {}
+        },
+        { <i class="conum" data-value="3"></i><b>(3)</b>
+          "name": "DEBUG_LOG",
+          "fileName": "logs/debug.log",
+          "PatternLayout": {
+            "pattern": "%d [%t] %p %c - %m%n"
+          }
+        }
+      ]
+    },
+    "Loggers": {
+      "Root": { <i class="conum" data-value="4"></i><b>(4)</b>
+        "level": "INFO",
+        "AppenderRef": [
+          {
+            "ref": "CONSOLE",
+            "level": "WARN"
+          },
+          {
+            "ref": "MAIN"
+          }
+        ]
+      },
+      "Logger": { <i class="conum" data-value="5"></i><b>(5)</b>
+        "name": "org.example",
+        "level": "DEBUG",
+        "AppenderRef": {
+          "ref": "DEBUG_LOG"
+        }
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_5_yaml--panel" class="tabpanel" aria-labelledby="_tabs_5_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/main-elements.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Configuration:
+  Appenders:
+    Console: <i class="conum" data-value="1"></i><b>(1)</b>
+      name: "CONSOLE"
+      PatternLayout:
+        pattern: "%p - %m%n"
+    File:
+      - name: "MAIN" <i class="conum" data-value="2"></i><b>(2)</b>
+        fileName: "logs/main.log"
+        JsonTemplateLayout: {}
+      - name: "DEBUG_LOG" <i class="conum" data-value="3"></i><b>(3)</b>
+        fileName: "logs/debug.log"
+        PatternLayout:
+          pattern: "%d [%t] %p %c - %m%n"
+  Loggers:
+    Root: <i class="conum" data-value="4"></i><b>(4)</b>
+      level: "INFO"
+      AppenderRef:
+        - ref: "CONSOLE"
+          level: "WARN"
+        - ref: "MAIN"
+      Logger: <i class="conum" data-value="5"></i><b>(5)</b>
+        name: "org.example"
+        level: "DEBUG"
+        AppenderRef:
+          ref: "DEBUG_LOG"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_5_properties--panel" class="tabpanel" aria-labelledby="_tabs_5_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/main-elements.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = Console <i class="conum" data-value="1"></i><b>(1)</b>
+appender.0.name = CONSOLE
+appender.0.layout.type = PatternLayout
+appender.0.layout.pattern = %p - %m%n
+
+appender.1.type = File <i class="conum" data-value="2"></i><b>(2)</b>
+appender.1.name = MAIN
+appender.1.fileName = logs/main.log
+appender.1.layout.type = JsonTemplateLayout
+
+appender.2.type = File <i class="conum" data-value="3"></i><b>(3)</b>
+appender.2.name = DEBUG_LOG
+appender.2.fileName = logs/debug.log
+appender.2.layout.type = PatternLayout
+appender.2.layout.pattern = %d [%t] %p %c - %m%n
+
+rootLogger.level = INFO <i class="conum" data-value="4"></i><b>(4)</b>
+rootLogger.appenderRef.0.ref = CONSOLE
+rootLogger.appenderRef.0.level = WARN
+rootLogger.appenderRef.1.ref = MAIN
+
+logger.0.name = org.example <i class="conum" data-value="5"></i><b>(5)</b>
+logger.0.level = DEBUG
+logger.0.appenderRef.0.ref = DEBUG_LOG</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Configures a console appender named <code>CONSOLE</code> with a pattern layout.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Configures a file appender named <code>MAIN</code> with a JSON template layout.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Configures a file appender named <code>DEBUG_LOG</code> with a pattern layout.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Configures the root logger at level <code>INFO</code> and connects it to the <code>CONSOLE</code> and <code>MAIN</code> appenders.
+The <code>CONSOLE</code> appender will only log messages at least as severe as <code>WARN</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Configures a logger named <code>"org.example"</code> at level <code>DEBUG</code> and connects it to the <code>DEBUG_LOG</code> appender.
+The logger is configured to forward messages to its parent (the root appender).</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Using the above configuration, the list of appenders that will be used for each log event depends only on the level of the event and the name of the logger, as in the table below:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 22.2222%;">
+<col style="width: 22.2222%;">
+<col style="width: 55.5556%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Logger name</th>
+<th class="tableblock halign-left valign-top">Log event level</th>
+<th class="tableblock halign-left valign-top">Appenders</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.example.foo</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WARN</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CONSOLE</code>, <code>MAIN</code>, <code>DEBUG_LOG</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.example.foo</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>MAIN</code>, <code>DEBUG_LOG</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.example.foo</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TRACE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>none</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>com.example</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WARN</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CONSOLE</code>, <code>MAIN</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>com.example</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFO</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>MAIN</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>com.example</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>none</em></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="additional-configuration-elements"><a class="anchor" href="#additional-configuration-elements"></a>Additional configuration elements</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A Log4j Core configuration file can also contain these configuration elements:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">CustomLevels</dt>
+<dd>
+<div class="paragraph">
+<p>Log4j allows the configuration of custom log-level names.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="customloglevels.html" class="xref page">Custom log level configuration</a> for details.</p>
+</div>
+</dd>
+</dl>
+</div>
+<div id="global-filters" class="dlist">
+<dl>
+<dt class="hdlist1">Filters</dt>
+<dd>
+<div class="paragraph">
+<p>Users can add Components to loggers, appender references, appenders, or the global configuration object to provide additional filtering of log events.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="filters.html" class="xref page">Filter configuration</a> for details.</p>
+</div>
+</dd>
+</dl>
+</div>
+<div id="global-properties" class="dlist">
+<dl>
+<dt class="hdlist1">Properties</dt>
+<dd>
+<div class="paragraph">
+<p>Represent a set of reusable configuration values for property substitution.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="#property-substitution">Property substitution</a> for details.</p>
+</div>
+</dd>
+<dt class="hdlist1">Scripts</dt>
+<dd>
+<div class="paragraph">
+<p>Scripts are a container for JSR 223 scripts that users can use in other Log4j components.</p>
+</div>
+<div class="paragraph">
+<p>For details, see <a href="scripts.html" class="xref page">Scripts configuration</a>.</p>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="global-configuration-attributes"><a class="anchor" href="#global-configuration-attributes"></a>Global configuration attributes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The main <code>Configuration</code> element has a set of attributes that can be used to tune how the configuration file is used.
+The principal attributes are listed below.
+See <a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Configuration" class="xref page">Plugin reference</a> for a complete list.</p>
+</div>
+<div class="sect2">
+<h3 id="configuration-attribute-monitorInterval"><a class="anchor" href="#configuration-attribute-monitorInterval"></a><a id="AutomaticReconfiguration"></a> <code>monitorInterval</code></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Determines the polling interval used by Log4j to check for changes to the configuration file.
+If a change in the configuration file is detected, Log4j automatically reconfigures the logger context.
+If set to <code>0</code>, polling is disabled.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Log4j Core is designed with reliability in mind, which implies that the reconfiguration process can not lose any log event.
+In order to achieve this Log4j does <strong>not</strong> stop any appender until the new <code>Configuration</code> is active and <strong>reuses</strong> resources that are present in both the old and the new <code>Configuration</code>.</p>
+</div>
+<div class="paragraph">
+<p>In order to guarantee reliability, Log4j <em>may</em> ignore the changes to some appender options, if they would cause log event loss.
+For example, changing the <code>append</code> option of a file appender, without changing the <code>fileName</code> option is not possible, since
+it would require closing the underlying file and reopening it with different options.
+Between the two operations log events might be lost.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configuration-attribute-status"><a class="anchor" href="#configuration-attribute-status"></a><code>status</code></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html"><code>LEVEL</code></a></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Status</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value (since 2.24.0)</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="status-logger.html#log4j2.statusLoggerLevel" class="xref page"><code>log4j2.statusLoggerLevel</code></a></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value (before 2.24.0)</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">value of <code>log4j2.defaultStatusLevel</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Overrides the logging level of <a href="status-logger.html" class="xref page">Status Logger</a>.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Since version <code>2.24.0</code>, this attribute is deprecated and should be replaced with the <a href="status-logger.html#log4j2.statusLoggerLevel" class="xref page">log4j2.statusLoggerLevel</a> configuration property instead.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configuring-loggers"><a class="anchor" href="#configuring-loggers"></a><a id="Loggers"></a> Loggers</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Log4j 2 contains multiple types of logger configurations that can be added to the <code>Loggers</code> element of the configuration:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>Root</code></dt>
+<dd>
+<p>is the logger that receives all events that do not have a more specific logger defined.</p>
+<div class="paragraph">
+<p>See also <a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig-RootLogger" class="xref page">Plugin reference</a>.</p>
+</div>
+</dd>
+<dt class="hdlist1"><code>AsyncRoot</code></dt>
+<dd>
+<p>is an alternative implementation of the root logger used in the <a href="async.html#MixedSync-Async" class="xref page">mixed synchronous and asynchronous mode</a>.</p>
+<div class="paragraph">
+<p>See also <a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-AsyncLoggerConfig-RootLogger" class="xref page">Plugin reference</a>.</p>
+</div>
+</dd>
+<dt class="hdlist1"><code>Logger</code></dt>
+<dd>
+<p>the most common logger kind, which collects log events from itself and all the children loggers, which do not have an explicit configuration (see <a href="architecture.html#logger-hierarchy" class="xref page">logger hierarchy</a>).</p>
+<div class="paragraph">
+<p>See also <a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig" class="xref page">Plugin Reference</a>.</p>
+</div>
+</dd>
+<dt class="hdlist1"><code>AsyncLogger</code></dt>
+<dd>
+<p>the equivalent of <code>Logger</code>, used in the <a href="async.html#MixedSync-Async" class="xref page">mixed synchronous and asynchronous mode</a>.</p>
+<div class="paragraph">
+<p>See also <a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-AsyncLoggerConfig" class="xref page">Plugin Reference</a>.</p>
+</div>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>There <strong>must</strong> be at least a <code>Root</code> or <code>AsyncRoot</code> element in every configuration file.
+Other logger configurations are optional.</p>
+</div>
+<div class="paragraph">
+<p>Every
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html"><code>Logger</code></a>
+in your application is assigned to one of these logger configurations (see
+<a href="architecture.html#LoggerConfig" class="xref page">architecture</a>), which determines the events that will be logged and those that won&#8217;t.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s start with an example of logger configuration:</p>
+</div>
+<div id="_tabs_6" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_6_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_6_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_6_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_6_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_6_xml--panel" class="tabpanel" aria-labelledby="_tabs_6_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/loggers.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Loggers&gt;
+  &lt;Root level="INFO"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+    &lt;AppenderRef ref="APPENDER1"/&gt;
+  &lt;/Root&gt;
+  &lt;Logger name="org.example.no_additivity" additivity="false"&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+    &lt;AppenderRef ref="APPENDER2"/&gt;
+  &lt;/Logger&gt;
+  &lt;Logger name="org.example.no_location" includeLocation="false"&gt; <i class="conum" data-value="3"></i><b>(3)</b>
+    &lt;AppenderRef ref="APPENDER3"/&gt;
+  &lt;/Logger&gt;
+  &lt;Logger name="org.example.level" level="DEBUG"&gt; <i class="conum" data-value="4"></i><b>(4)</b>
+    &lt;AppenderRef ref="APPENDER4"/&gt;
+  &lt;/Logger&gt;
+&lt;/Loggers&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_6_json--panel" class="tabpanel" aria-labelledby="_tabs_6_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/loggers.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Loggers": {
+  "Root": { <i class="conum" data-value="1"></i><b>(1)</b>
+    "level": "INFO",
+    "AppenderRef": {
+      "ref": "APPENDER1"
+    }
+  },
+  "Logger": [
+    { <i class="conum" data-value="2"></i><b>(2)</b>
+      "name": "org.example.no_additivity",
+      "additivity": false,
+      "AppenderRef": {
+        "ref": "APPENDER2"
+      }
+    },
+    { <i class="conum" data-value="3"></i><b>(3)</b>
+      "name": "org.example.no_location",
+      "includeLocation": false,
+      "AppenderRef": {
+        "ref": "APPENDER3"
+      }
+    },
+    { <i class="conum" data-value="4"></i><b>(4)</b>
+      "name": "org.example.level",
+      "level": "DEBUG",
+      "AppenderRef": {
+        "ref": "APPENDER4"
+      }
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_6_yaml--panel" class="tabpanel" aria-labelledby="_tabs_6_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/loggers.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Loggers:
+  Root: <i class="conum" data-value="1"></i><b>(1)</b>
+    level: "INFO"
+    AppenderRef:
+      ref: "APPENDER1"
+  Logger:
+    - name: "org.example.no_additivity" <i class="conum" data-value="2"></i><b>(2)</b>
+      additivity: false
+      AppenderRef:
+        ref: "APPENDER2"
+    - name: "org.example.no_location" <i class="conum" data-value="3"></i><b>(3)</b>
+      includeLocation: false
+      AppenderRef:
+        ref: "APPENDER3"
+    - name: "org.example.level" <i class="conum" data-value="4"></i><b>(4)</b>
+      level: "DEBUG"
+      AppenderRef:
+        ref: "APPENDER4"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_6_properties--panel" class="tabpanel" aria-labelledby="_tabs_6_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/loggers.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">rootLogger.level = INFO <i class="conum" data-value="1"></i><b>(1)</b>
+rootLogger.appenderRef.0.ref = APPENDER1
+
+logger.0.name = org.example.no_additivity <i class="conum" data-value="2"></i><b>(2)</b>
+logger.0.additivity = false
+logger.0.appenderRef.0.ref = APPENDER2
+
+logger.1.name = org.example.no_location <i class="conum" data-value="3"></i><b>(3)</b>
+logger.1.includeLocation = false
+logger.1.appenderRef.0.ref = APPENDER3
+
+logger.2.name = org.example.level <i class="conum" data-value="4"></i><b>(4)</b>
+logger.2.level = DEBUG
+logger.2.appenderRef.0.ref = APPENDER4</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>In the example above, we have four logger configurations.
+They differ from each other regarding the level of log messages that they allow, whether
+<a href="layouts.html#LocationInformation" class="xref page">location information</a>
+will be printed, and which appenders will be used.
+The table below summarizes the effects of each logger configuration:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Logger configurations</caption>
+<colgroup>
+<col style="width: 7.1428%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 35.7144%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#logger-attributes-name">Logger name</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#logger-attributes-level">Level</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#logger-attributes-additivity">Additivity</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#logger-attributes-includeLocation">Includes location</a></p></td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Appenders used</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>empty</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFO</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>default</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>APPENDER1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.example.no_additivity</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFO</code></p>
+<p class="tableblock">(inherited)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>default</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>APPENDER2</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.example.no_location</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFO</code></p>
+<p class="tableblock">(inherited)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>APPENDER1</code> and <code>APPENDER3</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.example.level</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>default</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>APPENDER1</code> and <code>APPENDER4</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>In the following part of this section, we explain in detail all the available options for logger configurations:</p>
+</div>
+<div class="sect2">
+<h3 id="logger-attributes-name"><a class="anchor" href="#logger-attributes-name"></a><code>name</code></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Applies to</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Logger</code> and <code>AsyncLogger</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Specifies the name of the logger configuration.</p>
+</div>
+<div class="paragraph">
+<p>Since loggers are usually named using fully qualified class names, this value usually contains the fully qualified name of a class or a package.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="logger-attributes-additivity"><a class="anchor" href="#logger-attributes-additivity"></a><a id="Additivity"></a> <code>additivity</code></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Applies to</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Logger</code> and <code>AsyncLogger</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>If <code>true</code> (default), all the messages this logger receives will also be transmitted to its
+<a href="architecture.html#logger-hierarchy" class="xref page">parent logger</a>).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="logger-attributes-level"><a class="anchor" href="#logger-attributes-level"></a><code>level</code></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html"><code>Level</code></a></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p><a href="systemproperties.html#log4j2.level" class="xref page"><code>log4j2.level</code></a>,
+for <code>Root</code> and <code>AsyncRoot</code>,</p>
+</li>
+<li>
+<p>inherited from the
+<a href="architecture.html#logger-hierarchy" class="xref page">parent logger</a>,
+for <code>Logger</code> and <code>AsyncLogger</code>.</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>It specifies the level threshold that a log event must have to be logged.
+Log events that are less severe than this setting will be filtered out.</p>
+</div>
+<div class="paragraph">
+<p>See also <a href="filters.html#filters" class="xref page">Filters</a> if you require additional filtering.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="logger-attributes-includeLocation"><a class="anchor" href="#logger-attributes-includeLocation"></a><code>includeLocation</code></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p><code>false</code>, if an asynchronous <code>ContextSelector</code> is used.</p>
+</li>
+<li>
+<p>Otherwise,</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>true</code> for <code>Root</code> and <code>Logger</code>,</p>
+</li>
+<li>
+<p><code>false</code> for <code>AsyncRoot</code> and <code>AsyncLogger</code>.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>See
+<a href="systemproperties.html#log4j2.contextSelector" class="xref page"><code>log4j2.contextSelector</code></a>
+for more details.</p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Specifies whether Log4j is allowed to compute location information.
+If set to <code>false</code>, Log4j will not attempt to infer the location of the logging call unless said location was provided explicitly using one of the available
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/LogBuilder.html"><code>LogBuilder#withLocation()</code></a>
+methods.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="layouts.html#LocationInformation" class="xref page">Location information</a> for more details.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="logger-elements-appenderrefs"><a class="anchor" href="#logger-elements-appenderrefs"></a>Appender references</h3>
+<div class="paragraph">
+<p>Loggers use appender references to list the appenders to deliver log events.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="#configuring-appenderrefs">Appender references</a> below for more details.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="logger-elements-properties"><a class="anchor" href="#logger-elements-properties"></a>Additional context properties</h3>
+<div class="paragraph">
+<p>Loggers can emit additional context data that will be integrated with other context data sources such as <a href="thread-context.html" class="xref page">ThreadContext</a>.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The <code>value</code> of each property is subject to <a href="#property-substitution">property substitution</a> twice:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>when the configuration is loaded, it is evaluated in the <a href="lookups.html#global-context" class="xref page">global context</a>.</p>
+</li>
+<li>
+<p>each time a log event is generated, it is evaluated in the <a href="lookups.html#event-context" class="xref page">context of the event</a>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Therefore, if you wish to insert a value that changes in time, you must double the <code>$</code> sign, as shown in the example below.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="_tabs_7" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_7_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_7_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_7_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_7_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_7_xml--panel" class="tabpanel" aria-labelledby="_tabs_7_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/logger-properties.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Root&gt;
+  &lt;Property name="client.address" value="$${web:request.remoteAddress}"/&gt;
+&lt;/Root&gt;
+&lt;Logger name="org.hibernate"&gt;
+  &lt;Property name="subsystem" value="Database"/&gt;
+&lt;/Logger&gt;
+&lt;Logger name="io.netty"&gt;
+  &lt;Property name="subsystem" value="Networking"/&gt;
+&lt;/Logger&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_7_json--panel" class="tabpanel" aria-labelledby="_tabs_7_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/logger-properties.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Root": {
+  "Property": {
+    "name": "client.address",
+    "value": "$${web:request.remoteAddress}"
+  }
+},
+"Logger": [
+  {
+    "name": "org.hibernate",
+    "Property": {
+      "subsystem": "Database"
+    }
+  },
+  {
+    "name": "io.netty",
+    "Property": {
+      "subsystem": "Networking"
+    }
+  }
+]</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_7_yaml--panel" class="tabpanel" aria-labelledby="_tabs_7_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/logger-properties.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Root:
+  Property:
+    name: "client.address"
+    value: "$${web:request.remoteAddress}"
+Logger:
+  - name: "org.hibernate"
+    Property:
+      name: "subsystem"
+      value: "Database"
+  - name: "io.netty"
+    Property:
+      name: "subsystem"
+      value: "Networking"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_7_properties--panel" class="tabpanel" aria-labelledby="_tabs_7_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/logger-properties.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">rootLogger.property.type = Property
+rootLogger.property.name = client.address
+rootLogger.property.value = $${web:request.remoteAddress}
+
+logger.0.name = org.hibernate
+logger.0.property.type = Property
+logger.0.property.name = subsystem
+logger.0.property.value = Database
+
+logger.1.name = io.netty
+logger.1.property.type = Property
+logger.1.property.name = subsystem
+logger.1.property.value = Networking</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="logger-elements-filters"><a class="anchor" href="#logger-elements-filters"></a>Filters</h3>
+<div class="paragraph">
+<p>See <a href="filters.html#filters" class="xref page">Filters</a> for additional filtering capabilities that can be applied to a logger configuration.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configuring-appenderrefs"><a class="anchor" href="#configuring-appenderrefs"></a>Appender references</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Many Log4j components, such as loggers, use appender references to designate which appenders will be used to deliver their events.</p>
+</div>
+<div class="paragraph">
+<p>Unlike in Log4j 1, where appender references were simple pointers, in Log4j 2, they have additional filtering capabilities.</p>
+</div>
+<div class="paragraph">
+<p>Appender references can have the following configuration attributes and elements:</p>
+</div>
+<div class="sect2">
+<h3 id="appenderref-attributes-name"><a class="anchor" href="#appenderref-attributes-name"></a><code>ref</code></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Specifies the name of the appender to use.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="appenderref-attributes-level"><a class="anchor" href="#appenderref-attributes-level"></a><code>level</code></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html"><code>Level</code></a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>It specifies the level threshold that a log event must have to be logged.
+Log events that are less severe than this setting will be filtered out.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="appenderrefs-elements-filters"><a class="anchor" href="#appenderrefs-elements-filters"></a>Filters</h3>
+<div class="paragraph">
+<p>See <a href="filters.html#filters" class="xref page">Filters</a> for additional filtering capabilities that can be applied to a logger configuration.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="property-substitution"><a class="anchor" href="#property-substitution"></a><a id="PropertySubstitution"></a>Property substitution</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Log4j provides a simple and extensible mechanism to reuse values in the configuration file using <code>${name}</code> expressions, such as those used in Bash, Ant or Maven.</p>
+</div>
+<div class="paragraph">
+<p>Reusable configuration values can be added directly to a configuration file by using a <a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-PropertiesPlugin" class="xref page">Properties</a> component.</p>
+</div>
+<div id="_tabs_8" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_8_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_8_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_8_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_8_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_8_xml--panel" class="tabpanel" aria-labelledby="_tabs_8_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/properties.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Configuration xmlns="https://logging.apache.org/xml/ns"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="
+                   https://logging.apache.org/xml/ns
+                   https://logging.apache.org/xml/ns/log4j-config-2.xsd"&gt;
+  &lt;Properties&gt;
+    &lt;Property name="log.dir" value="/var/log"/&gt;
+  &lt;/Properties&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_8_json--panel" class="tabpanel" aria-labelledby="_tabs_8_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/properties.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "Configuration": {
+    "Properties": {
+      "Property": [
+        {
+          "name": "log.dir",
+          "value": "/var/log"
+        },
+        {
+          "name": "log.file",
+          "value": "${log.dir}/app.log"
+        }
+      ]
+    }</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_8_yaml--panel" class="tabpanel" aria-labelledby="_tabs_8_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/properties.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Configuration:
+  Properties:
+    Property:
+      - name: "log.dir"
+        value: "/var/log"
+      - name: "log.file"
+        value: "${log.dir}/app.log"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_8_properties--panel" class="tabpanel" aria-labelledby="_tabs_8_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/properties.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">property.log.dir = /var/log
+property.log.file = ${log.dir}/app.log</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>An extensible lookup mechanism can also provide reusable configuration values.
+See <a href="lookups.html" class="xref page">Lookup</a>s for more information.</p>
+</div>
+<div class="paragraph">
+<p>Configuration values defined this way can be used in <strong>any</strong> configuration attribute by using the following expansion rules:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>${name}</code></dt>
+<dd>
+<div class="paragraph">
+<p>If the <code>Properties</code> element of the configuration file has a property named <code>name</code>, its value is substituted.
+Otherwise, the placeholder is not expanded.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If <code>name</code> contains a <code>:</code> character, it is expanded as in the rule below.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</dd>
+<dt class="hdlist1"><code>${lookup:name}</code></dt>
+<dd>
+<p>If both these conditions hold:</p>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p><code>lookup</code> is a prefix assigned to a <a href="lookups.html" class="xref page">Lookup</a>,</p>
+</li>
+<li>
+<p>the lookup has a value assigned to <code>name</code>,</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>the value for the lookup is substituted.
+Otherwise, the expansion of <code>${name}</code> is substituted.</p>
+</div>
+<div class="paragraph">
+<p>If <code>name</code> starts with a hyphen <code>-</code> (e.g. <code>-variable</code>), it must be escaped with a backslash <code>\</code> (e.g. <code>\-variable</code>).</p>
+</div>
+<div class="paragraph">
+<p>The most common lookup prefixes are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>sys</code> for Java system properties (see <a href="lookups.html#SystemPropertiesLookup" class="xref page">System Properties lookup</a>),</p>
+</li>
+<li>
+<p><code>env</code> for environment variables (see <a href="lookups.html#EnvironmentLookup" class="xref page">Environment lookup</a>).</p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>The above expansions have a version with an additional <code>default</code> value that is <strong>expanded</strong> if the lookup fails:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>${name:-default}</code></dt>
+<dd>
+<div class="paragraph">
+<p>If the <code>Properties</code> element of the configuration file has a property named <code>name,</code> its value is substituted.
+Otherwise, the <strong>expansion</strong> of <code>default</code> is substituted.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If <code>name</code> contains a <code>:</code> character, it is expanded as in the rule below.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</dd>
+<dt class="hdlist1"><code>${lookup:name:-default}</code></dt>
+<dd>
+<div class="paragraph">
+<p>If both these conditions hold:</p>
+</div>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p><code>lookup</code> is a prefix assigned to a <a href="lookups.html" class="xref page">Lookup</a>,</p>
+</li>
+<li>
+<p>the lookup has a value assigned to <code>name,</code></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>the value for the lookup is substituted.
+Otherwise, the expansion of <code>${name:-default}</code> is substituted.</p>
+</div>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>To prevent the expansion of one of the expressions above, the initial <code>$</code> must be doubled as <code>$$</code>.</p>
+</div>
+<div class="paragraph">
+<p>The same rule applies to the <code>name</code> parameter: if it contains a <code>${</code> sequence, it must be escaped as <code>$${</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="exampleblock">
+<div class="title">Example 1. Property substitution example</div>
+<div class="content">
+<div class="paragraph">
+<p>If your configuration file contains the following definitions:</p>
+</div>
+<div id="_tabs_9" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_9_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_9_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_9_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_9_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_9_xml--panel" class="tabpanel" aria-labelledby="_tabs_9_xml">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Properties&gt;
+  &lt;Property name="FOO" value="foo"/&gt;
+  &lt;Property name="BAR" value="bar"/&gt;
+&lt;/Properties&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_9_json--panel" class="tabpanel" aria-labelledby="_tabs_9_json">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "Properties": {
+    "Property": [
+      {
+        "name": "FOO",
+        "value": "foo"
+      },
+      {
+        "name": "BAR",
+        "value": "bar"
+      }
+    ]
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_9_yaml--panel" class="tabpanel" aria-labelledby="_tabs_9_yaml">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Properties:
+  Property:
+    - name: "FOO"
+      value: "foo"
+    - name: "BAR"
+      value: "bar"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_9_properties--panel" class="tabpanel" aria-labelledby="_tabs_9_properties">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">property.FOO = foo
+property.BAR = bar</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>and the OS environment variable <code>FOO</code> has a value of <code>environment</code>, Log4j will evaluate the expression as follows</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Expression</th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>${FOO}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>foo</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>${BAZ}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>${BAZ}</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>${BAR:-${FOO}}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bar</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>${BAZ:-${FOO}}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>foo</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>${env:FOO}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>environment</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>${env:BAR}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bar</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>${env:BAZ}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>${BAZ}</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>${env:BAR:-${FOO}}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bar</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>${env:BAZ:-${FOO}}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>foo</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>For security reasons, if the <strong>expansion</strong> of a <code>${&#8230;&#8203;}</code> expression contains other expressions, these will <strong>not</strong> be expanded.</p>
+</div>
+<div class="paragraph">
+<p>Properties defined in the <code>Properties</code> container, however, can depend on each other.
+If your configuration contains, for example:</p>
+</div>
+<div id="_tabs_10" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_10_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_10_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_10_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_10_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_10_xml--panel" class="tabpanel" aria-labelledby="_tabs_10_xml">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Properties&gt;
+  &lt;Property name="logging.file" value="${logging.dir}/app.log"/&gt;
+  &lt;Property name="logging.dir" value="${env:APP_BASE}/logs"/&gt;
+  &lt;Property name="APP_BASE" value="."/&gt;
+&lt;/Properties&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_10_json--panel" class="tabpanel" aria-labelledby="_tabs_10_json">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "Properties": {
+    "Property": [
+      {
+        "name": "logging.file",
+        "value": "${logging.path}/app.log"
+      },
+      {
+        "name": "logging.dir",
+        "value": "${env:APP_BASE}/logs"
+      },
+      {
+        "name": "APP_BASE",
+        "value": "."
+      }
+    ]
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_10_yaml--panel" class="tabpanel" aria-labelledby="_tabs_10_yaml">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Properties:
+  Property:
+    - name: "logging.file"
+      value: "${logging.dir}/app.log"
+    - name: "logging.dir"
+      value: "${env:APP_BASE}/logs"
+    - name: "APP_BASE"
+      value: "."</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_10_properties--panel" class="tabpanel" aria-labelledby="_tabs_10_properties">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">property.logging.file = ${logging.dir}/app.log
+property.logging.dir = ${env:APP_BASE}/logs
+property.APP_BASE = .</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>the <code>logging.dir</code> property will be expanded <strong>before</strong> the <code>logging.file</code> property, and the expanded value will be substituted in <code>${logging.dir}/app.log</code>.
+Therefore, the value of the <code>logging.file</code> property will be:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>./logs/app.log</code> if the environment variable <code>APP_BASE</code> is not defined,</p>
+</li>
+<li>
+<p><code>/var/lib/app/logs/app.log</code> if the environment variable <code>APP_BASE</code> has a value of <code>/var/lib/app</code>.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="lazy-property-substitution"><a class="anchor" href="#lazy-property-substitution"></a>Runtime property substitution</h3>
+<div class="paragraph">
+<p>For most attributes, property substitution is performed only once at <strong>configuration time</strong>,
+but there are exceptions to this rule: some attributes are <strong>also</strong> evaluated when a component-specific event occurs.</p>
+</div>
+<div class="paragraph">
+<p>In this case:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If you want property substitution to happen at configuration time, use one dollar sign, e.g., <code>${date:HH:mm:ss}</code>.</p>
+</li>
+<li>
+<p>If you want property substitution to happen at runtime, you use two dollar signs, e.g., <code>$${date:HH:mm:ss}</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The list of attributes that support runtime property substitution is:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>value</code> attribute of <a href="#logger-elements-properties">nested <code>Property</code> elements</a> of a logger configuration.</p>
+</li>
+<li>
+<p>The
+<a href="pattern-layout.html#plugin-attr-pattern" class="xref page"><code>pattern</code></a> attribute of the <a href="pattern-layout.html" class="xref page">Pattern Layout</a>.
+This attribute evaluates lookups in the <a href="lookups.html#event-context" class="xref page">context of the current log event</a>.</p>
+</li>
+<li>
+<p>Event template attributes of <a href="json-template-layout.html" class="xref page">JSON Template Layout</a>.
+See <a href="json-template-layout.html#property-substitution-in-template" class="xref page">property substitution in JSON Template Layout</a>
+for more details.</p>
+</li>
+<li>
+<p>The appender attributes listed in <a href="appenders.html#runtime-evaluation" class="xref page">runtime property substitution in appenders</a>.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Certain lookups might behave differently when they are expanded at runtime.
+See <a href="lookups.html#evaluation-contexts" class="xref page">lookup evaluation contexts</a> for details.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The
+<a href="appenders/delegating.html#Routes" class="xref page"><code>Route</code></a> component of the
+<a href="appenders/delegating.html#RoutingAppender" class="xref page">Routing Appender</a>
+is a different case altogether.
+The attributes of its children are expanded at runtime, but are not expanded at configuration time.</p>
+</div>
+<div class="paragraph">
+<p>Inside the <code>Route</code> component you <strong>should not</strong> use escaped <code>$${...}</code> expressions, but only unescaped <code>${...}</code> expressions.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The complete spectrum of behaviors concerning runtime property substitution is given by the routing appender example below:</p>
+</div>
+<div id="_tabs_11" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_11_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_11_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_11_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_11_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_11_xml--panel" class="tabpanel" aria-labelledby="_tabs_11_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/routing.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Routing name="ROUTING"&gt;
+  &lt;Routes pattern="$${sd:type}"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+    &lt;Route&gt;
+      &lt;File name="ROUTING-${sd:type}"
+            fileName="logs/${sd:type}.log"&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+        &lt;JsonTemplateLayout&gt;
+          &lt;EventTemplateAdditionalField name="type"
+                                        value="${sd:type}"/&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+        &lt;/JsonTemplateLayout&gt;
+      &lt;/File&gt;
+    &lt;/Route&gt;
+  &lt;/Routes&gt;
+&lt;/Routing&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_11_json--panel" class="tabpanel" aria-labelledby="_tabs_11_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/routing.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Routing": {
+  "name": "ROUTING",
+  "Routes": {
+    "pattern": "$${sd:type}", <i class="conum" data-value="1"></i><b>(1)</b>
+    "Route": {
+      "File": {
+        "name": "ROUTING-${sd:type}", <i class="conum" data-value="2"></i><b>(2)</b>
+        "fileName": "logs/${sd:type}.log", <i class="conum" data-value="2"></i><b>(2)</b>
+        "JsonTemplateLayout": {
+          "EventTemplateAdditionalField": {
+            "name": "type",
+            "value": "${sd:type}" <i class="conum" data-value="2"></i><b>(2)</b>
+          }
+        }
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_11_yaml--panel" class="tabpanel" aria-labelledby="_tabs_11_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/routing.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Routing:
+  name: "ROUTING"
+  Routes:
+    pattern: "$${sd:type}" <i class="conum" data-value="1"></i><b>(1)</b>
+    Route:
+      File:
+        name: "ROUTING-${sd:type}" <i class="conum" data-value="2"></i><b>(2)</b>
+        fileName: "logs/${sd:type}.log" <i class="conum" data-value="2"></i><b>(2)</b>
+        JsonTemplateLayout:
+          EventTemplateAdditionalField:
+            name: "type"
+            value: "${sd:type}" <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_11_properties--panel" class="tabpanel" aria-labelledby="_tabs_11_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/routing.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = Routing
+appender.0.name = ROUTING
+
+appender.0.routes.type = Routes
+appender.0.routes.pattern = $${sd:type} <i class="conum" data-value="1"></i><b>(1)</b>
+
+appender.0.routes.route.type = Route
+
+appender.0.routes.route.file.type = File
+appender.0.routes.route.file.name = ROUTING-${sd:type} <i class="conum" data-value="2"></i><b>(2)</b>
+appender.0.routes.route.file.fileName = logs/${sd:type}.log <i class="conum" data-value="2"></i><b>(2)</b>
+appender.0.routes.route.file.layout.type = JsonTemplateLayout
+appender.0.routes.route.file.layout.field.type = EventTemplateAdditionalField
+appender.0.routes.route.file.layout.field.name = type
+appender.0.routes.route.file.layout.field.value = ${sd:type} <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>pattern</code> attribute is evaluated at configuration time, and also each time a log event is routed.
+Therefore, the dollar <code>$</code> sign needs to be escaped.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>All the attributes of children of the <code>Route</code> element have a <strong>deferred</strong> evaluation. Therefore, they need only one <code>$</code> sign.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="arbiters"><a class="anchor" href="#arbiters"></a><a id="Arbiters"></a> Arbiters</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>While property substitution allows using the same configuration file in multiple deployment environments, sometimes changing the values of configuration attributes is not enough.</p>
+</div>
+<div class="paragraph">
+<p>Arbiters are to configuration elements what property substitution is for configuration attributes: they allow to conditionally add a subtree of configuration elements to a configuration file.</p>
+</div>
+<div class="paragraph">
+<p>Arbiters may occur anywhere an element is allowed in the configuration and can be nested.
+So, an Arbiter could encapsulate something as simple as a single property declaration or a whole set of appenders, loggers, or other arbiters.
+The child elements of an arbiter must be valid elements for whatever element is the parent of the arbiter.</p>
+</div>
+<div class="paragraph">
+<p>For a complete list of available arbiters, see
+<a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-arbiters-Arbiter" class="xref page">plugin reference</a>.
+In the examples below, we&#8217;ll use the
+<a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-arbiters-DefaultArbiter" class="xref page">DefaultArbiter</a>,
+<a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-arbiters-SelectArbiter" class="xref page">Select</a>
+and
+<a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-arbiters-SystemPropertyArbiter" class="xref page">SystemPropertyArbiter</a>.</p>
+</div>
+<div class="paragraph">
+<p>For example, you might want to use a different layout in a production and development environment:</p>
+</div>
+<div id="_tabs_12" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_12_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_12_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_12_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_12_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_12_xml--panel" class="tabpanel" aria-labelledby="_tabs_12_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/arbiters.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Appenders&gt;
+  &lt;File name="MAIN" fileName="logs/app.log"&gt;
+    &lt;SystemPropertyArbiter propertyName="env" propertyValue="dev"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+      &lt;PatternLayout pattern="%d [%t] %p %c - %m%n"/&gt;
+    &lt;/SystemPropertyArbiter&gt;
+    &lt;SystemPropertyArbiter propertyName="env" propertyValue="prod"&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+      &lt;JsonTemplateLayout/&gt;
+    &lt;/SystemPropertyArbiter&gt;
+  &lt;/File&gt;
+&lt;/Appenders&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_12_json--panel" class="tabpanel" aria-labelledby="_tabs_12_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/arbiters.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Appenders": {
+  "File": {
+    "name": "MAIN",
+    "fileName": "logs/app.log",
+    "SystemPropertyArbiter": [
+      <i class="conum" data-value="1"></i><b>(1)</b>
+      {
+        "propertyName": "env",
+        "propertyValue": "dev",
+        "PatternLayout": {
+          "pattern": "%d [%t] %p %c - %m%n"
+        }
+      },
+      <i class="conum" data-value="2"></i><b>(2)</b>
+      {
+        "propertyName": "env",
+        "propertyValue": "prod",
+        "JsonTemplateLayout": {}
+      }
+    ]
+  }
+},</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_12_yaml--panel" class="tabpanel" aria-labelledby="_tabs_12_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/arbiters.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Appenders:
+  File:
+    name: "MAIN"
+    fileName: "logs/app.log"
+    SystemPropertyArbiter:
+      - propertyName: "env" <i class="conum" data-value="1"></i><b>(1)</b>
+        propertyValue: "dev"
+        PatternLayout:
+          pattern: "%d [%t] %p %c - %m%n"
+      - propertyName: "env" <i class="conum" data-value="2"></i><b>(2)</b>
+        propertyValue: "prod"
+        JsonTemplateLayout: {}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_12_properties--panel" class="tabpanel" aria-labelledby="_tabs_12_properties">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = File
+appender.0.name = MAIN
+appender.0.fileName = logs/app.log
+
+appender.0.arbiter[0].type = SystemPropertyArbiter <i class="conum" data-value="1"></i><b>(1)</b>
+appender.0.arbiter[0].propertyName = env
+appender.0.arbiter[0].propertyValue = dev
+appender.0.arbiter[0].layout.type = PatternLayout
+appender.0.arbiter[0].layout.pattern = %d [%t] %p %c - %m%n
+
+appender.0.arbiter[1].type = SystemPropertyArbiter <i class="conum" data-value="2"></i><b>(2)</b>
+appender.0.arbiter[1].propertyName = env
+appender.0.arbiter[1].propertyValue = prod
+appender.0.arbiter[1].layout.type = JsonTemplateLayout
+
+rootLogger.level = INFO
+rootLogger.appenderRef.0.ref = MAIN</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>If the Java system property <code>env</code> has a value of <code>dev</code>, a pattern layout will be used.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>If the Java system property <code>env</code> has a value of <code>prod</code>, a JSON template layout will be used.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The above example has a problem: if the Java system property <code>env</code> has a value different from <code>dev</code> or <code>prod</code>, the appender will have no layout.</p>
+</div>
+<div class="paragraph">
+<p>This is a case when the <code>Select</code> plugin is useful: this configuration element contains a list of arbiters and a
+<code>DefaultArbiter</code> element.
+If none of the arbiters match, the configuration from the <code>DefaultArbiter</code> element will be used:</p>
+</div>
+<div id="_tabs_13" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_13_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_13_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_13_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_13_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_13_xml--panel" class="tabpanel" aria-labelledby="_tabs_13_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/arbiters-select.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Select&gt;
+  &lt;SystemPropertyArbiter propertyName="env" propertyValue="dev"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+    &lt;PatternLayout/&gt;
+  &lt;/SystemPropertyArbiter&gt;
+  &lt;DefaultArbiter&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+    &lt;JsonTemplateLayout/&gt;
+  &lt;/DefaultArbiter&gt;
+&lt;/Select&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_13_json--panel" class="tabpanel" aria-labelledby="_tabs_13_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/arbiters-select.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Select": {
+  "SystemPropertyArbiter": { <i class="conum" data-value="1"></i><b>(1)</b>
+    "propertyName": "env",
+    "propertyValue": "dev",
+    "PatternLayout": {}
+  },
+  "DefaultArbiter": { <i class="conum" data-value="2"></i><b>(2)</b>
+    "JsonTemplateLayout": {}
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_13_yaml--panel" class="tabpanel" aria-labelledby="_tabs_13_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/arbiters-select.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Select:
+  SystemPropertyArbiter: <i class="conum" data-value="1"></i><b>(1)</b>
+    propertyName: "env"
+    propertyValue: "dev"
+    PatternLayout: {}
+  DefaultArbiter: <i class="conum" data-value="2"></i><b>(2)</b>
+    JsonTemplateLayout: {}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_13_properties--panel" class="tabpanel" aria-labelledby="_tabs_13_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/arbiters-select.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.select.type = Select
+
+appender.0.select.0.type = SystemPropertyArbiter <i class="conum" data-value="1"></i><b>(1)</b>
+appender.0.select.0.propertyName = env
+appender.0.select.0.propertyValue = dev
+appender.0.select.0.layout.type = PatternLayout
+
+appender.0.select.1.type = DefaultArbiter <i class="conum" data-value="2"></i><b>(2)</b>
+appender.0.select.1.layout.type = JsonTemplateLayout</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>If the Java system property <code>env</code> has a value of <code>dev</code>, a Pattern Layout will be used.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Otherwise, a JSON Template Layout will be used.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="CompositeConfiguration"><a class="anchor" href="#CompositeConfiguration"></a>Composite configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>There are occasions where multiple configurations might need to be combined.
+For instance,</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>You have a common Log4j Core configuration that should always be present, and an environment-specific one that extends the common one depending on the environment (test, production, etc.) the application is running on.</p>
+</li>
+<li>
+<p>You develop a framework, and it contains a predefined Log4j Core configuration.
+Yet you want to allow users to extend it whenever necessary.</p>
+</li>
+<li>
+<p>You collect Log4j Core configurations from multiple sources.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You can provide a list of comma-separated file paths or URLs in <a href="systemproperties.html#log4j2.configurationFile" class="xref page">the <code>log4j2.configurationFile</code> configuration property</a>, where each resource will get read into a <code>Configuration</code>, and then eventually combined into a single one using <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/CompositeConfiguration.html"><code>CompositeConfiguration</code></a>.</p>
+</div>
+<details>
+<summary class="title">How does <code>CompositeConfiguration</code> work?</summary>
+<div class="content">
+<div class="paragraph">
+<p><code>CompositeConfiguration</code> merges multiple configurations into a single one using a <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy.html"><code>MergeStrategy</code></a>, which can be customized using <a href="systemproperties.html#log4j2.mergeStrategy" class="xref page">the <code>log4j2.mergeStrategy</code> configuration property</a>.
+The default merge strategy works as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#global-configuration-attributes">Global configuration attributes</a> in later configurations replace those in previous configurations.
+The only exception is the <code>monitorInterval</code> attribute: the lowest positive value from all the configuration files will be used.</p>
+</li>
+<li>
+<p><a href="#property-substitution">Properties</a> are aggregated.
+Duplicate properties override those in previous configurations.</p>
+</li>
+<li>
+<p><a href="filters.html" class="xref page">Filters</a> are aggregated under <a href="filters.html#CompositeFilter" class="xref page"><code>CompositeFilter</code></a>, if more than one filter is defined.</p>
+</li>
+<li>
+<p><a href="scripts.html" class="xref page">Scripts</a> are aggregated.
+Duplicate definitions override those in previous configurations.</p>
+</li>
+<li>
+<p><a href="appenders.html" class="xref page">Appenders</a> are aggregated.
+Appenders with the same name are <strong>overridden</strong> by those in later configurations, including all their elements.</p>
+</li>
+<li>
+<p><a href="#configuring-loggers">Loggers</a> are aggregated.
+Logger attributes are individually merged, and those in later configurations replace duplicates.
+Appender references on a logger are aggregated, and those in later configurations replace duplicates.
+The strategy merges filters on loggers using the rule above.</p>
+</li>
+</ul>
+</div>
+</div>
+</details>
+</div>
+</div>
+<div class="sect1">
+<h2 id="format-specific-notes"><a class="anchor" href="#format-specific-notes"></a>Format specific notes</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="xml-features"><a class="anchor" href="#xml-features"></a>XML format</h3>
+<div class="sect3">
+<h4 id="xml-global-configuration-attributes"><a class="anchor" href="#xml-global-configuration-attributes"></a>Global configuration attributes</h4>
+<div class="paragraph">
+<p>The XML format supports the following additional attributes on the <code>Configuration</code> element.</p>
+</div>
+<div class="sect4">
+<h5 id="configuration-attribute-schema"><a class="anchor" href="#configuration-attribute-schema"></a><code>schema</code></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">classpath resource</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>null</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Specifies the path to a classpath resource containing an XML schema.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="configuration-attribute-strict"><a class="anchor" href="#configuration-attribute-strict"></a><code>strict</code></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>If set to <code>true,</code> all configuration files will be checked against the XML schema provided by the
+<a href="#configuration-attribute-schema"><code>schema</code></a>.</p>
+</div>
+<div class="paragraph">
+<p>This setting also enables "XML strict mode" and allows one to specify an element&#8217;s <strong>plugin type</strong> through a <code>type</code> attribute instead of the tag name.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="xinclude"><a class="anchor" href="#xinclude"></a><a id="XInlcude"></a> XInclude</h4>
+<div class="paragraph">
+<p>XML configuration files can include other files with
+<a href="https://www.w3.org/TR/xinclude/">XInclude</a>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The list of <code>XInclude</code> and <code>XPath</code> features supported depends upon your
+<a href="https://docs.oracle.com/javase/8/docs/technotes/guides/xml/jaxp/index.html">JAXP implementation</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Here is an example <code>log4j2.xml</code> file that includes two other files:</p>
+</div>
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/xinclude-main.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Configuration xmlns="https://logging.apache.org/xml/ns"
+               xmlns:xi="http://www.w3.org/2001/XInclude"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="
+                   https://logging.apache.org/xml/ns
+                   https://logging.apache.org/xml/ns/log4j-config-2.xsd"&gt;
+  &lt;Properties&gt;
+    &lt;Property name="filename" value="app.log"/&gt;
+  &lt;/Properties&gt;
+  &lt;xi:include href="xinclude-appenders.xml"/&gt;
+  &lt;xi:include href="xinclude-loggers.xml"/&gt;
+&lt;/Configuration&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/xinclude-appenders.xml"><code>xinclude-appenders.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Appenders&gt;
+  &lt;Console name="CONSOLE"&gt;
+    &lt;PatternLayout pattern="%d %m%n"/&gt;
+  &lt;/Console&gt;
+  &lt;File name="FILE" fileName="${filename}"&gt;
+    &lt;PatternLayout pattern="%d %p %C{1.} [%t] %m%n"/&gt;
+  &lt;/File&gt;
+&lt;/Appenders&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/xinclude-loggers.xml"><code>xinclude-loggers.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Loggers&gt;
+  &lt;Rogger name="org.example" level="DEBUG" additivity="false"&gt;
+    &lt;AppenderRef ref="FILE" /&gt;
+  &lt;/Rogger&gt;
+  &lt;Root level="ERROR"&gt;
+    &lt;AppenderRef ref="CONSOLE" /&gt;
+  &lt;/Root&gt;
+&lt;/Loggers&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="java-properties-features"><a class="anchor" href="#java-properties-features"></a>Java properties format</h3>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The Java properties format is not well suited to represent hierarchical structures.</p>
+</div>
+<div class="paragraph">
+<p>Switch to XML to avoid additional dependencies, or choose YAML for a format similar to Java properties but less verbose.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The Java properties configuration format is the most verbose of the available formats.
+To make it more usable, a series of exceptions to the rules in <a href="#configuration-with-properties">Java properties syntax</a> have been introduced over time:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The following direct children of <code>Configuration</code> have predefined prefixes and do not require to specify a <code>type</code> attribute:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The <a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-AppendersPlugin" class="xref page">Appender container</a> has a predefined <code>appender</code> prefix.</p>
+</li>
+<li>
+<p>The <a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-CustomLevels" class="xref page">Custom levels container</a> has a predefined <code>customLevel</code> prefix.</p>
+</li>
+<li>
+<p>The <a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggersPlugin" class="xref page">Loggers container</a> has a predefined <code>logger</code> prefix.</p>
+</li>
+<li>
+<p>The <a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-PropertiesPlugin" class="xref page">Properties container</a> has a predefined <code>property</code> prefix.</p>
+</li>
+<li>
+<p>The <a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-ScriptsPlugin" class="xref page">Scripts container</a> has a predefined <code>script</code> prefix.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Properties that start with <code>property</code> are used for <a href="#property-substitution">Property substitution</a>.
+Their syntax is:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">property.&lt;key&gt; = &lt;value&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Properties that start with <code>customLevel</code> are used to define custom levels. Their syntax is:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">customLevel.&lt;name&gt; = &lt;intValue&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>where <code>&lt;name&gt;</code> is the name of the level and <code>&lt;intValue&gt;</code> its numerical value.</p>
+</div>
+</li>
+<li>
+<p>The root logger can be configured using properties that start with <code>rootLogger</code>.</p>
+</li>
+<li>
+<p>A shorthand notation is available that allows users to write:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">rootLogger = INFO, APPENDER</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>instead of:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">rootLogger.level = INFO
+rootLogger.appenderRef.0.ref = APPENDER</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>All the keys of the form <code>logger.&lt;name&gt;.appenderRef.&lt;id&gt;</code>, where <code>&lt;name&gt;</code> and <code>&lt;id&gt;</code> are arbitrary, are considered appender references.</p>
+</li>
+<li>
+<p>To add a filter to a component use a <code>filter.&lt;id&gt;</code> prefix instead of just <code>&lt;id&gt;</code>.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="extending"><a class="anchor" href="#extending"></a>Extending</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Log4j Core uses <a href="plugins.html" class="xref page">plugins</a> to inject necessary components while reading a configuration file.
+In this section, we will explore extension points users can hook into to customize the way Log4j Core reads configuration files.</p>
+</div>
+<div class="sect2">
+<h3 id="extending-plugins"><a class="anchor" href="#extending-plugins"></a>Plugin preliminaries</h3>
+<div class="paragraph">
+<p>Log4j plugin system is the de facto extension mechanism embraced by various Log4j components.
+Plugins provide extension points to components, that can be used to implement new features, without modifying the original component.
+It is analogous to a <a href="https://en.wikipedia.org/wiki/Dependency_injection">dependency injection</a> framework, but curated for Log4j-specific needs.</p>
+</div>
+<div class="paragraph">
+<p>In a nutshell, you annotate your classes with <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/Plugin.html"><code>@Plugin</code></a> and their (<code>static</code>) factory methods with <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/PluginFactory.html"><code>@PluginFactory</code></a>.
+Last, you inform the Log4j plugin system to discover these custom classes.
+This is done using running the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/processor/PluginProcessor.html"><code>PluginProcessor</code></a> annotation processor while building your project.
+Refer to <a href="plugins.html" class="xref page">Plugins</a> for details.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="ConfigurationFactory"><a class="anchor" href="#ConfigurationFactory"></a>Extending <code>ConfigurationFactory</code> plugins</h3>
+<div class="paragraph">
+<p>Under the hood, Log4j Core uses plugins extending from <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html"><code>ConfigurationFactory</code></a> to load configuration files.
+This procedure can be summarized as follows:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Load plugins which extend from <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html"><code>ConfigurationFactory</code></a> and whose plugin <code>category</code> is set to <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html#CATEGORY"><code>ConfigurationFactory.CATEGORY</code></a></p>
+</li>
+<li>
+<p>Sort them by <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Order.html"><code>@Order</code></a> annotation (in decreasing value order), if present</p>
+</li>
+<li>
+<p>Feed <a href="#automatic-configuration">found configuration files</a> to <code>ConfigurationFactory</code> instances in order, if the file extension is contained by <code>String[]</code> returned from <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html#getSupportedTypes()"><code>ConfigurationFactory#getSupportedTypes()</code></a></p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>If <a href="systemproperties.html#log4j2.configurationFactory" class="xref page">the <code>log4j2.configurationFactory</code> system property</a> is defined, it will be used before any other factory implementations.</p>
+</div>
+<div class="paragraph">
+<p>For an example, see <a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-core/src/main/java/org/apache/logging/log4j/core/config/json/JsonConfigurationFactory.java"><code>JsonConfigurationFactory.java</code></a> on how Log4j Core implements JSON-formatted configuration file read.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Next to introducing new configuration file formats, <code>ConfigurationFactory</code> can be used for <a href="customconfig.html" class="xref page">programmatic configuration</a> too.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="extending-config-file-plugins"><a class="anchor" href="#extending-config-file-plugins"></a>Plugins represented in a configuration file</h3>
+<div class="paragraph">
+<p>As explained in <a href="#configuration-syntax"> Syntax</a>, a configuration file gets parsed into a tree of plugins.
+If your plugin needs to be represented in a configuration file element, some <a href="plugins.html#core" class="xref page">extra plugin configuration</a> needs to be administered.</p>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>
+    Copyright © 1999-2024 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
+  </p>
+  <p>
+    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+    Other names may be trademarks of their respective owners.
+  </p>
+</footer>
+<script id="site-script" src="../_/js/site.js" data-ui-root-path="../_"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+<!-- `@asciidoctor/tabs` extension scripts -->
+<script async src="../_/js/vendor/tabs.js"></script>
+  </body>
+</html>

@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Garbage-free logging :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/garbagefree.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.6">
+<link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
+<!-- `@asciidoctor/tabs` extension styles -->
+<link rel="stylesheet" href="../_/css/vendor/tabs.css">
+<style>
+  /* Swap colors of `IMPORTANT` and `WARNING` blocks */ 
+  .doc .admonitionblock.important .icon { background-color: #f70; }
+  .doc .admonitionblock.warning .icon { background-color: #e40046; }
+  /* Default `h4`, `h5`, and `h6` are smaller than the normal text, fix header font sizing: */
+  .doc h1 { font-size: 1.9rem; }
+  .doc h2 { font-size: 1.7rem; }
+  .doc h3 { font-size: 1.5rem; font-weight: 400; }
+  .doc h4 { font-size: 1.3rem; font-weight: 500; }
+  .doc h5 { font-size: 1.1rem; font-weight: 500; text-decoration: underline; }
+  .doc h6 { font-size: 0.9rem; font-weight: 500; text-decoration: underline; }
+  /* Default `code`, `pre`, and `.colist` (source code annotations) fonts are too big, adjust them: */
+  .doc .colist>table code, .doc p code, .doc thead code { font-size: 0.8em; }
+  .doc pre { font-size: 0.7rem; }
+  .doc .colist { font-size: 0.75rem; }
+  /* Make links more visible: */
+  .doc a { text-decoration: underline; }
+  .doc a code { text-decoration: underline; color: #1565c0; }
+  /* Tab header fonts aren't rendered good, adjusting the font weight: */
+  .tablist > ul li { font-weight: 500; }
+  /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
+  .toc .toc-menu li[data-level="4"] a {
+    padding-left: 2.75rem;
+  }
+  /* Replace the default highlight.js color for strings from red (unnecessarily signaling something negative) to green: */
+  .hljs-string {
+    color: #0f8532;
+  }
+</style>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <img src="../_/../_images/logo-small-white.png" alt="Apache Log4j"/>
+      </div>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://logging.apache.org">a subproject of&nbsp;<strong>Apache Logging Services</strong></a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ROOT" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Home</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../download.html">Download</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../release-notes.html">Release Notes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="https://logging.apache.org/support.html">Support</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Manual</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="getting-started.html">Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="installation.html">Installation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html">API</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html#loggers">Loggers</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="eventlogging.html">Event Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="simple-logger.html">Simple Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="status-logger.html">Status Logger</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="logbuilder.html">Fluent API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html#fish-tagging">Fish tagging</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="customloglevels.html">Levels</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="markers.html">Markers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="thread-context.html">Thread Context</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="messages.html">Messages</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="implementation.html">Implementation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="config-intro.html">Configuration</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="configuration.html">Configuration file</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="systemproperties.html">Configuration properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="customconfig.html">Programmatic configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="appenders.html">Appenders</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/file.html">File appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/rolling-file.html">Rolling file appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/database.html">Database appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/network.html">Network Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/message-queue.html">Message queue appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/delegating.html">Delegating Appenders</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="pattern-layout.html">Pattern Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="filters.html">Filters</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="scripts.html">Scripts</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="jmx.html">JMX</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="extending.html">Extending</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="plugins.html">Plugins</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="performance.html">Performance</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="async.html">Asynchronous loggers</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="garbagefree.html">Garbage-free logging</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">References</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../plugin-reference.html">Plugin reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../javadoc.html">Java API reference</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Resources</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../faq.html">F.A.Q.</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-log4j1.html">Migrating from Log4j 1</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-logback.html">Migrating from Logback</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-slf4j.html">Migrating from SLF4J</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../hibernate.html">Integrating with Hibernate</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../jakarta.html">Integrating with Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../soa.html">Integrating with service-oriented architectures</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../development.html">Development</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../components.html">Components</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-boot.html">Log4j Spring Boot Support</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-jul.html">JUL-to-Log4j bridge</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-to-jul.html">Log4j-to-JUL bridge</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Related projects</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jakarta/index.html">Log4j Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jmx-gui/index.html">Log4j JMX GUI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/kotlin/index.html">Log4j Kotlin</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/scala/index.html">Log4j Scala</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/tools/index.html">Log4j Tools</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/transform/index.html">Log4j Transformation Tools</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="index.html">Manual</a></li>
+    <li><a href="implementation.html">Implementation</a></li>
+    <li><a href="performance.html">Performance</a></li>
+    <li><a href="garbagefree.html">Garbage-free logging</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/manual/garbagefree.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="4">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Garbage-free logging</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Garbage collection pauses are a common cause of latency spikes and for many systems significant effort is spent on controlling these pauses.
+Log4j allocates temporary <code>LogEvent</code>, <code>String</code>, <code>char[]</code>, <code>byte[]</code>, etc. objects during steady state logging.
+This contributes to pressure on the garbage collector and increases the frequency with which garbage collection pauses occur.
+In <em>garbage-free mode</em>, Log4j buffers and reuses objects to lessen this pressure.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Extra tuning of any application will deviate you away from defaults and add up to the maintenance load.
+You are strongly advised to measure your application&#8217;s overall performance and then, if Log4j is found to be an important bottleneck factor, tune it carefully.
+When this happens, we also recommend you to evaluate your assumptions on a regular basis to check if they still hold.
+Remember, <a href="https://en.wikipedia.org/wiki/Program_optimization#When_to_optimize">premature optimization is the root of all evil</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The act of logging is an interplay between the logging API (i.e., Log4j API) where the programmer publishes logs and a logging implementation (i.e., Log4j Core) where published logs get consumed; filtered, enriched, encoded, and written to files, databases, network sockets, etc.
+Both parties contain different features with different memory allocation characteristics.
+To achieve an end-to-end garbage-free logging system, they need to work hand in hand.
+Hence, we will discuss both:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><a href="#Config">Log4j Core configuration</a></p>
+</li>
+<li>
+<p><a href="#api">Log4j API usage</a></p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Garbage-free logging is currently implemented for Log4j API and its reference implementation, Log4j Core.
+If you use another setup (e.g., a different logging API or implementation) this promise might not hold.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="quick"><a class="anchor" href="#quick"></a>Quick start</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you want to have a garbage-free Log4j setup, but don&#8217;t want to spend time with the associated details, you can quickly get started with the following instructions:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Set the following system properties to <code>true</code>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#log4j2.enableThreadlocals"><code>log4j2.enableThreadlocals</code></a></p>
+</li>
+<li>
+<p><a href="#log4j2.garbagefreeThreadContextMap"><code>log4j2.garbagefreeThreadContextMap</code></a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Use garbage-free</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#Layouts">Layouts</a></p>
+</li>
+<li>
+<p><a href="#Appenders">Appenders</a></p>
+</li>
+<li>
+<p><a href="#Filters">Filters</a></p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This should be sufficient for a majority of use cases.
+If not for yours, keep on reading.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Config"><a class="anchor" href="#Config"></a>Log4j Core configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order to have a garbage-free Log4j Core, you need to</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#core-properties">configure it using properties</a>,</p>
+</li>
+<li>
+<p>and employ garbage-free <a href="#Layouts">Layouts</a>, <a href="#Appenders">Appenders</a>, and <a href="#Filters">Filters</a>.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="core-properties"><a class="anchor" href="#core-properties"></a>Properties</h3>
+<div class="paragraph">
+<p>Garbage-free logging can be configured for Log4j Core using properties listed below.
+(See <a href="configuration.html" class="xref page">Configuration file</a> on details how you can set these properties.)</p>
+</div>
+<div class="sect3">
+<h4 id="log4j2.isWebapp"><a class="anchor" href="#log4j2.isWebapp"></a><code>log4j2.isWebapp</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_IS_WEBAPP</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code> if the <a href="https://jakarta.ee/specifications/servlet/6.0/apidocs/jakarta.servlet/jakarta/servlet/servlet">Servlet</a> class on classpath,</p>
+<p class="tableblock"><code>false</code> otherwise</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Setting this property to <code>true</code> switches Log4j Core into "Web application mode" (<em>"Web-app mode"</em>).</p>
+</div>
+<div class="paragraph">
+<p>In this mode Log4j is optimized to work in a Servlet container.</p>
+</div>
+<div class="paragraph">
+<p>This mode is incompatible with <a href="#log4j2.enableThreadlocals"><code>log4j2.enableThreadlocals</code></a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="log4j2.enableThreadlocals"><a class="anchor" href="#log4j2.enableThreadlocals"></a><code>log4j2.enableThreadlocals</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ENABLE_THREADLOCALS</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code> if Web-app mode is enabled,</p>
+<p class="tableblock"><code>true</code> otherwise</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Setting this property to <code>true</code> switches Log4j Core into "garbage-free mode" (<em>"GC-free mode"</em>).</p>
+</div>
+<div class="paragraph">
+<p>In this mode Log4j uses <code>ThreadLocal</code>s for object pooling to prevent object allocations.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/ThreadLocal.html"><code>ThreadLocal</code></a>
+fields holding non-JDK classes can cause memory leaks in web applications when the application server&#8217;s thread pool continues to reference these fields after the web application is undeployed.
+Hence, to avoid causing memory leaks, <code>log4j2.enableThreadlocals</code> by default reflects the opposite of <a href="#log4j2.isWebapp"><code>log4j2.isWebapp</code></a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="log4j2.enableDirectEncoders"><a class="anchor" href="#log4j2.enableDirectEncoders"></a><code>log4j2.enableDirectEncoders</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ENABLE_DIRECT_ENCODERS</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>If <code>true</code>, garbage-aware layouts will directly encode log events into <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html"><code>ByteBuffer</code></a>s provided by appenders.</p>
+</div>
+<div class="paragraph">
+<p>This prevents allocating temporary <code>String</code> and <code>char[]</code> instances.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="log4j2.encoderByteBufferSize"><a class="anchor" href="#log4j2.encoderByteBufferSize"></a><code>log4j2.encoderByteBufferSize</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ENCODER_BYTE_BUFFER_SIZE</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>8192</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The size in bytes of the
+<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html"><code>ByteBuffer</code></a>s
+stored in <code>ThreadLocal</code> fields by layouts and
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder.html"><code>StringBuilderEncoder</code></a>s.</p>
+</div>
+<div class="paragraph">
+<p>This setting is only used if <a href="#log4j2.enableDirectEncoders"><code>log4j2.enableDirectEncoders</code></a> is set to <code>true</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="log4j2.encoderCharBufferSize"><a class="anchor" href="#log4j2.encoderCharBufferSize"></a><code>log4j2.encoderCharBufferSize</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_ENCODER_CHAR_BUFFER_SIZE</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>4096</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The size in <code>char</code>s of the
+<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html"><code>ByteBuffer</code></a>s
+stored in <code>ThreadLocal</code> fields
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder.html"><code>StringBuilderEncoder</code></a>s.</p>
+</div>
+<div class="paragraph">
+<p>This setting is only used if <a href="#log4j2.enableDirectEncoders"><code>log4j2.enableDirectEncoders</code></a> is set to <code>true</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="log4j2.initialReusableMsgSize"><a class="anchor" href="#log4j2.initialReusableMsgSize"></a><code>log4j2.initialReusableMsgSize</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_INITIAL_REUSABLE_MSG_SIZE</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>128</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>In GC-free mode, this property determines the initial size of the reusable <code>StringBuilder</code>s used by
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage.html"><code>ReusableMessages</code></a>
+for formatting purposes.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="log4j2.maxReusableMsgSize"><a class="anchor" href="#log4j2.maxReusableMsgSize"></a><code>log4j2.maxReusableMsgSize</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_MAX_REUSABLE_MSG_SIZE</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>518</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>In GC-free mode, this property determines the maximum size of the reusable <code>StringBuilder</code>s used by
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage.html"><code>ReusableMessages</code></a>
+for formatting purposes.</p>
+</div>
+<div class="paragraph">
+<p>The default value allows is equal to <code>2 &times; (2 &times; log4j.initialReusableMsgSize + 2) + 2</code> and allows the
+<code>StringBuilder</code> to be resized twice by the current JVM resize algorithm.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="log4j2.layoutStringBuilderMaxSize"><a class="anchor" href="#log4j2.layoutStringBuilderMaxSize"></a><code>log4j2.layoutStringBuilderMaxSize</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_LAYOUT_STRING_BUILDER_MAX_SIZE</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2048</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>This property determines the maximum size of the reusable <code>StringBuilder</code>s used to format
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html"><code>LogEvent</code></a>s.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="log4j2.unboxRingbufferSize"><a class="anchor" href="#log4j2.unboxRingbufferSize"></a><code>log4j2.unboxRingbufferSize</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_UNBOX_RINGBUFFER_SIZE</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>32</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/util/Unbox.html"><code>Unbox</code></a>
+utility class can be used by users to format primitive values without incurring in the boxing allocation cost.</p>
+</div>
+<div class="paragraph">
+<p>This property specifies the maximum number of primitive arguments to a log message that will be cached and usually does not need to be changed.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="log4j2.threadContextMap"><a class="anchor" href="#log4j2.threadContextMap"></a><code>log4j2.threadContextMap</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_THREAD_CONTEXT_MAP</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html"><code>Class&lt;? extends ThreadContextMap&gt;</code></a>
+or predefined constant</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WebApp</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Fully specified class name of a custom
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html"><code>ThreadContextMap</code></a>
+implementation class or (since version <code>2.24.0</code>) one of the predefined constants:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">NoOp</dt>
+<dd>
+<p>to disable the thread context,</p>
+</dd>
+<dt class="hdlist1">WebApp</dt>
+<dd>
+<p>a web application-safe implementation, that only binds JRE classes to <code>ThreadLocal</code> to prevent memory leaks,</p>
+</dd>
+<dt class="hdlist1">GarbageFree</dt>
+<dd>
+<p>a garbage-free implementation.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect3">
+<h4 id="log4j2.garbagefreeThreadContextMap"><a class="anchor" href="#log4j2.garbagefreeThreadContextMap"></a><code>log4j2.garbagefreeThreadContextMap</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_GARBAGEFREE_THREAD_CONTEXT_MAP</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>If set to <code>true</code> selects a garbage-free thread context map implementation.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="Layouts"><a class="anchor" href="#Layouts"></a>Layouts</h3>
+<div class="paragraph">
+<p>The following <a href="layouts.html" class="xref page">layouts</a> can be configured to run garbage-free during steady-state logging.
+To understand which configuration knobs exhibit what kind of allocation behaviour, see their dedicated pages.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="layouts.html#GELFLayout" class="xref page"><code>GelfLayout</code></a></p>
+</li>
+<li>
+<p><a href="json-template-layout.html#faq-garbage-free" class="xref page"><code>JsonTemplateLayout</code></a></p>
+</li>
+<li>
+<p><a href="pattern-layout.html#garbage-free" class="xref page"><code>PatternLayout</code></a></p>
+</li>
+</ul>
+</div>
+<details>
+<summary class="title">Implementation notes</summary>
+<div class="content">
+<div class="paragraph">
+<p>Garbage-free <a href="layouts.html" class="xref page">layouts</a> need to implement the <code>Encoder&lt;LogEvent&gt;</code> interface.
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder.html"><code>StringBuilderEncoder</code></a> helps with encoding text to bytes in a garbage-free manner.</p>
+</div>
+</div>
+</details>
+</div>
+<div class="sect2">
+<h3 id="Appenders"><a class="anchor" href="#Appenders"></a>Appenders</h3>
+<div class="paragraph">
+<p>The following <a href="appenders.html" class="xref page">appenders</a> are garbage-free during steady-state logging:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="appenders.html#ConsoleAppender" class="xref page"><code>ConsoleAppender</code></a></p>
+</li>
+<li>
+<p><a href="appenders/file.html#FileAppender" class="xref page"><code>FileAppender</code></a></p>
+</li>
+<li>
+<p><a href="appenders/file.html#MemoryMappedFileAppender" class="xref page"><code>MemoryMappedFileAppender</code></a></p>
+</li>
+<li>
+<p><a href="appenders/file.html#RandomAccessFileAppender" class="xref page"><code>RandomAccessFileAppender</code></a></p>
+</li>
+<li>
+<p><a href="appenders/rolling-file.html#RollingFileAppender" class="xref page"><code>RollingFileAppender</code></a> (except during rollover)</p>
+</li>
+<li>
+<p><a href="appenders/rolling-file.html#RollingRandomAccessFileAppender" class="xref page"><code>RollingRandomAccessFileAppender</code></a> (except during rollover)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Any other appender not shared in the above list (including <a href="appenders/delegating.html#AsyncAppender" class="xref page"><code>AsyncAppender</code></a>) is not garbage-free.</p>
+</div>
+<details>
+<summary class="title">Implementation notes</summary>
+<div class="content">
+<div class="paragraph">
+<p>Garbage-free <a href="appenders.html" class="xref page">appenders</a> need to provide their <a href="layouts.html" class="xref page">layout</a> with a <code>ByteBufferDestination</code> implementation that the layout can directly write into.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><code>AbstractOutputStreamAppender</code> has been modified to make the following appenders garbage-free:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ConsoleAppender</code></p>
+</li>
+<li>
+<p><code>(Rolling)FileAppender</code></p>
+</li>
+<li>
+<p><code>(Rolling)RandomAccessFileAppender</code></p>
+</li>
+<li>
+<p><code>MemoryMappedFileAppender</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>An effort has been made to minimize impact on custom appenders that extend <code>AbstractOutputStreamAppender</code>, but it is impossible to guarantee that changing the superclass will not impact any and all subclasses.
+Custom appenders that extend <code>AbstractOutputStreamAppender</code> should verify that they still function correctly.
+In case there is a problem, <a href="#log4j2.enableDirectEncoders">the <code>log4j2.enableDirectEncoders</code> system property</a> can be set to <code>false</code> to revert to the pre-Log4j 2.6 behaviour.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</details>
+</div>
+<div class="sect2">
+<h3 id="Filters"><a class="anchor" href="#Filters"></a>Filters</h3>
+<div class="paragraph">
+<p>The following <a href="filters.html" class="xref page">filters</a> are garbage-free during steady-state logging:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="filters.html#CompositeFilter" class="xref page"><code>CompositeFilter</code></a> (adding and removing element filters creates temporary
+objects for thread safety)</p>
+</li>
+<li>
+<p><a href="filters.html#DynamicThresholdFilter" class="xref page"><code>DynamicThresholdFilter</code></a></p>
+</li>
+<li>
+<p><a href="filters.html#LevelRangeFilter" class="xref page"><code>LevelRangeFilter</code></a> (garbage-free since <code>2.8</code>)</p>
+</li>
+<li>
+<p><a href="filters.html#MapFilter" class="xref page"><code>MapFilter</code></a> (garbage-free since <code>2.8</code>)</p>
+</li>
+<li>
+<p><a href="filters.html#MarkerFilter" class="xref page"><code>MarkerFilter</code></a> (garbage-free since <code>2.8</code>)</p>
+</li>
+<li>
+<p><a href="filters.html#StructuredDataFilter" class="xref page"><code>StructuredDataFilter</code></a> (garbage-free since <code>2.8</code>)</p>
+</li>
+<li>
+<p><a href="filters.html#ThreadContextMapFilter" class="xref page"><code>ThreadContextMapFilter</a></code> (garbage-free since <code>2.8</code>)</p>
+</li>
+<li>
+<p><a href="filters.html#ThresholdFilter" class="xref page"><code>ThresholdFilter</code></a> (garbage-free since <code>2.8</code>)</p>
+</li>
+<li>
+<p><a href="filters.html#TimeFilter" class="xref page"><code>TimeFilter</code></a> (garbage-free since <code>2.8</code> except when range must be recalculated once per day)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Any other filter not shared in the above list is not garbage-free.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="core-limitations"><a class="anchor" href="#core-limitations"></a>Limitations</h3>
+<div class="paragraph">
+<p>There are certain caveats associated with the configuration of garbage-free logging:</p>
+</div>
+<div id="core-limitation-properties" class="dlist">
+<dl>
+<dt class="hdlist1">Property substitutions</dt>
+<dd>
+<p>Some <a href="configuration.html#PropertySubstitution" class="xref page">property substitutions</a> (e.g., ones using <a href="lookups.html#DateLookup" class="xref page">Date Lookup</a>) might result in temporary objects being created during steady-state logging.</p>
+</dd>
+</dl>
+</div>
+<div id="core-limitation-async-logger-wait-strategy" class="dlist">
+<dl>
+<dt class="hdlist1">Asynchronous logger wait strategies</dt>
+<dd>
+<p>As of version <code>2.18.0</code>, the default <a href="async.html" class="xref page">asynchronous logger</a> wait strategy (i.e., <code>Timeout</code>) is garbage-free while running against both LMAX Disruptor 3 and 4.
+See <a href="async.html#log4j2.asyncLoggerWaitStrategy" class="xref page"><code>log4j2.asyncLoggerWaitStrategy</code></a> for details on predefined wait strategies.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="api"><a class="anchor" href="#api"></a>Log4j API usage</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="api.html" class="xref page">Log4j API</a> contains several features to facilitate garbage-free logging:</p>
+</div>
+<div class="sect2">
+<h3 id="api-vararg"><a class="anchor" href="#api-vararg"></a>Parameterized message arguments</h3>
+<div class="paragraph">
+<p>The <code>Logger</code> interface contains methods for parameterized messages up to 10 arguments.
+Logging more than 10 parameters creates <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/language/varargs.html">vararg arrays</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="api-encode-custom-object"><a class="anchor" href="#api-encode-custom-object"></a>Encoding custom objects</h3>
+<div class="paragraph">
+<p>When a message parameter contains an unknown type by the layout, it will encode by calling <code>toString()</code> on these objects.
+Most objects don&#8217;t have garbage-free <code>toString()</code> methods.
+Objects themselves can implement their own garbage-free encoders by either extending from <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/CharSequence.html">Java&#8217;s <code>CharSequence</code></a> or <a href="../javadoc/log4j-api/org/apache/logging/log4j/util/StringBuilderFormattable.html">Log4j&#8217;s <code>StringBuilderFormattable</code></a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="codeImpact"><a class="anchor" href="#codeImpact"></a>Avoiding autoboxing</h3>
+<div class="paragraph">
+<p>We made an effort to make logging garbage-free without requiring code
+changes in existing applications, but there is one area where this was
+not possible. When logging primitive values (i.e. int, double, boolean,
+etc.) the JVM autoboxes these primitive values to their Object wrapper
+equivalents, creating garbage.</p>
+</div>
+<div class="paragraph">
+<p>Log4j provides an <code>Unbox</code> utility to prevent autoboxing of primitive
+parameters. This utility contains a thread-local pool of reused
+<code>StringBuilder`s. The `Unbox.box(primitive)</code> methods write directly into
+a StringBuilder, and the resulting text will be copied into the final
+log message text without creating temporary objects.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import static org.apache.logging.log4j.util.Unbox.box;
+
+LOGGER.debug("Prevent primitive autoboxing {} {}", box(10L), box(2.6d));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This utility contains a <code>ThreadLocal</code> pool of reused <code>StringBuilder</code>s.
+The pool size is configured by <a href="#log4j2.unboxRingbufferSize">the <code>log4j2.unboxRingbufferSize</code> system property</a>.
+The <code>Unbox.box(primitive)</code> methods write directly into a <code>StringBuilder</code>, and the resulting text will be copied into the final log message text without creating temporary objects.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="api-limitations"><a class="anchor" href="#api-limitations"></a>Limitations</h3>
+<div class="paragraph">
+<p>Not all Log4j API feature set is garbage-free, specifically:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>ThreadContext</code> map (aka. MDC) is not garbage-free by default, but can be configured to be garbage-free by setting <a href="#log4j2.garbagefreeThreadContextMap">the <code>log4j2.garbagefreeThreadContextMap</code> system property</a> to <code>true</code>.</p>
+</li>
+<li>
+<p>The <code>ThreadContext</code> stack (aka. NDC) is not garbage-free.</p>
+</li>
+<li>
+<p>Logging very large messages (i.e., more than <a href="#log4j2.maxReusableMsgSize"><code>log4j2.maxReusableMsgSize</code></a> characters, which defaults to 518), when all loggers are <a href="async.html" class="xref page">asynchronous loggers</a>, will cause the internal <code>StringBuilder</code> in the
+<code>RingBuffer</code> to be trimmed back to their configured maximum size.</p>
+</li>
+<li>
+<p>Logging messages containing <code>${variable}</code> substitutions creates temporary objects.</p>
+</li>
+<li>
+<p>Logging a lambda as a parameter:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.info("lambda value is {}", () -&gt; callExpensiveMethod());</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>creates a vararg array.
+Logging a lambda expression by itself:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.debug(() -&gt; callExpensiveMethod());</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>is garbage-free.</p>
+</div>
+</li>
+<li>
+<p>The <a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#traceEntry()"><code>traceEntry()</code></a> and <a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#traceExit()"><code>traceExit()</code></a> methods create temporary objects.</p>
+</li>
+<li>
+<p>Time calculations are not garbage-free when the <code>log4j2.usePreciseClock</code> system property (defaults to <code>false</code>) is set to <code>true</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>
+    Copyright © 1999-2024 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
+  </p>
+  <p>
+    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+    Other names may be trademarks of their respective owners.
+  </p>
+</footer>
+<script id="site-script" src="../_/js/site.js" data-ui-root-path="../_"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+<!-- `@asciidoctor/tabs` extension scripts -->
+<script async src="../_/js/vendor/tabs.js"></script>
+  </body>
+</html>

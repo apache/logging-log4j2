@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Thread Context :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/thread-context.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.6">
+<link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
+<!-- `@asciidoctor/tabs` extension styles -->
+<link rel="stylesheet" href="../_/css/vendor/tabs.css">
+<style>
+  /* Swap colors of `IMPORTANT` and `WARNING` blocks */ 
+  .doc .admonitionblock.important .icon { background-color: #f70; }
+  .doc .admonitionblock.warning .icon { background-color: #e40046; }
+  /* Default `h4`, `h5`, and `h6` are smaller than the normal text, fix header font sizing: */
+  .doc h1 { font-size: 1.9rem; }
+  .doc h2 { font-size: 1.7rem; }
+  .doc h3 { font-size: 1.5rem; font-weight: 400; }
+  .doc h4 { font-size: 1.3rem; font-weight: 500; }
+  .doc h5 { font-size: 1.1rem; font-weight: 500; text-decoration: underline; }
+  .doc h6 { font-size: 0.9rem; font-weight: 500; text-decoration: underline; }
+  /* Default `code`, `pre`, and `.colist` (source code annotations) fonts are too big, adjust them: */
+  .doc .colist>table code, .doc p code, .doc thead code { font-size: 0.8em; }
+  .doc pre { font-size: 0.7rem; }
+  .doc .colist { font-size: 0.75rem; }
+  /* Make links more visible: */
+  .doc a { text-decoration: underline; }
+  .doc a code { text-decoration: underline; color: #1565c0; }
+  /* Tab header fonts aren't rendered good, adjusting the font weight: */
+  .tablist > ul li { font-weight: 500; }
+  /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
+  .toc .toc-menu li[data-level="4"] a {
+    padding-left: 2.75rem;
+  }
+  /* Replace the default highlight.js color for strings from red (unnecessarily signaling something negative) to green: */
+  .hljs-string {
+    color: #0f8532;
+  }
+</style>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <img src="../_/../_images/logo-small-white.png" alt="Apache Log4j"/>
+      </div>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://logging.apache.org">a subproject of&nbsp;<strong>Apache Logging Services</strong></a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ROOT" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Home</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../download.html">Download</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../release-notes.html">Release Notes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="https://logging.apache.org/support.html">Support</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Manual</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="getting-started.html">Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="installation.html">Installation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html">API</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html#loggers">Loggers</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="eventlogging.html">Event Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="simple-logger.html">Simple Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="status-logger.html">Status Logger</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="logbuilder.html">Fluent API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html#fish-tagging">Fish tagging</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="customloglevels.html">Levels</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="markers.html">Markers</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="thread-context.html">Thread Context</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="messages.html">Messages</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="implementation.html">Implementation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="config-intro.html">Configuration</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="configuration.html">Configuration file</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="systemproperties.html">Configuration properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="customconfig.html">Programmatic configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="appenders.html">Appenders</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/file.html">File appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/rolling-file.html">Rolling file appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/database.html">Database appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/network.html">Network Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/message-queue.html">Message queue appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/delegating.html">Delegating Appenders</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="pattern-layout.html">Pattern Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="filters.html">Filters</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="scripts.html">Scripts</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="jmx.html">JMX</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="extending.html">Extending</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="plugins.html">Plugins</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="performance.html">Performance</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="async.html">Asynchronous loggers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="garbagefree.html">Garbage-free logging</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">References</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../plugin-reference.html">Plugin reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../javadoc.html">Java API reference</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Resources</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../faq.html">F.A.Q.</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-log4j1.html">Migrating from Log4j 1</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-logback.html">Migrating from Logback</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-slf4j.html">Migrating from SLF4J</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../hibernate.html">Integrating with Hibernate</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../jakarta.html">Integrating with Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../soa.html">Integrating with service-oriented architectures</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../development.html">Development</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../components.html">Components</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-boot.html">Log4j Spring Boot Support</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-jul.html">JUL-to-Log4j bridge</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-to-jul.html">Log4j-to-JUL bridge</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Related projects</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jakarta/index.html">Log4j Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jmx-gui/index.html">Log4j JMX GUI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/kotlin/index.html">Log4j Kotlin</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/scala/index.html">Log4j Scala</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/tools/index.html">Log4j Tools</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/transform/index.html">Log4j Transformation Tools</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="index.html">Manual</a></li>
+    <li><a href="api.html">API</a></li>
+    <li><a href="api.html#fish-tagging">Fish tagging</a></li>
+    <li><a href="thread-context.html">Thread Context</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/manual/thread-context.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="4">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Thread Context</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Just like
+<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/ThreadLocal.html">Java&#8217;s <code>ThreadLocal</code></a>,
+<em>Thread Context</em> facilitates associating information with the executing thread and making this information accessible to the rest of the logging system.
+Thread Context is one of many <a href="api.html#fish-tagging" class="xref page"><em>fish tagging</em> capabilities provided by Log4j API</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="usage"><a class="anchor" href="#usage"></a>Usage</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The entry point for associating logging-related information with the executing thread is
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html"><code>ThreadContext</code></a>.
+It offers both</p>
+</div>
+<div id="mdc" class="ulist">
+<ul>
+<li>
+<p>map-structured – referred to as <em>Thread Context Map</em> or <em>Mapped Diagnostic Context (MDC)</em></p>
+</li>
+<li>
+<p>stack-structured – referred to as <em>Thread Context Stack</em> or <em>Nested Diagnostic Context (NDC)</em></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>storage:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">ThreadContext.put("ipAddress", request.getRemoteAddr()); <i class="conum" data-value="1"></i><b>(1)</b>
+ThreadContext.put("hostName", request.getServerName()); <i class="conum" data-value="1"></i><b>(1)</b>
+ThreadContext.put("loginId", session.getAttribute("loginId")); <i class="conum" data-value="1"></i><b>(1)</b>
+
+void performWork() {
+    ThreadContext.push("performWork()"); <i class="conum" data-value="2"></i><b>(2)</b>
+
+    LOGGER.debug("Performing work"); <i class="conum" data-value="3"></i><b>(3)</b>
+    // Perform the work
+
+    ThreadContext.pop(); <i class="conum" data-value="4"></i><b>(4)</b>
+}
+
+ThreadContext.clear(); <i class="conum" data-value="5"></i><b>(5)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Adding properties to the thread context map</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Pushing properties to the thread context stack</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Added properties can later on be used to, for instance, filter the log event, provide extra information in the layout, etc.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Popping the last pushed property from the thread context stack</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Clearing the thread context (for both stack and map!)</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="CloseableThreadContext"><a class="anchor" href="#CloseableThreadContext"></a>Auto-clearing thread context</h3>
+<div class="paragraph">
+<p>When placing items on the thread context stack or map, it&#8217;s necessary to remove them again when appropriate.
+To assist with this, you can use
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/CloseableThreadContext.html"><code>CloseableThreadContext</code></a>
+(implementing
+<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/AutoCloseable.html"><code>AutoCloseable</code></a>)
+in a try-with-resources block:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">try (CloseableThreadContext.Instance ignored = CloseableThreadContext
+        .put("ipAddress", request.getRemoteAddr()) <i class="conum" data-value="1"></i><b>(1)</b>
+        .push("performWork()")) { <i class="conum" data-value="1"></i><b>(1)</b>
+
+    LOGGER.debug("Performing work"); <i class="conum" data-value="2"></i><b>(2)</b>
+    // Perform the work
+
+}
+
+// ... <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Making thread context changes that will only be visible <strong>within the scope of the try-with-resources block</strong></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Added properties can later on be used to, for instance, filter the log event, provide extra information in the layout, etc.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Outside the scope of the try-with-resources block made thread context changes will not be visible</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="init"><a class="anchor" href="#init"></a>Initializing thread context</h3>
+<div class="paragraph">
+<p>It is a common use case that a single threaded execution fans out to multiple threads by means of a thread pool.
+In such a case, you need to clone the context of the current thread to the ones in the pool.
+For that purpose, you can use <code>putAll()</code> and <code>pushAll()</code> methods that are provided by both <code>ThreadContext</code> and <code>CloseableThreadContext</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.debug("Starting background thread for user");
+
+Map&lt;String, String&gt; mdc = ThreadContext.getImmutableContext(); <i class="conum" data-value="1"></i><b>(1)</b>
+List&lt;String&gt; ndc = ThreadContext.getImmutableStack().asList(); <i class="conum" data-value="1"></i><b>(1)</b>
+
+executor.submit(() -&gt; {
+    try (CloseableThreadContext.Instance ignored = CloseableThreadContext
+            .putAll(values) <i class="conum" data-value="2"></i><b>(2)</b>
+            .pushAll(messages)) { <i class="conum" data-value="2"></i><b>(2)</b>
+
+        LOGGER.debug("Processing for user started");
+        // ...
+
+    }
+});</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Taking a snapshot of the thread context</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Initializing the thread context for the background task</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="config"><a class="anchor" href="#config"></a>Configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Since the thread context is inherently linked to the logging implementation, its configuration options depend on the logging implementation used:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Simple Logger</dt>
+<dd>
+<div class="paragraph">
+<p>See <a href="simple-logger.html#thread-context" class="xref page">Thread context configuration of Simple Logger</a>.</p>
+</div>
+</dd>
+<dt class="hdlist1">Log4j Core</dt>
+<dd>
+<div class="paragraph">
+<p>See <a href="systemproperties.html#properties-thread-context" class="xref page">Thread context configuration of Log4j Core</a>.</p>
+</div>
+</dd>
+<dt class="hdlist1">Log4j API to SLF4J bridge</dt>
+<dd>
+<div class="paragraph">
+<p>All <code>ThreadContext</code> method calls are translated into equivalent
+<a href="https://www.slf4j.org/api/org/slf4j/MDC.html"><code>org.slf4j.MDC</code></a>
+method calls.</p>
+</div>
+</dd>
+<dt class="hdlist1">JUL</dt>
+<dd>
+<div class="paragraph">
+<p>All <code>ThreadContext</code> method calls are a no-op.</p>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="extending"><a class="anchor" href="#extending"></a>Extending</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Certain thread context implementation details can be customized to fit your use case.</p>
+</div>
+<div class="sect2">
+<h3 id="custom-ContextDataProvider"><a class="anchor" href="#custom-ContextDataProvider"></a>Custom thread context data provider</h3>
+<div class="paragraph">
+<p>The <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/ContextDataProvider.html"><code>ContextDataProvider</code></a> is an interface applications and libraries can use to inject additional properties into a log events' context data.
+Log4j uses <code>java.util.ServiceLoader</code> to locate and load <code>ContextDataProvider</code> instances.
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/impl/ThreadContextDataProvider.html"><code>ThreadContextDataProvider</code></a> is the default implementation provided.
+You can provide a custom <code>ContextDataProvider</code> implementation as follows:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create the following file in your class path:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">META-INF/services/org.apache.logging.log4j.core.util.ContextDataProvider</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Write the fully-qualified class name of your custom implementation (e.g., <code>com.mycompany.CustomContextDataProvider</code>) to the file created in the previous step</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="custom-ThreadContextMap"><a class="anchor" href="#custom-ThreadContextMap"></a>Custom thread context map</h3>
+<div class="paragraph">
+<p>Custom thread context map implementations can be provided by setting <a href="#log4j2.threadContextMap">the <code>log4j2.threadContextMap</code> system property</a> to the fully-qualified class name of the custom implementation class extending from
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html"><code>ThreadContextMap</code></a>.</p>
+</div>
+<div class="paragraph">
+<p>While providing a custom thread context map implementation, you are advised to also extend from
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/ReadOnlyThreadContextMap.html"><code>ReadOnlyThreadContextMap</code></a>
+too.
+By this way, your custom thread context map implementation will be accessible to applications via
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html#getThreadContextMap()"><code>ThreadContext.getThreadContextMap()</code></a>.</p>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>
+    Copyright © 1999-2024 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
+  </p>
+  <p>
+    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+    Other names may be trademarks of their respective owners.
+  </p>
+</footer>
+<script id="site-script" src="../_/js/site.js" data-ui-root-path="../_"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+<!-- `@asciidoctor/tabs` extension scripts -->
+<script async src="../_/js/vendor/tabs.js"></script>
+  </body>
+</html>

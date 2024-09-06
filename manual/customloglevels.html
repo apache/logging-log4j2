@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Levels :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/customloglevels.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.6">
+<link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
+<!-- `@asciidoctor/tabs` extension styles -->
+<link rel="stylesheet" href="../_/css/vendor/tabs.css">
+<style>
+  /* Swap colors of `IMPORTANT` and `WARNING` blocks */ 
+  .doc .admonitionblock.important .icon { background-color: #f70; }
+  .doc .admonitionblock.warning .icon { background-color: #e40046; }
+  /* Default `h4`, `h5`, and `h6` are smaller than the normal text, fix header font sizing: */
+  .doc h1 { font-size: 1.9rem; }
+  .doc h2 { font-size: 1.7rem; }
+  .doc h3 { font-size: 1.5rem; font-weight: 400; }
+  .doc h4 { font-size: 1.3rem; font-weight: 500; }
+  .doc h5 { font-size: 1.1rem; font-weight: 500; text-decoration: underline; }
+  .doc h6 { font-size: 0.9rem; font-weight: 500; text-decoration: underline; }
+  /* Default `code`, `pre`, and `.colist` (source code annotations) fonts are too big, adjust them: */
+  .doc .colist>table code, .doc p code, .doc thead code { font-size: 0.8em; }
+  .doc pre { font-size: 0.7rem; }
+  .doc .colist { font-size: 0.75rem; }
+  /* Make links more visible: */
+  .doc a { text-decoration: underline; }
+  .doc a code { text-decoration: underline; color: #1565c0; }
+  /* Tab header fonts aren't rendered good, adjusting the font weight: */
+  .tablist > ul li { font-weight: 500; }
+  /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
+  .toc .toc-menu li[data-level="4"] a {
+    padding-left: 2.75rem;
+  }
+  /* Replace the default highlight.js color for strings from red (unnecessarily signaling something negative) to green: */
+  .hljs-string {
+    color: #0f8532;
+  }
+</style>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <img src="../_/../_images/logo-small-white.png" alt="Apache Log4j"/>
+      </div>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://logging.apache.org">a subproject of&nbsp;<strong>Apache Logging Services</strong></a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ROOT" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Home</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../download.html">Download</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../release-notes.html">Release Notes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="https://logging.apache.org/support.html">Support</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Manual</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="getting-started.html">Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="installation.html">Installation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html">API</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html#loggers">Loggers</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="eventlogging.html">Event Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="simple-logger.html">Simple Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="status-logger.html">Status Logger</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="logbuilder.html">Fluent API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html#fish-tagging">Fish tagging</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="customloglevels.html">Levels</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="markers.html">Markers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="thread-context.html">Thread Context</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="messages.html">Messages</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="implementation.html">Implementation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="config-intro.html">Configuration</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="configuration.html">Configuration file</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="systemproperties.html">Configuration properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="customconfig.html">Programmatic configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="appenders.html">Appenders</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/file.html">File appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/rolling-file.html">Rolling file appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/database.html">Database appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/network.html">Network Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/message-queue.html">Message queue appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/delegating.html">Delegating Appenders</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="pattern-layout.html">Pattern Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="filters.html">Filters</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="scripts.html">Scripts</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="jmx.html">JMX</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="extending.html">Extending</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="plugins.html">Plugins</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="performance.html">Performance</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="async.html">Asynchronous loggers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="garbagefree.html">Garbage-free logging</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">References</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../plugin-reference.html">Plugin reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../javadoc.html">Java API reference</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Resources</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../faq.html">F.A.Q.</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-log4j1.html">Migrating from Log4j 1</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-logback.html">Migrating from Logback</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-slf4j.html">Migrating from SLF4J</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../hibernate.html">Integrating with Hibernate</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../jakarta.html">Integrating with Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../soa.html">Integrating with service-oriented architectures</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../development.html">Development</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../components.html">Components</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-boot.html">Log4j Spring Boot Support</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-jul.html">JUL-to-Log4j bridge</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-to-jul.html">Log4j-to-JUL bridge</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Related projects</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jakarta/index.html">Log4j Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jmx-gui/index.html">Log4j JMX GUI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/kotlin/index.html">Log4j Kotlin</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/scala/index.html">Log4j Scala</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/tools/index.html">Log4j Tools</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/transform/index.html">Log4j Transformation Tools</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="index.html">Manual</a></li>
+    <li><a href="api.html">API</a></li>
+    <li><a href="api.html#fish-tagging">Fish tagging</a></li>
+    <li><a href="customloglevels.html">Levels</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/manual/customloglevels.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="4">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Levels</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Log levels are used to categorize log events by severity and control the verbosity of the logs.
+They are one of many <a href="api.html#fish-tagging" class="xref page"><em>fish tagging</em> capabilities provided by Log4j API</a>.
+Using levels, you can filter out less important logs and focus on the most critical ones.</p>
+</div>
+<div class="paragraph">
+<p>Log4j contains following predefined levels:</p>
+</div>
+<table id="standard-log-levels" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Standard log levels</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Priority</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html#OFF"><code>OFF</code></a><a href="#dont-use-in-code">[see note]</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html#FATAL"><code>FATAL</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>100</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html#ERROR"><code>ERROR</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>200</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html#WARN"><code>WARN</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>300</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html#INFO"><code>INFO</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>400</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html#DEBUG"><code>DEBUG</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>500</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html#TRACE"><code>TRACE</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>600</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html#ALL"><code>ALL</code></a><a href="#dont-use-in-code">[see note]</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Integer.MAX_VALUE</code></p></td>
+</tr>
+</tbody>
+</table>
+<div id="dont-use-in-code" class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The <code>OFF</code> and <code>ALL</code> levels are special: they should not be used to fish-tag log events.</p>
+</div>
+<div class="paragraph">
+<p>Log4j API implementations, such as Log4j Core, can use <code>OFF</code> in their configuration files to disable all log statements and <code>ALL</code> to enabled them all.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>A level is composed of a case-sensitive name and a <strong>priority</strong> (of type <code>int</code>), which is used to define an order while comparing two.
+Priority can be used in several contexts to express a filtering capability, for instance:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>WARN</code> is <em>less severe</em> than <code>ERROR</code></p>
+</li>
+<li>
+<p><code>WARN</code> is <em>less specific</em> than <code>ERROR</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The entry point to log levels are through <a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html"><code>Level</code></a>.
+Predefined levels are available for Log4j API integrators through <a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/StandardLevel.html"><code>StandardLevel</code></a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="usage"><a class="anchor" href="#usage"></a><a id="StandardLoggerInterface"></a> Usage</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To assign a level to a log event you can use one of the variants of the
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#log(org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message)"><code>Logger.log(..)</code></a>
+and
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#atLevel(org.apache.logging.log4j.Level)"><code>Logger.atLevel(Level)</code></a>
+methods:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.log(Level.INFO, "Hello {}!", username);
+LOGGER.atLevel(Level.INFO).log("Hello {}!", username);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>Logger</code> interface also contains shorthand methods that always log at a specified log level:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Shorthand <code>Logger</code> methods</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Effective level</th>
+<th class="tableblock halign-left valign-top">Shorthand methods</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>FATAL</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#fatal(org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message)">Logger.fatal(..)</a>,
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#atFatal()">Logger.atFatal()</a></code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#error(org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message)">Logger.error(..)</a>,
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#atError()">Logger.atError()</a></code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WARN</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#warn(org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message)">Logger.warn(..)</a>,
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#atWarn()">Logger.atWarn()</a></code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFO</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#info(org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message)">Logger.info(..)</a>,
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#atInfo()">Logger.atInfo()</a></code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#debug(org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message)">Logger.debug(..)</a>,
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#atDebug()">Logger.atDebug()</a></code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TRACE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#trace(org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message)">Logger.trace(..)</a>,
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html#atTrace()">Logger.atTrace()</a></code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>By using shorthand methods, you can rewrite the example above as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.info("Hello {}!", username);
+LOGGER.atInfo().log("Hello {}!", username);</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="level-selection"><a class="anchor" href="#level-selection"></a>Which level to use?</h3>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>While Log4j API defines a set of standard levels, it does not define the purpose of these levels.
+Many different conventions on which log levels to use coexist in the industry.
+When in doubt, you should ask your teammates about the convention used at your company.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Most log level usage conventions divide log levels into two categories:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the most severe log levels (e.g. <code>FATAL</code>, <code>ERROR</code> and <code>WARN</code>) are used to inform the system administrator about a problem in the Java application that needs to be fixed.
+The more severe the problem, the more severe the log level.</p>
+<div class="paragraph">
+<p>Log events with these levels should be used sparingly and should allow the system administrator to fix the problem.</p>
+</div>
+</li>
+<li>
+<p>the less severe log levels (e.g. <code>INFO</code>, <code>DEBUG</code>, <code>TRACE</code>) provide context that allow a system administrator or developer to diagnose the reason of an application failure.
+The most severe of them describe events that concern the whole application, while the less severe describe events that are interesting for a single sub-system.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="DefiningLevelsInCode"><a class="anchor" href="#DefiningLevelsInCode"></a>Custom log levels</h3>
+<div class="paragraph">
+<p>While most Java logging APIs adopt the same set of standard logging levels, some logging APIs, such as <a href="../log4j-jul.html#default-level-conversions" class="xref page">JUL</a>
+and external logging systems, such as
+<a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.2.1">Syslog</a>
+and
+<a href="https://opentelemetry.io/docs/specs/otel/logs/data-model/#displaying-severity">OpenTelemetry</a>
+support additional logging levels that can not be mapped to the standard ones.</p>
+</div>
+<div class="paragraph">
+<p>To improve interoperability between logging systems, Log4j API supports custom log levels that can be defined using the
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html#forName(java.lang.String,int)"><code>Level.forName()</code></a>
+method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">// OpenTelemetry additional INFO levels
+private static final Level INFO2 = Level.forName("INFO2", 375);
+private static final Level INFO3 = Level.forName("INFO3", 350);
+private static final Level INFO4 = Level.forName("INFO4", 325);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Custom log levels can be used in your code with the usual <code>Logger.log(..)</code> and <code>Logger.atLevel(Level)</code> methods:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.log(INFO2, "Hello {}!", username);
+LOGGER.atLevel(INFO3).log("Hello {}!", username);</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="implementation-support"><a class="anchor" href="#implementation-support"></a>Implementation support</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>All logging implementations support filtering of log events, based on their log level, but the number of available log levels varies between implementations.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>While most logging implementations support <a href="#standard-log-levels">standard log levels</a>, custom log levels are only supported by Log4j Core (and the EOL Log4j 1).
+To ensure independence from a specific logging implementation you should restrict your log statements to <strong>standard</strong> log levels.</p>
+</div>
+<div class="paragraph">
+<p>If you use custom log levels as a fish-tagging technique, you can use alternative
+<a href="api.html#fish-tagging" class="xref page">fish-tagging features</a>
+such as
+<a href="markers.html" class="xref page">Markers</a>,
+which are supported by multiple logging implementations.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="DefiningLevelsInConfiguration"><a class="anchor" href="#DefiningLevelsInConfiguration"></a>Log4j Core</h3>
+<div class="paragraph">
+<p>The Log4j Core implementation fully supports both standard and custom levels.
+Similarly to the <a href="#DefiningLevelsInCode">Log4j API usage</a>, custom levels must be defined in a configuration file before they can be used.
+You can do it using
+<a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-CustomLevelConfig" class="xref page"><code>CustomLevel</code></a>
+configuration elements:</p>
+</div>
+<div id="_tabs_1" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_1_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_1_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_1_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_1_xml--panel" class="tabpanel" aria-labelledby="_tabs_1_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/customloglevels/log4j2.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Appenders&gt;
+  &lt;Console name="CONSOLE"&gt;
+    &lt;PatternLayout pattern="%d [%t] %p %c - %m%n"/&gt;<i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;/Console&gt;
+&lt;/Appenders&gt;
+&lt;CustomLevels&gt;<i class="conum" data-value="4"></i><b>(4)</b>
+  &lt;CustomLevel name="INFO2" intLevel="375"/&gt;
+  &lt;CustomLevel name="INFO3" intLevel="350"/&gt;
+  &lt;CustomLevel name="INFO4" intLevel="325"/&gt;
+&lt;/CustomLevels&gt;
+&lt;Loggers&gt;
+  &lt;Logger name="com.example" level="DEBUG"/&gt;<i class="conum" data-value="2"></i><b>(2)</b>
+  &lt;Root level="INFO2"&gt;<i class="conum" data-value="5"></i><b>(5)</b>
+    &lt;AppenderRef ref="CONSOLE" level="WARN"/&gt;<i class="conum" data-value="3"></i><b>(3)</b>
+  &lt;/Root&gt;
+&lt;/Loggers&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_json--panel" class="tabpanel" aria-labelledby="_tabs_1_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/customloglevels/log4j2.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">"Appenders": {
+  "Console": {
+    "name": "CONSOLE",
+    "PatternLayout": {
+      "pattern": "%d [%t] %p %c - %m%n" <i class="conum" data-value="1"></i><b>(1)</b>
+    }
+  }
+},
+"CustomLevels": { <i class="conum" data-value="4"></i><b>(4)</b>
+  "CustomLevel": [
+    {
+      "name": "INFO2",
+      "intLevel": 375
+    },
+    {
+      "name": "INFO3",
+      "intLevel": 350
+    },
+    {
+      "name": "INFO4",
+      "intLevel": 325
+    }
+  ]
+},
+"Loggers": {
+  "Logger": {
+    "name": "com.example",
+    "level": "DEBUG" <i class="conum" data-value="2"></i><b>(2)</b>
+  },
+  "Root": {
+    "level": "INFO2", <i class="conum" data-value="5"></i><b>(5)</b>
+    "AppenderRef": {
+      "ref": "CONSOLE",
+      "level": "WARN" <i class="conum" data-value="3"></i><b>(3)</b>
+    }
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_yaml--panel" class="tabpanel" aria-labelledby="_tabs_1_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/customloglevels/log4j2.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Appenders:
+  Console:
+    name: "CONSOLE"
+    PatternLayout:
+      pattern: "%d [%t] %p %c - %m%n" <i class="conum" data-value="1"></i><b>(1)</b>
+CustomLevels: <i class="conum" data-value="4"></i><b>(4)</b>
+  CustomLevel:
+    - name: "INFO2"
+      intLevel: 375
+    - name: "INFO3"
+      intlevel: 350
+    - name: "INFO4"
+      intLevel: 325
+Loggers:
+  Logger:
+    name: "com.example"
+    level: "DEBUG" <i class="conum" data-value="2"></i><b>(2)</b>
+  Root:
+    level: "INFO2" <i class="conum" data-value="5"></i><b>(5)</b>
+    AppenderRef:
+      ref: "CONSOLE"
+      level: "WARN" <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_properties--panel" class="tabpanel" aria-labelledby="_tabs_1_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/customloglevels/log4j2.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = Console
+appender.0.name = CONSOLE
+appender.0.layout.type = PatternLayout
+<i class="conum" data-value="1"></i><b>(1)</b>
+appender.0.layout.pattern = %d [%t] %p %c - %m%n
+
+<i class="conum" data-value="4"></i><b>(4)</b>
+customLevel.INFO2 = 375
+customLevel.INFO3 = 350
+customLevel.INFO4 = 325
+
+logger.0.name = com.example
+<i class="conum" data-value="2"></i><b>(2)</b>
+logger.0.level = DEBUG
+<i class="conum" data-value="5"></i><b>(5)</b>
+rootLogger.level = INFO2
+rootLogger.appenderRef.0.ref = CONSOLE
+<i class="conum" data-value="3"></i><b>(3)</b>
+rootLogger.appenderRef.0.level = WARN</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>All the available <a href="layouts.html" class="xref page">Layouts</a> support printing levels.
+In the case of
+<a href="pattern-layout.html" class="xref page">Pattern Layout</a>
+you can use a <a href="pattern-layout.html#converter-level" class="xref page"><code>%p</code> or <code>%level</code></a> pattern.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Loggers support a <a href="configuration.html#logger-attributes-level" class="xref page"><code>level</code></a> configuration attribute to filter log events.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>A <a href="configuration.html#appenderref-attributes-level" class="xref page"><code>level</code></a> attribute is also available in appender references.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Custom levels must be defined before they can be used.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Custom levels can be used anywhere a standard level can be used.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="slf4j-implementations"><a class="anchor" href="#slf4j-implementations"></a>SLF4J implementations (Logback)</h3>
+<div class="paragraph">
+<p>Since SLF4J only supports five log levels (<code>ERROR</code>, <code>WARN</code>, <code>INFO</code>, <code>DEBUG</code> and <code>TRACE</code>) and does not support custom log levels,
+Log4j API levels are converted according to the following table:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. Log4j to SLF4J level conversion</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Log4j level priority</th>
+<th class="tableblock halign-left valign-top">Log4j standard levels</th>
+<th class="tableblock halign-left valign-top">SLF4J Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0 &lt; priority &lt; 300</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>FATAL, ERROR</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://www.slf4j.org/api/org/slf4j/event/Level.html#ERROR">ERROR</a></code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>300 &le; priority &lt; 400</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WARN</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://www.slf4j.org/api/org/slf4j/event/Level.html#WARN">WARN</a></code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>400 &le; priority &lt; 500</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFO</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://www.slf4j.org/api/org/slf4j/event/Level.html#INFO">INFO</a></code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>500 &le; priority &lt; 600</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://www.slf4j.org/api/org/slf4j/event/Level.html#DEBUG">DEBUG</a></code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>600 &le; priority</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TRACE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://www.slf4j.org/api/org/slf4j/event/Level.html#TRACE">TRACE</a></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="jul"><a class="anchor" href="#jul"></a>JUL (<code>java.util.logging</code>)</h3>
+<div class="paragraph">
+<p>Similarly to Log4j API, <code>java.util.logging</code> also supports custom log levels, but the current
+<a href="../log4j-to-jul.html" class="xref page">Log4j-to-JUL bridge</a> implementation does not take advantage of them.
+The conversion of between Log4j log levels and JUL levels is performed accordingly to the following table:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. Log4j to Java level conversion</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Log4j level priority</th>
+<th class="tableblock halign-left valign-top">Log4j standard levels</th>
+<th class="tableblock halign-left valign-top">Java Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0 &le; priority &lt; 300</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>FATAL, ERROR</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/Level.html#SEVERE">SEVERE</a></code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>300 &le; priority &lt; 400</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WARN</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/Level.html#WARNING">WARNING</a></code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>400 &le; priority &lt; 500</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFO</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/Level.html#INFO">INFO</a></code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>500 &le; priority &lt; 600</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/Level.html#FINE">FINE</a></code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>600 &le; priority</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TRACE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/Level.html#FINER">FINER</a></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>
+    Copyright © 1999-2024 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
+  </p>
+  <p>
+    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+    Other names may be trademarks of their respective owners.
+  </p>
+</footer>
+<script id="site-script" src="../_/js/site.js" data-ui-root-path="../_"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+<!-- `@asciidoctor/tabs` extension scripts -->
+<script async src="../_/js/vendor/tabs.js"></script>
+  </body>
+</html>

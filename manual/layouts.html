@@ -1,0 +1,2170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Layouts :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/layouts.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.6">
+<link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
+<!-- `@asciidoctor/tabs` extension styles -->
+<link rel="stylesheet" href="../_/css/vendor/tabs.css">
+<style>
+  /* Swap colors of `IMPORTANT` and `WARNING` blocks */ 
+  .doc .admonitionblock.important .icon { background-color: #f70; }
+  .doc .admonitionblock.warning .icon { background-color: #e40046; }
+  /* Default `h4`, `h5`, and `h6` are smaller than the normal text, fix header font sizing: */
+  .doc h1 { font-size: 1.9rem; }
+  .doc h2 { font-size: 1.7rem; }
+  .doc h3 { font-size: 1.5rem; font-weight: 400; }
+  .doc h4 { font-size: 1.3rem; font-weight: 500; }
+  .doc h5 { font-size: 1.1rem; font-weight: 500; text-decoration: underline; }
+  .doc h6 { font-size: 0.9rem; font-weight: 500; text-decoration: underline; }
+  /* Default `code`, `pre`, and `.colist` (source code annotations) fonts are too big, adjust them: */
+  .doc .colist>table code, .doc p code, .doc thead code { font-size: 0.8em; }
+  .doc pre { font-size: 0.7rem; }
+  .doc .colist { font-size: 0.75rem; }
+  /* Make links more visible: */
+  .doc a { text-decoration: underline; }
+  .doc a code { text-decoration: underline; color: #1565c0; }
+  /* Tab header fonts aren't rendered good, adjusting the font weight: */
+  .tablist > ul li { font-weight: 500; }
+  /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
+  .toc .toc-menu li[data-level="4"] a {
+    padding-left: 2.75rem;
+  }
+  /* Replace the default highlight.js color for strings from red (unnecessarily signaling something negative) to green: */
+  .hljs-string {
+    color: #0f8532;
+  }
+</style>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <img src="../_/../_images/logo-small-white.png" alt="Apache Log4j"/>
+      </div>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://logging.apache.org">a subproject of&nbsp;<strong>Apache Logging Services</strong></a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ROOT" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Home</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../download.html">Download</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../release-notes.html">Release Notes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="https://logging.apache.org/support.html">Support</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Manual</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="getting-started.html">Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="installation.html">Installation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html">API</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html#loggers">Loggers</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="eventlogging.html">Event Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="simple-logger.html">Simple Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="status-logger.html">Status Logger</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="logbuilder.html">Fluent API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html#fish-tagging">Fish tagging</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="customloglevels.html">Levels</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="markers.html">Markers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="thread-context.html">Thread Context</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="messages.html">Messages</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="implementation.html">Implementation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="config-intro.html">Configuration</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="configuration.html">Configuration file</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="systemproperties.html">Configuration properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="customconfig.html">Programmatic configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="appenders.html">Appenders</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/file.html">File appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/rolling-file.html">Rolling file appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/database.html">Database appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/network.html">Network Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/message-queue.html">Message queue appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/delegating.html">Delegating Appenders</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item is-current-page" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="pattern-layout.html">Pattern Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="filters.html">Filters</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="scripts.html">Scripts</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="jmx.html">JMX</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="extending.html">Extending</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="plugins.html">Plugins</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="performance.html">Performance</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="async.html">Asynchronous loggers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="garbagefree.html">Garbage-free logging</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">References</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../plugin-reference.html">Plugin reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../javadoc.html">Java API reference</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Resources</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../faq.html">F.A.Q.</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-log4j1.html">Migrating from Log4j 1</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-logback.html">Migrating from Logback</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-slf4j.html">Migrating from SLF4J</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../hibernate.html">Integrating with Hibernate</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../jakarta.html">Integrating with Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../soa.html">Integrating with service-oriented architectures</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../development.html">Development</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../components.html">Components</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-boot.html">Log4j Spring Boot Support</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-jul.html">JUL-to-Log4j bridge</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-to-jul.html">Log4j-to-JUL bridge</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Related projects</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jakarta/index.html">Log4j Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jmx-gui/index.html">Log4j JMX GUI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/kotlin/index.html">Log4j Kotlin</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/scala/index.html">Log4j Scala</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/tools/index.html">Log4j Tools</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/transform/index.html">Log4j Transformation Tools</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="index.html">Manual</a></li>
+    <li><a href="implementation.html">Implementation</a></li>
+    <li><a href="config-intro.html">Configuration</a></li>
+    <li><a href="layouts.html">Layouts</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/manual/layouts.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="4">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Layouts</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>An <a href="appenders.html" class="xref page">appender</a> uses a <strong>layout</strong> to encode a <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html"><code>LogEvent</code></a> into a form that meets the needs of whatever will be consuming the log event.
+This page will try to answer following questions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#concerns">What are some common concerns shared by all predefined layouts?</a></p>
+</li>
+<li>
+<p><a href="#collection">Which layouts does Log4j provide?</a></p>
+</li>
+<li>
+<p><a href="#extending">How can you create custom layouts?</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="concerns"><a class="anchor" href="#concerns"></a>Common concerns</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This section introduces you to some common concerns shared by almost all <a href="#collection">predefined layouts</a> that you need to be aware of while using them.</p>
+</div>
+<div class="sect2">
+<h3 id="structured-logging"><a class="anchor" href="#structured-logging"></a>Structured logging</h3>
+<div class="paragraph">
+<p>In almost any modern production deployment, logs are no more written to files read by engineers while troubleshooting, but forwarded to log ingestion systems (Elasticsearch, Google Cloud Logging, etc.) for several observability use cases ranging from logging to metrics.
+This necessitates the applications to <em>structure</em> their logs in a machine-readable way ready to be delivered to an external system.
+This act of encoding logs following a certain structure is called <strong>structured logging</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Log4j strives to provide top of the class support for structured logging.
+To create an end-to-end experience, it provides several <a href="messages.html#collection-structured" class="xref page">structured message types</a> along with layouts supporting structured logging.</p>
+</div>
+<div class="paragraph">
+<p>We recommend <a href="json-template-layout.html" class="xref page">JSON Template Layout</a> for structured logging purposes.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="charset"><a class="anchor" href="#charset"></a>Character encoding</h3>
+<div class="paragraph">
+<p>All <a href="#collection">predefined layouts</a> produce <code>String</code> that eventually get converted into a <code>byte</code> using the <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html"><code>Charset</code></a> configured.
+While doing so, unless an explicit encoding configuration is stated, they use <code>UTF-8</code> by default.
+If you want all your log events to be formatted in a certain character encoding that is different from what the employed layout defaults to, make sure to configure the layout&#8217;s character encoding as needed.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="LocationInformation"><a class="anchor" href="#LocationInformation"></a>Location information</h3>
+<div class="paragraph">
+<p>Several layouts offer directives to include the <em>location information</em>: the caller class, method, file, and line.
+Log4j takes a snapshot of the stack, and walks the stack trace to find the location information.
+<strong>This is an expensive operation</strong> and should be avoided in performance-sensitive setups.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Note that <em>the caller class</em> of the location information and <em>the logger name</em> are two different things.
+In most setups just using <em>the logger name</em> – which doesn&#8217;t incur any overhead to obtain while logging! – is a sufficient and <strong>zero-cost substitute for the caller class</strong>.</p>
+</div>
+<details>
+<summary class="title">Example demonstrating that the logger name can be a substitute for the caller name</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package com.mycompany;
+
+public class PaymentService {
+
+    // Logger name: `com.mycompany.PaymentService`
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    private static final class PaymentTransaction {
+        void doPayment() {
+            // Caller class: `com.mycompany.PaymentService$PaymentTransaction`
+            LOGGER.trace("...");
+        }
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the above example, if <em>the caller class</em> (which is expensive to compute!) is omitted in the layout, the produced log line will still be likely to contain sufficient information to trace back the source by just looking at <em>the logger name</em>.</p>
+</div>
+</div>
+</details>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Asynchronous loggers need to capture the location information before passing the log message to another thread; otherwise the location information will be lost after that point.
+Due to associated performance implications, <a href="async.html" class="xref page">asynchronous loggers</a> and <a href="appenders.html#AsyncAppender" class="xref page">asynchronous appenders</a> do <strong>not</strong> include location information by default.
+You can override the default behaviour in your asynchronous logger or asynchronous appender configuration.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Even if a layout is configured not to <strong>request</strong> location information, it might use it if the information is already available.
+This is always the case if the location information is captured at build time using the <a href="https://logging.apache.org/log4j/transform/latest/#log4j-transform-maven-plugin">Log4j Transform Maven Plugin</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="collection"><a class="anchor" href="#collection"></a>Collection</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Log4j bundles predefined layouts to assist in several common deployment use cases.
+Let&#8217;s start with shortcuts to most used ones:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Are you looking for a production-grade <strong>JSON layout ready to be deployed to a log ingestion system</strong> such as Elasticsearch or Google Cloud?
+Refer to <a href="json-template-layout.html" class="xref page">JSON Template Layout</a>.</p>
+</li>
+<li>
+<p>Are you looking for a layout that encodes log events in a <strong>human-readable format suitable for tests and local development</strong>?
+Refer to <a href="pattern-layout.html" class="xref page">Pattern Layout</a>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Following sections explain all predefined layouts in detail.</p>
+</div>
+<div class="paragraph">
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Layout" class="xref page">&#x1F4D6; Plugin reference for all <code>Layout</code> implementations</a></p>
+</div>
+<div class="sect2">
+<h3 id="csv-layouts"><a class="anchor" href="#csv-layouts"></a><a id="CSVLayouts"></a> CSV Layouts</h3>
+<div class="paragraph">
+<p>There are two layouts performing <a href="https://en.wikipedia.org/wiki/Comma-separated_values">Comma Separated Value (CSV)</a> encoding:</p>
+</div>
+<div class="sect3">
+<h4 id="csv-layout-parameter"><a class="anchor" href="#csv-layout-parameter"></a>CSV Parameter Layout</h4>
+<div class="paragraph">
+<p><code>CsvParameterLayout</code> encodes <strong>only</strong> the parameters of the message of a log event.
+Generated CSV records will be composed of fields denoting the message parameters.</p>
+</div>
+<div class="paragraph">
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-CsvParameterLayout" class="xref page">&#x1F4D6; Plugin reference for <code>CsvParameterLayout</code></a></p>
+</div>
+<details>
+<summary class="title">Click here for examples</summary>
+<div class="content">
+<div class="paragraph">
+<p>Given the following statement</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.info("Record1 {} {}", "arg1", "arg2");
+LOGGER.error("Record2 {} {} {}", "arg3", "arg4", "arg5", throwable);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>CsvParameterLayout</code> will output</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">arg1,arg2
+arg3,arg4,arg5</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The same can be achieved using <a href="../javadoc/log4j-api/org/apache/logging/log4j/message/ObjectArrayMessage.html"><code>ObjectArrayMessage</code></a> as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.info(new ObjectArrayMessage("arg1", "arg2"));
+LOGGER.info(new ObjectArrayMessage("arg3", "arg4", "arg5"));</code></pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+<div class="sect3">
+<h4 id="csv-layout-log-event"><a class="anchor" href="#csv-layout-log-event"></a>CSV Log Event Layout</h4>
+<div class="paragraph">
+<p><code>CsvLogEventLayout</code> encodes the complete log event, including the formatted message.
+Generated CSV records will be composed of following fields in the given order:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Time (in nanoseconds)</p>
+</li>
+<li>
+<p>Time (in milliseconds)</p>
+</li>
+<li>
+<p>Level</p>
+</li>
+<li>
+<p>Thread ID</p>
+</li>
+<li>
+<p>Thread name</p>
+</li>
+<li>
+<p>Thread priority</p>
+</li>
+<li>
+<p>Message (formatted, hence including parameters)</p>
+</li>
+<li>
+<p>Logger FQCN</p>
+</li>
+<li>
+<p>Logger name</p>
+</li>
+<li>
+<p>Marker</p>
+</li>
+<li>
+<p>Throwable</p>
+</li>
+<li>
+<p>Source</p>
+</li>
+<li>
+<p>Thread context map</p>
+</li>
+<li>
+<p>Thread context stack</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-CsvLogEventLayout" class="xref page">&#x1F4D6; Plugin reference for <code>CsvLogEventLayout</code></a></p>
+</div>
+<details>
+<summary class="title">Click here for examples</summary>
+<div class="content">
+<div class="paragraph">
+<p>Given the following statement</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.debug("one={}, two={}, three={}", 1, 2, 3);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>CsvLogEventLayout</code> will output</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">0,1441617184044,DEBUG,main,"one=1, two=2, three=3",org.apache.logging.log4j.spi.AbstractLogger,,,,org.apache.logging.log4j.core.layout.CsvLogEventLayoutTest.testLayout(CsvLogEventLayoutTest.java:98),{},[]</code></pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+<div class="sect3">
+<h4 id="csv-layout-config"><a class="anchor" href="#csv-layout-config"></a>Configuration</h4>
+<div class="paragraph">
+<p>Both <code>CsvParameterLayout</code> and <code>CsvLogEventLayout</code> are configured with the following parameters:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>format</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A predefined format name (<code>Default</code>, <code>Excel</code>, <code>MySQL</code>, <code>RFC4180</code>, <code>TDF</code>, etc.) accepted by <a href="https://commons.apache.org/proper/commons-csv/apidocs/org/apache/commons/csv/CSVFormat.html"><code>CSVFormat</code></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>delimiter</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Character</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The field delimiter character</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>escape</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Character</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The escape character</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quote</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Character</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The quote character</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quoteMode</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A quote mode name (<code>ALL</code>, <code>ALL_NONE_NULL</code>, <code>MINIMAL</code>, <code>NON_NUMERIC</code>, <code>NONE</code>, etc.) accepted by <a href="https://commons.apache.org/proper/commons-csv/apidocs/org/apache/commons/csv/QuoteMode.html"><code>QuoteMode</code></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>nullString</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The string to denote <code>null</code> values</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recordSeparator</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The record separator string</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>charset</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Charset</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The character encoding</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>header</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The header to include when the stream is opened</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>footer</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The footer to include when the stream is closed</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Additional runtime dependencies are required for using CSV layouts:</p>
+</div>
+<div id="_tabs_1" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_1_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_1_maven--panel" class="tabpanel" aria-labelledby="_tabs_1_maven">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.commons&lt;/groupId&gt;
+  &lt;artifactId&gt;commons-csv&lt;/artifactId&gt;
+  &lt;version&gt;1.11.0&lt;/version&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_gradle--panel" class="tabpanel" aria-labelledby="_tabs_1_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.commons:commons-csv:1.11.0'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="GELFLayout"><a class="anchor" href="#GELFLayout"></a>GELF Layout</h3>
+<div class="paragraph">
+<p><code>GelfLayout</code> encodes log events in <a href="https://go2docs.graylog.org/current/getting_in_log_data/gelf.html#GELFPayloadSpecification">the GELF specification</a> version <code>1.1</code>.
+It can compress the output when it exceeds a certain threshold.
+This layout does not implement chunking.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>This layout is planned to be removed in the next major release!</strong>
+Unless compression is needed, we advise you to use <a href="json-template-layout.html" class="xref page">JSON Template Layout</a> instead, which provides GELF Layout support out of the box and offers more capabilities and performance.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-GelfLayout" class="xref page">&#x1F4D6; Plugin reference for <code>GelfLayout</code></a></p>
+</div>
+<div class="paragraph">
+<p>GELF Layout is configured with the following parameters:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>additionalFields</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/KeyValuePair.html">KeyValuePair[]</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/KeyValuePair.html"><code>KeyValuePair</code></a> elements denoting additional entries.
+Entry values can contain <a href="lookups.html" class="xref page">Lookups</a> using <code>${</code> syntax.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>compressionThreshold</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Triggers compression if the output is larger than this number of bytes (optional, defaults to 1024)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>compressionType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The compression to use.
+It is optional, and defaults to <code>GZIP</code>.
+Accepted values are <code>GZIP</code>, <code>ZLIB</code>, or <code>OFF</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>host</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The value of the <code>host</code> property (optional, defaults to the local host name)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeMapMessage</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to include fields from <a href="messages.html#MapMessage" class="xref page"><code>MapMessage</code></a>s as additional fields (optional, defaults to <code>true</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeNullDelimiter</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to include <code>NULL</code> byte as delimiter after each event.
+Optional and defaults to <code>false</code>.
+Useful for Graylog GELF TCP input.
+Cannot be used with compression.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeStacktrace</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to include full stacktrace of logged <code>Throwable</code>s.
+Optional and defaults to <code>true</code>.
+If set to <code>false</code>, only the class name and message of the <code>Throwable</code> will be included.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeThreadContext</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to include thread context as additional fields (optional, defaults to <code>true</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mapMessageExcludes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A comma separated list of attributes from the <a href="messages.html#MapMessage" class="xref page"><code>MapMessage</code></a> to exclude when formatting the event.
+This attribute only applies when <code>includeMapMessage</code> is <code>true</code>.
+If <code>mapMessageIncludes</code> are also specified, this attribute will be ignored.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mapMessageIncludes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A comma separated list of attributes from the <a href="messages.html#MapMessage" class="xref page"><code>MapMessage</code></a> to include when formatting the event.
+This attribute only applies when <code>includeMapMessage</code> is <code>true</code>.
+If <code>mapMessageExcludes</code> are also specified, this attribute will override them.
+<code>MapMessage</code> fields specified here that have no value will be omitted.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mapPrefix</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A string to prepend to all elements of the <a href="messages.html#MapMessage" class="xref page"><code>MapMessage</code></a> when rendered as a field (optional, defaults to an empty string)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="GELFLayout-messagePattern"></a> messagePattern</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The pattern to use to format the <code>String</code>.
+A <code>messagePattern</code> and <a href="#GELFLayout-patternSelector"><code>patternSelector</code></a> cannot both be specified.
+If both are present, the message pattern will be ignored and an error will be logged.
+If not supplied, only the text derived from the log message will be used.
+See <a href="pattern-layout.html" class="xref page">Pattern Layout</a> for information on the pattern strings.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>omitEmptyFields</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code>, fields which are null or are zero-length strings will not be included as a field in the produced JSON.
+This setting will not affect if those fields appear in the message fields.
+The default value is <code>false</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="GELFLayout-patternSelector"></a> patternSelector</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="pattern-layout.html#plugin-element-PatternSelector" class="xref page">PatternSelector</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <code>PatternSelector</code> to use to format the <code>String</code>.
+A <a href="#GELFLayout-messagePattern"><code>messagePattern</code></a> and <code>patternSelector</code> cannot both be specified.
+If both are present, the message pattern will be ignored and an error will be logged.
+If not supplied, only the text derived from the logging message will be used.
+See <a href="pattern-layout.html#plugin-element-PatternSelector" class="xref page"><code>PatternSelector</code></a> for information on how to specify a <code>PatternSelector</code>.
+See <a href="pattern-layout.html" class="xref page">Pattern Layout</a> for information on the pattern strings.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>threadContextExcludes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A comma separated list of <a href="thread-context.html" class="xref page">Thread Context</a> map keys to exclude when formatting the event.
+This attribute only applies when <code>includeThreadContext</code> is <code>true</code>.
+If <code>threadContextIncludes</code> are also specified, this attribute will be ignored.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>threadContextIncludes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A comma separated list of <a href="thread-context.html" class="xref page">Thread Context</a> map keys to include when formatting the event.
+This attribute only applies when <code>includeThreadContext</code> is <code>true</code>.
+If <code>threadContextExcludes</code> are also, specified this attribute will override them.
+Thread context fields specified here that have no value will be omitted.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>threadContextPrefix</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A string to prepend to all elements of the <a href="thread-context.html" class="xref page">Thread Context</a> map when rendered as a field (defaults to an empty string)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>GELF Layout is garbage-free if <code>compressionType</code> is <code>OFF</code> and there are no additional fields containing <code>${</code>.</p>
+</div>
+<details>
+<summary class="title">Example configurations</summary>
+<div class="content">
+<div id="_tabs_2" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_2_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_2_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_2_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_2_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_2_xml--panel" class="tabpanel" aria-labelledby="_tabs_2_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/gelf-layout/log4j2.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Console name="CONSOLE"&gt;<i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;GelfLayout messagePattern="%d %5p [%t] %c{1} %X{loginId, requestId} - %m%n"
+              includeThreadContext="true"
+              threadContextIncludes="loginId,requestId"&gt;
+    &lt;KeyValuePair key="additionalField1" value="constant value"/&gt;
+    &lt;KeyValuePair key="additionalField2" value="$${ctx:key}"/&gt;
+  &lt;/GelfLayout&gt;
+&lt;/Console&gt;
+
+&lt;Socket name="GRAYLOG_TCP" protocol="TCP" host="graylog.domain.com" port="12201"&gt;<i class="conum" data-value="2"></i><b>(2)</b>
+  &lt;GelfLayout host="someserver" compressionType="OFF" includeNullDelimiter="true"/&gt;
+&lt;/Socket&gt;
+
+&lt;Socket name="GRAYLOG_UDP" protocol="UDP" host="graylog.domain.com" port="12201"&gt;<i class="conum" data-value="3"></i><b>(3)</b>
+  &lt;GelfLayout host="someserver" compressionType="ZLIB" compressionThreshold="1024"/&gt;
+&lt;/Socket&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_2_json--panel" class="tabpanel" aria-labelledby="_tabs_2_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/gelf-layout/log4j2.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Console": {
+  "name": "CONSOLE",
+  "GelfLayout": { <i class="conum" data-value="1"></i><b>(1)</b>
+    "messagePattern": "%d %5p [%t] %c{1} %X{loginId, requestId} - %m%n",
+    "includeThreadContext": "true",
+    "threadContextIncludes": "loginId,requestId",
+    "KeyValuePair": [
+      {
+        "key": "additionalField1",
+        "value": "constant value"
+      },
+      {
+        "key": "additionalField2",
+        "value": "$${ctx:key}"
+      }
+    ]
+  }
+},
+
+"SocketTcp": { <i class="conum" data-value="2"></i><b>(2)</b>
+  "type": "Socket",
+  "name": "GRAYLOG_TCP",
+  "protocol": "TCP",
+  "host": "graylog.domain.com",
+  "port": 12201,
+  "GelfLayout": {
+    "host": "someserver",
+    "compressionType": "OFF",
+    "includeNullDelimiter": "true"
+  }
+},
+
+"SocketUdp": { <i class="conum" data-value="3"></i><b>(3)</b>
+  "type": "Socket",
+  "name": "GRAYLOG_UDP",
+  "protocol": "UDP",
+  "host": "graylog.domain.com",
+  "port": 12201,
+  "GelfLayout": {
+    "host": "someserver",
+    "compressionType": "ZLIB",
+    "compressionThreshold": 1024
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_2_yaml--panel" class="tabpanel" aria-labelledby="_tabs_2_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/gelf-layout/log4j2.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">Console:
+  name: "CONSOLE"
+  GelfLayout: <i class="conum" data-value="1"></i><b>(1)</b>
+    messagePattern: "%d %5p [%t] %c{1} %X{loginId, requestId} - %m%n"
+    includeThreadContext: "true"
+    threadContextIncludes: "loginId,requestId"
+    KeyValuePair:
+      - key: "additionalField1"
+        value: "constant value"
+      - key: "additionalField2"
+        value: "$${ctx:key}"
+
+SocketTcp: <i class="conum" data-value="2"></i><b>(2)</b>
+  type: "Socket"
+  name: "GRAYLOG_TCP"
+  protocol: "TCP"
+  host: "graylog.domain.com"
+  port: 12201
+  GelfLayout:
+    host: "someserver"
+    compressionType: "OFF"
+    includeNullDelimiter: "true"
+
+SocketUdp: <i class="conum" data-value="3"></i><b>(3)</b>
+  type: "Socket"
+  name: "GRAYLOG_UDP"
+  protocol: "UDP"
+  host: "graylog.domain.com"
+  port: 12201
+  GelfLayout:
+    host: "someserver"
+    compressionType: "ZLIB"
+    compressionThreshold: 1024</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_2_properties--panel" class="tabpanel" aria-labelledby="_tabs_2_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/gelf-layout/log4j2.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">appender.0.type = Console <i class="conum" data-value="1"></i><b>(1)</b>
+appender.0.name = CONSOLE
+appender.0.layout.type = GelfLayout
+appender.0.layout.messagePattern = %d %5p [%t] %c{1} %X{loginId, requestId} - %m%n
+appender.0.layout.includeThreadContext = true
+appender.0.layout.threadContextIncludes = true
+appender.0.layout.KeyValuePair.0.type = KeyValuePair
+appender.0.layout.KeyValuePair.0.key = additionalField1
+appender.0.layout.KeyValuePair.0.value = constant value
+appender.0.layout.KeyValuePair.1.type = KeyValuePair
+appender.0.layout.KeyValuePair.1.key = additionalField2
+appender.0.layout.KeyValuePair.1.value = $${ctx:key}
+
+appender.1.type = Socket <i class="conum" data-value="2"></i><b>(2)</b>
+appender.1.name = GRAYLOG_TCP
+appender.1.protocol = TCP
+appender.1.host = graylog.domain.com
+appender.1.port = 12201
+appender.1.layout.type = GelfLayout
+appender.1.layout.host = someserver
+appender.1.layout.compressionType = OFF
+appender.1.layout.includeNullDelimiter = true
+
+appender.2.type = Socket <i class="conum" data-value="3"></i><b>(3)</b>
+appender.2.name = GRAYLOG_UDP
+appender.2.protocol = UDP
+appender.2.host = graylog.domain.com
+appender.2.port = 12201
+appender.2.layout.type = GelfLayout
+appender.2.layout.host = someserver
+appender.2.layout.compressionType = ZLIB
+appender.2.layout.compressionThreshold = 1024</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Configuration with additional key value pairs</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Configuration for appending to a Graylog server using TCP</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Configuration for appending to a Graylog server using UDP</td>
+</tr>
+</table>
+</div>
+</div>
+</details>
+</div>
+<div class="sect2">
+<h3 id="HTMLLayout"><a class="anchor" href="#HTMLLayout"></a>HTML Layout</h3>
+<div class="paragraph">
+<p><code>HtmlLayout</code> generates an HTML page, and adds each log event to a row in a table.</p>
+</div>
+<div class="paragraph">
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-HtmlLayout" class="xref page">&#x1F4D6; Plugin reference for <code>HtmlLayout</code></a></p>
+</div>
+<div class="paragraph">
+<p>It is configured with the following parameters:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>charset</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The character encoding</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>contentType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <code>Content-Type</code> header value (defaults to <code>text/html</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>datePattern</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The date format of the log event.
+The default is <code>JVM_ELAPSE_TIME</code>, which outputs the milliseconds since JVM started.
+For other valid values, refer to <a href="pattern-layout.html#converter-date" class="xref page">the <code>date</code> conversion specifier of Pattern Layout</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>fontName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <code>font-family</code> (defaults to <code>arial,sans-serif</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>fontSize</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <code>font size</code> (defaults to <code>small</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>locationInfo</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code>, the <a href="#LocationInformation">source location information</a> be included (defaults to <code>false</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>timezone</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The time zone ID of the log event.
+If not specified, this layout uses the <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html#getDefault()"><code>TimeZone.getDefault()</code></a> as the default.
+You can use time zone IDs supported by <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)"><code>TimeZone.getTimeZone(String)</code></a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The HTML page title</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="JSONLayout"><a class="anchor" href="#JSONLayout"></a>JSON Layout</h3>
+<div class="paragraph">
+<p><code>JsonLayout</code> encodes a log event into JSON.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>JSON Layout is considered deprecated.
+It is succeeded by <a href="#JSONTemplateLayout">JSON Template Layout</a> providing more capabilities and efficiency.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-JsonLayout" class="xref page">&#x1F4D6; Plugin reference for <code>JsonLayout</code></a></p>
+</div>
+<details>
+<summary class="title">Click for an example output</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "instant": {
+    "epochSecond": 1493121664,
+    "nanoOfSecond": 118000000
+  },
+  "thread": "main",
+  "level": "INFO",
+  "loggerName": "HelloWorld",
+  "marker": {
+    "name": "child",
+    "parents": [
+      {
+        "name": "parent",
+        "parents": [
+          {
+            "name": "grandparent"
+          }
+        ]
+      }
+    ]
+  },
+  "message": "Hello, world!",
+  "thrown": {
+    "commonElementCount": 0,
+    "message": "error message",
+    "name": "java.lang.RuntimeException",
+    "extendedStackTrace": [
+      {
+        "class": "logtest.Main",
+        "method": "main",
+        "file": "Main.java",
+        "line": 29,
+        "exact": true,
+        "location": "classes/",
+        "version": "?"
+      }
+    ]
+  },
+  "contextStack": ["one", "two"],
+  "endOfBatch": false,
+  "loggerFqcn": "org.apache.logging.log4j.spi.AbstractLogger",
+  "contextMap": {
+    "bar": "BAR",
+    "foo": "FOO"
+  },
+  "threadId": 1,
+  "threadPriority": 5,
+  "source": {
+    "class": "logtest.Main",
+    "method": "main",
+    "file": "Main.java",
+    "line": 29
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p>JSON Layout is configured with the following parameters:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter Name</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>additionalFields</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/KeyValuePair.html">KeyValuePair[]</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/KeyValuePair.html"><code>KeyValuePair</code></a> elements denoting additional entries.
+Entry values can contain <a href="lookups.html" class="xref page">Lookups</a> using <code>${</code> syntax.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>charset</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The character encoding (defaults to <code>UTF-8</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>compact</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code>, does not use <code>endOfLine</code> and indentation.
+This feature is also referred to as <em>pretty-printing</em> too.
+It defaults to <code>false</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>complete</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code>, uses <code>header</code> and <code>footer</code>, and places comma between records – this leads to a well-formed JSON document given <code>header</code> and <code>footer</code> defaults to <code>[</code> and <code>]</code>, respectively.
+It defaults to <code>false</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>endOfLine</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If set, overrides the default end-of-line string.
+For instance, set it to <code>\n</code> and use with <code>eventEol=true</code> and <code>compact=true</code> to have one record per line separated by <code>\n</code> instead of <code>\r\n</code>.
+It is not set by default.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>eventEol</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code>, appends an <code>endOfLine</code> after each log event, even if <code>compact=true</code>.
+It defaults to <code>false</code>.
+Use with <code>eventEol=true</code> and <code>compact=true</code> to get one record per line.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>footer</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The footer to include when the stream is closed and <code>complete=true</code> (defaults to <code>]</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>header</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The header to include when the stream is opened and <code>complete=true</code> (defaults to <code>[</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeNullDelimiter</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code>, a NULL byte will suffix each encoded log event (defaults to <code>false</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeStacktrace</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code>, include full stacktrace of any logged <code>Throwable</code> (defaults to <code>true</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeTimeMillis</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code>, a <code>timeMillis</code> attribute is included in the JSON payload instead of the <code>instant</code>.
+<code>timeMillis</code> will contain the number of milliseconds since 1970-01-01T00:00:00Z.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>locationInfo</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code>, the appender includes the <a href="#LocationInformation">source location information</a> in the generated JSON (defaults to <code>false</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>objectMessageAsJsonObject</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code>, <a href="messages.html#ObjectMessage" class="xref page"><code>ObjectMessage</code></a> is serialized as JSON object to the <code>message</code> field of the output log (defaults to <code>false</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>properties</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code>, the appender includes the <a href="thread-context.html" class="xref page">Thread Context</a> map in the generated JSON (defaults to <code>false</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>propertiesAsList</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code>, the <a href="thread-context.html" class="xref page">Thread Context</a> map is included as a list of map entry objects, where each entry is denoted as a JSON object containg <code>key</code> and <code>value</code> fields.
+It defaults to <code>false</code>, in which case the thread context map is included as a simple map of key-value pairs.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>stacktraceAsString</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code>, the stacktrace will be formatted as <code>String</code>, and not a nested object (optional, defaults to <code>false</code>)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Additional runtime dependencies are required for using JSON Layout:</p>
+</div>
+<div id="_tabs_3" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_3_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_3_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_3_maven--panel" class="tabpanel" aria-labelledby="_tabs_3_maven">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;
+  &lt;artifactId&gt;jackson-databind&lt;/artifactId&gt;
+  &lt;version&gt;2.17.2&lt;/version&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_3_gradle--panel" class="tabpanel" aria-labelledby="_tabs_3_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.core:jackson-databind:2.17.2'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="JSONTemplateLayout"><a class="anchor" href="#JSONTemplateLayout"></a>JSON Template Layout</h3>
+<div class="paragraph">
+<p><code>JsonTemplateLayout</code> is a customizable, efficient, and garbage-free JSON generating layout.
+It encodes <code>LogEvent</code>s according to the structure described by the JSON template provided.</p>
+</div>
+<div class="paragraph">
+<p>For instance, given the following event template stored in <code>MyLayout.json</code> in your classpath:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "instant": { <i class="conum" data-value="1"></i><b>(1)</b>
+    "$resolver": "timestamp",
+    "pattern": {
+      "format": "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+      "timeZone": "UTC"
+    }
+  },
+  "someConstant": 1, <i class="conum" data-value="2"></i><b>(2)</b>
+  "message": { <i class="conum" data-value="3"></i><b>(3)</b>
+    "$resolver": "message",
+    "stringified": true
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Using the <code>timestamp</code> event template resolver to populate the <code>instant</code> field</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Passing a constant that will be rendered as is</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Using the <code>message</code> event template resolver to populate the <code>message</code> field</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>in combination with the below layout configuration:</p>
+</div>
+<div id="_tabs_4" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_4_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_4_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_4_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_4_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_4_xml--panel" class="tabpanel" aria-labelledby="_tabs_4_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/json-template-layout/usage/log4j2.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;JsonTemplateLayout eventTemplateUri="classpath:MyLayout.json"/&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_4_json--panel" class="tabpanel" aria-labelledby="_tabs_4_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/json-template-layout/usage/log4j2.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"JsonTemplateLayout": {
+  "eventTemplateUri": "classpath:MyLayout.json"
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_4_yaml--panel" class="tabpanel" aria-labelledby="_tabs_4_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/json-template-layout/usage/log4j2.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">JsonTemplateLayout:
+  eventTemplateUri: "classpath:MyLayout.json"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_4_properties--panel" class="tabpanel" aria-labelledby="_tabs_4_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/json-template-layout/usage/log4j2.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">appender.0.layout.type = JsonTemplateLayout
+appender.0.layout.eventTemplateUri = classpath:MyLayout.json</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>JSON Template Layout generates JSON as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{"instant":"2017-05-25T19:56:23.370Z","someConstant":1,"message":"Hello, error!"} <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>JSON pretty-printing is not supported for performance reasons.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Good news is JSON Template Layout is perfectly production-ready without any configuration!
+It bundles several predefined event templates modeling popular JSON-based log formats.</p>
+</div>
+<div class="paragraph">
+<p>Read more on <a href="json-template-layout.html" class="xref page">JSON Template Layout</a>&#8230;&#8203;</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="MessageLayout"><a class="anchor" href="#MessageLayout"></a>Message Layout</h3>
+<div class="paragraph">
+<p><code>MessageLayout</code> is a special layout that extracts the
+<a href="messages.html" class="xref page"><code>Message</code></a>
+contained in a log event.
+It is currently only useful with the
+<a href="appenders/database.html#JdbcAppender" class="xref page">JDBC Appender</a>.</p>
+</div>
+<div class="paragraph">
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-MessageLayout" class="xref page">&#x1F4D6; Plugin reference for <code>MessageLayout</code></a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="pattern-layout"><a class="anchor" href="#pattern-layout"></a><a id="PatternLayout"></a> Pattern Layout</h3>
+<div class="paragraph">
+<p><code>PatternLayout</code> is a customizable, efficient, garbage-free, and human-readable string generating layout using a user-provided pattern.
+It is analogous to <code>String#format()</code> with specialized directives on injecting certain properties of a <code>LogEvent</code>.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Pattern Layout is not intended for <em>structural logging</em> purposes.
+For production environments, you are strongly advised to use <a href="json-template-layout.html" class="xref page">JSON Template Layout</a> producing JSON output ready to be delivered to log ingestion systems such as Elasticsearch or Google Cloud Logging.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>A conversion pattern is composed of literal text and format control expressions.
+For instance, given the <code>%-5p [%t]: %m%n</code> pattern, following statements</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">LOGGER.debug("Message 1");
+LOGGER.warn("Message 2");</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>will yield the output</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">DEBUG [main]: Message 1
+WARN  [main]: Message 2</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Read more on <a href="pattern-layout.html" class="xref page">Pattern Layout</a>&#8230;&#8203;</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="RFC5424Layout"><a class="anchor" href="#RFC5424Layout"></a>RFC 5424 Layout</h3>
+<div class="paragraph">
+<p><code>Rfc5424</code> Layout encodes log events according to <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6">the Syslog message format described in RFC 5424</a>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>RFC 5424 obsoletes RFC 3164, implemented by <a href="#SyslogLayout">Syslog Layout</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-Rfc5424Layout" class="xref page">&#x1F4D6; Plugin reference for <code>Rfc5424Layout</code></a></p>
+</div>
+<div class="paragraph">
+<p>RFC 5424 Layout is configured with the following parameters:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>appName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <code>APP-NAME</code> field as described in RFC 5424</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>charset</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The character encoding (defaults to <code>UTF-8</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>enterpriseNumber</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>integer</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <code>enterpriseId</code> parameter as described in RFC 5424.
+If missing, <code>32473</code> will be used, which is <a href="https://www.rfc-editor.org/rfc/rfc5612.html#section-2">reserved for documentation use</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>exceptionPattern</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An <a href="pattern-layout.html#converter-exception" class="xref page"><code>exception</code> conversion specifier of Pattern Layout</a>.
+The default is to not include the <code>Throwable</code> from the event, if any, in the output.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>facility</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/net/Facility.html"><code>Facility</code></a> as described in RFC 5424.
+The matching is case-insensitive.
+It defaults to <code>LOCAL0</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The default <em>Structured Data ID</em> to use when formatting according to RFC 5424.
+If the log event contains a <a href="messages.html#StructuredDataMessage" class="xref page"><code>StructuredDataMessage</code></a>, the ID from that message will be used instead.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeMDC</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Indicates whether data from the <a href="thread-context.html" class="xref page">Thread Context</a> map will be included in the RFC 5424 Syslog record (defaults to <code>true</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>loggerFields</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/KeyValuePair.html">KeyValuePair[]</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows arbitrary <a href="thread-context.html" class="xref page">Thread Context</a> map entries.
+To use, include a <code>LoggerFields</code> nested element, containing one or more <code>KeyValuePair</code> elements.
+Each <code>KeyValuePair</code> must have <code>key</code> and <code>value</code> attributes associating them with a thread context map entry.
+The <code>value</code> attribute can be an arbitrary <a href="pattern-layout.html" class="xref page">Pattern Layout</a> pattern.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdcExcludes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A comma-separated list of <a href="thread-context.html" class="xref page">Thread Context</a> map (aka, MDC) keys that should be excluded.
+This is mutually exclusive with <code>mdcIncludes</code>.
+This attribute only applies to RFC 5424 Syslog records.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdcIncludes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A comma-separated list of <a href="thread-context.html" class="xref page">Thread Context</a> map (aka, MDC) keys that should be included.
+Any keys in the thread context map not found in the list will be excluded.
+This option is mutually exclusive with <code>mdcExcludes</code>.
+This attribute only applies to RFC 5424 Syslog records.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdcId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID to use for the <a href="thread-context.html" class="xref page">Thread Context</a> map (aka, MDC) Structured Data Element.
+It defaults to <code>mdc</code>.
+This attribute only applies to RFC 5424 Syslog records.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdcPrefix</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A string to be prepended to each <a href="thread-context.html" class="xref page">Thread Context</a> map (aka, MDC) key to distinguish it from event attributes.
+It defaults to <code>mdc:</code>.
+This attribute only applies to RFC 5424 Syslog records.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdcRequired</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A comma-separated list of <a href="thread-context.html" class="xref page">Thread Context</a> map (aka, MDC) keys that must be present.
+If a key is not present, a
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/LoggingException.html"><code>LoggingException</code></a>
+will be thrown.
+This attribute only applies to RFC 5424 Syslog records.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>messageId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The default value to be used in the <code>MSGID</code> field of RFC 5424 Syslog records</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>newLine</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code>, a <code>\n</code> character will be appended to the end of the Syslog record (defaults to <code>false</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>newLineEscape</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The string that should be used to replace newlines within the message text</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>RFC 5424 Layout has specialized handling for <a href="messages.html#StructuredDataMessage" class="xref page"><code>StructuredDataMessage</code></a>s.
+By combining two, users can have complete control on how their message is encoded in a way compliant with RFC 5424, while RFC 5424 Layout will make sure the rest of the information attached to the log event is properly injected.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="SerializedLayout"><a class="anchor" href="#SerializedLayout"></a>Serialized Layout</h3>
+<div class="paragraph">
+<p><code>SerializedLayout</code> encodes a log event using <a href="https://docs.oracle.com/javase/8/docs/platform/serialization/spec/protocol.html">Java Serialization</a>.
+It accepts no configuration parameters.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This layout has been deprecated since version <code>2.9</code>.
+Java Serialization has inherent security weaknesses.
+<strong>Serialized Layout users are strongly advised to migrate to another layout!</strong></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-SerializedLayout[{plugin-reference-marker} Plugin reference for `SerializedLayout`]</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="SyslogLayout"><a class="anchor" href="#SyslogLayout"></a>Syslog Layout</h3>
+<div class="paragraph">
+<p><code>SyslogLayout</code> encodes log events according to <a href="https://datatracker.ietf.org/doc/html/rfc3164#section-4.1">the syslog message format described in RFC 3164</a>.
+This matches the same format used by <a href="https://logging.apache.org/log4j/1.x/index.html">Log4j 1</a>.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>RFC 3164, implemented by Syslog Layout, is obsoleted by RFC 5424, implemented by <a href="#RFC5424Layout">RFC 5424 Layout</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-SyslogLayout" class="xref page">&#x1F4D6; Plugin reference for <code>SyslogLayout</code></a></p>
+</div>
+<div class="paragraph">
+<p>Syslog Layout is configured with the following parameters:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>charset</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The character encoding (defaults to <code>UTF-8</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>facility</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/net/Facility.html"><code>Facility</code></a> as described in RFC 5424.
+The matching is case-insensitive.
+It defaults to <code>LOCAL0</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>newLine</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code>, a <code>\n</code> character will be appended to the end of the Syslog record (defaults to <code>false</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>newLineEscape</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The string that should be used to replace newlines within the message text</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="XMLLayout"><a class="anchor" href="#XMLLayout"></a>XML Layout</h3>
+<div class="paragraph">
+<p><code>XmlLayout</code> encodes a log event into XML.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>This layout is planned to be removed in the next major release!</strong>
+XML Layout users are strongly advised to migrate to another layout!</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-XmlLayout" class="xref page">&#x1F4D6; Plugin reference for <code>XmlLayout</code></a></p>
+</div>
+<details>
+<summary class="title">Click for an example output</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Event xmlns="https://logging.apache.org/log4j/2.0/events"
+       level="INFO"
+       loggerName="HelloWorld"
+       endOfBatch="false"
+       thread="main"
+       loggerFqcn="org.apache.logging.log4j.spi.AbstractLogger"
+       threadId="1"
+       threadPriority="5"&gt;
+  &lt;Instant epochSecond="1493121664" nanoOfSecond="118000000"/&gt;
+  &lt;Marker name="child"&gt;
+    &lt;Parents&gt;
+      &lt;Marker name="parent"&gt;
+        &lt;Parents&gt;
+          &lt;Marker name="grandparent"/&gt;
+        &lt;/Parents&gt;
+      &lt;/Marker&gt;
+    &lt;/Parents&gt;
+  &lt;/Marker&gt;
+  &lt;Message&gt;Hello, world!&lt;/Message&gt;
+  &lt;ContextMap&gt;
+    &lt;item key="bar" value="BAR"/&gt;
+    &lt;item key="foo" value="FOO"/&gt;
+  &lt;/ContextMap&gt;
+  &lt;ContextStack&gt;
+    &lt;ContextStackItem&gt;one&lt;/ContextStackItem&gt;
+    &lt;ContextStackItem&gt;two&lt;/ContextStackItem&gt;
+  &lt;/ContextStack&gt;
+  &lt;Source
+      class="logtest.Main"
+      method="main"
+      file="Main.java"
+      line="29"/&gt;
+  &lt;Thrown commonElementCount="0" message="error message" name="java.lang.RuntimeException"&gt;
+    &lt;ExtendedStackTrace&gt;
+      &lt;ExtendedStackTraceItem
+          class="logtest.Main"
+          method="main"
+          file="Main.java"
+          line="29"
+          exact="true"
+          location="classes/"
+          version="?"/&gt;
+    &lt;/ExtendedStackTrace&gt;
+  &lt;/Thrown&gt;
+&lt;/Event&gt;</code></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p>XML Layout configuration is identical to the one of <a href="#JSONLayout">JSON Layout</a>, with following exceptions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>header</code> and <code>footer</code> parameters are discarded</p>
+</li>
+<li>
+<p>If <code>complete=true</code>, each log event will be encoded into a well-formed XML document, such that:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>&lt;?xml version&#8230;&#8203;</code> preamble will be added</p>
+</li>
+<li>
+<p>The root <code>&lt;event</code> element will be enriched with <code>namespace="http://logging.apache.org/log4j/2.0/events"</code> attribute</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Additional runtime dependencies are required for using XML Layout:</p>
+</div>
+<div id="_tabs_5" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_5_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_5_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_5_maven--panel" class="tabpanel" aria-labelledby="_tabs_5_maven">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.fasterxml.jackson.dataformat&lt;/groupId&gt;
+  &lt;artifactId&gt;jackson-dataformat-xml&lt;/artifactId&gt;
+  &lt;version&gt;2.17.2&lt;/version&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_5_gradle--panel" class="tabpanel" aria-labelledby="_tabs_5_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.17.2'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="YamlLayout"><a class="anchor" href="#YamlLayout"></a>YAML Layout</h3>
+<div class="paragraph">
+<p><code>YamlLayout</code> encodes a log event into YAML.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This layout is planned to be removed in the next major release!</p>
+</div>
+<div class="paragraph">
+<p>YAML is a superset of JSON.
+<strong>We strongly advise existing YAML Layout users to migrate to <a href="#JSONTemplateLayout">JSON Template Layout</a></strong> providing more capabilities and efficiency.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-YamlLayout" class="xref page">&#x1F4D6; Plugin reference for <code>YamlLayout</code></a></p>
+</div>
+<details>
+<summary class="title">Click for an example output</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">instant:
+  epochSecond: 1493121664
+  nanoOfSecond: 118000000
+thread: "main"
+level: "INFO"
+loggerName: "HelloWorld"
+marker:
+  name: "child"
+  parents:
+  - name: "parent"
+    parents:
+    - name: "grandparent"
+message: "Hello, world!"
+thrown:
+  commonElementCount: 0
+  message: "error message"
+  name: "java.lang.RuntimeException"
+  extendedStackTrace:
+  - class: "logtest.Main"
+    method: "main"
+    file: "Main.java"
+    line: 29
+    exact: true
+    location: "classes/"
+    version: "?"
+contextStack:
+- "one"
+- "two"
+endOfBatch: false
+loggerFqcn: "org.apache.logging.log4j.spi.AbstractLogger"
+contextMap:
+  bar: "BAR"
+  foo: "FOO"
+threadId: 1
+threadPriority: 5
+source:
+  class: "logtest.Main"
+  method: "main"
+  file: "Main.java"
+  line: 29</code></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p>YAML Layout configuration is identical to the one of <a href="#JSONLayout">JSON Layout</a>, with following exceptions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>header</code> defaults to an empty string</p>
+</li>
+<li>
+<p>The <code>footer</code> defaults to an empty string</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Additional runtime dependencies are required for using XML Layout:</p>
+</div>
+<div id="_tabs_6" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_6_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_6_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_6_maven--panel" class="tabpanel" aria-labelledby="_tabs_6_maven">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.fasterxml.jackson.dataformat&lt;/groupId&gt;
+  &lt;artifactId&gt;jackson-dataformat-yaml&lt;/artifactId&gt;
+  &lt;version&gt;2.17.2&lt;/version&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_6_gradle--panel" class="tabpanel" aria-labelledby="_tabs_6_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.17.2'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="extending"><a class="anchor" href="#extending"></a>Extending</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Layouts are <a href="plugins.html" class="xref page">plugins</a> implementing <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html">the <code>Layout</code> interface</a>.
+This section will guide you on how to create custom ones.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>While <a href="#collection">the predefined layout collection</a> should address most common use cases, you might find yourself needing to implement a custom one.
+If this is the case, we really appreciate it if you can <strong>share your use case in a <a href="https://logging.apache.org/support.html">user support channel</a></strong>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="extending-plugins"><a class="anchor" href="#extending-plugins"></a>Plugin preliminaries</h3>
+<div class="paragraph">
+<p>Log4j plugin system is the de facto extension mechanism embraced by various Log4j components.
+Plugins provide extension points to components, that can be used to implement new features, without modifying the original component.
+It is analogous to a <a href="https://en.wikipedia.org/wiki/Dependency_injection">dependency injection</a> framework, but curated for Log4j-specific needs.</p>
+</div>
+<div class="paragraph">
+<p>In a nutshell, you annotate your classes with <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/Plugin.html"><code>@Plugin</code></a> and their (<code>static</code>) factory methods with <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/PluginFactory.html"><code>@PluginFactory</code></a>.
+Last, you inform the Log4j plugin system to discover these custom classes.
+This is done using running the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/processor/PluginProcessor.html"><code>PluginProcessor</code></a> annotation processor while building your project.
+Refer to <a href="plugins.html" class="xref page">Plugins</a> for details.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="extending-layouts"><a class="anchor" href="#extending-layouts"></a>Extending layouts</h3>
+<div class="paragraph">
+<p>Layouts are <a href="plugins.html" class="xref page">plugins</a> implementing <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html">the <code>Layout</code> interface</a>.
+If your layout is a <code>String</code>-based one, we recommend you to extend your plugin class from <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/AbstractStringLayout.html"><code>AbstractStringLayout</code></a>, which contains convenience for some of the boilerplate code shared by <code>String</code>-based layouts.
+While annotating your layout with <code>@Plugin</code>, you need to make sure that</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>It has a unique <code>name</code> attribute across all available <code>Layout</code> plugins</p>
+</li>
+<li>
+<p>The <code>category</code> attribute is set to <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Node.html#CATEGORY"><code>Node.CATEGORY</code></a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You can check out following files for examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-core/src/main/java/org/apache/logging/log4j/core/layout/SyslogLayout.java"><code>SyslogLayout.java</code></a> – simple, single-file, extending from <code>AbstractStringLayout</code></p>
+</li>
+<li>
+<p><a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-layout-template-json/src/main/java/org/apache/logging/log4j/layout/template/json/JsonTemplateLayout.java"><code>JsonTemplateLayout.java</code></a> – advanced, using plugins for composing several of its features, contains <em>recycler</em> concept for <a href="garbagefree.html" class="xref page">garbage-free</a> operation, extends from <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/StringLayout.html"><code>StringLayout</code></a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>
+    Copyright © 1999-2024 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
+  </p>
+  <p>
+    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+    Other names may be trademarks of their respective owners.
+  </p>
+</footer>
+<script id="site-script" src="../_/js/site.js" data-ui-root-path="../_"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+<!-- `@asciidoctor/tabs` extension scripts -->
+<script async src="../_/js/vendor/tabs.js"></script>
+  </body>
+</html>

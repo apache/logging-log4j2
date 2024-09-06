@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Architecture :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/architecture.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.6">
+<link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
+<!-- `@asciidoctor/tabs` extension styles -->
+<link rel="stylesheet" href="../_/css/vendor/tabs.css">
+<style>
+  /* Swap colors of `IMPORTANT` and `WARNING` blocks */ 
+  .doc .admonitionblock.important .icon { background-color: #f70; }
+  .doc .admonitionblock.warning .icon { background-color: #e40046; }
+  /* Default `h4`, `h5`, and `h6` are smaller than the normal text, fix header font sizing: */
+  .doc h1 { font-size: 1.9rem; }
+  .doc h2 { font-size: 1.7rem; }
+  .doc h3 { font-size: 1.5rem; font-weight: 400; }
+  .doc h4 { font-size: 1.3rem; font-weight: 500; }
+  .doc h5 { font-size: 1.1rem; font-weight: 500; text-decoration: underline; }
+  .doc h6 { font-size: 0.9rem; font-weight: 500; text-decoration: underline; }
+  /* Default `code`, `pre`, and `.colist` (source code annotations) fonts are too big, adjust them: */
+  .doc .colist>table code, .doc p code, .doc thead code { font-size: 0.8em; }
+  .doc pre { font-size: 0.7rem; }
+  .doc .colist { font-size: 0.75rem; }
+  /* Make links more visible: */
+  .doc a { text-decoration: underline; }
+  .doc a code { text-decoration: underline; color: #1565c0; }
+  /* Tab header fonts aren't rendered good, adjusting the font weight: */
+  .tablist > ul li { font-weight: 500; }
+  /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
+  .toc .toc-menu li[data-level="4"] a {
+    padding-left: 2.75rem;
+  }
+  /* Replace the default highlight.js color for strings from red (unnecessarily signaling something negative) to green: */
+  .hljs-string {
+    color: #0f8532;
+  }
+</style>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <img src="../_/../_images/logo-small-white.png" alt="Apache Log4j"/>
+      </div>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://logging.apache.org">a subproject of&nbsp;<strong>Apache Logging Services</strong></a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ROOT" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Home</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../download.html">Download</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../release-notes.html">Release Notes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="https://logging.apache.org/support.html">Support</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Manual</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="getting-started.html">Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="installation.html">Installation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html">API</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html#loggers">Loggers</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="eventlogging.html">Event Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="simple-logger.html">Simple Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="status-logger.html">Status Logger</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="logbuilder.html">Fluent API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html#fish-tagging">Fish tagging</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="customloglevels.html">Levels</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="markers.html">Markers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="thread-context.html">Thread Context</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="messages.html">Messages</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="implementation.html">Implementation</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="config-intro.html">Configuration</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="configuration.html">Configuration file</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="systemproperties.html">Configuration properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="customconfig.html">Programmatic configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="appenders.html">Appenders</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/file.html">File appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/rolling-file.html">Rolling file appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/database.html">Database appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/network.html">Network Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/message-queue.html">Message queue appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/delegating.html">Delegating Appenders</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="pattern-layout.html">Pattern Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="filters.html">Filters</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="scripts.html">Scripts</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="jmx.html">JMX</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="extending.html">Extending</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="plugins.html">Plugins</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="performance.html">Performance</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="async.html">Asynchronous loggers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="garbagefree.html">Garbage-free logging</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">References</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../plugin-reference.html">Plugin reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../javadoc.html">Java API reference</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Resources</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../faq.html">F.A.Q.</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-log4j1.html">Migrating from Log4j 1</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-logback.html">Migrating from Logback</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-slf4j.html">Migrating from SLF4J</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../hibernate.html">Integrating with Hibernate</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../jakarta.html">Integrating with Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../soa.html">Integrating with service-oriented architectures</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../development.html">Development</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../components.html">Components</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-boot.html">Log4j Spring Boot Support</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-jul.html">JUL-to-Log4j bridge</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-to-jul.html">Log4j-to-JUL bridge</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Related projects</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jakarta/index.html">Log4j Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jmx-gui/index.html">Log4j JMX GUI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/kotlin/index.html">Log4j Kotlin</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/scala/index.html">Log4j Scala</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/tools/index.html">Log4j Tools</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/transform/index.html">Log4j Transformation Tools</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="index.html">Manual</a></li>
+    <li><a href="implementation.html">Implementation</a></li>
+    <li><a href="architecture.html">Architecture</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/manual/architecture.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="4">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Architecture</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Log4j Core is the reference implementation of <a href="api.html" class="xref page">Log4j API</a> and composed of several components.
+In this section we will try to explain major pillars its architecture stands on.
+An overview these major classes can be depicted as follows:</p>
+</div>
+<div id="architecture-diagram" class="imageblock kroki">
+<div class="content">
+<img src="../_images/diag-3f8a04c810525cc09a5e7564abf3aa14ed1f7c81.svg" alt="An overview of major classes and their relation">
+</div>
+<div class="title">Figure 1. An overview of major classes and their relation</div>
+</div>
+<div class="paragraph">
+<p>At a really high level,</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A <a href="#LoggerContext"><code>LoggerContext</code></a>, the composition anchor, gets created in combination with a <a href="#Configuration"><code>Configuration</code></a>.
+Both can be created either directly (i.e., programmatically) or indirectly at first interaction with Log4j.</p>
+</li>
+<li>
+<p><code>LoggerContext</code> creates <a href="#Logger"><code>Logger</code></a>s that users interact with for logging purposes.</p>
+</li>
+<li>
+<p><a href="#Appender"><code>Appender</code></a> delivers a <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html"><code>LogEvent</code></a> to a target (file, socket, database, etc.) and typically uses a <a href="#Layout"><code>Layout</code></a> to encode log events and an <a href="#AbstractManager"><code>AbstractManager</code></a> to handle the lifecycle of the target resource.</p>
+</li>
+<li>
+<p><a href="#LoggerConfig"><code>LoggerConfig</code></a> encapsulates configuration for a <code>Logger</code>, as <code>AppenderControl</code> and <code>AppenderRef</code> for <code>Appender</code>s.</p>
+</li>
+<li>
+<p><a href="#Configuration"><code>Configuration</code></a> is equipped with <a href="#StrSubstitutor"><code>StrSubstitutor</code> et al.</a> to allow property substitution in <code>String</code>-typed values.</p>
+</li>
+<li>
+<p>A typical <code>log()</code> call triggers a chain of invocations through classes <code>Logger</code>, <code>LoggerConfig</code>, <code>AppenderControl</code>, <code>Appender</code>, and <code>AbstractManager</code> in order – this is depicted using green arrows in <a href="#architecture-diagram">Figure 1</a>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Following sections examine this interplay in detail.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="LoggerContext"><a class="anchor" href="#LoggerContext"></a><code>LoggerContext</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html"><code>LoggerContext</code></a> acts as the anchor point for the logging system.
+It is associated with an active <a href="#Configuration"><code>Configuration</code></a> and is primarily responsible for instantiating <a href="#Logger"><code>Logger</code></a>s.</p>
+</div>
+<div id="LoggerContext-diagram" class="imageblock kroki">
+<div class="content">
+<img src="../_images/diag-fd71b342bbb89cd55a1ddb592976b9ac26b6348e.svg" alt="`LoggerContext` and other directly related classes">
+</div>
+<div class="title">Figure 2. <code>LoggerContext</code> and other directly related classes</div>
+</div>
+<div class="paragraph">
+<p>In most cases, applications have a single global <code>LoggerContext</code>.
+Though in certain cases (e.g., Java EE applications), Log4j can be configured to accommodate multiple <code>LoggerContext</code>s.
+Refer to <a href="../jakarta.html#log-separation" class="xref page">Log Separation</a> for details.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Configuration"><a class="anchor" href="#Configuration"></a><code>Configuration</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Every <a href="#LoggerContext"><code>LoggerContext</code></a> is associated with an active <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html"><code>Configuration</code></a>.
+It models the configuration of all appenders, layouts, filters, loggers, and contains the reference to <a href="#StrSubstitutor"><code>StrSubstitutor</code> et al.</a>.</p>
+</div>
+<div id="Configuration-diagram" class="imageblock kroki">
+<div class="content">
+<img src="../_images/diag-5ffe377615be9b0375b26533bbf7b10507dc946b.svg" alt="`Configuration` and other directly related classes">
+</div>
+<div class="title">Figure 3. <code>Configuration</code> and other directly related classes</div>
+</div>
+<div class="paragraph">
+<p>Configuration of Log4j Core is typically done at application initialization.
+The preferred way is by reading a <a href="configuration.html" class="xref page">configuration file</a>, but it can also be done <a href="customconfig.html" class="xref page">programmatically</a>.
+This is further discussed in <a href="config-intro.html" class="xref page">Configuration</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="reconfiguration"><a class="anchor" href="#reconfiguration"></a>Reconfiguration reliability</h3>
+<div class="paragraph">
+<p>The main motivation for the existing architecture is the reliability to configuration changes.
+When a reconfiguration event occurs, two <code>Configuration</code> instances are active at the same time.
+Threads that already started processing a log event will either:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>continue logging to the old configuration, if execution already reached the <code>LoggerConfig</code> class,</p>
+</li>
+<li>
+<p>or switch to the new configuration.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The service that manages the reconfiguration process is called <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/ReliabilityStrategy.html"><code>ReliabilityStrategy</code></a> and it decides:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>when should <code>Logger</code>s switch to the new configuration,</p>
+</li>
+<li>
+<p>when should the old configuration be stopped.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock kroki">
+<div class="content">
+<img src="../_images/diag-01168003b98f120d2f0736e5172de8e1218f189e.svg" alt="Overview of the reconfiguration process">
+</div>
+<div class="title">Figure 4. Overview of the reconfiguration process</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Logger"><a class="anchor" href="#Logger"></a><code>Logger</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html"><code>Logger</code></a>s are the primary user entry point for logging.
+They are created by calling one of the <code>getLogger()</code> methods of <a href="../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html"><code>LogManager</code></a> – this is further documented in <a href="api.html" class="xref page">Log4j API</a>.
+The <code>Logger</code> itself performs no direct actions.
+It simply has a name and is associated with a <a href="#LoggerConfig"><code>LoggerConfig</code></a>.</p>
+</div>
+<div id="Logger-diagram" class="imageblock kroki">
+<div class="content">
+<img src="../_images/diag-77a13b00749af95e3ed0eefd605a73f25d70973c.svg" alt="`Logger` and other directly related classes">
+</div>
+<div class="title">Figure 5. <code>Logger</code> and other directly related classes</div>
+</div>
+<div class="paragraph">
+<p>The hierarchy between <a href="#LoggerConfig"><code>LoggerConfig</code></a>s, implies the very same hierarchy between <code>Logger</code>s too.
+You can use <code>LogManager.getRootLogger()</code> to get the root logger.
+Note that Log4j API has no assumptions on a <code>Logger</code> hierarchy – this is a feature implemented by Log4j Core.</p>
+</div>
+<div class="paragraph">
+<p>When the <a href="#Configuration"><code>Configuration</code></a> is modified, <code>Logger</code>s may become associated with a different <code>LoggerConfig</code>, thus causing their behavior to be modified.
+Refer to <a href="configuration.html#configuring-loggers" class="xref page">configuring <code>Logger</code>s</a> for further information.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="LoggerConfig"><a class="anchor" href="#LoggerConfig"></a><code>LoggerConfig</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/LoggerConfig.html"><code>LoggerConfig</code></a> binds <a href="#Logger"><code>Logger</code></a> definitions to their associated components (appenders, filters, etc.) as declared in the active <a href="#Configuration"><code>Configuration</code></a>.
+The details of mapping a <code>Configuration</code> to <code>LoggerConfig</code>s is explained <a href="configuration.html#configuring-loggers" class="xref page">here</a>.
+<code>Logger</code>s effectively interact with appenders, filters, etc. through corresponding <code>LoggerConfig</code>s.
+A <code>LoggerConfig</code> essentially contains</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A reference to its parent (except if it is the root logger)</p>
+</li>
+<li>
+<p>A <a href="customloglevels.html" class="xref page">level</a> denoting the severity of messages that are accepted (defaults to <code>ERROR</code>)</p>
+</li>
+<li>
+<p><a href="#Filter"><code>Filter</code></a>s that must allow the <code>LogEvent</code> to pass before it will be passed to any <a href="#Appender"><code>Appender</code></a>s</p>
+</li>
+<li>
+<p>References to <a href="#Appender"><code>Appender</code></a>s that should be used to process the event</p>
+</li>
+</ul>
+</div>
+<div id="LoggerConfig-diagram" class="imageblock kroki">
+<div class="content">
+<img src="../_images/diag-73365a4d8197b5441a98fd1d661b07760da178be.svg" alt="`LoggerConfig` and other directly related classes">
+</div>
+<div class="title">Figure 6. <code>LoggerConfig</code> and other directly related classes</div>
+</div>
+<div class="sect2">
+<h3 id="logger-hierarchy"><a class="anchor" href="#logger-hierarchy"></a>Logger hierarchy</h3>
+<div class="paragraph">
+<p>Log4j Core has a <strong>hierarchical</strong> model of <code>LoggerConfig</code>s, and hence <code>Logger</code>s.
+A <code>LoggerConfig</code> called <code>child</code> is said to be parented by <code>parent</code>, if <code>parent</code> has the <em>longest prefix match</em> on name.
+This match is case-sensitive and performed after tokenizing the name by splitting it from <code>.</code> (dot) characters.
+For a positive name match, tokens must match exhaustively.
+See <a href="#logger-hiearchy-diagram">Figure 7</a> for an example.</p>
+</div>
+<div id="logger-hiearchy-diagram" class="imageblock kroki">
+<div class="content">
+<img src="../_images/diag-892fd9dbd9ea6bece55c1d4078ae1de2edd5c689.svg" alt="Example hierarchy of loggers named `X`, `X.Y`, `X.Y.Z`, and `X.YZ`">
+</div>
+<div class="title">Figure 7. Example hierarchy of loggers named <code>X</code>, <code>X.Y</code>, <code>X.Y.Z</code>, and <code>X.YZ</code></div>
+</div>
+<div class="paragraph">
+<p>If a <code>LoggerConfig</code> is not provided an explicit level, it will be inherited from its parent.
+Similarly, if a user programmatically requests a <code>Logger</code> with a name that doesn&#8217;t have a directly corresponding <code>LoggerConfig</code> configuration entry with its name, the <code>LoggerConfig</code> of the parent will be used.</p>
+</div>
+<details>
+<summary class="title">Click for examples on <code>LoggerConfig</code> hierarchy</summary>
+<div class="content">
+<div class="paragraph">
+<p>Below we demonstrate the <code>LoggerConfig</code> hierarchy by means of <em>level inheritance</em>.
+That is, we will examine the effective level of a <code>Logger</code> in various <code>LoggerConfig</code> settings.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Only the root logger is configured with a level, and it is <code>DEBUG</code></caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Logger name</th>
+<th class="tableblock halign-left valign-top">Assigned <code>LoggerConfig</code> name</th>
+<th class="tableblock halign-left valign-top">Configured level</th>
+<th class="tableblock halign-left valign-top">Effective level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>root</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>root</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>root</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X.Y</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>root</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X.Y.Z</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>root</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. All loggers are configured with a level</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Logger name</th>
+<th class="tableblock halign-left valign-top">Assigned <code>LoggerConfig</code></th>
+<th class="tableblock halign-left valign-top">Configured level</th>
+<th class="tableblock halign-left valign-top">Effective level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>root</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>root</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X.Y</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X.Y</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFO</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFO</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X.Y.Z</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X.Y.Z</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WARN</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WARN</code></p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. All loggers are configured with a level, except the logger <code>X.Y</code></caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Logger name</th>
+<th class="tableblock halign-left valign-top">Assigned <code>LoggerConfig</code></th>
+<th class="tableblock halign-left valign-top">Configured level</th>
+<th class="tableblock halign-left valign-top">Effective level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>root</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>root</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X.Y</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X.Y.Z</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X.Y.Z</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WARN</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WARN</code></p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. All loggers are configured with a level, except loggers <code>X.Y</code> and <code>X.Y.Z</code></caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Logger name</th>
+<th class="tableblock halign-left valign-top">Assigned <code>LoggerConfig</code></th>
+<th class="tableblock halign-left valign-top">Configured level</th>
+<th class="tableblock halign-left valign-top">Effective level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>root</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>root</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X.Y</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X.Y.Z</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 5. All loggers are configured with a level, except the logger <code>X.YZ</code></caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Logger name</th>
+<th class="tableblock halign-left valign-top">Assigned <code>LoggerConfig</code></th>
+<th class="tableblock halign-left valign-top">Configured level</th>
+<th class="tableblock halign-left valign-top">Effective level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>root</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>root</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X.Y</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X.Y</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFO</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFO</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X.YZ</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</details>
+<div class="paragraph">
+<p>For further information on log levels and using them for filtering purposes in a configuration, see <a href="customloglevels.html" class="xref page">Levels</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Filter"><a class="anchor" href="#Filter"></a><code>Filter</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In addition to <a href="#LoggerConfig">the level-based filtering facilitated by <code>LoggerConfig</code></a>, Log4j provides <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Filter.html"><code>Filter</code></a>s to evaluate the parameters of a logging call (i.e., context-wide filter) or a log event, and decide if it should be processed further in the pipeline.</p>
+</div>
+<div id="Filter-diagram" class="imageblock kroki">
+<div class="content">
+<img src="../_images/diag-581e854ee8ecdb00104bac5affda10a653d8f76d.svg" alt="`Filter` and other directly related classes">
+</div>
+<div class="title">Figure 8. <code>Filter</code> and other directly related classes</div>
+</div>
+<div class="paragraph">
+<p>Refer to <a href="filters.html" class="xref page">Filters</a> for further information.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Appender"><a class="anchor" href="#Appender"></a><code>Appender</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Appender.html"><code>Appender</code></a>s are responsible for delivering a <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html"><code>LogEvent</code></a> to a certain target; console, file, database, etc.
+While doing so, they typically use <a href="#Layout"><code>Layout</code></a>s to encode the log event.
+See <a href="appenders.html" class="xref page">Appenders</a> for the complete guide.</p>
+</div>
+<div id="Appender-diagram" class="imageblock kroki">
+<div class="content">
+<img src="../_images/diag-63d449f3bcd24cfa522a41f6e2f545416de30322.svg" alt="`Appender` and other directly related classes">
+</div>
+<div class="title">Figure 9. <code>Appender</code> and other directly related classes</div>
+</div>
+<div class="paragraph">
+<p>An <code>Appender</code> can be added to a <a href="#Logger"><code>Logger</code></a> by calling the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html#addLoggerAppender(org.apache.logging.log4j.core.Logger,%20org.apache.logging.log4j.core.Appender)"><code>addLoggerAppender()</code></a> method of the current <a href="#Configuration"><code>Configuration</code></a>.
+If a <a href="#LoggerConfig"><code>LoggerConfig</code></a> matching the name of the <code>Logger</code> does not exist, one will be created, and the <code>Appender</code> will be  attached to it, and then all <code>Logger</code>s will be notified to update their <code>LoggerConfig</code> references.</p>
+</div>
+<div class="sect2">
+<h3 id="appender-additivity"><a class="anchor" href="#appender-additivity"></a>Appender additivity</h3>
+<div class="paragraph">
+<p>Each enabled logging request for a given logger will be forwarded to all the appenders in the corresponding <code>Logger</code>'s <code>LoggerConfig</code>, as well as to the <code>Appender</code>s of the <code>LoggerConfig</code>'s parents.
+In other words, <code>Appender</code>s are inherited <strong>additively</strong> from the <code>LoggerConfig</code> hierarchy.
+For example, if a console appender is added to the root logger, then all enabled logging requests will at least print on the console.
+If in addition a file appender is added to a <code>LoggerConfig</code>, say <code>LC</code>, then enabled logging requests for <code>LC</code> and <code>LC</code>'s children will print in a file <em>and</em> on the console.
+It is possible to override this default behavior so that appender accumulation is no longer additive by setting <code>additivity</code> attribute to <code>false</code> on <a href="configuration.html#configuring-loggers" class="xref page">the <code>Logger</code> declaration in the configuration file</a>.</p>
+</div>
+<div class="paragraph">
+<p>The output of a log statement of <code>Logger</code> <code>L</code> will go to all the appenders in the <code>LoggerConfig</code> associated with <code>L</code> and the ancestors of that <code>LoggerConfig</code>.
+However, if an ancestor of the <code>LoggerConfig</code> associated with <code>Logger</code>
+<code>L</code>, say <code>P</code>, has the additivity flag set to <code>false</code>, then <code>L</code>'s output will be directed to all the appenders in <code>L</code>'s <code>LoggerConfig</code> and it&#8217;s ancestors up to and including <code>P</code> but not the appenders in any of the ancestors of <code>P</code>.</p>
+</div>
+<details>
+<summary class="title">Click for an example on appender additivity</summary>
+<div class="content">
+<div id="appender-additivity-diagram" class="imageblock kroki">
+<div class="content">
+<img src="../_images/diag-58c484caf8cd616db4f1c7ed31b51c123b5859d4.svg" alt="Example hierarchy of logger configurations to demonstrate appender additivity">
+</div>
+<div class="title">Figure 10. Example hierarchy of logger configurations to demonstrate appender additivity</div>
+</div>
+<div class="paragraph">
+<p>In <a href="#appender-additivity-diagram">Figure 10</a>, the effective appenders for each logger configuration are as follows:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 6. Effective appenders of logger configurations in <a href="#appender-additivity-diagram">Figure 10</a></caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2858%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-center valign-middle" rowspan="2"><p class="tableblock">Appender</p></th>
+<th class="tableblock halign-center valign-top" colspan="6"><p class="tableblock">Logger configuration</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A.B1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A.B1.C</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A.B1.C.D</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A.B2.C</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A.B2.C.D</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>root</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A.B1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A.B1.C</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A.B1.C.D</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A.B2.C</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A.B2.C.D</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</details>
+</div>
+<div class="sect2">
+<h3 id="AbstractManager"><a class="anchor" href="#AbstractManager"></a><code>AbstractManager</code></h3>
+<div class="paragraph">
+<p>To multiplex the access to external resources (files, network connections, etc.), most appenders are split into an
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/AbstractManager.html"><code>AbstractManager</code></a>
+that handles the low-level access to the external resource and an <code>Appender</code> that transforms log events into a format that the manager can handle.</p>
+</div>
+<div class="paragraph">
+<p>Managers that share the same resource are shared between appenders regardless of the <code>Configuration</code> or <code>LoggerContext</code> of the appenders.
+For example
+<a href="appenders/file.html" class="xref page">file appenders</a>s
+with the same <code>fileName</code> attribute all share the same
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/appender/FileManager.html"><code>FileManager</code></a>.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Due to the manager-sharing feature of many Log4j appenders, it is not possible to configure multiple appenders for the same resource that only differ in the way the underlying resource is configured.</p>
+</div>
+<div class="paragraph">
+<p>For example, it is not possible to have two file appenders (even in different logger contexts) that use the same file, but a different value of the <code>append</code> option.
+Since during a <a href="#reconfiguration">reconfiguration event</a> multiple instances of the same appender exists, it is also not possible to toggle the value of the <code>append</code> option through reconfiguration.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Layout"><a class="anchor" href="#Layout"></a><code>Layout</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>An <a href="#Appender"><code>Appender</code></a> uses a <strong>layout</strong> to encode a <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html"><code>LogEvent</code></a> into a form that meets the needs of whatever will be consuming the log event.</p>
+</div>
+<div id="Layout-diagram" class="imageblock kroki">
+<div class="content">
+<img src="../_images/diag-232cdf1d44336897239fa03f6521cc730f38f32d.svg" alt="`Layout` and other directly related classes">
+</div>
+<div class="title">Figure 11. <code>Layout</code> and other directly related classes</div>
+</div>
+<div class="paragraph">
+<p>Refer to <a href="layouts.html" class="xref page">Layouts</a> for details.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="StrSubstitutor"><a class="anchor" href="#StrSubstitutor"></a><code>StrSubstitutor</code> et al.</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrSubstitutor.html"><code>StrSubstitutor</code></a> is a <code>String</code> interpolation tool that can be used in both configurations and components (e.g., appenders, layouts).
+It accepts an <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/Interpolator.html"><code>Interpolator</code></a> to determine if a key maps to a certain value.
+<code>Interpolator</code> is essentially a facade delegating to multiple <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrLookup.html"><code>StrLookup</code></a> (aka. <em>lookup</em>) implementations.</p>
+</div>
+<div id="StrSubstitutor-diagram" class="imageblock kroki">
+<div class="content">
+<img src="../_images/diag-7a08e5a79432e9299cc0d9671bd39677be5618e8.svg" alt="`StrSubstitutor` et al. and other directly related classes">
+</div>
+<div class="title">Figure 12. <code>StrSubstitutor</code> et al. and other directly related classes</div>
+</div>
+<div class="paragraph">
+<p>See <a href="configuration.html#property-substitution" class="xref page">how property substitution works</a> and <a href="lookups.html" class="xref page">the predefined lookups</a> for further information.</p>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>
+    Copyright © 1999-2024 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
+  </p>
+  <p>
+    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+    Other names may be trademarks of their respective owners.
+  </p>
+</footer>
+<script id="site-script" src="../_/js/site.js" data-ui-root-path="../_"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+<!-- `@asciidoctor/tabs` extension scripts -->
+<script async src="../_/js/vendor/tabs.js"></script>
+  </body>
+</html>

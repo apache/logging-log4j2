@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Extending :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/extending.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.6">
+<link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
+<!-- `@asciidoctor/tabs` extension styles -->
+<link rel="stylesheet" href="../_/css/vendor/tabs.css">
+<style>
+  /* Swap colors of `IMPORTANT` and `WARNING` blocks */ 
+  .doc .admonitionblock.important .icon { background-color: #f70; }
+  .doc .admonitionblock.warning .icon { background-color: #e40046; }
+  /* Default `h4`, `h5`, and `h6` are smaller than the normal text, fix header font sizing: */
+  .doc h1 { font-size: 1.9rem; }
+  .doc h2 { font-size: 1.7rem; }
+  .doc h3 { font-size: 1.5rem; font-weight: 400; }
+  .doc h4 { font-size: 1.3rem; font-weight: 500; }
+  .doc h5 { font-size: 1.1rem; font-weight: 500; text-decoration: underline; }
+  .doc h6 { font-size: 0.9rem; font-weight: 500; text-decoration: underline; }
+  /* Default `code`, `pre`, and `.colist` (source code annotations) fonts are too big, adjust them: */
+  .doc .colist>table code, .doc p code, .doc thead code { font-size: 0.8em; }
+  .doc pre { font-size: 0.7rem; }
+  .doc .colist { font-size: 0.75rem; }
+  /* Make links more visible: */
+  .doc a { text-decoration: underline; }
+  .doc a code { text-decoration: underline; color: #1565c0; }
+  /* Tab header fonts aren't rendered good, adjusting the font weight: */
+  .tablist > ul li { font-weight: 500; }
+  /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
+  .toc .toc-menu li[data-level="4"] a {
+    padding-left: 2.75rem;
+  }
+  /* Replace the default highlight.js color for strings from red (unnecessarily signaling something negative) to green: */
+  .hljs-string {
+    color: #0f8532;
+  }
+</style>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <img src="../_/../_images/logo-small-white.png" alt="Apache Log4j"/>
+      </div>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://logging.apache.org">a subproject of&nbsp;<strong>Apache Logging Services</strong></a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ROOT" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Home</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../download.html">Download</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../release-notes.html">Release Notes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="https://logging.apache.org/support.html">Support</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Manual</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="getting-started.html">Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="installation.html">Installation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html">API</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html#loggers">Loggers</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="eventlogging.html">Event Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="simple-logger.html">Simple Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="status-logger.html">Status Logger</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="logbuilder.html">Fluent API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html#fish-tagging">Fish tagging</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="customloglevels.html">Levels</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="markers.html">Markers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="thread-context.html">Thread Context</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="messages.html">Messages</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="implementation.html">Implementation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="config-intro.html">Configuration</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="configuration.html">Configuration file</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="systemproperties.html">Configuration properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="customconfig.html">Programmatic configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="appenders.html">Appenders</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/file.html">File appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/rolling-file.html">Rolling file appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/database.html">Database appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/network.html">Network Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/message-queue.html">Message queue appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/delegating.html">Delegating Appenders</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="pattern-layout.html">Pattern Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="filters.html">Filters</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="scripts.html">Scripts</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="jmx.html">JMX</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="extending.html">Extending</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="plugins.html">Plugins</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="performance.html">Performance</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="async.html">Asynchronous loggers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="garbagefree.html">Garbage-free logging</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">References</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../plugin-reference.html">Plugin reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../javadoc.html">Java API reference</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Resources</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../faq.html">F.A.Q.</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-log4j1.html">Migrating from Log4j 1</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-logback.html">Migrating from Logback</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-slf4j.html">Migrating from SLF4J</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../hibernate.html">Integrating with Hibernate</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../jakarta.html">Integrating with Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../soa.html">Integrating with service-oriented architectures</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../development.html">Development</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../components.html">Components</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-boot.html">Log4j Spring Boot Support</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-jul.html">JUL-to-Log4j bridge</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-to-jul.html">Log4j-to-JUL bridge</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Related projects</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jakarta/index.html">Log4j Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jmx-gui/index.html">Log4j JMX GUI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/kotlin/index.html">Log4j Kotlin</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/scala/index.html">Log4j Scala</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/tools/index.html">Log4j Tools</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/transform/index.html">Log4j Transformation Tools</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="index.html">Manual</a></li>
+    <li><a href="implementation.html">Implementation</a></li>
+    <li><a href="extending.html">Extending</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/manual/extending.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="4">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Extending</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Log4j provides numerous extension points to adapt it for custom needs.
+Several of such extension points are covered in the page of the associated component:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Log4j API</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="customloglevels.html" class="xref page">Extending levels</a></p>
+</li>
+<li>
+<p><a href="markers.html" class="xref page">Extending markers</a></p>
+</li>
+<li>
+<p><a href="messages.html#extending" class="xref page">Extending messages</a></p>
+</li>
+<li>
+<p><a href="thread-context.html#extending" class="xref page">Extending thread context</a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Log4j Core</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="appenders.html#extending" class="xref page">Extending appenders</a></p>
+</li>
+<li>
+<p><a href="filters.html#extending" class="xref page">Extending filters</a></p>
+</li>
+<li>
+<p><a href="layouts.html#extending" class="xref page">Extending layouts</a></p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="json-template-layout.html#extending" class="xref page">Extending JSON Template Layout</a></p>
+</li>
+<li>
+<p><a href="pattern-layout.html#extending" class="xref page">Extending Pattern Layout</a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><a href="lookups.html#extending" class="xref page">Extending lookups</a></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This section guides you on the rest of the Log4j extension points.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="mechanisms"><a class="anchor" href="#mechanisms"></a>Extension mechanisms</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Log4j allows extensions primarily using following mechanisms:</p>
+</div>
+<div class="sect2">
+<h3 id="Custom_Plugins"><a class="anchor" href="#Custom_Plugins"></a>Plugins</h3>
+<div class="paragraph">
+<p>Log4j plugin system is the de facto extension mechanism embraced by various Log4j components.
+Plugins provide extension points to components, that can be used to implement new features, without modifying the original component.
+It is analogous to a <a href="https://en.wikipedia.org/wiki/Dependency_injection">dependency injection</a> framework, but curated for Log4j-specific needs.</p>
+</div>
+<div class="paragraph">
+<p>In a nutshell, you annotate your classes with <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/Plugin.html"><code>@Plugin</code></a> and their (<code>static</code>) factory methods with <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/PluginFactory.html"><code>@PluginFactory</code></a>.
+Last, you inform the Log4j plugin system to discover these custom classes.
+This is done using running the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/processor/PluginProcessor.html"><code>PluginProcessor</code></a> annotation processor while building your project.
+Refer to <a href="plugins.html" class="xref page">Plugins</a> for details.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="service-loader"><a class="anchor" href="#service-loader"></a><code>ServiceLoader</code>s</h3>
+<div class="paragraph">
+<p><a href="https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html"><code>ServiceLoader</code></a> is a simple service-provider loading facility baked into the Java platform itself.
+Log4j uses <code>ServiceLoader</code>s for extending places where</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The service needs to be implementation agnostic.
+As a result, <a href="#Custom_Plugins">the Log4j plugin system</a> cannot be used, since it is provided by the logging implementation, i.e., Log4j Core.
+For instance, this is why <a href="thread-context.html#extending" class="xref page">extending Thread Context</a>, which is a Log4j API component, works using <code>ServiceLoader</code>s.</p>
+</li>
+<li>
+<p>The service needs to be loaded before <a href="#Custom_Plugins">the Log4j plugin system</a>.
+For instance, this is why <a href="#Provider">extending <code>Provider</code></a> works using <code>ServiceLoader</code>s.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Refer to <a href="https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html">the <code>ServiceLoader</code> documentation</a> for details.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="system-properties"><a class="anchor" href="#system-properties"></a>System properties</h3>
+<div class="paragraph">
+<p>Log4j uses system properties to determine the fully-qualified class name (FQCN) to load for extending a certain functionality.
+For instance, <a href="#MessageFactory">extending <code>MessageFactory2</code></a> works using system properties.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Loading a class using <em>only</em> its FQCN can result in unexpected behaviour when there are multiple class loaders.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="points"><a class="anchor" href="#points"></a>Extension points</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this section we will guide you on certain Log4j extension points that are not covered elsewhere.</p>
+</div>
+<div class="sect2">
+<h3 id="Provider"><a class="anchor" href="#Provider"></a><code>Provider</code></h3>
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/Provider.html"><code>Provider</code></a> is the anchor contract binding Log4j API to an implementation.
+For instance, it has been implemented by Log4j Core, Log4j-to-JUL bridge, and Log4j-to-SLF4J bridge modules.</p>
+</div>
+<div class="paragraph">
+<p>Under the hood, <a href="../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html"><code>LogManager</code></a> locates a <code>Provider</code> implementation using <a href="#service-loader">the <code>ServiceLoader</code> mechanism</a>, and delegates invocations to it.
+Hence, you can extend it by providing a <code>org.apache.logging.log4j.spi.Provider</code> implementation in the form of a <code>ServiceLoader</code>.</p>
+</div>
+<div class="paragraph">
+<p>Having multiple <code>Provider</code>s in the classpath is strongly discouraged.
+Yet when this happens, you can use <a href="systemproperties.html#log4j2.provider" class="xref page">the <code>log4j2.provider</code> property</a> to explicitly select one.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="LoggerContextFactory"><a class="anchor" href="#LoggerContextFactory"></a><code>LoggerContextFactory</code></h3>
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextFactory.html"><code>LoggerContextFactory</code></a> is the factory class used by Log4j API implementations to create <a href="architecture.html#LoggerContext" class="xref page"><code>LoggerContext</code></a>s.
+If you are using Log4j Core, you can use <a href="#ContextSelector"><code>ContextSelector</code></a>s to influence the way its <code>LoggerContextFactory</code> implementation works.
+If you are creating a new Log4j API implementation, you should <a href="#Provider">provide a custom <code>Provider</code></a> to introduce your custom <code>LoggerContextFactory</code> implementation.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="ContextSelector"><a class="anchor" href="#ContextSelector"></a><code>ContextSelector</code></h3>
+<div class="paragraph">
+<p><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/impl/Log4jContextFactory.html"><code>Log4jContextFactory</code></a>, the Log4j Core implementation of <a href="#LoggerContextFactory"><code>LoggerContextFactory</code></a>, delegates the actual work to a <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ContextSelector.html"><code>ContextSelector</code></a>.
+It can be configured using <a href="systemproperties.html#log4j2.contextSelector" class="xref page">the <code>log4j2.contextSelector</code> property</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="ConfigurationFactory"><a class="anchor" href="#ConfigurationFactory"></a><code>ConfigurationFactory</code></h3>
+<div class="paragraph">
+<p><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html"><code>ConfigurationFactory</code></a> is the factory class used by Log4j Core to create <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html"><code>Configuration</code></a> instances given a <a href="architecture.html#LoggerContext" class="xref page"><code>LoggerContext</code></a> and a <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationSource.html"><code>ConfigurationSource</code></a>.</p>
+</div>
+<div class="paragraph">
+<p>You can provide a custom <code>ConfigurationFactory</code> in the form of a <a href="#Custom_Plugins">plugin</a>.
+For example, see <a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-core/src/main/java/org/apache/logging/log4j/core/config/xml/XmlConfigurationFactory.java"><code>XmlConfigurationFactory.java</code></a> and <a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-core/src/main/java/org/apache/logging/log4j/core/config/xml/XmlConfiguration.java"><code>XmlConfiguration.java</code></a> of Log4j Core.</p>
+</div>
+<div class="paragraph">
+<p>You can use <a href="systemproperties.html#log4j2.configurationFactory" class="xref page">the <code>log4j2.configurationFactory</code> property</a> to explicitly set a <code>ConfigurationFactory</code> to be used before any other factory implementation.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="LoggerConfig"><a class="anchor" href="#LoggerConfig"></a><code>LoggerConfig</code></h3>
+<div class="paragraph">
+<p><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/LoggerConfig.html"><code>LoggerConfig</code></a> denotes the <code>Logger</code> configurations in a <code>Configuration</code>.
+A custom <code>LoggerConfig</code> needs to satisfy the following conditions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>It needs to extend from <code>LoggerConfig</code> class</p>
+</li>
+<li>
+<p>It needs to be declared as a <a href="#Custom_Plugins">plugin</a></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Its plugin <code>category</code> should be set to <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Node.html#CATEGORY"><code>Node.CATEGORY</code></a></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For example, see <code>RootLogger</code> definition in <a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-core/src/main/java/org/apache/logging/log4j/core/config/LoggerConfig.java"><code>LoggerConfig.java</code></a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="LogEventFactory"><a class="anchor" href="#LogEventFactory"></a><code>LogEventFactory</code></h3>
+<div class="paragraph">
+<p>Log4j Core uses <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/impl/LogEventFactory.html"><code>LogEventFactory</code></a> to create <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html"><code>LogEvent</code></a>s.
+You can replace the default <code>LogEventFactory</code> implementation with a custom one of yours by using <a href="systemproperties.html#log4j2.logEventFactory" class="xref page">the <code>log4j2.logEventFactory</code> property</a>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><a href="async.html" class="xref page">Asynchronous loggers</a> discard <code>LogEventFactory</code> and any configuration related with it.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="MessageFactory"><a class="anchor" href="#MessageFactory"></a><code>MessageFactory2</code></h3>
+<div class="paragraph">
+<p>Log4j Core uses <a href="../javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory2.html"><code>MessageFactory2</code></a> to create <a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html"><code>Message</code></a>s.
+You can replace the default <code>MessageFactory2</code> implementation with a custom one of yours by using <a href="systemproperties.html#log4j2.messageFactory" class="xref page">the <code>log4j2.messageFactory</code> property</a>.</p>
+</div>
+<div class="paragraph">
+<p>In the case of <a href="flowtracing.html" class="xref page">Flow Tracing</a>, Log4j Core uses <a href="../javadoc/log4j-api/org/apache/logging/log4j/message/FlowMessageFactory.html"><code>FlowMessageFactory</code></a>.
+You can replace the default <code>FlowMessageFactory</code> implementation with a custom one of yours by using <a href="systemproperties.html#log4j2.flowMessageFactory" class="xref page">the <code>log4j2.flowMessageFactory</code> property</a>.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Message factory implementations are expected to interpret formatting patterns containing placeholders denoted with <code>{}</code>.
+For instance, the default message factory chooses between a <a href="messages.html#SimpleMessage" class="xref page"><code>SimpleMessage</code></a> and a <a href="messages.html#ParameterizedMessage" class="xref page"><code>ParameterizedMessage</code></a> depending on the presence of placeholders in the formatting pattern.</p>
+</div>
+<div class="paragraph">
+<p>If you want to change the placeholder style (e.g., switching from <code>{}</code> to <code>%s</code>), you should <strong>not</strong> replace the default message factory.
+Because this will break the existing Log4j API calls using the standard placeholder style.
+Instead, you can use <a href="../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html"><code>LogManager</code></a> methods accepting a message factory to create <code>Logger</code>s with your custom message factory implementations.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>
+    Copyright © 1999-2024 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
+  </p>
+  <p>
+    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+    Other names may be trademarks of their respective owners.
+  </p>
+</footer>
+<script id="site-script" src="../_/js/site.js" data-ui-root-path="../_"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+<!-- `@asciidoctor/tabs` extension scripts -->
+<script async src="../_/js/vendor/tabs.js"></script>
+  </body>
+</html>

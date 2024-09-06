@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Integrating with service-oriented architectures :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/soa.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.6">
+<link rel="stylesheet" href="./_/css/site.css">
+<link rel="icon" href="./_/../_images/favicon.ico" type="image/x-icon">
+<!-- `@asciidoctor/tabs` extension styles -->
+<link rel="stylesheet" href="./_/css/vendor/tabs.css">
+<style>
+  /* Swap colors of `IMPORTANT` and `WARNING` blocks */ 
+  .doc .admonitionblock.important .icon { background-color: #f70; }
+  .doc .admonitionblock.warning .icon { background-color: #e40046; }
+  /* Default `h4`, `h5`, and `h6` are smaller than the normal text, fix header font sizing: */
+  .doc h1 { font-size: 1.9rem; }
+  .doc h2 { font-size: 1.7rem; }
+  .doc h3 { font-size: 1.5rem; font-weight: 400; }
+  .doc h4 { font-size: 1.3rem; font-weight: 500; }
+  .doc h5 { font-size: 1.1rem; font-weight: 500; text-decoration: underline; }
+  .doc h6 { font-size: 0.9rem; font-weight: 500; text-decoration: underline; }
+  /* Default `code`, `pre`, and `.colist` (source code annotations) fonts are too big, adjust them: */
+  .doc .colist>table code, .doc p code, .doc thead code { font-size: 0.8em; }
+  .doc pre { font-size: 0.7rem; }
+  .doc .colist { font-size: 0.75rem; }
+  /* Make links more visible: */
+  .doc a { text-decoration: underline; }
+  .doc a code { text-decoration: underline; color: #1565c0; }
+  /* Tab header fonts aren't rendered good, adjusting the font weight: */
+  .tablist > ul li { font-weight: 500; }
+  /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
+  .toc .toc-menu li[data-level="4"] a {
+    padding-left: 2.75rem;
+  }
+  /* Replace the default highlight.js color for strings from red (unnecessarily signaling something negative) to green: */
+  .hljs-string {
+    color: #0f8532;
+  }
+</style>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <img src="./_/../_images/logo-small-white.png" alt="Apache Log4j"/>
+      </div>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://logging.apache.org">a subproject of&nbsp;<strong>Apache Logging Services</strong></a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ROOT" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="index.html">Home</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="download.html">Download</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="release-notes.html">Release Notes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="https://logging.apache.org/support.html">Support</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="manual/index.html">Manual</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="manual/getting-started.html">Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="manual/installation.html">Installation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="manual/api.html">API</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="manual/api.html#loggers">Loggers</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/eventlogging.html">Event Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/simple-logger.html">Simple Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/status-logger.html">Status Logger</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/logbuilder.html">Fluent API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="manual/api.html#fish-tagging">Fish tagging</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/customloglevels.html">Levels</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/markers.html">Markers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/thread-context.html">Thread Context</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/messages.html">Messages</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/flowtracing.html">Flow Tracing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="manual/implementation.html">Implementation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="manual/config-intro.html">Configuration</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/configuration.html">Configuration file</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/systemproperties.html">Configuration properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/customconfig.html">Programmatic configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="manual/appenders.html">Appenders</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="manual/appenders/file.html">File appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="manual/appenders/rolling-file.html">Rolling file appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="manual/appenders/database.html">Database appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="manual/appenders/network.html">Network Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="manual/appenders/message-queue.html">Message queue appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="manual/appenders/delegating.html">Delegating Appenders</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="manual/layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="manual/json-template-layout.html">JSON Template Layout</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="manual/pattern-layout.html">Pattern Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/filters.html">Filters</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/scripts.html">Scripts</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/jmx.html">JMX</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="manual/extending.html">Extending</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/plugins.html">Plugins</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="manual/performance.html">Performance</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/async.html">Asynchronous loggers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/garbagefree.html">Garbage-free logging</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">References</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="plugin-reference.html">Plugin reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="javadoc.html">Java API reference</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Resources</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="faq.html">F.A.Q.</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="migrate-from-log4j1.html">Migrating from Log4j 1</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="migrate-from-logback.html">Migrating from Logback</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="migrate-from-slf4j.html">Migrating from SLF4J</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="hibernate.html">Integrating with Hibernate</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="jakarta.html">Integrating with Jakarta EE</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="soa.html">Integrating with service-oriented architectures</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="development.html">Development</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="components.html">Components</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-iostreams.html">Log4j IOStreams</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-spring-boot.html">Log4j Spring Boot Support</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-jul.html">JUL-to-Log4j bridge</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-to-jul.html">Log4j-to-JUL bridge</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Related projects</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jakarta/index.html">Log4j Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jmx-gui/index.html">Log4j JMX GUI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/kotlin/index.html">Log4j Kotlin</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/scala/index.html">Log4j Scala</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/tools/index.html">Log4j Tools</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/transform/index.html">Log4j Transformation Tools</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li>Resources</li>
+    <li><a href="soa.html">Integrating with service-oriented architectures</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/soa.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="4">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Integrating with service-oriented architectures</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this page we will share certain <a href="#best-practices">best practices</a> you can employ in your applications using Log4j Core to integrate them with service-oriented architectures.
+While doing so, we will also try to share guides on some popular scenarios.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="motivation"><a class="anchor" href="#motivation"></a>Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Most modern software is deployed in <a href="https://en.wikipedia.org/wiki/Service-oriented_architecture">service-oriented architectures</a>.
+This is a very broad domain and can be realized in an amazingly large number of ways.
+Nevertheless, they all redefine the notion of an application:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Deployed in <strong>multiple instances</strong></p>
+</li>
+<li>
+<p>Situated in <strong>multiple locations</strong>; either in the same rack, or in different data centers located in different continents</p>
+</li>
+<li>
+<p>Hosted by <strong>multiple platforms</strong>; hardware, virtual machine, container, etc.</p>
+</li>
+<li>
+<p><strong>Polyglot</strong>; a product of multiple programming languages</p>
+</li>
+<li>
+<p><strong>Scaled</strong> on demand; instances come and go in time</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Naturally, logging systems also evolved to accommodate these needs.
+In particular, the old practice of <em>"monoliths writing logs to files rotated daily"</em> has changed in two major angles:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Application delivers logs differently</dt>
+<dd>
+<p>Applications no longer write logs to files, but <a href="#structured-encoding">encode them structurally</a>, and deliver them to an external system centrally managed.
+Most of the time this is a <a href="#proxy">proxy</a> (a library, a sidecar container, etc.) that takes care of discovering the log storage system and determining the right external service to forward the logs to.</p>
+</dd>
+<dt class="hdlist1">Platform stores logs differently</dt>
+<dd>
+<p>There is no longer <code>/var/log/tomcat/catalina.out</code> combining all logs of a monolith.
+Instead, the software runs in multiple instances, each is implemented in a different language, and instances get scaled (i.e., new ones get started, old ones get stopped) on demand.
+To accommodate this, logs are persisted on a central storage system (Elasticsearch, Google Cloud Logging, etc.) that allows advanced navigation and filtering capabilities.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Log4j Core not only adapts to this evolution, but also strives to provide the best in the class support for that.
+We will explore how to integrate Log4j with service-oriented architectures.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="best-practices"><a class="anchor" href="#best-practices"></a>Best practices</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Independent of the service-oriented architecture you choose, there are certain best practices we strongly encourage you to follow:</p>
+</div>
+<div class="sect2">
+<h3 id="structured-encoding"><a class="anchor" href="#structured-encoding"></a>Encode logs using a structured layout</h3>
+<div class="paragraph">
+<p>We can&#8217;t emphasize it enough to not use anything, but a <a href="manual/layouts.html#structured-logging" class="xref page">structured layout</a> to deliver your logs to an external system.
+We recommend <a href="manual/json-template-layout.html" class="xref page">JSON Template Layout</a> for this purpose:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>JSON Template Layout provides full customizability and contains several predefined layouts for popular log storage services.</p>
+</li>
+<li>
+<p>JSON is accepted by every log storage service.</p>
+</li>
+<li>
+<p>JSON is supported by logging frameworks in other languages.
+This makes it possible to agree on a common log format with non-Java applications.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="proxy"><a class="anchor" href="#proxy"></a>Use a proxy for writing logs</h3>
+<div class="paragraph">
+<p>Most of the time it is not a good idea to write to the log storage system directly, but instead delegate that task to a proxy.
+This design decouples applications' log target and the log storage system and, as a result, effectively enables each to evolve independently and reliably (i.e., without downtime).
+For instance, this will allow the log storage system to scale or migrate to a new environment while proxies take care of necessary buffering and routing.</p>
+</div>
+<div class="paragraph">
+<p>This proxy can appear in many forms, for instance:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Console</strong> can act as a proxy.
+Logs written to console can be consumed by an external service.
+For example, <a href="https://12factor.net/logs">The Twelve-Factor App</a> and <a href="https://kubernetes.io/docs/concepts/cluster-administration/logging/">Kubernetes Logging Architecture</a> recommends this approach.</p>
+</li>
+<li>
+<p>A <strong>library</strong> can act as proxy.
+It can tap into the logging API and forward it to an external service.
+For instance,
+<a href="https://docs.datadoghq.com/logs/log_collection/java/?tab=log4j2">Datadog&#8217;s Java Log Collector</a> uses this mechanism.</p>
+</li>
+<li>
+<p>An external <strong>service</strong> can act as a proxy, which applications can write logs to.
+For example, you can write to <a href="https://www.elastic.co/logstash">Logstash</a>, a <a href="https://kubernetes.io/docs/concepts/cluster-administration/logging/#sidecar-container-with-a-logging-agent">Kubernetes logging agent sidecar</a>, or a <a href="https://redis.io/glossary/redis-queue/">Redis queue</a> over a socket.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>What to use as a proxy depends on your deployment environment.
+You should consult to your colleagues if there is already an established logging proxy convention.
+Otherwise, we strongly encourage you to establish one in collaboration with your system administrators and architects.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="appender"><a class="anchor" href="#appender"></a>Configure your appender correctly</h3>
+<div class="paragraph">
+<p>Once you decide on <a href="#proxy">the log proxy</a> to use, the choice of appender pretty much becomes self-evident.
+Nevertheless, there are some tips we recommend you to practice:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>For writing to console</strong>, use a <a href="manual/appenders.html#ConsoleAppender" class="xref page">Console Appender</a> and make sure to configure its <code>direct</code> attribute to <code>true</code> for the maximum efficiency.</p>
+</li>
+<li>
+<p><strong>For writing to an external service</strong>, use a <a href="manual/appenders/network.html#SocketAppender" class="xref page">Socket Appender</a> and make sure to set the protocol to TCP and configure the null delimiter of the associated layout.
+For instance, see <a href="manual/json-template-layout.html#plugin-attr-nullEventDelimiterEnabled" class="xref page">the <code>nullEventDelimiterEnabled</code> configuration attribute of JSON Template Layout</a>.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="file"><a class="anchor" href="#file"></a>Avoid writing to files</h3>
+<div class="paragraph">
+<p>As explained in <a href="#motivation">Motivation</a>, in a service-oriented architecture, log files are</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Difficult to maintain – writable volumes must be mounted to the runtime (container, VM, etc.), rotated, and monitored for excessive usage</p>
+</li>
+<li>
+<p>Difficult to use – multiple files need to be manually combined while troubleshooting, no central navigation point</p>
+</li>
+<li>
+<p>Difficult to interoperate – each application needs to be individually configured to produce the same structured log output to enable interleaving of logs from multiple sources while troubleshooting distributed issues</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In short, <strong>we don&#8217;t recommend writing logs to files</strong>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="separate-config"><a class="anchor" href="#separate-config"></a>Separate logging configuration from the application</h3>
+<div class="paragraph">
+<p>We strongly advise you to separate the logging configuration from the application and couple them in an environment-specific way.
+This will allow you to</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Address environment-specific configurations (e.g., logging verbosity needs of test and production can be different)</p>
+</li>
+<li>
+<p>Ensure Log4j configuration changes applies to all affected Log4j-using software without the need to manually update their Log4j configuration one by one</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>How to implement this separation pretty much depends on your setup.
+We will share some recommended approaches to give you an idea:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Choosing configuration files during deployment</dt>
+<dd>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Environment-specific <a href="manual/configuration.html" class="xref page">Log4j configuration files</a> (<code>log4j2-common.xml</code>, <code>log4j2-local.xml</code>, <code>log4j2-test.xml</code>, <code>log4j2-prod.xml</code>, etc.) can be provided in one of following ways:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Shipped with your software (i.e., accessible in the classpath)</p>
+</li>
+<li>
+<p>Served from an HTTP server</p>
+</li>
+<li>
+<p>A combination of the first two</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Depending on the deployment environment, you can selectively activate a subset of them using <a href="manual/systemproperties.html#log4j2.configurationFile" class="xref page">the <code>log4j2.configurationFile</code> configuration property</a>.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Spring Boot allows you to <a href="https://docs.spring.io/spring-boot/reference/features/logging.html">configure the underlying logging system</a>.
+Just like any other Spring Boot configuration, logging-related configuration also can be provided in multiple files split by profiles matching the environment: <code>application-common.yaml</code>, <code>application-local.yaml</code>, etc.
+<a href="https://docs.spring.io/spring-boot/reference/features/external-config.html">Spring Boot&#8217;s Externalized Configuration System</a> will automatically load these files depending on the active profile(s).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</dd>
+<dt class="hdlist1">Mounting configuration files during deployment</dt>
+<dd>
+<div class="paragraph">
+<p>Many service-oriented deployment architectures offer solutions for environment-specific configuration storage; Kubernetes' <a href="https://kubernetes.io/docs/concepts/configuration/configmap/">ConfigMap</a>, HashiCorp&#8217;s <a href="https://developer.hashicorp.com/consul/docs/dynamic-app-config/kv">Consul</a>, etc.
+You can leverage these to store environment-specific Log4j configurations and mount them to the associated runtime (container, VM, etc.) at deployment.</p>
+</div>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Log4j Core can poll configuration files for changes (see <a href="manual/configuration.html#configuration-attribute-monitorInterval" class="xref page">the <code>monitorInterval</code> attribute</a>) and reconfigure the associated logger context.
+You can leverage this mechanism to <strong>dynamically update the Log4j configuration at runtime</strong>.</p>
+</div>
+<div class="paragraph">
+<p>You need to be careful with this mechanism to not shoot yourself in the foot.
+Imagine publishing an incorrect <code>log4j2.xml</code> and rendering the logging setup of your entire cluster useless in seconds.
+Coupling the configuration with the application at deployment and gradually deploying new configurations is a more reliable approach.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guides"><a class="anchor" href="#guides"></a>Guides</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this section, we will share guides on some popular integration scenarios.</p>
+</div>
+<div class="sect2">
+<h3 id="docker"><a class="anchor" href="#docker"></a>Docker</h3>
+<div class="paragraph">
+<p>See <a href="components.html#log4j-docker" class="xref page">Log4j Docker</a> for Docker-specific Log4j features, e.g., <a href="manual/lookups.html#DockerLookup" class="xref page">Docker Lookup</a>.
+We also strongly advise you to check <a href="https://docs.docker.com/config/containers/logging/">the extensive logging integration</a> offered by Docker containers.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_kubernetes"><a class="anchor" href="#_kubernetes"></a>Kubernetes</h3>
+<div class="paragraph">
+<p>Log4j Kubernetes (containing <a href="manual/lookups.html#KubernetesLookup" class="xref page">Kubernetes Lookup</a>) is distributed as a part of Fabric8&#8217;s Kubernetes Client, refer to <a href="https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md">its website</a> for details.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="ELK"><a class="anchor" href="#ELK"></a>Elasticsearch &amp; Logstash</h3>
+<div class="paragraph">
+<p>Elasticsearch, Logstash, and Kibana (aka. <a href="https://www.elastic.co/elastic-stack/">ELK Stack</a>) is probably the most popular logging system solution.
+In this setup,</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.elastic.co/elasticsearch">Elasticsearch</a> is used for log storage</p>
+</li>
+<li>
+<p><a href="https://www.elastic.co/logstash">Logstash</a> is used for transformation and ingestion to Elasticsearch from multiple sources (file, socket, etc.)</p>
+</li>
+<li>
+<p><a href="https://www.elastic.co/kibana">Kibana</a> is used as a web-based UI to query Elasticsearch</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To begin with, JSON is the de facto messaging format used across the entire <a href="https://www.elastic.co/platform">Elastic platform</a>.
+Hence, as stated earlier, <a href="#structured-encoding">we strongly advise you to configure a structured encoding</a>, i.e., <a href="manual/json-template-layout.html" class="xref page">JSON Template Layout</a>.</p>
+</div>
+<div class="sect3">
+<h4 id="logstash"><a class="anchor" href="#logstash"></a>Logstash as a proxy</h4>
+<div class="paragraph">
+<p>While using ELK stack, there are numerous ways you can write your application logs to Elasticsearch.
+<a href="#proxy">We advise you to always employ a proxy</a> while doing so.
+In particular, <strong>we recommend you to use Logstash</strong> for this purpose.
+In a modern software stack, the shape and accessibility of log varies greatly: some write to files (be it legacy or new systems), some doesn&#8217;t provide a structured encoding, etc.
+Logstash excels at ingesting from a wide range of sources, transforming them into the desired format, and writing them to Elasticsearch.</p>
+</div>
+<div class="paragraph">
+<p>While setting up Logstash, we recommend you to use <a href="https://www.elastic.co/guide/en/logstash/current/plugins-inputs-tcp.html">TCP input plugin</a> in combination with <a href="https://www.elastic.co/guide/en/logstash/current/plugins-outputs-elasticsearch.html">Elasticsearch output plugin</a> to accept logs over a TCP socket and write them to Elasticsearch:</p>
+</div>
+<div class="listingblock">
+<div class="title">An example <code>logstash.conf</code> snippet for accepting JSON-encoded log events over TCP and writing them to Elasticsearch</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">input {
+  tcp { <i class="conum" data-value="1"></i><b>(1)</b>
+    port =&gt; 12345 <i class="conum" data-value="2"></i><b>(2)</b>
+    codec =&gt; "json" <i class="conum" data-value="3"></i><b>(3)</b>
+  }
+}
+
+output {
+
+  # stdout { codec =&gt; rubydebug } <i class="conum" data-value="4"></i><b>(4)</b>
+
+  # Modify the hosts value to reflect where Elasticsearch is installed.
+  elasticsearch { <i class="conum" data-value="5"></i><b>(5)</b>
+    hosts =&gt; ["http://localhost:9200/"] <i class="conum" data-value="6"></i><b>(6)</b>
+    index =&gt; "app-%{application}-%{+YYYYMMdd}" <i class="conum" data-value="7"></i><b>(7)</b>
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Using <a href="https://www.elastic.co/guide/en/logstash/current/plugins-inputs-tcp.html">TCP input plugin</a> to accept logs from</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Setting the port Logstash will bind to accept TCP connections to 12345 – <strong>adapt the <code>port</code></strong> to your setup</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Setting the payload encoding to JSON</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Uncomment this while troubleshooting your Logstash configuration</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Using <a href="https://www.elastic.co/guide/en/logstash/current/plugins-outputs-elasticsearch.html">Elasticsearch output plugin</a> to write logs to Elasticsearch</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>The list of Elasticsearch hosts to connect to</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>The name of the Elasticsearch index to write to</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Refer to <a href="https://www.elastic.co/guide/en/logstash/current/configuration.html">the official documentation</a> for details on configuring a Logstash pipeline.</p>
+</div>
+<div class="paragraph">
+<p>For the sake of completeness, see the following Log4j configuration to write to the TCP socket Logstash accepts input from:</p>
+</div>
+<div id="_tabs_1" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_1_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_1_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_1_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_1_xml--panel" class="tabpanel" aria-labelledby="_tabs_1_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/cloud/logstash/log4j2.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Socket name="SOCKET" host="localhost" port="12345"&gt;
+  &lt;JsonTemplateLayout nullEventDelimiterEnabled="true"/&gt;
+&lt;/Socket&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_json--panel" class="tabpanel" aria-labelledby="_tabs_1_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/cloud/logstash/log4j2.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Socket": {
+  "name": "SOCKET",
+  "host": "localhost",
+  "port": 12345,
+  "JsonTemplateLayout": {
+    "nullEventDelimiterEnabled": true
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_yaml--panel" class="tabpanel" aria-labelledby="_tabs_1_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/cloud/logstash/log4j2.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">Socket:
+  name: "SOCKET"
+  host: "localhost"
+  port: 12345
+  JsonTemplateLayout:
+    nullEventDelimiterEnabled: true</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_properties--panel" class="tabpanel" aria-labelledby="_tabs_1_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/cloud/logstash/log4j2.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">appender.0.type = Socket
+appender.0.name = SOCKET
+appender.0.host = localhost
+appender.0.port = 12345
+appender.0.layout.type = JsonTemplateLayout
+appender.0.layout.nullEventDelimiterEnabled = true</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><a href="#file">We don&#8217;t recommend writing logs to files</a>.
+If this is a necessity in your logging setup for some reason, we recommend you to check <a href="https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-overview.html">Filebeat</a>.
+It is a data shipper agent for forwarding logs to Logstash, Elasticsearch, etc.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>
+    Copyright © 1999-2024 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
+  </p>
+  <p>
+    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+    Other names may be trademarks of their respective owners.
+  </p>
+</footer>
+<script id="site-script" src="./_/js/site.js" data-ui-root-path="./_"></script>
+<script async src="./_/js/vendor/highlight.js"></script>
+<!-- `@asciidoctor/tabs` extension scripts -->
+<script async src="./_/js/vendor/tabs.js"></script>
+  </body>
+</html>

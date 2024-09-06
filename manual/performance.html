@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Performance :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/performance.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.6">
+<link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
+<!-- `@asciidoctor/tabs` extension styles -->
+<link rel="stylesheet" href="../_/css/vendor/tabs.css">
+<style>
+  /* Swap colors of `IMPORTANT` and `WARNING` blocks */ 
+  .doc .admonitionblock.important .icon { background-color: #f70; }
+  .doc .admonitionblock.warning .icon { background-color: #e40046; }
+  /* Default `h4`, `h5`, and `h6` are smaller than the normal text, fix header font sizing: */
+  .doc h1 { font-size: 1.9rem; }
+  .doc h2 { font-size: 1.7rem; }
+  .doc h3 { font-size: 1.5rem; font-weight: 400; }
+  .doc h4 { font-size: 1.3rem; font-weight: 500; }
+  .doc h5 { font-size: 1.1rem; font-weight: 500; text-decoration: underline; }
+  .doc h6 { font-size: 0.9rem; font-weight: 500; text-decoration: underline; }
+  /* Default `code`, `pre`, and `.colist` (source code annotations) fonts are too big, adjust them: */
+  .doc .colist>table code, .doc p code, .doc thead code { font-size: 0.8em; }
+  .doc pre { font-size: 0.7rem; }
+  .doc .colist { font-size: 0.75rem; }
+  /* Make links more visible: */
+  .doc a { text-decoration: underline; }
+  .doc a code { text-decoration: underline; color: #1565c0; }
+  /* Tab header fonts aren't rendered good, adjusting the font weight: */
+  .tablist > ul li { font-weight: 500; }
+  /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
+  .toc .toc-menu li[data-level="4"] a {
+    padding-left: 2.75rem;
+  }
+  /* Replace the default highlight.js color for strings from red (unnecessarily signaling something negative) to green: */
+  .hljs-string {
+    color: #0f8532;
+  }
+</style>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <img src="../_/../_images/logo-small-white.png" alt="Apache Log4j"/>
+      </div>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://logging.apache.org">a subproject of&nbsp;<strong>Apache Logging Services</strong></a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ROOT" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Home</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../download.html">Download</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../release-notes.html">Release Notes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="https://logging.apache.org/support.html">Support</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Manual</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="getting-started.html">Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="installation.html">Installation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html">API</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html#loggers">Loggers</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="eventlogging.html">Event Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="simple-logger.html">Simple Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="status-logger.html">Status Logger</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="logbuilder.html">Fluent API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html#fish-tagging">Fish tagging</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="customloglevels.html">Levels</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="markers.html">Markers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="thread-context.html">Thread Context</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="messages.html">Messages</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="implementation.html">Implementation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="config-intro.html">Configuration</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="configuration.html">Configuration file</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="systemproperties.html">Configuration properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="customconfig.html">Programmatic configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="appenders.html">Appenders</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/file.html">File appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/rolling-file.html">Rolling file appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/database.html">Database appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/network.html">Network Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/message-queue.html">Message queue appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/delegating.html">Delegating Appenders</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="pattern-layout.html">Pattern Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="filters.html">Filters</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="scripts.html">Scripts</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="jmx.html">JMX</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="extending.html">Extending</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="plugins.html">Plugins</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="performance.html">Performance</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="async.html">Asynchronous loggers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="garbagefree.html">Garbage-free logging</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">References</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../plugin-reference.html">Plugin reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../javadoc.html">Java API reference</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Resources</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../faq.html">F.A.Q.</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-log4j1.html">Migrating from Log4j 1</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-logback.html">Migrating from Logback</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-slf4j.html">Migrating from SLF4J</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../hibernate.html">Integrating with Hibernate</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../jakarta.html">Integrating with Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../soa.html">Integrating with service-oriented architectures</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../development.html">Development</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../components.html">Components</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-boot.html">Log4j Spring Boot Support</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-jul.html">JUL-to-Log4j bridge</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-to-jul.html">Log4j-to-JUL bridge</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Related projects</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jakarta/index.html">Log4j Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jmx-gui/index.html">Log4j JMX GUI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/kotlin/index.html">Log4j Kotlin</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/scala/index.html">Log4j Scala</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/tools/index.html">Log4j Tools</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/transform/index.html">Log4j Transformation Tools</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="index.html">Manual</a></li>
+    <li><a href="implementation.html">Implementation</a></li>
+    <li><a href="performance.html">Performance</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/manual/performance.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="4">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Performance</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this page we will guide you through certain steps that will show how to improve the performance of your Log4j configuration to serve your particular use case best.</p>
+</div>
+<div class="paragraph">
+<p>The act of logging is an interplay between the logging API (i.e., Log4j API) where the programmer publishes logs and a logging implementation (i.e., Log4j Core) where published logs get consumed; filtered, enriched, encoded, and written to files, databases, network sockets, etc.
+Both parties can have dramatic impact on performance.
+Hence, we will discuss the performance optimization of both individually:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><a href="#api">Using Log4j API efficiently</a></p>
+</li>
+<li>
+<p><a href="#core">Tuning Log4j Core for performance</a></p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="api"><a class="anchor" href="#api"></a>Using Log4j API efficiently</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Log4j API bundles a rich set of features to either totally avoid or minimize expensive computations whenever possible.
+We will walk you through these features with examples.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Remember that a logging API and a logging implementation are two different things.
+You can use Log4j API in combination with a logging implementation other than Log4j Core (e.g., Logback).
+<strong>The tips shared in this section are logging implementation agnostic.</strong></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="api-concat"><a class="anchor" href="#api-concat"></a>Don&#8217;t use string concatenation</h3>
+<div class="paragraph">
+<p>If you are using <code>String</code> concatenation while logging, you are doing something very wrong and dangerous!</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><i class="fa fa-square-o"></i> Don&#8217;t use <code>String</code> concatenation to format arguments!
+This circumvents the handling of arguments by message type and layout.
+More importantly, <strong>this approach is prone to attacks!</strong>
+Imagine <code>userId</code> being provided by the user with the following content:
+<code>placeholders for non-existing args to trigger failure: {} {} {dangerousLookup}</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">/* BAD! */ LOGGER.info("failed for user ID: " + userId);</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> Use message parameters.
+Parameterized messages allow safe encoding of parameters and avoid formatting totally if the message is filtered.
+For instance, if the associated level for the logger is discarded, no formatting will take place.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">/* GOOD */ LOGGER.info("failed for user ID `{}`", userId);</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="api-supplier"><a class="anchor" href="#api-supplier"></a>Use <code>Supplier</code>s to pass computationally expensive arguments</h3>
+<div class="paragraph">
+<p>If one or more arguments of the log statement are computationally expensive, it is not wise to evaluate them knowing that their results can be discarded.
+Consider the following example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">/* BAD! */ LOGGER.info("failed for user ID `{}` and role `{}`", userId, db.findUserRoleById(userId));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The database query (i.e., <code>db.findUserNameById(userId)</code>) can be a significant bottleneck if the created the log event will be discarded anyway – maybe the <code>INFO</code> level or the associated <a href="markers.html" class="xref page">marker</a> is not accepted for this package, or due to some other filtering.</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><i class="fa fa-square-o"></i> The old-school way of solving this problem is to level-guard the log statement:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">/* BAD! */ if (LOGGER.isInfoEnabled()) { LOGGER.info(...); }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>While this would work for cases where the message can be dropped due to insufficient level, this approach is still prone to other filtering cases; e.g., maybe the associated <a href="markers.html" class="xref page">marker</a> is not accepted.</p>
+</div>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> Use <code>Supplier</code>s to pass arguments containing computationally expensive items:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">/* GOOD */ LOGGER.info("failed for user ID `{}` and role `{}`", () -&gt; userId, () -&gt; db.findUserRoleById(userId));</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> Use a <code>Supplier</code> to pass the message and its arguments containing computationally expensive items:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">/* GOOD */ LOGGER.info(() -&gt; new ParameterizedMessage("failed for user ID `{}` and role `{}`", userId, db.findUserRoleById(userId)));</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="core"><a class="anchor" href="#core"></a>Tuning Log4j Core for performance</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Below sections walk you through a set of features that can have significant impact on the performance of Log4j Core.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Extra tuning of any application will deviate you away from defaults and add up to the maintenance load.
+You are strongly advised to measure your application&#8217;s overall performance and then, if Log4j is found to be an important bottleneck factor, tune it carefully.
+When this happens, we also recommend you to evaluate your assumptions on a regular basis to check if they still hold.
+Remember, <a href="https://en.wikipedia.org/wiki/Program_optimization#When_to_optimize">premature optimization is the root of all evil</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Remember that a logging API and a logging implementation are two different things.
+You can use Log4j Core in combination with a logging API other than Log4j API (e.g., SLF4J, JUL, JPL).
+<strong>The tips shared in this section are logging API agnostic.</strong></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="layouts"><a class="anchor" href="#layouts"></a>Layouts</h3>
+<div class="paragraph">
+<p><a href="layouts.html" class="xref page">Layouts</a> are responsible for encoding a log event in a certain format (human-readable text, JSON, etc.) and they can have significant impact in your overall logging performance.</p>
+</div>
+<div class="sect3">
+<h4 id="layouts-location"><a class="anchor" href="#layouts-location"></a>Location information</h4>
+<div class="paragraph">
+<p>Several layouts offer directives to include the <em>location information</em>: the caller class, method, file, and line.
+Log4j takes a snapshot of the stack, and walks the stack trace to find the location information.
+<strong>This is an expensive operation</strong> and should be avoided in performance-sensitive setups.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Note that <em>the caller class</em> of the location information and <em>the logger name</em> are two different things.
+In most setups just using <em>the logger name</em> – which doesn&#8217;t incur any overhead to obtain while logging! – is a sufficient and <strong>zero-cost substitute for the caller class</strong>.</p>
+</div>
+<details>
+<summary class="title">Example demonstrating that the logger name can be a substitute for the caller name</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package com.mycompany;
+
+public class PaymentService {
+
+    // Logger name: `com.mycompany.PaymentService`
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    private static final class PaymentTransaction {
+        void doPayment() {
+            // Caller class: `com.mycompany.PaymentService$PaymentTransaction`
+            LOGGER.trace("...");
+        }
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the above example, if <em>the caller class</em> (which is expensive to compute!) is omitted in the layout, the produced log line will still be likely to contain sufficient information to trace back the source by just looking at <em>the logger name</em>.</p>
+</div>
+</div>
+</details>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Asynchronous loggers need to capture the location information before passing the log message to another thread; otherwise the location information will be lost after that point.
+Due to associated performance implications, <a href="async.html" class="xref page">asynchronous loggers</a> and <a href="appenders.html#AsyncAppender" class="xref page">asynchronous appenders</a> do <strong>not</strong> include location information by default.
+You can override the default behaviour in your asynchronous logger or asynchronous appender configuration.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Even if a layout is configured not to <strong>request</strong> location information, it might use it if the information is already available.
+This is always the case if the location information is captured at build time using the <a href="https://logging.apache.org/log4j/transform/latest/#log4j-transform-maven-plugin">Log4j Transform Maven Plugin</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="layouts-efficiency"><a class="anchor" href="#layouts-efficiency"></a>Layout efficiency</h4>
+<div class="paragraph">
+<p>Not all layouts are designed with the same performance considerations in mind.
+Following layouts are known to be well-optimized for performance-sensitive workloads:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><a href="json-template-layout.html#performance" class="xref page">JSON Template Layout</a></dt>
+<dd>
+<p>It encodes log events into JSON according to the structure described by the template provided.
+Its output can safely be ingested into several log storage solutions: Elasticsearch, Google Cloud Logging, Graylog, Logstash, etc.</p>
+</dd>
+<dt class="hdlist1"><a href="pattern-layout.html#performance" class="xref page">Pattern Layout</a></dt>
+<dd>
+<p>It encodes log events into human-readable text according to the pattern provided.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="async"><a class="anchor" href="#async"></a>Asynchronous logging</h3>
+<div class="paragraph">
+<p>Asynchronous logging is useful to deal with bursts of events.
+How this works is that a minimum amount of work is done by the application thread to capture all required information in a log event, and this log event is then put on a queue for later processing by a background thread.
+As long as the queue is sized large enough, the application threads should be able to spend very little time on the logging call and return to the business logic very quickly.</p>
+</div>
+<div class="sect3">
+<h4 id="trade-offs"><a class="anchor" href="#trade-offs"></a><a id="Trade-offs"></a>Trade-offs</h4>
+<div class="paragraph">
+<p>There are certain trade-offs associated with asynchronous logging:</p>
+</div>
+<div class="sect4">
+<h5 id="async-benefits"><a class="anchor" href="#async-benefits"></a>Benefits</h5>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Higher peak throughput</dt>
+<dd>
+<p>Applications that occasionally need to log bursts of messages, can take advantage of asynchronous logging.
+It can prevent or dampen latency spikes by shortening the wait time until the next message can be logged.
+If the queue size is large enough to handle the burst, asynchronous logging will prevent your application from falling behind during a sudden increase of activity.</p>
+</dd>
+<dt class="hdlist1">Lower logging latency</dt>
+<dd>
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html"><code>Logger</code></a> method calls return faster, since most of the work is done on the I/O thread.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect4">
+<h5 id="async-drawbacks"><a class="anchor" href="#async-drawbacks"></a>Drawbacks</h5>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Lower sustainable throughput</dt>
+<dd>
+<p>If the <em>sustained rate</em> at which your application is logging messages is faster than the maximum sustained throughput of the underlying appender, the queue will fill up and the application will end up logging at the speed of the slowest appender.
+If this happens, consider selecting a faster appender, or logging less.
+If neither of these is an option, you may get better throughput and fewer latency spikes by logging synchronously.</p>
+</dd>
+<dt class="hdlist1">Error handling</dt>
+<dd>
+<p>If a problem happens during the logging process and an exception is thrown, it is less easy for an asynchronous setting to signal this problem to the application.
+This can partly be alleviated by configuring an exception handler, but this may still not cover all cases.</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If logging is part of your business logic, e.g. you are using Log4j as an audit logging framework, we would recommend to synchronously log those audit messages.</p>
+</div>
+<div class="paragraph">
+<p>See
+<a href="async.html#MixedSync-Async" class="xref page">mixed synchronous/asynchronous loggers</a> on how to log some messages synchronously.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</dd>
+<dt class="hdlist1">Stateful messages</dt>
+<dd>
+<p>Most
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html"><code>Message</code></a>
+implementations take a snapshot of the formatted message on the calling thread (cf.
+<a href="systemproperties.html#log4j2.formatMsgAsync" class="xref page"><code>log4j2.formatMsgAsync</code></a>).
+The log message will not change even if the arguments of the logging call are modified later.</p>
+<div class="paragraph">
+<p>There are some exceptions to this rule.
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html"><code>MapMessage</code></a>
+and
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html"><code>StructuredDataMessage</code></a>
+for example are mutable by design: fields can be added to these messages after the message object was created.
+These messages should not be modified after they are logged with asynchronous loggers or asynchronous appenders.</p>
+</div>
+<div class="paragraph">
+<p>Similarly, custom
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html"><code>Message</code></a>
+implementations should be designed with asynchronous use in mind, and either take a snapshot of their parameters at construction time, or document their thread-safety characteristics (see
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/AsynchronouslyFormattable.html"><code>AsynchronouslyFormattable</code></a>).</p>
+</div>
+</dd>
+<dt class="hdlist1">Computational overhead</dt>
+<dd>
+<p>If your application is running in an environment where CPU resources are scarce, like a VM with a single vCPU, starting another thread is not likely to give better performance.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="async-strategies"><a class="anchor" href="#async-strategies"></a>Asynchronous logging strategies</h4>
+<div class="paragraph">
+<p>Log4j provides following strategies users can choose from to do asynchronous logging:</p>
+</div>
+<div class="sect4">
+<h5 id="async-logger"><a class="anchor" href="#async-logger"></a>Asynchronous logger</h5>
+<div class="paragraph">
+<p><a href="async.html" class="xref page">Asynchronous loggers</a> use <a href="https://lmax-exchange.github.io/disruptor/">LMAX Disruptor</a> messaging library to consume log events.
+Their aim is to return from a <code>log()</code> call to the application as soon as possible.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="async-appender"><a class="anchor" href="#async-appender"></a>Asynchronous appender</h5>
+<div class="paragraph">
+<p>The <a href="appenders/delegating.html#AsyncAppender" class="xref page">asynchronous appender</a> accepts references to other appenders and causes log events to be written to them on a separate thread.
+The backing queue uses <code>ArrayBlockingQueue</code> by default, though it can be replaced with a better performing one suitable for your use case.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="gcfree"><a class="anchor" href="#gcfree"></a>Garbage-free logging</h3>
+<div class="paragraph">
+<p>Garbage collection pauses are a common cause of latency spikes and for many systems significant effort is spent on controlling these pauses.
+Log4j allocates temporary <code>LogEvent</code>, <code>String</code>, <code>char[]</code>, <code>byte[]</code>, etc. objects during steady state logging.
+This contributes to pressure on the garbage collector and increases the frequency with which garbage collection pauses occur.
+In <em>garbage-free mode</em>, Log4j buffers and reuses objects to lessen this pressure.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="garbagefree.html" class="xref page">Garbage-free logging</a> for details.</p>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>
+    Copyright © 1999-2024 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
+  </p>
+  <p>
+    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+    Other names may be trademarks of their respective owners.
+  </p>
+</footer>
+<script id="site-script" src="../_/js/site.js" data-ui-root-path="../_"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+<!-- `@asciidoctor/tabs` extension scripts -->
+<script async src="../_/js/vendor/tabs.js"></script>
+  </body>
+</html>

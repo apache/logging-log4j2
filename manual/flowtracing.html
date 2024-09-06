@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Flow Tracing :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/flowtracing.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.6">
+<link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
+<!-- `@asciidoctor/tabs` extension styles -->
+<link rel="stylesheet" href="../_/css/vendor/tabs.css">
+<style>
+  /* Swap colors of `IMPORTANT` and `WARNING` blocks */ 
+  .doc .admonitionblock.important .icon { background-color: #f70; }
+  .doc .admonitionblock.warning .icon { background-color: #e40046; }
+  /* Default `h4`, `h5`, and `h6` are smaller than the normal text, fix header font sizing: */
+  .doc h1 { font-size: 1.9rem; }
+  .doc h2 { font-size: 1.7rem; }
+  .doc h3 { font-size: 1.5rem; font-weight: 400; }
+  .doc h4 { font-size: 1.3rem; font-weight: 500; }
+  .doc h5 { font-size: 1.1rem; font-weight: 500; text-decoration: underline; }
+  .doc h6 { font-size: 0.9rem; font-weight: 500; text-decoration: underline; }
+  /* Default `code`, `pre`, and `.colist` (source code annotations) fonts are too big, adjust them: */
+  .doc .colist>table code, .doc p code, .doc thead code { font-size: 0.8em; }
+  .doc pre { font-size: 0.7rem; }
+  .doc .colist { font-size: 0.75rem; }
+  /* Make links more visible: */
+  .doc a { text-decoration: underline; }
+  .doc a code { text-decoration: underline; color: #1565c0; }
+  /* Tab header fonts aren't rendered good, adjusting the font weight: */
+  .tablist > ul li { font-weight: 500; }
+  /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
+  .toc .toc-menu li[data-level="4"] a {
+    padding-left: 2.75rem;
+  }
+  /* Replace the default highlight.js color for strings from red (unnecessarily signaling something negative) to green: */
+  .hljs-string {
+    color: #0f8532;
+  }
+</style>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <img src="../_/../_images/logo-small-white.png" alt="Apache Log4j"/>
+      </div>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://logging.apache.org">a subproject of&nbsp;<strong>Apache Logging Services</strong></a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ROOT" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Home</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../download.html">Download</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../release-notes.html">Release Notes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="https://logging.apache.org/support.html">Support</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Manual</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="getting-started.html">Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="installation.html">Installation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html">API</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html#loggers">Loggers</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="eventlogging.html">Event Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="simple-logger.html">Simple Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="status-logger.html">Status Logger</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="logbuilder.html">Fluent API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html#fish-tagging">Fish tagging</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="customloglevels.html">Levels</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="markers.html">Markers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="thread-context.html">Thread Context</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="messages.html">Messages</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="implementation.html">Implementation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="config-intro.html">Configuration</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="configuration.html">Configuration file</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="systemproperties.html">Configuration properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="customconfig.html">Programmatic configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="appenders.html">Appenders</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/file.html">File appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/rolling-file.html">Rolling file appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/database.html">Database appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/network.html">Network Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/message-queue.html">Message queue appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/delegating.html">Delegating Appenders</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="pattern-layout.html">Pattern Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="filters.html">Filters</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="scripts.html">Scripts</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="jmx.html">JMX</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="extending.html">Extending</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="plugins.html">Plugins</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="performance.html">Performance</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="async.html">Asynchronous loggers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="garbagefree.html">Garbage-free logging</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">References</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../plugin-reference.html">Plugin reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../javadoc.html">Java API reference</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Resources</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../faq.html">F.A.Q.</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-log4j1.html">Migrating from Log4j 1</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-logback.html">Migrating from Logback</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-slf4j.html">Migrating from SLF4J</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../hibernate.html">Integrating with Hibernate</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../jakarta.html">Integrating with Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../soa.html">Integrating with service-oriented architectures</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../development.html">Development</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../components.html">Components</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-boot.html">Log4j Spring Boot Support</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-jul.html">JUL-to-Log4j bridge</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-to-jul.html">Log4j-to-JUL bridge</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Related projects</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jakarta/index.html">Log4j Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jmx-gui/index.html">Log4j JMX GUI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/kotlin/index.html">Log4j Kotlin</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/scala/index.html">Log4j Scala</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/tools/index.html">Log4j Tools</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/transform/index.html">Log4j Transformation Tools</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="index.html">Manual</a></li>
+    <li><a href="api.html">API</a></li>
+    <li><a href="flowtracing.html">Flow Tracing</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/manual/flowtracing.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="4">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Flow Tracing</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="api.html" class="xref page">Log4j API</a> provides convenience logging methods to aid the tracking of the data flow through an application, which is referred to as <strong>flow tracing</strong>.
+<a href="#impl">Logging implementations</a> can choose to <a href="#impl-log4j-log-events">generate specialized log events</a> allowing users to handle these messages different from the rest – see <a href="#example">Example configuration</a>.</p>
+</div>
+<div class="paragraph">
+<p>Flow tracing is known to help with the following use cases:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Troubleshooting without requiring a debugging session</p>
+</li>
+<li>
+<p>Helping educate new developers in learning the application</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="usage"><a class="anchor" href="#usage"></a>Usage</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html"><code>Logger</code></a> provides following methods for flow tracing purposes:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>traceEntry()</code></dt>
+<dd>
+<p>Marks the entry to a block</p>
+</dd>
+<dt class="hdlist1"><code>traceExit()</code></dt>
+<dd>
+<p>Marks the exit from a block</p>
+</dd>
+<dt class="hdlist1"><code>catching()</code></dt>
+<dd>
+<p>Reports caught exceptions</p>
+</dd>
+<dt class="hdlist1"><code>throwing()</code></dt>
+<dd>
+<p>Reports exceptions that are either discarded or unlikely to be handled</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>The most used <code>traceEntry()</code> and <code>traceExit()</code> methods are intended to mark the <em>entry</em> and <em>exit</em> points of a particular block of code:</p>
+</div>
+<div id="example-trace" class="listingblock">
+<div class="title">Example <code>traceEntry()</code> and <code>traceExit()</code> usage</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public void someMethod() {
+    LOGGER.traceEntry(); <i class="conum" data-value="1"></i><b>(1)</b>
+    // method body
+    LOGGER.traceExit(); <i class="conum" data-value="2"></i><b>(2)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>traceEntry()</code> marks the entry to the block</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>traceExit()</code> marks the exit from the block</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Both <code>traceEntry()</code> and <code>traceExit()</code> also accept parameters.
+You can use them to track the input and output of the associated block:</p>
+</div>
+<div id="example-trace-args" class="listingblock">
+<div class="title">Example <code>traceEntry()</code> and <code>traceExit()</code> usage with arguments</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public String someMethod(String input) {
+    logger.traceEntry(null, input); <i class="conum" data-value="1"></i><b>(1)</b>
+    // method body
+    String output = ...;
+    return logger.traceExit(output); <i class="conum" data-value="2"></i><b>(2)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>traceEntry()</code> marks the entry to the block along with the input</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>traceExit()</code> marks the exit from the block along with the output</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The <code>catching()</code> method can be used by an application when it catches an exception that it will not rethrow, either explicitly or attached to another exception:</p>
+</div>
+<div id="example-catching" class="listingblock">
+<div class="title">Example <code>catching()</code> usage</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public void someMethod() {
+    try {
+        // Business logic
+    } catch (Exception error) {
+        logger.catching(error); <i class="conum" data-value="1"></i><b>(1)</b>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>catching()</code> reports the caught exception</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The <code>throwing()</code> method can be used by an application when it is throwing an exception that is unlikely to be handled, such as a <code>RuntimeException</code>.
+This will ensure that proper diagnostics are available if needed.</p>
+</div>
+<div id="example-throwing" class="listingblock">
+<div class="title">Example <code>throwing()</code> usage</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public void someMethod() {
+    try {
+        // Business logic
+    } catch (RuntimeException error) {
+        throw logger.throwing(error); <i class="conum" data-value="1"></i><b>(1)</b>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>thrown()</code> reports the caught exception that is about to be rethrown.
+Plus, rethrowing the exception, contrary to <a href="#example-catching">the <code>catching()</code> example</a> suppressing the exception.</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public void someMethod() {
+    try {
+        // Let's assume an exception is thrown here
+        String msg = messages[messages.length];
+    } catch (Exception ex) {
+        logger.throwing(ex); <i class="conum" data-value="1"></i><b>(1)</b>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>throwing()</code> method logs exceptions that are thrown and not caught.</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="aop"><a class="anchor" href="#aop"></a>Aspect-oriented programming</h3>
+<div class="paragraph">
+<p>Logging has been a notorious example for demonstrating <a href="https://en.wikipedia.org/wiki/Aspect-oriented_programming">aspect-oriented programming</a> (AOP).
+For instance, using AOP, you can inject logging statements to methods that match a particular footprint, e.g., all public methods in <code>com.mycompany</code> package.
+With a couple of lines of AOP instructions, you can log input and output of all matching functions.
+Flow tracing methods fits like a glove to this AOP use case.
+You can see a demonstration of this in <a href="https://github.com/apache/logging-log4j-samples/tree/main/log4j-samples-aspectj">the <code>log4j-samples-aspectj</code> project</a> demonstrating how you can implement this use case using Log4j API flow methods and Spring Boot AspectJ support.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="impl"><a class="anchor" href="#impl"></a>Implementation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This section explains how flow tracing is implemented by different logging implementations.</p>
+</div>
+<div class="sect2">
+<h3 id="impl-log4j"><a class="anchor" href="#impl-log4j"></a>Log4j Core</h3>
+<div class="paragraph">
+<p>Log4j Core, the reference implementation of Log4j API, implements the flow tracing methods such that</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#impl-log4j-log-events">It generates specialized log events</a></p>
+</li>
+<li>
+<p><a href="#impl-log4j-config">Its behaviour is configurable</a></p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="impl-log4j-log-events"><a class="anchor" href="#impl-log4j-log-events"></a>Log events</h4>
+<div class="paragraph">
+<p>Log4j Core implements the flow tracing methods such that the generated log events are decorated to accommodate any need to selectively handle them:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 12.5%;">
+<col style="width: 25%;">
+<col style="width: 37.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Method</th>
+<th class="tableblock halign-left valign-top">Level</th>
+<th class="tableblock halign-left valign-top">Markers</th>
+<th class="tableblock halign-left valign-top">Message</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>traceEntry()</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TRACE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ENTER</code>, <code>FLOW</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/EntryMessage.html"><code>EntryMessage</code></a> extending from <a href="../javadoc/log4j-api/org/apache/logging/log4j/message/FlowMessage.html"><code>FlowMessage</code></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>traceExit()</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TRACE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>EXIT</code>, <code>FLOW</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/EntryMessage.html"><code>ExitMessage</code></a> extending from <a href="../javadoc/log4j-api/org/apache/logging/log4j/message/FlowMessage.html"><code>FlowMessage</code></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>throwing()</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>THROWING</code>, <code>EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Plain message</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>catching()</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CATCHING</code>, <code>EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Plain message</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="impl-log4j-config"><a class="anchor" href="#impl-log4j-config"></a>Configuration</h4>
+<div class="paragraph">
+<p>Flow tracing implementation of Log4j Core can be configured using the following system properties:</p>
+</div>
+<div class="sect4">
+<h5 id="log4j2.flowMessageFactory"><a class="anchor" href="#log4j2.flowMessageFactory"></a><code>log4j2.flowMessageFactory</code></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_FLOW_MESSAGE_FACTORY</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/FlowMessageFactory.html"><code>Class&lt;? extends FlowMessageFactory&gt;</code></a></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/message/DefaultFlowMessageFactory.html"><code>DefaultFlowMessageFactory</code></a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Fully qualified class name of a
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/FlowMessageFactory.html"><code>FlowMessageFactory</code></a>
+implementation to be used by all loggers.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="impl-logback"><a class="anchor" href="#impl-logback"></a>Logback</h3>
+<div class="paragraph">
+<p><a href="https://logback.qos.ch">Logback</a> is another logging implementation for the <a href="https://www.slf4j.org">SLF4J</a> logging API, just like Log4j Core is a logging implementation for the <a href="api.html" class="xref page">Log4j API</a>.
+Using Log4j-to-SLF4J bridge, Logback can be <a href="installation.html#impl-logback" class="xref page">configured to consume Log4j API</a>.</p>
+</div>
+<div class="paragraph">
+<p>Log4j-to-SLF4J bridge implements flow tracing methods such that log events are generated with same <a href="#impl-log4j-log-events">marker and level changes of Log4j Core</a>.
+They only differ in generated message types, since SLF4J has no <a href="messages.html" class="xref page">extensible message contract</a> like Log4j, but plain <code>String</code>-based messages.
+This effectively means Logback also has access to the stated marker and level changes while using Log4j API flow tracing methods.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="example"><a class="anchor" href="#example"></a>Example configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this section, we will share logging implementation configuration examples to filter on flow tracing log events.</p>
+</div>
+<div class="sect2">
+<h3 id="example-log4j"><a class="anchor" href="#example-log4j"></a>Log4j Core</h3>
+<div class="paragraph">
+<p>Log4j Core is the reference implementation of Log4j API.
+In the example configurations below, we will employ a <a href="pattern-layout.html" class="xref page">Pattern Layout</a> depending on the associated markers of the log event:</p>
+</div>
+<div id="_tabs_1" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_1_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_1_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_1_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_1_xml--panel" class="tabpanel" aria-labelledby="_tabs_1_xml">
+<div class="listingblock">
+<div class="title"><a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examplesmanual/flowtracing/log4j2.xml">log4j2.xml</a> snippet</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;MarkerFilter marker="FLOW" onMatch="ACCEPT" onMismatch="NEUTRAL"/&gt;<i class="conum" data-value="1"></i><b>(1)</b>
+
+&lt;Appenders&gt;
+  &lt;Console name="CONSOLE"&gt;
+    &lt;PatternLayout&gt;
+      &lt;MarkerPatternSelector defaultPattern="%d %5p [%t] %c{1} -- %m%n"&gt;<i class="conum" data-value="2"></i><b>(2)</b>
+        &lt;PatternMatch key="ENTER" pattern="%d %5p [%t] %c{1} =&gt; %m%n"/&gt;<i class="conum" data-value="3"></i><b>(3)</b>
+        &lt;PatternMatch key="EXIT" pattern="%d %5p [%t] %c{1} &lt;= %m%n"/&gt;<i class="conum" data-value="4"></i><b>(4)</b>
+      &lt;/MarkerPatternSelector&gt;
+    &lt;/PatternLayout&gt;
+  &lt;/Console&gt;
+&lt;/Appenders&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_json--panel" class="tabpanel" aria-labelledby="_tabs_1_json">
+<div class="listingblock">
+<div class="title"><a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examplesmanual/flowtracing/log4j2.json">log4j2.json</a> snippet</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"MarkerFilter": { <i class="conum" data-value="1"></i><b>(1)</b>
+  "marker": "FLOW",
+  "onMatch": "ACCEPT",
+  "onMismatch": "NEUTRAL"
+},
+
+"Appenders": {
+  "Console": {
+    "name": "CONSOLE",
+    "PatternLayout": {
+      "MarkerPatternSelector": {
+        "defaultPattern": "%d %5p [%t] %c{1} -- %m%n",<i class="conum" data-value="2"></i><b>(2)</b>
+        "PatternMatch": [
+          {<i class="conum" data-value="3"></i><b>(3)</b>
+            "key": "ENTER",
+            "pattern": "%d %5p [%t] %c{1} =&gt; %m%n"
+          },
+          {<i class="conum" data-value="4"></i><b>(4)</b>
+            "key": "EXIT",
+            "pattern": "%d %5p [%t] %c{1} &lt;= %m%n"
+          }
+        ]
+      }
+    }
+  }
+},</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_yaml--panel" class="tabpanel" aria-labelledby="_tabs_1_yaml">
+<div class="listingblock">
+<div class="title"><a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examplesmanual/flowtracing/log4j2.yaml">log4j2.yaml</a> snippet</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">MarkerFilter: <i class="conum" data-value="1"></i><b>(1)</b>
+  marker: "FLOW"
+  onMatch: "ACCEPT"
+  onMismatch: "NEUTRAL"
+
+Appenders:
+  Console:
+    name: "CONSOLE"
+    PatternLayout:
+      MarkerPatternSelector:
+      defaultPattern: "%d %5p [%t] %c{1} -- %m%n" <i class="conum" data-value="2"></i><b>(2)</b>
+      PatternMatch:
+        - key: "ENTER" <i class="conum" data-value="3"></i><b>(3)</b>
+          pattern: "%d %5p [%t] %c{1} =&gt; %m%n"
+        - key: "EXIT" <i class="conum" data-value="4"></i><b>(4)</b>
+          pattern: "%d %5p [%t] %c{1} &lt;= %m%n"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_properties--panel" class="tabpanel" aria-labelledby="_tabs_1_properties">
+<div class="listingblock">
+<div class="title"><a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examplesmanual/flowtracing/log4j2.properties">log4j2.properties</a> snippet</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">filter.0.type = MarkerFilter <i class="conum" data-value="1"></i><b>(1)</b>
+filter.0.marker = FLOW
+filter.0.onMatch = ACCEPT
+filter.0.onMismatch = NEUTRAL
+
+appender.0.type = Console
+appender.0.name = CONSOLE
+appender.0.layout.type = PatternLayout
+appender.0.layout.patternSelector.type = MarkerPatternSelector
+appender.0.layout.patternSelector.defaultPattern = "%d %5p [%t] %c{1} -- %m%n <i class="conum" data-value="2"></i><b>(2)</b>
+appender.0.layout.patternSelector.properties.0.type = PatternMatch
+appender.0.layout.patternSelector.properties.0.key = ENTER
+appender.0.layout.patternSelector.properties.0.pattern = %d %5p [%t] %c{1} =&gt; %m%n <i class="conum" data-value="3"></i><b>(3)</b>
+appender.0.layout.patternSelector.properties.1.type = PatternMatch
+appender.0.layout.patternSelector.properties.1.key = EXIT
+appender.0.layout.patternSelector.properties.1.pattern = %d %5p [%t] %c{1} &lt;= %m%n <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Accepting log events marked with <code>FLOW</code> regardless of their level</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>By default, log event messages will be formatted with a <code>--</code> prefix</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Log events marked with <code>ENTER</code> (that is, generated by <code>traceEntry()</code>) will have their message formatted with a <code>&#8658;</code> prefix</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Log events marked with <code>EXIT</code> (that is, generated by <code>traceExit()</code>) will have their message formatted with a <code>&#8656;</code> prefix</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="example-logback"><a class="anchor" href="#example-logback"></a>Logback</h3>
+<div class="paragraph">
+<p><a href="https://logback.qos.ch">Logback</a> is another logging implementation for the <a href="https://www.slf4j.org">SLF4J</a> logging API, just like Log4j Core is a logging implementation for the <a href="api.html" class="xref page">Log4j API</a>.
+Using Log4j-to-SLF4J bridge, Logback can be <a href="installation.html#impl-logback" class="xref page">configured to consume Log4j API</a>.</p>
+</div>
+<div class="paragraph">
+<p>Below we will use a combination of <code>EvaluatorFilter</code>, <code>MarkerFilter</code>, and <code>OnMarkerEvaluator</code> in Logback to adapt the formatting pattern of messages written to console based on flow tracing specific markers:</p>
+</div>
+<div class="listingblock">
+<div class="title"><a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examplesmanual/flowtracing/logback.xml">logback.xml</a> snippet</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;turboFilter class="MarkerFilter"&gt;<i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;Marker&gt;FLOW&lt;/Marker&gt;
+  &lt;OnMatch&gt;ACCEPT&lt;/OnMatch&gt;
+&lt;/turboFilter&gt;
+
+&lt;appender name="CONSOLE_DEFAULT" class="ConsoleAppender"&gt;
+  &lt;filter class="EvaluatorFilter"&gt;<i class="conum" data-value="2"></i><b>(2)</b>
+    &lt;evaluator class="OnMarkerEvaluator"&gt;
+      &lt;marker&gt;ENTER&lt;/marker&gt;
+      &lt;marker&gt;EXIT&lt;/marker&gt;
+    &lt;/evaluator&gt;
+    &lt;onMismatch&gt;ACCEPT&lt;/onMismatch&gt;
+    &lt;onMatch&gt;DENY&lt;/onMatch&gt;
+  &lt;/filter&gt;
+  &lt;encoder class="PatternLayoutEncoder"&gt;<i class="conum" data-value="3"></i><b>(3)</b>
+    &lt;pattern&gt;&lt;![CDATA[%d %5p [%t] %c{1} -- %m%n]]&gt;&lt;/pattern&gt;
+  &lt;/encoder&gt;
+&lt;/appender&gt;
+
+&lt;appender name="CONSOLE_FLOW_ENTER" class="ConsoleAppender"&gt;
+  &lt;filter class="EvaluatorFilter"&gt;<i class="conum" data-value="4"></i><b>(4)</b>
+    &lt;evaluator class="OnMarkerEvaluator"&gt;
+      &lt;marker&gt;ENTER&lt;/marker&gt;
+    &lt;/evaluator&gt;
+    &lt;onMismatch&gt;DENY&lt;/onMismatch&gt;
+    &lt;onMatch&gt;ACCEPT&lt;/onMatch&gt;
+  &lt;/filter&gt;
+  &lt;encoder class="PatternLayoutEncoder"&gt;<i class="conum" data-value="5"></i><b>(5)</b>
+    &lt;pattern&gt;&lt;![CDATA[%d %5p [%t] %c{1} =&gt; %m%n]]&gt;&lt;/pattern&gt;
+  &lt;/encoder&gt;
+&lt;/appender&gt;
+
+&lt;appender name="CONSOLE_FLOW_EXIT" class="ConsoleAppender"&gt;
+  &lt;filter class="EvaluatorFilter"&gt;<i class="conum" data-value="6"></i><b>(6)</b>
+    &lt;evaluator class="OnMarkerEvaluator"&gt;
+      &lt;marker&gt;EXIT&lt;/marker&gt;
+    &lt;/evaluator&gt;
+    &lt;onMismatch&gt;DENY&lt;/onMismatch&gt;
+    &lt;onMatch&gt;ACCEPT&lt;/onMatch&gt;
+  &lt;/filter&gt;
+  &lt;encoder class="PatternLayoutEncoder"&gt;<i class="conum" data-value="7"></i><b>(7)</b>
+    &lt;pattern&gt;&lt;![CDATA[%d %5p [%t] %c{1} &lt;= %m%n]]&gt;&lt;/pattern&gt;
+  &lt;/encoder&gt;
+&lt;/appender&gt;
+
+&lt;root level="WARN"&gt;
+  &lt;appender-ref ref="CONSOLE_DEFAULT"/&gt;
+  &lt;appender-ref ref="CONSOLE_FLOW_ENTER"/&gt;
+  &lt;appender-ref ref="CONSOLE_FLOW_EXIT"/&gt;
+&lt;/root&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Accepting log events marked with <code>FLOW</code> regardless of their level</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>In <code>CONSOLE_DEFAULT</code> appender, excluding all log events marked with <code>ENTER</code> and <code>EXIT</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>In <code>CONSOLE_DEFAULT</code> appender, log event messages will be formatted with a <code>-</code> prefix</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>In <code>CONSOLE_FLOW_ENTER</code> appender, accepting only log events marked with <code>ENTER</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>In <code>CONSOLE_FLOW_ENTER</code> appender, log event messages will be formatted with a <code>→</code> prefix</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>In <code>CONSOLE_FLOW_EXIT</code> appender, accepting only log events marked with <code>EXIT</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>In <code>CONSOLE_FLOW_EXIT</code> appender, log event messages will be formatted with a <code>←</code> prefix</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>
+    Copyright © 1999-2024 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
+  </p>
+  <p>
+    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+    Other names may be trademarks of their respective owners.
+  </p>
+</footer>
+<script id="site-script" src="../_/js/site.js" data-ui-root-path="../_"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+<!-- `@asciidoctor/tabs` extension scripts -->
+<script async src="../_/js/vendor/tabs.js"></script>
+  </body>
+</html>

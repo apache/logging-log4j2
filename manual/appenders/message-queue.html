@@ -1,0 +1,2328 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Message queue appenders :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/appenders/message-queue.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.6">
+<link rel="stylesheet" href="../../_/css/site.css">
+<link rel="icon" href="../../_/../_images/favicon.ico" type="image/x-icon">
+<!-- `@asciidoctor/tabs` extension styles -->
+<link rel="stylesheet" href="../../_/css/vendor/tabs.css">
+<style>
+  /* Swap colors of `IMPORTANT` and `WARNING` blocks */ 
+  .doc .admonitionblock.important .icon { background-color: #f70; }
+  .doc .admonitionblock.warning .icon { background-color: #e40046; }
+  /* Default `h4`, `h5`, and `h6` are smaller than the normal text, fix header font sizing: */
+  .doc h1 { font-size: 1.9rem; }
+  .doc h2 { font-size: 1.7rem; }
+  .doc h3 { font-size: 1.5rem; font-weight: 400; }
+  .doc h4 { font-size: 1.3rem; font-weight: 500; }
+  .doc h5 { font-size: 1.1rem; font-weight: 500; text-decoration: underline; }
+  .doc h6 { font-size: 0.9rem; font-weight: 500; text-decoration: underline; }
+  /* Default `code`, `pre`, and `.colist` (source code annotations) fonts are too big, adjust them: */
+  .doc .colist>table code, .doc p code, .doc thead code { font-size: 0.8em; }
+  .doc pre { font-size: 0.7rem; }
+  .doc .colist { font-size: 0.75rem; }
+  /* Make links more visible: */
+  .doc a { text-decoration: underline; }
+  .doc a code { text-decoration: underline; color: #1565c0; }
+  /* Tab header fonts aren't rendered good, adjusting the font weight: */
+  .tablist > ul li { font-weight: 500; }
+  /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
+  .toc .toc-menu li[data-level="4"] a {
+    padding-left: 2.75rem;
+  }
+  /* Replace the default highlight.js color for strings from red (unnecessarily signaling something negative) to green: */
+  .hljs-string {
+    color: #0f8532;
+  }
+</style>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <img src="../../_/../_images/logo-small-white.png" alt="Apache Log4j"/>
+      </div>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://logging.apache.org">a subproject of&nbsp;<strong>Apache Logging Services</strong></a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ROOT" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../../index.html">Home</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../download.html">Download</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../release-notes.html">Release Notes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="https://logging.apache.org/support.html">Support</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../index.html">Manual</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../getting-started.html">Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../installation.html">Installation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../api.html">API</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../api.html#loggers">Loggers</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../eventlogging.html">Event Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../simple-logger.html">Simple Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../status-logger.html">Status Logger</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../logbuilder.html">Fluent API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../api.html#fish-tagging">Fish tagging</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../customloglevels.html">Levels</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../markers.html">Markers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../thread-context.html">Thread Context</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../messages.html">Messages</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../flowtracing.html">Flow Tracing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../implementation.html">Implementation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../config-intro.html">Configuration</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../configuration.html">Configuration file</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../systemproperties.html">Configuration properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../customconfig.html">Programmatic configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../appenders.html">Appenders</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="file.html">File appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="rolling-file.html">Rolling file appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="database.html">Database appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="network.html">Network Appenders</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="4">
+    <a class="nav-link" href="message-queue.html">Message queue appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="delegating.html">Delegating Appenders</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../json-template-layout.html">JSON Template Layout</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../pattern-layout.html">Pattern Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../filters.html">Filters</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../scripts.html">Scripts</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../jmx.html">JMX</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../extending.html">Extending</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../plugins.html">Plugins</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../performance.html">Performance</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../async.html">Asynchronous loggers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../garbagefree.html">Garbage-free logging</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">References</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../plugin-reference.html">Plugin reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../javadoc.html">Java API reference</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Resources</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../faq.html">F.A.Q.</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../migrate-from-log4j1.html">Migrating from Log4j 1</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../migrate-from-logback.html">Migrating from Logback</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../migrate-from-slf4j.html">Migrating from SLF4J</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../hibernate.html">Integrating with Hibernate</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../jakarta.html">Integrating with Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../soa.html">Integrating with service-oriented architectures</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../development.html">Development</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../components.html">Components</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../log4j-iostreams.html">Log4j IOStreams</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../log4j-spring-boot.html">Log4j Spring Boot Support</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../log4j-jul.html">JUL-to-Log4j bridge</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../log4j-to-jul.html">Log4j-to-JUL bridge</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Related projects</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jakarta/index.html">Log4j Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jmx-gui/index.html">Log4j JMX GUI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/kotlin/index.html">Log4j Kotlin</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/scala/index.html">Log4j Scala</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/tools/index.html">Log4j Tools</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/transform/index.html">Log4j Transformation Tools</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">Home</a></li>
+    <li><a href="../index.html">Manual</a></li>
+    <li><a href="../implementation.html">Implementation</a></li>
+    <li><a href="../config-intro.html">Configuration</a></li>
+    <li><a href="../appenders.html">Appenders</a></li>
+    <li><a href="message-queue.html">Message queue appenders</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/manual/appenders/message-queue.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="4">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Message queue appenders</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>This page guides you through message queue <a href="../appenders.html" class="xref page">appenders</a> that forward log events to a message broker.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="FlumeAppender"><a class="anchor" href="#FlumeAppender"></a>Flume Appender</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://flume.apache.org/index.html">Apache Flume</a> is a distributed, reliable, and available system for efficiently collecting, aggregating, and moving large amounts of log data from many different sources to a centralized data store.
+The Flume Appender takes log events and sends them to a Flume agent as serialized Avro events for consumption.</p>
+</div>
+<div class="paragraph">
+<p>The Flume Appender supports three modes of operation.</p>
+</div>
+<div id="FlumeAppender-mode-AVRO" class="dlist">
+<dl>
+<dt class="hdlist1"><code>AVRO</code></dt>
+<dd>
+<p>It can act as a remote Flume client which sends Flume events via Avro to a Flume Agent configured with an Avro Source.</p>
+</dd>
+</dl>
+</div>
+<div id="FlumeAppender-mode-EMBEDDED" class="dlist">
+<dl>
+<dt class="hdlist1"><code>EMBEDDED</code></dt>
+<dd>
+<p>It can act as an embedded Flume Agent where Flume events pass directly into Flume for processing.</p>
+</dd>
+</dl>
+</div>
+<div id="FlumeAppender-mode-PERSISTENT" class="dlist">
+<dl>
+<dt class="hdlist1"><code>PERSISTENT</code></dt>
+<dd>
+<p>It can persist events to a local BerkeleyDB data store and then asynchronously send the events to Flume, similar to the embedded Flume Agent but without most of the Flume dependencies.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Usage as an embedded agent will cause the messages to be directly passed to the Flume Channel, and then control will be immediately returned to the application.
+All interaction with remote agents will occur asynchronously.
+Setting the <a href="#FlumeAppender-attr-type"><code>type</code> attribute</a> to <code>EMBEDDED</code> will force the use of the embedded agent.
+In addition, configuring agent properties in the appender configuration will also cause the embedded agent to be used.</p>
+</div>
+<table id="FlumeAppender-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Flume Appender configuration attributes</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Required</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="FlumeAppender-attr-name"></a>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the appender.</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Optional</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="FlumeAppender-attr-type"></a>type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>enumeration</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>AVRO</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">One of
+<a href="#FlumeAppender-mode-AVRO">AVRO</a>,
+<a href="#FlumeAppender-mode-EMBEDDED">EMBEDDED</a>
+or
+<a href="#FlumeAppender-mode-PERSISTENT">PERSISTENT</a>
+to indicate which variation of the Appender is desired.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="FlumeAppender-attr-ignoreExceptions"></a>ignoreExceptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>false</code>, logging exception will be forwarded to the caller of the logging statement.
+Otherwise, they will be ignored.</p>
+<p class="tableblock">Logging exceptions are always also logged to <a href="../status-logger.html" class="xref page">Status Logger</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="FlumeAppender-attr-connectTimeoutMillis"></a>connectTimeoutMillis</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The connect timeout in milliseconds.
+If <code>0</code> the timeout is infinite.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="FlumeAppender-attr-requestTimeoutMillis"></a>requestTimeoutMillis</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The request timeout in milliseconds.
+If <code>0</code> the timeout is infinite.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="FlumeAppender-attr-agentRetries"></a>agentRetries</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of times the agent should be retried before failing to a secondary.
+This parameter is ignored when <code>type="persistent"</code> is specified (agents are tried once before failing to
+the next).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="FlumeAppender-attr-batchSize"></a>batchSize</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It specifies the number of events that should be sent as a batch.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="FlumeAppender-attr-compress"></a>compress</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When set to <code>true</code> the message body will be compressed using gzip.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="FlumeAppender-attr-dataDir"></a>dataDir</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html"><code>Path</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Directory where the Flume write-ahead log should be written.
+Valid only when embedded is set to true and Agent elements are used instead of Property elements.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="FlumeAppender-attr-eventPrefix"></a>eventPrefix</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>""</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The character string to prepend to each event attribute to distinguish it from MDC attributes.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="FlumeAppender-attr-lockTimeoutRetries"></a>lockTimeoutRetries</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>5</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of times to retry if a LockConflictException occurs while writing to Berkeley DB.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="FlumeAppender-attr-maxDelayMillis"></a>maxDelayMillis</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>60000</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of milliseconds to wait for <a href="#FlumeAppender-attr-batchSize">batchSize</a> events before publishing the batch.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="FlumeAppender-attr-mdcExcludes"></a>mdcExcludes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String[]</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A comma-separated list of mdc keys that should be excluded from the FlumeEvent.</p>
+<p class="tableblock">This is mutually exclusive with the <a href="#FlumeAppender-attr-mdcIncludes">mdcIncludes</a> attribute.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="FlumeAppender-attr-mdcIncludes"></a>mdcIncludes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String[]</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A comma-separated list of mdc keys that should be included in the <code>FlumeEvent</code>.
+Any keys in the MDC not found in the list will be excluded.</p>
+<p class="tableblock">This option is mutually exclusive with the <a href="#FlumeAppender-attr-mdcExcludes">mdcExcludes</a> attribute.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="FlumeAppender-attr-mdcRequired"></a>mdcRequired</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String[]</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A comma-separated list of <code>mdc</code> keys that must be present in the MDC.
+If a key is not present, a LoggingException will be thrown.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="FlumeAppender-attr-mdcPrefix"></a>mdcPrefix</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdc:</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A string that should be prepended to each MDC key to distinguish it from event attributes.</p></td>
+</tr>
+</tbody>
+</table>
+<table id="FlumeAppender-elements" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Flume Appender nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Multiplicity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="FlumeAppender-element-Agent"></a><a href="#Agent"><code>Agent</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or more</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An array of Agents to which the logging events should be sent.
+If more than one agent is specified, the first Agent will be the primary and subsequent Agents will be used in the order specified as secondaries should the primary Agent fail.
+Each Agent definition supplies the Agent&#8217;s host and port.</p>
+<p class="tableblock">The specification of agents and <a href="#FlumeAppender-element-Property">properties</a> are mutually exclusive.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="FlumeAppender-element-Filter"></a><a href="../filters.html" class="xref page"><code>Filter</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows filtering log events just before they are formatted and sent.</p>
+<p class="tableblock">See also <a href="../filters.html#appender-stage" class="xref page">appender filtering stage</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="FlumeAppender-element-FlumeEventFactory"></a><a href="#FlumeEventFactory"><code>FlumeEventFactory</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Factory that generates the Flume events from Log4j events.</p>
+<p class="tableblock">The default factory is the appender itself.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="FlumeAppender-element-Layout"></a><a href="../layouts.html" class="xref page"><code>Layout</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Formats log events.
+If not provided, <a href="../layouts.html#RFC5424Layout" class="xref page">Rfc5424 Layout</a> is used.</p>
+<p class="tableblock">See <a href="../layouts.html" class="xref page">Layouts</a> for more information.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="FlumeAppender-element-Property"></a><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property" class="xref page"><code>Property</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or more</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">One or more Property elements that are used to configure the Flume Agent.
+The properties must be configured without the agent name, the appender name is used for this, and no sources can be configured.
+Interceptors can be specified for the source using "sources.log4j-source.interceptors".
+All other Flume configuration properties are allowed.
+Specifying both Agent and Property elements will result in an error.</p>
+<p class="tableblock">When used to configure in Persistent mode, the valid properties are:</p>
+<p class="tableblock">1. <code>keyProvider</code> to specify the name of the plugin to provide the
+secret key for encryption.</p>
+<p class="tableblock">The specification of <a href="#FlumeAppender-element-Agent">agents</a> and properties are mutually exclusive.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeAppender" class="xref page">&#x1F4D6; Plugin reference for <code>Flume</code></a></p>
+</div>
+<div class="paragraph">
+<p>Additional runtime dependencies are required to use the Flume Appender:</p>
+</div>
+<div id="_tabs_1" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_1_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_1_maven--panel" class="tabpanel" aria-labelledby="_tabs_1_maven">
+<div class="paragraph">
+<p>We assume you use <a href="../../components.html#log4j-bom" class="xref page"><code>log4j-bom</code></a> for dependency management.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+  &lt;artifactId&gt;log4j-flume-ng&lt;/artifactId&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_gradle--panel" class="tabpanel" aria-labelledby="_tabs_1_gradle">
+<div class="paragraph">
+<p>We assume you use <a href="../../components.html#log4j-bom" class="xref page"><code>log4j-bom</code></a> for dependency management.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-flume-ng'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>To use the Flume Appender <a href="#FlumeAppender-mode-PERSISTENT">PERSISTENT mode</a>, you need the following additional dependency:</p>
+</div>
+<div id="_tabs_2" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_2_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_2_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_2_maven--panel" class="tabpanel" aria-labelledby="_tabs_2_maven">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.sleepycat&lt;/groupId&gt;
+  &lt;artifactId&gt;je&lt;/artifactId&gt;
+  &lt;version&gt;18.3.12&lt;/version&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_2_gradle--panel" class="tabpanel" aria-labelledby="_tabs_2_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.sleepycat:je:{je-version}'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>If you use the Flume Appender in <a href="#FlumeAppender-mode-EMBEDDED">EMBEDDED mode</a>, you need to add the <code>flume-ng-embedded-agent</code> dependency below and all the channel and sink implementation you plan to use.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="https://flume.apache.org/releases/content/1.11.0/FlumeDeveloperGuide.html#embedded-agent">Flume Embedded Agent</a> documentation for more details.</p>
+</div>
+<div id="_tabs_3" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_3_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_3_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_3_maven--panel" class="tabpanel" aria-labelledby="_tabs_3_maven">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.flume&lt;/groupId&gt;
+  &lt;artifactId&gt;flume-ng-embedded-agent&lt;/artifactId&gt;
+  &lt;version&gt;1.11.0&lt;/version&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_3_gradle--panel" class="tabpanel" aria-labelledby="_tabs_3_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.flume:flume-ng-embedded-agent:{flume-version}'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="Agent"><a class="anchor" href="#Agent"></a>Agent Addresses</h3>
+<div class="paragraph">
+<p>The address of the Flume server is specified using the <code>Agent</code> element, which supports the following configuration options:</p>
+</div>
+<table id="Agent-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. <code>Agent</code> configuration attributes</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="Agent-attr-host"></a>host</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/net/InetAddress.html"><code>InetAddress</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>localhost</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The host to connect to.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="Agent-attr-port"></a>port</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>35853</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The port to connect to.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-Agent" class="xref page">&#x1F4D6; Plugin reference for <code>Agent</code></a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="FlumeEventFactory"><a class="anchor" href="#FlumeEventFactory"></a>Flume event factories</h3>
+<div class="paragraph">
+<p>Flume event factories are Log4j plugins that implement the
+<a href="../../javadoc/log4j-flume-ng/org/apache/logging/log4j/flume/appender/FlumeEventFactory.html"><code>FlumeEventFactory</code></a>
+and allow to customize the way log events are transformed into
+<a href="../../javadoc/log4j-flume-ng/org/apache/logging/log4j/flume/appender/FlumeEvent.html"><code>FlumeEvent</code></a>s.</p>
+</div>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeEventFactory" class="xref page">&#x1F4D6; Plugin reference for <code>FlumeEventFactory</code></a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="FlumeAppender-examples"><a class="anchor" href="#FlumeAppender-examples"></a>Configuration examples</h3>
+<div class="paragraph">
+<p>A sample Flume Appender which is configured with a primary and a secondary agent, compresses the body and formats the body using the RFC5424 Layout:</p>
+</div>
+<div id="_tabs_4" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_4_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_4_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_4_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_4_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_4_xml--panel" class="tabpanel" aria-labelledby="_tabs_4_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/flume-avro.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Flume name="FLUME"&gt;
+  &lt;Rfc5424Layout enterpriseNumber="18060"
+                 includeMDC="true"
+                 appName="MyApp"/&gt;
+  &lt;Agent host="192.168.10.101" port="8800"/&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;Agent host="192.168.10.102" port="8800"/&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+&lt;/Flume&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_4_json--panel" class="tabpanel" aria-labelledby="_tabs_4_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/flume-avro.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Flume": {
+  "name": "FLUME",
+  "Rfc5424Layout": {
+    "enterpriseNumber": 18060,
+    "includeMDC": true,
+    "appName": "MyAPP"
+  },
+  "Agent": [
+    { <i class="conum" data-value="1"></i><b>(1)</b>
+      "host": "192.168.10.101",
+      "port": "8800"
+    },
+    { <i class="conum" data-value="2"></i><b>(2)</b>
+      "host": "192.168.10.102",
+      "port": "8800"
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_4_yaml--panel" class="tabpanel" aria-labelledby="_tabs_4_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/flume-avro.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Flume:
+  name: "FLUME"
+  Rfc5424Layout:
+    enterpriseNumber: 18060
+    includeMDC: true
+    appName: MyApp
+  Agent:
+    <i class="conum" data-value="1"></i><b>(1)</b>
+    - host: "192.168.10.101"
+      port: 8800
+    <i class="conum" data-value="2"></i><b>(2)</b>
+    - host: "192.168.10.102"
+      port: 8800</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_4_properties--panel" class="tabpanel" aria-labelledby="_tabs_4_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/flume-avro.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = Flume
+appender.0.name = FLUME
+
+appender.0.layout.type = Rfc5424Layout
+appender.0.layout.enterpriseNumber = 18060
+appender.0.layout.includeMDC = true
+appender.0.layout.appName = MyApp
+
+<i class="conum" data-value="1"></i><b>(1)</b>
+appender.0.primary.type = Agent
+appender.0.primary.host = 192.168.10.101
+appender.0.primary.port = 8800
+<i class="conum" data-value="2"></i><b>(2)</b>
+appender.0.secondary.type = Agent
+appender.0.secondary.host = 192.168.10.102
+appender.0.secondary.port = 8800</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Primary agent</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Secondary agent</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>A sample Flume Appender, which is configured with a primary and a secondary agent, compresses the body, formats the body using the RFC5424 Layout, and persists encrypted events to disk:</p>
+</div>
+<div id="_tabs_5" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_5_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_5_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_5_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_5_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_5_xml--panel" class="tabpanel" aria-labelledby="_tabs_5_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/flume-persistent.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Flume name="FLUME"
+       type="PERSISTENT"
+       compress="true"
+       dataDir="./logData"&gt;
+  &lt;Rfc5424Layout enterpriseNumber="18060"
+                 includeMDC="true"
+                 appName="MyApp"/&gt;
+  &lt;Property name="keyProvider" value="org.example.MySecretProvider"/&gt;
+  &lt;Agent host="192.168.10.101" port="8800"/&gt;
+  &lt;Agent host="192.168.10.102" port="8800"/&gt;
+&lt;/Flume&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_5_json--panel" class="tabpanel" aria-labelledby="_tabs_5_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/flume-persistent.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Flume": {
+  "name": "FLUME",
+  "type": "PERSISTENT",
+  "compress": true,
+  "dataDir": "./logData",
+  "Rfc5424Layout": {
+    "enterpriseNumber": 18060,
+    "includeMDC": true,
+    "appName": "MyAPP"
+  },
+  "Property": {
+    "name": "keyProvider",
+    "value": "org.example.MySecretProvider"
+  },
+  "Agent": [
+    {
+      "host": "192.168.10.101",
+      "port": "8800"
+    },
+    {
+      "host": "192.168.10.102",
+      "port": "8800"
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_5_yaml--panel" class="tabpanel" aria-labelledby="_tabs_5_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/flume-persistent.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Flume:
+  name: "FLUME"
+  type: "PERSISTENT"
+  compress: true
+  dataDir: "./logData"
+  Rfc5424Layout:
+    enterpriseNumber: 18060
+    includeMDC: true
+    appName: MyApp
+  Property:
+    name: "keyProvider"
+    value: "org.example.MySecretProvider"
+  Agent:
+    - host: "192.168.10.101"
+      port: 8800
+    - host: "192.168.10.102"
+      port: 8800</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_5_properties--panel" class="tabpanel" aria-labelledby="_tabs_5_properties">
+<div class="paragraph">
+<p>This example cannot be configured using Java properties.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>A sample Flume Appender, which is configured with a primary and a secondary agent compresses the body, formats the body using RFC5424 Layout, and passes the events to an embedded Flume Agent.</p>
+</div>
+<div id="_tabs_6" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_6_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_6_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_6_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_6_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_6_xml--panel" class="tabpanel" aria-labelledby="_tabs_6_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/flume-embedded.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Flume name="FLUME"
+       type="EMBEDDED"
+       compress="true"&gt;
+  &lt;Rfc5424Layout enterpriseNumber="18060"
+                 includeMDC="true"
+                 appName="MyApp"/&gt;
+  &lt;Agent host="192.168.10.101" port="8800"/&gt;
+  &lt;Agent host="192.168.10.102" port="8800"/&gt;
+&lt;/Flume&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_6_json--panel" class="tabpanel" aria-labelledby="_tabs_6_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/flume-embedded.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Flume": {
+  "name": "FLUME",
+  "type": "EMBEDDED",
+  "compress": true,
+  "Rfc5424Layout": {
+    "enterpriseNumber": 18060,
+    "includeMDC": true,
+    "appName": "MyAPP"
+  },
+  "Agent": [
+    {
+      "host": "192.168.10.101",
+      "port": "8800"
+    },
+    {
+      "host": "192.168.10.102",
+      "port": "8800"
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_6_yaml--panel" class="tabpanel" aria-labelledby="_tabs_6_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/flume-embedded.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Flume:
+  name: "FLUME"
+  type: "EMBEDDED"
+  compress: true
+  Rfc5424Layout:
+    enterpriseNumber: 18060
+    includeMDC: true
+    appName: MyApp
+  Agent:
+    - host: "192.168.10.101"
+      port: 8800
+    - host: "192.168.10.102"
+      port: 8800</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_6_properties--panel" class="tabpanel" aria-labelledby="_tabs_6_properties">
+<div class="paragraph">
+<p>This example cannot be configured using Java properties.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="JmsAppender"><a class="anchor" href="#JmsAppender"></a>JMS Appender</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The JMS Appender sends the formatted log event to a
+<a href="https://jakarta.ee/specifications/messaging/2.0/">Jakarta Messaging API</a>
+destination.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>As of Log4j <code>2.17.0</code> you need to enable the JMS Appender <strong>explicitly</strong> by setting the
+<a href="../systemproperties.html#log4j2.enableJndiJms" class="xref page"><code>log4j2.enableJndiJms</code></a>
+configuration property to <code>true</code>.</p>
+</div>
+<div class="paragraph">
+<p>Due to breaking changes in the underlying API, the JMS Appender cannot be used with Jakarta Messaging API 3.0 or later.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<table id="JmsAppender-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. JMS Appender configuration attributes</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Required</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JmsAppender-attr-name"></a>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the appender.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JmsAppender-attr-factoryBindingName"></a>factoryBindingName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/javax/naming/Name.html"><code>Name</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The JNDI name of the
+<a href="https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/connectionfactory"><code>ConnectionFactory</code></a>.</p>
+<p class="tableblock">Only the <code>java:</code> protocol is supported.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JmsAppender-attr-destinationBindingName"></a>destinationBindingName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/javax/naming/Name.html"><code>Name</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The JNDI name of the
+<a href="https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/destination"><code>Destination</code></a>, which can be either a
+<a href="https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/queue"><code>Queue</code></a>
+or a
+<a href="https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/topic"><code>Topic</code></a>.</p>
+<p class="tableblock">Only the <code>java:</code> protocol is supported.</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">JNDI configuration (overrides system properties)</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JmsAppender-attr-factoryName"></a>factoryName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It specifies the
+<a href="https://docs.oracle.com/javase/8/docs/api/javax/naming/spi/InitialContextFactory.html"><code>InitialContextFactory</code></a>.</p>
+<p class="tableblock">See
+<a href="https://docs.oracle.com/javase/8/docs/api/javax/naming/Context.html#INITIAL_CONTEXT_FACTORY">INITIAL_CONTEXT_FACTORY</a>
+for details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JmsAppender-attr-urlPkgPrefixes"></a>urlPkgPrefixes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String[]</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A colon-separated list of package prefixes that contain URL context factories.</p>
+<p class="tableblock">See <a href="https://docs.oracle.com/javase/8/docs/api/javax/naming/Context.html#URL_PKG_PREFIXES">URL_PKG_PREFIXES</a> for details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JmsAppender-attr-providerURL"></a>providerURL</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A configuration parameter for the <a href="#JmsAppender-attr-factoryName"><code>InitialContextFactory</code></a>.</p>
+<p class="tableblock">See <a href="https://docs.oracle.com/javase/8/docs/api/javax/naming/Context.html#PROVIDER_URL">PROVIDER_URL</a>
+for details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JmsAppender-attr-securityPrincipalName"></a>securityPrincipalName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the principal to use for the <a href="#JmsAppender-attr-factoryName"><code>InitialContextFactory</code></a>.</p>
+<p class="tableblock">See
+<a href="https://docs.oracle.com/javase/8/docs/api/javax/naming/Context.html#SECURITY_PRINCIPAL">SECURITY_PRINCIPAL</a>
+for details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>securityCredentials</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The security credentials for the <a href="#JmsAppender-attr-securityPrincipalName">principal</a>.</p>
+<p class="tableblock">See
+<a href="https://docs.oracle.com/javase/8/docs/api/javax/naming/Context.html#SECURITY_CREDENTIALS">SECURITY_CREDENTIALS</a>
+for details.</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Optional</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JmsAppender-attr-userName"></a>userName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The username for the
+<a href="https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/connectionfactory"><code>ConnectionFactory</code></a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JmsAppender-attr-password"></a>password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The password for the
+<a href="https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/connectionfactory"><code>ConnectionFactory</code></a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JmsAppender-attr-ignoreExceptions"></a>ignoreExceptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>false</code>, logging exception will be forwarded to the caller of the logging statement.
+Otherwise, they will be ignored.</p>
+<p class="tableblock">Logging exceptions are always also logged to <a href="../status-logger.html" class="xref page">Status Logger</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JmsAppender-attr-reconnectIntervalMillis"></a>reconnectIntervalMillis</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>long</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>5000</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The request timeout in milliseconds.
+If <code>0</code> the timeout is infinite.</p></td>
+</tr>
+</tbody>
+</table>
+<table id="JmsAppender-elements" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 5. JMS Appender nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Multiplicity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JmsAppender-element-Filter"></a><a href="../filters.html" class="xref page"><code>Filter</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows filtering log events just before they are formatted and sent.</p>
+<p class="tableblock">See also <a href="../filters.html#appender-stage" class="xref page">appender filtering stage</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JmsAppender-element-Layout"></a><a href="../layouts.html" class="xref page"><code>Layout</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>one</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Used in the mapping process to get a JMS
+<a href="https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/message"><code>Message</code></a>.</p>
+<p class="tableblock">See <a href="#JmsAppender-mapping">Mapping events to JMS messages</a> below for more information.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-JmsAppender" class="xref page">&#x1F4D6; Plugin reference for <code>JMS</code></a></p>
+</div>
+<div class="sect2">
+<h3 id="JmsAppender-mapping"><a class="anchor" href="#JmsAppender-mapping"></a>Mapping events to JMS messages</h3>
+<div class="paragraph">
+<p>The mapping between log events and JMS messages has two steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>First, the <a href="../layouts.html" class="xref page">layout</a> is used to transform a log event into an intermediary format.</p>
+</li>
+<li>
+<p>Then, a <a href="https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/message"><code>Message</code></a> is created based on the type of object returned by the layout:</p>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>String</code></dt>
+<dd>
+<p>Strings are converted into
+<a href="https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/textmessage"><code>TextMessage</code></a>s.</p>
+</dd>
+<dt class="hdlist1"><a href="../messages.html#MapMessage" class="xref page"><code>MapMessage</code></a></dt>
+<dd>
+<p>The Log4j <code>MapMessage</code> type is mapped to the JMS
+<a href="https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/mapmessage"><code>MapMessage</code></a>
+type.</p>
+</dd>
+<dt class="hdlist1"><code>Serializable</code></dt>
+<dd>
+<p>Anything else is converted into an
+<a href="https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/objectmessage"><code>ObjectMessage</code></a>.</p>
+</dd>
+</dl>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="JmsAppender-examples"><a class="anchor" href="#JmsAppender-examples"></a>Configuration examples</h3>
+<div class="paragraph">
+<p>Here is a sample JMS Appender configuration:</p>
+</div>
+<div id="_tabs_7" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_7_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_7_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_7_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_7_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_7_xml--panel" class="tabpanel" aria-labelledby="_tabs_7_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/jms-simple.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;JMS name="JMS"
+     factoryBindingName="jms/ConnectionFactory"
+     destinationBindingName="jms/Queue"&gt;
+  &lt;JsonTemplateLayout/&gt;
+&lt;/JMS&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_7_json--panel" class="tabpanel" aria-labelledby="_tabs_7_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/jms-simple.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"JMS": {
+  "name": "JMS",
+  "factoryBindingName": "jms/ConnectionFactory",
+  "destinationBindingName": "jms/Queue",
+  "JsonTemplateLayout": {}
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_7_yaml--panel" class="tabpanel" aria-labelledby="_tabs_7_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/jms-simple.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">JMS:
+  name: "JMS"
+  factoryBindingName: "jms/ConnectionFactory"
+  destinationBindingName: "jms/Queue"
+  JsonTemplateLayout: {}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_7_properties--panel" class="tabpanel" aria-labelledby="_tabs_7_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/jms-simple.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = JMS
+appender.0.name = JMS
+appender.0.factoryBindingName = jms/ConnectionFactory
+appender.0.destinationBindingName = jms/Queue
+
+appender.0.layout.type = JsonTemplateLayout</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>To map your Log4j <code>MapMessage</code> to JMS <code>javax.jms.MapMessage</code>, set the layout of the appender to <a href="../layouts.html#MessageLayout" class="xref page"><code>MessageLayout</code></a>:</p>
+</div>
+<div id="_tabs_8" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_8_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_8_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_8_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_8_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_8_xml--panel" class="tabpanel" aria-labelledby="_tabs_8_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/jms-message.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;JMS name="JMS"
+     factoryBindingName="jms/ConnectionFactory"
+     destinationBindingName="jms/Queue"&gt;
+  &lt;MessageLayout/&gt;
+&lt;/JMS&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_8_json--panel" class="tabpanel" aria-labelledby="_tabs_8_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/jms-message.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"JMS": {
+  "name": "JMS",
+  "factoryBindingName": "jms/ConnectionFactory",
+  "destinationBindingName": "jms/Queue",
+  "MessageLayout": {}
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_8_yaml--panel" class="tabpanel" aria-labelledby="_tabs_8_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/jms-message.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">JMS:
+  name: "JMS"
+  factoryBindingName: "jms/ConnectionFactory"
+  destinationBindingName: "jms/Queue"
+  MessageLayout: {}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_8_properties--panel" class="tabpanel" aria-labelledby="_tabs_8_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/jms-message.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = JMS
+appender.0.name = JMS
+appender.0.factoryBindingName = jms/ConnectionFactory
+appender.0.destinationBindingName = jms/Queue
+
+appender.0.layout.type = MessageLayout</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="KafkaAppender"><a class="anchor" href="#KafkaAppender"></a>Kafka Appender</h2>
+<div class="sectionbody">
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>This appender is planned to be removed in the next major release!</strong>
+If you are using this library, please get in touch with the Log4j maintainers using <a href="https://logging.apache.org/support.html">the official support channels</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The KafkaAppender logs events to an <a href="https://kafka.apache.org/">Apache Kafka</a> topic.
+Each log event is sent as a
+<a href="https://kafka.apache.org/30/javadoc/org/apache/kafka/clients/producer/ProducerRecord.html"><code>ProducerRecord&lt;byte[], byte[]&gt;</code></a>, where:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the key is provided by the byte representation of the <a href="#KafkaAppender-attr-key"><code>key</code></a> attribute.</p>
+</li>
+<li>
+<p>the value is provided by the byte representation produced by the <a href="#KafkaAppender-element-Layout">layout</a>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This appender is synchronous by default and will block until the record has been acknowledged by the Kafka server.
+The maximum delivery time can be configured using the
+<a href="https://kafka.apache.org/documentation.html#producerconfigs_delivery.timeout.ms">Kafka <code>delivery.timeout.ms</code> property</a>.
+Wrap the appender with an
+<a href="delegating.html" class="xref page">Async Appender</a>
+or set
+<a href="#KafkaAppender-attr-syncSend"><code>syncSend</code></a>
+to <code>false</code> to log asynchronously.</p>
+</div>
+<table id="KafkaAppender-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 6. Kafka Appender configuration attributes</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Required</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="KafkaAppender-attr-name"></a>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the appender.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="KafkaAppender-attr-topic"></a>topic</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Kafka topic to use.</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Optional</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="KafkaAppender-attr-key"></a>key</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The key of the Kafka
+<a href="https://kafka.apache.org/30/javadoc/org/apache/kafka/clients/producer/ProducerRecord.html"><code>ProducerRecord</code></a>.</p>
+<p class="tableblock">Supports
+<a href="../configuration.html#lazy-property-substitution" class="xref page">runtime property substitution</a>
+and is evaluated in the
+<a href="../lookups.html#global-context" class="xref page"><em>global context</em></a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="KafkaAppender-attr-ignoreExceptions"></a>ignoreExceptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>false</code>, logging exception will be forwarded to the caller of the logging statement.
+Otherwise, they will be ignored.</p>
+<p class="tableblock">Logging exceptions are always also logged to <a href="../status-logger.html" class="xref page">Status Logger</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="KafkaAppender-attr-syncSend"></a>syncSend</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>If <code>true</code>, the appender blocks until the record has been acknowledged by the Kafka server.
+Otherwise, the appender returns immediately, allowing for lower latency and significantly higher throughput.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If set to <code>false</code> any failure sending to Kafka will be reported as an error to <a href="../status-logger.html" class="xref page">Status Logger</a> and the log event will be dropped.
+The <a href="#KafkaAppender-attr-ignoreExceptions"><code>ignoreExceptions</code></a> setting will not be effective.</p>
+</div>
+<div class="paragraph">
+<p>Log events may arrive out of order on the Kafka server.</p>
+</div>
+</td>
+</tr>
+</table>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<table id="KafkaAppender-elements" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 7. Kafka Appender nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Multiplicity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="KafkaAppender-element-Filter"></a><a href="../filters.html" class="xref page"><code>Filter</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows filtering log events just before they are formatted and sent.</p>
+<p class="tableblock">See also <a href="../filters.html#appender-stage" class="xref page">appender filtering stage</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="KafkaAppender-element-Layout"></a><a href="../layouts.html" class="xref page"><code>Layout</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>one</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Formats the log event as a byte array using
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html#toByteArray(org.apache.logging.log4j.core.LogEvent)"><code>Layout.toByteArray()</code></a>.</p>
+<p class="tableblock">See <a href="../layouts.html" class="xref page">Layouts</a> for more information.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="KafkaAppender-element-Property"></a><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property" class="xref page"><code>Property</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">one or more</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>These properties are forwarded directly to the Kafka producer.
+See
+<a href="https://kafka.apache.org/documentation.html#producerconfigs">Kafka producer properties</a>
+for more details.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>bootstrap.servers</code></dt>
+<dd>
+<p>This property is <strong>required</strong>.</p>
+</dd>
+<dt class="hdlist1"><code>key.serializer</code></dt>
+<dt class="hdlist1"><code>value.serializer</code></dt>
+<dd>
+<p>These properties should not be used.</p>
+</dd>
+</dl>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-kafka-KafkaAppender" class="xref page">&#x1F4D6; Plugin reference for <code>Kafka</code></a></p>
+</div>
+<div class="paragraph">
+<p>Additional runtime dependencies are required to use the Kafka Appender:</p>
+</div>
+<div id="_tabs_9" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_9_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_9_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_9_maven--panel" class="tabpanel" aria-labelledby="_tabs_9_maven">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.kafka&lt;/groupId&gt;
+  &lt;artifactId&gt;kafka-clients&lt;/artifactId&gt;
+  &lt;version&gt;3.8.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_9_gradle--panel" class="tabpanel" aria-labelledby="_tabs_9_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.kafka:kafka-clients:3.8.0'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="KafkaAppender-examples"><a class="anchor" href="#KafkaAppender-examples"></a>Configuration examples</h3>
+<div class="paragraph">
+<p>Here is a sample Kafka Appender configuration snippet:</p>
+</div>
+<div id="_tabs_10" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_10_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_10_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_10_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_10_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_10_xml--panel" class="tabpanel" aria-labelledby="_tabs_10_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/kafka.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Kafka name="KAFKA"
+       topic="logs"
+       key="$${web:contextName}"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;JsonTemplateLayout/&gt;
+&lt;/Kafka&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_10_json--panel" class="tabpanel" aria-labelledby="_tabs_10_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/kafka.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Kafka": {
+  "name": "KAFKA",
+  "topic": "logs",
+  "key": "$${web:contextName}", <i class="conum" data-value="1"></i><b>(1)</b>
+  "JsonTemplateLayout": {}
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_10_yaml--panel" class="tabpanel" aria-labelledby="_tabs_10_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/kafka.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Kafka:
+  name: "KAFKA"
+  topic: "logs"
+  key: "$${web:contextName}" <i class="conum" data-value="1"></i><b>(1)</b>
+  JsonTemplateLayout: {}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_10_properties--panel" class="tabpanel" aria-labelledby="_tabs_10_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/kafka.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.1.type = Kafka
+appender.1.name = KAFKA
+appender.1.topic = logs
+<i class="conum" data-value="1"></i><b>(1)</b>
+appender.1.key = $${web:contextName}
+
+appender.1.layout.type = JsonTemplateLayout</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <a href="#KafkaAppender-attr-key"><code>key</code></a> attribute supports runtime lookups.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Make sure to not let <code>org.apache.kafka</code> log to a Kafka appender on <code>DEBUG</code> level, since that will cause recursive logging:</p>
+</div>
+<div id="_tabs_11" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_11_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_11_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_11_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_11_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_11_xml--panel" class="tabpanel" aria-labelledby="_tabs_11_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/kafka.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Root level="INFO"&gt;
+  &lt;AppenderRef ref="KAFKA"/&gt;
+&lt;/Root&gt;
+&lt;Logger name="org.apache.kafka"
+        level="WARN"
+        additivity="false"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;AppenderRef ref="FILE"/&gt;
+&lt;/Logger&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_11_json--panel" class="tabpanel" aria-labelledby="_tabs_11_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/kafka.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Root": {
+  "level": "INFO",
+  "AppenderRef": {
+    "ref": "KAFKA"
+  }
+},
+"Logger": {
+  "name": "org.apache.kafka",
+  "level": "WARN",
+  "additivity": false, <i class="conum" data-value="1"></i><b>(1)</b>
+  "AppenderRef": {
+    "ref": "FILE"
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_11_yaml--panel" class="tabpanel" aria-labelledby="_tabs_11_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/kafka.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Root:
+  level: "INFO"
+  AppenderRef:
+    ref: "KAFKA"
+Logger:
+  name: "org.apache.kafka"
+  level: "WARN"
+  additivity: false <i class="conum" data-value="1"></i><b>(1)</b>
+  AppenderRef:
+    ref: "FILE"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_11_properties--panel" class="tabpanel" aria-labelledby="_tabs_11_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/kafka.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">rootLogger.level = INFO
+rootLogger.appenderRef.0.ref = KAFKA
+
+logger.0.name = org.apache.kafka
+logger.0.level = WARN
+<i class="conum" data-value="1"></i><b>(1)</b>
+logger.0.additivity = false
+logger.0.appenderRef.0.ref = FILE</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Remember to set the <a href="../configuration.html#logger-attributes-additivity" class="xref page"><code>additivity</code></a> configuration attribute to <code>false</code>.</td>
+</tr>
+</table>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="JeroMqAppender"><a class="anchor" href="#JeroMqAppender"></a>ZeroMQ/JeroMQ Appender</h2>
+<div class="sectionbody">
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>This appender is planned to be removed in the next major release!</strong>
+Users should consider switching to
+<a href="https://github.com/fbacchella/loghublog4j2#zmqappender">a third-party <code>ZMQ</code> appender</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The ZeroMQ appender uses the <a href="https://github.com/zeromq/jeromq">JeroMQ</a> library to send log events to one or more ZeroMQ endpoints.</p>
+</div>
+<table id="JeroMqAppender-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 8. JeroMQ Appender configuration attributes</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Required</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JeroMqAppender-attr-name"></a>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the appender.</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Optional</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JeroMqAppender-attr-ignoreExceptions"></a>ignoreExceptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>false</code>, logging exception will be forwarded to the caller of the logging statement.
+Otherwise, they will be ignored.</p>
+<p class="tableblock">Logging exceptions are always also logged to <a href="../status-logger.html" class="xref page">Status Logger</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JeroMqAppender-attr-affinity"></a>affinity</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>long</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The I/O affinity of the sending thread.</p>
+<p class="tableblock">See
+<a href="https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setAffinity&lpar;long&rpar;"><code>Socket.setAffinity()</code></a>
+for more details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JeroMqAppender-attr-backlog"></a>backlog</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>100</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum size of the backlog.</p>
+<p class="tableblock">See
+<a href="https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setBacklog&lpar;long&rpar;"><code>Socket.setBacklog()</code></a>
+for more details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JeroMqAppender-attr-delayAttachOnConnect"></a>delayAttachOnConnect</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Delays the attachment of a pipe on connection.</p>
+<p class="tableblock">See
+<a href="https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setDelayAttachOnConnect&lpar;long&rpar;"><code>Socket.setDelayAttachOnConnect()</code></a>
+for more details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JeroMqAppender-attr-identity"></a>identity</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>byte[]</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It sets the identity of the socket.</p>
+<p class="tableblock">See
+<a href="https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setIdentity(byte&#91;&#93;)"><code>Socket.setIdentity()</code></a>
+for more details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JeroMqAppender-attr-ipv4Only"></a>ipv4Only</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If set, only IPv4 will be used.</p>
+<p class="tableblock">See
+<a href="https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setIPv4Only&lpar;long&rpar;"><code>Socket.setIPv4Only()</code></a>
+for more details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JeroMqAppender-attr-linger"></a>linger</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>long</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It sets the linger-period for the socket.
+The value <code>-1</code> mean infinite.</p>
+<p class="tableblock">See
+<a href="https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setLinger&lpar;long&rpar;"><code>Socket.setLinger()</code></a>
+for more details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JeroMqAppender-attr-maxMsgSize"></a>maxMsgSize</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>long</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Size limit in bytes for inbound messages.</p>
+<p class="tableblock">See
+<a href="https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setMaxMsgSize&lpar;long&rpar;"><code>Socket.setMaxMsgSize()</code></a>
+for more details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JeroMqAppender-attr-rcvHwm"></a>rcvHwm</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1000</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It sets the high-water mark for inbound messages.</p>
+<p class="tableblock">See
+<a href="https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setRcvHWM&lpar;long&rpar;"><code>Socket.setRcvHWM()</code></a>
+for more details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JeroMqAppender-attr-receiveBufferSize"></a>receiveBufferSize</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>long</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It sets the OS buffer size for inbound messages.
+A value of <code>0</code> uses the OS default value.</p>
+<p class="tableblock">See
+<a href="https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setReceiveBufferSize&lpar;long&rpar;"><code>Socket.setReceiveBufferSize()</code></a>
+for more details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JeroMqAppender-attr-receiveTimeOut"></a>receiveTimeOut</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It sets the timeout in milliseconds for receive operations.</p>
+<p class="tableblock">See
+<a href="https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setReceiveTimeOut&lpar;long&rpar;"><code>Socket.setReceiveTimeOut()</code></a>
+for more details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JeroMqAppender-attr-reconnectIVL"></a>reconnectIVL</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>100</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It sets the reconnection interval.</p>
+<p class="tableblock">See
+<a href="https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setReconnectIVL&lpar;long&rpar;"><code>Socket.setReconnectIVL()</code></a>
+for more details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JeroMqAppender-attr-reconnectIVLMax"></a>reconnectIVLMax</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>long</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It sets the maximum reconnection interval.</p>
+<p class="tableblock">See
+<a href="https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setReconnectIVLMax&lpar;long&rpar;"><code>Socket.setReconnectIVLMax()</code></a>
+for more details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JeroMqAppender-attr-sendBufferSize"></a>sendBufferSize</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It sets the OS buffer size for outbound messages.
+A value of <code>0</code> uses the OS default value.</p>
+<p class="tableblock">See
+<a href="https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setSendBufferSize&lpar;long&rpar;"><code>Socket.setSendBufferSize()</code></a>
+for more details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JeroMqAppender-attr-sendTimeOut"></a>sendTimeOut</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It sets the timeout in milliseconds for send operations.</p>
+<p class="tableblock">See
+<a href="https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setSendTimeOut&lpar;long&rpar;"><code>Socket.setSendTimeOut()</code></a>
+for more details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JeroMqAppender-attr-sndHwm"></a>sndHwm</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1000</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It sets the OS buffer size for outbound messages.
+A value of <code>0</code> uses the OS default value.</p>
+<p class="tableblock">See
+<a href="https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setSendBufferSize&lpar;long&rpar;"><code>Socket.setSendBufferSize()</code></a>
+for more details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JeroMqAppender-attr-tcpKeepAlive"></a>tcpKeepAlive</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-1</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>A value of:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>0</code></dt>
+<dd>
+<p>disables TCP keep-alive packets.</p>
+</dd>
+<dt class="hdlist1"><code>1</code></dt>
+<dd>
+<p>enables TCP keep-alive packets.</p>
+</dd>
+<dt class="hdlist1"><code>-1</code></dt>
+<dd>
+<p>uses the OS default value.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>See
+<a href="https://www.javadoc.io/doc/org.zeromq/jeromq/latest/org/zeromq/ZMQ.Socket.html#setTCPKeepAlive&lpar;long&rpar;"><code>Socket.setTCPKeepAlive()</code></a>
+for more details.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JeroMqAppender-attr-tcpKeepAliveCount"></a>tcpKeepAliveCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>long</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It sets the maximum number of keep-alive probes before dropping the connection.
+A value of <code>-1</code> uses the OS default.</p>
+<p class="tableblock">See
+<a href="https://www.javadoc.io/doc/org.zeromq/jeromq/latest/org/zeromq/ZMQ.Socket.html#setTCPKeepAliveCount&lpar;long&rpar;"><code>Socket.setTCPKeepAliveCount()</code></a>
+for more details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JeroMqAppender-attr-tcpKeepAliveIdle"></a>tcpKeepAliveIdle</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>long</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It sets the time a connection needs to remain idle before keep-alive probes are sent.
+The unit depends on the OS and a value of <code>-1</code> uses the OS default.</p>
+<p class="tableblock">See
+<a href="https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setTCPKeepAliveIdle&lpar;long&rpar;"><code>Socket.setTCPKeepAliveIdle()</code></a>
+for more details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JeroMqAppender-attr-tcpKeepAliveInterval"></a>tcpKeepAliveInterval</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>long</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It sets the time between two keep-alive probes.
+The unit depends on the OS and a value of <code>-1</code> uses the OS default.</p>
+<p class="tableblock">See
+<a href="https://www.javadoc.io/static/org.zeromq/jeromq/0.6.0/org/zeromq/ZMQ.Socket.html#setTCPKeepAliveInterval&lpar;long&rpar;"><code>Socket.setTCPKeepAliveInterval()</code></a>
+for more details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JeroMqAppender-attr-xpubVerbose"></a>xpubVerbose</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code>, all subscriptions are passed upstream.</p>
+<p class="tableblock">See
+<a href="https://www.javadoc.io/doc/org.zeromq/jeromq/latest/org/zeromq/ZMQ.Socket.html#setXpubVerbose&lpar;long&rpar;"><code>Socket.setXpubVerbose()</code></a>
+for more details.</p></td>
+</tr>
+</tbody>
+</table>
+<table id="JeroMqAppender-elements" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 9. JeroMQ Appender nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Multiplicity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JeroMqAppender-element-Filter"></a><a href="../filters.html" class="xref page"><code>Filter</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows filtering log events just before they are formatted and sent.</p>
+<p class="tableblock">See also <a href="../filters.html#appender-stage" class="xref page">appender filtering stage</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JeroMqAppender-element-Layout"></a><a href="../layouts.html" class="xref page"><code>Layout</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>one</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Formats the log event as a byte array using
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html#toByteArray(org.apache.logging.log4j.core.LogEvent)"><code>Layout.toByteArray()</code></a>.</p>
+<p class="tableblock">See <a href="../layouts.html" class="xref page">Layouts</a> for more information.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JeroMqAppender-element-Property"></a><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property" class="xref page"><code>Property</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">one or more</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Only properties with an <code>endpoint</code> name are supported.
+At least one is required to provide the address of the endpoint to connect to.</p>
+<p class="tableblock">See
+<a href="https://www.javadoc.io/doc/org.zeromq/jeromq/latest/org/zeromq/ZMQ.Socket.html#connect(java.lang.String)"><code>Socket.connect</code> JavaDoc</a>
+for more details.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-jeromq-JeroMqAppender" class="xref page">&#x1F4D6; Plugin reference for <code>JeroMQ</code></a></p>
+</div>
+<div class="paragraph">
+<p>Additional runtime dependencies are required to use the JeroMQ Appender:</p>
+</div>
+<div id="_tabs_12" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_12_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_12_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_12_maven--panel" class="tabpanel" aria-labelledby="_tabs_12_maven">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.zeromq&lt;/groupId&gt;
+  &lt;artifactId&gt;jeromq&lt;/artifactId&gt;
+  &lt;version&gt;0.6.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_12_gradle--panel" class="tabpanel" aria-labelledby="_tabs_12_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.zeromq:jeromq:0.6.0'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="JeroMqAppender-examples"><a class="anchor" href="#JeroMqAppender-examples"></a>Configuration examples</h3>
+<div class="paragraph">
+<p>This is a simple JeroMQ configuration:</p>
+</div>
+<div id="_tabs_13" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_13_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_13_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_13_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_13_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_13_xml--panel" class="tabpanel" aria-labelledby="_tabs_13_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/jeromq.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;JeroMQ name="JEROMQ"&gt;
+  &lt;JsonTemplateLayout/&gt;
+  &lt;Property name="endpoint" value="tcp://*:5556"/&gt;
+  &lt;Property name="endpoint" value="ipc://info-topic"/&gt;
+&lt;/JeroMQ&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_13_json--panel" class="tabpanel" aria-labelledby="_tabs_13_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/jeromq.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"JeroMQ": {
+  "name": "JEROMQ",
+  "JsonTemplateLayout": {},
+  "Property": [
+    {
+      "name": "endpoint",
+      "value": "tcp://*:5556"
+    },
+    {
+      "name": "endpoint",
+      "value": "ipc://info-topic"
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_13_yaml--panel" class="tabpanel" aria-labelledby="_tabs_13_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/jeromq.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">JeroMQ:
+  name: "JEROMQ"
+  JsonTemplateLayout: {}
+  Property:
+    - name: "endpoint"
+      value: "tcp://*:5556"
+    - name: "endpoint"
+      value: "ipc://info-topic"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_13_properties--panel" class="tabpanel" aria-labelledby="_tabs_13_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/message-queue/jeromq.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = JeroMQ
+appender.0.name = JEROMQ
+
+appender.0.layout.type = JsonTemplateLayout
+
+appender.0.endpoint[0].type = Property
+appender.0.endpoint[0].name = endpoint
+appender.0.endpoint[0].value = tcp://*:5556
+
+appender.0.endpoint[1].type = Property
+appender.0.endpoint[1].name = endpoint
+appender.0.endpoint[1].value = ipc://info-topic</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>
+    Copyright © 1999-2024 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
+  </p>
+  <p>
+    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+    Other names may be trademarks of their respective owners.
+  </p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+<!-- `@asciidoctor/tabs` extension scripts -->
+<script async src="../../_/js/vendor/tabs.js"></script>
+  </body>
+</html>

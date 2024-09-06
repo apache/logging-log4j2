@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Scripts :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/scripts.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.6">
+<link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
+<!-- `@asciidoctor/tabs` extension styles -->
+<link rel="stylesheet" href="../_/css/vendor/tabs.css">
+<style>
+  /* Swap colors of `IMPORTANT` and `WARNING` blocks */ 
+  .doc .admonitionblock.important .icon { background-color: #f70; }
+  .doc .admonitionblock.warning .icon { background-color: #e40046; }
+  /* Default `h4`, `h5`, and `h6` are smaller than the normal text, fix header font sizing: */
+  .doc h1 { font-size: 1.9rem; }
+  .doc h2 { font-size: 1.7rem; }
+  .doc h3 { font-size: 1.5rem; font-weight: 400; }
+  .doc h4 { font-size: 1.3rem; font-weight: 500; }
+  .doc h5 { font-size: 1.1rem; font-weight: 500; text-decoration: underline; }
+  .doc h6 { font-size: 0.9rem; font-weight: 500; text-decoration: underline; }
+  /* Default `code`, `pre`, and `.colist` (source code annotations) fonts are too big, adjust them: */
+  .doc .colist>table code, .doc p code, .doc thead code { font-size: 0.8em; }
+  .doc pre { font-size: 0.7rem; }
+  .doc .colist { font-size: 0.75rem; }
+  /* Make links more visible: */
+  .doc a { text-decoration: underline; }
+  .doc a code { text-decoration: underline; color: #1565c0; }
+  /* Tab header fonts aren't rendered good, adjusting the font weight: */
+  .tablist > ul li { font-weight: 500; }
+  /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
+  .toc .toc-menu li[data-level="4"] a {
+    padding-left: 2.75rem;
+  }
+  /* Replace the default highlight.js color for strings from red (unnecessarily signaling something negative) to green: */
+  .hljs-string {
+    color: #0f8532;
+  }
+</style>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <img src="../_/../_images/logo-small-white.png" alt="Apache Log4j"/>
+      </div>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://logging.apache.org">a subproject of&nbsp;<strong>Apache Logging Services</strong></a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ROOT" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Home</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../download.html">Download</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../release-notes.html">Release Notes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="https://logging.apache.org/support.html">Support</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Manual</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="getting-started.html">Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="installation.html">Installation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html">API</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html#loggers">Loggers</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="eventlogging.html">Event Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="simple-logger.html">Simple Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="status-logger.html">Status Logger</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="logbuilder.html">Fluent API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html#fish-tagging">Fish tagging</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="customloglevels.html">Levels</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="markers.html">Markers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="thread-context.html">Thread Context</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="messages.html">Messages</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="implementation.html">Implementation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="config-intro.html">Configuration</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="configuration.html">Configuration file</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="systemproperties.html">Configuration properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="customconfig.html">Programmatic configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="appenders.html">Appenders</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/file.html">File appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/rolling-file.html">Rolling file appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/database.html">Database appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/network.html">Network Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/message-queue.html">Message queue appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="appenders/delegating.html">Delegating Appenders</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="pattern-layout.html">Pattern Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="filters.html">Filters</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="scripts.html">Scripts</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="jmx.html">JMX</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="extending.html">Extending</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="plugins.html">Plugins</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="performance.html">Performance</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="async.html">Asynchronous loggers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="garbagefree.html">Garbage-free logging</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">References</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../plugin-reference.html">Plugin reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../javadoc.html">Java API reference</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Resources</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../faq.html">F.A.Q.</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-log4j1.html">Migrating from Log4j 1</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-logback.html">Migrating from Logback</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../migrate-from-slf4j.html">Migrating from SLF4J</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../hibernate.html">Integrating with Hibernate</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../jakarta.html">Integrating with Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../soa.html">Integrating with service-oriented architectures</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../development.html">Development</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../components.html">Components</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-boot.html">Log4j Spring Boot Support</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-jul.html">JUL-to-Log4j bridge</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-to-jul.html">Log4j-to-JUL bridge</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Related projects</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jakarta/index.html">Log4j Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jmx-gui/index.html">Log4j JMX GUI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/kotlin/index.html">Log4j Kotlin</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/scala/index.html">Log4j Scala</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/tools/index.html">Log4j Tools</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/transform/index.html">Log4j Transformation Tools</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="index.html">Manual</a></li>
+    <li><a href="implementation.html">Implementation</a></li>
+    <li><a href="config-intro.html">Configuration</a></li>
+    <li><a href="scripts.html">Scripts</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/manual/scripts.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="4">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Scripts</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Log4j provides support for
+<a href="https://docs.oracle.com/javase/8/docs/technotes/guides/scripting/">JSR
+223</a> scripting languages to be used in some of its components.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>In order to enable a scripting language, its name must be included in the
+<a href="systemproperties.html#log4j2.scriptEnableLanguages" class="xref page"><code>log4j2.scriptEnableLanguages</code></a>
+configuration property.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Each component that allows scripts can contain on of the following configuration elements:</p>
+</div>
+<div id="Script" class="dlist">
+<dl>
+<dt class="hdlist1">Script</dt>
+<dd>
+<div class="paragraph">
+<p>This element specifies the content of the script directly and has:</p>
+</div>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>a required <code>language</code> configuration attribute that specifies the name of the JSR 223 language to use,</p>
+</li>
+<li>
+<p>a required <code>scriptText</code> configuration attribute that contains the text of the script.
+In the XML configuration format, the text of the script can also be written as content of the <code>&lt;Script&gt;</code> XML element.
+This allows the usage of a <code>CDATA</code> block.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The element can be assigned a name using the <code>name</code> configuration attribute.</p>
+</div>
+<div class="paragraph">
+<p>See also
+<a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-script-Script" class="xref page">Plugin reference</a>.</p>
+</div>
+</dd>
+</dl>
+</div>
+<div id="ScriptFile" class="dlist">
+<dl>
+<dt class="hdlist1">ScriptFile</dt>
+<dd>
+<div class="paragraph">
+<p>This element points to an external script file and has:</p>
+</div>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>a required <code>path</code> attribute that points to the path to a file name.</p>
+</li>
+<li>
+<p>an optional <code>language</code> attribute that specifies the name of the JSR 223 language to use.
+If not provided, the language is deduced from the extension of the file.</p>
+</li>
+<li>
+<p>an optional <code>isWatched</code> attribute.
+If set to <code>true</code> the script file will be monitored for changes.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The element can be assigned a name using the <code>name</code> configuration attribute.</p>
+</div>
+<div class="paragraph">
+<p>See also
+<a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-script-ScriptFile" class="xref page">Plugin reference</a>.</p>
+</div>
+</dd>
+</dl>
+</div>
+<div id="ScriptRef" class="dlist">
+<dl>
+<dt class="hdlist1">ScriptRef</dt>
+<dd>
+<div class="paragraph">
+<p>This element references a <strong>named</strong> script from the global
+<a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-ScriptsPlugin" class="xref page">Scripts</a>
+container plugin in the configuration file.</p>
+</div>
+<div class="paragraph">
+<p>See also
+<a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-script-ScriptRef" class="xref page">Plugin reference</a>.</p>
+</div>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>The environment in which the script runs is different for each Log4j script-based component.</p>
+</div>
+<div id="_tabs_1" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_1_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_1_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_1_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_1_xml--panel" class="tabpanel" aria-labelledby="_tabs_1_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/scripts/log4j2.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Appenders&gt;
+  &lt;Console name="STDOUT"&gt;
+    &lt;PatternLayout&gt;
+      &lt;ScriptPatternSelector defaultPattern="%d %p %m%n"&gt;
+        &lt;ScriptRef ref="SELECTOR_SCRIPT"/&gt;
+        &lt;PatternMatch key="NoLocation" pattern="[%-5level] %c{1.} %msg%n"/&gt;
+        &lt;PatternMatch key="Flow"
+                      pattern="[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"/&gt;
+      &lt;/ScriptPatternSelector&gt;
+    &lt;/PatternLayout&gt;
+  &lt;/Console&gt;
+&lt;/Appenders&gt;
+&lt;Loggers&gt;
+  &lt;Logger name="EventLogger"&gt;
+    &lt;ScriptFilter onMatch="ACCEPT" onMismatch="DENY"&gt;
+      &lt;Script name="EVENT_LOGGER_FILTER" language="groovy"&gt;&lt;![CDATA[
+        if (logEvent.getMarker() != null
+            &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW")) {
+          return true;
+        } else if (logEvent.getContextMap().containsKey("UserId")) {
+          return true;
+        }
+        return false;
+        ]]&gt;
+      &lt;/Script&gt;
+    &lt;/ScriptFilter&gt;
+  &lt;/Logger&gt;
+  &lt;Root level="INFO"&gt;
+    &lt;ScriptFilter onMatch="ACCEPT" onMismatch="DENY"&gt;
+      &lt;ScriptRef ref="ROOT_FILTER"/&gt;
+    &lt;/ScriptFilter&gt;
+    &lt;AppenderRef ref="STDOUT"/&gt;
+  &lt;/Root&gt;
+&lt;/Loggers&gt;
+&lt;Scripts&gt;
+  &lt;Script name="SELECTOR_SCRIPT" language="javascript"&gt;&lt;![CDATA[
+    var result;
+    if (logEvent.getLoggerName().equals("JavascriptNoLocation")) {
+      result = "NoLocation";
+    } else if (logEvent.getMarker() != null
+        &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW")) {
+      result = "Flow";
+    }
+    result;
+    ]]&gt;
+  &lt;/Script&gt;
+  &lt;ScriptFile name="ROOT_FILTER" path="scripts/filter.groovy"/&gt;
+&lt;/Scripts&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_json--panel" class="tabpanel" aria-labelledby="_tabs_1_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/scripts/log4j2.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Appenders": {
+  "Console": {
+    "name": "STDOUT",
+    "PatternLayout": {
+      "ScriptPatternSelector": {
+        "defaultPattern": "%d %p %m%n",
+        "ScriptRef": {
+          "ref": "SELECTOR_SCRIPT",
+          "PatternMatch": [
+            {
+              "key": "NoLocation",
+              "pattern": "[%-5level] %c{1.} %msg%n"
+            },
+            {
+              "key": "Flow",
+              "pattern": "[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"
+            }
+          ]
+        }
+      }
+    }
+  }
+},
+"Loggers": {
+  "Logger": {
+    "name": "EventLogger",
+    "ScriptFilter": {
+      "onMatch": "ACCEPT",
+      "onMismatch": "DENY",
+      "Script": {
+        "name": "EVENT_LOGGER_FILTER",
+        "language": "groovy",
+        "scriptText": "if (logEvent.getMarker() != null &amp;&amp; logEvent.getMarker().isInstanceOf('FLOW'))) { return true; } else if (logEvent.getContextMap().containsKey('UserId')) { return true; } return false;"
+      }
+    }
+  },
+  "Root": {
+    "level": "INFO",
+    "ScriptFilter": {
+      "onMatch": "ACCEPT",
+      "onMismatch": "DENY",
+      "ScriptRef": {
+        "ref": "ROOT_FILTER"
+      }
+    },
+    "AppenderRef": {
+      "ref": "STDOUT"
+    }
+  }
+},
+"Scripts": {
+  "Script": {
+    "name": "SELECTOR_SCRIPT",
+    "language": "javascript",
+    "scriptText": "var result; if (logEvent.getLoggerName().equals('JavascriptNoLocation')) { result = 'NoLocation'; } else if (logEvent.getMarker() != null &amp;&amp; logEvent.getMarker().isInstanceOf('FLOW')) { result = 'Flow'; } result;"
+  },
+  "ScriptFile": {
+    "name": "ROOT_FILTER",
+    "path": "scripts/filter.groovy"
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_yaml--panel" class="tabpanel" aria-labelledby="_tabs_1_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/scripts/log4j2.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Appenders:
+  Console:
+    name: "STDOUT"
+    PatternLayout:
+      ScriptPatternSelector:
+        defaultPattern: "%d %p %m%n"
+        ScriptRef:
+          ref: "SELECTOR_SCRIPT"
+        PatternMatch:
+          - key: "NoLocation"
+            pattern: "[%-5level] %c{1.} %msg%n"
+          - key: "Flow"
+            pattern: "[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"
+Loggers:
+  Logger:
+    name: "EventLogger"
+    ScriptFilter:
+      onMatch: "ACCEPT"
+      onMismatch: "DENY"
+      Script:
+        name: "EVENT_LOGGER_FILTER"
+        language: "groovy"
+        scriptText: |
+          if (logEvent.getMarker() != null
+              &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW")) {
+            return true;
+          } else if (logEvent.getContextMap().containsKey("UserId")) {
+            return true;
+          }
+          return false;
+  Root:
+    level: "INFO"
+    ScriptFilter:
+      onMatch: "ACCEPT"
+      onMismatch: "DENY"
+      ScriptRef:
+        ref: "ROOT_FILTER"
+    AppenderRef:
+      ref: "STDOUT"
+Scripts:
+  Script:
+    name: "SELECTOR_SCRIPT"
+    language: "javascript"
+    scriptText: |
+      var result;
+      if (logEvent.getLoggerName().equals("JavascriptNoLocation")) {
+        result = "NoLocation";
+      } else if (logEvent.getMarker() != null
+          &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW")) {
+        result = "Flow";
+      }
+      result;
+  ScriptFile:
+    name: "ROOT_FILTER"
+    path: "scripts/filter.groovy"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_properties--panel" class="tabpanel" aria-labelledby="_tabs_1_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/scripts/log4j2.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = Console
+appender.0.name = STDOUT
+appender.0.layout.type = PatternLayout
+
+appender.0.layout.selector = ScriptPatternSelector
+appender.0.layout.selector.defaultPattern = %d %p %m%n
+appender.0.layout.selector.scriptRef.type = ScriptRef
+appender.0.layout.selector.scriptRef.ref = SELECTOR_SCRIPT
+appender.0.layout.selector.match[0].type = PatternMatch
+appender.0.layout.selector.match[0].key = NoLocation
+appender.0.layout.selector.match[0].pattern = [%-5level] %c{1.} %msg%n
+appender.0.layout.selector.match[1].type = PatternMatch
+appender.0.layout.selector.match[1].key = Flow
+appender.0.layout.selector.match[1].pattern = \
+  [%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n
+
+logger.0.name = EventLogger
+logger.0.filter.0.type = ScriptFilter
+logger.0.filter.0.onMatch = ACCEPT
+logger.0.filter.0.onMismatch = DENY
+logger.0.filter.0.script.type = Script
+logger.0.filter.0.script.name = EVENT_LOGGER_FILTER
+logger.0.filter.0.script.language = groovy
+logger.0.filter.0.script.scriptText = \
+  if (logEvent.getMarker() != null\
+      &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW"))) {\
+    return true;\
+  } else if (logEvent.getContextMap().containsKey("UserId")) {\
+    return true;\
+  }\
+  return false;
+
+rootLogger.level = INFO
+rootLogger.filter.0.type = ScriptFilter
+rootLogger.filter.0.onMatch = ACCEPT
+rootLogger.filter.0.onMismatch = DENY
+rootLogger.filter.0.scriptRef.type = ScriptRef
+rootLogger.filter.0.scriptRef.ref = ROOT_FILTER
+rootLogger.appenderRef.0.ref = STDOUT
+
+script.0.type = Script
+script.0.name = SELECTOR_SCRIPT
+script.0.language = javascript
+script.0.scriptText = \
+  var result;\
+  if (logEvent.getLoggerName().equals("JavascriptNoLocation")) {\
+    result = "NoLocation";\
+  } else if (logEvent.getMarker() != null\
+      &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW")) {\
+    result = "Flow";\
+  }\
+  result;
+
+script.1.type = ScriptFile
+script.1.name = ROOT_FILTER
+script.1.path = scripts/filter.groovy</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="a-special-note-on-beanshell"><a class="anchor" href="#a-special-note-on-beanshell"></a>A special note on Beanshell</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>JSR 223 scripting engines are supposed to identify that they support the
+<a href="https://docs.oracle.com/javase/8/docs/api/javax/script/Compilable.html"><code>Compilable</code></a>
+interface if they support compiling their scripts.</p>
+</div>
+<div class="paragraph">
+<p>Beanshell does extend the <code>Compilable</code> interface, but an attempt to compile a script ends up in an
+<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Error.html"><code>Error</code></a>
+being thrown.
+Log4j catches the throwable, but issues a warning in <a href="status-logger.html" class="xref page">Status Logger</a>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>2015-09-27 16:13:23,095 main DEBUG Script BeanShellSelector is compilable
+2015-09-27 16:13:23,096 main WARN Error compiling script java.lang.Error: unimplemented
+            at bsh.engine.BshScriptEngine.compile(BshScriptEngine.java:175)
+            at bsh.engine.BshScriptEngine.compile(BshScriptEngine.java:154)
+            at org.apache.logging.log4j.core.script.ScriptManager$MainScriptRunner.&lt;init&gt;(ScriptManager.java:125)
+            at org.apache.logging.log4j.core.script.ScriptManager.addScript(ScriptManager.java:94)</pre>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>
+    Copyright © 1999-2024 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
+  </p>
+  <p>
+    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+    Other names may be trademarks of their respective owners.
+  </p>
+</footer>
+<script id="site-script" src="../_/js/site.js" data-ui-root-path="../_"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+<!-- `@asciidoctor/tabs` extension scripts -->
+<script async src="../_/js/vendor/tabs.js"></script>
+  </body>
+</html>

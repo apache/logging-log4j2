@@ -1,0 +1,2566 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Delegating Appenders :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/appenders/delegating.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.6">
+<link rel="stylesheet" href="../../_/css/site.css">
+<link rel="icon" href="../../_/../_images/favicon.ico" type="image/x-icon">
+<!-- `@asciidoctor/tabs` extension styles -->
+<link rel="stylesheet" href="../../_/css/vendor/tabs.css">
+<style>
+  /* Swap colors of `IMPORTANT` and `WARNING` blocks */ 
+  .doc .admonitionblock.important .icon { background-color: #f70; }
+  .doc .admonitionblock.warning .icon { background-color: #e40046; }
+  /* Default `h4`, `h5`, and `h6` are smaller than the normal text, fix header font sizing: */
+  .doc h1 { font-size: 1.9rem; }
+  .doc h2 { font-size: 1.7rem; }
+  .doc h3 { font-size: 1.5rem; font-weight: 400; }
+  .doc h4 { font-size: 1.3rem; font-weight: 500; }
+  .doc h5 { font-size: 1.1rem; font-weight: 500; text-decoration: underline; }
+  .doc h6 { font-size: 0.9rem; font-weight: 500; text-decoration: underline; }
+  /* Default `code`, `pre`, and `.colist` (source code annotations) fonts are too big, adjust them: */
+  .doc .colist>table code, .doc p code, .doc thead code { font-size: 0.8em; }
+  .doc pre { font-size: 0.7rem; }
+  .doc .colist { font-size: 0.75rem; }
+  /* Make links more visible: */
+  .doc a { text-decoration: underline; }
+  .doc a code { text-decoration: underline; color: #1565c0; }
+  /* Tab header fonts aren't rendered good, adjusting the font weight: */
+  .tablist > ul li { font-weight: 500; }
+  /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
+  .toc .toc-menu li[data-level="4"] a {
+    padding-left: 2.75rem;
+  }
+  /* Replace the default highlight.js color for strings from red (unnecessarily signaling something negative) to green: */
+  .hljs-string {
+    color: #0f8532;
+  }
+</style>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <img src="../../_/../_images/logo-small-white.png" alt="Apache Log4j"/>
+      </div>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://logging.apache.org">a subproject of&nbsp;<strong>Apache Logging Services</strong></a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ROOT" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../../index.html">Home</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../download.html">Download</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../release-notes.html">Release Notes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="https://logging.apache.org/support.html">Support</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../index.html">Manual</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../getting-started.html">Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../installation.html">Installation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../api.html">API</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../api.html#loggers">Loggers</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../eventlogging.html">Event Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../simple-logger.html">Simple Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../status-logger.html">Status Logger</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../logbuilder.html">Fluent API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../api.html#fish-tagging">Fish tagging</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../customloglevels.html">Levels</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../markers.html">Markers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../thread-context.html">Thread Context</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../messages.html">Messages</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../flowtracing.html">Flow Tracing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../implementation.html">Implementation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../config-intro.html">Configuration</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../configuration.html">Configuration file</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../systemproperties.html">Configuration properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../customconfig.html">Programmatic configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../appenders.html">Appenders</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="file.html">File appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="rolling-file.html">Rolling file appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="database.html">Database appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="network.html">Network Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="message-queue.html">Message queue appenders</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="4">
+    <a class="nav-link" href="delegating.html">Delegating Appenders</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../json-template-layout.html">JSON Template Layout</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../pattern-layout.html">Pattern Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../filters.html">Filters</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../scripts.html">Scripts</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../jmx.html">JMX</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../extending.html">Extending</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../plugins.html">Plugins</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../performance.html">Performance</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../async.html">Asynchronous loggers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../garbagefree.html">Garbage-free logging</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">References</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../plugin-reference.html">Plugin reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../javadoc.html">Java API reference</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Resources</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../faq.html">F.A.Q.</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../migrate-from-log4j1.html">Migrating from Log4j 1</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../migrate-from-logback.html">Migrating from Logback</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../migrate-from-slf4j.html">Migrating from SLF4J</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../hibernate.html">Integrating with Hibernate</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../jakarta.html">Integrating with Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../soa.html">Integrating with service-oriented architectures</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../development.html">Development</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../components.html">Components</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../log4j-iostreams.html">Log4j IOStreams</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../log4j-spring-boot.html">Log4j Spring Boot Support</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../log4j-jul.html">JUL-to-Log4j bridge</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../log4j-to-jul.html">Log4j-to-JUL bridge</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Related projects</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jakarta/index.html">Log4j Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jmx-gui/index.html">Log4j JMX GUI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/kotlin/index.html">Log4j Kotlin</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/scala/index.html">Log4j Scala</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/tools/index.html">Log4j Tools</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/transform/index.html">Log4j Transformation Tools</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">Home</a></li>
+    <li><a href="../index.html">Manual</a></li>
+    <li><a href="../implementation.html">Implementation</a></li>
+    <li><a href="../config-intro.html">Configuration</a></li>
+    <li><a href="../appenders.html">Appenders</a></li>
+    <li><a href="delegating.html">Delegating Appenders</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/manual/appenders/delegating.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="4">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Delegating Appenders</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Log4j Core supplies multiple appenders that do not perform any work themselves, but modify the way other appenders work.
+The following behaviors can be modified:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If you want to perform all I/O from a dedicated thread, see <a href="#AsyncAppender"><code>Async</code> Appender</a>.</p>
+</li>
+<li>
+<p>If you want to provide a backup appender in case an appender fails, see <a href="#FailoverAppender"><code>Failover</code> Appender</a>.</p>
+</li>
+<li>
+<p>If you want to modify the log event, before it is sent to the target destination, see <a href="#RewriteAppender"><code>Rewrite</code> Appender</a>.</p>
+</li>
+<li>
+<p>If you want to create appenders dynamically or choose a different appender for each log event, see <a href="#RoutingAppender"><code>Routing</code> Appender</a>.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="AsyncAppender"><a class="anchor" href="#AsyncAppender"></a><code>Async</code> Appender</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>Async</code> Appender stores log events in a blocking queue and forwards them to other appenders on a separate thread.
+Due to the asynchronous barrier, exceptions occurring in those appenders will not be forwarded to the caller of the log statement.</p>
+</div>
+<div class="paragraph">
+<p>The <code>Async</code> should be configured after the appenders it references to allow it to shut down properly.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The blocking queue is susceptible to lock contention, and performance may become worse when more threads are logging concurrently.
+Consider using
+<a href="../async.html" class="xref page">lock-free asynchronous loggers</a> instead, for optimal performance.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Log4j 2 brought the following enhancements to the Log4j 1 async appender:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>all appenders referenced by <code>AsyncAppender</code> flush their buffers to the OS at the end of a batch, when the queue becomes empty.
+This guarantees that the batch of log events is passed to the OS and is a more performant version of the <a href="../appenders.html#immediateFlush" class="xref page"><code>immediateFlush</code></a> attribute.</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Similarly to what happens with the <code>immediateFlush</code> attribute, this does not guarantee that the OS stores the data on the underlying device.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>the type of queue is configurable to allow users to use faster and more performant queues, such as those from the
+<a href="https://github.com/JCTools/JCTools?tab=readme-ov-file#jctools">JCTools</a>
+or
+<a href="https://github.com/conversant/disruptor">Conversant Disruptor</a> projects.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="AsyncAppender-configuration"><a class="anchor" href="#AsyncAppender-configuration"></a><code>Async</code> configuration</h3>
+<div class="paragraph">
+<p>The <code>Async</code> Appender supports the following configuration options:</p>
+</div>
+<table id="AsyncAppender-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. <code>Async</code> Appender configuration attributes</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Required</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="AsyncAppender-attr-name"></a>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the appender.</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Optional</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="AsyncAppender-attr-blocking"></a>blocking</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code>, the Appender will wait until there are free slots in the queue.</p>
+<p class="tableblock">If false, the event will be written to the error
+appender if the queue is full. The default is true.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="AsyncAppender-attr-bufferSize"></a>bufferSize</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1024</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specifies the maximum number of events that can be queued.</p>
+<p class="tableblock">When using a disruptor-style <code>BlockingQueue</code>, this
+buffer size must be a power of 2.</p>
+<p class="tableblock">When the application is logging faster than the underlying appender can
+keep up with for a long enough time to fill up the queue, the behavior
+is determined by the <a href="#AsyncQueueFullPolicy">Queue full policy</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="AsyncAppender-attr-errorRef"></a>errorRef</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the appender to invoke if none of the appenders can be called, either due to exceptions in the appenders or because the queue is full.</p>
+<p class="tableblock">If not specified then errors will be ignored.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="AsyncAppender-attr-includeLocation"></a>includeLocation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If set to <code>false</code>, location information will not be available to layouts of the downstream appenders.</p>
+<p class="tableblock">See <a href="../layouts.html#LocationInformation" class="xref page">location information</a> for more information.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="AsyncAppender-attr-ignoreExceptions"></a>ignoreExceptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>If <code>false</code>, logging exceptions will be forwarded to the caller of the log statement.
+Otherwise, they will be ignored.</p>
+</div>
+<div class="paragraph">
+<p>Logging exceptions are always also logged to <a href="../status-logger.html" class="xref page">Status Logger</a></p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This setting only applies to logging exceptions that occur on the caller thread.
+Exceptions that occur on the asynchronous thread will always be logged.</p>
+</div>
+</td>
+</tr>
+</table>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="AsyncAppender-attr-shutdownTimeout"></a>shutdownTimeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Timeout in milliseconds to wait before stopping the asynchronous thread.</p>
+<p class="tableblock">A value of <code>0</code> will wait until the queue is empty.</p></td>
+</tr>
+</tbody>
+</table>
+<table id="AsyncAppender-elements" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. <code>Async</code> Appender nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Multiplicity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="AsyncAppender-element-Filter"></a><a href="../filters.html" class="xref page"><code>Filter</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows filtering log events just before they are appended to the blocking queue.</p>
+<p class="tableblock">See also <a href="../filters.html#appender-stage" class="xref page">appender filtering stage</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="AsyncAppender-element-AppenderRef"></a><a href="../configuration.html#configuring-appenderrefs" class="xref page"><code>AppenderRef</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">one or more</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A list of appenders to invoke asynchronously.</p>
+<p class="tableblock">See <a href="../configuration.html#configuring-appenderrefs" class="xref page">appender references</a> for more information.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="AsyncAppender-element-BlockingQueueFactory"></a><a href="#BlockingQueueFactory"><code>BlockingQueueFactory</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The blocking queue factory implementation to use.</p>
+<p class="tableblock">If not provided, <a href="#ArrayBlockingQueueFactory"><code>ArrayBlockingQueueFactory</code></a> will be used.</p>
+<p class="tableblock">See <a href="#BlockingQueueFactory">Blocking Queue Factories</a> below.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-AsyncAppender" class="xref page">&#x1F4D6; Plugin reference for <code>Async</code></a></p>
+</div>
+<div class="paragraph">
+<p>As an example, you can instrument a <a href="file.html#FileAppender" class="xref page"><code>File</code> appender</a> to perform asynchronous I/O, by using the following appender configurations:</p>
+</div>
+<div id="_tabs_1" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_1_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_1_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_1_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_1_xml--panel" class="tabpanel" aria-labelledby="_tabs_1_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/delegating/async.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;File name="FILE"
+      fileName="app.log"&gt;
+  &lt;JsonTemplateLayout/&gt;
+&lt;/File&gt;
+&lt;Async name="ASYNC"&gt;
+  &lt;AppenderRef ref="FILE"/&gt;
+&lt;/Async&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_json--panel" class="tabpanel" aria-labelledby="_tabs_1_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/delegating/async.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"File": {
+  "name": "FILE",
+  "fileName": "app.log"
+},
+"Async": {
+  "name": "ASYNC"
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_yaml--panel" class="tabpanel" aria-labelledby="_tabs_1_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/delegating/async.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">File:
+  name: "FILE"
+  fileName: "app.log"
+Async:
+  name: "ASYNC"
+  AppenderRef:
+    ref: "FILE"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_properties--panel" class="tabpanel" aria-labelledby="_tabs_1_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/delegating/async.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = File
+appender.0.name = FILE
+appender.0.fileName = app.log
+
+appender.1.type = Async
+appender.1.name = ASYNC
+appender.1.appenderRef.type = AppenderRef
+appender.1.appenderRef.ref = FILE</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="AsyncQueueFullPolicy"><a class="anchor" href="#AsyncQueueFullPolicy"></a>Queue full policy</h3>
+<div class="paragraph">
+<p>When the queue is full the <code>Async</code> Appender uses an
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html"><code>AsyncQueueFullPolicy</code></a>
+to decide whether to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>drop the log event.</p>
+</li>
+<li>
+<p>busy wait until the log event can be added to the queue.</p>
+</li>
+<li>
+<p>log the event on the current thread.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The queue full policy can only be configured through
+<a href="../systemproperties.html" class="xref page">configuration properties</a>.
+See <a href="../systemproperties.html#properties-async" class="xref page">Async components</a> for more details.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="BlockingQueueFactory"><a class="anchor" href="#BlockingQueueFactory"></a>Blocking Queue Factories</h3>
+<div class="paragraph">
+<p>The <code>Async</code> appender allows you to customize the blocking queue used by specifying a nested
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/async/BlockingQueueFactory.html"><code>BlockingQueueFactory</code></a>
+element.</p>
+</div>
+<div class="paragraph">
+<p>You can specify the size of the queue using the <a href="#AsyncAppender-attr-bufferSize"><code>bufferSize</code></a> configuration attribute.</p>
+</div>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-BlockingQueueFactory" class="xref page">&#x1F4D6; Plugin reference for <code>BlockingQueueFactory</code></a></p>
+</div>
+<div id="ArrayBlockingQueueFactory" class="dlist">
+<dl>
+<dt class="hdlist1"><code>ArrayBlockingQueue</code></dt>
+<dd>
+<div class="paragraph">
+<p>This is the default implementation that produces
+<a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ArrayBlockingQueue.html"><code>ArrayBlockingQueue</code></a>s.</p>
+</div>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-ArrayBlockingQueueFactory" class="xref page">&#x1F4D6; Plugin reference for <code>ArrayBlockingQueue</code></a></p>
+</div>
+</dd>
+</dl>
+</div>
+<div id="DisruptorBlockingQueueFactory" class="dlist">
+<dl>
+<dt class="hdlist1"><code>DisruptorBlockingQueue</code></dt>
+<dd>
+<div class="paragraph">
+<p>This queue factory uses the
+<a href="https://github.com/conversant/disruptor">Conversant Disruptor</a>
+implementation of <code>BlockingQueue</code>.</p>
+</div>
+<table id="DisruptorBlockingQueueFactory-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. <code>DisruptorBlockingQueue</code> Factory configuration attributes</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spinPolicy</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://javadoc.io/doc/com.conversantmedia/disruptor/latest/com.conversantmedia.disruptor/com/conversantmedia/util/concurrent/SpinPolicy.html"><code>SpinPolicy</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://javadoc.io/doc/com.conversantmedia/disruptor/latest/com.conversantmedia.disruptor/com/conversantmedia/util/concurrent/SpinPolicy.html#WAITING"><code>WAITING</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <code>SpinPolicy</code> to apply, when adding elements to the queue.</p></td>
+</tr>
+</tbody>
+</table>
+<details>
+<summary class="title">Additional dependencies are required to use <code>DisruptorBlockingQueue</code></summary>
+<div class="content">
+<div id="_tabs_2" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_2_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_2_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_2_maven--panel" class="tabpanel" aria-labelledby="_tabs_2_maven">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.conversantmedia&lt;/groupId&gt;
+  &lt;artifactId&gt;disruptor&lt;/artifactId&gt;
+  &lt;version&gt;1.2.21&lt;/version&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_2_gradle--panel" class="tabpanel" aria-labelledby="_tabs_2_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.conversantmedia:disruptor:1.2.21'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-DisruptorBlockingQueueFactory" class="xref page">&#x1F4D6; Plugin reference for <code>DisruptorBlockingQueue</code></a></p>
+</div>
+</dd>
+</dl>
+</div>
+<div id="JCToolsBlockingQueueFactory" class="dlist">
+<dl>
+<dt class="hdlist1"><code>JCToolsBlockingQueue</code></dt>
+<dd>
+<div class="paragraph">
+<p>This queue factory uses
+<a href="https://jctools.github.io/JCTools/">JCTools</a>, specifically the MPSC bounded lock-free queue.</p>
+</div>
+<details>
+<summary class="title">Additional dependencies are required to use <code>JCToolsBlockingQueue</code></summary>
+<div class="content">
+<div id="_tabs_3" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_3_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_3_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_3_maven--panel" class="tabpanel" aria-labelledby="_tabs_3_maven">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.jctools&lt;/groupId&gt;
+  &lt;artifactId&gt;jctools-core&lt;/artifactId&gt;
+  &lt;version&gt;4.0.5&lt;/version&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_3_gradle--panel" class="tabpanel" aria-labelledby="_tabs_3_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.jctools:jctools-core:4.0.5'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</details>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-JCToolsBlockingQueueFactory" class="xref page">&#x1F4D6; Plugin reference for <code>JCToolsBlockingQueue</code></a></p>
+</div>
+<div id="LinkedTransferQueueFactory" class="dlist">
+<dl>
+<dt class="hdlist1"><code>LinkedTransferQueue</code></dt>
+<dd>
+<div class="paragraph">
+<p>This queue factory produces
+<a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/LinkedTransferQueue.html"><code>LinkedTransferQueue</code></a>s.
+Note that this queue does not have a maximum capacity and ignores the <a href="#AsyncAppender-attr-bufferSize"><code>bufferSize</code></a> attribute.</p>
+</div>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-LinkedTransferQueueFactory" class="xref page">&#x1F4D6; Plugin reference for <code>LinkedTransferQueue</code></a></p>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="FailoverAppender"><a class="anchor" href="#FailoverAppender"></a><code>Failover</code> Appender</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>Failover</code> Appender can protect your logging pipeline against I/O exceptions in other appenders.</p>
+</div>
+<div class="paragraph">
+<p>During normal operations the <code>Failover</code> Appender forwards all log events to a primary appender.
+However, if the primary appender fails, a set of secondary appenders will be checked until one succeeds.</p>
+</div>
+<div class="sect2">
+<h3 id="FailoverAppender-configuration"><a class="anchor" href="#FailoverAppender-configuration"></a><code>Failover</code> configuration</h3>
+<div class="paragraph">
+<p>The <code>Failover</code> Appender supports the following configuration options:</p>
+</div>
+<table id="FailoverAppender-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. <code>Failover</code> Appender configuration attributes</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Required</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="FailoverAppender-attr-name"></a>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of this appender.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="FailoverAppender-attr-primary"></a>primary</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the primary appender to use.</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Optional</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="FailoverAppender-attr-retryIntervalSeconds"></a>retryIntervalSeconds</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>60</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It specifies how many seconds to wait after a failure of the primary appender before the primary appender can be used again.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="FailoverAppender-attr-ignoreExceptions"></a>ignoreExceptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>false</code> and <strong>all</strong> the fallback appenders fail to handle the log event, the logging exception will be forwarded to the caller.
+Otherwise, it will be ignored.</p>
+<p class="tableblock">Logging exceptions are always also logged to <a href="../status-logger.html" class="xref page">Status Logger</a></p></td>
+</tr>
+</tbody>
+</table>
+<table id="FailoverAppender-elements" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 5. <code>Failover</code> Appender nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Multiplicity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="FailoverAppender-element-Filter"></a><a href="../filters.html" class="xref page"><code>Filter</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows filtering log events just before they are appended to the blocking queue.</p>
+<p class="tableblock">See also <a href="../filters.html#appender-stage" class="xref page">appender filtering stage</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="FailoverAppender-element-Failovers"></a><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-FailoversPlugin" class="xref page"><code>Failovers</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>one</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A container element for a list of
+<a href="../configuration.html#configuring-appenderrefs" class="xref page"><code>AppenderRef</code></a>s
+that specifies the names of the secondary appenders</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The primary appender must be configured to forward exceptions to the caller, by setting the
+<a href="../appenders.html#ignoreExceptions" class="xref page"><code>ignoreExceptions</code></a>
+configuration attribute to <code>false</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The following example shows how to configure <code>Failover</code> to use an appender named <code>FILE</code> as primary and fall back to <code>CONSOLE</code> if an error occurs:</p>
+</div>
+<div id="_tabs_4" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_4_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_4_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_4_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_4_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_4_xml--panel" class="tabpanel" aria-labelledby="_tabs_4_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/delegating/failover.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;File name="FILE"
+      fileName="app.log"
+      ignoreExceptions="false"/&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+&lt;Console name="CONSOLE"/&gt;
+&lt;Failover name="FAILOVER"
+          primary="FILE"&gt;
+  &lt;Failovers&gt;
+    &lt;AppenderRef ref="CONSOLE"/&gt;
+  &lt;/Failovers&gt;
+&lt;/Failover&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_4_json--panel" class="tabpanel" aria-labelledby="_tabs_4_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/delegating/failover.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"File": {
+  "name": "FILE",
+  "fileName": "app.log",
+  "ignoreExceptions": false <i class="conum" data-value="1"></i><b>(1)</b>
+},
+"Console": {
+  "name": "CONSOLE"
+},
+"Failover": {
+  "name": "FAILOVER",
+  "primary": "FILE",
+  "Failovers": {
+    "AppenderRef": {
+      "ref": "CONSOLE"
+    }
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_4_yaml--panel" class="tabpanel" aria-labelledby="_tabs_4_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/delegating/failover.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">File:
+  name: "FILE"
+  fileName: "app.log"
+  ignoreExceptions: false
+Console:
+  name: "CONSOLE"
+Failover:
+  name: "FAILOVER"
+  primary: "FILE"
+  Failovers:
+    AppenderRef:
+      ref: "CONSOLE"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_4_properties--panel" class="tabpanel" aria-labelledby="_tabs_4_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/delegating/failover.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = File
+appender.0.name = FILE
+appender.0.fileName = app.log
+appender.0.ignoreExceptions = false
+
+appender.1.type = Console
+appender.1.name = CONSOLE
+
+appender.2.type = Failover
+appender.2.name = FAILOVER
+appender.2.primary = FILE
+appender.2.fail.type = Failovers
+appender.2.fail.0.type = AppenderRef
+appender.2.fail.0.ref = CONSOLE</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The primary appender must set <code>ignoreExceptions</code> to <code>false</code>.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-FailoverAppender" class="xref page">&#x1F4D6; Plugin reference for <code>Failover</code></a></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="RewriteAppender"><a class="anchor" href="#RewriteAppender"></a><code>Rewrite</code> Appender</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>Rewrite</code> allows the log events to be manipulated before they are processed by another Appender.
+This can be used to inject additional information into each event.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Although this appender can be used to mask sensitive information contained in log events, we strongly discourage such practice.
+Sensitive data like passwords and credit card numbers can appear in log files in many formats, and it is challenging to detect them all.</p>
+</div>
+<div class="paragraph">
+<p>A better approach to sensitive data is not to log them at all.
+Third-party frameworks like
+<a href="https://github.com/palantir/safe-logging">Palantir <code>safe-logging</code></a>
+can ensure that objects marked as sensitive are not passed as parameters to log statements.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="RewriteAppender-configuration"><a class="anchor" href="#RewriteAppender-configuration"></a><code>Rewrite</code> Configuration</h3>
+<table id="RewriteAppender-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 6. <code>Rewrite</code> Appender configuration attributes</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Required</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="RewriteAppender-attr-name"></a>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of this appender.</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Optional</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="RewriteAppender-attr-ignoreExceptions"></a>ignoreExceptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>false</code> and the downstream appender fails with an exception, the exception will be propagated to the caller.
+Otherwise, it will be ignored.</p>
+<p class="tableblock">Logging exceptions are always also logged to <a href="../status-logger.html" class="xref page">Status Logger</a></p></td>
+</tr>
+</tbody>
+</table>
+<table id="RewriteAppender-elements" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 7. <code>Rewrite</code> Appender nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Multiplicity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="RewriteAppender-element-AppenderRef"></a><a href="../configuration.html#configuring-appenderrefs" class="xref page"><code>AppenderRef</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>one</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The
+<a href="../configuration.html#configuring-appenderrefs" class="xref page">reference to an appender</a>
+that will perform the actual logging.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="RewriteAppender-element-Filter"></a><a href="../filters.html" class="xref page"><code>Filter</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows filtering log events just before they are appended to the blocking queue.</p>
+<p class="tableblock">See also <a href="../filters.html#appender-stage" class="xref page">appender filtering stage</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="RewriteAppender-element-RewritePolicy"></a><a href="#RewritePolicy"><code>RewritePolicy</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>one</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <a href="#RewritePolicy">rewrite policy</a> to apply to all logged events.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-RewriteAppender" class="xref page">&#x1F4D6; Plugin reference for <code>Rewrite</code></a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="RewritePolicy"><a class="anchor" href="#RewritePolicy"></a>Rewrite Policies</h3>
+<div class="paragraph">
+<p>A rewrite policy is a Log4j plugin that implements the
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rewrite/RewritePolicy.html"><code>RewritePolicy</code></a>
+interface.
+Rewrite policies allow to apply arbitrary modifications to log events.</p>
+</div>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-RewritePolicy" class="xref page">&#x1F4D6; Plugin reference for <code>RewritePolicy</code></a></p>
+</div>
+<div class="paragraph">
+<p>Log4j Core provides three rewrite policies out-of-the-box:</p>
+</div>
+<div id="MapRewritePolicy" class="dlist">
+<dl>
+<dt class="hdlist1"><code>MapRewritePolicy</code></dt>
+<dd>
+<div class="paragraph">
+<p>The <code>MapRewritePolicy</code> only modifies events that contain a
+<a href="../messages.html#MapMessage" class="xref page"><code>MapMessage</code></a>.
+It allows adding or updating the keys of the <code>MapMessage</code>.</p>
+</div>
+<table id="MapRewritePolicy-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 8. <code>MapRewritePolicy</code> configuration attributes</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="MapRewritePolicy-attr-mode"></a>mode</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rewrite/MapRewritePolicy.Mode.html"><code>MapRewritePolicy.Mode</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/appender/rewrite/MapRewritePolicy.Mode.html#Add"><code>Add</code></a></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>It determines which map entries to modify:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Add</dt>
+<dd>
+<p>All the configured map entries will be added to the <code>MapMessage</code>, modifying the existing ones.</p>
+</dd>
+<dt class="hdlist1">Update</dt>
+<dd>
+<p>The rewrite policy will add to the <code>MapMessage</code> only entries corresponding to existing keys.</p>
+</dd>
+</dl>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<table id="MapRewritePolicy-elements" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 9. <code>MapRewritePolicy</code> nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Multiplicity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="MapRewritePolicy-element-KeyValuePair"></a>
+<a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-util-KeyValuePair" class="xref page"><code>KeyValuePair</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">one or more</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A list of map entries to add to the <code>MapMessage</code>.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-MapRewritePolicy" class="xref page">&#x1F4D6; Plugin reference for <code>MapRewritePolicy</code></a></p>
+</div>
+</dd>
+</dl>
+</div>
+<div id="PropertiesRewritePolicy" class="dlist">
+<dl>
+<dt class="hdlist1"><code>PropertiesRewritePolicy</code></dt>
+<dd>
+<div class="paragraph">
+<p>The <code>PropertiesRewritePolicy</code> will add properties to the context data of the log event.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Only the context data of the log event will be modified.
+The contents of the <a href="../thread-context.html" class="xref page">Thread Context</a> will remain unchanged.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<table id="PropertiesRewritePolicy-elements" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 10. <code>PropertiesRewritePolicy</code> nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Multiplicity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PropertiesRewritePolicy-element-Property"></a><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property" class="xref page"><code>Property</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">one or more</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A list of map entries to add to the context data of the log event.</p>
+<p class="tableblock">The <code>value</code> attribute of each <code>Property</code> element supports
+<a href="../configuration.html#lazy-property-substitution" class="xref page">runtime property substitution</a>
+in the
+<a href="../lookups.html#global-context" class="xref page"><em>global context</em></a>.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-PropertiesRewritePolicy" class="xref page">&#x1F4D6; Plugin reference for <code>PropertiesRewritePolicy</code></a></p>
+</div>
+</dd>
+</dl>
+</div>
+<div id="LoggerNameLevelRewritePolicy" class="dlist">
+<dl>
+<dt class="hdlist1">LoggerNameLevelRewritePolicy</dt>
+<dd>
+<div class="paragraph">
+<p>You can use this policy to change the log level of loggers from third-party libraries.
+The <code>LoggerNameLevelRewritePolicy</code> will rewrite the level of log event for a given logger name prefix.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The new log levels will only be used by the filter attached to the <code>Rewrite</code> appender and those downstream of the appender.
+Filters configured on loggers will use the previous levels.
+See <a href="../filters.html" class="xref page">Filters</a> for more details on filtering</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<table id="LoggerNameLevelRewritePolicy-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 11. <code>LoggerNameLevelRewritePolicy</code> configuration attributes</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="LoggerNameLevelRewritePolicy-attr-mode"></a>logger</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The rewrite policy will only be applied to loggers with this logger name and their children.</p></td>
+</tr>
+</tbody>
+</table>
+<table id="LoggerNameLevelRewritePolicy-elements" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 12. <code>LoggerNameLevelRewritePolicy</code> nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Multiplicity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="LoggerNameLevelRewritePolicy-element-KeyValuePair"></a><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-util-KeyValuePair" class="xref page"><code>KeyValuePair</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">one or more</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Provides a mapping between old level names and new level names.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-LoggerNameLevelRewritePolicy" class="xref page">&#x1F4D6; Plugin reference for <code>LoggerNameLevelRewritePolicy</code></a></p>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="RewriteAppender-examples"><a class="anchor" href="#RewriteAppender-examples"></a>Configuration example</h3>
+<div class="paragraph">
+<p>If a library <code>org.example</code> over-evaluates the severity of its log events, you decrease their severity with the following configuration:</p>
+</div>
+<div id="_tabs_5" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_5_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_5_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_5_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_5_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_5_xml--panel" class="tabpanel" aria-labelledby="_tabs_5_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/delegating/rewrite.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Rewrite name="REWRITE"&gt;
+  &lt;LoggerNameLevelRewritePolicy logger="org.example"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+    &lt;KeyValuePair key="WARN" value="INFO"/&gt;
+    &lt;KeyValuePair key="INFO" value="DEBUG"/&gt;
+  &lt;/LoggerNameLevelRewritePolicy&gt;
+  &lt;AppenderRef level="INFO" ref="CONSOLE"/&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+&lt;/Rewrite&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_5_json--panel" class="tabpanel" aria-labelledby="_tabs_5_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/delegating/rewrite.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Rewrite": {
+  "name": "REWRITE",
+  "LoggerNameLevelRewritePolicy": { <i class="conum" data-value="1"></i><b>(1)</b>
+    "logger": "org.example",
+    "KeyValuePair": [
+      {
+        "key": "WARN",
+        "value": "INFO"
+      },
+      {
+        "key": "INFO",
+        "value": "DEBUG"
+      }
+    ]
+  },
+  "AppenderRef": {
+    "level": "INFO", <i class="conum" data-value="2"></i><b>(2)</b>
+    "ref": "CONSOLE"
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_5_yaml--panel" class="tabpanel" aria-labelledby="_tabs_5_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/delegating/rewrite.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Rewrite:
+  name: "REWRITE"
+  LoggerNameLevelRewritePolicy: <i class="conum" data-value="1"></i><b>(1)</b>
+    logger: "org.example"
+    KeyValuePair:
+      - key: "WARN"
+        value: "INFO"
+      - key: "INFO"
+        value: "DEBUG"
+  AppenderRef:
+    level: "INFO" <i class="conum" data-value="2"></i><b>(2)</b>
+    ref: "CONSOLE"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_5_properties--panel" class="tabpanel" aria-labelledby="_tabs_5_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/delegating/rewrite.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.1.type = Rewrite
+appender.1.name = REWRITE
+
+<i class="conum" data-value="1"></i><b>(1)</b>
+appender.1.policy.type = LoggerNameLevelRewritePolicy
+appender.1.policy.logger = org.example
+appender.1.policy.kv0.type = KeyValuePair
+appender.1.policy.kv0.key = WARN
+appender.1.policy.kv0.value = INFO
+appender.1.policy.kv1.type = KeyValuePair
+appender.1.policy.kv1.key = INFO
+appender.1.policy.kv1.value = DEBUG
+
+appender.1.appenderRef.type = AppenderRef
+<i class="conum" data-value="2"></i><b>(2)</b>
+appender.1.appenderRef.level = INFO
+appender.1.appenderRef.ref = CONSOLE</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Decreases the severity of <code>WARN</code> and <code>INFO</code> messages, so they appear with the new severity in your log viewer.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>If additionally you don&#8217;t want to log <code>DEBUG</code> log events, you must apply a filter.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="RoutingAppender"><a class="anchor" href="#RoutingAppender"></a><code>Routing</code> Appender</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>Routing</code> Appender evaluates log events and then routes them to one of its subordinate appenders.
+The target appender may be:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>an existing appender referenced by its name.</p>
+</li>
+<li>
+<p>a new appender obtained by evaluating a configuration snippet.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The <code>Routing</code> Appender should be configured after any appenders it references to allow it to shut down properly.</p>
+</div>
+<div class="sect2">
+<h3 id="RoutingAppender-configuration"><a class="anchor" href="#RoutingAppender-configuration"></a><code>Routing</code> Configuration</h3>
+<table id="RoutingAppender-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 13. <code>Routing</code> Appender configuration attributes</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Required</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="RoutingAppender-attr-name"></a>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of this appender.</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Optional</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="RoutingAppender-attr-ignoreExceptions"></a>ignoreExceptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>false</code> and the downstream appender fails with an exception, the exception will be propagated to the caller.
+Otherwise, it will be ignored.</p>
+<p class="tableblock">Logging exceptions are always also logged to <a href="../status-logger.html" class="xref page">Status Logger</a></p></td>
+</tr>
+</tbody>
+</table>
+<table id="RoutingAppender-elements" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 14. <code>Routing</code> Appender nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Multiplicity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="RoutingAppender-element-AbstractScript"></a><a href="../scripts.html" class="xref page"><code>AbstractScript</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>This script has two purposes:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>It initializes a shared <code>Map&lt;String, Object&gt;</code> bound to the <code>staticVariables</code> identifier.
+The values of this map can be used later by the <a href="#Routes-element-AbstractScript"><code>Routes</code> script</a>.</p>
+</li>
+<li>
+<p>It returns the name of the default route.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The script has the following bindings:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>staticVariables</code></dt>
+<dd>
+<p>A <code>Map&lt;String, Object&gt;</code> that is reused between script calls.
+This is the same map, which is passed to the <a href="#RoutingAppender-element-AbstractScript"><code>AbstractScript</code> of <code>Routing</code></a>.</p>
+</dd>
+<dt class="hdlist1"><code>configuration</code></dt>
+<dd>
+<p>The current <a href="../configuration.html" class="xref page"><code>Configuration</code> object</a>.</p>
+</dd>
+<dt class="hdlist1"><code>statusLogger</code></dt>
+<dd>
+<p>The <a href="../status-logger.html" class="xref page">Status Logger</a> to use to print diagnostic messages in the script.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>See also <a href="../scripts.html" class="xref page">Scripts</a> for more details on scripting in Log4j Core.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="RoutingAppender-element-Filter"></a><a href="../filters.html" class="xref page"><code>Filter</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows filtering log events before routing them to a subordinate appender.</p>
+<p class="tableblock">See also <a href="../filters.html#appender-stage" class="xref page">appender filtering stage</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="RoutingAppender-element-PurgePolicy"></a><a href="#PurgePolicy"><code>PurgePolicy</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <a href="#PurgePolicy">purge policy</a> to apply to handle the lifecycle of automatically instantiated appenders.</p>
+<p class="tableblock">See <a href="#PurgePolicy">Purge Policy</a> for more details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="RoutingAppender-element-RewritePolicy"></a><a href="#RewritePolicy"><code>RewritePolicy</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <a href="#RewritePolicy">rewrite policy</a> to apply to all logged events.</p>
+<p class="tableblock">If set, the <code>Routing</code> appender will rewrite a log event before routing it.
+See also <a href="#RewriteAppender"><code>Rewrite</code> Appender</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="RoutingApender-element-Routes"></a><a href="#Routes"><code>Routes</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>one</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Determines the routing configuration of the appender.</p>
+<p class="tableblock">See <a href="#Routes"><code>Routes</code></a> for more details.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-RoutingAppender" class="xref page">&#x1F4D6; Plugin reference for <code>Routing</code></a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="route-selection"><a class="anchor" href="#route-selection"></a>Route selection</h3>
+<div class="paragraph">
+<p>At the base of route selection there are two configuration elements:</p>
+</div>
+<div id="Routes" class="dlist">
+<dl>
+<dt class="hdlist1"><code>Routes</code></dt>
+<dd>
+<div class="paragraph">
+<p>The <code>Routes</code> element is a container for <a href="#Route"><code>Route</code></a> definitions.
+It provides two additional properties, which are used to determine the appropriate route for each log event:</p>
+</div>
+<table id="Routes-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 15. <code>Routes</code> configuration attributes</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="Routes-attr-pattern"></a>pattern</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If present, this pattern is evaluated at each log event to determine the key of the route to use.</p>
+<p class="tableblock">This attribute supports
+<a href="../configuration.html#lazy-property-substitution" class="xref page">runtime property substitution</a>
+using the
+<a href="../lookups.html#event-context" class="xref page">current event as context</a>.</p>
+<p class="tableblock"><strong>Required</strong>, unless a nested <a href="#Routes-element-AbstractScript"><code>AbstractScript</code></a> is provided.</p></td>
+</tr>
+</tbody>
+</table>
+<table id="Routes-elements" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 16. <code>Routes</code> nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Multiplicity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="Routes-element-AbstractScript"></a><a href="../scripts.html" class="xref page"><code>AbstractScript</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>If present, this script is evaluated at each log event to determine the key of the route to use.
+The script has the following bindings:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>staticVariables</code></dt>
+<dd>
+<p>A <code>Map&lt;String, Object&gt;</code> that is reused between script calls.
+This is the same map, which is passed to the <a href="#RoutingAppender-element-AbstractScript"><code>AbstractScript</code> of <code>Routing</code></a>.</p>
+</dd>
+<dt class="hdlist1"><code>logEvent</code></dt>
+<dd>
+<p>The
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html"><code>LogEvent</code></a>
+being processed.</p>
+</dd>
+<dt class="hdlist1"><code>configuration</code></dt>
+<dd>
+<p>The current <a href="../configuration.html" class="xref page"><code>Configuration</code> object</a>.</p>
+</dd>
+<dt class="hdlist1"><code>statusLogger</code></dt>
+<dd>
+<p>The <a href="../status-logger.html" class="xref page">Status Logger</a> to use to print diagnostic messages in the script.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>See also <a href="../scripts.html" class="xref page">Scripts</a> for more details on scripting in Log4j Core.</p>
+</div>
+<div class="paragraph">
+<p><strong>Required</strong>, unless the <a href="#Routes-attr-pattern"><code>pattern</code></a> attribute is provided.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#Route"><code>Route</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">one or more</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-Routes" class="xref page">&#x1F4D6; Plugin reference for <code>Routes</code></a></p>
+</div>
+</dd>
+</dl>
+</div>
+<div id="Route" class="dlist">
+<dl>
+<dt class="hdlist1"><code>Route</code></dt>
+<dd>
+<p>The <code>Route</code> element determines the appender to use if the route is selected.
+The appender can be:</p>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>A previously declared appender, from the <a href="../configuration.html#main-configuration-elements" class="xref page"><code>Appenders</code> section</a> of the configuration file.</p>
+</li>
+<li>
+<p>A new appender that is instantiated based on a nested appender definition, when the route becomes active.
+See also <a href="#PurgePolicy">Purge Policy</a> to learn more about the lifecycle of such an appender.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<table id="Route-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 17. <code>Route</code> configuration attributes</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Attribute</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="Route-attr-key"></a>
+key</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>null</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A key that is compared with the evaluation of either the <a href="#Routes-attr-pattern"><code>pattern</code></a> attribute or <a href="#Routes-element-AbstractScript">nested script</a> of the `Routes element.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="Route-attr-ref"></a>
+ref</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The reference to an existing appender to use.</p>
+<p class="tableblock">You cannot specify both this attribute and a <a href="#Route-element-Appender">nested `Appender definition</a>.</p></td>
+</tr>
+</tbody>
+</table>
+<table id="Route-elements" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 18. <code>Route</code> nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Multiplicity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="Route-element-Appender"></a>
+<a href="../appenders.html" class="xref page"><code>Appender</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The definition of an <code>Appender</code> to create, when this route is used for the first time.</p>
+<p class="tableblock">You cannot specify both this nested element and the <a href="#Route-attr-ref"><code>ref</code> configuration attribute</a>.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Lookups in the <strong>children</strong> of the <code>Route</code> component are <strong>not</strong> evaluated at configuration time.
+The substitution is delayed until the <code>Route</code> element is evaluated.
+This means that <code>${...}</code> expression <strong>should not</strong> be escaped as <code>$${...}</code>.</p>
+</div>
+<div class="paragraph">
+<p>The appender definition is evaluated in the <a href="../lookups.html#event-context" class="xref page">context of the current event</a>, instead of the global context.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="../configuration.html#lazy-property-substitution" class="xref page">lazy property substitution</a> for more details.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-Route" class="xref page">&#x1F4D6; Plugin reference for <code>Route</code></a></p>
+</div>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>For each log event, the appropriate route is selected as follows:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>First the <a href="#Routes-attr-pattern"><code>pattern</code> attribute</a> or <a href="#Routes-element-AbstractScript"><code>Routes</code> script</a> are evaluated to obtain a <strong>key</strong>.</p>
+</li>
+<li>
+<p>The key is compared with the <a href="#Route-attr-key"><code>key</code> attribute</a> of each <code>Route</code> element.</p>
+</li>
+<li>
+<p>If there is a <code>Route</code> for that key, it is selected.</p>
+</li>
+<li>
+<p>Otherwise, the <strong>default</strong> <code>Route</code> is selected. The key of the default <code>Route</code> is determined by the <a href="#RoutingAppender-element-AbstractScript"><code>Routing</code> script</a> or is <code>null</code> (lack of <a href="#Route-attr-key"><code>key</code> attribute</a>) if the script is absent.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If the <code>Route</code> element contains an appender definition, the appender will be instantiated:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>once if the <code>Route</code> has a non-default key.</p>
+</li>
+<li>
+<p>once for each value of the key, if the <code>Route</code> has the default key.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="PurgePolicy"><a class="anchor" href="#PurgePolicy"></a>Purge Policy</h3>
+<div class="paragraph">
+<p>If your default <a href="#Route"><code>Route</code> element</a> contains an <a href="#Route-element-Appender">appender definition</a>, the <code>Routing</code> Appender can instantiate a large number of appenders, one for each value of the routing key.
+These appenders might be useful only for a short period of time, but will consume system resources unless they are stopped.</p>
+</div>
+<div class="paragraph">
+<p>The purge policy is a Log4j plugin that implements the
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/routing/PurgePolicy.html"><code>PurgePolicy</code></a>
+interface and handles the lifecycle of automatically instantiated appenders.</p>
+</div>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-PurgePolicy" class="xref page">&#x1F4D6; Plugin reference for <code>PurgePolicy</code></a></p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If an appender has been destroyed, it can be created again when the <code>Route</code> is selected again.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Log4j Core provides one implementation of <code>PurgePolicy</code>:</p>
+</div>
+<div id="IdlePurgePolicy" class="dlist">
+<dl>
+<dt class="hdlist1"><code>IdlePurgePolicy</code></dt>
+<dd>
+<div class="paragraph">
+<p>This policy destroys appenders if they have not been used for a certain amount of time.
+It supports the following configuration attributes:</p>
+</div>
+<table id="IdlePurgePolicy-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 19. <code>IdlePurgePolicy</code> configuration attributes</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="IdlePurgePolicy-attr-timeToLive"></a>timeToLive</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>long</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It specifies the number of <a href="#IdlePurgePolicy-attr-timeUnit">time units</a> that an appender can be idle, before it is destroyed.</p>
+<p class="tableblock"><strong>Required</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="IdlePurgePolicy-attr-checkInterval"></a>checkInterval</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>long</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#IdlePurgePolicy-attr-timeToLive"><code>timeToLive</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It specifies the number of <a href="#IdlePurgePolicy-attr-timeUnit">time units</a> between two runs of this purge policy.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="IdlePurgePolicy-attr-timeUnit"></a>timeUnit</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/TimeUnit.html"><code>TimeUnit</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/TimeUnit.html#MINUTES"><code>MINUTES</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It specifies the time unit to use for the other attributes.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-IdlePurgePolicy" class="xref page">&#x1F4D6; Plugin reference for <code>IdlePurgePolicy</code></a></p>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="RoutingAppender-examples"><a class="anchor" href="#RoutingAppender-examples"></a>Configuration examples</h3>
+<div class="sect3">
+<h4 id="RoutingAppender-example-ref"><a class="anchor" href="#RoutingAppender-example-ref"></a>Using appender references</h4>
+<div class="paragraph">
+<p>You can deliver log events for different <a href="../markers.html" class="xref page">Markers</a> into separate log files, using the following configuration:</p>
+</div>
+<div id="_tabs_6" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_6_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_6_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_6_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_6_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_6_xml--panel" class="tabpanel" aria-labelledby="_tabs_6_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/delegating/routing-ref.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Routing name="ROUTING"&gt;
+  &lt;Routes pattern="$${event:Marker}"&gt;
+    &lt;Route key="AUDIT" ref="AUDIT_LOG"/&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+    &lt;Route key="$${event:Marker}" ref="MAIN_LOG"/&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+    &lt;Route ref="MARKED_LOG"/&gt; <i class="conum" data-value="3"></i><b>(3)</b>
+  &lt;/Routes&gt;
+&lt;/Routing&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_6_json--panel" class="tabpanel" aria-labelledby="_tabs_6_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/delegating/routing-ref.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Routing": {
+  "name": "ROUTING",
+  "Routes": {
+    "pattern": "$${event:Marker}}",
+    "Route": [
+      { <i class="conum" data-value="1"></i><b>(1)</b>
+        "key": "AUDIT",
+        "ref": "AUDIT_LOG"
+      },
+      { <i class="conum" data-value="2"></i><b>(2)</b>
+        "key": "$${event:Marker}",
+        "ref": "MAIN_LOG"
+      },
+      { <i class="conum" data-value="3"></i><b>(3)</b>
+        "ref": "MARKED_LOG"
+      }
+    ]
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_6_yaml--panel" class="tabpanel" aria-labelledby="_tabs_6_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/delegating/routing-ref.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Routing:
+  Routes:
+    pattern: "$${event:Marker}"
+    Route:
+      - key: "AUDIT" <i class="conum" data-value="1"></i><b>(1)</b>
+        ref: "AUDIT_LOG"
+      - key: "$${event:Marker}" <i class="conum" data-value="2"></i><b>(2)</b>
+        ref: "MAIN_LOG"
+      - ref: "MARKED_LOG" <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_6_properties--panel" class="tabpanel" aria-labelledby="_tabs_6_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/delegating/routing-ref.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.3.type = Routing
+appender.3.name = ROUTING
+appender.3.route.type = Routes
+appender.3.route.pattern = $${event:Marker}
+<i class="conum" data-value="1"></i><b>(1)</b>
+appender.3.route.0.type = Route
+appender.3.route.0.key = AUDIT
+appender.3.route.0.ref = AUDIT_LOG
+<i class="conum" data-value="2"></i><b>(2)</b>
+appender.3.route.1.type = Route
+appender.3.route.1.key = $${event:Marker}
+appender.3.route.1.ref = MAIN_LOG
+<i class="conum" data-value="3"></i><b>(3)</b>
+appender.3.route.2.type = Route
+appender.3.route.2.ref = MARKED_LOG</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This route is selected if the log event is marked with an <code>AUDIT</code> marker.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This route is selected if the log event has no marker.
+In this case the expression <code>${event:Marker}</code> evaluates to itself.
+See <a href="../configuration.html#property-substitution" class="xref page">Property evaluation</a> for more details.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>This is the <strong>default</strong> route.
+It is selected if the log event has a marker, but it is not the <code>AUDIT</code> marker.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="RoutingAppender-example-definition"><a class="anchor" href="#RoutingAppender-example-definition"></a>Using appender definitions</h4>
+<div class="paragraph">
+<p>If the number of appenders is high or unknown, you might want to use appender definitions instead of appender references.
+In the example below, a different log file is created for each <a href="../markers.html" class="xref page">marker</a>.</p>
+</div>
+<div id="_tabs_7" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_7_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_7_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_7_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_7_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_7_xml--panel" class="tabpanel" aria-labelledby="_tabs_7_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/delegating/routing-definition.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Routing name="ROUTING"&gt;
+  &lt;Routes pattern="$${event:Marker}"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+    &lt;Route&gt;
+      &lt;File name="${event:Marker}"
+            fileName="${event:Marker:-main}.log"&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+        &lt;JsonTemplateLayout/&gt;
+      &lt;/File&gt;
+    &lt;/Route&gt;
+  &lt;/Routes&gt;
+  &lt;IdlePurgePolicy timeToLive="15"/&gt; <i class="conum" data-value="3"></i><b>(3)</b>
+&lt;/Routing&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_7_json--panel" class="tabpanel" aria-labelledby="_tabs_7_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/delegating/routing-definition.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Routing": {
+  "name": "ROUTING",
+  "Routes": {
+    "pattern": "$${event:Marker}}", <i class="conum" data-value="1"></i><b>(1)</b>
+    "Route": {
+      "File": { <i class="conum" data-value="2"></i><b>(2)</b>
+        "name": "${event:Marker}",
+        "fileName": "${event:Marker:-main}.log",
+        "JsonTemplateLayout": {}
+      }
+    }
+  },
+  "IdlePurgePolicy": { <i class="conum" data-value="3"></i><b>(3)</b>
+    "timeToLive": 15
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_7_yaml--panel" class="tabpanel" aria-labelledby="_tabs_7_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/delegating/routing-definition.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Routing:
+  Routes:
+    pattern: "$${event:Marker}" <i class="conum" data-value="1"></i><b>(1)</b>
+    Route:
+      File: <i class="conum" data-value="2"></i><b>(2)</b>
+        name: "${event:Marker}"
+        fileName: "${event:Marker:-main}.log"
+IdlePurgePolicy: <i class="conum" data-value="3"></i><b>(3)</b>
+  timeToLive: 15</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_7_properties--panel" class="tabpanel" aria-labelledby="_tabs_7_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/delegating/routing-definition.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = Routing
+appender.0.name = ROUTING
+appender.0.route.type = Routes
+<i class="conum" data-value="1"></i><b>(1)</b>
+appender.0.route.pattern = $${event:Marker}
+
+appender.0.route.0.type = Route
+<i class="conum" data-value="2"></i><b>(2)</b>
+appender.0.route.0.appender.type = File
+appender.0.route.0.appender.name = ${event:Marker}
+appender.0.route.0.appender.fileName = ${event:Marker:-main}.log
+appender.0.route.0.appender.layout.type = JsonTemplateLayout
+
+<i class="conum" data-value="3"></i><b>(3)</b>
+appender.0.purge.type = IdlePurgePolicy
+appender.0.purge.timeToLive = 15</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>pattern</code> attribute is evaluated at configuration time, so the <code>${event:Marker}</code> lookup needs to be escaped.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The appender definition is <strong>not</strong> evaluated at configuration time, so no escaping is necessary.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>To prevent resource leaks, consider using a <a href="#PurgePolicy">Purge Policy</a>.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="RoutingAppender-example-script"><a class="anchor" href="#RoutingAppender-example-script"></a>Using scripts</h4>
+<div class="paragraph">
+<p>If the flexibility of <a href="../lookups.html" class="xref page">Lookups</a> is not enough to express your routing logic, you can also resort to scripts.
+In the example below, we route messages in a round-robin fashion to three different Syslog servers:</p>
+</div>
+<div id="_tabs_8" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_8_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_8_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_8_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_8_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_8_xml--panel" class="tabpanel" aria-labelledby="_tabs_8_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/delegating/routing-script.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Routing name="ROUTING"&gt;
+  &lt;Script language="groovy"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+    staticVariables.servers = ['server1', 'server2', 'server3'];
+    staticVariables.count = 0;
+  &lt;/Script&gt;
+  &lt;Routes&gt;
+    &lt;Script language="groovy"&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+      int count = staticVariables.count++;
+      String server = staticVariables.servers[count % 3];
+      return configuration.properties['server'] = server;
+    &lt;/Script&gt;
+    &lt;Route&gt;
+      &lt;Socket name="${server}"
+              protocol="TCP"
+              host="${server}"
+              port="500"&gt; <i class="conum" data-value="3"></i><b>(3)</b>
+        &lt;Rfc5424Layout/&gt;
+      &lt;/Socket&gt;
+    &lt;/Route&gt;
+  &lt;/Routes&gt;
+&lt;/Routing&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_8_json--panel" class="tabpanel" aria-labelledby="_tabs_8_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/delegating/routing-script.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Routing": {
+  "name": "ROUTING",
+  "Script": {
+    "language": "groovy",
+    <i class="conum" data-value="1"></i><b>(1)</b>
+    "scriptText": "staticVariables.servers = ['server1', 'server2', 'server3']; staticVariables.count = 0;"
+  },
+  "Routes": {
+    "Script": {
+      "language": "groovy",
+      <i class="conum" data-value="2"></i><b>(2)</b>
+      "scriptText": "int count = staticVariables.count++; String server = staticVariables.servers[count % 3]; return configuration.properties['server'] = server;"
+    },
+    "Route": {
+      "Socket": { <i class="conum" data-value="3"></i><b>(3)</b>
+        "name": "${server}",
+        "protocol": "TCP",
+        "host": "${server}",
+        "port": "500",
+        "Rfc5425Layout": {}
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_8_yaml--panel" class="tabpanel" aria-labelledby="_tabs_8_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/delegating/routing-script.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Routing:
+  Script:
+    language: "groovy"
+    <i class="conum" data-value="1"></i><b>(1)</b>
+    scriptText: |
+      staticVariables.servers = ['server1', 'server2', 'server3'];
+      staticVariables.count = 0;
+  Routes:
+    Script:
+      language: "groovy"
+      <i class="conum" data-value="2"></i><b>(2)</b>
+      scriptText: |
+        int count = staticVariables.count++;
+        String server = staticVariables.servers[count % 3];
+        return configuration.properties['server'] = server;
+    Route:
+      <i class="conum" data-value="3"></i><b>(3)</b>
+      Socket:
+        name: "${server}"
+        protocol: "TCP"
+        host: "${server}"
+        port: 500
+        Rfc5424Layout: {}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_8_properties--panel" class="tabpanel" aria-labelledby="_tabs_8_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/delegating/routing-script.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = Routing
+appender.0.name = ROUTING
+
+appender.0.script.type = Script
+appender.0.script.language = groovy
+<i class="conum" data-value="1"></i><b>(1)</b>
+appender.0.script.scriptText = \
+  staticVariables.servers = ['server1', 'server2', 'server3']; \
+  staticVariables.count = 0;
+
+appender.0.route.type = Routes
+appender.0.route.script.type = Script
+appender.0.route.script.language = groovy
+<i class="conum" data-value="2"></i><b>(2)</b>
+appender.0.route.script.scriptText = \
+  int count = staticVariables.count++; \
+  String server = staticVariables.servers[count % 3]; \
+  return configuration.properties['server'] = server;
+
+appender.0.route.0.type = Route
+<i class="conum" data-value="3"></i><b>(3)</b>
+appender.0.route.0.appender.type = Socket
+appender.0.route.0.appender.name = ${server}
+appender.0.route.0.appender.protocol = TCP
+appender.0.route.0.appender.host = ${server}
+appender.0.route.0.appender.port = 500
+appender.0.route.0.appender.layout = Rfc5424Layout</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <a href="#RoutingAppender-element-AbstractScript"><code>Routing</code> script</a> performs the initialization of state variables.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <a href="#Routes-element-AbstractScript"><code>Routes</code> script</a> returns the name of the server to use.
+It also exports the value as <code>server</code> entry in
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html#getProperties()"><code>Configuration.getProperties()</code></a>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The exported value can be used as <code>${server}</code> in the appender definition.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="ScriptAppenderSelector"><a class="anchor" href="#ScriptAppenderSelector"></a><code>ScriptAppenderSelector</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>ScriptAppenderSelector</code> plugin allows using different appender definitions based on the output of a script.
+At <strong>configuration time</strong>:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The nested script element is evaluated to obtain the name of an appender.</p>
+</li>
+<li>
+<p>The plugin looks for the appropriate appender definition inside the <code>&lt;AppenderSet&gt;</code> container.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The functionality of <code>ScriptAppenderSelector</code> has been replaced by the more general
+<a href="../configuration.html#arbiters" class="xref page"><code>Arbiter</code> mechanism</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<table id="ScriptAppenderSelector-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 20. <code>ScriptAppenderSelector</code> Appender configuration attributes</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Attribute</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="ScriptAppenderSelector-attr-name"></a>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of this appender.</p>
+<p class="tableblock"><strong>Required</strong></p></td>
+</tr>
+</tbody>
+</table>
+<table id="ScriptAppenderSelector-elements" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 21. <code>ScriptAppenderSelector</code> Appender nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Multiplicity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="ScriptAppenderSelector-element-AbstractScript"></a><a href="../scripts.html" class="xref page"><code>AbstractScript</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>one</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The script to determine the appender name.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="RoutingAppender-element-AppenderSet"></a><code>AppenderSet</code></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>one</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A lazy container for appender definitions.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-ScriptAppenderSelector" class="xref page">&#x1F4D6; Plugin reference for <code>ScriptAppenderSelector</code></a></p>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>
+    Copyright © 1999-2024 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
+  </p>
+  <p>
+    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+    Other names may be trademarks of their respective owners.
+  </p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+<!-- `@asciidoctor/tabs` extension scripts -->
+<script async src="../../_/js/vendor/tabs.js"></script>
+  </body>
+</html>

@@ -1,0 +1,3603 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Database appenders :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/appenders/database.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.6">
+<link rel="stylesheet" href="../../_/css/site.css">
+<link rel="icon" href="../../_/../_images/favicon.ico" type="image/x-icon">
+<!-- `@asciidoctor/tabs` extension styles -->
+<link rel="stylesheet" href="../../_/css/vendor/tabs.css">
+<style>
+  /* Swap colors of `IMPORTANT` and `WARNING` blocks */ 
+  .doc .admonitionblock.important .icon { background-color: #f70; }
+  .doc .admonitionblock.warning .icon { background-color: #e40046; }
+  /* Default `h4`, `h5`, and `h6` are smaller than the normal text, fix header font sizing: */
+  .doc h1 { font-size: 1.9rem; }
+  .doc h2 { font-size: 1.7rem; }
+  .doc h3 { font-size: 1.5rem; font-weight: 400; }
+  .doc h4 { font-size: 1.3rem; font-weight: 500; }
+  .doc h5 { font-size: 1.1rem; font-weight: 500; text-decoration: underline; }
+  .doc h6 { font-size: 0.9rem; font-weight: 500; text-decoration: underline; }
+  /* Default `code`, `pre`, and `.colist` (source code annotations) fonts are too big, adjust them: */
+  .doc .colist>table code, .doc p code, .doc thead code { font-size: 0.8em; }
+  .doc pre { font-size: 0.7rem; }
+  .doc .colist { font-size: 0.75rem; }
+  /* Make links more visible: */
+  .doc a { text-decoration: underline; }
+  .doc a code { text-decoration: underline; color: #1565c0; }
+  /* Tab header fonts aren't rendered good, adjusting the font weight: */
+  .tablist > ul li { font-weight: 500; }
+  /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
+  .toc .toc-menu li[data-level="4"] a {
+    padding-left: 2.75rem;
+  }
+  /* Replace the default highlight.js color for strings from red (unnecessarily signaling something negative) to green: */
+  .hljs-string {
+    color: #0f8532;
+  }
+</style>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <img src="../../_/../_images/logo-small-white.png" alt="Apache Log4j"/>
+      </div>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://logging.apache.org">a subproject of&nbsp;<strong>Apache Logging Services</strong></a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ROOT" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../../index.html">Home</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../download.html">Download</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../release-notes.html">Release Notes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="https://logging.apache.org/support.html">Support</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../index.html">Manual</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../getting-started.html">Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../installation.html">Installation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../api.html">API</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../api.html#loggers">Loggers</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../eventlogging.html">Event Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../simple-logger.html">Simple Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../status-logger.html">Status Logger</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../logbuilder.html">Fluent API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../api.html#fish-tagging">Fish tagging</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../customloglevels.html">Levels</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../markers.html">Markers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../thread-context.html">Thread Context</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../messages.html">Messages</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../flowtracing.html">Flow Tracing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../implementation.html">Implementation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../config-intro.html">Configuration</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../configuration.html">Configuration file</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../systemproperties.html">Configuration properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../customconfig.html">Programmatic configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../appenders.html">Appenders</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="file.html">File appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="rolling-file.html">Rolling file appenders</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="4">
+    <a class="nav-link" href="database.html">Database appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="network.html">Network Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="message-queue.html">Message queue appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="delegating.html">Delegating Appenders</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../json-template-layout.html">JSON Template Layout</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../pattern-layout.html">Pattern Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../filters.html">Filters</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../scripts.html">Scripts</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../jmx.html">JMX</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../extending.html">Extending</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../plugins.html">Plugins</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../performance.html">Performance</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../async.html">Asynchronous loggers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../garbagefree.html">Garbage-free logging</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">References</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../plugin-reference.html">Plugin reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../javadoc.html">Java API reference</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Resources</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../faq.html">F.A.Q.</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../migrate-from-log4j1.html">Migrating from Log4j 1</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../migrate-from-logback.html">Migrating from Logback</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../migrate-from-slf4j.html">Migrating from SLF4J</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../hibernate.html">Integrating with Hibernate</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../jakarta.html">Integrating with Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../soa.html">Integrating with service-oriented architectures</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../development.html">Development</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../components.html">Components</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../log4j-iostreams.html">Log4j IOStreams</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../log4j-spring-boot.html">Log4j Spring Boot Support</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../log4j-jul.html">JUL-to-Log4j bridge</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../log4j-to-jul.html">Log4j-to-JUL bridge</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Related projects</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jakarta/index.html">Log4j Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jmx-gui/index.html">Log4j JMX GUI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/kotlin/index.html">Log4j Kotlin</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/scala/index.html">Log4j Scala</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/tools/index.html">Log4j Tools</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/transform/index.html">Log4j Transformation Tools</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">Home</a></li>
+    <li><a href="../index.html">Manual</a></li>
+    <li><a href="../implementation.html">Implementation</a></li>
+    <li><a href="../config-intro.html">Configuration</a></li>
+    <li><a href="../appenders.html">Appenders</a></li>
+    <li><a href="database.html">Database appenders</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/manual/appenders/database.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="4">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Database appenders</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Log4j Core provides multiple appenders to send log events directly to your database.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="common-concerns"><a class="anchor" href="#common-concerns"></a>Common concerns</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="ColumnMapping"><a class="anchor" href="#ColumnMapping"></a>Column mapping</h3>
+<div class="paragraph">
+<p>Since relational databases and some NoSQL databases split data into columns, Log4j Core provides a reusable
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/db/ColumnMapping.html"><code>ColumnMapping</code></a>
+configuration element to allow specifying the content of each column.</p>
+</div>
+<div class="paragraph">
+<p>The Column Mapping element supports the following configuration properties:</p>
+</div>
+<table id="ColumnMapping-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. <code>ColumnMapping</code> configuration attributes</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Required</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="ColumnMapping-attr-name"></a>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the column.</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Optional</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="ColumnMapping-attr-columnType"></a>columnType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Class&lt;?&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>It specifies the Java type that will be stored in the column.</p>
+</div>
+<div class="paragraph">
+<p>If set to:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>org.apache.logging.log4j.util.ReadOnlyStringMap</code></dt>
+<dt class="hdlist1"><code>org.apache.logging.log4j.spi.ThreadContextMap</code></dt>
+<dd>
+<p>The column will be filled with the contents of the log event&#8217;s <a href="../thread-context.html#mdc" class="xref page">context map</a>.</p>
+</dd>
+<dt class="hdlist1"><code>org.apache.logging.log4j.spi.ThreadContextStack</code></dt>
+<dd>
+<p>The column will be filled with the contents of the log event&#8217;s <a href="../thread-context.html#ndc" class="xref page">context stack</a>.</p>
+</dd>
+<dt class="hdlist1"><code>java.util.Date</code></dt>
+<dd>
+<p>The column will be filled with the log event&#8217;s timestamp.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>For any other value:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The log event will be formatted using the <a href="#ColumnMapping-element-Layout">nested <code>Layout</code></a>.</p>
+</li>
+<li>
+<p>The resulting <code>String</code> will be converted to the specified type using a
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/convert/TypeConverter.html"><code>TypeConverter</code></a>.
+See the
+<a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-plugins-convert-TypeConverter" class="xref page">plugin reference</a>
+for a list of available type converters.</p>
+</li>
+</ol>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="ColumnMapping-attr-type"></a>type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Class&lt;?&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Deprecated</strong>: since <code>2.21.0</code> use <a href="#ColumnMapping-attr-columnType"><code>columnType</code></a> instead.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="ColumnMapping-attr-literal"></a>literal</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>If set, the value will be added <strong>directly</strong> in the insert statement of the database-specific query language.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This value is added as-is, without any validation.
+Never use user-provided data to determine its value.</p>
+</div>
+</td>
+</tr>
+</table>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="ColumnMapping-attr-parameter"></a>parameter</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>It specifies the database-specific parameter marker to use.
+Otherwise, the default parameter marker for the database language will be used.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This value is added as-is, without any validation.
+Never use user-provided data to determine its value.</p>
+</div>
+</td>
+</tr>
+</table>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="ColumnMapping-attr-pattern"></a>pattern</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This is a shortcut configuration attribute to set the
+<a href="#ColumnMapping-element-Layout">nested <code>Layout</code> element</a>
+to a <a href="../pattern-layout.html" class="xref page"><code>PatternLayout</code></a>
+instance with the specified <code>pattern</code> property.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="ColumnMapping-attr-source"></a>source</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#ColumnMapping-attr-name"><code>name</code></a></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>It specifies which key of a <a href="../messages.html#MapMessage" class="xref page"><code>MapMessage</code></a> will be stored in the column.
+This attribute is used only if:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <a href="#ColumnMapping-element-Layout">nested <code>Layout</code> element</a>
+is a
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/layout/MessageLayout.html"><code>MessageLayout</code></a>.</p>
+</li>
+<li>
+<p>The message being logged is a <code>MapMessage</code></p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<table id="ColumnMapping-elements" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. <code>ColumnMapping</code> nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Multiplicity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="ColumnMapping-element-Layout"></a><a href="../layouts.html" class="xref page"><code>Layout</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Formats the value to store in the column.</p>
+<p class="tableblock">See <a href="../layouts.html" class="xref page">Layouts</a> for more information.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-ColumnMapping" class="xref page">Plugin reference for <code>ColumnMapping</code></a></p>
+</div>
+<div class="paragraph">
+<p>An example column mapping might look like this:</p>
+</div>
+<div id="_tabs_1" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_1_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_1_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_1_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_1_xml--panel" class="tabpanel" aria-labelledby="_tabs_1_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/column-mapping.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml"><i class="conum" data-value="1"></i><b>(1)</b>
+&lt;ColumnMapping name="id" literal="currval('logging_seq')"/&gt;
+<i class="conum" data-value="2"></i><b>(2)</b>
+&lt;ColumnMapping name="uuid"
+               pattern="%uuid{TIME}"
+               columnType="java.util.UUID"/&gt;
+&lt;ColumnMapping name="message" pattern="%m"/&gt;
+<i class="conum" data-value="3"></i><b>(3)</b>
+&lt;ColumnMapping name="timestamp" columnType="java.util.Date"/&gt;
+&lt;ColumnMapping name="mdc"
+               columnType="org.apache.logging.log4j.spi.ThreadContextMap"/&gt;
+&lt;ColumnMapping name="ndc"
+               columnType="org.apache.logging.log4j.spi.ThreadContextStack"/&gt;
+<i class="conum" data-value="4"></i><b>(4)</b>
+&lt;ColumnMapping name="asJson"&gt;
+  &lt;JsonTemplateLayout/&gt;
+&lt;/ColumnMapping&gt;
+<i class="conum" data-value="5"></i><b>(5)</b>
+&lt;ColumnMapping name="resource" source="resourceId"/&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_json--panel" class="tabpanel" aria-labelledby="_tabs_1_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/column-mapping.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"ColumnMapping": [
+  <i class="conum" data-value="1"></i><b>(1)</b>
+  {
+    "name": "id",
+    "literal": "currval('logging_seq')"
+  },
+  <i class="conum" data-value="2"></i><b>(2)</b>
+  {
+    "name": "uuid",
+    "pattern": "%uuid{TIME}",
+    "columnType": "java.util.UUID"
+  },
+  {
+    "name": "message",
+    "pattern": "%m"
+  },
+  <i class="conum" data-value="3"></i><b>(3)</b>
+  {
+    "name": "timestamp",
+    "columnType": "java.util.Date"
+  },
+  {
+    "name": "mdc",
+    "columnType": "org.apache.logging.log4j.spi.ThreadContextMap"
+  },
+  {
+    "name": "ndc",
+    "columnType": "org.apache.logging.log4j.spi.ThreadContextStack"
+  },
+  <i class="conum" data-value="4"></i><b>(4)</b>
+  {
+    "name": "asJson",
+    "JsonTemplateLayout": {}
+  },
+  <i class="conum" data-value="5"></i><b>(5)</b>
+  {
+    "name": "resource",
+    "source": "resourceId"
+  }
+]</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_yaml--panel" class="tabpanel" aria-labelledby="_tabs_1_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/column-mapping.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ColumnMapping:
+  <i class="conum" data-value="1"></i><b>(1)</b>
+  - name: "id"
+    literal: "currval('logging_seq')"
+  <i class="conum" data-value="2"></i><b>(2)</b>
+  - name: "uuid"
+    pattern: "%uuid{TIME}"
+    columnType: "java.util.UUID"
+  - name: "message"
+    pattern: "%m"
+  <i class="conum" data-value="3"></i><b>(3)</b>
+  - name: "timestamp"
+    columnType: "java.util.Date"
+  - name: "mdc"
+    columnType: "org.apache.logging.log4j.spi.ThreadContextMap"
+  - name: "ndc"
+    columnType: "org.apache.logging.log4j.spi.ThreadContextStack"
+  <i class="conum" data-value="4"></i><b>(4)</b>
+  - name: "asJson"
+    JsonTemplateLayout: {}
+  <i class="conum" data-value="5"></i><b>(5)</b>
+  - name: "resource"
+    source: "resourceId"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_properties--panel" class="tabpanel" aria-labelledby="_tabs_1_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/column-mapping.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties"><i class="conum" data-value="1"></i><b>(1)</b>
+appender.0.col[0].type = ColumnMapping
+appender.0.col[0].name = id
+appender.0.col[0].literal = currval('logging_seq')
+
+<i class="conum" data-value="2"></i><b>(2)</b>
+appender.0.col[1].type = ColumnMapping
+appender.0.col[1].name = uuid
+appender.0.col[1].pattern = %uuid{TIME}
+appender.0.col[1].columnType = java.util.UUID
+
+appender.0.col[2].type = ColumnMapping
+appender.0.col[2].name = message
+appender.0.col[2].pattern = %m
+
+<i class="conum" data-value="3"></i><b>(3)</b>
+appender.0.col[3].type = ColumnMapping
+appender.0.col[3].name = timestamp
+appender.0.col[3].timestamp = java.util.Date
+
+appender.0.col[4].type = ColumnMapping
+appender.0.col[4].name = mdc
+appender.0.col[4].columnType = org.apache.logging.log4j.spi.ThreadContextMap
+
+appender.0.col[5].type = ColumnMapping
+appender.0.col[5].name = ndc
+appender.0.col[5].columnType = org.apache.logging.log4j.spi.ThreadContextStack
+
+<i class="conum" data-value="4"></i><b>(4)</b>
+appender.0.col[6].type = ColumnMapping
+appender.0.col[6].name = asJson
+appender.0.col[6].layout.type = JsonTemplateLayout
+
+<i class="conum" data-value="5"></i><b>(5)</b>
+appender.0.col[7].type = ColumnMapping
+appender.0.col[7].name = resource
+appender.0.col[7].source = resourceId</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>A database-specific expression is added literally to the <code>INSERT</code> statement.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>A <a href="../pattern-layout.html" class="xref page">Pattern Layout</a> with the specified pattern is used for these columns.
+The <code>uuid</code> column is additionally converted into a <code>java.util.UUID</code> before being sent to the JDBC driver.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Three special column types are replaced with the log event timestamp, context map, and context stack.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>A <a href="../json-template-layout.html" class="xref page">JSON Template Layout</a> is used to format this column.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>If the global layout of the appender returns a <code>MapMessage</code>, the value for key <code>resourceId</code> will be put into the <code>resource</code> column.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="CassandraAppender"><a class="anchor" href="#CassandraAppender"></a>Cassandra Appender</h2>
+<div class="sectionbody">
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>This appender is planned to be removed in the next major release!</strong>
+If you are using this library, please get in touch with the Log4j maintainers using <a href="https://logging.apache.org/support.html">the official support channels</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The Cassandra Appender writes its output to an
+<a href="https://cassandra.apache.org/_/index.html">Apache Cassandra</a>
+database.
+The appender supports the following configuration properties:</p>
+</div>
+<table id="CassandraAppender-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. Cassandra Appender configuration attributes</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Required</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="CassandraAppender-attr-name"></a>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the Appender.</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Optional</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="CassandraAppender-attr-batched"></a>batched</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to use batch statements to write log messages to Cassandra.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="CassandraAppender-attr-batchType"></a>batchType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.datastax.com/en/drivers/java/3.0/com/datastax/driver/core/BatchStatement.Type.html">BatchStatement.Type</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.datastax.com/en/drivers/java/3.0/com/datastax/driver/core/BatchStatement.Type.html#LOGGED"><code>LOGGED</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The batch type to use when using batched writes.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="CassandraAppender-attr-bufferSize"></a>bufferSize</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of log messages to buffer or batch before writing.
+If <code>0</code>, buffering is disabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="CassandraAppender-attr-clusterName"></a>clusterName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the Cassandra cluster to connect to.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="CassandraAppender-attr-ignoreExceptions"></a>ignoreExceptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>false</code>, logging exception will be forwarded to the caller of the logging statement.
+Otherwise, they will be ignored.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="CassandraAppender-attr-keyspace"></a>keyspace</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the keyspace containing the table that log messages will be written to.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The password to use (along with the username) to connect to Cassandra.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>table</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the table to write log messages to.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>useClockForTimestampGenerator</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to use the configured <code>org.apache.logging.log4j.core.util.Clock</code> as a timestamp generator.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><code>username</code></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The username to use to connect to Cassandra. By default, no username or password is used.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>useTls</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to use TLS/SSL to connect to Cassandra. This is <code>false</code> by default.</p></td>
+</tr>
+</tbody>
+</table>
+<table id="CassandraAppender-elements" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. Cassandra Appender nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Multiplicity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="CassandraAppender-element-Filter"></a><a href="../filters.html" class="xref page"><code>Filter</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows filtering log events just before they are formatted and sent.</p>
+<p class="tableblock">See also <a href="../filters.html#appender-stage" class="xref page">appender filtering stage</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="CassandraAppender-element-ColumnMapping"></a><a href="#ColumnMapping"><code>ColumnMapping</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">one or more</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>A list of <a href="#ColumnMapping">column mapping</a> configurations.
+The following database-specific restrictions apply:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the <a href="#ColumnMapping-attr-name"><code>name</code> attribute</a> must be a valid
+<a href="https://cassandra.apache.org/doc/stable/cassandra/cql/definitions.html#identifiers">CQL identifier</a>.</p>
+</li>
+<li>
+<p>the <a href="#ColumnMapping-attr-literal"><code>literal</code> attribute</a> must be a valid
+<a href="https://cassandra.apache.org/doc/stable/cassandra/cql/definitions.html#terms">CQL term</a>.</p>
+</li>
+<li>
+<p>the <a href="#ColumnMapping-attr-parameter"><code>parameter</code> attribute</a> has a fixed value of <code>?</code>.</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="CassandraAppender-element-SocketAddress"></a><a href="#SocketAddress"><code>SocketAddress</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">one or more</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A list of Cassandra node addresses to connect to.
+If absent, <code>localhost:9042</code> will be used.</p>
+<p class="tableblock">See <a href="#SocketAddress">Socket Addresses</a> for the configuration syntax.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Additional runtime dependencies are required for using the Cassandra Appender:</p>
+</div>
+<div id="_tabs_2" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_2_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_2_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_2_maven--panel" class="tabpanel" aria-labelledby="_tabs_2_maven">
+<div class="paragraph">
+<p>We assume you use <a href="../../components.html#log4j-bom" class="xref page"><code>log4j-bom</code></a> for dependency management.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+  &lt;artifactId&gt;log4j-cassandra&lt;/artifactId&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_2_gradle--panel" class="tabpanel" aria-labelledby="_tabs_2_gradle">
+<div class="paragraph">
+<p>We assume you use <a href="../../components.html#log4j-bom" class="xref page"><code>log4j-bom</code></a> for dependency management.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-cassandra'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-cassandra_org-apache-logging-log4j-cassandra-CassandraAppender" class="xref page">&#x1F4D6; Plugin reference for <code>Cassandra</code></a></p>
+</div>
+<div class="sect2">
+<h3 id="SocketAddress"><a class="anchor" href="#SocketAddress"></a>Socket Addresses</h3>
+<div class="paragraph">
+<p>The address of the Cassandra server is specified using the <code>SocketAddress</code> element, which supports the following configuration options:</p>
+</div>
+<table id="SocketAddress-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 5. <code>SocketAddress</code> configuration attributes</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SocketAddress-attr-host"></a>host</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/net/InetAddress.html"><code>InetAddress</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>localhost</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The host to connect to.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SocketAddress-attr-port"></a>port</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The port to connect to.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-SocketAddress" class="xref page">&#x1F4D6; Plugin reference for <code>SocketAddress</code></a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="CassandraAppender-examples"><a class="anchor" href="#CassandraAppender-examples"></a>Configuration examples</h3>
+<div class="paragraph">
+<p>Here is an example Cassandra Appender configuration:</p>
+</div>
+<div id="_tabs_3" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_3_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_3_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_3_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_3_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_3_xml--panel" class="tabpanel" aria-labelledby="_tabs_3_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/cassandra.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Cassandra name="CASSANDRA"
+           clusterName="test-cluster"
+           keyspace="test"
+           table="logs"
+           bufferSize="10"
+           batched="true"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+  <i class="conum" data-value="2"></i><b>(2)</b>
+  &lt;SocketAddress host="server1" port="9042"/&gt;
+  &lt;SocketAddress host="server2" port="9042"/&gt;
+  <i class="conum" data-value="3"></i><b>(3)</b>
+  &lt;ColumnMapping name="id"
+                 pattern="%uuid{TIME}"
+                 columnType="java.util.UUID"/&gt;
+  &lt;ColumnMapping name="timestamp" columnType="java.util.Date"/&gt;
+  &lt;ColumnMapping name="level" pattern="%level"/&gt;
+  &lt;ColumnMapping name="marker" pattern="%marker"/&gt;
+  &lt;ColumnMapping name="logger" pattern="%logger"/&gt;
+  &lt;ColumnMapping name="message" pattern="%message"/&gt;
+  &lt;ColumnMapping name="mdc"
+                 columnType="org.apache.logging.log4j.spi.ThreadContextMap"/&gt;
+  &lt;ColumnMapping name="ndc"
+                 columnType="org.apache.logging.log4j.spi.ThreadContextStack"/&gt;
+&lt;/Cassandra&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_3_json--panel" class="tabpanel" aria-labelledby="_tabs_3_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/cassandra.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Cassandra": {
+  "name": "CASSANDRA",
+  "clusterName": "test-cluster",
+  "keyspace": "test",
+  "table": "logs",
+  <i class="conum" data-value="1"></i><b>(1)</b>
+  "bufferSize": 10,
+  "batched": true,
+  <i class="conum" data-value="2"></i><b>(2)</b>
+  "SocketAddress": [
+    {
+      "host": "server1",
+      "port": "9042"
+    },
+    {
+      "host": "server2",
+      "port": "9042"
+    }
+  ],
+  <i class="conum" data-value="3"></i><b>(3)</b>
+  "ColumnMapping": [
+    {
+      "name": "id",
+      "pattern": "%uuid{TIME}",
+      "columnType": "java.util.UUID"
+    },
+    {
+      "name": "timestamp",
+      "columnType": "java.util.Date"
+    },
+    {
+      "name": "level",
+      "pattern": "%level"
+    },
+    {
+      "name": "marker",
+      "pattern": "%marker"
+    },
+    {
+      "name": "logger",
+      "pattern": "%logger"
+    },
+    {
+      "name": "message",
+      "pattern": "%m"
+    },
+    {
+      "name": "mdc",
+      "columnType": "org.apache.logging.log4j.spi.ThreadContextMap"
+    },
+    {
+      "name": "ndc",
+      "columnType": "org.apache.logging.log4j.spi.ThreadContextStack"
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_3_yaml--panel" class="tabpanel" aria-labelledby="_tabs_3_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/cassandra.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Cassandra:
+  name: "CASSANDRA"
+  clusterName: "test-cluster"
+  keyspace: "test"
+  table: "logs"
+  <i class="conum" data-value="1"></i><b>(1)</b>
+  bufferSize: 10
+  batched: true
+  <i class="conum" data-value="2"></i><b>(2)</b>
+  SocketAddress:
+    - host: "server1"
+      port: "9042"
+    - host: "server2"
+      port: "9042"
+  <i class="conum" data-value="3"></i><b>(3)</b>
+  ColumnMapping:
+    - name: "id"
+      pattern: "%uuid{TIME}"
+      columnType: "java.util.UUID"
+    - name: "timestamp"
+      columnType: "java.util.Date"
+    - name: "level"
+      pattern: "%level"
+    - name: "marker"
+      pattern: "%marker"
+    - name: "logger"
+      pattern: "%logger"
+    - name: "message"
+      pattern: "%message"
+    - name: "mdc"
+      columnType: "org.apache.logging.log4j.spi.ThreadContextMap"
+    - name: "ndc"
+      columnType: "org.apache.logging.log4j.spi.ThreadContextStack"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_3_properties--panel" class="tabpanel" aria-labelledby="_tabs_3_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/cassandra.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = Cassandra
+appender.0.name = CASSANDRA
+appender.0.clusterName = test-cluster
+appender.0.keyspace = test
+appender.0.table = logs
+<i class="conum" data-value="1"></i><b>(1)</b>
+appender.0.bufferSize = 10
+appender.0.batched = true
+
+<i class="conum" data-value="2"></i><b>(2)</b>
+appender.0.addr[0].type = SocketAddress
+appender.0.addr[0].host = server1
+appender.0.addr[0].port = 9042
+
+appender.0.addr[1].type = SocketAddress
+appender.0.addr[1].host = server2
+appender.0.addr[1].port = 9042
+
+<i class="conum" data-value="3"></i><b>(3)</b>
+appender.0.col[0].type = ColumnMapping
+appender.0.col[0].name = uuid
+appender.0.col[0].pattern = %uuid{TIME}
+appender.0.col[0].columnType = java.util.UUID
+
+appender.0.col[1].type = ColumnMapping
+appender.0.col[1].name = timestamp
+appender.0.col[1].timestamp = java.util.Date
+
+appender.0.col[2].type = ColumnMapping
+appender.0.col[2].name = level
+appender.0.col[2].pattern = %level
+
+appender.0.col[3].type = ColumnMapping
+appender.0.col[3].name = marker
+appender.0.col[3].pattern = %marker
+
+appender.0.col[4].type = ColumnMapping
+appender.0.col[4].name = logger
+appender.0.col[4].pattern = %logger
+
+appender.0.col[5].type = ColumnMapping
+appender.0.col[5].name = message
+appender.0.col[5].pattern = %message
+
+appender.0.col[6].type = ColumnMapping
+appender.0.col[6].name = mdc
+appender.0.col[6].columnType = org.apache.logging.log4j.spi.ThreadContextMap
+
+appender.0.col[7].type = ColumnMapping
+appender.0.col[7].name = ndc
+appender.0.col[7].columnType = org.apache.logging.log4j.spi.ThreadContextStack</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Enables buffering.
+Messages are sent in batches of 10.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Multiple server addresses can be used.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>An example of column mapping.
+See <a href="#ColumnMapping">Column mapping</a> for more details.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The example above uses the following table schema:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sql hljs" data-lang="sql">CREATE TABLE logs
+(
+    id        timeuuid PRIMARY KEY,
+    level     text,
+    marker    text,
+    logger    text,
+    message   text,
+    timestamp timestamp,
+    mdc       map&lt;text,text&gt;,
+    ndc       list&lt;text&gt;
+);</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="JdbcAppender"><a class="anchor" href="#JdbcAppender"></a>JDBC Appender</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The JDBCAppender writes log events to a relational database table using standard JDBC.
+It can be configured to get JDBC connections from different <a href="#ConnectionSource">connection sources</a>.</p>
+</div>
+<div class="paragraph">
+<p>If batch statements are supported by the configured JDBC driver and
+<a href="#JdbcAppender-attr-bufferSize"><code>bufferSize</code></a>
+is configured to be a positive number, then log events will be batched.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The appender gets a new connection for each batch of log events.
+The connection source <strong>must</strong> be backed by a connection pool, otherwise the performance will suffer greatly.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<table id="JdbcAppender-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 6. JDBC Appender configuration attributes</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Required</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JdbcAppender-attr-name"></a>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the Appender.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JdbcAppender-attr-tableName"></a>tableName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the table to use.</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Optional</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JdbcAppender-attr-bufferSize"></a>bufferSize</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of log messages to batch before writing.
+If <code>0</code>, batching is disabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JdbcAppender-attr-ignoreExceptions"></a>ignoreExceptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>false</code>, logging exception will be forwarded to the caller of the logging statement.
+Otherwise, they will be ignored.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JdbcAppender-attr-immediateFail"></a>immediateFail</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When set to <code>true</code>, log events will not wait to try to reconnect and will fail immediately if the JDBC resources are not available.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JdbcAppender-attr-reconnectIntervalMillis"></a>reconnectIntervalMillis</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>long</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>5000</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If set to a value greater than 0, after an error, the <code>JdbcDatabaseManager</code> will attempt to reconnect to the database after waiting the specified number of milliseconds.</p>
+<p class="tableblock">If the reconnecting fails then an exception will be thrown and can be caught by the application if
+<a href="#JdbcAppender-attr-ignoreExceptions"><code>ignoreExceptions</code></a>
+is set to <code>false</code>.</p></td>
+</tr>
+</tbody>
+</table>
+<table id="JdbcAppender-elements" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 7. JDBC Appender nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Multiplicity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JdbcAppender-element-Filter"></a><a href="../filters.html" class="xref page"><code>Filter</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows filtering log events just before they are formatted and sent.</p>
+<p class="tableblock">See also <a href="../filters.html#appender-stage" class="xref page">appender filtering stage</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JdbcAppender-element-ColumnMapping"></a><a href="#ColumnMapping"><code>ColumnMapping</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or more</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>A list of <a href="#ColumnMapping">column mapping</a> configurations.
+The following database-specific restrictions apply:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the <a href="#ColumnMapping-attr-name"><code>name</code> attribute</a> must be a valid SQL identifier.</p>
+</li>
+<li>
+<p>the <a href="#ColumnMapping-attr-literal"><code>literal</code> attribute</a> must be a valid SQL term.</p>
+</li>
+<li>
+<p>the <a href="#ColumnMapping-attr-parameter"><code>parameter</code> attribute</a> must be a valid SQL term containing a <code>?</code> placeholder.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Required</strong>, unless <a href="#JdbcAppender-element-ColumnConfig"><code>ColumnConfig</code></a> is used.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JdbcAppender-element-ColumnConfig"></a><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-ColumnConfig" class="xref page"><code>ColumnConfig</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or more</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Deprecated</strong>: an older mechanism to define <a href="#JdbcAppender-element-ColumnMapping">column mappings</a>.</p>
+<p class="tableblock"><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-ColumnConfig" class="xref page">&#x1F4D6; Plugin reference for <code>ColumnConfig</code></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JdbcAppender-element-ConnectionSource"></a><a href="#ConnectionSource"><code>ConnectionSource</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>one</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It specifies how to retrieve JDBC
+<a href="https://docs.oracle.com/javase/8/docs/api/java/sql/Connection.html"><code>Connection</code></a>
+objects.</p>
+<p class="tableblock">See <a href="#ConnectionSource">Connection Sources</a> for more details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JdbcAppender-element-Layout"></a><a href="#JdbcAppender-MapMessage"><code>Layout</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An optional
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html"><code>Layout&lt;? extends Message&gt;</code></a>
+implementation that formats a log event as
+<a href="../messages.html" class="xref page">log <code>Message</code></a>.</p>
+<p class="tableblock">If supplied <code>MapMessage</code>s will be treated in a special way.</p>
+<p class="tableblock">See <a href="#JdbcAppender-MapMessage">Map Message handling</a> for more details.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-JdbcAppender" class="xref page">&#x1F4D6; Plugin reference for <code>JDBC</code></a></p>
+</div>
+<div class="sect2">
+<h3 id="ConnectionSource"><a class="anchor" href="#ConnectionSource"></a>Connection Sources</h3>
+<div class="paragraph">
+<p>When configuring the JDBC Appender, you must specify an implementation of
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/db/jdbc/ConnectionSource.html"><code>ConnectionSource</code></a>
+that the appender will use to get
+<a href="https://docs.oracle.com/javase/8/docs/api/java/sql/Connection.html"><code>Connection</code></a> objects.</p>
+</div>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-ConnectionSource" class="xref page">&#x1F4D6; Plugin reference for <code>ConnectionSource</code></a></p>
+</div>
+<div class="paragraph">
+<p>The following connection sources are available out-of-the-box:</p>
+</div>
+<div class="sect3">
+<h4 id="DataSourceConnectionSource"><a class="anchor" href="#DataSourceConnectionSource"></a><code>DataSource</code></h4>
+<div class="paragraph">
+<p>This connection source uses JNDI to locate a JDBC
+<a href="https://docs.oracle.com/javase/8/docs/api/javax/sql/DataSource.html"><code>DataSource</code></a>.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>As of Log4j <code>2.17.0</code> you need to enable the <code>DataSource</code> connection source <strong>explicitly</strong> by setting the
+<a href="../systemproperties.html#log4j2.enableJndiJdbc" class="xref page"><code>log4j2.enableJndiJdbc</code></a>
+configuration property to <code>true</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<table id="DataSourceConnectionSource-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 8. <code>DataSource</code> configuration attributes</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="DataSourceConnectionSource-attr-jndiName"></a>jndiName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/javax/naming/Name.html"><code>Name</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It specifies the JNDI name of a JDBC
+<a href="https://docs.oracle.com/javase/8/docs/api/javax/sql/DataSource.html"><code>DataSource</code></a>.</p>
+<p class="tableblock">Only the <code>java:</code> JNDI protocol is supported.</p>
+<p class="tableblock"><strong>Required</strong></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-DataSourceConnectionSource" class="xref page">&#x1F4D6; Plugin reference for <code>DataSource</code></a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="FactoryMethodConnectionSource"><a class="anchor" href="#FactoryMethodConnectionSource"></a><code>ConnectionFactory</code></h4>
+<div class="paragraph">
+<p>This connection source can use any factory method.
+The method must:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Be <code>public</code> and <code>static</code>.</p>
+</li>
+<li>
+<p>Have an empty parameter list.</p>
+</li>
+<li>
+<p>Return either
+<a href="https://docs.oracle.com/javase/8/docs/api/java/sql/Connection.html"><code>Connection</code></a>
+or
+<a href="https://docs.oracle.com/javase/8/docs/api/javax/sql/DataSource.html"><code>DataSource</code></a>.</p>
+</li>
+</ul>
+</div>
+<table id="FactoryMethodConnectionSource-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 9. <code>ConnectionFactory</code> configuration attributes</caption>
+<colgroup>
+<col style="width: 11.1111%;">
+<col style="width: 22.2222%;">
+<col style="width: 11.1111%;">
+<col style="width: 55.5556%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="FactoryMethodConnectionSource-attr-class"></a>class</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Class&lt;?&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The fully qualified class name of the class containing the factory method.</p>
+<p class="tableblock"><strong>Required</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="FactoryMethodConnectionSource-attr-method"></a>method</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the factory method.</p>
+<p class="tableblock"><strong>Required</strong></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-FactoryMethodConnectionSource" class="xref page">&#x1F4D6; Plugin reference for <code>ConnectionFactory</code></a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="DriverManagerConnectionSource"><a class="anchor" href="#DriverManagerConnectionSource"></a><code>DriverManager</code></h4>
+<div class="paragraph">
+<p>This connection source uses
+<a href="https://docs.oracle.com/javase/8/docs/api/java/sql/DriverManager.html"><code>DriverManager</code></a>
+to directly create connections using a JDBC
+<a href="https://docs.oracle.com/javase/8/docs/api/java/sql/Driver.html"><code>Driver</code></a>.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This configuration source is useful during development, but we don&#8217;t recommend it in production.
+Unless the JDBC driver provides connection pooling, the performance of the appender will suffer.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="#PoolingDriverConnectionSource"><code>PoolingDriver</code></a> for a variant of this connection source that uses a connection pool.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<table id="DriverManagerConnectionSource-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 10. <code>DriverManager</code> configuration attributes</caption>
+<colgroup>
+<col style="width: 11.1111%;">
+<col style="width: 22.2222%;">
+<col style="width: 11.1111%;">
+<col style="width: 55.5556%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="DriverManagerConnectionSource-attr-connectionString"></a>connectionString</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The driver-specific JDBC connection string.</p>
+<p class="tableblock"><strong>Required</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="DriverManagerConnectionSource-attr-driverClassName"></a>driverClassName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>autodetected</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The fully qualified class name of the JDBC driver to use.</p>
+<p class="tableblock">JDBC 4.0 drivers can be automatically detected by <code>DriverManager</code>.
+See
+<a href="https://docs.oracle.com/javase/8/docs/api/java/sql/DriverManager.html"><code>DriverManager</code></a>
+for more details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="DriverManagerConnectionSource-attr-userName"></a>userName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The username to use to connect to the database.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="DriverManagerConnectionSource-attr-password"></a>password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The password to use to connect to the database.</p></td>
+</tr>
+</tbody>
+</table>
+<table id="DriverManagerConnectionSource-elements" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 11. <code>DriverManager</code> nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Multiplicity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="DriverManagerConnectionSource-element-Property"></a><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property" class="xref page"><code>Property</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or more</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A list of key/value pairs to pass to <code>DriverManager</code>.</p>
+<p class="tableblock">If supplied, the <a href="#DriverManagerConnectionSource-attr-userName"><code>userName</code></a> and <a href="#DriverManagerConnectionSource-attr-password"><code>password</code></a> attributes will be ignored.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-DriverManagerConnectionSource" class="xref page">&#x1F4D6; Plugin reference for <code>DriverManager</code></a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="PoolingDriverConnectionSource"><a class="anchor" href="#PoolingDriverConnectionSource"></a><code>PoolingDriver</code></h4>
+<div class="paragraph">
+<p>The <code>PoolingDriver</code> uses
+<a href="https://commons.apache.org/proper/commons-dbcp/">Apache Commons DBCP 2</a>
+to configure a JDBC connection pool.</p>
+</div>
+<table id="PoolingDriverConnectionSource-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 12. <code>PoolingDriver</code> configuration attributes</caption>
+<colgroup>
+<col style="width: 11.1111%;">
+<col style="width: 22.2222%;">
+<col style="width: 11.1111%;">
+<col style="width: 55.5556%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PoolingDriverConnectionSource-attr-connectionString"></a>connectionString</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The driver-specific JDBC connection string.</p>
+<p class="tableblock"><strong>Required</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PoolingDriverConnectionSource-attr-driverClassName"></a>driverClassName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>autodetected</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The fully qualified class name of the JDBC driver to use.</p>
+<p class="tableblock">JDBC 4.0 drivers can be automatically detected by <code>DriverManager</code>.
+See
+<a href="https://docs.oracle.com/javase/8/docs/api/java/sql/DriverManager.html"><code>DriverManager</code></a>
+for more details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PoolingDriverConnectionSource-attr-userName"></a>userName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The username to use to connect to the database.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PoolingDriverConnectionSource-attr-password"></a>password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The password to use to connect to the database.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PoolingDriverConnectionSource-attr-poolName"></a>poolName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>example</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<table id="PoolingDriverConnectionSource-elements" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 13. <code>PoolingDriver</code> nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Multiplicity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PoolingDriverConnectionSource-element-Property"></a><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property" class="xref page"><code>Property</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or more</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A list of key/value pairs to pass to <code>DriverManager</code>.</p>
+<p class="tableblock">If supplied, the <a href="#DriverManagerConnectionSource-attr-userName"><code>userName</code></a> and <a href="#DriverManagerConnectionSource-attr-password"><code>password</code></a> attributes will be ignored.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PoolingDriverConnectionSource-element-PoolingConnectionFactoryConfig"></a><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-core-appender-db-jdbc-PoolableConnectionFactoryConfig" class="xref page"><code>PoolableConnectionFactory</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows finely tuning the configuration of the DBCP 2 connection pool.
+The available parameters are the same as those provided by DBCP 2.
+See
+<a href="https://commons.apache.org/proper/commons-dbcp/configuration.html">DBCP 2 configuration</a> for more details.</p>
+<p class="tableblock"><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-core-appender-db-jdbc-PoolableConnectionFactoryConfig" class="xref page">&#x1F4D6; Plugin reference for <code>PoolableConnectionFactory</code></a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Additional runtime dependencies are required for using <code>PoolingDriver</code>:</p>
+</div>
+<div id="_tabs_4" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_4_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_4_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_4_maven--panel" class="tabpanel" aria-labelledby="_tabs_4_maven">
+<div class="paragraph">
+<p>We assume you use <a href="../../components.html#log4j-bom" class="xref page"><code>log4j-bom</code></a> for dependency management.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+  &lt;artifactId&gt;log4j-jdbc-dbcp2&lt;/artifactId&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_4_gradle--panel" class="tabpanel" aria-labelledby="_tabs_4_gradle">
+<div class="paragraph">
+<p>We assume you use <a href="../../components.html#log4j-bom" class="xref page"><code>log4j-bom</code></a> for dependency management.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-jdbc-dbcp2'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-core-appender-db-jdbc-PoolingDriverConnectionSource" class="xref page">&#x1F4D6; Plugin reference for <code>PoolingDriver</code></a></p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="JdbcAppender-MapMessage"><a class="anchor" href="#JdbcAppender-MapMessage"></a>Map Message handling</h3>
+<div class="paragraph">
+<p>If the optional <a href="#JdbcAppender-element-Layout">nested element of type <code>Layout&lt;? Extends Message&gt;</code></a> is provided, log events containing messages of type
+<a href="../messages.html#MapMessage" class="xref page"><code>MapMessage</code></a>
+will be treated specially.
+For each <a href="#ColumnMapping">column mapping</a> (except those containing literals) the <a href="#ColumnMapping-attr-source"><code>source</code></a> attribute will be used as key to the value in <code>MapMessage</code> that will be stored in column <a href="#ColumnMapping-attr-name"><code>name</code></a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="JdbcAppender-examples"><a class="anchor" href="#JdbcAppender-examples"></a>Configuration examples</h3>
+<div class="paragraph">
+<p>Here is an example JDBC Appender configuration:</p>
+</div>
+<div id="_tabs_5" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_5_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_5_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_5_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_5_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_5_xml--panel" class="tabpanel" aria-labelledby="_tabs_5_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/jdbc.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;JDBC name="JDBC"
+      tableName="logs"
+      bufferSize="10"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+  <i class="conum" data-value="2"></i><b>(2)</b>
+  &lt;DataSource jndiName="java:comp/env/jdbc/logging"/&gt;
+  <i class="conum" data-value="3"></i><b>(3)</b>
+  &lt;ColumnMapping name="id"
+                 pattern="%uuid{TIME}"
+                 columnType="java.util.UUID"/&gt;
+  &lt;ColumnMapping name="timestamp" columnType="java.util.Date"/&gt;
+  &lt;ColumnMapping name="level" pattern="%level"/&gt;
+  &lt;ColumnMapping name="marker" pattern="%marker"/&gt;
+  &lt;ColumnMapping name="logger" pattern="%logger"/&gt;
+  &lt;ColumnMapping name="message" pattern="%message"/&gt;
+  &lt;ColumnMapping name="mdc"
+                 columnType="org.apache.logging.log4j.spi.ThreadContextMap"/&gt;
+  &lt;ColumnMapping name="ndc"
+                 columnType="org.apache.logging.log4j.spi.ThreadContextStack"/&gt;
+&lt;/JDBC&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_5_json--panel" class="tabpanel" aria-labelledby="_tabs_5_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/jdbc.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"JDBC": {
+  "name": "JDBC",
+  "tableName": "logs",
+  <i class="conum" data-value="1"></i><b>(1)</b>
+  "bufferSize": 10,
+  <i class="conum" data-value="2"></i><b>(2)</b>
+  "DataSource": {
+    "jndiName": "java:comp/env/jdbc/logging"
+  },
+  <i class="conum" data-value="3"></i><b>(3)</b>
+  "ColumnMapping": [
+    {
+      "name": "id",
+      "pattern": "%uuid{TIME}",
+      "columnType": "java.util.UUID"
+    },
+    {
+      "name": "timestamp",
+      "columnType": "java.util.Date"
+    },
+    {
+      "name": "level",
+      "pattern": "%level"
+    },
+    {
+      "name": "marker",
+      "pattern": "%marker"
+    },
+    {
+      "name": "logger",
+      "pattern": "%logger"
+    },
+    {
+      "name": "message",
+      "pattern": "%m"
+    },
+    {
+      "name": "mdc",
+      "columnType": "org.apache.logging.log4j.spi.ThreadContextMap"
+    },
+    {
+      "name": "ndc",
+      "columnType": "org.apache.logging.log4j.spi.ThreadContextStack"
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_5_yaml--panel" class="tabpanel" aria-labelledby="_tabs_5_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/jdbc.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">JDBC:
+  name: "JDBC"
+  tableName: "logs"
+  <i class="conum" data-value="1"></i><b>(1)</b>
+  bufferSize: 10
+  <i class="conum" data-value="2"></i><b>(2)</b>
+  DataSource:
+    jndiName: "java:comp/env/jdbc/logging"
+  <i class="conum" data-value="3"></i><b>(3)</b>
+  ColumnMapping:
+    - name: "id"
+      pattern: "%uuid{TIME}"
+      columnType: "java.util.UUID"
+    - name: "timestamp"
+      columnType: "java.util.Date"
+    - name: "level"
+      pattern: "%level"
+    - name: "marker"
+      pattern: "%marker"
+    - name: "logger"
+      pattern: "%logger"
+    - name: "message"
+      pattern: "%message"
+    - name: "mdc"
+      columnType: "org.apache.logging.log4j.spi.ThreadContextMap"
+    - name: "ndc"
+      columnType: "org.apache.logging.log4j.spi.ThreadContextStack"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_5_properties--panel" class="tabpanel" aria-labelledby="_tabs_5_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/jdbc.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = JDBC
+appender.0.name = JDBC
+appender.0.tableName = logs
+<i class="conum" data-value="1"></i><b>(1)</b>
+appender.0.bufferSize = 10
+
+<i class="conum" data-value="2"></i><b>(2)</b>
+appender.0.ds.type = DataSource
+appender.0.ds.jndiName = java:comp/env/jdbc/logging
+
+<i class="conum" data-value="3"></i><b>(3)</b>
+appender.0.col[0].type = ColumnMapping
+appender.0.col[0].name = uuid
+appender.0.col[0].pattern = %uuid{TIME}
+appender.0.col[0].columnType = java.util.UUID
+
+appender.0.col[1].type = ColumnMapping
+appender.0.col[1].name = timestamp
+appender.0.col[1].timestamp = java.util.Date
+
+appender.0.col[2].type = ColumnMapping
+appender.0.col[2].name = level
+appender.0.col[2].pattern = %level
+
+appender.0.col[3].type = ColumnMapping
+appender.0.col[3].name = marker
+appender.0.col[3].pattern = %marker
+
+appender.0.col[4].type = ColumnMapping
+appender.0.col[4].name = logger
+appender.0.col[4].pattern = %logger
+
+appender.0.col[5].type = ColumnMapping
+appender.0.col[5].name = message
+appender.0.col[5].pattern = %message
+
+appender.0.col[6].type = ColumnMapping
+appender.0.col[6].name = mdc
+appender.0.col[6].columnType = org.apache.logging.log4j.spi.ThreadContextMap
+
+appender.0.col[7].type = ColumnMapping
+appender.0.col[7].name = ndc
+appender.0.col[7].columnType = org.apache.logging.log4j.spi.ThreadContextStack</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Enables buffering.
+Messages are sent in batches of 10.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>A <a href="#DataSourceConnectionSource"><code>JNDI</code> data source</a> is used.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>An example of column mapping.
+See <a href="#ColumnMapping">Column mapping</a> for more details.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The example above uses the following table schema:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sql hljs" data-lang="sql">CREATE TABLE logs
+(
+    id        BIGINT PRIMARY KEY,
+    level     VARCHAR,
+    marker    VARCHAR,
+    logger    VARCHAR,
+    message   VARCHAR,
+    timestamp TIMESTAMP,
+    mdc       VARCHAR,
+    ndc       VARCHAR
+);</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="JpaAppender"><a class="anchor" href="#JpaAppender"></a>JPA Appender</h2>
+<div class="sectionbody">
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>This appender is planned to be removed in the next major release!</strong>
+If you are using this library, please get in touch with the Log4j maintainers using <a href="https://logging.apache.org/support.html">the official support channels</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The JPA Appender writes log events to a relational database table using the
+<a href="https://jakarta.ee/specifications/persistence/2.2/">Jakarta Persistence API 2.2</a>.
+To use the appender, you need to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>configure your JPA persistence unit.
+See <a href="#JpaAppender-persistence">Persistence configuration</a> below.</p>
+</li>
+<li>
+<p>configure the JPA Appender.
+See <a href="#JpaAppender-configuration">Appender configuration</a> below.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Due to breaking changes in the underlying API, the JPA Appender cannot be used with Jakarta Persistence API 3.0 or later.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="JpaAppender-persistence"><a class="anchor" href="#JpaAppender-persistence"></a>Persistence configuration</h3>
+<div class="paragraph">
+<p>To store log events using JPA, you need to implement a JPA Entity that extends the
+<a href="../../javadoc/log4j-jpa/org/apache/logging/log4j/core/appender/db/jpa/AbstractLogEventWrapperEntity.html"><code>AbstractLogEventWrapperEntity</code></a>
+class.
+To help you with the implementation, Log4j provides a
+<a href="../../javadoc/log4j-jpa/org/apache/logging/log4j/core/appender/db/jpa/BasicLogEventEntity.html"><code>BasicLogEventEntity</code></a>
+class that only lacks an identity field.</p>
+</div>
+<div class="paragraph">
+<p>A simple <code>AbstractLogEventWrapperEntity</code> implementation might look like:</p>
+</div>
+<div class="listingblock">
+<div class="title">Snippet from a <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/LogEventEntity.java"><code>LogEventEntity.java</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Entity
+@Table(name = "log")
+public class LogEventEntity extends BasicLogEventEntity {
+    private static final long serialVersionUID = 1L;
+    private long id;
+    <i class="conum" data-value="1"></i><b>(1)</b>
+    public LogEventEntity() {}
+    <i class="conum" data-value="2"></i><b>(2)</b>
+    public LogEventEntity(final LogEvent wrapped) {
+        super(wrapped);
+    }
+    <i class="conum" data-value="3"></i><b>(3)</b>
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    public long getId() {
+        return id;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For performance reasons, we recommend creating a <strong>separate</strong> persistence unit for logging.
+This allows you to optimize the unit for logging purposes.
+The definition of the persistence unit should look like the example below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+                                 http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+             version="2.1"&gt;
+  &lt;persistence-unit name="logging" transaction-type="RESOURCE_LOCAL"&gt;
+    <i class="conum" data-value="1"></i><b>(1)</b>
+    &lt;provider&gt;org.eclipse.persistence.jpa.PersistenceProvider&lt;/provider&gt;
+    <i class="conum" data-value="2"></i><b>(2)</b>
+    &lt;non-jta-data-source&gt;jdbc/logging&lt;/non-jta-data-source&gt;
+    <i class="conum" data-value="3"></i><b>(3)</b>
+    &lt;class&gt;
+      org.apache.logging.log4j.core.appender.db.jpa.converter.ContextMapAttributeConverter
+    &lt;/class&gt;
+    &lt;class&gt;
+      org.apache.logging.log4j.core.appender.db.jpa.converter.ContextStackAttributeConverter
+    &lt;/class&gt;
+    &lt;class&gt;
+      org.apache.logging.log4j.core.appender.db.jpa.converter.InstantAttributeConverter
+    &lt;/class&gt;
+    &lt;class&gt;
+      org.apache.logging.log4j.core.appender.db.jpa.converter.LevelAttributeConverter
+    &lt;/class&gt;
+    &lt;class&gt;
+      org.apache.logging.log4j.core.appender.db.jpa.converter.MarkerAttributeConverter
+    &lt;/class&gt;
+    &lt;class&gt;
+      org.apache.logging.log4j.core.appender.db.jpa.converter.MessageAttributeConverter
+    &lt;/class&gt;
+    &lt;class&gt;
+      org.apache.logging.log4j.core.appender.db.jpa.converter.StackTraceElementAttributeConverter
+    &lt;/class&gt;
+    &lt;class&gt;
+      org.apache.logging.log4j.core.appender.db.jpa.converter.ThrowableAttributeConverter
+    &lt;/class&gt;
+    <i class="conum" data-value="4"></i><b>(4)</b>
+    &lt;class&gt;
+      com.example.logging.LogEventEntity
+    &lt;/class&gt;
+    <i class="conum" data-value="5"></i><b>(5)</b>
+    &lt;shared-cache-mode&gt;NONE&lt;/shared-cache-mode&gt;
+  &lt;/persistence-unit&gt;
+&lt;/persistence&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Specify you JPA provider.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>A non-JTA source should be used for performance.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>If your log event entity extends <code>BasicLogEventEntity</code>, you need to declare these converters.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Declare your log event entity.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Cache sharing should be set to <code>NONE</code>.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="JpaAppender-configuration"><a class="anchor" href="#JpaAppender-configuration"></a>Appender configuration</h3>
+<div class="paragraph">
+<p>The JPA appender supports these configuration options:</p>
+</div>
+<table id="JpaAppender-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 14. JPA Appender configuration attributes</caption>
+<colgroup>
+<col style="width: 11.1111%;">
+<col style="width: 22.2222%;">
+<col style="width: 11.1111%;">
+<col style="width: 55.5556%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Required</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JpaAppender-attr-name"></a>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the Appender.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JpaAppender-attr-tableName"></a>tableName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the table to use.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JpaAppender-attr-persistenceUnit"></a>persistenceUnitName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the persistence unit to use.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JpaAppender-attr-entityClassName"></a>entityClassName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Class&lt;?&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The fully qualified name of the entity class to use.</p>
+<p class="tableblock">The type must extend
+<a href="../../javadoc/log4j-jpa/org/apache/logging/log4j/core/appender/db/jpa/AbstractLogEventWrapperEntity.html"><code>AbstractLogEventWrapperEntity</code></a>.</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Optional</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JpaAppender-attr-bufferSize"></a>bufferSize</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of log messages to batch before writing.
+If <code>0</code>, batching is disabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JpaAppender-attr-ignoreExceptions"></a>ignoreExceptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>false</code>, logging exception will be forwarded to the caller of the logging statement.
+Otherwise, they will be ignored.</p></td>
+</tr>
+</tbody>
+</table>
+<table id="JpaAppender-elements" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 15. JPA Appender nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Multiplicity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JpaAppender-element-Filter"></a><a href="../filters.html" class="xref page"><code>Filter</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows filtering log events just before they are formatted and sent.</p>
+<p class="tableblock">See also <a href="../filters.html#appender-stage" class="xref page">appender filtering stage</a>.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Additional runtime dependencies are required for using the JPA Appender:</p>
+</div>
+<div id="_tabs_6" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_6_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_6_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_6_maven--panel" class="tabpanel" aria-labelledby="_tabs_6_maven">
+<div class="paragraph">
+<p>We assume you use <a href="../../components.html#log4j-bom" class="xref page"><code>log4j-bom</code></a> for dependency management.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+  &lt;artifactId&gt;log4j-jpa&lt;/artifactId&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_6_gradle--panel" class="tabpanel" aria-labelledby="_tabs_6_gradle">
+<div class="paragraph">
+<p>We assume you use <a href="../../components.html#log4j-bom" class="xref page"><code>log4j-bom</code></a> for dependency management.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-jpa'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-jpa_org-apache-logging-log4j-core-appender-db-jpa-JpaAppender" class="xref page">&#x1F4D6; Plugin reference for <code>JPA</code></a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="JpaAppender-examples"><a class="anchor" href="#JpaAppender-examples"></a>Configuration examples</h3>
+<div class="paragraph">
+<p>Using the persistence unit from section <a href="#JpaAppender-persistence">Persistence configuration</a>, the JPA appender can be easily configured as:</p>
+</div>
+<div id="_tabs_7" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_7_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_7_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_7_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_7_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_7_xml--panel" class="tabpanel" aria-labelledby="_tabs_7_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/jpa.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;JPA name="JPA"
+     persistenceUnitName="logging"
+     entityClassName="com.example.logging.LogEventEntity"/&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_7_json--panel" class="tabpanel" aria-labelledby="_tabs_7_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/jpa.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"JPA": {
+  "name": "JPA",
+  "persistenceUnitName": "logging",
+  "entityClassName": "com.example.logging.LogEventEntity"
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_7_yaml--panel" class="tabpanel" aria-labelledby="_tabs_7_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/jpa.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">JPA:
+  name: "JPA"
+  persistenceUnitName: "logging"
+  entityClassName: "com.example.logging.LogEventEntity"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_7_properties--panel" class="tabpanel" aria-labelledby="_tabs_7_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/jpa.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = JPA
+appender.0.name = JPA
+appender.0.persistenceUnitName = logging
+appender.0.entityClassName = com.example.logging.LogEventEntity</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="NoSqlAppender"><a class="anchor" href="#NoSqlAppender"></a>NoSQL Appender</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The NoSQL Appender writes log events to a
+<a href="https://en.wikipedia.org/wiki/Document-oriented_database#Implementations">document-oriented NoSQL database</a>
+using an internal lightweight provider interface.
+It supports the following configuration options:</p>
+</div>
+<table id="NoSqlAppender-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 16. NoSQL Appender configuration attributes</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Required</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="NoSqlAppender-attr-name"></a>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the Appender.</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Optional</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="NoSqlAppender-attr-bufferSize"></a>bufferSize</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of log messages to batch before writing to the database.
+If <code>0</code>, batching is disabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="NoSqlAppender-attr-ignoreExceptions"></a>ignoreExceptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>false</code>, logging exception will be forwarded to the caller of the logging statement.
+Otherwise, they will be ignored.</p></td>
+</tr>
+</tbody>
+</table>
+<table id="NoSqlAppender-elements" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 17. NoSQL Appender nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Multiplicity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="NoSqlAppender-element-Filter"></a><a href="../filters.html" class="xref page"><code>Filter</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows filtering log events just before they are formatted and sent.</p>
+<p class="tableblock">See also <a href="../filters.html#appender-stage" class="xref page">appender filtering stage</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="NoSqlAppender-element-KeyValuePair"></a><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-util-KeyValuePair" class="xref page"><code>KeyValuePair</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Zero or more</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Adds a simple key/value field to the NoSQL object.</p>
+</div>
+<div class="paragraph">
+<p>The <code>value</code> attribute of the pair supports
+<a href="../configuration.html#lazy-property-substitution" class="xref page">runtime property substitution</a>
+using the
+<a href="../lookups.html#event-context" class="xref page">current event as context</a>.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="NoSqlAppender-element-Layout"></a><a href="#NoSqlAppender-formatting"><code>Layout</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An optional
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html"><code>Layout&lt;? extends MapMessage&gt;</code></a>
+implementation that formats a log event as
+<a href="../messages.html#MapMessage" class="xref page"><code>MapMessage</code></a>.</p>
+<p class="tableblock">See <a href="#NoSqlAppender-formatting">Formatting</a> for more details.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-nosql-NoSqlAppender" class="xref page">&#x1F4D6; Plugin reference for <code>NoSQL</code></a></p>
+</div>
+<div class="sect2">
+<h3 id="NoSqlAppender-formatting"><a class="anchor" href="#NoSqlAppender-formatting"></a>Formatting</h3>
+<div class="paragraph">
+<p>This appender transforms log events into NoSQL documents in two ways:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If the optional <a href="#NoSqlAppender-element-Layout"><code>Layout</code></a> configuration element is provided, the
+<a href="../messages.html#MapMessage" class="xref page"><code>MapMessage</code></a> returned by the layout will be converted into its NoSQL document.</p>
+</li>
+<li>
+<p>Otherwise, a default conversion will be applied.
+You enhance the format with additional top level key/value pairs using nested
+<a href="#NoSqlAppender-element-KeyValuePair"><code>KeyValuePair</code></a> configuration elements.</p>
+<details>
+<summary class="title">Click to see an example of default log event formatting</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "level": "WARN",
+  "loggerName": "com.example.application.MyClass",
+  "message": "Something happened that you might want to know about.",
+  "source": {
+    "className": "com.example.application.MyClass",
+    "methodName": "exampleMethod",
+    "fileName": "MyClass.java",
+    "lineNumber": 81
+  },
+  "marker": {
+    "name": "SomeMarker",
+    "parent": {
+      "name": "SomeParentMarker"
+    }
+  },
+  "threadName": "Thread-1",
+  "millis": 1368844166761,
+  "date": "2013-05-18T02:29:26.761Z",
+  "thrown": {
+    "type": "java.sql.SQLException",
+    "message": "Could not insert record. Connection lost.",
+    "stackTrace": [
+      {
+        "className": "org.example.sql.driver.PreparedStatement$1",
+        "methodName": "responder",
+        "fileName": "PreparedStatement.java",
+        "lineNumber": 1049
+      },
+      {
+        "className": "org.example.sql.driver.PreparedStatement",
+        "methodName": "executeUpdate",
+        "fileName": "PreparedStatement.java",
+        "lineNumber": 738
+      },
+      {
+        "className": "com.example.application.MyClass",
+        "methodName": "exampleMethod",
+        "fileName": "MyClass.java",
+        "lineNumber": 81
+      },
+      {
+        "className": "com.example.application.MainClass",
+        "methodName": "main",
+        "fileName": "MainClass.java",
+        "lineNumber": 52
+      }
+    ],
+    "cause": {
+      "type": "java.io.IOException",
+      "message": "Connection lost.",
+      "stackTrace": [
+        {
+          "className": "java.nio.channels.SocketChannel",
+          "methodName": "write",
+          "fileName": null,
+          "lineNumber": -1
+        },
+        {
+          "className": "org.example.sql.driver.PreparedStatement$1",
+          "methodName": "responder",
+          "fileName": "PreparedStatement.java",
+          "lineNumber": 1032
+        },
+        {
+          "className": "org.example.sql.driver.PreparedStatement",
+          "methodName": "executeUpdate",
+          "fileName": "PreparedStatement.java",
+          "lineNumber": 738
+        },
+        {
+          "className": "com.example.application.MyClass",
+          "methodName": "exampleMethod",
+          "fileName": "MyClass.java",
+          "lineNumber": 81
+        },
+        {
+          "className": "com.example.application.MainClass",
+          "methodName": "main",
+          "fileName": "MainClass.java",
+          "lineNumber": 52
+        }
+      ]
+    }
+  },
+  "contextMap": {
+    "ID": "86c3a497-4e67-4eed-9d6a-2e5797324d7b",
+    "username": "JohnDoe"
+  },
+  "contextStack": [
+    "topItem",
+    "anotherItem",
+    "bottomItem"
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+</details>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="NoSqlProvider"><a class="anchor" href="#NoSqlProvider"></a>Providers</h3>
+<div class="paragraph">
+<p>The NoSQL Appender only handles the conversion of log events into NoSQL documents, and it delegates database-specific tasks to a NoSQL provider.
+NoSQL providers are Log4j plugins that implement the
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/nosql/NoSqlProvider.html"><code>NoSqlProvider</code></a>
+interface.
+Log4j Core currently provides the following providers:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Multiple providers for different versions of the
+<a href="https://www.mongodb.com/">MongoDB database</a>.
+See <a href="#NoSQLProvider-MongoDB">MongoDB Providers</a> below for more details.</p>
+</li>
+<li>
+<p>A provider for the
+<a href="https://couchdb.apache.org/">Apache CouchDB database</a>.
+See <a href="#CouchDbProvider">Apache CouchDB provider</a> below for more details.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="NoSQLProvider-MongoDB"><a class="anchor" href="#NoSQLProvider-MongoDB"></a>MongoDB Providers</h3>
+<div class="paragraph">
+<p>Starting with version 2.11.0, Log4j supplies providers for the
+<a href="https://www.mongodb.com/">MongoDB</a>
+NoSQL database engine, based on the
+<a href="https://www.mongodb.com/docs/drivers/java/sync/current/">MongoDB synchronous Java driver</a>.
+The choice of the provider to use depends on:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the major version of the MongoDB Java driver your application uses: Log4j supports all major versions starting from version 2.</p>
+</li>
+<li>
+<p>the type of driver API used: either the <em>Legacy API</em> or the <em>Modern API</em>.
+See <a href="https://www.mongodb.com/docs/drivers/java/sync/current/legacy/">MongoDB documentation</a>
+for the difference between APIs.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The list of dependencies of your application provides a hint as to which driver API your application is using.
+If your application contains any one of these dependencies, it might use the <strong>Legacy API</strong>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>org.mongodb:mongo-java-driver</code></p>
+</li>
+<li>
+<p><code>org.mongodb:mongodb-driver-legacy</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If you application only uses <code>org.mongodb:mongodb-driver-sync</code>, it uses the <strong>Modern API</strong>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The version of the MongoDB Java driver is not the same as the version of the MongoDB server.
+See
+<a href="https://www.mongodb.com/docs/drivers/java/sync/current/compatibility/">MongoDB compatibility matrix</a>
+for more information.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In order to use a Log4j MongoDB appender you need to add the following dependencies to your application:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 18. MongoDB providers compatibility table</caption>
+<colgroup>
+<col style="width: 18.1818%;">
+<col style="width: 18.1818%;">
+<col style="width: 18.1818%;">
+<col style="width: 45.4546%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Driver version</th>
+<th class="tableblock halign-left valign-top">Driver API</th>
+<th class="tableblock halign-left valign-top">Log4j artifact</th>
+<th class="tableblock halign-left valign-top">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.x</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Legacy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-mongodb2"><code>log4j-mongodb2</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reached end-of-support.</p>
+<p class="tableblock">Last released version: <code>2.12.4</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a id="NoSQLAppenderMongoDB3"></a><code>3.x</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Legacy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-mongodb3"><code>log4j-mongodb3</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reached end-of-support.</p>
+<p class="tableblock">Last released version: <code>2.23.1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>4.x</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Modern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-mongodb4"><code>log4j-mongodb4</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>5.x</code> or later</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Modern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-mongodb"><code>log4j-mongodb</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you are note sure, which implementation to choose, <code>log4j-mongodb</code> is the recommended choice.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="MongoDbProvider"><a class="anchor" href="#MongoDbProvider"></a>MongoDb Provider (current)</h4>
+<div class="paragraph">
+<p>The <code>MongoDb</code> provider is based on the
+<a href="https://www.mongodb.com/docs/drivers/java/sync/current/">current version of the MongoDB Java driver</a>.
+It supports the following configuration options:</p>
+</div>
+<table id="MongoDbProvider-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 19. MongoDb Provider configuration attributes</caption>
+<colgroup>
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 22.2222%;">
+<col style="width: 55.5556%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="MongoDbProvider-attr-connection"></a>connection</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://mongodb.github.io/mongo-java-driver/5.1/apidocs/mongodb-driver-core/com/mongodb/ConnectionString.html"><code>ConnectionString</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It specifies the connection URI used to reach the server.</p>
+<p class="tableblock">See
+<a href="https://www.mongodb.com/docs/drivers/java/sync/current/fundamentals/connection/connect/#connection-uri">Connection URI documentation</a>
+for its format.</p>
+<p class="tableblock"><strong>Required</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="MongoDbProvider-attr-capped"></a>capped</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code>, a
+<a href="https://www.mongodb.com/docs/manual/core/capped-collections/">capped collection</a>
+will be used.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="MongoDbProvider-attr-collectionSize"></a>collectionSize</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>long</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>512 MiB</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It specifies the capped collection size of bytes.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Additional runtime dependencies are required to use the <code>MongoDb</code> provider:</p>
+</div>
+<div id="_tabs_8" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_8_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_8_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_8_maven--panel" class="tabpanel" aria-labelledby="_tabs_8_maven">
+<div class="paragraph">
+<p>We assume you use <a href="../../components.html#log4j-bom" class="xref page"><code>log4j-bom</code></a> for dependency management.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+  &lt;artifactId&gt;log4j-mongodb&lt;/artifactId&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_8_gradle--panel" class="tabpanel" aria-labelledby="_tabs_8_gradle">
+<div class="paragraph">
+<p>We assume you use <a href="../../components.html#log4j-bom" class="xref page"><code>log4j-bom</code></a> for dependency management.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-mongodb4'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider" class="xref page">&#x1F4D6; Plugin reference for <code>MongoDb</code></a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="MongoDb4Provider"><a class="anchor" href="#MongoDb4Provider"></a>MongoDb4 Provider (deprecated)</h4>
+<div class="paragraph">
+<p>The <code>log4j-mongodb4</code> module is deprecated in favor of the <a href="#MongoDbProvider">current <code>MongoDB</code> provider</a>.
+It supports the following configuration attributes:</p>
+</div>
+<table id="MongoDb4Provider-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 20. MongoDb4 provider configuration attributes</caption>
+<colgroup>
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 22.2222%;">
+<col style="width: 55.5556%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="MongoDb4Provider-attr-connection"></a>connection</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://mongodb.github.io/mongo-java-driver/5.1/apidocs/mongodb-driver-core/com/mongodb/ConnectionString.html"><code>ConnectionString</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It specifies the connection URI used to reach the server.</p>
+<p class="tableblock">See
+<a href="https://www.mongodb.com/docs/drivers/java/sync/current/fundamentals/connection/connect/#connection-uri">Connection URI documentation</a>
+for its format.</p>
+<p class="tableblock"><strong>Required</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="MongoDb4Provider-attr-capped"></a>capped</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code>, a
+<a href="https://www.mongodb.com/docs/manual/core/capped-collections/">capped collection</a>
+will be used.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="MongoDb4Provider-attr-collectionSize"></a>collectionSize</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>long</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>512 MiB</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It specifies the capped collection size of bytes.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Additional runtime dependencies are required to use the <code>MongoDb4</code> provider:</p>
+</div>
+<div id="_tabs_9" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_9_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_9_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_9_maven--panel" class="tabpanel" aria-labelledby="_tabs_9_maven">
+<div class="paragraph">
+<p>We assume you use <a href="../../components.html#log4j-bom" class="xref page"><code>log4j-bom</code></a> for dependency management.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+  &lt;artifactId&gt;log4j-mongodb4&lt;/artifactId&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_9_gradle--panel" class="tabpanel" aria-labelledby="_tabs_9_gradle">
+<div class="paragraph">
+<p>We assume you use <a href="../../components.html#log4j-bom" class="xref page"><code>log4j-bom</code></a> for dependency management.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-mongodb4'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-mongodb4-MongoDb4Provider" class="xref page">&#x1F4D6; Plugin reference for <code>MongoDb4</code></a></p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="CouchDbProvider"><a class="anchor" href="#CouchDbProvider"></a>Apache CouchDB provider</h3>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>This provider is planned to be removed in the next major release!</strong>
+If you are using this library, please get in touch with the Log4j maintainers using <a href="https://logging.apache.org/support.html">the official support channels</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The <code>CouchDb</code> Provider allows using the <a href="#NoSqlAppender">NoSQL Appender</a> with an
+<a href="https://couchdb.apache.org/">Apache CouchDB database</a>.
+The provider can be configured by:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>either providing some <a href="#CouchDbProvider-attr-standard">standard configuration attributes</a>,</p>
+</li>
+<li>
+<p>or providing a <a href="#CouchDbProvider-attr-factory">factory method</a>.</p>
+</li>
+</ul>
+</div>
+<table id="CouchDbProvider-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 21. CouchDb provider configuration attributes</caption>
+<colgroup>
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 22.2222%;">
+<col style="width: 55.5556%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock"><a id="CouchDbProvider-attr-standard"></a>Standard configuration attributes</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="CouchDbProvider-attr-protocol"></a>protocol</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>enumeration</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>http</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>It specifies the protocol to use to connect to the server.
+Can be one of:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>http</code></p>
+</li>
+<li>
+<p><code>https</code></p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="CouchDbProvider-attr-server"></a>server</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>localhost</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The host name of the CouchDB server.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="CouchDbProvider-attr-port"></a>port</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>80</code> (<code>http</code>)
+<code>443</code> (<code>https</code>)</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It specifies the TCP port to use.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="CouchDbProvider-attr-databaseName"></a>databaseName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the database to connect to.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="CouchDbProvider-attr-username"></a>username</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The username for authentication.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="CouchDbProvider-attr-password"></a>password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The password for authentication.</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock"><a id="CouchDbProvider-attr-factory"></a>Factory method configuration attributes</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="CouchDbProvider-attr-factoryClassName"></a>factoryClassName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Class&lt;?&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The fully qualified class name that contains a factory method that returns either a
+<a href="https://javadoc.io/static/org.lightcouch/lightcouch/0.2.0/org/lightcouch/CouchDbClient.html"><code>CouchDbClient</code></a>
+or
+<a href="https://javadoc.io/static/org.lightcouch/lightcouch/0.2.0/org/lightcouch/CouchDbProperties.html"><code>CouchDbProperties</code></a>
+object.</p>
+</div>
+<div class="paragraph">
+<p>The class must be public.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="CouchDbProvider-attr-factoryMethodName"></a>factoryMethodName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The name of the factory method.
+The method:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Must be <code>public</code> and <code>static</code>.</p>
+</li>
+<li>
+<p>Have an empty parameter list.</p>
+</li>
+<li>
+<p>Returns either a
+<a href="https://javadoc.io/static/org.lightcouch/lightcouch/0.2.0/org/lightcouch/CouchDbClient.html"><code>CouchDbClient</code></a>
+or
+<a href="https://javadoc.io/static/org.lightcouch/lightcouch/0.2.0/org/lightcouch/CouchDbProperties.html"><code>CouchDbProperties</code></a>
+object.</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Additional runtime dependencies are required to use the <code>CouchDb</code> provider:</p>
+</div>
+<div id="_tabs_10" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_10_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_10_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_10_maven--panel" class="tabpanel" aria-labelledby="_tabs_10_maven">
+<div class="paragraph">
+<p>We assume you use <a href="../../components.html#log4j-bom" class="xref page"><code>log4j-bom</code></a> for dependency management.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+  &lt;artifactId&gt;log4j-couchdb&lt;/artifactId&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_10_gradle--panel" class="tabpanel" aria-labelledby="_tabs_10_gradle">
+<div class="paragraph">
+<p>We assume you use <a href="../../components.html#log4j-bom" class="xref page"><code>log4j-bom</code></a> for dependency management.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-couchdb'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-couchdb-CouchDbProvider" class="xref page">&#x1F4D6; Plugin reference for <code>CouchDb</code></a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="NoSqlAppender-examples"><a class="anchor" href="#NoSqlAppender-examples"></a>Configuration examples</h3>
+<div class="paragraph">
+<p>To connect the NoSQL Appender to a MongoDB database, you only need to provide a connection string:</p>
+</div>
+<div id="_tabs_11" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_11_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_11_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_11_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_11_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_11_xml--panel" class="tabpanel" aria-labelledby="_tabs_11_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-mongo.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;NoSql name="MONGO"&gt;
+  &lt;MongoDb connection="mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs"/&gt;
+&lt;/NoSql&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_11_json--panel" class="tabpanel" aria-labelledby="_tabs_11_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-mongo.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"NoSql": {
+  "name": "MONGO",
+  "MongoDb": {
+    "connection": "mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs"
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_11_yaml--panel" class="tabpanel" aria-labelledby="_tabs_11_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-mongo.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">NoSql:
+  name: "MONGO"
+  MongoDb:
+    connection: "mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_11_properties--panel" class="tabpanel" aria-labelledby="_tabs_11_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-mongo.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.1.type = NoSql
+appender.1.name = MONGO
+appender.1.provider.type = MongoDB
+appender.1.provider.connection = mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Make sure to not let <code>org.bson</code>, <code>com.mongodb</code> log to a MongoDB database on a <code>DEBUG</code> level, since that will cause recursive logging:</p>
+</div>
+<div id="_tabs_12" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_12_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_12_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_12_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_12_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_12_xml--panel" class="tabpanel" aria-labelledby="_tabs_12_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-mongo.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Root level="INFO"&gt;
+  &lt;AppenderRef ref="MONGO"/&gt;
+&lt;/Root&gt;
+&lt;Logger name="org.bson"
+        level="WARN"
+        additivity="false"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;AppenderRef ref="FILE"/&gt;
+&lt;/Logger&gt;
+&lt;Logger name="com.mongodb"
+        level="WARN"
+        additivity="false"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;AppenderRef ref="FILE"/&gt;
+&lt;/Logger&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_12_json--panel" class="tabpanel" aria-labelledby="_tabs_12_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-mongo.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Root": {
+  "level": "INFO",
+  "AppenderRef": {
+    "ref": "MONGO"
+  }
+},
+"Logger": [
+  {
+    "name": "org.bson",
+    "level": "WARN",
+    "additivity": false, <i class="conum" data-value="1"></i><b>(1)</b>
+    "AppenderRef": {
+      "ref": "FILE"
+    }
+  },
+  {
+    "name": "com.mongodb",
+    "level": "WARN",
+    "additivity": false, <i class="conum" data-value="1"></i><b>(1)</b>
+    "AppenderRef": {
+      "ref": "FILE"
+    }
+  }
+]</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_12_yaml--panel" class="tabpanel" aria-labelledby="_tabs_12_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-mongo.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Root:
+  level: "INFO"
+  AppenderRef:
+    ref: "MONGO"
+Logger:
+  - name: "org.bson"
+    level: "WARN"
+    additivity: false <i class="conum" data-value="1"></i><b>(1)</b>
+    AppenderRef:
+      ref: "FILE"
+  - name: "com.mongodb"
+    level: "WARN"
+    additivity: false <i class="conum" data-value="1"></i><b>(1)</b>
+    AppenderRef:
+      ref: "FILE"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_12_properties--panel" class="tabpanel" aria-labelledby="_tabs_12_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-mongo.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">rootLogger.level = INFO
+rootLogger.appenderRef.0.ref = MONGO
+
+logger.0.name = org.bson
+logger.0.level = WARN
+<i class="conum" data-value="1"></i><b>(1)</b>
+logger.0.additivity = false
+logger.0.appenderRef.0.ref = FILE
+
+logger.1.name = com.mongodb
+logger.1.level = WARN
+<i class="conum" data-value="1"></i><b>(1)</b>
+logger.1.additivity = false
+logger.1.appenderRef.0.ref = FILE</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Remember to set the <a href="../configuration.html#logger-attributes-additivity" class="xref page"><code>additivity</code></a> configuration attribute to <code>false</code>.</td>
+</tr>
+</table>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>A similar configuration for an Apache CouchDB database looks like:</p>
+</div>
+<div id="_tabs_13" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_13_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_13_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_13_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_13_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_13_xml--panel" class="tabpanel" aria-labelledby="_tabs_13_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-couch.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;NoSql name="COUCH"&gt;
+  &lt;CouchDB protocol="https"
+           username="${env:DB_USER}"
+           password="${env:DB_PASS}"
+           server="localhost"
+           port="5984"
+           databaseName="logging"/&gt;
+&lt;/NoSql&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_13_json--panel" class="tabpanel" aria-labelledby="_tabs_13_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-couch.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"CouchDb": {
+  "name": "COUCH",
+  "CouchDB": {
+    "protocol": "https",
+    "username": "${env:DB_USER}",
+    "password": "${env:DB_PASS"},
+    "server": "localhost",
+    "port": 5984,
+    "databaseName": "logging"
+  }</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_13_yaml--panel" class="tabpanel" aria-labelledby="_tabs_13_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-couch.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">NoSql:
+  name: "COUCH"
+  CouchDB:
+    protocol: "https"
+    username: "${env:DB_USER}"
+    password: "${env:DB_PASS}"
+    server: "localhost"
+    port: 5984
+    databaseName: "logging"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_13_properties--panel" class="tabpanel" aria-labelledby="_tabs_13_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-couch.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = NoSql
+appender.0.name = COUCH
+appender.0.provider.type = CouchDB
+appender.0.provider.protocol = https
+appender.0.provider.username = ${env:DB_USER}
+appender.0.provider.password = ${env:DB_PASS}
+appender.0.provider.server = localhost
+appender.0.provider.port = 5984
+appender.0.provider.databaseName = logging</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>You can define additional fields to the NoSQL document using <a href="#NoSqlAppender-element-KeyValuePair"><code>KeyValuePair</code> elements</a>, for example:</p>
+</div>
+<div id="_tabs_14" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_14_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_14_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_14_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_14_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_14_xml--panel" class="tabpanel" aria-labelledby="_tabs_14_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-mongo-keys.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;NoSql name="MONGO"&gt;
+  &lt;MongoDb connection="mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs"/&gt;
+  &lt;KeyValuePair key="startTime" value="${date:yyyy-MM-dd hh:mm:ss.SSS}"/&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;KeyValuePair key="currentTime" value="$${date:yyyy-MM-dd hh:mm:ss.SSS}"/&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+&lt;/NoSql&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_14_json--panel" class="tabpanel" aria-labelledby="_tabs_14_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-mongo-keys.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"NoSql": {
+  "name": "MONGO",
+  "MongoDb": {
+    "connection": "mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs"
+  },
+  "KeyValuePair": [
+    {
+      "key": "startTime",
+      "value": "${date:yyyy-MM-dd hh:mm:ss.SSS}" <i class="conum" data-value="1"></i><b>(1)</b>
+    },
+    {
+      "key": "currentTime",
+      "value": "$${date:yyyy-MM-dd hh:mm:ss.SSS}" <i class="conum" data-value="2"></i><b>(2)</b>
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_14_yaml--panel" class="tabpanel" aria-labelledby="_tabs_14_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-mongo-keys.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">NoSql:
+  name: "MONGO"
+  MongoDb:
+    connection: "mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs"
+  KeyValuePair:
+    - key: "startTime"
+      value: "${date:yyyy-MM-dd hh:mm:ss.SSS}" <i class="conum" data-value="1"></i><b>(1)</b>
+    - key: "currentTime"
+      value: "$${date:yyyy-MM-dd hh:mm:ss.SSS}" <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_14_properties--panel" class="tabpanel" aria-labelledby="_tabs_14_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-mongo-keys.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = NoSql
+appender.0.name = MONGO
+appender.0.provider.type = MongoDB
+appender.0.provider.connection = mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs
+
+appender.0.kv[0].type = KeyValuePair
+appender.0.kv[0].key = startTime
+<i class="conum" data-value="1"></i><b>(1)</b>
+appender.0.kv[0].value = ${date:yyyy-MM-dd hh:mm:ss.SSS}
+
+appender.0.kv[1].type = KeyValuePair
+appender.0.kv[1].key = currentTime
+<i class="conum" data-value="1"></i><b>(1)</b>
+appender.0.kv[1].value = $${date:yyyy-MM-dd hh:mm:ss.SSS}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This lookup is evaluated at configuration time and gives the time when Log4j was most recently reconfigured.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This lookup is evaluated at runtime and gives the current date.
+See <a href="../configuration.html#lazy-property-substitution" class="xref page">runtime lookup evaluation</a> for more details.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>
+    Copyright © 1999-2024 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
+  </p>
+  <p>
+    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+    Other names may be trademarks of their respective owners.
+  </p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+<!-- `@asciidoctor/tabs` extension scripts -->
+<script async src="../../_/js/vendor/tabs.js"></script>
+  </body>
+</html>

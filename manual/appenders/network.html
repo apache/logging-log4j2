@@ -1,0 +1,2010 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Network Appenders :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/appenders/network.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.6">
+<link rel="stylesheet" href="../../_/css/site.css">
+<link rel="icon" href="../../_/../_images/favicon.ico" type="image/x-icon">
+<!-- `@asciidoctor/tabs` extension styles -->
+<link rel="stylesheet" href="../../_/css/vendor/tabs.css">
+<style>
+  /* Swap colors of `IMPORTANT` and `WARNING` blocks */ 
+  .doc .admonitionblock.important .icon { background-color: #f70; }
+  .doc .admonitionblock.warning .icon { background-color: #e40046; }
+  /* Default `h4`, `h5`, and `h6` are smaller than the normal text, fix header font sizing: */
+  .doc h1 { font-size: 1.9rem; }
+  .doc h2 { font-size: 1.7rem; }
+  .doc h3 { font-size: 1.5rem; font-weight: 400; }
+  .doc h4 { font-size: 1.3rem; font-weight: 500; }
+  .doc h5 { font-size: 1.1rem; font-weight: 500; text-decoration: underline; }
+  .doc h6 { font-size: 0.9rem; font-weight: 500; text-decoration: underline; }
+  /* Default `code`, `pre`, and `.colist` (source code annotations) fonts are too big, adjust them: */
+  .doc .colist>table code, .doc p code, .doc thead code { font-size: 0.8em; }
+  .doc pre { font-size: 0.7rem; }
+  .doc .colist { font-size: 0.75rem; }
+  /* Make links more visible: */
+  .doc a { text-decoration: underline; }
+  .doc a code { text-decoration: underline; color: #1565c0; }
+  /* Tab header fonts aren't rendered good, adjusting the font weight: */
+  .tablist > ul li { font-weight: 500; }
+  /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
+  .toc .toc-menu li[data-level="4"] a {
+    padding-left: 2.75rem;
+  }
+  /* Replace the default highlight.js color for strings from red (unnecessarily signaling something negative) to green: */
+  .hljs-string {
+    color: #0f8532;
+  }
+</style>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <img src="../../_/../_images/logo-small-white.png" alt="Apache Log4j"/>
+      </div>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://logging.apache.org">a subproject of&nbsp;<strong>Apache Logging Services</strong></a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ROOT" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../../index.html">Home</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../download.html">Download</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../release-notes.html">Release Notes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="https://logging.apache.org/support.html">Support</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../index.html">Manual</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../getting-started.html">Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../installation.html">Installation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../api.html">API</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../api.html#loggers">Loggers</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../eventlogging.html">Event Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../simple-logger.html">Simple Logger</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../status-logger.html">Status Logger</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../logbuilder.html">Fluent API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../api.html#fish-tagging">Fish tagging</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../customloglevels.html">Levels</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../markers.html">Markers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../thread-context.html">Thread Context</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../messages.html">Messages</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../flowtracing.html">Flow Tracing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../implementation.html">Implementation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../config-intro.html">Configuration</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../configuration.html">Configuration file</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../systemproperties.html">Configuration properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../customconfig.html">Programmatic configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../appenders.html">Appenders</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="file.html">File appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="rolling-file.html">Rolling file appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="database.html">Database appenders</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="4">
+    <a class="nav-link" href="network.html">Network Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="message-queue.html">Message queue appenders</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="delegating.html">Delegating Appenders</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../json-template-layout.html">JSON Template Layout</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../pattern-layout.html">Pattern Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../filters.html">Filters</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../scripts.html">Scripts</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../jmx.html">JMX</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../extending.html">Extending</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../plugins.html">Plugins</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../performance.html">Performance</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../async.html">Asynchronous loggers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../garbagefree.html">Garbage-free logging</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">References</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../plugin-reference.html">Plugin reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../javadoc.html">Java API reference</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Resources</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../faq.html">F.A.Q.</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../migrate-from-log4j1.html">Migrating from Log4j 1</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../migrate-from-logback.html">Migrating from Logback</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../migrate-from-slf4j.html">Migrating from SLF4J</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../hibernate.html">Integrating with Hibernate</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../jakarta.html">Integrating with Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../soa.html">Integrating with service-oriented architectures</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../development.html">Development</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../components.html">Components</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../log4j-iostreams.html">Log4j IOStreams</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../log4j-spring-boot.html">Log4j Spring Boot Support</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../log4j-jul.html">JUL-to-Log4j bridge</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../log4j-to-jul.html">Log4j-to-JUL bridge</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Related projects</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jakarta/index.html">Log4j Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/jmx-gui/index.html">Log4j JMX GUI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/kotlin/index.html">Log4j Kotlin</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/scala/index.html">Log4j Scala</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/tools/index.html">Log4j Tools</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://logging.apache.org/log4j/transform/index.html">Log4j Transformation Tools</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">Home</a></li>
+    <li><a href="../index.html">Manual</a></li>
+    <li><a href="../implementation.html">Implementation</a></li>
+    <li><a href="../config-intro.html">Configuration</a></li>
+    <li><a href="../appenders.html">Appenders</a></li>
+    <li><a href="network.html">Network Appenders</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/manual/appenders/network.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="4">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Network Appenders</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>This section guides you through <a href="../appenders.html" class="xref page">appenders</a> that use simple network protocols to transmit log events to a remote host.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="common-configuration"><a class="anchor" href="#common-configuration"></a>Common concerns</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="tls-configuration"><a class="anchor" href="#tls-configuration"></a>TLS Configuration</h3>
+<div class="paragraph">
+<p>All network appenders support TLS (formerly known as SSL) connections.
+The TLS layer can be configured:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Either globally using configuration properties.
+See <a href="../systemproperties.html#properties-transport-security" class="xref page">Transport Security</a>
+for more details.</p>
+</li>
+<li>
+<p>Or by providing a nested <a href="#SslConfiguration"><code>SSL</code></a> Log4j component.</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="SslConfiguration"><a class="anchor" href="#SslConfiguration"></a><code>Ssl</code></h4>
+<div class="paragraph">
+<p>The <code>Ssl</code> component supports the following configuration options:</p>
+</div>
+<table id="SslConfiguration-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. <code>Ssl</code> configuration attributes</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SslConfiguration-attr-protocol"></a>protocol</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TLS</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>It specifies the
+<a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#SSLContext"><code>SSLContext</code> algorithm</a>
+that <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/jsse/JSSERefGuide.html">JSSE</a> will use.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This setting can only be used to reduce the highest version of TLS to be used.</p>
+</div>
+<div class="paragraph">
+<p>To disable older TLS versions, see
+<a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/jsse/JSSERefGuide.html#InstallationAndCustomization">JSSE documentation</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SslConfiguration-attr-verifyHostName"></a>verifyHostName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code>, the host name in X509 certificate will be compared to the requested host name.
+In the case of a mismatch, the connection will fail.</p>
+<p class="tableblock">See also
+<a href="../systemproperties.html#log4j2.sslVerifyHostName" class="xref page"><code>log4j2.sslVerifyHostName</code></a>.</p></td>
+</tr>
+</tbody>
+</table>
+<table id="SslConfiguration-elements" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. <code>Ssl</code> nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Multiplicity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SslConfiguration-element-KeyStore"></a><a href="#KeyStoreConfiguration"><code>KeyStore</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It specifies the
+<a href="https://docs.oracle.com/javase/8/docs/api/java/security/KeyStore.html"><code>KeyStore</code></a>
+to use for TLS client authentication.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SslConfiguration-element-TrustStore"></a><a href="#TrustStoreConfiguration"><code>TrustStore</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It specifies the trust roots to use for TLS server authentication.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-ssl-SslConfiguration" class="xref page">&#x1F4D6; Plugin reference for <code>SSL</code></a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="KeyStoreConfiguration"><a class="anchor" href="#KeyStoreConfiguration"></a>KeyStore</h4>
+<div class="paragraph">
+<p>The <code>KeyStore</code> is meant to contain your private keys and certificates, and determines which authentication credentials to send to the remote host.</p>
+</div>
+<table id="KeyStoreConfiguration-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. <code>KeyStore</code> configuration attributes</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="KeyStoreConfiguration-attr-location"></a>location</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html"><code>Path</code></a> or
+<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html"><code>URI</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The location of the private key store.</p>
+<p class="tableblock">See also <a href="../systemproperties.html#log4j2.keyStoreLocation" class="xref page"><code>log4j2.keyStoreLocation</code></a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="KeyStoreConfiguration-attr-password"></a>password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>null</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The password for the private key store.</p>
+<p class="tableblock">See also <a href="../systemproperties.html#log4j2.keyStorePassword" class="xref page"><code>log4j2.keyStorePassword</code></a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="KeyStoreConfiguration-attr-passwordEnvironmentVariable"></a>passwordEnvironmentVariable</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>null</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the environment variable that contains the password for the private key store.</p>
+<p class="tableblock">See also <a href="../systemproperties.html#log4j2.keyStorePasswordEnvironmentVariable" class="xref page"><code>log4j2.keyStorePasswordEnvironmentVariable</code></a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="KeyStoreConfiguration-attr-passwordFile"></a>passwordFile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html"><code>Path</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>null</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of a file that contains the password for the private key store.</p>
+<p class="tableblock">See also <a href="../systemproperties.html#log4j2.keyStorePasswordFile" class="xref page"><code>log4j2.keyStorePasswordFile</code></a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="KeyStoreConfiguration-attr-type"></a>type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyStore"><code>KeyStore</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/security/KeyStore.html#getDefaultType--"><em>JVM dependent</em></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The type of private key store.
+See <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyStore"><code>KeyStore</code> standard types</a>.</p>
+<p class="tableblock">See also <a href="../systemproperties.html#log4j2.keyStoreType" class="xref page"><code>log4j2.keyStoreType</code></a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="KeyStoreConfiguration-attr-keyManagerFactoryAlgorithm"></a>keyManagerFactoryAlgorithm</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory"><code>KeyManagerFactory</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/javax/net/ssl/KeyManagerFactory.html#getDefaultAlgorithm--"><em>JVM dependent</em></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the <a href="https://docs.oracle.com/javase/8/docs/api/javax/net/ssl/KeyManagerFactory.html"><code>KeyManagerFactory</code></a> implementation to use for the private key store.
+See <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory"><code>KeyManagerFactory</code> standard names</a>.</p>
+<p class="tableblock">See also <a href="../systemproperties.html#log4j2.keyStoreKeyManagerFactoryAlgorithm" class="xref page"><code>log4j2.keyStoreKeyManagerFactoryAlgorithm</code></a>.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-ssl-KeyStoreConfiguration" class="xref page">&#x1F4D6; Plugin reference for <code>KeyStore</code></a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="TrustStoreConfiguration"><a class="anchor" href="#TrustStoreConfiguration"></a>TrustStore</h4>
+<div class="paragraph">
+<p>The trust store is meant to contain the CA certificates you are willing to trust when a remote party presents its certificate.
+It determines whether the remote authentication credentials (and thus the connection) should be trusted.</p>
+</div>
+<table id="TrustStoreConfiguration-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. <code>TrustStore</code> configuration attributes</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="TrustStoreConfiguration-attr-location"></a>location</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html"><code>Path</code></a> or
+<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html"><code>URI</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The location of the trust store.</p>
+<p class="tableblock">See also <a href="../systemproperties.html#log4j2.trustStoreLocation" class="xref page"><code>log4j2.trustStoreLocation</code></a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="TrustStoreConfiguration-attr-password"></a>password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>null</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The password for the trust store.</p>
+<p class="tableblock">See also <a href="../systemproperties.html#log4j2.trustStorePassword" class="xref page"><code>log4j2.trustStorePassword</code></a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="TrustStoreConfiguration-attr-passwordEnvironmentVariable"></a>passwordEnvironmentVariable</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>null</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the environment variable that contains the password for the trust store.</p>
+<p class="tableblock">See also <a href="../systemproperties.html#log4j2.trustStorePasswordEnvironmentVariable" class="xref page"><code>log4j2.trustStorePasswordEnvironmentVariable</code></a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="TrustStoreConfiguration-attr-passwordFile"></a>passwordFile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html"><code>Path</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>null</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of a file that contains the password for the trust store.</p>
+<p class="tableblock">See also <a href="../systemproperties.html#log4j2.trustStorePasswordFile" class="xref page"><code>log4j2.trustStorePasswordFile</code></a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="TrustStoreConfiguration-attr-type"></a>type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyStore"><code>KeyStore</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/security/KeyStore.html#getDefaultType--"><em>JVM dependent</em></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The type of trust store.
+See <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyStore"><code>KeyStore</code> standard types</a>.</p>
+<p class="tableblock">See also <a href="../systemproperties.html#log4j2.trustStoreType" class="xref page"><code>log4j2.trustStoreType</code></a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="TrustStoreConfiguration-attr-keyManagerFactoryAlgorithm"></a>keyManagerFactoryAlgorithm</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory"><code>KeyManagerFactory</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/javax/net/ssl/KeyManagerFactory.html#getDefaultAlgorithm--"><em>JVM dependent</em></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the <a href="https://docs.oracle.com/javase/8/docs/api/javax/net/ssl/KeyManagerFactory.html"><code>KeyManagerFactory</code></a> implementation to use for the trust store.
+See <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory"><code>KeyManagerFactory</code> standard names</a>.</p>
+<p class="tableblock">See also <a href="../systemproperties.html#log4j2.trustStoreKeyManagerFactoryAlgorithm" class="xref page"><code>log4j2.trustStoreKeyManagerFactoryAlgorithm</code></a>.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-ssl-TrustStoreConfiguration" class="xref page">&#x1F4D6; Plugin reference for <code>TrustStore</code></a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="SslConfiguration-examples"><a class="anchor" href="#SslConfiguration-examples"></a>TLS configuration example</h4>
+<div class="paragraph">
+<p>This is an example of TLS configuration:</p>
+</div>
+<div id="_tabs_1" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_1_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_1_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_1_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_1_xml--panel" class="tabpanel" aria-labelledby="_tabs_1_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/network/ssl.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Ssl&gt;
+  &lt;KeyStore location="keystore.p12"
+            type="PKCS12"
+            password="${env:KEYSTORE_PASSWORD}"/&gt;
+  &lt;TrustStore location="truststore.p12"
+              type="PKCS12"
+              passwordEnvironmentVariable="TRUSTSTORE_PASSWORD"/&gt;
+&lt;/Ssl&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_json--panel" class="tabpanel" aria-labelledby="_tabs_1_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/network/ssl.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Ssl": {
+  "KeyStore": {
+    "location": "keystore.p12",
+    "type": "PKCS12",
+    "password": "${env:KEYSTORE_PASSWORD}"
+  },
+  "TrustStore": {
+    "location": "truststore.p12",
+    "type": "PKCS12",
+    "passwordEnvironmentVariable": "TRUSTSTORE_PASSWORD"
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_yaml--panel" class="tabpanel" aria-labelledby="_tabs_1_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/network/ssl.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Ssl:
+  KeyStore:
+    location: "keystore.p12"
+    type: "PKCS12"
+    password: "${env:KEYSTORE_PASSWORD}"
+  TrustStore:
+    location: "truststore.p12"
+    type: "PKCS12"
+    passwordEnvironmentVariable: "TRUSTSTORE_PASSWORD"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_properties--panel" class="tabpanel" aria-labelledby="_tabs_1_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/network/ssl.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.ssl.type = Ssl
+appender.0.ssl.ks.type = KeyStore
+appender.0.ssl.ks.password = ${env:KEYSTORE_PASSWORD}
+
+appender.0.ssl.ts.type = TrustStore
+appender.0.ssl.ts.passwordEnvironmentVariable = TRUSTSTORE_PASSWORD</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="HttpAppender"><a class="anchor" href="#HttpAppender"></a>HTTP Appender</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The HTTP Appender sends log events over HTTP, by wrapping them in an HTTP request.
+The <code>Content-Type</code> HTTP header is set based on the
+<a href="../../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html#getContentType()"><code>getContentType()</code></a>
+method of the
+<a href="#HttpAppender-element-Layout">nested layout</a>.
+Additional headers can be configured using the nested
+<a href="#HttpAppender-element-Property"><code>Property</code> elements</a>.</p>
+</div>
+<div class="paragraph">
+<p>If the appender receives a response with status code different from <code>2xx</code>, an exception is thrown.
+See also <a href="#HttpAppender-attr-ignoreExceptions"><code>ignoreExceptions</code></a> configuration attribute.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The implementation uses
+<a href="https://docs.oracle.com/javase/8/docs/api/java/net/HttpURLConnection.html"><code>HttpURLConnection</code></a>
+under the hood.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<table id="HttpAppender-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 5. HTTP Appender configuration attributes</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Required</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="HttpAppender-attr-name"></a>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the appender.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="HttpAppender-attr-url"></a>url</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html"><code>URL</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The URL of the HTTP server.
+Only the <code>http</code> and <code>https</code> schemas are supported.</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Optional</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="HttpAppender-attr-connectTimeoutMillis"></a>connectTimeoutMillis</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The connect timeout in milliseconds.
+If <code>0</code> the timeout is infinite.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="HttpAppender-attr-readTimeoutMillis"></a>readTimeoutMillis</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The socket read timeout in milliseconds.
+If <code>0</code> the timeout is infinite.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="HttpAppender-attr-ignoreExceptions"></a>ignoreExceptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>false</code>, logging exception will be forwarded to the caller of the logging statement.
+Otherwise, they will be ignored.</p>
+<p class="tableblock">Logging exceptions are always also logged to <a href="../status-logger.html" class="xref page">Status Logger</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="HttpAppender-attr-method"></a>method</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>POST</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The HTTP method to use.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="HttpAppender-attr-verifyHostName"></a>verifyHostName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code>, the host name in X509 certificate will be compared to the requested host name.
+In the case of a mismatch, the connection will fail.</p></td>
+</tr>
+</tbody>
+</table>
+<table id="HttpAppender-elements" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 6. HTTP Appender nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Multiplicity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="HttpAppender-element-Filter"></a><a href="../filters.html" class="xref page"><code>Filter</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows filtering log events just before they are formatted and sent.</p>
+<p class="tableblock">See also <a href="../filters.html#appender-stage" class="xref page">appender filtering stage</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="HttpAppender-element-Layout"></a><a href="../layouts.html" class="xref page"><code>Layout</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>one</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Formats log events.
+The choice of the layout is also responsible for the <code>Content-Type</code> header of HTTP requests.</p>
+<p class="tableblock">See <a href="../layouts.html" class="xref page">Layouts</a> for more information.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="HttpAppender-element-Property"></a><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property" class="xref page"><code>Property</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or more</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Additional HTTP headers to use.</p>
+<p class="tableblock">The values support
+<a href="../configuration.html#lazy-property-substitution" class="xref page">runtime property substitution</a>
+and are evaluated in a
+<a href="../lookups.html#global-context" class="xref page"><em>global context</em></a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="HttpAppender-element-SslConfiguration"></a><a href="#SslConfiguration"><code>SSL</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It specifies the TLS parameters to use.
+See <a href="#tls-configuration">TLS Configuration</a> for more details.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-HttpAppender" class="xref page">&#x1F4D6; Plugin reference for <code>HTTP</code></a></p>
+</div>
+<div class="sect2">
+<h3 id="HttpAppender-examples"><a class="anchor" href="#HttpAppender-examples"></a>Configuration examples</h3>
+<div class="paragraph">
+<p>Here is a sample Http Appender configuration snippet:</p>
+</div>
+<div id="_tabs_2" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_2_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_2_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_2_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_2_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_2_xml--panel" class="tabpanel" aria-labelledby="_tabs_2_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/network/http.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Http name="HTTP" url="https://localhost/logs"&gt;
+  &lt;Property name="X-Java-Version" value="${java:version}"/&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;Property name="X-Context-Path" value="$${web:contextPath}"/&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+  &lt;JsonTemplateLayout/&gt;
+  &lt;Ssl&gt;
+    &lt;KeyStore location="keystore.p12"
+              password="${env:KEYSTORE_PASSWORD}"/&gt;
+    &lt;TrustStore location="truststore.p12"
+                password="${env:TRUSTSTORE_PASSWORD}"/&gt;
+  &lt;/Ssl&gt;
+&lt;/Http&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_2_json--panel" class="tabpanel" aria-labelledby="_tabs_2_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/network/http.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Http": {
+  "name": "HTTP",
+  "url": "https://localhost/logs",
+  "JsonTemplateLayout": {},
+  "Property": [
+    { <i class="conum" data-value="1"></i><b>(1)</b>
+      "name": "X-Java-Version",
+      "value": "${java:version}"
+    },
+    { <i class="conum" data-value="2"></i><b>(2)</b>
+      "name": "X-Context-Path",
+      "value": "$${web:contextPath}"
+    }
+  ],
+  "Ssl": {
+    "KeyStore": {
+      "location": "keystore.p12",
+      "password": "${env:KEYSTORE_PASSWORD}"
+    },
+    "TrustStore": {
+      "location": "truststore.p12",
+      "password": "${env:TRUSTSTORE_PASSWORD}"
+    }
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_2_yaml--panel" class="tabpanel" aria-labelledby="_tabs_2_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/network/http.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Http:
+  name: "HTTP"
+  host: "localhost"
+  url: "https://localhost/logs"
+  Property:
+    <i class="conum" data-value="1"></i><b>(1)</b>
+    - name: "X-Java-Version"
+      value: "${java:version}"
+    <i class="conum" data-value="2"></i><b>(2)</b>
+    - name: "X-Context-Path"
+      value: "$${web:contextPath}"
+  JsonTemplateLayout: {}
+  Ssl:
+    KeyStore:
+      location: "keystore.p12"
+      password: "${env:KEYSTORE_PASSWORD}"
+    TrustStore:
+      location: "truststore.p12"
+      password: "${env:TRUSTSTORE_PASSWORD}"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_2_properties--panel" class="tabpanel" aria-labelledby="_tabs_2_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/network/http.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = Http
+appender.0.name = HTTP
+appender.0.url = https://localhost/logs
+
+<i class="conum" data-value="1"></i><b>(1)</b>
+appender.0.p0.type = Property
+appender.0.p0.name = X-Java-Version
+appender.0.p0.value = ${java:version}
+<i class="conum" data-value="2"></i><b>(2)</b>
+appender.0.p1.type = Property
+appender.0.p1.name = X-Context-Path
+appender.0.p1.value = $${web:contextPath}
+
+appender.0.layout.type = JsonTemplateLayout
+
+appender.0.ssl.type = Ssl
+appender.0.ssl.ks.type = KeyStore
+appender.0.ssl.ks.password = ${env:KEYSTORE_PASSWORD}
+
+appender.0.ssl.ts.type = TrustStore
+appender.0.ssl.ts.password = ${env:TRUSTSTORE_PASSWORD}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This HTTP header is evaluated once at configuration time.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This HTTP header is evaluated at each log event.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="SmtpAppender"><a class="anchor" href="#SmtpAppender"></a>SMTP Appender</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The SMTP writes log events to an e-mail service using
+<a href="https://jakarta.ee/specifications/mail/1.6/">Jakarta Mail 1.6 or higher</a>.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Unlike what happens with
+<a href="../filters.html#appender-stage" class="xref page">most appenders</a>, the SMTP does <strong>not</strong> discard log events that are denied by the
+<a href="#SmtpAppender-element-Filter"><code>Filter</code></a> element.</p>
+</div>
+<div class="paragraph">
+<p>All the log events received by the appender are added to a cyclic log event buffer as context.
+If the filter accepts a message, an e-mail is sent.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<table id="SmtpAppender-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 7. SMTP Appender configuration attributes</caption>
+<colgroup>
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 22.2222%;">
+<col style="width: 55.5556%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Required</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SmtpAppender-attr-name"></a>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the appender.</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Optional</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SmtpAppender-attr-bufferSize"></a>bufferSize</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>512</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of log events to be buffered for inclusion in a single message.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SmtpAppender-attr-ignoreExceptions"></a>ignoreExceptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>false</code>, logging exception will be forwarded to the caller of the logging statement.
+Otherwise, they will be ignored.</p>
+<p class="tableblock">Logging exceptions are always also logged to <a href="../status-logger.html" class="xref page">Status Logger</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SmtpAppender-attr-smtpDebug"></a>smtpDebug</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When set to <code>true</code> turns on the session debugging.
+In the reference implementation of Jakarta Mail
+(<a href="https://projects.eclipse.org/projects/ee4j.angus">Eclipse Angus</a>)
+this will cause log messages to be printed on <code>System.out</code>.</p>
+<p class="tableblock">See the javadoc of
+<a href="https://jakarta.ee/specifications/mail/2.1/apidocs/jakarta.mail/jakarta/mail/session#setDebug(boolean)"><code>Session.setDebug()</code></a>
+for more details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SmtpAppender-attr-"></a>smtpProtocol</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>smtp</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The Jakarta Mail transport protocol.
+Most implementations provide:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>smtp</code></dt>
+<dd>
+<p>SMTP</p>
+</dd>
+<dt class="hdlist1"><code>smtps</code></dt>
+<dd>
+<p>SMTP over TLS</p>
+</dd>
+</dl>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SmtpAppender-attr-smtpHost"></a>smtpHost</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>localhost</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The SMTP hostname to send to.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SmtpAppender-attr-Port"></a>smtpPort</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="dlist">
+<dl>
+<dt class="hdlist1"><code>25</code></dt>
+<dd>
+<p>for <code>smtp</code></p>
+</dd>
+<dt class="hdlist1"><code>465</code></dt>
+<dd>
+<p>for <code>smtps</code></p>
+</dd>
+</dl>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The SMTP port to send to.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SmtpAppender-attr-smtpUsername"></a>smtpUsername</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The username used to authenticate against the SMTP server.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SmtpAppender-attr-smtpPassword"></a>smtpPassword</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The password used to authenticate against the SMTP server.</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock"><a href="https://datatracker.ietf.org/doc/html/rfc5322">RFC 822 message</a> fields</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SmtpAppender-attr-from"></a>from</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://jakarta.ee/specifications/mail/2.1/apidocs/jakarta.mail/jakarta/mail/internet/internetaddress"><code>InternetAddress[]</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A list of
+<a href="https://datatracker.ietf.org/doc/html/rfc2822#section-3.6.2">sender e-mail addresses</a>.</p>
+<p class="tableblock">See
+<a href="https://datatracker.ietf.org/doc/html/rfc2822#section-3.4">RFC2822 Address Specification</a>
+for the format.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SmtpAppender-attr-replyTo"></a>replyTo</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://jakarta.ee/specifications/mail/2.1/apidocs/jakarta.mail/jakarta/mail/internet/internetaddress"><code>InternetAddress[]</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A list of
+<a href="https://datatracker.ietf.org/doc/html/rfc2822#section-3.6.2">reply-to e-mail addresses</a>.</p>
+<p class="tableblock">See
+<a href="https://datatracker.ietf.org/doc/html/rfc2822#section-3.4">RFC2822 Address Specification</a>
+for the format.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SmtpAppender-attr-to"></a>to</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://jakarta.ee/specifications/mail/2.1/apidocs/jakarta.mail/jakarta/mail/internet/internetaddress"><code>InternetAddress[]</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A list of
+<a href="https://datatracker.ietf.org/doc/html/rfc2822#section-3.6.3">recipient e-mail addresses</a>.</p>
+<p class="tableblock">See
+<a href="https://datatracker.ietf.org/doc/html/rfc2822#section-3.4">RFC2822 Address Specification</a>
+for the format.</p>
+<p class="tableblock"><strong>Required</strong>, if <a href="#SmtpAppender-attr-cc"><code>cc</code></a> and <a href="#SmtpAppender-attr-bcc"><code>bcc</code></a> are empty.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SmtpAppender-attr-cc"></a>cc</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://jakarta.ee/specifications/mail/2.1/apidocs/jakarta.mail/jakarta/mail/internet/internetaddress"><code>InternetAddress[]</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A list of
+<a href="https://datatracker.ietf.org/doc/html/rfc2822#section-3.6.3">CC e-mail addresses</a>.</p>
+<p class="tableblock">See
+<a href="https://datatracker.ietf.org/doc/html/rfc2822#section-3.4">RFC2822 Address Specification</a>
+for the format.</p>
+<p class="tableblock"><strong>Required</strong>, if <a href="#SmtpAppender-attr-to"><code>to</code></a> and <a href="#SmtpAppender-attr-bcc"><code>bcc</code></a> are empty.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SmtpAppender-attr-bcc"></a>bcc</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://jakarta.ee/specifications/mail/2.1/apidocs/jakarta.mail/jakarta/mail/internet/internetaddress"><code>InternetAddress[]</code></a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A list of
+<a href="https://datatracker.ietf.org/doc/html/rfc2822#section-3.6.3">BCC e-mail addresses</a>.</p>
+<p class="tableblock">See
+<a href="https://datatracker.ietf.org/doc/html/rfc2822#section-3.4">RFC2822 Address Specification</a>
+for the format.</p>
+<p class="tableblock"><strong>Required</strong>, if <a href="#SmtpAppender-attr-to"><code>to</code></a> and <a href="#SmtpAppender-attr-cc"><code>cc</code></a> are empty.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SmtpAppender-attr-subject"></a>subject</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It specifies the subject field of the RFC 822 message.</p>
+<p class="tableblock">This field can contain
+<a href="../pattern-layout.html#converters" class="xref page">pattern converters</a>.</p></td>
+</tr>
+</tbody>
+</table>
+<table id="SmtpAppender-elements" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 8. HTTP Appender nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Multiplicity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SmtpAppender-element-Filter"></a><a href="../filters.html" class="xref page"><code>Filter</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>A filter that decides which events trigger an e-mail and which events are buffered for context.</p>
+</div>
+<div class="paragraph">
+<p>If absent, a
+<a href="../filters.html#ThresholdFilter" class="xref page"><code>ThresholdFilter</code></a>
+with default parameters will be used.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SmtpAppender-element-Layout"></a><a href="../layouts.html" class="xref page"><code>Layout</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>one</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Formats log events.
+The choice of the layout is also responsible for the <code>Content-Type</code> header of e-mail message.</p>
+<p class="tableblock">See <a href="../layouts.html" class="xref page">Layouts</a> for more information.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SmtpAppender-element-SslConfiguration"></a><a href="#SslConfiguration"><code>SSL</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It specifies the TLS parameters to use.
+See <a href="#tls-configuration">TLS Configuration</a> for more details.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-SmtpAppender" class="xref page">&#x1F4D6; Plugin reference for <code>SMTP</code></a></p>
+</div>
+<div class="paragraph">
+<p>Additional runtime dependencies are required to use the SMTP appender:</p>
+</div>
+<div id="_tabs_3" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_3_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_3_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_3_maven--panel" class="tabpanel" aria-labelledby="_tabs_3_maven">
+<div class="paragraph">
+<p>We assume you use <a href="../../components.html#log4j-bom" class="xref page"><code>log4j-bom</code></a> for dependency management.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+  &lt;artifactId&gt;log4j-jakarta-smtp&lt;/artifactId&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_3_gradle--panel" class="tabpanel" aria-labelledby="_tabs_3_gradle">
+<div class="paragraph">
+<p>We assume you use <a href="../../components.html#log4j-bom" class="xref page"><code>log4j-bom</code></a> for dependency management.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-jakarta-smtp'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<details>
+<summary class="title">Click here if you are you using Jakarta EE 8 or any version of Java EE?</summary>
+<div class="content">
+<div class="paragraph">
+<p>Jakarta EE 8 and all Java EE applications servers use the legacy <code>javax</code> package prefix instead of <code>jakarta</code>.
+If you are using those application servers, you should replace the dependencies above with:</p>
+</div>
+<div id="_tabs_4" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_4_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_4_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_4_maven--panel" class="tabpanel" aria-labelledby="_tabs_4_maven">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.sun.mail&lt;/groupId&gt;
+  &lt;artifactId&gt;javax.mail&lt;/artifactId&gt;
+  &lt;version&gt;1.6.2&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_4_gradle--panel" class="tabpanel" aria-labelledby="_tabs_4_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.sun.mail:javax.mail:1.6.2'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</details>
+<div class="sect2">
+<h3 id="SmtpAppender-examples"><a class="anchor" href="#SmtpAppender-examples"></a>Configuration examples</h3>
+<div class="paragraph">
+<p>Here is an example of SMTP Appender configuration:</p>
+</div>
+<div id="_tabs_5" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_5_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_5_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_5_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_5_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_5_xml--panel" class="tabpanel" aria-labelledby="_tabs_5_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/network/smtp.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;SMTP name="SMTP"
+      smtpProtocol="smtps"
+      smtpHost="mx.example.org"
+      from="app@example.org"
+      to="root@example.org"
+      subject="[%markerSimpleName] Security incident on ${hostName}"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;MarkerFilter marker="AUDIT"/&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+  &lt;HtmlLayout/&gt;
+  &lt;Ssl&gt;
+    &lt;KeyStore location="keystore.p12"
+              password="${env:KEYSTORE_PASSWORD}"/&gt;
+    &lt;TrustStore location="truststore.p12"
+                password="${env:TRUSTSTORE_PASSWORD}"/&gt;
+  &lt;/Ssl&gt;
+&lt;/SMTP&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_5_json--panel" class="tabpanel" aria-labelledby="_tabs_5_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/network/smtp.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"SMTP": {
+  "name": "SMTP",
+  "smtpProtocol": "smtps",
+  "smtpHost": "mx.example.org",
+  "from": "app@example.org",
+  "to": "root@example.org",
+  "subject": "[%markerSimpleName] Security incident on ${hostName}", <i class="conum" data-value="1"></i><b>(1)</b>
+  "MarkerFilter": { <i class="conum" data-value="2"></i><b>(2)</b>
+    "marker": "AUDIT"
+  },
+  "HtmlLayout": {},
+  "Ssl": {
+    "KeyStore": {
+      "location": "keystore.p12",
+      "password": "${env:KEYSTORE_PASSWORD}"
+    },
+    "TrustStore": {
+      "location": "truststore.p12",
+      "password": "${env:TRUSTSTORE_PASSWORD}"
+    }
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_5_yaml--panel" class="tabpanel" aria-labelledby="_tabs_5_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/network/smtp.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">SMTP:
+  name: "SMTP"
+  smtpProtocol: "smtps"
+  smtpHost: "mx.example.org"
+  from: "app@example.org"
+  to: "root@example.org"
+  subject: "[%markerSimpleName] Security incident on ${hostName}" <i class="conum" data-value="1"></i><b>(1)</b>
+  MarkerFilter: <i class="conum" data-value="2"></i><b>(2)</b>
+    marker: "AUDIT"
+  HtmlLayout: {}
+  Ssl:
+    KeyStore:
+      location: "keystore.p12"
+      password: "${env:KEYSTORE_PASSWORD}"
+    TrustStore:
+      location: "truststore.p12"
+      password: "${env:TRUSTSTORE_PASSWORD}"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_5_properties--panel" class="tabpanel" aria-labelledby="_tabs_5_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/network/smtp.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = SMTP
+appender.0.name = SMTP
+appender.0.url = https://localhost/logs
+
+appender.0.smtpProtocol = smtps
+appender.0.smtpHost = mx.example.org
+appender.0.from = app@example.org
+appender.0.to = root@example.org
+<i class="conum" data-value="1"></i><b>(1)</b>
+appender.0.subject = [%markerSimpleName] Security incident on ${hostName}
+
+<i class="conum" data-value="2"></i><b>(2)</b>
+appender.0.filter.0.type = MarkerFilter
+appender.0.filter.0.marker = AUDIT
+
+appender.0.layout.type = HtmlLayout
+
+appender.0.ssl.type = Ssl
+appender.0.ssl.ks.type = KeyStore
+appender.0.ssl.ks.password = ${env:KEYSTORE_PASSWORD}
+
+appender.0.ssl.ts.type = TrustStore
+appender.0.ssl.ts.password = ${env:TRUSTSTORE_PASSWORD}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>subject</code> attribute can use <a href="../pattern-layout.html#converters" class="xref page">pattern converters</a>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>An e-mail will be sent for each <code>AUDIT</code> log event.
+Additional log events will be kept for context.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="SocketAppender"><a class="anchor" href="#SocketAppender"></a>Socket Appender</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Socket Appender that writes its output to a remote destination using TCP or UDP sockets.
+You can optionally secure communication with <a href="#tls-configuration">TLS</a>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The TCP and TLS variants write to the socket as a stream and do not expect a response from the target destination.
+When the target server closes its connection, some log events may continue to appear as delivered until a
+<a href="https://docs.oracle.com/javase/8/docs/api/java/net/SocketException.html"><code>SocketException</code></a>
+is raised, causing those events to be lost.</p>
+</div>
+<div class="paragraph">
+<p>If guaranteed delivery is required, a protocol that requires acknowledgments must be used.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<table id="SocketAppender-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 9. Socket Appender configuration attributes</caption>
+<colgroup>
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 22.2222%;">
+<col style="width: 55.5556%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Required</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SocketAppender-attr-host"></a>host</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name or address of the system that is listening for log events.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SocketAppender-attr-name"></a>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the appender.</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Optional</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SocketAppender-attr-bufferedIo"></a>bufferedIo</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If set to <code>true</code>, Log4j Core will format each log event in an internal buffer, before sending it to the underlying resource.</p>
+<p class="tableblock">See <a href="../appenders.html#buffering" class="xref page">Buffering</a> for more details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SocketAppender-attr-bufferSize"></a>bufferSize</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../systemproperties.html#log4j2.encoderByteBufferSize" class="xref page"><code>8192</code></a></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The size of the
+<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html"><code>ByteBuffer</code></a>
+internally used by the appender.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="../appenders.html#buffering" class="xref page">Buffering</a> for more details.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SocketAppender-attr-ignoreExceptions"></a>ignoreExceptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>false</code>, logging exception will be forwarded to the caller of the logging statement.
+Otherwise, they will be ignored.</p>
+<p class="tableblock">Logging exceptions are always also logged to <a href="../status-logger.html" class="xref page">Status Logger</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>immediateFail</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When set to <code>true</code>, log events will not wait to try to reconnect and will fail immediately if the socket is not
+available.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SocketAppender-attr-immediateFlush"></a>immediateFlush</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If set to <code>true</code>, the appender will flush its internal buffer after each event.</p>
+<p class="tableblock">See <a href="../appenders.html#buffering" class="xref page">Buffering</a> for more details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SocketAppender-attr-port"></a>port</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="dlist">
+<dl>
+<dt class="hdlist1"><code>4560</code></dt>
+<dd>
+<p>for <code>TCP</code></p>
+</dd>
+<dt class="hdlist1"><code>6514</code></dt>
+<dd>
+<p>for <code>SSL</code></p>
+</dd>
+<dt class="hdlist1"><em>no default</em></dt>
+<dd>
+<p>for <code>UDP</code></p>
+</dd>
+</dl>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The port on the host that is listening for log events.</p>
+<p class="tableblock"><strong>Required</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SocketAppender-attr-protocol"></a>protocol</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>enumeration</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TCP</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The network protocol to use: <code>UDP</code>, <code>TCP</code> or <code>SSL</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SocketAppender-attr-connectTimeoutMillis"></a>connectTimeoutMillis</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The connect timeout in milliseconds.
+If <code>0</code> the timeout is infinite.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SocketAppender-attr-readTimeoutMillis"></a>readTimeoutMillis</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The socket read timeout in milliseconds.
+If <code>0</code> the timeout is infinite.</p></td>
+</tr>
+</tbody>
+</table>
+<table id="SocketAppender-elements" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 10. Socket Appender nested elements</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Multiplicity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SocketAppender-element-Filter"></a><a href="../filters.html" class="xref page"><code>Filter</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows filtering log events just before they are formatted and sent.</p>
+<p class="tableblock">See also <a href="../filters.html#appender-stage" class="xref page">appender filtering stage</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SocketAppender-element-Layout"></a><a href="../layouts.html" class="xref page"><code>Layout</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Formats log events.</p>
+<p class="tableblock">See <a href="../layouts.html" class="xref page">Layouts</a> for more information.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SocketAppender-element-SslConfiguration"></a><a href="#SslConfiguration"><code>SSL</code></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zero or one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It specifies the TLS parameters to use.
+See <a href="#tls-configuration">TLS Configuration</a> for more details.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect2">
+<h3 id="SocketAppender-examples"><a class="anchor" href="#SocketAppender-examples"></a>Configuration examples</h3>
+<div class="paragraph">
+<p>The following example appends log events to a Syslog server using a TLS connection and the RFC5424 log event format:</p>
+</div>
+<div id="_tabs_6" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_6_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_6_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_6_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_6_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_6_xml--panel" class="tabpanel" aria-labelledby="_tabs_6_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/network/socket.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Socket name="SYSLOG"
+        host="syslog.local"
+        port="6514"&gt;
+  &lt;Rfc5424Layout appName="myApp"
+                 facility="DAEMON"
+                 id="Log4j"
+                 newLineEscape="\n"/&gt;
+  &lt;Ssl&gt;
+    &lt;KeyStore location="keystore.p12"
+              password="${env:KEYSTORE_PASSWORD}"/&gt;
+    &lt;TrustStore location="truststore.p12"
+                password="${env:TRUSTSTORE_PASSWORD}"/&gt;
+  &lt;/Ssl&gt;
+&lt;/Socket&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_6_json--panel" class="tabpanel" aria-labelledby="_tabs_6_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/network/socket.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Socket": {
+  "name": "SYSLOG",
+  "host": "syslog.local",
+  "port": 6514,
+  "Rfc5424Layout": {
+    "appName": "myApp",
+    "facility": "DAEMON",
+    "id": "Log4j",
+    "newLineEscape": "\\n"
+  },
+  "Ssl": {
+    "KeyStore": {
+      "location": "keystore.p12",
+      "password": "${env:KEYSTORE_PASSWORD}"
+    },
+    "TrustStore": {
+      "location": "truststore.p12",
+      "password": "${env:TRUSTSTORE_PASSWORD}"
+    }
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_6_yaml--panel" class="tabpanel" aria-labelledby="_tabs_6_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/network/socket.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Socket:
+  name: "SYSLOG"
+  host: "syslog.local"
+  port: 6514
+  Rfc5424Layout:
+    appName: "myApp"
+    facility: "DAEMON"
+    id: "Log4j"
+    newLineEscape: "\\n"
+  Ssl:
+    KeyStore:
+      location: "keystore.p12"
+      password: "${env:KEYSTORE_PASSWORD}"
+    TrustStore:
+      location: "truststore.p12"
+      password: "${env:TRUSTSTORE_PASSWORD}"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_6_properties--panel" class="tabpanel" aria-labelledby="_tabs_6_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/network/socket.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = Socket
+appender.0.name = SYSLOG
+appender.0.host = syslog.local
+appender.0.port = 6514
+
+appender.0.layout.type = Rfc5424Layout
+appender.0.layout.appName = myApp
+appender.0.layout.facility = DAEMON
+appender.0.layout.id = Log4j
+appender.0.layout.newLineEscape = \\n
+
+appender.0.ssl.type = Ssl
+appender.0.ssl.ks.type = KeyStore
+appender.0.ssl.ks.password = ${env:KEYSTORE_PASSWORD}
+
+appender.0.ssl.ts.type = TrustStore
+appender.0.ssl.ts.password = ${env:TRUSTSTORE_PASSWORD}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="SyslogAppender"><a class="anchor" href="#SyslogAppender"></a>Syslog Appender</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Syslog Appender is a utility Log4j plugin to combine a <a href="#SocketAppender">Socket Appender</a> with either a
+<a href="../layouts.html#SyslogLayout" class="xref page">Syslog Layout</a>
+or
+<a href="../layouts.html#RFC5424Layout" class="xref page">Rfc5424 Layout</a>
+to provide a functionality similar to the
+<a href="https://man7.org/linux/man-pages/man3/syslog.3.html">UNIX <code>syslog</code> function</a>.</p>
+</div>
+<div class="paragraph">
+<p>It has a single configuration property to select the layout to use:</p>
+</div>
+<table id="SyslogAppender-attributes" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 11. Configuration attributes specific to Syslog Appender</caption>
+<colgroup>
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 22.2222%;">
+<col style="width: 55.5556%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="SyslogAppender-attr-format"></a>format</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>enumeration</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>BSD</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>It determines the layout to use:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>BSD</code></dt>
+<dd>
+<p>Uses the legacy <a href="../layouts.html#SyslogLayout" class="xref page">Syslog Layout</a>.</p>
+</dd>
+<dt class="hdlist1"><code>RFC5242</code></dt>
+<dd>
+<p>Uses the <a href="../layouts.html#RFC5424Layout" class="xref page">Rfc5424 Layout</a>.</p>
+</dd>
+</dl>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>All the remaining configuration attributes and nested elements are inherited from
+<a href="#SocketAppender">Socket Appender</a> and the chosen layout.</p>
+</div>
+<div class="paragraph">
+<p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-SyslogAppender" class="xref page">&#x1F4D6; Plugin reference for <code>Syslog</code></a></p>
+</div>
+<div class="sect2">
+<h3 id="SyslogAppender-examples"><a class="anchor" href="#SyslogAppender-examples"></a>Configuration examples</h3>
+<div class="paragraph">
+<p>The following configuration snippet creates the same appender as the <a href="#SocketAppender-examples">Socket Appender example above</a>:</p>
+</div>
+<div id="_tabs_7" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_7_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_7_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_7_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_7_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_7_xml--panel" class="tabpanel" aria-labelledby="_tabs_7_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/network/syslog.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Syslog name="SYSLOG"
+        host="syslog.local"
+        port="6514"
+        format="RFC5424"
+        appName="myApp"
+        facility="DAEMON"
+        id="Log4j"
+        newLineEscape="\n"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;Ssl&gt;
+    &lt;KeyStore location="keystore.p12"
+              password="${env:KEYSTORE_PASSWORD}"/&gt;
+    &lt;TrustStore location="truststore.p12"
+                password="${env:TRUSTSTORE_PASSWORD}"/&gt;
+  &lt;/Ssl&gt;
+&lt;/Syslog&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_7_json--panel" class="tabpanel" aria-labelledby="_tabs_7_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/network/syslog.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Syslog": {
+  "name": "SYSLOG",
+  "host": "syslog.local",
+  "port": 6514,
+  "format": "RFC5424", <i class="conum" data-value="1"></i><b>(1)</b>
+  "appName": "myApp",
+  "facility": "DAEMON",
+  "id": "Log4j",
+  "newLineEscape": "\\n",
+  "Ssl": {
+    "KeyStore": {
+      "location": "keystore.p12",
+      "password": "${env:KEYSTORE_PASSWORD}"
+    },
+    "TrustStore": {
+      "location": "truststore.p12",
+      "password": "${env:TRUSTSTORE_PASSWORD}"
+    }
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_7_yaml--panel" class="tabpanel" aria-labelledby="_tabs_7_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/network/syslog.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Socket:
+  name: "SYSLOG"
+  host: "syslog.local"
+  port: 6514
+  format: "RFC5424" <i class="conum" data-value="1"></i><b>(1)</b>
+  appName: "myApp"
+  facility: "DAEMON"
+  id: "Log4j"
+  newLineEscape: "\\n"
+  Ssl:
+    KeyStore:
+      location: "keystore.p12"
+      password: "${env:KEYSTORE_PASSWORD}"
+    TrustStore:
+      location: "truststore.p12"
+      password: "${env:TRUSTSTORE_PASSWORD}"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_7_properties--panel" class="tabpanel" aria-labelledby="_tabs_7_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/network/syslog.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = Syslog
+appender.0.name = SYSLOG
+appender.0.host = syslog.local
+appender.0.port = 6514
+<i class="conum" data-value="1"></i><b>(1)</b>
+appender.0.format = RFC5424
+appender.0.appName = myApp
+appender.0.facility = DAEMON
+appender.0.id = Log4j
+appender.0.newLineEscape = \\n
+
+appender.0.ssl.type = Ssl
+appender.0.ssl.ks.type = KeyStore
+appender.0.ssl.ks.password = ${env:KEYSTORE_PASSWORD}
+
+appender.0.ssl.ts.type = TrustStore
+appender.0.ssl.ts.password = ${env:TRUSTSTORE_PASSWORD}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>By setting the <code>format</code> attribute to <code>RFC5424</code>, the <a href="../layouts.html#RFC5424Layout" class="xref page"><code>Rfc5424Layout</code></a> will be used.
+The remaining attributes are either attributes of <a href="#SocketAppender">Socket Appender</a> or the <code>Rfc5424Layout</code>.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>
+    Copyright © 1999-2024 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
+  </p>
+  <p>
+    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+    Other names may be trademarks of their respective owners.
+  </p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+<!-- `@asciidoctor/tabs` extension scripts -->
+<script async src="../../_/js/vendor/tabs.js"></script>
+  </body>
+</html>
