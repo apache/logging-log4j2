@@ -361,12 +361,112 @@
 </div>
 </div>
 <div class="sect2">
-<h3 id="release-notes-2-x-x-added"><a class="anchor" href="#release-notes-2-x-x-added"></a>Added</h3>
+<h3 id="release-notes-2-x-x-fixed"><a class="anchor" href="#release-notes-2-x-x-fixed"></a>Fixed</h3>
 <div class="ulist">
 <ul>
 <li>
-<p>Add <code>useFqdn</code> configuration attribute to RFC5424 Layout. (<a href="https://github.com/apache/logging-log4j2/issues/1740">1740</a>)</p>
+<p>Reload key &amp; trust stores while reconfiguring network appenders containing a TLS (formerly known as SSL) configuration (<a href="https://issues.apache.org/jira/browse/LOG4J2-2988">LOG4J2-2988</a>, <a href="https://github.com/apache/logging-log4j2/pull/2767">2767</a>)</p>
 </li>
+<li>
+<p>Simplify the <code>SSLContext</code> instantiation for the TLS (formerly known as SSL) configuration (<a href="https://issues.apache.org/jira/browse/LOG4J2-2988">LOG4J2-2988</a>, <a href="https://github.com/apache/logging-log4j2/pull/2767">2767</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-x-x-updated"><a class="anchor" href="#release-notes-2-x-x-updated"></a>Updated</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Update <code>co.elastic.clients:elasticsearch-java</code> to version <code>8.15.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/2925">2925</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="release-notes-2-24-0"><a class="anchor" href="#release-notes-2-24-0"></a>2.24.0</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Release date</dt>
+<dd>
+<p>2024-09-03</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>This release contains improvements and changes in several areas of Apache Log4j:</p>
+</div>
+<div class="sect2">
+<h3 id="_log4j_api"><a class="anchor" href="#_log4j_api"></a>Log4j API</h3>
+<div class="paragraph">
+<p>The <code>2.24.0</code> version of Log4j API has been enhanced with changes from the 3.x branch and will be used by both Log4j 2 Core and Log4j 3 Core releases.
+The changes include:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A faster default <code>ThreadContextMap</code>.</p>
+</li>
+<li>
+<p>Enhanced GraalVM support: native binaries that use Log4j API will no longer require additional GraalVM configuration.</p>
+</li>
+<li>
+<p>The configuration properties subsystem now only accepts the official pre-2.10 property names and the normalized post-2.10 names.
+Check your configuration for typos.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_documentation"><a class="anchor" href="#_documentation"></a>Documentation</h3>
+<div class="paragraph">
+<p>The <a href="index.html" class="xref page">Apache Log4j 2</a> website has been almost entirely rewritten to provide improved documentation and faster access to the information you need.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_bridges"><a class="anchor" href="#_bridges"></a>Bridges</h3>
+<div class="paragraph">
+<p>The JUL-to-Log4j API and Log4j 1-to-Log4j API will no longer be able to modify the configuration of Log4j Core by default.
+If such a functionality is required, it must be explicitly enabled.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_modules"><a class="anchor" href="#_modules"></a>Modules</h3>
+<div class="paragraph">
+<p>The following Log4j Core additional modules have been removed:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>log4j-flume-ng</code></dt>
+<dd>
+<p>The module is no longer part of the release process and will follow its own release lifecycle.
+Please manage your dependencies using <a href="components.html#log4j-bom" class="xref page"><code>log4j-bom</code></a> to always use its latest version.</p>
+</dd>
+<dt class="hdlist1"><code>log4j-kubernetes</code></dt>
+<dd>
+<p>The module has been moved to the <a href="https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md">Fabric8.io Kubernetes project</a> and follows the Fabric8.io release lifecycle.</p>
+</dd>
+<dt class="hdlist1"><code>log4j-mongodb3</code></dt>
+<dd>
+<p>The module based on MongoDB Java client version 3.x has been removed.
+Please migrate to <a href="components.html#log4j-mongodb" class="xref page"><code>log4j-mongodb</code></a> (client version 5.x) or <a href="components.html#log4j-mongodb4" class="xref page"><code>log4j-mongodb4</code></a> (client version 4.x).</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_jmx_changes_2"><a class="anchor" href="#_jmx_changes_2"></a>JMX changes</h3>
+<div class="paragraph">
+<p>Starting in version 2.24.0, JMX support is disabled by default and can be re-enabled via the <code>log4j2.disableJmx=false</code> system property.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-24-0-added"><a class="anchor" href="#release-notes-2-24-0-added"></a>Added</h3>
+<div class="ulist">
+<ul>
 <li>
 <p>Add a faster <code>DefaultThreadContextMap</code> implementation. (<a href="https://github.com/apache/logging-log4j2/pull/2330">2330</a>)</p>
 </li>
@@ -386,7 +486,7 @@
 </div>
 </div>
 <div class="sect2">
-<h3 id="release-notes-2-x-x-changed"><a class="anchor" href="#release-notes-2-x-x-changed"></a>Changed</h3>
+<h3 id="release-notes-2-24-0-changed"><a class="anchor" href="#release-notes-2-24-0-changed"></a>Changed</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -423,7 +523,7 @@
 <p>Remove configuration properties caching and (undocumented) fuzzy property name matching. (<a href="https://github.com/apache/logging-log4j2/pull/2849">2849</a>)</p>
 </li>
 <li>
-<p>Fixes property source ordering to account for same priority of different sources. (<a href="https://issues.apache.org/jira/browse/LOG4J2-3618">LOG4J2-3618</a>)</p>
+<p>Fixes property source ordering to account for different sources with the same priority. (<a href="https://issues.apache.org/jira/browse/LOG4J2-3618">LOG4J2-3618</a>)</p>
 </li>
 <li>
 <p>Prioritize user-defined values of <code>log4j2.enableThreadLocals</code>, <code>log4j2.garbagefreeThreadContextMap</code> and <code>log4j2.shutdownHookEnabled</code> over the value of <code>log4j.isWebapp</code>. (<a href="https://github.com/apache/logging-log4j2/pull/2517">2517</a>)</p>
@@ -438,7 +538,7 @@
 </div>
 </div>
 <div class="sect2">
-<h3 id="release-notes-2-x-x-deprecated"><a class="anchor" href="#release-notes-2-x-x-deprecated"></a>Deprecated</h3>
+<h3 id="release-notes-2-24-0-deprecated"><a class="anchor" href="#release-notes-2-24-0-deprecated"></a>Deprecated</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -457,9 +557,12 @@
 </div>
 </div>
 <div class="sect2">
-<h3 id="release-notes-2-x-x-fixed"><a class="anchor" href="#release-notes-2-x-x-fixed"></a>Fixed</h3>
+<h3 id="release-notes-2-24-0-fixed"><a class="anchor" href="#release-notes-2-24-0-fixed"></a>Fixed</h3>
 <div class="ulist">
 <ul>
+<li>
+<p>Use FQDN in RFC5424 Layout. (<a href="https://github.com/apache/logging-log4j2/issues/1740">1740</a>)</p>
+</li>
 <li>
 <p>Fix custom thread-context data provider handling in lookups and filters. (<a href="https://github.com/apache/logging-log4j2/issues/2331">2331</a>)</p>
 </li>
@@ -471,12 +574,6 @@
 </li>
 <li>
 <p>Fix handling of <code>log4j2.debug</code>. (<a href="https://github.com/apache/logging-log4j2/issues/2703">2703</a>)</p>
-</li>
-<li>
-<p>Reload key &amp; trust stores while reconfiguring network appenders containing a TLS (formerly known as SSL) configuration (<a href="https://issues.apache.org/jira/browse/LOG4J2-2988">LOG4J2-2988</a>, <a href="https://github.com/apache/logging-log4j2/pull/2767">2767</a>)</p>
-</li>
-<li>
-<p>Simplify the <code>SSLContext</code> instantiation for the TLS (formerly known as SSL) configuration (<a href="https://issues.apache.org/jira/browse/LOG4J2-2988">LOG4J2-2988</a>, <a href="https://github.com/apache/logging-log4j2/pull/2767">2767</a>)</p>
 </li>
 <li>
 <p>Fix location requirement for the <code>%F</code> and <code>%file</code> keys in Pattern Layout (<a href="https://github.com/apache/logging-log4j2/issues/2781">2781</a>)</p>
@@ -503,7 +600,7 @@
 </div>
 </div>
 <div class="sect2">
-<h3 id="release-notes-2-x-x-removed"><a class="anchor" href="#release-notes-2-x-x-removed"></a>Removed</h3>
+<h3 id="release-notes-2-24-0-removed"><a class="anchor" href="#release-notes-2-24-0-removed"></a>Removed</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -513,7 +610,7 @@
 </div>
 </div>
 <div class="sect2">
-<h3 id="release-notes-2-x-x-updated"><a class="anchor" href="#release-notes-2-x-x-updated"></a>Updated</h3>
+<h3 id="release-notes-2-24-0-updated"><a class="anchor" href="#release-notes-2-24-0-updated"></a>Updated</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -521,9 +618,6 @@
 </li>
 <li>
 <p>Remove module log4j-mongodb3, use log4j-mongodb instead, log4j-mongodb4 is deprecated for removal. (<a href="https://github.com/apache/logging-log4j2/pull/2486">2486</a>)</p>
-</li>
-<li>
-<p>Update <code>co.elastic.clients:elasticsearch-java</code> to version <code>8.15.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/2925">2925</a>)</p>
 </li>
 <li>
 <p>Update <code>com.fasterxml.jackson:jackson-bom</code> to version <code>2.17.2</code> (<a href="https://github.com/apache/logging-log4j2/pull/2719">2719</a>)</p>
