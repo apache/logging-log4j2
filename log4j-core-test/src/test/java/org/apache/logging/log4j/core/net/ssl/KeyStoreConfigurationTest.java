@@ -25,6 +25,7 @@ import java.security.KeyStore;
 import java.util.Collections;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -32,6 +33,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
+@UsingStatusListener // Suppresses `StatusLogger` output, unless there is a failure
 @SetSystemProperty(key = "sun.security.mscapi.keyStoreCompatibilityMode", value = "false")
 public class KeyStoreConfigurationTest {
 
@@ -40,21 +42,25 @@ public class KeyStoreConfigurationTest {
     public void loadEmptyConfigurationDeprecated() {
         assertThrows(
                 StoreConfigurationException.class,
-                () -> new KeyStoreConfiguration(null, TestConstants.NULL_PWD, null, null));
+                () -> new KeyStoreConfiguration(null, SslKeyStoreConstants.NULL_PWD, null, null));
     }
 
     @Test
     public void loadEmptyConfiguration() {
         assertThrows(
                 StoreConfigurationException.class,
-                () -> new KeyStoreConfiguration(null, new MemoryPasswordProvider(TestConstants.NULL_PWD), null, null));
+                () -> new KeyStoreConfiguration(
+                        null, new MemoryPasswordProvider(SslKeyStoreConstants.NULL_PWD), null, null));
     }
 
     @Test
     public void loadNotEmptyConfigurationDeprecated() throws StoreConfigurationException {
         @SuppressWarnings("deprecation")
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(
-                TestConstants.KEYSTORE_FILE, TestConstants.KEYSTORE_PWD(), TestConstants.KEYSTORE_TYPE, null);
+                SslKeyStoreConstants.KEYSTORE_LOCATION,
+                SslKeyStoreConstants.KEYSTORE_PWD(),
+                SslKeyStoreConstants.KEYSTORE_TYPE,
+                null);
         final KeyStore ks = ksc.getKeyStore();
         assertNotNull(ks);
         checkKeystoreConfiguration(ksc);
@@ -63,17 +69,17 @@ public class KeyStoreConfigurationTest {
     static Stream<Arguments> configurations() {
         final Stream.Builder<Arguments> builder = Stream.builder();
         builder.add(Arguments.of(
-                        TestConstants.KEYSTORE_FILE,
-                        (Supplier<char[]>) TestConstants::KEYSTORE_PWD,
-                        TestConstants.KEYSTORE_TYPE))
+                        SslKeyStoreConstants.KEYSTORE_LOCATION,
+                        (Supplier<char[]>) SslKeyStoreConstants::KEYSTORE_PWD,
+                        SslKeyStoreConstants.KEYSTORE_TYPE))
                 .add(Arguments.of(
-                        TestConstants.KEYSTORE_PKCS12_FILE,
-                        (Supplier<char[]>) TestConstants::KEYSTORE_PKCS12_PWD,
-                        TestConstants.KEYSTORE_PKCS12_TYPE))
+                        SslKeyStoreConstants.KEYSTORE_P12_LOCATION,
+                        (Supplier<char[]>) SslKeyStoreConstants::KEYSTORE_P12_PWD,
+                        SslKeyStoreConstants.KEYSTORE_P12_TYPE))
                 .add(Arguments.of(
-                        TestConstants.KEYSTORE_EMPTYPASS_FILE,
-                        (Supplier<char[]>) TestConstants::KEYSTORE_EMPTYPASS_PWD,
-                        TestConstants.KEYSTORE_EMPTYPASS_TYPE));
+                        SslKeyStoreConstants.KEYSTORE_P12_NOPASS_LOCATION,
+                        (Supplier<char[]>) SslKeyStoreConstants::KEYSTORE_P12_NOPASS_PWD,
+                        SslKeyStoreConstants.KEYSTORE_P12_NOPASS_TYPE));
         if (OS.WINDOWS.isCurrentOs()) {
             builder.add(Arguments.of(null, (Supplier<char[]>) () -> null, "Windows-MY"))
                     .add(Arguments.of(null, (Supplier<char[]>) () -> null, "Windows-ROOT"));
@@ -97,7 +103,10 @@ public class KeyStoreConfigurationTest {
     public void returnTheSameKeyStoreAfterMultipleLoadsDeprecated() throws StoreConfigurationException {
         @SuppressWarnings("deprecation")
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(
-                TestConstants.KEYSTORE_FILE, TestConstants.KEYSTORE_PWD(), TestConstants.KEYSTORE_TYPE, null);
+                SslKeyStoreConstants.KEYSTORE_LOCATION,
+                SslKeyStoreConstants.KEYSTORE_PWD(),
+                SslKeyStoreConstants.KEYSTORE_TYPE,
+                null);
         final KeyStore ks = ksc.getKeyStore();
         final KeyStore ks2 = ksc.getKeyStore();
         assertSame(ks, ks2);
@@ -106,9 +115,9 @@ public class KeyStoreConfigurationTest {
     @Test
     public void returnTheSameKeyStoreAfterMultipleLoads() throws StoreConfigurationException {
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(
-                TestConstants.KEYSTORE_FILE,
-                new MemoryPasswordProvider(TestConstants.KEYSTORE_PWD()),
-                TestConstants.KEYSTORE_TYPE,
+                SslKeyStoreConstants.KEYSTORE_LOCATION,
+                new MemoryPasswordProvider(SslKeyStoreConstants.KEYSTORE_PWD()),
+                SslKeyStoreConstants.KEYSTORE_TYPE,
                 null);
         final KeyStore ks = ksc.getKeyStore();
         final KeyStore ks2 = ksc.getKeyStore();
@@ -120,27 +129,27 @@ public class KeyStoreConfigurationTest {
     public void wrongPasswordDeprecated() {
         assertThrows(
                 StoreConfigurationException.class,
-                () -> new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, "wrongPassword!", null, null));
+                () -> new KeyStoreConfiguration(SslKeyStoreConstants.KEYSTORE_LOCATION, "wrongPassword!", null, null));
     }
 
     static Stream<Arguments> wrongConfigurations() {
         final Stream.Builder<Arguments> builder = Stream.builder();
         builder.add(Arguments.of(
-                        TestConstants.KEYSTORE_FILE,
-                        (Supplier<char[]>) TestConstants::KEYSTORE_EMPTYPASS_PWD,
-                        TestConstants.KEYSTORE_TYPE))
+                        SslKeyStoreConstants.KEYSTORE_LOCATION,
+                        (Supplier<char[]>) SslKeyStoreConstants::KEYSTORE_P12_NOPASS_PWD,
+                        SslKeyStoreConstants.KEYSTORE_TYPE))
                 .add(Arguments.of(
-                        TestConstants.KEYSTORE_FILE,
+                        SslKeyStoreConstants.KEYSTORE_LOCATION,
                         (Supplier<char[]>) () -> "wrongPassword!".toCharArray(),
-                        TestConstants.KEYSTORE_TYPE))
+                        SslKeyStoreConstants.KEYSTORE_TYPE))
                 .add(Arguments.of(
-                        TestConstants.KEYSTORE_PKCS12_FILE,
-                        (Supplier<char[]>) TestConstants::KEYSTORE_EMPTYPASS_PWD,
-                        TestConstants.KEYSTORE_PKCS12_TYPE))
+                        SslKeyStoreConstants.KEYSTORE_P12_LOCATION,
+                        (Supplier<char[]>) SslKeyStoreConstants::KEYSTORE_P12_NOPASS_PWD,
+                        SslKeyStoreConstants.KEYSTORE_P12_TYPE))
                 .add(Arguments.of(
-                        TestConstants.KEYSTORE_PKCS12_FILE,
-                        (Supplier<char[]>) TestConstants::KEYSTORE_EMPTYPASS_PWD,
-                        TestConstants.KEYSTORE_PKCS12_TYPE));
+                        SslKeyStoreConstants.KEYSTORE_P12_LOCATION,
+                        (Supplier<char[]>) SslKeyStoreConstants::KEYSTORE_P12_NOPASS_PWD,
+                        SslKeyStoreConstants.KEYSTORE_P12_TYPE));
         if (OS.WINDOWS.isCurrentOs()) {
             builder.add(Arguments.of(null, (Supplier<char[]>) () -> new char[0], "Windows-MY"))
                     .add(Arguments.of(null, (Supplier<char[]>) () -> new char[0], "Windows-ROOT"));
