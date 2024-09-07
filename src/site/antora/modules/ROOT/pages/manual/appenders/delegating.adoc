@@ -520,7 +520,7 @@ It allows adding or updating the keys of the `MapMessage`.
 
 | [[MapRewritePolicy-attr-mode]]mode
 | link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rewrite/MapRewritePolicy.Mode.html[`MapRewritePolicy.Mode`]
-| link:../https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/appender/rewrite/MapRewritePolicy.Mode.html#Add[`Add`]
+| link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rewrite/MapRewritePolicy.Mode.html#Add[`Add`]
 a|
 It determines which map entries to modify:
 
