@@ -64,7 +64,7 @@ ASF Nexus Repository::
 All the binary artifacts are available on the Apache Software Foundation
 https://repository.apache.org/content/repositories/releases/[`repository.apache.org` Nexus repository].
 Its content is mirrored to the
-https://repo.maven.apache.org/maven2[Maven Central repository].
+https://repo.maven.apache.org/maven2/[Maven Central repository].
 +
 See xref:components.adoc[] for more information on the GAV coordinates of the artifacts.
 
