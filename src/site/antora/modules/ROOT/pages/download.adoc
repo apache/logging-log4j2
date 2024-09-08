@@ -18,11 +18,7 @@
 = Download
 :dist-url: https://downloads.apache.org/logging/log4j/{log4j-core-version}
 
-Apache Log4j is distributed under the
-https://www.apache.org/licenses/LICENSE-2.0[Apache License, version 2.0].
-You can find the download links of the official <<source-distribution,source>> and <<binary-distribution,binary distributions>> below.
-
-See also the {logging-services-url}/download.html[Logging Services download page] for instruction on how to validate the downloaded files.
+You can manually download all published Log4j distributions, verify them, and see their licensing information by following the instructions in {logging-services-url}/download.html[the Download page] of {logging-services-url}[Logging Services].
 
 [TIP]
 ====
@@ -35,13 +31,13 @@ Proceed to xref:release-notes.adoc[].
 [#source-distribution]
 == Source distribution
 
-You can download the source code of the latest Apache Log4j release using the links below:
+You can download the source code of the latest Log4j release using the links below:
 
 .Source distribution files
 [cols="2h,5"]
 |===
 
-| Source distribution archive
+| Sources
 | {dist-url}/apache-log4j-{log4j-core-version}-src.zip[apache-log4j-{log4j-core-version}-src.zip]
 
 | Checksum
@@ -50,14 +46,14 @@ You can download the source code of the latest Apache Log4j release using the li
 | Signature
 | {dist-url}/apache-log4j-{log4j-core-version}-src.zip.asc[apache-log4j-{log4j-core-version}-src.zip.asc]
 
-| PGP keys
+| Signing keys
 | https://downloads.apache.org/logging/KEYS[KEYS]
 |===
 
 [#binary-distribution]
 == Binary distribution
 
-A set of binaries of Apache Log4j is available through two main distribution channels:
+A set of binaries of Log4j is available through two main distribution channels:
 
 ASF Nexus Repository::
 +
@@ -76,22 +72,22 @@ All the artifacts in the ASF Nexus repository are also available in a single ZIP
 [cols="2h,5"]
 |===
 
-| Source distribution archive
+| Binaries
 | {dist-url}/apache-log4j-{log4j-core-version}-bin.zip[apache-log4j-{log4j-core-version}-bin.zip]
 
 | Checksum
-| {dist-url}/apache-log4j-{log4j-core-version}-bin.zip.sha512[apache-log4j-{log4j-core-version}-src.bin.sha512]
+| {dist-url}/apache-log4j-{log4j-core-version}-bin.zip.sha512[apache-log4j-{log4j-core-version}-bin.zip.sha512]
 
 | Signature
-| {dist-url}/apache-log4j-{log4j-core-version}-bin.zip.asc[apache-log4j-{log4j-core-version}-src.bin.asc]
+| {dist-url}/apache-log4j-{log4j-core-version}-bin.zip.asc[apache-log4j-{log4j-core-version}-bin.zip.asc]
 
-| PGP keys
+| Signing keys
 | https://downloads.apache.org/logging/KEYS[KEYS]
 |===
 
 [NOTE]
 ====
-The authenticity of the Apache Log4j binary release is independently verified by the
+The authenticity of the Log4j binary release is independently verified by the
 https://github.com/jvm-repo-rebuild/reproducible-central[Reproducible Builds for Maven Central Repository]
 project.
 You can check the reproducibility status of the artifacts on their
@@ -101,19 +97,8 @@ https://github.com/jvm-repo-rebuild/reproducible-central/blob/master/content/org
 [#sbom]
 == Software Bill of Materials (SBOM)
 
-Each Apache Log4j artifact is accompanied by a Software Bill of Materials in
-https://cyclonedx.org/[CycloneDX format].
-The SBOMs are published to the ASF Nexus repository with `cyclonedx` as classifier and `xml` as type and are also available in the binary distribution archive.
-
-See also {logging-services-url}/download.html#sbom[Apache Logging Services SBOMs].
-
-[IMPORTANT]
-====
-Since Apache Log4j is a software library, the contents of the SBOMs constitute only a **suggested** list of component versions known to work with Apache Log4j.
-These versions are used by our unit tests.
-
-The **effective** list of components included in an application containing Apache Log4j can only be determined by the producer of the application.
-====
+Each Log4j artifact is accompanied by a Software Bill of Materials (SBOM).
+See {logging-services-url}/download.html#sbom[the Download page of Logging Services page] for details.
 
 [#older]
 == Older releases
