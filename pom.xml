@@ -302,7 +302,7 @@
   <properties>
 
     <!-- project version -->
-    <revision>2.24.1-SNAPSHOT</revision>
+    <revision>2.25.0-SNAPSHOT</revision>
 
     <!-- =================
          Common properties
