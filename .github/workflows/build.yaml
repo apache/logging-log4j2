@@ -20,7 +20,7 @@ name: build
 on:
   push:
     branches:
-      - "2.x"
+      - "2.24.x"
       - "release/2*"
   pull_request:
 
@@ -43,7 +43,7 @@ jobs:
 
   deploy-snapshot:
     needs: build
-    if: github.repository == 'apache/logging-log4j2' && github.ref_name == '2.x'
+    if: github.repository == 'apache/logging-log4j2' && github.ref_name == '2.24.x'
     uses: apache/logging-parent/.github/workflows/deploy-snapshot-reusable.yaml@rel/11.2.0
     # Secrets for deployments
     secrets:
