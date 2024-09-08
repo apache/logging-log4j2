@@ -87,6 +87,7 @@
     <asciidoctor-maven-plugin.version>2.2.4</asciidoctor-maven-plugin.version>
     <docker-maven-plugin.version>0.43.4</docker-maven-plugin.version>
     <exam-maven-plugin.version>4.13.5</exam-maven-plugin.version>
+    <gmavenplus-plugin.version>3.0.2</gmavenplus-plugin.version>
     <!-- `surefire.version` property used in `apache.org:apache`: -->
     <surefire.version>3.5.0</surefire.version>
 
@@ -833,6 +834,68 @@
                   </excludes>
                 </bannedDependencies>
               </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.gmavenplus</groupId>
+        <artifactId>gmavenplus-plugin</artifactId>
+        <version>${gmavenplus-plugin.version}</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy-ant</artifactId>
+            <version>${groovy.version}</version>
+            <scope>runtime</scope>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>${groovy.version}</version>
+            <scope>runtime</scope>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>ban-static-transitive</id>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <phase>verify</phase>
+            <configuration>
+              <continueExecuting>false</continueExecuting>
+              <scripts>
+                <script><![CDATA[
+                  import java.io.StringWriter
+                  import java.util.spi.ToolProvider
+
+                  if ("jar" != project.packaging) {
+                      log.info("Skipping module descriptor check, since the project type is not `jar`.")
+                      return
+                  }
+                  String jarFile = project.build.directory + "/" + project.build.finalName + ".jar";
+                  if (!new File(jarFile).exists()) {
+                      log.info("Skipping module descriptor check, since `" + jarFile + "` is missing.")
+                      return
+                  }
+                  StringWriter out = new StringWriter()
+                  StringWriter err = new StringWriter()
+                  ToolProvider jar = ToolProvider.findFirst("jar").orElseThrow()
+                  int result = jar.run(new PrintWriter(out), new PrintWriter(err), "-d", "-f", jarFile)
+                  if (result != 0) {
+                      throw new RuntimeException("Failed to decompile the module descriptor in `" + jarFile + "`:\n" + err)
+                  }
+                  log.debug("Module descriptor: " + out)
+                  for (String line : out.toString().split("\r?\n", -1)) {
+                      if (line.contains("static") && line.contains("transitive")) {
+                          throw new RuntimeException("The `static` and `transitive` modifiers should not be use together: " + line)
+                      }
+                  }
+                  log.info("Successfully verified module descriptor in `" + jarFile + "`.")
+              ]]></script>
+              </scripts>
             </configuration>
           </execution>
         </executions>
