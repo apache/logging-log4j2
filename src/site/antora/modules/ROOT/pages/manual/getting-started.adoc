@@ -280,7 +280,7 @@ xref:manual/json-template-layout.adoc[JSON Template Layout] encodes log events i
 It serves as the default `<logger>` configuration.
 <6> Unless specified otherwise, accepted log events will be forwarded to the `console` appender defined earlier.
 
-Next, you need to you need to configure Log4j for the tests of your application.
+Next, you need to configure Log4j for the tests of your application.
 Please proceed to <<config-test>>
 
 [#install-lib]
