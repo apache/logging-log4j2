@@ -167,7 +167,14 @@ export PATH="\$JAVA_HOME/bin:\$PATH"
 java -version
 
 # Dump some debugging aid
-export
+dump_debug() {
+  export
+  ls -al . \
+    "\$CRASH_STACKTRACES_DIR" \
+    "\$DATA_BUNDLES_DIR" \
+    "\$FUZZ_INPUTS"
+}
+dump_debug
 
 # Create a temporary file for capturing the command output
 cmdOutputFile=\$(mktemp "$module-$className-XXX.out")
@@ -184,7 +191,9 @@ jazzer_driver \\
   2>&1 | tee "\$cmdOutputFile" || {
     retCode=\$?;
     if grep -q "A fatal error has been detected by the Java Runtime Environment" "\$cmdOutputFile"; then
-      echo "Detected JRE crash; exiting with success, since it doesn't qualify as a fuzzing failure."
+      echo "Detected JRE crash; it doesn't qualify as a fuzzing failure."
+      echo "Cleaning up crash reports and exiting with success..."
+      dump_debug
       exit 0
     else
       exit \$retCode
