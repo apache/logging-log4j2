@@ -246,13 +246,13 @@ include::partial$components/log4j-slf4j-impl.adoc[]
 
 You can translate {jul-link} calls to Log4j API using the `log4j-jul` artifact:
 
-include::partial$components/log4j-jul.adoc[]
+include::partial$components/jul-to-log4j.adoc[]
 
 In order to activate the bridge from JUL to Log4j API, you also need to add:
 
 [source]
 ----
--Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager
+-Djava.util.logging.manager=org.apache.logging.jul.tolog4j.LogManager
 ----
 
 to the JVM parameters in your application launcher.
