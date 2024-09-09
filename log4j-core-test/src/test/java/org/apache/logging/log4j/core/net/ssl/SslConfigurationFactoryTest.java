@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.net.ssl;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.util.stream.Stream;
 import org.apache.logging.log4j.core.impl.CoreProperties.KeyManagerFactoryProperties;
 import org.apache.logging.log4j.core.impl.CoreProperties.KeyStoreProperties;
 import org.apache.logging.log4j.core.impl.CoreProperties.TransportSecurityProperties;
@@ -29,8 +30,6 @@ import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import java.util.stream.Stream;
 
 @UsingStatusListener // Suppresses `StatusLogger` output, unless there is a failure
 class SslConfigurationFactoryTest {
@@ -108,7 +107,9 @@ class SslConfigurationFactoryTest {
                 null,
                 null,
                 SslKeyStoreConstants.WINDOWS_TRUSTSTORE_TYPE);
-        final TransportSecurityProperties transportSecurity = TransportSecurityProperties.defaultValue().withKeyStore(keyStore).withTrustStore(trustStore);
+        final TransportSecurityProperties transportSecurity = TransportSecurityProperties.defaultValue()
+                .withKeyStore(keyStore)
+                .withTrustStore(trustStore);
 
         // Verify the configuration
         final SslConfiguration config = SslConfigurationFactory.getSslConfiguration(transportSecurity);
