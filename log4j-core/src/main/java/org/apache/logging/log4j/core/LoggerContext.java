@@ -527,7 +527,6 @@ public class LoggerContext extends AbstractLifeCycle
         // Note: This is the only method where we add entries to the 'loggerRegistry' ivar.
         Logger logger = loggerRegistry.getLogger(name, messageFactory);
         if (logger != null) {
-            AbstractLogger.checkMessageFactory(logger, messageFactory);
             return logger;
         }
 

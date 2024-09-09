@@ -166,7 +166,10 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
      *
      * @param logger The logger to check
      * @param messageFactory The message factory to check.
+     * @deprecated Planned to be removed!
+     * Instead, in {@link LoggerContext#getLogger(String, MessageFactory)} implementations, namespace loggers with message factories.
      */
+    @Deprecated
     public static void checkMessageFactory(final ExtendedLogger logger, final MessageFactory messageFactory) {
         final String name = logger.getName();
         final MessageFactory loggerMessageFactory = logger.getMessageFactory();

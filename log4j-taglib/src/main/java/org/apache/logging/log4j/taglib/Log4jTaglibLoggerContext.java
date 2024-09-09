@@ -60,7 +60,6 @@ final class Log4jTaglibLoggerContext implements LoggerContext {
         // Note: This is the only method where we add entries to the 'loggerRegistry' ivar.
         Log4jTaglibLogger logger = this.loggerRegistry.getLogger(name, messageFactory);
         if (logger != null) {
-            AbstractLogger.checkMessageFactory(logger, messageFactory);
             return logger;
         }
 
