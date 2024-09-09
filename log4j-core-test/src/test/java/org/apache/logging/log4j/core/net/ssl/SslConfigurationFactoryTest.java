@@ -93,17 +93,18 @@ class SslConfigurationFactoryTest {
     public void testPasswordLessStores(final String location, final String password) {
 
         // Create the configuration
+        final char[] passwordChars = password != null ? password.toCharArray() : null;
         final KeyStoreProperties keyStore = new KeyStoreProperties(
                 new KeyManagerFactoryProperties(null),
                 location,
-                password.toCharArray(),
+                passwordChars,
                 null,
                 null,
                 SslKeyStoreConstants.WINDOWS_KEYSTORE_TYPE);
         final KeyStoreProperties trustStore = new KeyStoreProperties(
                 new KeyManagerFactoryProperties(null),
                 location,
-                password.toCharArray(),
+                passwordChars,
                 null,
                 null,
                 SslKeyStoreConstants.WINDOWS_TRUSTSTORE_TYPE);
