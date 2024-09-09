@@ -15,8 +15,10 @@
  * limitations under the license.
  */
 @Export
-@Version("2.21.1")
+@Version("2.25.0")
+@BaselineIgnore("2.25.0")
 package org.apache.logging.log4j.core.test;
 
+import aQute.bnd.annotation.baseline.BaselineIgnore;
 import org.osgi.annotation.bundle.Export;
 import org.osgi.annotation.versioning.Version;

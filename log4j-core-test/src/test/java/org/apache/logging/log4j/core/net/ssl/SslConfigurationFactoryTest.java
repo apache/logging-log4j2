@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Properties;
 import java.util.stream.Stream;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
@@ -29,6 +30,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+@UsingStatusListener // Suppresses `StatusLogger` output, unless there is a failure
 public class SslConfigurationFactoryTest {
 
     private static final String trustStorelocation = "log4j2.trustStoreLocation";
@@ -39,13 +41,13 @@ public class SslConfigurationFactoryTest {
     private static final String keyStoreType = "log4j2.keyStoreType";
 
     private static void addKeystoreConfiguration(final Properties props) {
-        props.setProperty(keyStoreLocation, TestConstants.KEYSTORE_FILE_RESOURCE);
-        props.setProperty(keyStoreType, TestConstants.KEYSTORE_TYPE);
+        props.setProperty(keyStoreLocation, SslKeyStoreConstants.KEYSTORE_LOCATION);
+        props.setProperty(keyStoreType, SslKeyStoreConstants.KEYSTORE_TYPE);
     }
 
     private static void addTruststoreConfiguration(final Properties props) {
-        props.setProperty(trustStorelocation, TestConstants.TRUSTSTORE_FILE_RESOURCE);
-        props.setProperty(trustStoreKeyStoreType, TestConstants.TRUSTSTORE_TYPE);
+        props.setProperty(trustStorelocation, SslKeyStoreConstants.TRUSTSTORE_LOCATION);
+        props.setProperty(trustStoreKeyStoreType, SslKeyStoreConstants.TRUSTSTORE_TYPE);
     }
 
     @Test

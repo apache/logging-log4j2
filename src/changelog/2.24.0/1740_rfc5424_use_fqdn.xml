@@ -2,7 +2,7 @@
 <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
-       type="updated">
-  <issue id="2918" link="https://github.com/apache/logging-log4j2/pull/2918"/>
-  <description format="asciidoc">Update `org.mongodb:bson` to version `5.1.4`</description>
+       type="fixed">
+  <issue id="1740" link="https://github.com/apache/logging-log4j2/issues/1740"/>
+  <description format="asciidoc">Use FQDN in RFC5424 Layout.</description>
 </entry>

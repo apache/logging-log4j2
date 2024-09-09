@@ -15,15 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration name="HttpAppenderTest" status="WARN">
-  <Appenders>
-    <Console name="Console" target="SYSTEM_OUT">
-        <PatternLayout pattern="%d [%t] %-5level: %msg%n%throwable" />
-    </Console>
-  </Appenders>
-  <Loggers>
-    <Root level="WARN">
-      <AppenderRef ref="Console"/>
-    </Root>
-  </Loggers>
-</Configuration>
+<release xmlns="https://logging.apache.org/xml/ns"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+         date="2024-09-03" version="2.24.0"/>

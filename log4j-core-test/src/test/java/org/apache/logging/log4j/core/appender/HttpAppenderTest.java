@@ -25,35 +25,36 @@ import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import java.io.IOException;
-import java.io.Serializable;
+import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
+import java.net.MalformedURLException;
 import java.net.URL;
-import org.apache.commons.lang3.SystemUtils;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.JsonLayout;
 import org.apache.logging.log4j.core.lookup.JavaLookup;
 import org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
-import org.apache.logging.log4j.core.net.ssl.TestConstants;
+import org.apache.logging.log4j.core.net.ssl.SslKeyStoreConstants;
 import org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusData;
-import org.apache.logging.log4j.status.StatusListener;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.Assume;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
+import org.apache.logging.log4j.test.ListStatusListener;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /* Fails often on Windows, for example:
 [ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:2.20.1:test (default-test) on project log4j-core: There are test failures.
@@ -125,14 +126,12 @@ import org.junit.Test;
 [ERROR] After correcting the problems, you can resume the build with the command
 [ERROR]   mvn <goals> -rf :log4j-core
  */
-public class HttpAppenderTest {
+@DisabledOnOs(OS.WINDOWS)
+class HttpAppenderTest {
+
+    private static final Configuration CONFIGURATION = new DefaultConfiguration();
 
     private static final String LOG_MESSAGE = "Hello, world!";
-
-    @BeforeClass
-    public static void setupClass() {
-        Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
-    }
 
     private static Log4jLogEvent createLogEvent() {
         return Log4jLogEvent.newBuilder()
@@ -153,97 +152,111 @@ public class HttpAppenderTest {
             .withHeader("Content-Type", "application/json")
             .withBody("{\"status\":\"error\"}");
 
-    private final JavaLookup JAVA_LOOKUP = new JavaLookup();
+    private static final JavaLookup JAVA_LOOKUP = new JavaLookup();
 
-    @Rule
-    public LoggerContextRule ctx = new LoggerContextRule("HttpAppenderTest.xml");
+    @RegisterExtension
+    static final WireMockExtension WIRE_MOCK = WireMockExtension.newInstance()
+            .options(wireMockConfig()
+                    .dynamicPort()
+                    .dynamicHttpsPort()
+                    .keystorePath(SslKeyStoreConstants.KEYSTORE_LOCATION)
+                    .keystorePassword(String.valueOf(SslKeyStoreConstants.KEYSTORE_PWD()))
+                    .keyManagerPassword(String.valueOf(SslKeyStoreConstants.KEYSTORE_PWD()))
+                    .keystoreType(SslKeyStoreConstants.KEYSTORE_TYPE))
+            .build();
 
-    @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig()
-            .dynamicPort()
-            .dynamicHttpsPort()
-            .keystorePath(TestConstants.KEYSTORE_FILE)
-            .keystorePassword(String.valueOf(TestConstants.KEYSTORE_PWD()))
-            .keyManagerPassword(String.valueOf(TestConstants.KEYSTORE_PWD()))
-            .keystoreType(TestConstants.KEYSTORE_TYPE));
+    private static URL wireMockUrl(final String path, final boolean secure, final boolean portMangled)
+            throws MalformedURLException {
+        final String scheme = secure ? "https" : "http";
+        int port = secure ? WIRE_MOCK.getHttpsPort() : WIRE_MOCK.getPort();
+        if (portMangled) {
+            port++;
+        }
+        final String url = String.format("%s://localhost:%d%s", scheme, port, path);
+        return new URL(url);
+    }
 
     @Test
-    public void testAppend() throws Exception {
-        wireMockRule.stubFor(post(urlEqualTo("/test/log4j/")).willReturn(SUCCESS_RESPONSE));
+    void testAppend() throws Exception {
+        WIRE_MOCK.stubFor(post(urlEqualTo("/test/log4j/")).willReturn(SUCCESS_RESPONSE));
 
         final Appender appender = HttpAppender.newBuilder()
                 .setName("Http")
-                .setLayout((Layout<? extends Serializable>) JsonLayout.createDefaultLayout())
-                .setConfiguration(ctx.getConfiguration())
-                .setUrl(new URL("http://localhost:" + wireMockRule.port() + "/test/log4j/"))
+                .setLayout(JsonLayout.createDefaultLayout())
+                .setConfiguration(CONFIGURATION)
+                .setUrl(wireMockUrl("/test/log4j/", false, false))
                 .build();
         appender.append(createLogEvent());
 
-        wireMockRule.verify(postRequestedFor(urlEqualTo("/test/log4j/"))
+        WIRE_MOCK.verify(postRequestedFor(urlEqualTo("/test/log4j/"))
                 .withHeader("Host", containing("localhost"))
                 .withHeader("Content-Type", containing("application/json"))
                 .withRequestBody(containing("\"message\" : \"" + LOG_MESSAGE + "\"")));
     }
 
     @Test
-    public void testAppendHttps() throws Exception {
-        wireMockRule.stubFor(post(urlEqualTo("/test/log4j/")).willReturn(SUCCESS_RESPONSE));
+    void testAppendHttps() throws Exception {
+        WIRE_MOCK.stubFor(post(urlEqualTo("/test/log4j/")).willReturn(SUCCESS_RESPONSE));
 
         final Appender appender = HttpAppender.newBuilder()
                 .setName("Http")
-                .setLayout((Layout<? extends Serializable>) JsonLayout.createDefaultLayout())
-                .setConfiguration(ctx.getConfiguration())
-                .setUrl(new URL("https://localhost:" + wireMockRule.httpsPort() + "/test/log4j/"))
+                .setLayout(JsonLayout.createDefaultLayout())
+                .setConfiguration(CONFIGURATION)
+                .setUrl(wireMockUrl("/test/log4j/", true, false))
                 .setSslConfiguration(SslConfiguration.createSSLConfiguration(
                         null,
                         KeyStoreConfiguration.createKeyStoreConfiguration(
-                                TestConstants.KEYSTORE_FILE,
-                                TestConstants.KEYSTORE_PWD(),
-                                TestConstants.KEYSTORE_TYPE,
+                                SslKeyStoreConstants.KEYSTORE_LOCATION,
+                                SslKeyStoreConstants.KEYSTORE_PWD(),
+                                null,
+                                null,
+                                SslKeyStoreConstants.KEYSTORE_TYPE,
                                 null),
                         TrustStoreConfiguration.createKeyStoreConfiguration(
-                                TestConstants.TRUSTSTORE_FILE,
-                                TestConstants.TRUSTSTORE_PWD(),
-                                TestConstants.TRUSTSTORE_TYPE,
+                                SslKeyStoreConstants.TRUSTSTORE_LOCATION,
+                                SslKeyStoreConstants.TRUSTSTORE_PWD(),
+                                null,
+                                null,
+                                SslKeyStoreConstants.TRUSTSTORE_TYPE,
                                 null)))
                 .setVerifyHostname(false)
                 .build();
         appender.append(createLogEvent());
 
-        wireMockRule.verify(postRequestedFor(urlEqualTo("/test/log4j/"))
-                .withHeader("Host", containing("localhost"))
+        WIRE_MOCK.verify(postRequestedFor(urlEqualTo("/test/log4j/"))
                 .withHeader("Content-Type", containing("application/json"))
                 .withRequestBody(containing("\"message\" : \"" + LOG_MESSAGE + "\"")));
     }
 
     @Test
-    public void testAppendMethodPut() throws Exception {
-        wireMockRule.stubFor(put(urlEqualTo("/test/log4j/1234")).willReturn(SUCCESS_RESPONSE));
+    void testAppendMethodPut() throws Exception {
+        WIRE_MOCK.stubFor(put(urlEqualTo("/test/log4j/1234")).willReturn(SUCCESS_RESPONSE));
 
         final Appender appender = HttpAppender.newBuilder()
                 .setName("Http")
-                .setLayout((Layout<? extends Serializable>) JsonLayout.createDefaultLayout())
-                .setConfiguration(ctx.getConfiguration())
+                .setLayout(JsonLayout.createDefaultLayout())
+                .setConfiguration(CONFIGURATION)
+                .setIgnoreExceptions(false)
                 .setMethod("PUT")
-                .setUrl(new URL("http://localhost:" + wireMockRule.port() + "/test/log4j/1234"))
+                .setUrl(wireMockUrl("/test/log4j/1234", false, false))
                 .build();
         appender.append(createLogEvent());
 
-        wireMockRule.verify(putRequestedFor(urlEqualTo("/test/log4j/1234"))
-                .withHeader("Host", containing("localhost"))
+        WIRE_MOCK.verify(putRequestedFor(urlEqualTo("/test/log4j/1234"))
                 .withHeader("Content-Type", containing("application/json"))
                 .withRequestBody(containing("\"message\" : \"" + LOG_MESSAGE + "\"")));
     }
 
     @Test
-    public void testAppendCustomHeader() throws Exception {
-        wireMockRule.stubFor(post(urlEqualTo("/test/log4j/")).willReturn(SUCCESS_RESPONSE));
+    void testAppendCustomHeader() throws Exception {
+        WIRE_MOCK.stubFor(post(urlEqualTo("/test/log4j/")).willReturn(SUCCESS_RESPONSE));
 
         final Appender appender = HttpAppender.newBuilder()
                 .setName("Http")
-                .setLayout((Layout<? extends Serializable>) JsonLayout.createDefaultLayout())
-                .setConfiguration(ctx.getConfiguration())
-                .setUrl(new URL("http://localhost:" + wireMockRule.port() + "/test/log4j/"))
+                .setLayout(JsonLayout.createDefaultLayout())
+                .setConfiguration(CONFIGURATION)
+                .setIgnoreExceptions(false)
+                .setUrl(wireMockUrl("/test/log4j/", false, false))
                 .setHeaders(new Property[] {
                     Property.createProperty("X-Test", "header value"),
                     Property.createProperty("X-Runtime", "${java:runtime}")
@@ -251,79 +264,62 @@ public class HttpAppenderTest {
                 .build();
         appender.append(createLogEvent());
 
-        wireMockRule.verify(postRequestedFor(urlEqualTo("/test/log4j/"))
-                .withHeader("Host", containing("localhost"))
+        WIRE_MOCK.verify(postRequestedFor(urlEqualTo("/test/log4j/"))
                 .withHeader("X-Test", equalTo("header value"))
                 .withHeader("X-Runtime", equalTo(JAVA_LOOKUP.getRuntime()))
                 .withHeader("Content-Type", containing("application/json"))
                 .withRequestBody(containing("\"message\" : \"" + LOG_MESSAGE + "\"")));
     }
 
-    volatile StatusData error;
-
     @Test
-    public void testAppendErrorIgnore() throws Exception {
-        wireMockRule.stubFor(post(urlEqualTo("/test/log4j/")).willReturn(FAILURE_RESPONSE));
-
-        StatusLogger.getLogger().registerListener(new StatusListener() {
-            @Override
-            public void log(final StatusData data) {
-                error = data;
-            }
-
-            @Override
-            public Level getStatusLevel() {
-                return Level.ERROR;
-            }
-
-            @Override
-            public void close() throws IOException {}
-        });
-
-        error = null;
-
+    @UsingStatusListener
+    void testAppendErrorIgnore(final ListStatusListener statusListener) throws Exception {
+        WIRE_MOCK.stubFor(post(urlEqualTo("/test/log4j/")).willReturn(FAILURE_RESPONSE));
         final Appender appender = HttpAppender.newBuilder()
                 .setName("Http")
-                .setLayout((Layout<? extends Serializable>) JsonLayout.createDefaultLayout())
-                .setConfiguration(ctx.getConfiguration())
-                .setUrl(new URL("http://localhost:" + wireMockRule.port() + "/test/log4j/"))
+                .setLayout(JsonLayout.createDefaultLayout())
+                .setConfiguration(CONFIGURATION)
+                .setUrl(wireMockUrl("/test/log4j/", false, false))
                 .build();
         appender.append(createLogEvent());
 
-        wireMockRule.verify(postRequestedFor(urlEqualTo("/test/log4j/"))
-                .withHeader("Host", containing("localhost"))
+        WIRE_MOCK.verify(postRequestedFor(urlEqualTo("/test/log4j/"))
                 .withHeader("Content-Type", containing("application/json"))
                 .withRequestBody(containing("\"message\" : \"" + LOG_MESSAGE + "\"")));
 
-        assertNotNull(error);
-        assertEquals(Level.ERROR, error.getLevel());
-        assertEquals(
-                "Unable to send HTTP in appender [Http]", error.getMessage().toString());
+        final List<StatusData> statusDataList = statusListener.getStatusData().collect(Collectors.toList());
+        assertThat(statusDataList).anySatisfy(statusData -> {
+            assertThat(statusData.getLevel()).isEqualTo(Level.ERROR);
+            assertThat(statusData.getFormattedStatus()).contains("Unable to send HTTP in appender [Http]");
+        });
     }
 
-    @Test(expected = AppenderLoggingException.class)
-    public void testAppendError() throws Exception {
-        wireMockRule.stubFor(post(urlEqualTo("/test/log4j/")).willReturn(FAILURE_RESPONSE));
-
+    @Test
+    @UsingStatusListener // Suppresses `StatusLogger` output, unless there is a failure
+    void testAppendError() throws Exception {
+        WIRE_MOCK.stubFor(post(urlEqualTo("/test/log4j/")).willReturn(FAILURE_RESPONSE));
         final Appender appender = HttpAppender.newBuilder()
                 .setName("Http")
-                .setLayout((Layout<? extends Serializable>) JsonLayout.createDefaultLayout())
-                .setConfiguration(ctx.getConfiguration())
+                .setLayout(JsonLayout.createDefaultLayout())
+                .setConfiguration(CONFIGURATION)
                 .setIgnoreExceptions(false)
-                .setUrl(new URL("http://localhost:" + wireMockRule.port() + "/test/log4j/"))
+                .setUrl(wireMockUrl("/test/log4j/", false, false))
                 .build();
-        appender.append(createLogEvent());
+        final LogEvent logEvent = createLogEvent();
+        assertThrows(AppenderLoggingException.class, () -> appender.append(logEvent));
     }
 
-    @Test(expected = AppenderLoggingException.class)
-    public void testAppendConnectError() throws Exception {
+    @Test
+    @UsingStatusListener // Suppresses `StatusLogger` output, unless there is a failure
+    void testAppendConnectError() throws Exception {
         final Appender appender = HttpAppender.newBuilder()
                 .setName("Http")
-                .setLayout((Layout<? extends Serializable>) JsonLayout.createDefaultLayout())
-                .setConfiguration(ctx.getConfiguration())
+                .setLayout(JsonLayout.createDefaultLayout())
+                .setConfiguration(CONFIGURATION)
                 .setIgnoreExceptions(false)
-                .setUrl(new URL("http://localhost:" + (wireMockRule.port() + 1) + "/test/log4j/"))
+                .setUrl(wireMockUrl("/test/log4j/", false, true))
                 .build();
-        appender.append(createLogEvent());
+        final LogEvent logEvent = createLogEvent();
+        assertThrows(AppenderLoggingException.class, () -> appender.append(logEvent));
     }
 }
