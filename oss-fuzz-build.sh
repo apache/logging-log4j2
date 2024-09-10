@@ -169,10 +169,9 @@ java -version
 # Dump some debugging aid
 dump_debug() {
   export
-  ls -al . \
-    "\$CRASH_STACKTRACES_DIR" \
-    "\$DATA_BUNDLES_DIR" \
-    "\$FUZZ_INPUTS"
+  for filePath in . "\${CRASH_STACKTRACES_DIR:-}" "\${CRASH_STACKTRACES_DIR:-}" "\${DATA_BUNDLES_DIR:-}" "\${FUZZ_INPUTS:-}"; do
+    ls -al "$filePath"
+  done
 }
 dump_debug
 
