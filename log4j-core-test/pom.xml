@@ -61,7 +61,33 @@
       java.allocation.instrumenter;substitute="java-allocation-instrumenter",
       spring.test;substitute="spring-test"
     </bnd-extra-module-options>
+
+    <!-- Dependency versions -->
+    <slf4j2.version>2.0.16</slf4j2.version>
+    <wiremock.version>3.9.1</wiremock.version>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+
+      <!-- Transitive dependency of `wiremock` -->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j2.version}</version>
+      </dependency>
+
+      <!-- Pinned transitive dependencies with CVEs -->
+
+      <!-- Transitive dependency of `log4j2-custom-layout` -->
+      <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>2.11.0</version>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
 
@@ -241,13 +267,6 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- Log4j 1.2 tests -->
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <scope>test</scope>
-    </dependency>
-
     <dependency>
       <groupId>com.github.ivandzf</groupId>
       <artifactId>log4j2-custom-layout</artifactId>
@@ -288,11 +307,11 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- SLF4J tests -->
+    <!-- Switch to `slf4j-simple` to enable HTTP logging -->
     <dependency>
       <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <scope>test</scope>
+      <artifactId>slf4j-nop</artifactId>
+      <version>${slf4j2.version}</version>
     </dependency>
 
     <dependency>
@@ -303,8 +322,9 @@
 
     <!-- Used for testing HTTP Watcher -->
     <dependency>
-      <groupId>com.github.tomakehurst</groupId>
-      <artifactId>wiremock-jre8</artifactId>
+      <groupId>org.wiremock</groupId>
+      <artifactId>wiremock</artifactId>
+      <version>${wiremock.version}</version>
       <scope>test</scope>
     </dependency>
 
@@ -345,6 +365,8 @@
           <runOrder>random</runOrder>
           <systemPropertyVariables>
             <Web.isWebApp>false</Web.isWebApp>
+            <!-- Enables logging of HTTP requests, if `slf4j-nop` is replaced by `slf4j-simple` above-->
+            <org.slf4j.simpleLogger.log.org.eclipse.jetty.server.HttpChannel>DEBUG</org.slf4j.simpleLogger.log.org.eclipse.jetty.server.HttpChannel>
           </systemPropertyVariables>
           <useModulePath>false</useModulePath>
         </configuration>
