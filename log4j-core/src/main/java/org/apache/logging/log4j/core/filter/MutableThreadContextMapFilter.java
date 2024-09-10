@@ -66,6 +66,8 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 @PerformanceSensitive("allocation")
 public class MutableThreadContextMapFilter extends AbstractFilter {
 
+    private static final String HTTP = "http";
+    private static final String HTTPS = "https";
     private static final KeyValuePair[] EMPTY_ARRAY = {};
 
     private volatile Filter filter;
@@ -376,29 +378,42 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
             final PropertyEnvironment properties = configuration.getEnvironment();
             final SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration(properties);
             final ConfigResult result = getConfig(source, authorizationProvider, properties, sslConfiguration);
-            if (result.status == Status.SUCCESS) {
-                filter = ThreadContextMapFilter.newBuilder()
-                        .setPairs(result.pairs)
-                        .setOperator("or")
-                        .setOnMatch(getOnMatch())
-                        .setOnMismatch(getOnMismatch())
-                        .setContextDataInjector(configuration.getComponent(ContextDataInjector.KEY))
-                        .get();
-                LOGGER.info("Filter configuration was updated: {}", filter.toString());
-                for (FilterConfigUpdateListener listener : listeners) {
-                    listener.onEvent();
-                }
-            } else if (result.status == Status.NOT_FOUND) {
-                if (!(filter instanceof NoOpFilter)) {
-                    LOGGER.info("Filter configuration was removed");
+            switch (result.status) {
+                case SUCCESS:
+                    filter = ThreadContextMapFilter.newBuilder()
+                            .setPairs(result.pairs)
+                            .setOperator("or")
+                            .setOnMatch(getOnMatch())
+                            .setOnMismatch(getOnMismatch())
+                            .setContextDataInjector(configuration.getComponent(ContextDataInjector.KEY))
+                            .get();
+                    LOGGER.info("MutableThreadContextMapFilter configuration was updated: {}", filter.toString());
+                    break;
+                case NOT_FOUND:
+                    if (!(filter instanceof NoOpFilter)) {
+                        LOGGER.info("MutableThreadContextMapFilter configuration was removed");
+                        filter = new NoOpFilter();
+                    }
+                    break;
+                case EMPTY:
+                    LOGGER.debug("MutableThreadContextMapFilter configuration is empty");
                     filter = new NoOpFilter();
+                    break;
+            }
+            switch (result.status) {
+                    // These results cause changes in the filter
+                    // We call the listeners
+                case SUCCESS:
+                case NOT_FOUND:
+                case EMPTY:
                     for (FilterConfigUpdateListener listener : listeners) {
                         listener.onEvent();
                     }
-                }
-            } else if (result.status == Status.EMPTY) {
-                LOGGER.debug("Filter configuration is empty");
-                filter = new NoOpFilter();
+                    break;
+                    // These results do no cause changes in the filter
+                case ERROR:
+                case NOT_MODIFIED:
+                    break;
             }
         }
     }
@@ -407,7 +422,7 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
             value = "PATH_TRAVERSAL_IN",
             justification = "The location of the file comes from a configuration value.")
     private static LastModifiedSource getSource(final String configLocation) {
-        LastModifiedSource source = null;
+        LastModifiedSource source;
         try {
             final URI uri = new URI(configLocation);
             if (uri.getScheme() != null) {
@@ -430,8 +445,9 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
         final File inputFile = source.getFile();
         final ConfigResult configResult = new ConfigResult();
         InputStream inputStream = null;
-        HttpInputStreamUtil.Result result = null;
+        HttpInputStreamUtil.Result result;
         final long lastModified = source.getLastModified();
+        URI uri = source.getURI();
         try {
             if (inputFile != null && inputFile.exists()) {
                 try {
@@ -446,7 +462,7 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
                 } catch (Exception ex) {
                     result = new HttpInputStreamUtil.Result(Status.ERROR);
                 }
-            } else if (source.getURI() != null) {
+            } else if (HTTP.equalsIgnoreCase(uri.getScheme()) || HTTPS.equalsIgnoreCase(uri.getScheme())) {
                 try {
                     result = HttpInputStreamUtil.getInputStream(source, props, authorizationProvider, sslConfiguration);
                     inputStream = result.getInputStream();
@@ -508,7 +524,7 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
                             LOGGER.warn("Ignoring the value for {}, which is not an array: {}", key, jsonArray);
                         }
                     }
-                    if (pairs.size() > 0) {
+                    if (!pairs.isEmpty()) {
                         configResult.pairs = pairs.toArray(EMPTY_ARRAY);
                         configResult.status = Status.SUCCESS;
                     } else {

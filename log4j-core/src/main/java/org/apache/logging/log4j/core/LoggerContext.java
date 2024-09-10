@@ -341,7 +341,7 @@ public class LoggerContext extends AbstractLifeCycle
      * @param config The new Configuration.
      */
     public void start(final Configuration config) {
-        LOGGER.debug("Starting {} with configuration {}...", this, config);
+        LOGGER.info("Starting {}[name={}] with configuration {}...", getClass().getSimpleName(), getName(), config);
         if (configLock.tryLock()) {
             try {
                 if (this.isInitialized() || this.isStopped()) {
@@ -355,7 +355,7 @@ public class LoggerContext extends AbstractLifeCycle
             }
         }
         setConfiguration(config);
-        LOGGER.debug("{} started OK with configuration {}.", this, config);
+        LOGGER.info("{}[name={}] started with configuration {}.", getClass().getSimpleName(), getName(), config);
     }
 
     private void setUpShutdownHook() {
@@ -815,7 +815,12 @@ public class LoggerContext extends AbstractLifeCycle
     private void reconfigure(final URI configURI) {
         final Object externalContext = externalMap.get(EXTERNAL_CONTEXT_KEY);
         final ClassLoader cl = externalContext instanceof ClassLoader ? (ClassLoader) externalContext : null;
-        LOGGER.debug("Reconfiguration started for {} at URI {} with optional ClassLoader: {}", this, configURI, cl);
+        LOGGER.debug(
+                "Reconfiguration started for context[name={}] at URI {} ({}) with optional ClassLoader: {}",
+                contextName,
+                configURI,
+                this,
+                cl);
         final Configuration instance = getConfiguration(contextName, configURI, cl);
         if (instance == null) {
             LOGGER.error(

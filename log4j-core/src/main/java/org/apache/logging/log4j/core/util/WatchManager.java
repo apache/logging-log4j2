@@ -20,6 +20,7 @@ import aQute.bnd.annotation.Cardinality;
 import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.io.File;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -53,8 +54,9 @@ import org.apache.logging.log4j.util.ServiceLoaderUtil;
 public class WatchManager extends AbstractLifeCycle {
 
     private static final class ConfigurationMonitor {
-        private volatile long lastModifiedMillis;
         private final Watcher watcher;
+        // Only used for logging
+        private volatile long lastModifiedMillis;
 
         public ConfigurationMonitor(final long lastModifiedMillis, final Watcher watcher) {
             this.watcher = watcher;
@@ -115,15 +117,11 @@ public class WatchManager extends AbstractLifeCycle {
                 final ConfigurationMonitor monitor = entry.getValue();
                 if (monitor.getWatcher().isModified()) {
                     final long lastModified = monitor.getWatcher().getLastModified();
-                    if (logger.isInfoEnabled()) {
-                        logger.info(
-                                "Source '{}' was modified on {} ({}), previous modification was on {} ({})",
-                                source,
-                                millisToString(lastModified),
-                                lastModified,
-                                millisToString(monitor.lastModifiedMillis),
-                                monitor.lastModifiedMillis);
-                    }
+                    logger.info(
+                            "Configuration source at `{}` was modified on `{}`, previous modification was on `{}`",
+                            () -> source,
+                            () -> Instant.ofEpochMilli(lastModified),
+                            () -> Instant.ofEpochMilli(monitor.lastModifiedMillis));
                     monitor.lastModifiedMillis = lastModified;
                     monitor.getWatcher().modified();
                 }
@@ -188,7 +186,7 @@ public class WatchManager extends AbstractLifeCycle {
     }
 
     public boolean hasEventListeners() {
-        return eventServiceList.size() > 0;
+        return !eventServiceList.isEmpty();
     }
 
     private String millisToString(final long millis) {
