@@ -20,9 +20,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URI;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +64,9 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 @PluginAliases("MutableContextMapFilter")
 @PerformanceSensitive("allocation")
 public class MutableThreadContextMapFilter extends AbstractFilter {
+
+    private static final String HTTP = "http";
+    private static final String HTTPS = "https";
 
     private static final ObjectMapper MAPPER =
             new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -364,23 +367,29 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
         @Override
         public void run() {
             final ConfigResult result = getConfig(source, authorizationProvider);
-            if (result.status == Status.SUCCESS) {
-                filter = ThreadContextMapFilter.createFilter(result.pairs, "or", getOnMatch(), getOnMismatch());
-                LOGGER.info("Filter configuration was updated: {}", filter.toString());
-                for (FilterConfigUpdateListener listener : listeners) {
-                    listener.onEvent();
-                }
-            } else if (result.status == Status.NOT_FOUND) {
-                if (!(filter instanceof NoOpFilter)) {
-                    LOGGER.info("Filter configuration was removed");
+            switch (result.status) {
+                case SUCCESS:
+                    filter = ThreadContextMapFilter.createFilter(result.pairs, "or", getOnMatch(), getOnMismatch());
+                    LOGGER.info("MutableThreadContextMapFilter configuration was updated: {}", filter.toString());
+                    break;
+                case NOT_FOUND:
+                    if (!(filter instanceof NoOpFilter)) {
+                        LOGGER.info("MutableThreadContextMapFilter configuration was removed");
+                        filter = new NoOpFilter();
+                    }
+                    break;
+                case EMPTY:
+                    LOGGER.debug("MutableThreadContextMapFilter configuration is empty");
                     filter = new NoOpFilter();
+                    break;
+            }
+            switch (result.status) {
+                case SUCCESS:
+                case NOT_FOUND:
+                case EMPTY:
                     for (FilterConfigUpdateListener listener : listeners) {
                         listener.onEvent();
                     }
-                }
-            } else if (result.status == Status.EMPTY) {
-                LOGGER.debug("Filter configuration is empty");
-                filter = new NoOpFilter();
             }
         }
     }
@@ -389,7 +398,7 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
             value = "PATH_TRAVERSAL_IN",
             justification = "The location of the file comes from a configuration value.")
     private static LastModifiedSource getSource(final String configLocation) {
-        LastModifiedSource source = null;
+        LastModifiedSource source;
         try {
             final URI uri = new URI(configLocation);
             if (uri.getScheme() != null) {
@@ -408,14 +417,15 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
             final LastModifiedSource source, final AuthorizationProvider authorizationProvider) {
         final File inputFile = source.getFile();
         InputStream inputStream = null;
-        HttpInputStreamUtil.Result result = null;
+        HttpInputStreamUtil.Result result;
         final long lastModified = source.getLastModified();
+        URI uri = source.getURI();
         if (inputFile != null && inputFile.exists()) {
             try {
                 final long modified = inputFile.lastModified();
                 if (modified > lastModified) {
                     source.setLastModified(modified);
-                    inputStream = new FileInputStream(inputFile);
+                    inputStream = Files.newInputStream(inputFile.toPath());
                     result = new HttpInputStreamUtil.Result(Status.SUCCESS);
                 } else {
                     result = new HttpInputStreamUtil.Result(Status.NOT_MODIFIED);
@@ -423,7 +433,7 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
             } catch (Exception ex) {
                 result = new HttpInputStreamUtil.Result(Status.ERROR);
             }
-        } else if (source.getURI() != null) {
+        } else if (uri != null && (HTTP.equalsIgnoreCase(uri.getScheme()) || HTTPS.equalsIgnoreCase(uri.getScheme()))) {
             try {
                 result = HttpInputStreamUtil.getInputStream(source, authorizationProvider);
                 inputStream = result.getInputStream();
@@ -440,7 +450,7 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
                 final KeyValuePairConfig keyValuePairConfig = MAPPER.readValue(inputStream, KeyValuePairConfig.class);
                 if (keyValuePairConfig != null) {
                     final Map<String, String[]> configs = keyValuePairConfig.getConfigs();
-                    if (configs != null && configs.size() > 0) {
+                    if (configs != null && !configs.isEmpty()) {
                         final List<KeyValuePair> pairs = new ArrayList<>();
                         for (Map.Entry<String, String[]> entry : configs.entrySet()) {
                             final String key = entry.getKey();
@@ -452,7 +462,7 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
                                 }
                             }
                         }
-                        if (pairs.size() > 0) {
+                        if (!pairs.isEmpty()) {
                             configResult.pairs = pairs.toArray(EMPTY_ARRAY);
                             configResult.status = Status.SUCCESS;
                         } else {

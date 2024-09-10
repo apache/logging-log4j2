@@ -281,9 +281,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 watchManager.setIntervalSeconds(monitorIntervalSeconds);
                 if (configSource.getFile() != null) {
                     final Source cfgSource = new Source(configSource);
-                    final long lastModifeid = configSource.getFile().lastModified();
+                    final long lastModified = configSource.getFile().lastModified();
                     final ConfigurationFileWatcher watcher =
-                            new ConfigurationFileWatcher(this, reconfigurable, listeners, lastModifeid);
+                            new ConfigurationFileWatcher(this, reconfigurable, listeners, lastModified);
                     watchManager.watch(cfgSource, watcher);
                 } else if (configSource.getURL() != null) {
                     monitorSource(reconfigurable, configSource);
@@ -318,9 +318,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         if (getState() == State.INITIALIZING) {
             initialize();
         }
-        LOGGER.debug("Starting configuration {}", this);
+        LOGGER.info("Starting configuration {}...", this);
         this.setStarting();
         if (watchManager.getIntervalSeconds() >= 0) {
+            LOGGER.info(
+                    "Start watching for changes to {} every {} seconds",
+                    getConfigurationSource(),
+                    watchManager.getIntervalSeconds());
             watchManager.start();
         }
         if (hasAsyncLoggers()) {
@@ -338,7 +342,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             root.start(); // LOG4J2-336
         }
         super.start();
-        LOGGER.debug("Started configuration {} OK.", this);
+        LOGGER.info("Configuration {} started.", this);
     }
 
     private boolean hasAsyncLoggers() {
@@ -358,9 +362,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        LOGGER.info("Stopping configuration {}...", this);
         this.setStopping();
         super.stop(timeout, timeUnit, false);
-        LOGGER.trace("Stopping {}...", this);
 
         // Stop the components that are closest to the application first:
         // 1. Notify all LoggerConfigs' ReliabilityStrategy that the configuration will be stopped.
@@ -456,7 +460,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             advertiser.unadvertise(advertisement);
         }
         setStopped();
-        LOGGER.debug("Stopped {} OK", this);
+        LOGGER.info("Configuration {} stopped.", this);
         return true;
     }
 
@@ -484,6 +488,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         // default does nothing, subclasses do work.
     }
 
+    @SuppressWarnings("deprecation")
     protected Level getDefaultStatus() {
         final PropertiesUtil properties = PropertiesUtil.getProperties();
         String statusLevel = properties.getStringProperty(StatusLogger.DEFAULT_STATUS_LISTENER_LEVEL);
