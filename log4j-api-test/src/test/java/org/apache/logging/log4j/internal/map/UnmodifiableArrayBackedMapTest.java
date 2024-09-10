@@ -55,18 +55,19 @@ public class UnmodifiableArrayBackedMapTest {
     @Test
     public void testCopyAndPut() {
         UnmodifiableArrayBackedMap testMap = UnmodifiableArrayBackedMap.EMPTY_MAP;
-        testMap = testMap.copyAndPut("1", "value1");
-        assertTrue(testMap.containsKey("1"));
-        assertEquals(testMap.get("1"), "value1");
+        testMap = testMap.copyAndPut("6", "value6");
+        assertTrue(testMap.containsKey("6"));
+        assertEquals(testMap.get("6"), "value6");
 
-        testMap = testMap.copyAndPut("1", "another value");
-        assertTrue(testMap.containsKey("1"));
-        assertEquals(testMap.get("1"), "another value");
+        testMap = testMap.copyAndPut("6", "another value");
+        assertTrue(testMap.containsKey("6"));
+        assertEquals(testMap.get("6"), "another value");
 
         HashMap<String, String> newValues = getTestParameters();
         testMap = testMap.copyAndPutAll(newValues);
         assertEquals(testMap.get("1"), "value1");
         assertEquals(testMap.get("4"), "value4");
+        assertEquals(testMap.get("6"), "another value");
     }
 
     @Test

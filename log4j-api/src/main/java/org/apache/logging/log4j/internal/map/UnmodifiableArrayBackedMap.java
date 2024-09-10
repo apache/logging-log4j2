@@ -282,6 +282,7 @@ public class UnmodifiableArrayBackedMap extends AbstractMap<String, String> impl
         // copy the contents of the current map (if any)
         if (numEntries > 0) {
             System.arraycopy(backingArray, 0, newMap.backingArray, 0, numEntries * 2 + 1);
+            newMap.numEntries = numEntries;
         }
 
         for (Map.Entry<String, String> entry : entriesToAdd.entrySet()) {
