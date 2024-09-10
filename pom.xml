@@ -230,7 +230,7 @@
     <!-- the parent POM must come first: -->
     <module>log4j-parent</module>
 
-    <!-- Next unpublished modules in alphabetical order: -->
+    <!-- Next unpublished, but internally and *implicitly* (e.g., as a plugin dependency) consumed modules in alphabetical order: -->
     <module>log4j-api-java9</module>
     <module>log4j-core-java9</module>
 
@@ -369,6 +369,10 @@
 
   <dependencyManagement>
     <dependencies>
+
+      <!-- List of managed dependencies (in alphabetical order) that are intended for public consumption.
+           Modules that are not used anywhere (e.g., `log4j-core-its`, `log4j-osgi-test`) should not be placed here.
+           Modules that are used only internally (e.g., `log4j-layout-template-json-test`) should be added to `dependencyManagement > dependencies` in `log4j-parent/pom.xml`. -->
 
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -961,6 +965,7 @@
 
   <profiles>
 
+    <!-- `java8-tests` profile to force using Java 8 while running tests -->
     <profile>
       <id>java8-tests</id>
       <activation>
@@ -969,11 +974,23 @@
           <value>true</value>
         </property>
       </activation>
+
       <build>
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
+            <!-- There are certain Java 8 bugs[1] that cause Mockito failures[2].
+                 Adding necessary dependencies to workaround them.
+                 [1] https://bugs.openjdk.org/browse/JDK-8152174
+                 [2] https://github.com/mockito/mockito/issues/1449 -->
+            <dependencies>
+              <dependency>
+                <groupId>org.jspecify</groupId>
+                <artifactId>jspecify</artifactId>
+                <version>${jspecify.version}</version>
+              </dependency>
+            </dependencies>
             <executions>
               <!-- Modifies only the `default-test` run -->
               <execution>
