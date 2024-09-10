@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static java.util.Objects.requireNonNull;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -32,18 +34,22 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Objects;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Source;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
  * Represents the source for the logging configuration.
  */
+/*@NullMarked*/
 public class ConfigurationSource {
+
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     /**
      * ConfigurationSource to use with Configurations that do not require a "real" configuration source.
@@ -57,11 +63,12 @@ public class ConfigurationSource {
             new ConfigurationSource(Constants.EMPTY_BYTE_ARRAY, null, 0);
 
     private final InputStream stream;
-    private volatile byte[] data;
-    private volatile Source source;
-    private final long lastModified;
+    private volatile byte /*@Nullable*/[] data;
+    private final /*@Nullable*/ Source source;
+    // The initial modification time when the `ConfigurationSource` is created
+    private final long initialLastModified;
     // Set when the configuration has been updated so reset can use it for the next lastModified timestamp.
-    private volatile long modifiedMillis;
+    private volatile long currentLastModified;
 
     /**
      * Constructs a new {@code ConfigurationSource} with the specified input stream that originated from the specified
@@ -71,16 +78,7 @@ public class ConfigurationSource {
      * @param file the file where the input stream originated
      */
     public ConfigurationSource(final InputStream stream, final File file) {
-        this.stream = Objects.requireNonNull(stream, "stream is null");
-        this.data = null;
-        this.source = new Source(file);
-        long modified = 0;
-        try {
-            modified = file.lastModified();
-        } catch (Exception ex) {
-            // There is a problem with the file. It will be handled somewhere else.
-        }
-        this.lastModified = modified;
+        this(null, new Source(file), stream, getLastModified(file.toPath()));
     }
 
     /**
@@ -91,16 +89,16 @@ public class ConfigurationSource {
      * @param path the path where the input stream originated.
      */
     public ConfigurationSource(final InputStream stream, final Path path) {
-        this.stream = Objects.requireNonNull(stream, "stream is null");
-        this.data = null;
-        this.source = new Source(path);
-        long modified = 0;
+        this(null, new Source(path), stream, getLastModified(path));
+    }
+
+    private static long getLastModified(Path path) {
         try {
-            modified = Files.getLastModifiedTime(path).toMillis();
-        } catch (Exception ex) {
+            return Files.getLastModifiedTime(path).toMillis();
+        } catch (Exception ignored) {
             // There is a problem with the file. It will be handled somewhere else.
         }
-        this.lastModified = modified;
+        return 0L;
     }
 
     /**
@@ -111,10 +109,7 @@ public class ConfigurationSource {
      * @param url the URL where the input stream originated
      */
     public ConfigurationSource(final InputStream stream, final URL url) {
-        this.stream = Objects.requireNonNull(stream, "stream is null");
-        this.data = null;
-        this.lastModified = 0;
-        this.source = new Source(url);
+        this(stream, url, 0);
     }
 
     /**
@@ -125,11 +120,8 @@ public class ConfigurationSource {
      * @param url the URL where the input stream originated
      * @param lastModified when the source was last modified.
      */
-    public ConfigurationSource(final InputStream stream, final URL url, final long lastModified) {
-        this.stream = Objects.requireNonNull(stream, "stream is null");
-        this.data = null;
-        this.lastModified = lastModified;
-        this.source = new Source(url);
+    public ConfigurationSource(InputStream stream, final URL url, final long lastModified) {
+        this(null, new Source(url), stream, lastModified);
     }
 
     /**
@@ -139,7 +131,7 @@ public class ConfigurationSource {
      * @param stream the input stream, the caller is responsible for closing this resource.
      * @throws IOException if an exception occurred reading from the specified stream
      */
-    public ConfigurationSource(final InputStream stream) throws IOException {
+    public ConfigurationSource(InputStream stream) throws IOException {
         this(toByteArray(stream), null, 0);
     }
 
@@ -150,23 +142,26 @@ public class ConfigurationSource {
      * @param data data from the source
      * @param lastModified when the source was last modified.
      */
-    public ConfigurationSource(final Source source, final byte[] data, final long lastModified) {
-        Objects.requireNonNull(source, "source is null");
-        this.data = Objects.requireNonNull(data, "data is null");
-        this.stream = new ByteArrayInputStream(data);
-        this.lastModified = lastModified;
-        this.source = source;
+    public ConfigurationSource(Source source, byte[] data, long lastModified) {
+        this(data, requireNonNull(source, "source is null"), lastModified);
     }
 
-    private ConfigurationSource(final byte[] data, final URL url, final long lastModified) {
-        this.data = Objects.requireNonNull(data, "data is null");
-        this.stream = new ByteArrayInputStream(data);
-        this.lastModified = lastModified;
-        if (url == null) {
-            this.data = data;
-        } else {
-            this.source = new Source(url);
+    private ConfigurationSource(byte[] data, /*@Nullable*/ Source source, long lastModified) {
+        this(requireNonNull(data, "data is null"), source, new ByteArrayInputStream(data), lastModified);
+    }
+
+    /**
+     * @throws NullPointerException if both {@code stream} and {@code data} are {@code null}.
+     */
+    private ConfigurationSource(
+            byte /*@Nullable*/[] data, /*@Nullable*/ Source source, InputStream stream, long lastModified) {
+        if (data == null && source == null) {
+            throw new NullPointerException("both `data` and `source` are null");
         }
+        this.stream = stream;
+        this.data = data;
+        this.source = source;
+        this.currentLastModified = this.initialLastModified = lastModified;
     }
 
     /**
@@ -195,20 +190,8 @@ public class ConfigurationSource {
      *
      * @return the configuration source file, or {@code null}
      */
-    public File getFile() {
+    public /*@Nullable*/ File getFile() {
         return source == null ? null : source.getFile();
-    }
-
-    private boolean isFile() {
-        return source == null ? false : source.getFile() != null;
-    }
-
-    private boolean isURL() {
-        return source == null ? false : source.getURI() != null;
-    }
-
-    private boolean isLocation() {
-        return source == null ? false : source.getLocation() != null;
     }
 
     /**
@@ -217,40 +200,46 @@ public class ConfigurationSource {
      *
      * @return the configuration source URL, or {@code null}
      */
-    public URL getURL() {
+    public /*@Nullable*/ URL getURL() {
         return source == null ? null : source.getURL();
     }
 
     /**
-     * @deprecated Not used internally, no replacement. TODO remove and make source final.
+     * @deprecated Not used internally, no replacement.
      */
     @Deprecated
-    public void setSource(final Source source) {
-        this.source = source;
+    public void setSource(final Source ignored) {
+        LOGGER.warn("Ignoring call of deprecated method `ConfigurationSource#setSource()`.");
     }
 
     public void setData(final byte[] data) {
         this.data = data;
     }
 
-    public void setModifiedMillis(final long modifiedMillis) {
-        this.modifiedMillis = modifiedMillis;
+    /**
+     * Updates the last known modification time of the resource.
+     *
+     * @param currentLastModified The modification time of the resource in millis.
+     */
+    public void setModifiedMillis(final long currentLastModified) {
+        this.currentLastModified = currentLastModified;
     }
 
     /**
      * Returns a URI representing the configuration resource or null if it cannot be determined.
      * @return The URI.
      */
-    public URI getURI() {
+    public /*@Nullable*/ URI getURI() {
         return source == null ? null : source.getURI();
     }
 
     /**
-     * Returns the time the resource was last modified or 0 if it is not available.
+     * Returns the last modification time known when the {@code ConfigurationSource} was created.
+     *
      * @return the last modified time of the resource.
      */
     public long getLastModified() {
-        return lastModified;
+        return initialLastModified;
     }
 
     /**
@@ -259,7 +248,7 @@ public class ConfigurationSource {
      *
      * @return a string describing the configuration source file or URL, or {@code null}
      */
-    public String getLocation() {
+    public /*@Nullable*/ String getLocation() {
         return source == null ? null : source.getLocation();
     }
 
@@ -278,30 +267,36 @@ public class ConfigurationSource {
      * @return a new {@code ConfigurationSource}
      * @throws IOException if a problem occurred while opening the new input stream
      */
-    public ConfigurationSource resetInputStream() throws IOException {
+    public /*@Nullable*/ ConfigurationSource resetInputStream() throws IOException {
+        byte[] data = this.data;
         if (source != null && data != null) {
-            return new ConfigurationSource(source, data, this.lastModified);
-        } else if (isFile()) {
-            return new ConfigurationSource(new FileInputStream(getFile()), getFile());
-        } else if (isURL() && data != null) {
-            // Creates a ConfigurationSource without accessing the URL since the data was provided.
-            return new ConfigurationSource(data, getURL(), modifiedMillis == 0 ? lastModified : modifiedMillis);
-        } else if (isURL()) {
-            return fromUri(getURI());
-        } else if (data != null) {
-            return new ConfigurationSource(data, null, lastModified);
+            return new ConfigurationSource(source, data, currentLastModified);
         }
-        return null;
+        File file = getFile();
+        if (file != null) {
+            return new ConfigurationSource(Files.newInputStream(file.toPath()), getFile());
+        }
+        URL url = getURL();
+        if (url != null && data != null) {
+            // Creates a ConfigurationSource without accessing the URL since the data was provided.
+            return new ConfigurationSource(data, new Source(url), currentLastModified);
+        }
+        URI uri = getURI();
+        if (uri != null) {
+            return fromUri(uri);
+        }
+        return data == null ? null : new ConfigurationSource(data, null, currentLastModified);
     }
 
     @Override
     public String toString() {
-        if (isLocation()) {
-            return getLocation();
+        if (source != null) {
+            return source.getLocation();
         }
         if (this == NULL_SOURCE) {
             return "NULL_SOURCE";
         }
+        byte[] data = this.data;
         final int length = data == null ? -1 : data.length;
         return "stream (" + length + " bytes, unknown location)";
     }
@@ -309,9 +304,9 @@ public class ConfigurationSource {
     /**
      * Loads the configuration from a URI.
      * @param configLocation A URI representing the location of the configuration.
-     * @return The ConfigurationSource for the configuration.
+     * @return The ConfigurationSource for the configuration or {@code null}.
      */
-    public static ConfigurationSource fromUri(final URI configLocation) {
+    public static /*@Nullable*/ ConfigurationSource fromUri(final URI configLocation) {
         final File configFile = FileUtils.fileFromUri(configLocation);
         if (configFile != null && configFile.exists() && configFile.canRead()) {
             try {
@@ -344,18 +339,15 @@ public class ConfigurationSource {
      * @param loader The default ClassLoader to use.
      * @return The ConfigurationSource for the configuration.
      */
-    public static ConfigurationSource fromResource(final String resource, final ClassLoader loader) {
+    public static /*@Nullable*/ ConfigurationSource fromResource(String resource, /*@Nullable*/ ClassLoader loader) {
         final URL url = Loader.getResource(resource, loader);
-        if (url == null) {
-            return null;
-        }
-        return getConfigurationSource(url);
+        return url == null ? null : getConfigurationSource(url);
     }
 
     @SuppressFBWarnings(
             value = "PATH_TRAVERSAL_IN",
             justification = "The name of the accessed files is based on a configuration value.")
-    private static ConfigurationSource getConfigurationSource(final URL url) {
+    private static /*@Nullable*/ ConfigurationSource getConfigurationSource(final URL url) {
         try {
             final File file = FileUtils.fileFromUri(url.toURI());
             final URLConnection urlConnection = UrlConnectionFactory.createConnection(url);
