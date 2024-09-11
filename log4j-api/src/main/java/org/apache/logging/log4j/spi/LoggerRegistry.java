@@ -16,28 +16,47 @@
  */
 package org.apache.logging.log4j.spi;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.BiFunction;
 import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
- * Convenience class to be used by {@code LoggerContext} implementations.
+ * Convenience class to be used as an {@link ExtendedLogger} registry by {@code LoggerContext} implementations.
  */
+@NullMarked
 public class LoggerRegistry<T extends ExtendedLogger> {
-    private static final String DEFAULT_FACTORY_KEY = AbstractLogger.DEFAULT_MESSAGE_FACTORY_CLASS.getName();
-    private final MapFactory<T> factory;
-    private final Map<String, Map<String, T>> map;
+
+    private final Map<String, Map<MessageFactory, T>> loggerByMessageFactoryByName = new HashMap<>();
+
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
+
+    private final Lock readLock = lock.readLock();
+
+    private final Lock writeLock = lock.writeLock();
 
     /**
-     * Interface to control the data structure used by the registry to store the Loggers.
+     * Data structure contract for the internal storage of admitted loggers.
+     *
      * @param <T> subtype of {@code ExtendedLogger}
+     * @deprecated As of version {@code 2.24.1}, planned to be removed!
      */
+    @Deprecated
     public interface MapFactory<T extends ExtendedLogger> {
+
         Map<String, T> createInnerMap();
 
         Map<String, Map<String, T>> createOuterMap();
@@ -46,10 +65,14 @@ public class LoggerRegistry<T extends ExtendedLogger> {
     }
 
     /**
-     * Generates ConcurrentHashMaps for use by the registry to store the Loggers.
+     * {@link MapFactory} implementation using {@link ConcurrentHashMap}.
+     *
      * @param <T> subtype of {@code ExtendedLogger}
+     * @deprecated As of version {@code 2.24.1}, planned to be removed!
      */
+    @Deprecated
     public static class ConcurrentMapFactory<T extends ExtendedLogger> implements MapFactory<T> {
+
         @Override
         public Map<String, T> createInnerMap() {
             return new ConcurrentHashMap<>();
@@ -62,15 +85,19 @@ public class LoggerRegistry<T extends ExtendedLogger> {
 
         @Override
         public void putIfAbsent(final Map<String, T> innerMap, final String name, final T logger) {
-            ((ConcurrentMap<String, T>) innerMap).putIfAbsent(name, logger);
+            innerMap.putIfAbsent(name, logger);
         }
     }
 
     /**
-     * Generates WeakHashMaps for use by the registry to store the Loggers.
+     * {@link MapFactory} implementation using {@link WeakHashMap}.
+     *
      * @param <T> subtype of {@code ExtendedLogger}
+     * @deprecated As of version {@code 2.24.1}, planned to be removed!
      */
+    @Deprecated
     public static class WeakMapFactory<T extends ExtendedLogger> implements MapFactory<T> {
+
         @Override
         public Map<String, T> createInnerMap() {
             return new WeakHashMap<>();
@@ -87,43 +114,66 @@ public class LoggerRegistry<T extends ExtendedLogger> {
         }
     }
 
-    public LoggerRegistry() {
-        this(new ConcurrentMapFactory<T>());
-    }
+    public LoggerRegistry() {}
 
-    public LoggerRegistry(final MapFactory<T> factory) {
-        this.factory = Objects.requireNonNull(factory, "factory");
-        this.map = factory.createOuterMap();
-    }
-
-    private static String factoryClassKey(final Class<? extends MessageFactory> messageFactoryClass) {
-        return messageFactoryClass == null ? DEFAULT_FACTORY_KEY : messageFactoryClass.getName();
-    }
-
-    private static String factoryKey(final MessageFactory messageFactory) {
-        return messageFactory == null
-                ? DEFAULT_FACTORY_KEY
-                : messageFactory.getClass().getName();
+    /**
+     * Constructs an instance <b>ignoring</b> the given the map factory.
+     *
+     * @param mapFactory a map factory
+     * @deprecated As of version {@code 2.24.1}, planned to be removed!
+     */
+    @Deprecated
+    public LoggerRegistry(@Nullable final MapFactory<T> mapFactory) {
+        this();
     }
 
     /**
-     * Returns an ExtendedLogger.
-     * @param name The name of the Logger to return.
-     * @return The logger with the specified name.
+     * Returns the logger associated with the given name.
+     * <p>
+     * There can be made no assumptions on the message factory of the returned logger.
+     * Callers are strongly advised to switch to {@link #getLogger(String, MessageFactory)} and <b>provide a message factory parameter!</b>
+     * </p>
+     *
+     * @param name a logger name
+     * @return the logger associated with the name
+     * @deprecated As of version {@code 2.24.1}, planned to be removed!
+     * Use {@link #getLogger(String, MessageFactory)} instead.
      */
+    @Deprecated
     public T getLogger(final String name) {
-        return getOrCreateInnerMap(DEFAULT_FACTORY_KEY).get(name);
+        requireNonNull(name, "name");
+        return getLogger(name, null);
     }
 
     /**
-     * Returns an ExtendedLogger.
-     * @param name The name of the Logger to return.
-     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change
-     *                       the logger but will log a warning if mismatched.
-     * @return The logger with the specified name.
+     * Returns the logger associated with the given name and message factory.
+     * <p>
+     * In the absence of a message factory, there can be made no assumptions on the message factory of the returned logger.
+     * This lenient behaviour is only kept for backward compatibility.
+     * Callers are strongly advised to <b>provide a message factory parameter to the method!</b>
+     * </p>
+     *
+     * @param name a logger name
+     * @param messageFactory a message factory
+     * @return the logger associated with the given name and message factory
      */
-    public T getLogger(final String name, final MessageFactory messageFactory) {
-        return getOrCreateInnerMap(factoryKey(messageFactory)).get(name);
+    public T getLogger(final String name, @Nullable final MessageFactory messageFactory) {
+        requireNonNull(name, "name");
+        readLock.lock();
+        try {
+            final Map<MessageFactory, T> loggerByMessageFactory = loggerByMessageFactoryByName.get(name);
+            if (loggerByMessageFactory == null) {
+                return null;
+            }
+            if (messageFactory != null) {
+                return loggerByMessageFactory.get(messageFactory);
+            }
+            return !loggerByMessageFactory.isEmpty()
+                    ? loggerByMessageFactory.values().iterator().next()
+                    : null;
+        } finally {
+            readLock.unlock();
+        }
     }
 
     public Collection<T> getLoggers() {
@@ -131,53 +181,157 @@ public class LoggerRegistry<T extends ExtendedLogger> {
     }
 
     public Collection<T> getLoggers(final Collection<T> destination) {
-        for (final Map<String, T> inner : map.values()) {
-            destination.addAll(inner.values());
+        requireNonNull(destination, "destination");
+        readLock.lock();
+        try {
+            loggerByMessageFactoryByName
+                    .values()
+                    .forEach(loggerByMessageFactory -> destination.addAll(loggerByMessageFactory.values()));
+        } finally {
+            readLock.unlock();
         }
         return destination;
     }
 
-    private Map<String, T> getOrCreateInnerMap(final String factoryName) {
-        Map<String, T> inner = map.get(factoryName);
-        if (inner == null) {
-            inner = factory.createInnerMap();
-            map.put(factoryName, inner);
-        }
-        return inner;
-    }
-
     /**
-     * Detects if a Logger with the specified name exists.
-     * @param name The Logger name to search for.
-     * @return true if the Logger exists, false otherwise.
+     * Checks if a logger associated with the given name exists.
+     * <p>
+     * There can be made no assumptions on the message factory of the found logger.
+     * Callers are strongly advised to switch to {@link #hasLogger(String, MessageFactory)} and <b>provide a message factory parameter!</b>
+     * </p>
+     *
+     * @param name a logger name
+     * @return {@code true}, if the logger exists; {@code false} otherwise.
+     * @deprecated As of version {@code 2.24.1}, planned to be removed!
+     * Use {@link #hasLogger(String, MessageFactory)} instead.
      */
+    @Deprecated
     public boolean hasLogger(final String name) {
-        return getOrCreateInnerMap(DEFAULT_FACTORY_KEY).containsKey(name);
+        requireNonNull(name, "name");
+        final T logger = getLogger(name);
+        return logger != null;
     }
 
     /**
-     * Detects if a Logger with the specified name and MessageFactory exists.
-     * @param name The Logger name to search for.
-     * @param messageFactory The message factory to search for.
-     * @return true if the Logger exists, false otherwise.
+     * Checks if a logger associated with the given name and message factory exists.
+     * <p>
+     * In the absence of a message factory, there can be made no assumptions on the message factory of the found logger.
+     * This lenient behaviour is only kept for backward compatibility.
+     * Callers are strongly advised to <b>provide a message factory parameter to the method!</b>
+     * </p>
+     *
+     * @param name a logger name
+     * @param messageFactory a message factory
+     * @return {@code true}, if the logger exists; {@code false} otherwise.
      * @since 2.5
      */
-    public boolean hasLogger(final String name, final MessageFactory messageFactory) {
-        return getOrCreateInnerMap(factoryKey(messageFactory)).containsKey(name);
+    public boolean hasLogger(final String name, @Nullable final MessageFactory messageFactory) {
+        requireNonNull(name, "name");
+        final T logger = getLogger(name, messageFactory);
+        return logger != null;
     }
 
     /**
-     * Detects if a Logger with the specified name and MessageFactory type exists.
-     * @param name The Logger name to search for.
-     * @param messageFactoryClass The message factory class to search for.
-     * @return true if the Logger exists, false otherwise.
+     * Checks if a logger associated with the given name and message factory type exists.
+     *
+     * @param name a logger name
+     * @param messageFactoryClass a message factory class
+     * @return {@code true}, if the logger exists; {@code false} otherwise.
      * @since 2.5
      */
     public boolean hasLogger(final String name, final Class<? extends MessageFactory> messageFactoryClass) {
-        return getOrCreateInnerMap(factoryClassKey(messageFactoryClass)).containsKey(name);
+        requireNonNull(name, "name");
+        requireNonNull(messageFactoryClass, "messageFactoryClass");
+        readLock.lock();
+        try {
+            return loggerByMessageFactoryByName.getOrDefault(name, Collections.emptyMap()).keySet().stream()
+                    .anyMatch(messageFactory -> messageFactoryClass.equals(messageFactory.getClass()));
+        } finally {
+            readLock.unlock();
+        }
     }
 
-    public void putIfAbsent(final String name, final MessageFactory messageFactory, final T logger) {
-        factory.putIfAbsent(getOrCreateInnerMap(factoryKey(messageFactory)), name, logger);
+    /**
+     * Registers the provided logger using the given name – <b>message factory parameter is ignored</b> and the one from the logger will be used instead.
+     *
+     * @param name a logger name
+     * @param messageFactory ignored – kept for backward compatibility
+     * @param logger a logger instance
+     * @deprecated As of version {@code 2.24.1}, planned to be removed!
+     * Use {@link #computeIfAbsent(String, MessageFactory, BiFunction)} instead.
+     */
+    @Deprecated
+    public void putIfAbsent(final String name, @Nullable final MessageFactory messageFactory, final T logger) {
+
+        // Check arguments
+        requireNonNull(name, "name");
+        requireNonNull(logger, "logger");
+
+        // Insert the logger
+        writeLock.lock();
+        try {
+            final Map<MessageFactory, T> loggerByMessageFactory =
+                    loggerByMessageFactoryByName.computeIfAbsent(name, this::createLoggerByMessageFactoryMap);
+            final MessageFactory loggerMessageFactory = logger.getMessageFactory();
+            loggerByMessageFactory.putIfAbsent(loggerMessageFactory, logger);
+        } finally {
+            writeLock.unlock();
+        }
+    }
+
+    public T computeIfAbsent(
+            final String name,
+            final MessageFactory messageFactory,
+            final BiFunction<String, MessageFactory, T> loggerSupplier) {
+
+        // Check arguments
+        requireNonNull(name, "name");
+        requireNonNull(messageFactory, "messageFactory");
+        requireNonNull(loggerSupplier, "loggerSupplier");
+
+        // Read lock fast path: See if logger already exists
+        T logger = getLogger(name, messageFactory);
+        if (logger != null) {
+            return logger;
+        }
+
+        // Write lock slow path: Insert the logger
+        writeLock.lock();
+        try {
+
+            // See if the logger is created by another thread in the meantime
+            final Map<MessageFactory, T> loggerByMessageFactory =
+                    loggerByMessageFactoryByName.computeIfAbsent(name, this::createLoggerByMessageFactoryMap);
+            if ((logger = loggerByMessageFactory.get(messageFactory)) != null) {
+                return logger;
+            }
+
+            // Create the logger
+            logger = loggerSupplier.apply(name, messageFactory);
+
+            // Report message factory mismatches, if there is any
+            final MessageFactory loggerMessageFactory = logger.getMessageFactory();
+            if (!loggerMessageFactory.equals(messageFactory)) {
+                StatusLogger.getLogger()
+                        .error(
+                                "Newly registered logger with name `{}` and message factory `{}`, is requested to be associated with a different message factory: `{}`.\n"
+                                        + "Effectively the message factory of the logger will be used and the other one will be ignored.\n"
+                                        + "This generally hints a problem at the logger context implementation.\n"
+                                        + "Please report this using the Log4j project issue tracker.",
+                                name,
+                                loggerMessageFactory,
+                                messageFactory);
+            }
+
+            // Insert the logger
+            loggerByMessageFactory.put(loggerMessageFactory, logger);
+            return logger;
+        } finally {
+            writeLock.unlock();
+        }
+    }
+
+    private Map<MessageFactory, T> createLoggerByMessageFactoryMap(final String ignored) {
+        return new WeakHashMap<>();
     }
 }
