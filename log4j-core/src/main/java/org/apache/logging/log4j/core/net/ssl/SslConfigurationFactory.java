@@ -41,21 +41,15 @@ public final class SslConfigurationFactory {
             if (config.trustStore().location() != null) {
                 try {
                     trustStoreConfiguration = TrustStoreConfiguration.createKeyStoreConfiguration(config.trustStore());
-                } catch (final Exception ex) {
-                    LOGGER.warn(
-                            "Unable to create trust store configuration due to: {} {}",
-                            ex.getClass().getName(),
-                            ex.getMessage());
+                } catch (final Exception error) {
+                    LOGGER.error("Failed to create the trust store configuration", error);
                 }
             }
             if (config.keyStore().location() != null) {
                 try {
                     keyStoreConfiguration = KeyStoreConfiguration.createKeyStoreConfiguration(config.keyStore());
-                } catch (final Exception ex) {
-                    LOGGER.warn(
-                            "Unable to create key store configuration due to: {} {}",
-                            ex.getClass().getName(),
-                            ex.getMessage());
+                } catch (final Exception error) {
+                    LOGGER.error("Failed to create the key store configuration", error);
                 }
             }
         }
