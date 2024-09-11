@@ -166,7 +166,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
      *
      * @param logger The logger to check
      * @param messageFactory The message factory to check.
-     * @deprecated As of version {@code 2.24.1}, planned to be removed!
+     * @deprecated As of version {@code 2.25.0}, planned to be removed!
      * Instead, in {@link LoggerContext#getLogger(String, MessageFactory)} implementations, namespace loggers with message factories.
      * If your implementation uses {@link LoggerRegistry}, you are already covered.
      */

@@ -54,7 +54,7 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      * Data structure contract for the internal storage of admitted loggers.
      *
      * @param <T> subtype of {@code ExtendedLogger}
-     * @deprecated As of version {@code 2.24.1}, planned to be removed!
+     * @deprecated As of version {@code 2.25.0}, planned to be removed!
      */
     @Deprecated
     public interface MapFactory<T extends ExtendedLogger> {
@@ -70,7 +70,7 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      * {@link MapFactory} implementation using {@link ConcurrentHashMap}.
      *
      * @param <T> subtype of {@code ExtendedLogger}
-     * @deprecated As of version {@code 2.24.1}, planned to be removed!
+     * @deprecated As of version {@code 2.25.0}, planned to be removed!
      */
     @Deprecated
     public static class ConcurrentMapFactory<T extends ExtendedLogger> implements MapFactory<T> {
@@ -95,7 +95,7 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      * {@link MapFactory} implementation using {@link WeakHashMap}.
      *
      * @param <T> subtype of {@code ExtendedLogger}
-     * @deprecated As of version {@code 2.24.1}, planned to be removed!
+     * @deprecated As of version {@code 2.25.0}, planned to be removed!
      */
     @Deprecated
     public static class WeakMapFactory<T extends ExtendedLogger> implements MapFactory<T> {
@@ -122,7 +122,7 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      * Constructs an instance <b>ignoring</b> the given the map factory.
      *
      * @param mapFactory a map factory
-     * @deprecated As of version {@code 2.24.1}, planned to be removed!
+     * @deprecated As of version {@code 2.25.0}, planned to be removed!
      */
     @Deprecated
     public LoggerRegistry(@Nullable final MapFactory<T> mapFactory) {
@@ -138,7 +138,7 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      *
      * @param name a logger name
      * @return the logger associated with the name
-     * @deprecated As of version {@code 2.24.1}, planned to be removed!
+     * @deprecated As of version {@code 2.25.0}, planned to be removed!
      * Use {@link #getLogger(String, MessageFactory)} instead.
      */
     @Deprecated
@@ -208,7 +208,7 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      *
      * @param name a logger name
      * @return {@code true}, if the logger exists; {@code false} otherwise.
-     * @deprecated As of version {@code 2.24.1}, planned to be removed!
+     * @deprecated As of version {@code 2.25.0}, planned to be removed!
      * Use {@link #hasLogger(String, MessageFactory)} instead.
      */
     @Deprecated
@@ -263,7 +263,7 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      * @param name a logger name
      * @param messageFactory ignored – kept for backward compatibility
      * @param logger a logger instance
-     * @deprecated As of version {@code 2.24.1}, planned to be removed!
+     * @deprecated As of version {@code 2.25.0}, planned to be removed!
      * Use {@link #computeIfAbsent(String, MessageFactory, BiFunction)} instead.
      */
     @Deprecated
