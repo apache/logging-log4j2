@@ -18,6 +18,7 @@ package org.apache.logging.log4j.spi;
 
 import static java.util.Objects.requireNonNull;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,6 +31,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.BiFunction;
 import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -40,7 +42,7 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 public class LoggerRegistry<T extends ExtendedLogger> {
 
-    private final Map<String, Map<MessageFactory, T>> loggerByMessageFactoryByName = new HashMap<>();
+    private final Map<String, Map<MessageFactory, WeakReference<T>>> loggerRefByMessageFactoryByName = new HashMap<>();
 
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
@@ -161,16 +163,15 @@ public class LoggerRegistry<T extends ExtendedLogger> {
         requireNonNull(name, "name");
         readLock.lock();
         try {
-            final Map<MessageFactory, T> loggerByMessageFactory = loggerByMessageFactoryByName.get(name);
-            if (loggerByMessageFactory == null) {
+            final Map<MessageFactory, WeakReference<T>> loggerRefByMessageFactory =
+                    loggerRefByMessageFactoryByName.get(name);
+            if (loggerRefByMessageFactory == null) {
                 return null;
             }
-            if (messageFactory != null) {
-                return loggerByMessageFactory.get(messageFactory);
-            }
-            return !loggerByMessageFactory.isEmpty()
-                    ? loggerByMessageFactory.values().iterator().next()
-                    : null;
+            final MessageFactory effectiveMessageFactory =
+                    messageFactory != null ? messageFactory : ParameterizedMessageFactory.INSTANCE;
+            final WeakReference<T> loggerRef = loggerRefByMessageFactory.get(effectiveMessageFactory);
+            return loggerRef.get();
         } finally {
             readLock.unlock();
         }
@@ -184,9 +185,14 @@ public class LoggerRegistry<T extends ExtendedLogger> {
         requireNonNull(destination, "destination");
         readLock.lock();
         try {
-            loggerByMessageFactoryByName
+            loggerRefByMessageFactoryByName.values().forEach(loggerRefByMessageFactory -> loggerRefByMessageFactory
                     .values()
-                    .forEach(loggerByMessageFactory -> destination.addAll(loggerByMessageFactory.values()));
+                    .forEach(loggerRef -> {
+                        final T logger = loggerRef.get();
+                        if (logger != null) {
+                            destination.add(logger);
+                        }
+                    }));
         } finally {
             readLock.unlock();
         }
@@ -244,7 +250,7 @@ public class LoggerRegistry<T extends ExtendedLogger> {
         requireNonNull(messageFactoryClass, "messageFactoryClass");
         readLock.lock();
         try {
-            return loggerByMessageFactoryByName.getOrDefault(name, Collections.emptyMap()).keySet().stream()
+            return loggerRefByMessageFactoryByName.getOrDefault(name, Collections.emptyMap()).keySet().stream()
                     .anyMatch(messageFactory -> messageFactoryClass.equals(messageFactory.getClass()));
         } finally {
             readLock.unlock();
@@ -270,10 +276,13 @@ public class LoggerRegistry<T extends ExtendedLogger> {
         // Insert the logger
         writeLock.lock();
         try {
-            final Map<MessageFactory, T> loggerByMessageFactory =
-                    loggerByMessageFactoryByName.computeIfAbsent(name, this::createLoggerByMessageFactoryMap);
+            final Map<MessageFactory, WeakReference<T>> loggerRefByMessageFactory =
+                    loggerRefByMessageFactoryByName.computeIfAbsent(name, this::createLoggerRefByMessageFactoryMap);
             final MessageFactory loggerMessageFactory = logger.getMessageFactory();
-            loggerByMessageFactory.putIfAbsent(loggerMessageFactory, logger);
+            final WeakReference<T> loggerRef = loggerRefByMessageFactory.get(loggerMessageFactory);
+            if (loggerRef == null || loggerRef.get() == null) {
+                loggerRefByMessageFactory.put(loggerMessageFactory, new WeakReference<>(logger));
+            }
         } finally {
             writeLock.unlock();
         }
@@ -300,9 +309,11 @@ public class LoggerRegistry<T extends ExtendedLogger> {
         try {
 
             // See if the logger is created by another thread in the meantime
-            final Map<MessageFactory, T> loggerByMessageFactory =
-                    loggerByMessageFactoryByName.computeIfAbsent(name, this::createLoggerByMessageFactoryMap);
-            if ((logger = loggerByMessageFactory.get(messageFactory)) != null) {
+            final Map<MessageFactory, WeakReference<T>> loggerRefByMessageFactory =
+                    loggerRefByMessageFactoryByName.computeIfAbsent(name, this::createLoggerRefByMessageFactoryMap);
+            final WeakReference<T> loggerRef;
+            if ((loggerRef = loggerRefByMessageFactory.get(messageFactory)) != null
+                    && (logger = loggerRef.get()) != null) {
                 return logger;
             }
 
@@ -324,14 +335,14 @@ public class LoggerRegistry<T extends ExtendedLogger> {
             }
 
             // Insert the logger
-            loggerByMessageFactory.put(loggerMessageFactory, logger);
+            loggerRefByMessageFactory.put(loggerMessageFactory, new WeakReference<>(logger));
             return logger;
         } finally {
             writeLock.unlock();
         }
     }
 
-    private Map<MessageFactory, T> createLoggerByMessageFactoryMap(final String ignored) {
+    private Map<MessageFactory, WeakReference<T>> createLoggerRefByMessageFactoryMap(final String ignored) {
         return new WeakHashMap<>();
     }
 }
