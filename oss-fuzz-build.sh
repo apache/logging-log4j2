@@ -170,7 +170,7 @@ java -version
 dump_debug() {
   export
   for filePath in . "\${CRASH_STACKTRACES_DIR:-}" "\${CRASH_STACKTRACES_DIR:-}" "\${DATA_BUNDLES_DIR:-}" "\${FUZZ_INPUTS:-}"; do
-    ls -al "$filePath"
+    ls -al "\$filePath"
   done
 }
 dump_debug
