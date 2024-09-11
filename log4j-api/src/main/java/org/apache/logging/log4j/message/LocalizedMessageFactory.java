@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.message;
 
+import org.jspecify.annotations.Nullable;
+
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 /**
@@ -33,8 +36,11 @@ import java.util.ResourceBundle;
 public class LocalizedMessageFactory extends AbstractMessageFactory {
     private static final long serialVersionUID = -1996295808703146741L;
 
+    @Nullable
     // FIXME: cannot use ResourceBundle name for serialization until Java 8
     private final transient ResourceBundle resourceBundle;
+
+    @Nullable
     private final String baseName;
 
     public LocalizedMessageFactory(final ResourceBundle resourceBundle) {
@@ -91,5 +97,22 @@ public class LocalizedMessageFactory extends AbstractMessageFactory {
             return new LocalizedMessage(baseName, key, params);
         }
         return new LocalizedMessage(resourceBundle, key, params);
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        final LocalizedMessageFactory that = (LocalizedMessageFactory) object;
+        return Objects.equals(resourceBundle, that.resourceBundle) && Objects.equals(baseName, that.baseName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(resourceBundle, baseName);
     }
 }
