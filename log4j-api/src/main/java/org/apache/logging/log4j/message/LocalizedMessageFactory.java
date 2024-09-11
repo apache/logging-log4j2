@@ -16,10 +16,9 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.jspecify.annotations.Nullable;
-
 import java.util.Objects;
 import java.util.ResourceBundle;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Creates {@link FormattedMessage} instances for {@link MessageFactory2} methods (and {@link MessageFactory} by
