@@ -53,7 +53,7 @@ public class SslConfiguration {
     @Nullable
     private final TrustStoreConfiguration trustStoreConfig;
 
-    private final transient SSLContext sslContext;
+    private final SSLContext sslContext;
 
     private SslConfiguration(
             @Nullable final String protocol,

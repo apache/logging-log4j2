@@ -58,13 +58,6 @@ public class StoreConfiguration<T> {
         this.passwordProvider = new MemoryPasswordProvider(password);
     }
 
-    /**
-     * @throws StoreConfigurationException May be thrown by subclasses
-     */
-    protected T load() throws StoreConfigurationException {
-        return null;
-    }
-
     @Override
     public int hashCode() {
         final int prime = 31;

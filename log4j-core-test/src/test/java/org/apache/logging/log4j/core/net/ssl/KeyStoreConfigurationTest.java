@@ -172,7 +172,7 @@ public class KeyStoreConfigurationTest {
     static void checkKeystoreConfiguration(final AbstractKeyStoreConfiguration config) {
         // Not all keystores throw immediately if the password is wrong
         assertDoesNotThrow(() -> {
-            final KeyStore ks = config.load();
+            final KeyStore ks = config.getKeyStore();
             for (final String alias : Collections.list(ks.aliases())) {
                 if (ks.isCertificateEntry(alias)) {
                     ks.getCertificate(alias);

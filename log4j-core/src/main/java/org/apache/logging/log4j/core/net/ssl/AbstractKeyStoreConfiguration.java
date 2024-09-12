@@ -35,18 +35,17 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
 
     private final String keyStoreType;
 
-    private final transient KeyStore keyStore;
+    private final KeyStore keyStore;
 
     public AbstractKeyStoreConfiguration(
             final String location, final PasswordProvider passwordProvider, final String keyStoreType)
             throws StoreConfigurationException {
         super(location, passwordProvider);
         this.keyStoreType = keyStoreType == null ? SslConfigurationDefaults.KEYSTORE_TYPE : keyStoreType;
-        this.keyStore = this.load();
+        this.keyStore = load();
     }
 
-    @Override
-    protected KeyStore load() throws StoreConfigurationException {
+    private KeyStore load() throws StoreConfigurationException {
         final String loadLocation = this.getLocation();
         final char[] password = this.getPassword();
         LOGGER.debug("Loading keystore from location {}", loadLocation);
