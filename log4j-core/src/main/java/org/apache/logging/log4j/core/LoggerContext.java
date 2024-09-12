@@ -93,6 +93,14 @@ public class LoggerContext extends AbstractLifeCycle
     private String contextName;
     private volatile URI configLocation;
     private Cancellable shutdownCallback;
+
+    /**
+     * The default message factory to use while creating loggers.
+     * <p>
+     * The initial value is only set to avoid nullability.
+     * The actual value is populated by {@link #reloadDefaultMessageFactory()} during (re)configuration.
+     * </p>
+     */
     private MessageFactory defaultMessageFactory = ParameterizedMessageFactory.INSTANCE;
 
     private final Lock configLock = new ReentrantLock();
@@ -645,15 +653,24 @@ public class LoggerContext extends AbstractLifeCycle
             // AsyncLoggers update their nanoClock when the configuration changes
             Log4jLogEvent.setNanoClock(configuration.getNanoClock());
 
-            // Our implementations tend to choose a different message factory based on the employed configuration.
-            // Hence, creating a throwaway logger to determine the default message factory.
-            defaultMessageFactory =
-                    newInstance(this, "throwaway-for-determining-MF", null).getMessageFactory();
+            reloadDefaultMessageFactory();
 
             return prev;
         } finally {
             configLock.unlock();
         }
+    }
+
+    /**
+     * Reloads the value of {@link #defaultMessageFactory}.
+     * <p>
+     * {@link LoggerContext} implementations tend to choose a different message factory based on the employed configuration.
+     * Hence, this method creates a throwaway logger to determine the default message factory.
+     * </p>
+     */
+    private void reloadDefaultMessageFactory() {
+        defaultMessageFactory =
+                newInstance(this, "throwaway-for-determining-MF", null).getMessageFactory();
     }
 
     private static void registerJmxBeans() {
