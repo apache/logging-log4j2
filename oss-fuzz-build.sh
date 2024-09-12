@@ -133,7 +133,7 @@ set -euo pipefail
 IFS=\$'\n\t'
 
 # Report the build
-echo "Produced using the commit ID: $commitId"
+echo "INFO: Produced using the commit ID: $commitId"
 
 # Switch to the script directory
 cd -- "\$(dirname -- "\${BASH_SOURCE[0]}")"
@@ -168,9 +168,13 @@ java -version
 
 # Dump some debugging aid
 dump_debug() {
+  echo "DEBUG: Dumping environment variables..."
   export
   for filePath in . "\${CRASH_STACKTRACES_DIR:-}" "\${CRASH_STACKTRACES_DIR:-}" "\${DATA_BUNDLES_DIR:-}" "\${FUZZ_INPUTS:-}"; do
-    ls -al "\$filePath"
+    if [ -e "\$filePath" ]; then
+      echo "DEBUG: Listing \"\$filePath\"..."
+      ls -al "\$filePath"
+    fi
   done
 }
 dump_debug
@@ -190,8 +194,8 @@ jazzer_driver \\
   2>&1 | tee "\$cmdOutputFile" || {
     retCode=\$?;
     if grep -q "A fatal error has been detected by the Java Runtime Environment" "\$cmdOutputFile"; then
-      echo "Detected JRE crash; it doesn't qualify as a fuzzing failure."
-      echo "Cleaning up crash reports and exiting with success..."
+      echo "WARN: Detected JRE crash; it doesn't qualify as a fuzzing failure."
+      echo "WARN: Cleaning up crash reports and exiting with success..."
       dump_debug
       exit 0
     else
