@@ -971,30 +971,11 @@ If the <<RolloverStrategy-attr-tempCompressedFilePattern,`tempCompressedFilePatt
 ^dep^::
 Additional dependencies are required to use these compression algorithms:
 +
-[tabs]
-====
-Maven::
+--
+include::partial$features/compression.adoc[]
+--
 +
-[source,xml,subs=+attributes]
-----
-<dependency>
-  <groupId>org.apache.commons</groupId>
-  <artifactId>commons-compress</artifactId>
-  <version>{commons-compress-version}</version>
-  <scope>runtime</scope>
-</dependency>
-----
-
-Gradle::
-+
-[source,groovy,subs=+attributes]
-----
-runtimeOnly 'org.apache.commons:commons-compress:{commons-compress-version}'
-----
-
-====
-+
-The `.xz` and `.zst` extensions require **additional** Commons Compress dependencies.
+The `.xz` and `.zst` extensions require **additional** dependencies.
 See
 https://commons.apache.org/proper/commons-compress/index.html[Commons Compress documentation]
 for more details.
