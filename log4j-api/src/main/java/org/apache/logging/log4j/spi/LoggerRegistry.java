@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
@@ -171,6 +172,9 @@ public class LoggerRegistry<T extends ExtendedLogger> {
             final MessageFactory effectiveMessageFactory =
                     messageFactory != null ? messageFactory : ParameterizedMessageFactory.INSTANCE;
             final WeakReference<T> loggerRef = loggerRefByMessageFactory.get(effectiveMessageFactory);
+            if (loggerRef == null) {
+                return null;
+            }
             return loggerRef.get();
         } finally {
             readLock.unlock();
@@ -185,14 +189,11 @@ public class LoggerRegistry<T extends ExtendedLogger> {
         requireNonNull(destination, "destination");
         readLock.lock();
         try {
-            loggerRefByMessageFactoryByName.values().forEach(loggerRefByMessageFactory -> loggerRefByMessageFactory
-                    .values()
-                    .forEach(loggerRef -> {
-                        final T logger = loggerRef.get();
-                        if (logger != null) {
-                            destination.add(logger);
-                        }
-                    }));
+            loggerRefByMessageFactoryByName.values().stream()
+                    .flatMap(loggerRefByMessageFactory ->
+                            loggerRefByMessageFactory.values().stream().map(WeakReference::get))
+                    .filter(Objects::nonNull)
+                    .forEach(destination::add);
         } finally {
             readLock.unlock();
         }
