@@ -168,6 +168,8 @@ java -version
 
 # Dump some debugging aid
 dump_debug() {
+  echo "DEBUG: Dumping system memory information..."
+  free -m
   echo "DEBUG: Dumping environment variables..."
   export
   for filePath in . "\${CRASH_STACKTRACES_DIR:-}" "\${CRASH_STACKTRACES_DIR:-}" "\${DATA_BUNDLES_DIR:-}" "\${FUZZ_INPUTS:-}"; do
