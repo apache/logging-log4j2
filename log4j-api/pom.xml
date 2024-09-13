@@ -54,7 +54,9 @@
       <!-- Used in StringBuilders through reflection -->
       java.sql;static=true,
       <!-- Used in ProcessIdUtil through reflection -->
-      java.management;static=true
+      java.management;static=true,
+      <!-- Remove `transitive` for optional dependencies -->
+      org.jspecify;transitive=false
     </bnd-extra-module-options>
 
   </properties>

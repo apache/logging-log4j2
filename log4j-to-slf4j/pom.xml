@@ -45,6 +45,10 @@
       <!-- This bridge also support SLF4J 2.x -->
       org.slf4j.*;version="${slf4j.support.range}"
     </bnd-extra-package-options>
+    <bnd-extra-module-options>
+      <!-- Remove `transitive` for optional dependencies -->
+      org.jspecify;transitive=false
+    </bnd-extra-module-options>
 
     <slf4j2.version>2.0.16</slf4j2.version>
   </properties>
