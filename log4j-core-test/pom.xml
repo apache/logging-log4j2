@@ -316,6 +316,7 @@
             --add-opens java.base/java.util=ALL-UNNAMED</argLine>
           <runOrder>random</runOrder>
           <systemPropertyVariables>
+            <log4j2.debug>true</log4j2.debug>
             <Web.isWebApp>false</Web.isWebApp>
           </systemPropertyVariables>
           <useModulePath>false</useModulePath>
