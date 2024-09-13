@@ -83,4 +83,8 @@ public final class SslKeyStoreConstants {
     /// Other /////////////////////////////////////////////////////////////////
 
     public static final char[] NULL_PWD = null;
+
+    public static final String WINDOWS_KEYSTORE_TYPE = "Windows-MY";
+
+    public static final String WINDOWS_TRUSTSTORE_TYPE = "Windows-ROOT";
 }
