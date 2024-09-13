@@ -60,6 +60,7 @@ RewriteRule "^manual/scala-api\.html$" "/log4j/scala/latest/index.html" [R=perma
 RewriteRule "^manual/usage\.html$" "manual/api.html" [R=permanent]
 RewriteRule "^manual/webapp\.html$" "jakarta.html" [R=permanent]
 RewriteRule "^runtime-dependencies\.html$" "manual/installation.html" [R=permanent]
+RewriteRule "^security\.html$" "/security.html" [R=permanent]
 RewriteRule "^thanks\.html$" "/support.html#sponsors" [R=permanent,NE]
 
 # These redirects are special, since:
