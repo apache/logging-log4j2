@@ -111,7 +111,7 @@
     <flapdoodle-embed.version>4.13.1</flapdoodle-embed.version>
     <flapdoodle-reverse.version>1.8.0</flapdoodle-reverse.version>
     <graalvm.version>24.0.2</graalvm.version>
-    <groovy.version>4.0.22</groovy.version>
+    <groovy.version>4.0.23</groovy.version>
     <guava.version>33.3.0-jre</guava.version>
     <h2.version>2.3.232</h2.version>
     <hamcrest.version>3.0</hamcrest.version>
