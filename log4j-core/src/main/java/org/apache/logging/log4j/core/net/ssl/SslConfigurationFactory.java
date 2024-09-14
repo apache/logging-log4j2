@@ -43,6 +43,7 @@ public final class SslConfigurationFactory {
                     trustStoreConfiguration = TrustStoreConfiguration.createKeyStoreConfiguration(config.trustStore());
                 } catch (final Exception error) {
                     LOGGER.error("Failed to create the trust store configuration", error);
+                    throw new RuntimeException(error);
                 }
             }
             if (config.keyStore().location() != null) {
@@ -50,8 +51,12 @@ public final class SslConfigurationFactory {
                     keyStoreConfiguration = KeyStoreConfiguration.createKeyStoreConfiguration(config.keyStore());
                 } catch (final Exception error) {
                     LOGGER.error("Failed to create the key store configuration", error);
+                    throw new RuntimeException(error);
                 }
             }
+        }
+        if (trustStoreConfiguration == null && keyStoreConfiguration == null) {
+            throw new RuntimeException("both stores are null");
         }
         return trustStoreConfiguration != null || keyStoreConfiguration != null
                 ? SslConfiguration.createSSLConfiguration(
