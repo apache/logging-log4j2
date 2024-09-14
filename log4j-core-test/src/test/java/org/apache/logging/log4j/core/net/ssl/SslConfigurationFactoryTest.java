@@ -91,8 +91,10 @@ class SslConfigurationFactoryTest {
     @Test
     //    @ParameterizedTest
     //    @MethodSource("windowsKeystoreConfigs")
-    public void testPasswordLessStores(String location, String password) {
-        location = password = null;
+//    public void testPasswordLessStores(String location, String password) {
+    public void testPasswordLessStores() {
+        String location = null;
+        String password = null;
 
         // Create the configuration
         final char[] passwordChars = password != null ? password.toCharArray() : null;
