@@ -16,11 +16,21 @@
  */
 package org.apache.logging.log4j.mongodb4;
 
+import com.mongodb.client.MongoClient;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.junit.jupiter.api.Test;
 
 @UsingMongoDb4
-@LoggerContextSource("log4j2-mongodb-capped-long.xml")
-public class MongoDb4CappedLongTest extends AbstractMongoDb4CappedTest {
+@LoggerContextSource("MongoDb4CappedIntIT.xml")
+// Print debug status logger output upon failure
+@UsingStatusListener
+class MongoDb4CappedIntIT extends AbstractMongoDb4CappedIT {
 
-    // test is in superclass
+    @Test
+    @Override
+    protected void test(LoggerContext ctx, MongoClient mongoClient) {
+        super.test(ctx, mongoClient);
+    }
 }

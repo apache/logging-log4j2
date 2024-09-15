@@ -82,8 +82,6 @@
     <elasticsearch-java.version>8.15.1</elasticsearch-java.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <felix.version>7.0.5</felix.version>
-    <flapdoodle-embed.version>4.13.1</flapdoodle-embed.version>
-    <flapdoodle-reverse.version>1.8.0</flapdoodle-reverse.version>
     <groovy.version>3.0.22</groovy.version>
     <guava.version>33.3.0-jre</guava.version>
     <h2.version>2.2.224</h2.version>
@@ -370,24 +368,6 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-pool2</artifactId>
         <version>${commons-pool2.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>de.flapdoodle.embed</groupId>
-        <artifactId>de.flapdoodle.embed.mongo</artifactId>
-        <version>${flapdoodle-embed.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>de.flapdoodle.embed</groupId>
-        <artifactId>de.flapdoodle.embed.process</artifactId>
-        <version>${flapdoodle-embed.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>de.flapdoodle.reverse</groupId>
-        <artifactId>de.flapdoodle.reverse</artifactId>
-        <version>${flapdoodle-reverse.version}</version>
       </dependency>
 
       <dependency>
@@ -900,7 +880,7 @@
     <pluginManagement>
       <plugins>
 
-        <!-- used by `docker` profile in `log4j-layout-template-json-test`: -->
+        <!-- used by `docker` profile -->
         <plugin>
           <groupId>io.fabric8</groupId>
           <artifactId>docker-maven-plugin</artifactId>

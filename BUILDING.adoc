@@ -85,6 +85,13 @@ You either need to have a user-level configuration in `~/.m2/toolchains.xml` or 
 ./mvnw verify -Pjava8-tests,!java8-incompat-fixes
 ----
 
+[#docker]
+=== Docker tests
+
+Certain tests use Docker to spawn necessary external services.
+Docker tests are configured using the `docker` Maven profile, which is activated by default for the CI environment.
+You can locally enable this profile by passing a `-P docker` argument to your `./mvnw` commands.
+
 [#website]
 == Building the website
 
