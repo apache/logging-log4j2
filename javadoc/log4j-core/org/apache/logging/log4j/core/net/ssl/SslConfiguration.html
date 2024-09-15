@@ -77,7 +77,8 @@ loadScripts(document, 'script');</script>
 </div>
 <section class="class-description" id="class-description">
 <hr>
-<div class="type-signature"><span class="annotations"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Configurable.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@Configurable</a>(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Configurable.html#printObject()" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">printObject</a>=true)
+<div class="type-signature"><span class="annotations">@NullMarked
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Configurable.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@Configurable</a>(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Configurable.html#printObject()" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">printObject</a>=true)
 <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Plugin.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@Plugin</a>("Ssl")
 </span><span class="modifiers">public class </span><span class="element-name type-name-label">SslConfiguration</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
@@ -128,12 +129,6 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/javax/net/ssl/SSLContext.html" title="class or interface in javax.net.ssl" class="external-link">SSLContext</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getSslContext()" class="member-name-link">getSslContext</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/javax/net/ssl/SSLServerSocketFactory.html" title="class or interface in javax.net.ssl" class="external-link">SSLServerSocketFactory</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getSslServerSocketFactory()" class="member-name-link">getSslServerSocketFactory</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/javax/net/ssl/SSLSocketFactory.html" title="class or interface in javax.net.ssl" class="external-link">SSLSocketFactory</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getSslSocketFactory()" class="member-name-link">getSslSocketFactory</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="TrustStoreConfiguration.html" title="class in org.apache.logging.log4j.core.net.ssl">TrustStoreConfiguration</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTrustStoreConfig()" class="member-name-link">getTrustStoreConfig</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
@@ -168,21 +163,10 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="getSslSocketFactory()">
-<h3>getSslSocketFactory</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/javax/net/ssl/SSLSocketFactory.html" title="class or interface in javax.net.ssl" class="external-link">SSLSocketFactory</a></span>&nbsp;<span class="element-name">getSslSocketFactory</span>()</div>
-</section>
-</li>
-<li>
-<section class="detail" id="getSslServerSocketFactory()">
-<h3>getSslServerSocketFactory</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/javax/net/ssl/SSLServerSocketFactory.html" title="class or interface in javax.net.ssl" class="external-link">SSLServerSocketFactory</a></span>&nbsp;<span class="element-name">getSslServerSocketFactory</span>()</div>
-</section>
-</li>
-<li>
 <section class="detail" id="createSSLConfiguration(java.lang.String,org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration,org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration)">
 <h3>createSSLConfiguration</h3>
-<div class="member-signature"><span class="annotations"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/PluginFactory.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginFactory</a>
+<div class="member-signature"><span class="annotations">@NullUnmarked
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/PluginFactory.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginFactory</a>
 </span><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="SslConfiguration.html" title="class in org.apache.logging.log4j.core.net.ssl">SslConfiguration</a></span>&nbsp;<span class="element-name">createSSLConfiguration</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/PluginAttribute.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginAttribute</a>
  <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/PluginAttribute.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginAttribute</a> <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;protocol,
  <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/PluginElement.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginElement</a>
@@ -203,7 +187,8 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="createSSLConfiguration(java.lang.String,org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration,org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration,boolean)">
 <h3>createSSLConfiguration</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="SslConfiguration.html" title="class in org.apache.logging.log4j.core.net.ssl">SslConfiguration</a></span>&nbsp;<span class="element-name">createSSLConfiguration</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/PluginAttribute.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginAttribute</a>
+<div class="member-signature"><span class="annotations">@NullUnmarked
+</span><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="SslConfiguration.html" title="class in org.apache.logging.log4j.core.net.ssl">SslConfiguration</a></span>&nbsp;<span class="element-name">createSSLConfiguration</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/PluginAttribute.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginAttribute</a>
  <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/PluginAttribute.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginAttribute</a> <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;protocol,
  <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/PluginElement.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginElement</a>
  <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/PluginElement.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginElement</a> <a href="KeyStoreConfiguration.html" title="class in org.apache.logging.log4j.core.net.ssl">KeyStoreConfiguration</a>&nbsp;keyStoreConfig,
@@ -246,6 +231,18 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
+<section class="detail" id="getProtocol()">
+<h3>getProtocol</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getProtocol</span>()</div>
+</section>
+</li>
+<li>
+<section class="detail" id="isVerifyHostName()">
+<h3>isVerifyHostName</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isVerifyHostName</span>()</div>
+</section>
+</li>
+<li>
 <section class="detail" id="getKeyStoreConfig()">
 <h3>getKeyStoreConfig</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="KeyStoreConfiguration.html" title="class in org.apache.logging.log4j.core.net.ssl">KeyStoreConfiguration</a></span>&nbsp;<span class="element-name">getKeyStoreConfig</span>()</div>
@@ -261,18 +258,6 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getSslContext()">
 <h3>getSslContext</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/javax/net/ssl/SSLContext.html" title="class or interface in javax.net.ssl" class="external-link">SSLContext</a></span>&nbsp;<span class="element-name">getSslContext</span>()</div>
-</section>
-</li>
-<li>
-<section class="detail" id="getProtocol()">
-<h3>getProtocol</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getProtocol</span>()</div>
-</section>
-</li>
-<li>
-<section class="detail" id="isVerifyHostName()">
-<h3>isVerifyHostName</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isVerifyHostName</span>()</div>
 </section>
 </li>
 </ul>
