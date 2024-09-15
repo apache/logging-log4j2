@@ -26,11 +26,9 @@ import java.net.ConnectException;
 import java.net.UnknownHostException;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
-import org.apache.logging.log4j.core.test.net.ssl.TestConstants;
-import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 
-@StatusLoggerLevel("OFF")
 class SslConfigurationTest {
 
     private static final String TLS_TEST_HOST = "apache.org";
@@ -38,13 +36,13 @@ class SslConfigurationTest {
 
     private static SslConfiguration createTestSslConfigurationResources() throws StoreConfigurationException {
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(
-                TestConstants.KEYSTORE_FILE_RESOURCE,
-                new MemoryPasswordProvider(TestConstants.KEYSTORE_PWD()),
-                TestConstants.KEYSTORE_TYPE,
+                SslKeyStoreConstants.KEYSTORE_LOCATION,
+                new MemoryPasswordProvider(SslKeyStoreConstants.KEYSTORE_PWD()),
+                SslKeyStoreConstants.KEYSTORE_TYPE,
                 null);
         final TrustStoreConfiguration tsc = new TrustStoreConfiguration(
-                TestConstants.TRUSTSTORE_FILE_RESOURCE,
-                new MemoryPasswordProvider(TestConstants.TRUSTSTORE_PWD()),
+                SslKeyStoreConstants.TRUSTSTORE_LOCATION,
+                new MemoryPasswordProvider(SslKeyStoreConstants.TRUSTSTORE_PWD()),
                 null,
                 null);
         return SslConfiguration.createSSLConfiguration(null, ksc, tsc);
@@ -52,12 +50,15 @@ class SslConfigurationTest {
 
     private static SslConfiguration createTestSslConfigurationFiles() throws StoreConfigurationException {
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(
-                TestConstants.KEYSTORE_FILE,
-                new MemoryPasswordProvider(TestConstants.KEYSTORE_PWD()),
-                TestConstants.KEYSTORE_TYPE,
+                SslKeyStoreConstants.KEYSTORE_LOCATION,
+                new MemoryPasswordProvider(SslKeyStoreConstants.KEYSTORE_PWD()),
+                SslKeyStoreConstants.KEYSTORE_TYPE,
                 null);
         final TrustStoreConfiguration tsc = new TrustStoreConfiguration(
-                TestConstants.TRUSTSTORE_FILE, new MemoryPasswordProvider(TestConstants.TRUSTSTORE_PWD()), null, null);
+                SslKeyStoreConstants.TRUSTSTORE_LOCATION,
+                new MemoryPasswordProvider(SslKeyStoreConstants.TRUSTSTORE_PWD()),
+                SslKeyStoreConstants.TRUSTSTORE_TYPE,
+                null);
         return SslConfiguration.createSSLConfiguration(null, ksc, tsc);
     }
 
@@ -66,7 +67,7 @@ class SslConfigurationTest {
         assertNotNull(createTestSslConfigurationFiles().getProtocol());
         assertNotNull(createTestSslConfigurationFiles().getKeyStoreConfig());
         assertNotNull(createTestSslConfigurationFiles().getSslContext());
-        assertNotNull(createTestSslConfigurationFiles().getSslSocketFactory());
+        assertNotNull(createTestSslConfigurationFiles().getSslContext().getSocketFactory());
         assertNotNull(createTestSslConfigurationFiles().getTrustStoreConfig());
     }
 
@@ -75,7 +76,7 @@ class SslConfigurationTest {
         assertNotNull(createTestSslConfigurationResources().getProtocol());
         assertNotNull(createTestSslConfigurationResources().getKeyStoreConfig());
         assertNotNull(createTestSslConfigurationResources().getSslContext());
-        assertNotNull(createTestSslConfigurationResources().getSslSocketFactory());
+        assertNotNull(createTestSslConfigurationResources().getSslContext().getSocketFactory());
         assertNotNull(createTestSslConfigurationResources().getTrustStoreConfig());
     }
 
@@ -89,14 +90,14 @@ class SslConfigurationTest {
     @Test
     void emptyConfigurationDoesNotCauseNullSSLSocketFactory() {
         final SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null, null);
-        final SSLSocketFactory factory = sc.getSslSocketFactory();
+        final SSLSocketFactory factory = sc.getSslContext().getSocketFactory();
         assertNotNull(factory);
     }
 
     @Test
     void emptyConfigurationHasDefaultTrustStore() throws IOException {
         final SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null, null);
-        final SSLSocketFactory factory = sc.getSslSocketFactory();
+        final SSLSocketFactory factory = sc.getSslContext().getSocketFactory();
         try {
             try (final SSLSocket clientSocket = (SSLSocket) factory.createSocket(TLS_TEST_HOST, TLS_TEST_PORT)) {
                 assertNotNull(clientSocket);
@@ -110,9 +111,12 @@ class SslConfigurationTest {
     @Test
     void connectionFailsWithoutValidServerCertificate() throws IOException, StoreConfigurationException {
         final TrustStoreConfiguration tsc = new TrustStoreConfiguration(
-                TestConstants.TRUSTSTORE_FILE, new MemoryPasswordProvider(TestConstants.NULL_PWD), null, null);
+                SslKeyStoreConstants.TRUSTSTORE_LOCATION,
+                new MemoryPasswordProvider(SslKeyStoreConstants.NULL_PWD),
+                null,
+                null);
         final SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null, tsc);
-        final SSLSocketFactory factory = sc.getSslSocketFactory();
+        final SSLSocketFactory factory = sc.getSslContext().getSocketFactory();
         try {
             try (final SSLSocket clientSocket = (SSLSocket) factory.createSocket(TLS_TEST_HOST, TLS_TEST_PORT)) {
                 try (final OutputStream os = clientSocket.getOutputStream()) {
@@ -126,11 +130,15 @@ class SslConfigurationTest {
     }
 
     @Test
+    @UsingStatusListener // Suppresses `StatusLogger` output, unless there is a failure
     void loadKeyStoreWithoutPassword() throws StoreConfigurationException {
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(
-                TestConstants.KEYSTORE_FILE, new MemoryPasswordProvider(TestConstants.NULL_PWD), null, null);
+                SslKeyStoreConstants.KEYSTORE_P12_NOPASS_LOCATION,
+                new MemoryPasswordProvider(SslKeyStoreConstants.NULL_PWD),
+                SslKeyStoreConstants.KEYSTORE_P12_NOPASS_TYPE,
+                null);
         final SslConfiguration sslConf = SslConfiguration.createSSLConfiguration(null, ksc, null);
-        final SSLSocketFactory factory = sslConf.getSslSocketFactory();
+        final SSLSocketFactory factory = sslConf.getSslContext().getSocketFactory();
         assertNotNull(factory);
     }
 }

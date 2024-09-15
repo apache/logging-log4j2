@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.net.ssl;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.impl.CoreProperties.KeyStoreProperties;
 import org.apache.logging.log4j.core.impl.CoreProperties.TransportSecurityProperties;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -38,24 +39,20 @@ public final class SslConfigurationFactory {
         KeyStoreConfiguration keyStoreConfiguration = null;
         TrustStoreConfiguration trustStoreConfiguration = null;
         if (config != null) {
-            if (config.trustStore().location() != null) {
+            final KeyStoreProperties trustStoreProperties = config.trustStore();
+            if (trustStoreProperties.location() != null || trustStoreProperties.type() != null) {
                 try {
-                    trustStoreConfiguration = TrustStoreConfiguration.createKeyStoreConfiguration(config.trustStore());
-                } catch (final Exception ex) {
-                    LOGGER.warn(
-                            "Unable to create trust store configuration due to: {} {}",
-                            ex.getClass().getName(),
-                            ex.getMessage());
+                    trustStoreConfiguration = TrustStoreConfiguration.createKeyStoreConfiguration(trustStoreProperties);
+                } catch (final Exception error) {
+                    LOGGER.error("Failed to create the trust store configuration", error);
                 }
             }
-            if (config.keyStore().location() != null) {
+            final KeyStoreProperties keyStoreProperties = config.keyStore();
+            if (keyStoreProperties.location() != null || keyStoreProperties.type() != null) {
                 try {
-                    keyStoreConfiguration = KeyStoreConfiguration.createKeyStoreConfiguration(config.keyStore());
-                } catch (final Exception ex) {
-                    LOGGER.warn(
-                            "Unable to create key store configuration due to: {} {}",
-                            ex.getClass().getName(),
-                            ex.getMessage());
+                    keyStoreConfiguration = KeyStoreConfiguration.createKeyStoreConfiguration(keyStoreProperties);
+                } catch (final Exception error) {
+                    LOGGER.error("Failed to create the key store configuration", error);
                 }
             }
         }

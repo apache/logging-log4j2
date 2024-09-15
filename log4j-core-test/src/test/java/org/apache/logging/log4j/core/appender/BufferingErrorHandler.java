@@ -14,11 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.test;
+package org.apache.logging.log4j.core.appender;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.ErrorHandler;
 import org.apache.logging.log4j.core.LogEvent;
@@ -26,47 +26,43 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 
-public class ListErrorHandler implements ErrorHandler {
+/**
+ * {@link ErrorHandler} implementation buffering invocations in the form of {@link StatusData}.
+ */
+final class BufferingErrorHandler implements ErrorHandler {
 
-    private final ArrayList<StatusData> statusData = new ArrayList<>();
+    private final List<StatusData> statusDataBuffer = Collections.synchronizedList(new ArrayList<>());
 
-    private void addStatusData(final String msg, final Throwable t) {
-        synchronized (statusData) {
-            final StackTraceElement caller = StackLocatorUtil.getStackTraceElement(3);
-            final String threadName = Thread.currentThread().getName();
-            statusData.add(new StatusData(caller, Level.ERROR, new SimpleMessage(msg), t, threadName));
-        }
+    BufferingErrorHandler() {}
+
+    private void addStatusData(final String message, final Throwable throwable) {
+        final StackTraceElement caller = StackLocatorUtil.getStackTraceElement(3);
+        final String threadName = Thread.currentThread().getName();
+        final StatusData statusData =
+                new StatusData(caller, Level.ERROR, new SimpleMessage(message), throwable, threadName);
+        statusDataBuffer.add(statusData);
     }
 
     @Override
-    public void error(String msg) {
-        addStatusData(msg, null);
+    public void error(String message) {
+        addStatusData(message, null);
     }
 
     @Override
-    public void error(String msg, Throwable t) {
-        addStatusData(msg, t);
+    public void error(final String message, final Throwable throwable) {
+        addStatusData(message, throwable);
     }
 
     @Override
-    public void error(String msg, LogEvent event, Throwable t) {
-        addStatusData(msg, t);
+    public void error(final String message, final LogEvent event, final Throwable throwable) {
+        addStatusData(message, throwable);
     }
 
     public void clear() {
-        synchronized (statusData) {
-            statusData.clear();
-        }
+        statusDataBuffer.clear();
     }
 
-    public Stream<StatusData> getStatusData() {
-        synchronized (statusData) {
-            return ((List<StatusData>) statusData.clone()).stream();
-        }
-    }
-
-    public Stream<StatusData> findStatusData(String regex) {
-        return getStatusData()
-                .filter(data -> data.getMessage().getFormattedMessage().matches(regex));
+    public List<StatusData> getBuffer() {
+        return statusDataBuffer;
     }
 }

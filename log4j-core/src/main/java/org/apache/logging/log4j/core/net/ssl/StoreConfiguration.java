@@ -39,7 +39,7 @@ public class StoreConfiguration<T> {
      */
     public void clearSecrets() {
         this.location = null;
-        this.passwordProvider = null;
+        this.passwordProvider = new MemoryPasswordProvider(new char[0]);
     }
 
     public String getLocation() {
@@ -56,13 +56,6 @@ public class StoreConfiguration<T> {
 
     public void setPassword(final char[] password) {
         this.passwordProvider = new MemoryPasswordProvider(password);
-    }
-
-    /**
-     * @throws StoreConfigurationException May be thrown by subclasses
-     */
-    protected T load() throws StoreConfigurationException {
-        return null;
     }
 
     @Override
