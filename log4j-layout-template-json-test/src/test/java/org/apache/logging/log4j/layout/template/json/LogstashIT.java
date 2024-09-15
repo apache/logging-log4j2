@@ -45,6 +45,7 @@ import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
 import org.elasticsearch.ElasticsearchStatusException;
@@ -133,13 +134,29 @@ class LogstashIT {
 
         private MavenHardcodedConstants() {}
 
-        private static final int LS_GELF_INPUT_PORT = 12222;
+        private static final int LS_GELF_INPUT_PORT = readPort("log4j.logstash.gelf.port");
 
-        private static final int LS_TCP_INPUT_PORT = 12345;
+        private static final int LS_TCP_INPUT_PORT = readPort("log4j.logstash.tcp.port");
 
-        private static final int ES_PORT = 9200;
+        private static final int ES_PORT = readPort("log4j.elasticsearch.port");
 
         private static final String ES_INDEX_NAME = "log4j";
+
+        private static int readPort(final String propertyName) {
+            final String propertyValue = System.getProperty(propertyName);
+            final int port;
+            final String errorMessage = String.format(
+                    "was expecting a valid port number in the system property `%s`, found: `%s`",
+                    propertyName, propertyValue);
+            try {
+                if (Strings.isBlank(propertyValue) || (port = Integer.parseInt(propertyValue)) < 0 || port >= 0xFFFF) {
+                    throw new IllegalArgumentException(errorMessage);
+                }
+            } catch (final NumberFormatException error) {
+                throw new IllegalArgumentException(errorMessage, error);
+            }
+            return port;
+        }
     }
 
     @Test

@@ -118,23 +118,6 @@
   <build>
     <plugins>
 
-      <!-- Disable ITs, which are Docker-dependent, by default. -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -159,8 +142,17 @@
 
       <id>docker</id>
 
+      <!--
+        ~ Only the `ubuntu` CI runners have access to Docker
+        -->
       <activation>
-        <activeByDefault>false</activeByDefault>
+        <os>
+          <family>linux</family>
+        </os>
+        <property>
+          <name>env.CI</name>
+          <value>true</value>
+        </property>
       </activation>
 
       <properties>
@@ -191,7 +183,8 @@
                       <ES_JAVA_OPTS>${elastic.java-opts}</ES_JAVA_OPTS>
                     </env>
                     <ports>
-                      <port>9200:9200</port>
+                      <!-- Binds an ephemeral port to the `elasticsearch.port` Maven property. -->
+                      <port>localhost:elasticsearch.port:9200</port>
                     </ports>
                     <network>
                       <mode>custom</mode>
@@ -224,8 +217,10 @@
                       <LS_JAVA_OPTS>${elastic.java-opts}</LS_JAVA_OPTS>
                     </env>
                     <ports>
-                      <port>12222:12222</port>
-                      <port>12345:12345</port>
+                      <!-- Binds an ephemeral port to the `logstash.gelf.port` Maven property. -->
+                      <port>localhost:logstash.gelf.port:12222</port>
+                      <!-- Binds an ephemeral port to the `logstash.tcp.port` Maven property. -->
+                      <port>localhost:logstash.tcp.port:12345</port>
                     </ports>
                     <log>
                       <prefix>[LS]</prefix>
@@ -316,6 +311,11 @@
               <includes>
                 <include>**/*IT.java</include>
               </includes>
+              <systemPropertyVariables>
+                <log4j.elasticsearch.port>${elasticsearch.port}</log4j.elasticsearch.port>
+                <log4j.logstash.gelf.port>${logstash.gelf.port}</log4j.logstash.gelf.port>
+                <log4j.logstash.tcp.port>${logstash.tcp.port}</log4j.logstash.tcp.port>
+              </systemPropertyVariables>
             </configuration>
             <executions>
               <execution>
