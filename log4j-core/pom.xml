@@ -66,6 +66,7 @@
       java.xml;transitive=false,
       jdk.unsupported;transitive=false,
       org.fusesource.jansi;transitive=false,
+      org.jspecify;transitive=false
     </bnd-extra-module-options>
 
     <log4j.docgen.pluginDescriptorsDir>${log4j.docgen.pluginDescriptorsDir.phase1}</log4j.docgen.pluginDescriptorsDir>

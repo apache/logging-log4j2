@@ -86,13 +86,13 @@ xref:manual/json-template-layout.adoc#event-templates[`GelfLayout.json`]
 template
 
 | xref:manual/appenders/database.adoc#JdbcAppender[JDBC appender]
-| xref:components.adoc#log4j-jdbc[`log4j-jdbc`]
+| xref:components.adoc#log4j-jdbc[`log4j-jdbc`] or one of the `log4j-jdbc-*` artifacts below.
 
-| xref:manual/appenders/database.adoc#PoolingDriverConnectionSource[JDBC appender: DBCP 2 connection source]
+| xref:manual/appenders/database.adoc#PoolingDriverConnectionSource[JDBC appender with DBCP 2 connection source]
 | xref:components.adoc#log4j-jdbc-dbcp2[`log4j-jdbc-dbcp2`]
 
-| xref:manual/appenders/database.adoc#DataSourceConnectionSource[JDBC appender: JNDI connection source]
-| xref:components.adoc#log4j-jndi[`log4j-jndi`]
+| xref:manual/appenders/database.adoc#DataSourceConnectionSource[JDBC appender with JNDI connection source]
+| xref:components.adoc#log4j-jdbc-jndi[`log4j-jdbc-jndi`]
 
 | {log4j2-url}/manual/appenders.html#JeroMQAppender[JeroMQ appender]
 | replaced by external

@@ -111,7 +111,8 @@ public class AsyncLoggerConfigTest {
         disruptor.start();
         try {
             config.log(FQCN, FQCN, null, Level.INFO, new SimpleMessage(), null);
-            verify(appender, timeout(100).times(1)).append(any());
+            // If this fails, the log event might not have reached the asynchronous thread yet
+            verify(appender, timeout(1000).times(1)).append(any());
             verify(filter, times(1)).filter(any());
         } finally {
             disruptor.stop();

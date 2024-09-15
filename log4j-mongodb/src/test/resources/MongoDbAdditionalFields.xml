@@ -15,15 +15,23 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="WARN">
+<Configuration xmlns="https://logging.apache.org/xml/ns"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="
+                   https://logging.apache.org/xml/ns
+                   https://logging.apache.org/xml/ns/log4j-config-3.xsd">
   <Appenders>
-    <NoSql name="MongoDbAppender">
-      <MongoDb connection="mongodb://localhost:${test:MongoDBTestPort:-27017}/testDb.testCollection" />
+    <NoSql name="MONGO">
+      <MongoDb connection="mongodb://localhost:${sys:log4j.mongo.port:-27017}/testDb.MongoDbAdditionalFieldsIT"/>
+      <KeyValuePair key="A" value="1"/>
+      <KeyValuePair key="B" value="2"/>
+      <KeyValuePair key="env1" value="${env:PATH}"/>
+      <KeyValuePair key="env2" value="$${env:PATH}"/>
     </NoSql>
   </Appenders>
   <Loggers>
     <Root level="ALL">
-      <AppenderRef ref="MongoDbAppender" />
+      <AppenderRef ref="MONGO"/>
     </Root>
   </Loggers>
 </Configuration>
