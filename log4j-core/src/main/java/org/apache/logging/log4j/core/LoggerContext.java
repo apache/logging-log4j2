@@ -48,7 +48,6 @@ import org.apache.logging.log4j.core.util.ExecutorServices;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
 import org.apache.logging.log4j.spi.LoggerContextShutdownEnabled;
@@ -56,6 +55,7 @@ import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.spi.Terminable;
 import org.apache.logging.log4j.spi.ThreadContextMapFactory;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.jspecify.annotations.Nullable;
 
@@ -96,12 +96,11 @@ public class LoggerContext extends AbstractLifeCycle
 
     /**
      * The default message factory to use while creating loggers.
-     * <p>
-     * The initial value is only set to avoid nullability.
-     * The actual value is populated by {@link #reloadDefaultMessageFactory()} during (re)configuration.
-     * </p>
      */
-    private MessageFactory defaultMessageFactory = ParameterizedMessageFactory.INSTANCE;
+    private final Lazy<MessageFactory> defaultMessageFactoryRef = Lazy.lazy(() -> {
+        final Logger throwawayLogger = newInstance(this, "throwaway-for-determining-MF", null);
+        return throwawayLogger.getMessageFactory();
+    });
 
     private final Lock configLock = new ReentrantLock();
 
@@ -534,7 +533,8 @@ public class LoggerContext extends AbstractLifeCycle
      */
     @Override
     public Logger getLogger(final String name, @Nullable final MessageFactory messageFactory) {
-        final MessageFactory effectiveMessageFactory = messageFactory != null ? messageFactory : defaultMessageFactory;
+        final MessageFactory effectiveMessageFactory =
+                messageFactory != null ? messageFactory : defaultMessageFactoryRef.get();
         return loggerRegistry.computeIfAbsent(name, effectiveMessageFactory, this::newInstance);
     }
 
@@ -556,7 +556,7 @@ public class LoggerContext extends AbstractLifeCycle
      */
     @Override
     public boolean hasLogger(final String name) {
-        return loggerRegistry.hasLogger(name, defaultMessageFactory);
+        return loggerRegistry.hasLogger(name, defaultMessageFactoryRef.get());
     }
 
     /**
@@ -567,7 +567,8 @@ public class LoggerContext extends AbstractLifeCycle
      */
     @Override
     public boolean hasLogger(final String name, @Nullable final MessageFactory messageFactory) {
-        final MessageFactory effectiveMessageFactory = messageFactory != null ? messageFactory : defaultMessageFactory;
+        final MessageFactory effectiveMessageFactory =
+                messageFactory != null ? messageFactory : defaultMessageFactoryRef.get();
         return loggerRegistry.hasLogger(name, effectiveMessageFactory);
     }
 
@@ -653,24 +654,10 @@ public class LoggerContext extends AbstractLifeCycle
             // AsyncLoggers update their nanoClock when the configuration changes
             Log4jLogEvent.setNanoClock(configuration.getNanoClock());
 
-            reloadDefaultMessageFactory();
-
             return prev;
         } finally {
             configLock.unlock();
         }
-    }
-
-    /**
-     * Reloads the value of {@link #defaultMessageFactory}.
-     * <p>
-     * {@link LoggerContext} implementations tend to choose a different message factory based on the employed configuration.
-     * Hence, this method creates a throwaway logger to determine the default message factory.
-     * </p>
-     */
-    private void reloadDefaultMessageFactory() {
-        defaultMessageFactory =
-                newInstance(this, "throwaway-for-determining-MF", null).getMessageFactory();
     }
 
     private static void registerJmxBeans() {
