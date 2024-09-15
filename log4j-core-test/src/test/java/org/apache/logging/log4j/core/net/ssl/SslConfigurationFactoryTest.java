@@ -23,15 +23,15 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.core.impl.CoreProperties.KeyManagerFactoryProperties;
 import org.apache.logging.log4j.core.impl.CoreProperties.KeyStoreProperties;
 import org.apache.logging.log4j.core.impl.CoreProperties.TransportSecurityProperties;
-// import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.OS;
-// import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-// import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
-// @UsingStatusListener // Suppresses `StatusLogger` output, unless there is a failure
+@UsingStatusListener // Suppresses `StatusLogger` output, unless there is a failure
 class SslConfigurationFactoryTest {
 
     @Test
@@ -88,13 +88,9 @@ class SslConfigurationFactoryTest {
     }
 
     @EnabledOnOs(OS.WINDOWS)
-    @Test
-    //    @ParameterizedTest
-    //    @MethodSource("windowsKeystoreConfigs")
-    //    public void testPasswordLessStores(String location, String password) {
-    public void testPasswordLessStores() {
-        String location = null;
-        String password = null;
+    @ParameterizedTest
+    @MethodSource("windowsKeystoreConfigs")
+    public void testPasswordLessStores(String location, String password) {
 
         // Create the configuration
         final char[] passwordChars = password != null ? password.toCharArray() : null;

@@ -304,11 +304,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-
-          <!-- TODO Added for troubleshooting, remove the following elements! -->
-          <test>SslConfigurationFactoryTest#testPasswordLessStores</test>
-          <failIfNoTests>false</failIfNoTests>
-
           <!-- Illegal access is disabled by default in Java 16 due to JEP-396.
                We are relaxing it for tests. -->
           <argLine>--add-opens java.base/java.lang=ALL-UNNAMED
@@ -316,7 +311,6 @@
             --add-opens java.base/java.util=ALL-UNNAMED</argLine>
           <runOrder>random</runOrder>
           <systemPropertyVariables>
-            <log4j2.debug>true</log4j2.debug>
             <Web.isWebApp>false</Web.isWebApp>
           </systemPropertyVariables>
           <useModulePath>false</useModulePath>
