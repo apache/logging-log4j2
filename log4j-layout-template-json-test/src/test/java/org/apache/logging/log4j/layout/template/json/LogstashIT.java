@@ -439,8 +439,24 @@ class LogstashIT {
     }
 
     private static boolean checkDocumentCount(int expectedCount) throws IOException {
-        final CountResponse countResponse =
-                ES_CLIENT.count(builder -> builder.index(MavenHardcodedConstants.ES_INDEX_NAME));
+        final CountResponse countResponse;
+        try {
+            countResponse = ES_CLIENT.count(builder -> builder.index(MavenHardcodedConstants.ES_INDEX_NAME));
+        }
+        // Try to enrich the failure with the available list of indices
+        catch (final ElasticsearchException error) {
+            try {
+                if (error.getMessage().contains("index_not_found_exception")) {
+                    final Set<String> indexNames =
+                            ES_CLIENT.cluster().health().indices().keySet();
+                    final String message = String.format("Could not find index! Available index names: %s", indexNames);
+                    throw new AssertionError(message, error);
+                }
+            } catch (final Exception suppressed) {
+                error.addSuppressed(suppressed);
+            }
+            throw error;
+        }
         final long actualCount = countResponse.count();
         Assertions.assertThat(actualCount).isLessThanOrEqualTo(expectedCount);
         return actualCount == expectedCount;
