@@ -53,7 +53,6 @@ import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.GelfLayout;
-import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
 import org.apache.logging.log4j.layout.template.json.util.ThreadLocalRecyclerFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
@@ -78,7 +77,7 @@ class LogstashIT {
 
     private static final Charset CHARSET = StandardCharsets.UTF_8;
 
-    private static final String HOST_NAME = NetUtils.getLocalHostname();
+    private static final String HOST_NAME = "localhost";
 
     private static final String SERVICE_NAME = "LogstashIT";
 

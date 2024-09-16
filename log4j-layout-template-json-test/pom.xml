@@ -194,7 +194,7 @@
                     </env>
                     <ports>
                       <!-- Binds an ephemeral port to the `elasticsearch.port` Maven property. -->
-                      <port>elasticsearch.port:9200</port>
+                      <port>localhost:elasticsearch.port:9200</port>
                     </ports>
                     <network>
                       <mode>custom</mode>
@@ -228,9 +228,9 @@
                     </env>
                     <ports>
                       <!-- Binds an ephemeral port to the `logstash.gelf.port` Maven property. -->
-                      <port>logstash.gelf.port:12222</port>
+                      <port>localhost:logstash.gelf.port:12222</port>
                       <!-- Binds an ephemeral port to the `logstash.tcp.port` Maven property. -->
-                      <port>logstash.tcp.port:12345</port>
+                      <port>localhost:logstash.tcp.port:12345</port>
                     </ports>
                     <log>
                       <prefix>[LS]</prefix>
