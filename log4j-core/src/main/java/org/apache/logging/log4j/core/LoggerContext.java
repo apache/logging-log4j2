@@ -55,7 +55,6 @@ import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.spi.Terminable;
 import org.apache.logging.log4j.spi.ThreadContextMapFactory;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.jspecify.annotations.Nullable;
 
@@ -78,6 +77,13 @@ public class LoggerContext extends AbstractLifeCycle
 
     private static final Configuration NULL_CONFIGURATION = new NullConfiguration();
 
+    /**
+     * The default message factory to use while creating loggers, if none is provided.
+     *
+     * @see <a href="https://github.com/apache/logging-log4j2/pull/2936">#2936</a> for the discussion on why we leak the message factory of the default logger and hardcode it here.
+     */
+    private static final MessageFactory DEFAULT_MESSAGE_FACTORY = Logger.getEffectiveMessageFactory(null);
+
     private final LoggerRegistry<Logger> loggerRegistry = new LoggerRegistry<>();
     private final CopyOnWriteArrayList<PropertyChangeListener> propertyChangeListeners = new CopyOnWriteArrayList<>();
     private volatile List<LoggerContextShutdownAware> listeners;
@@ -93,14 +99,6 @@ public class LoggerContext extends AbstractLifeCycle
     private String contextName;
     private volatile URI configLocation;
     private Cancellable shutdownCallback;
-
-    /**
-     * The default message factory to use while creating loggers.
-     */
-    private final Lazy<MessageFactory> defaultMessageFactoryRef = Lazy.lazy(() -> {
-        final Logger throwawayLogger = newInstance(this, "throwaway-for-determining-MF", null);
-        return throwawayLogger.getMessageFactory();
-    });
 
     private final Lock configLock = new ReentrantLock();
 
@@ -534,7 +532,7 @@ public class LoggerContext extends AbstractLifeCycle
     @Override
     public Logger getLogger(final String name, @Nullable final MessageFactory messageFactory) {
         final MessageFactory effectiveMessageFactory =
-                messageFactory != null ? messageFactory : defaultMessageFactoryRef.get();
+                messageFactory != null ? messageFactory : DEFAULT_MESSAGE_FACTORY;
         return loggerRegistry.computeIfAbsent(name, effectiveMessageFactory, this::newInstance);
     }
 
@@ -556,7 +554,7 @@ public class LoggerContext extends AbstractLifeCycle
      */
     @Override
     public boolean hasLogger(final String name) {
-        return loggerRegistry.hasLogger(name, defaultMessageFactoryRef.get());
+        return loggerRegistry.hasLogger(name, DEFAULT_MESSAGE_FACTORY);
     }
 
     /**
@@ -568,7 +566,7 @@ public class LoggerContext extends AbstractLifeCycle
     @Override
     public boolean hasLogger(final String name, @Nullable final MessageFactory messageFactory) {
         final MessageFactory effectiveMessageFactory =
-                messageFactory != null ? messageFactory : defaultMessageFactoryRef.get();
+                messageFactory != null ? messageFactory : DEFAULT_MESSAGE_FACTORY;
         return loggerRegistry.hasLogger(name, effectiveMessageFactory);
     }
 
