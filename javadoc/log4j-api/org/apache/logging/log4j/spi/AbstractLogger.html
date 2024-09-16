@@ -262,11 +262,14 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="../message/Message.html" title="interface in org.apache.logging.log4j.message">Message</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#catchingMsg(java.lang.Throwable)" class="member-name-link">catchingMsg</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link">Throwable</a>&nbsp;throwable)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#checkMessageFactory(org.apache.logging.log4j.spi.ExtendedLogger,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">checkMessageFactory</a><wbr>(<a href="ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a>&nbsp;logger,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#checkMessageFactory(org.apache.logging.log4j.spi.ExtendedLogger,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">checkMessageFactory</a><wbr>(<a href="ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a>&nbsp;logger,
  <a href="../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Checks that the message factory a logger was created with is the same as the given messageFactory.</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">As of version <code>2.25.0</code>, planned to be removed!
+ Instead, in <a href="LoggerContext.html#getLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)"><code>LoggerContext.getLogger(String, MessageFactory)</code></a> implementations, namespace loggers with message factories.</div>
+</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#debug(java.lang.CharSequence)" class="member-name-link">debug</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/CharSequence.html" title="class or interface in java.lang" class="external-link">CharSequence</a>&nbsp;message)</code></div>
@@ -3967,8 +3970,14 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
 <li>
 <section class="detail" id="checkMessageFactory(org.apache.logging.log4j.spi.ExtendedLogger,org.apache.logging.log4j.message.MessageFactory)">
 <h3>checkMessageFactory</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">checkMessageFactory</span><wbr><span class="parameters">(<a href="ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a>&nbsp;logger,
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">checkMessageFactory</span><wbr><span class="parameters">(<a href="ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a>&nbsp;logger,
  <a href="../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">As of version <code>2.25.0</code>, planned to be removed!
+ Instead, in <a href="LoggerContext.html#getLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)"><code>LoggerContext.getLogger(String, MessageFactory)</code></a> implementations, namespace loggers with message factories.
+ If your implementation uses <a href="LoggerRegistry.html" title="class in org.apache.logging.log4j.spi"><code>LoggerRegistry</code></a>, you are already covered.</div>
+</div>
 <div class="block">Checks that the message factory a logger was created with is the same as the given messageFactory. If they are
  different log a warning to the <a href="../status/StatusLogger.html" title="class in org.apache.logging.log4j.status">StatusLogger</a>. A null MessageFactory translates to the default
  MessageFactory <a href="#DEFAULT_MESSAGE_FACTORY_CLASS"><code>DEFAULT_MESSAGE_FACTORY_CLASS</code></a>.</div>

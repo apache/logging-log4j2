@@ -95,7 +95,7 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code><a href="../ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a></code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">SimpleLoggerContext.</span><code><a href="../../simple/SimpleLoggerContext.html#getLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">getLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="../../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</code></div>
+ @Nullable <a href="../../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 </div>
 <div class="caption"><span>Methods in <a href="../../simple/package-summary.html">org.apache.logging.log4j.simple</a> that return types with arguments of type <a href="../ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a></span></div>
@@ -122,22 +122,28 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>class&nbsp;</code></div>
 <div class="col-second even-row-color"><code><a href="../LoggerRegistry.html" class="type-name-link" title="class in org.apache.logging.log4j.spi">LoggerRegistry</a>&lt;T extends <a href="../ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a>&gt;</code></div>
 <div class="col-last even-row-color">
-<div class="block">Convenience class to be used by <code>LoggerContext</code> implementations.</div>
+<div class="block">Convenience class to be used as an <a href="../ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi"><code>ExtendedLogger</code></a> registry by <code>LoggerContext</code> implementations.</div>
 </div>
 <div class="col-first odd-row-color"><code>static class&nbsp;</code></div>
 <div class="col-second odd-row-color"><code><a href="../LoggerRegistry.ConcurrentMapFactory.html" class="type-name-link" title="class in org.apache.logging.log4j.spi">LoggerRegistry.ConcurrentMapFactory</a>&lt;T extends <a href="../ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a>&gt;</code></div>
 <div class="col-last odd-row-color">
-<div class="block">Generates ConcurrentHashMaps for use by the registry to store the Loggers.</div>
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">As of version <code>2.25.0</code>, planned to be removed!</div>
+</div>
 </div>
 <div class="col-first even-row-color"><code>static interface&nbsp;</code></div>
 <div class="col-second even-row-color"><code><a href="../LoggerRegistry.MapFactory.html" class="type-name-link" title="interface in org.apache.logging.log4j.spi">LoggerRegistry.MapFactory</a>&lt;T extends <a href="../ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a>&gt;</code></div>
 <div class="col-last even-row-color">
-<div class="block">Interface to control the data structure used by the registry to store the Loggers.</div>
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">As of version <code>2.25.0</code>, planned to be removed!</div>
+</div>
 </div>
 <div class="col-first odd-row-color"><code>static class&nbsp;</code></div>
 <div class="col-second odd-row-color"><code><a href="../LoggerRegistry.WeakMapFactory.html" class="type-name-link" title="class in org.apache.logging.log4j.spi">LoggerRegistry.WeakMapFactory</a>&lt;T extends <a href="../ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a>&gt;</code></div>
 <div class="col-last odd-row-color">
-<div class="block">Generates WeakHashMaps for use by the registry to store the Loggers.</div>
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">As of version <code>2.25.0</code>, planned to be removed!</div>
+</div>
 </div>
 </div>
 <div class="caption"><span>Classes in <a href="../package-summary.html">org.apache.logging.log4j.spi</a> that implement <a href="../ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a></span></div>
@@ -179,7 +185,7 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first odd-row-color"><code>default <a href="../ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a></code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">LoggerContext.</span><code><a href="../LoggerContext.html#getLogger(java.lang.Class,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">getLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;?&gt;&nbsp;cls,
- <a href="../../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</code></div>
+ @Nullable <a href="../../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</code></div>
 <div class="col-last odd-row-color">
 <div class="block">Gets an ExtendedLogger using the fully qualified name of the Class as the Logger name.</div>
 </div>
@@ -190,7 +196,7 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first odd-row-color"><code><a href="../ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a></code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">LoggerContext.</span><code><a href="../LoggerContext.html#getLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">getLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="../../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</code></div>
+ @Nullable <a href="../../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</code></div>
 <div class="col-last odd-row-color">
 <div class="block">Gets an ExtendedLogger.</div>
 </div>
@@ -204,7 +210,10 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color"><span class="type-name-label">AbstractLogger.</span><code><a href="../AbstractLogger.html#checkMessageFactory(org.apache.logging.log4j.spi.ExtendedLogger,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">checkMessageFactory</a><wbr>(<a href="../ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a>&nbsp;logger,
  <a href="../../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</code></div>
 <div class="col-last even-row-color">
-<div class="block">Checks that the message factory a logger was created with is the same as the given messageFactory.</div>
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">As of version <code>2.25.0</code>, planned to be removed!
+ Instead, in <a href="../LoggerContext.html#getLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)"><code>LoggerContext.getLogger(String, MessageFactory)</code></a> implementations, namespace loggers with message factories.</div>
+</div>
 </div>
 </div>
 <div class="caption"><span>Constructors in <a href="../package-summary.html">org.apache.logging.log4j.spi</a> with parameters of type <a href="../ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a></span></div>

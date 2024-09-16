@@ -70,6 +70,10 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">
 <div class="deprecation-comment">Since 2.24.0 no class implements this.</div>
 </div>
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/spi/LoggerRegistry.MapFactory.html" title="interface in org.apache.logging.log4j.spi">org.apache.logging.log4j.spi.LoggerRegistry.MapFactory</a></div>
+<div class="col-last odd-row-color">
+<div class="deprecation-comment">As of version <code>2.25.0</code>, planned to be removed!</div>
+</div>
 </div>
 </div>
 </li>
@@ -88,6 +92,14 @@ loadScripts(document, 'script');</script>
 <div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/spi/LoggerContextKey.html" title="class in org.apache.logging.log4j.spi">org.apache.logging.log4j.spi.LoggerContextKey</a></div>
 <div class="col-last odd-row-color">
 <div class="deprecation-comment">with no replacement - no longer used</div>
+</div>
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/spi/LoggerRegistry.ConcurrentMapFactory.html" title="class in org.apache.logging.log4j.spi">org.apache.logging.log4j.spi.LoggerRegistry.ConcurrentMapFactory</a></div>
+<div class="col-last even-row-color">
+<div class="deprecation-comment">As of version <code>2.25.0</code>, planned to be removed!</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/spi/LoggerRegistry.WeakMapFactory.html" title="class in org.apache.logging.log4j.spi">org.apache.logging.log4j.spi.LoggerRegistry.WeakMapFactory</a></div>
+<div class="col-last odd-row-color">
+<div class="deprecation-comment">As of version <code>2.25.0</code>, planned to be removed!</div>
 </div>
 </div>
 </div>
@@ -160,18 +172,39 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color">
 <div class="deprecation-comment">Use <a href="org/apache/logging/log4j/message/StructuredDataId.html#makeId(java.lang.String,java.lang.String)"><code>StructuredDataId.makeId(String, String)</code></a> instead</div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/spi/AbstractLogger.html#enter(java.lang.String,java.lang.String,org.apache.logging.log4j.util.MessageSupplier...)">org.apache.logging.log4j.spi.AbstractLogger.enter<wbr>(String, String, MessageSupplier...)</a></div>
-<div class="col-last even-row-color"></div>
-<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/spi/AbstractLogger.html#enter(java.lang.String,org.apache.logging.log4j.util.MessageSupplier)">org.apache.logging.log4j.spi.AbstractLogger.enter<wbr>(String, MessageSupplier)</a></div>
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/spi/AbstractLogger.html#checkMessageFactory(org.apache.logging.log4j.spi.ExtendedLogger,org.apache.logging.log4j.message.MessageFactory)">org.apache.logging.log4j.spi.AbstractLogger.checkMessageFactory<wbr>(ExtendedLogger, MessageFactory)</a></div>
+<div class="col-last even-row-color">
+<div class="deprecation-comment">As of version <code>2.25.0</code>, planned to be removed!
+ Instead, in <a href="org/apache/logging/log4j/spi/LoggerContext.html#getLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)"><code>LoggerContext.getLogger(String, MessageFactory)</code></a> implementations, namespace loggers with message factories.
+ If your implementation uses <a href="org/apache/logging/log4j/spi/LoggerRegistry.html" title="class in org.apache.logging.log4j.spi"><code>LoggerRegistry</code></a>, you are already covered.</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/spi/AbstractLogger.html#enter(java.lang.String,java.lang.String,org.apache.logging.log4j.util.MessageSupplier...)">org.apache.logging.log4j.spi.AbstractLogger.enter<wbr>(String, String, MessageSupplier...)</a></div>
 <div class="col-last odd-row-color"></div>
-<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/spi/AbstractLogger.html#entry()">org.apache.logging.log4j.spi.AbstractLogger.entry()</a></div>
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/spi/AbstractLogger.html#enter(java.lang.String,org.apache.logging.log4j.util.MessageSupplier)">org.apache.logging.log4j.spi.AbstractLogger.enter<wbr>(String, MessageSupplier)</a></div>
 <div class="col-last even-row-color"></div>
-<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/spi/AbstractLogger.html#entry(java.lang.Object...)">org.apache.logging.log4j.spi.AbstractLogger.entry<wbr>(Object...)</a></div>
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/spi/AbstractLogger.html#entry()">org.apache.logging.log4j.spi.AbstractLogger.entry()</a></div>
 <div class="col-last odd-row-color"></div>
-<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/spi/AbstractLogger.html#exit()">org.apache.logging.log4j.spi.AbstractLogger.exit()</a></div>
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/spi/AbstractLogger.html#entry(java.lang.Object...)">org.apache.logging.log4j.spi.AbstractLogger.entry<wbr>(Object...)</a></div>
 <div class="col-last even-row-color"></div>
-<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/spi/AbstractLogger.html#exit(R)">org.apache.logging.log4j.spi.AbstractLogger.exit<wbr>(R)</a></div>
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/spi/AbstractLogger.html#exit()">org.apache.logging.log4j.spi.AbstractLogger.exit()</a></div>
 <div class="col-last odd-row-color"></div>
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/spi/AbstractLogger.html#exit(R)">org.apache.logging.log4j.spi.AbstractLogger.exit<wbr>(R)</a></div>
+<div class="col-last even-row-color"></div>
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/spi/LoggerRegistry.html#getLogger(java.lang.String)">org.apache.logging.log4j.spi.LoggerRegistry.getLogger<wbr>(String)</a></div>
+<div class="col-last odd-row-color">
+<div class="deprecation-comment">As of version <code>2.25.0</code>, planned to be removed!
+ Use <a href="org/apache/logging/log4j/spi/LoggerRegistry.html#getLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)"><code>LoggerRegistry.getLogger(String, MessageFactory)</code></a> instead.</div>
+</div>
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/spi/LoggerRegistry.html#hasLogger(java.lang.String)">org.apache.logging.log4j.spi.LoggerRegistry.hasLogger<wbr>(String)</a></div>
+<div class="col-last even-row-color">
+<div class="deprecation-comment">As of version <code>2.25.0</code>, planned to be removed!
+ Use <a href="org/apache/logging/log4j/spi/LoggerRegistry.html#hasLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)"><code>LoggerRegistry.hasLogger(String, MessageFactory)</code></a> instead.</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/spi/LoggerRegistry.html#putIfAbsent(java.lang.String,org.apache.logging.log4j.message.MessageFactory,T)">org.apache.logging.log4j.spi.LoggerRegistry.putIfAbsent<wbr>(String, MessageFactory, T)</a></div>
+<div class="col-last odd-row-color">
+<div class="deprecation-comment">As of version <code>2.25.0</code>, planned to be removed!
+ Use <a href="org/apache/logging/log4j/spi/LoggerRegistry.html#computeIfAbsent(java.lang.String,org.apache.logging.log4j.message.MessageFactory,java.util.function.BiFunction)"><code>LoggerRegistry.computeIfAbsent(String, MessageFactory, BiFunction)</code></a> instead.</div>
+</div>
 <div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/spi/Provider.html#getUrl()">org.apache.logging.log4j.spi.Provider.getUrl()</a></div>
 <div class="col-last even-row-color">
 <div class="deprecation-comment">since 2.24.0, without replacement.</div>
@@ -237,8 +270,12 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">
 <div class="deprecation-comment">since 2.24.0 without a replacement.</div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/spi/Provider.html#%3Cinit%3E(java.util.Properties,java.net.URL,java.lang.ClassLoader)">org.apache.logging.log4j.spi.Provider<wbr>(Properties, URL, ClassLoader)</a></div>
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/spi/LoggerRegistry.html#%3Cinit%3E(org.apache.logging.log4j.spi.LoggerRegistry.MapFactory)">org.apache.logging.log4j.spi.LoggerRegistry<wbr>(LoggerRegistry.MapFactory&lt;T&gt;)</a></div>
 <div class="col-last odd-row-color">
+<div class="deprecation-comment">As of version <code>2.25.0</code>, planned to be removed!</div>
+</div>
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/spi/Provider.html#%3Cinit%3E(java.util.Properties,java.net.URL,java.lang.ClassLoader)">org.apache.logging.log4j.spi.Provider<wbr>(Properties, URL, ClassLoader)</a></div>
+<div class="col-last even-row-color">
 <div class="deprecation-comment">since 2.24.0</div>
 </div>
 </div>

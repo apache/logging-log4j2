@@ -151,7 +151,7 @@ implements <a href="../spi/LoggerContext.html" title="interface in org.apache.lo
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../spi/ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">getLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</code></div>
+ @Nullable <a href="../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Gets an ExtendedLogger.</div>
 </div>
@@ -166,16 +166,16 @@ implements <a href="../spi/LoggerContext.html" title="interface in org.apache.lo
 <div class="block">Tests if a Logger with the specified name exists.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#hasLogger(java.lang.String,java.lang.Class)" class="member-name-link">hasLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&gt;&nbsp;messageFactoryClass)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#hasLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">hasLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ @Nullable <a href="../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Tests if a Logger with the specified name and MessageFactory type exists.</div>
+<div class="block">Tests if a Logger with the specified name and MessageFactory exists.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#hasLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">hasLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#hasLogger(java.lang.String,java.lang.Class)" class="member-name-link">hasLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&gt;&nbsp;messageFactoryClass)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Tests if a Logger with the specified name and MessageFactory exists.</div>
+<div class="block">Tests if a Logger with the specified name and MessageFactory type exists.</div>
 </div>
 </div>
 </div>
@@ -284,7 +284,7 @@ implements <a href="../spi/LoggerContext.html" title="interface in org.apache.lo
 <section class="detail" id="getLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)">
 <h3>getLogger</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../spi/ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a></span>&nbsp;<span class="element-name">getLogger</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</span></div>
+ @Nullable <a href="../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</span></div>
 <div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="../spi/LoggerContext.html#getLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)">LoggerContext</a></code></span></div>
 <div class="block">Gets an ExtendedLogger.</div>
 <dl class="notes">
@@ -352,7 +352,7 @@ implements <a href="../spi/LoggerContext.html" title="interface in org.apache.lo
 <section class="detail" id="hasLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)">
 <h3>hasLogger</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">hasLogger</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</span></div>
+ @Nullable <a href="../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</span></div>
 <div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="../spi/LoggerContext.html#hasLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)">LoggerContext</a></code></span></div>
 <div class="block">Tests if a Logger with the specified name and MessageFactory exists.</div>
 <dl class="notes">
