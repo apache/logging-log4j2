@@ -38,7 +38,7 @@
     <bnd-extra-module-options>
       <!-- Filebased module names: MUST be static -->
       javax.servlet.api;substitute="javax.servlet-api";static=true;transitive=false,
-      javax.servlet.jsp.api;substitute="javax.servlet.jsp-api";static=true;transitive=false
+      javax.servlet.jsp.api;substitute="javax.servlet.jsp-api";static=true;transitive=false,
       <!-- Remove `transitive` for optional dependencies -->
       org.jspecify;transitive=false
     </bnd-extra-module-options>
