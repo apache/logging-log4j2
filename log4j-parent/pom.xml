@@ -85,7 +85,7 @@
          Plugin version properties (in alphabetical order)
          ================================================= -->
     <asciidoctor-maven-plugin.version>2.2.4</asciidoctor-maven-plugin.version>
-    <docker-maven-plugin.version>0.43.4</docker-maven-plugin.version>
+    <docker-maven-plugin.version>0.45.0</docker-maven-plugin.version>
     <exam-maven-plugin.version>4.13.5</exam-maven-plugin.version>
     <gmavenplus-plugin.version>3.0.2</gmavenplus-plugin.version>
     <!-- `surefire.version` property used in `apache.org:apache`: -->
