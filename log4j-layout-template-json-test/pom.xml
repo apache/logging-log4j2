@@ -167,6 +167,9 @@
       </activation>
 
       <properties>
+        <elasticsearch.port>9200</elasticsearch.port>
+        <logstash.gelf.port>12222</logstash.gelf.port>
+        <logstash.tcp.port>12345</logstash.tcp.port>
         <!-- `docker run elasticsearch:<TAG>` exists with code 137 due to insufficient memory.
              We limit the used JVM memory to avoid this OOM failure. -->
         <elastic.java-opts>-Xms750m -Xmx750m</elastic.java-opts>
