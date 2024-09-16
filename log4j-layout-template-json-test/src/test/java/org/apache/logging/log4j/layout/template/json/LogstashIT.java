@@ -16,6 +16,18 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch._types.ElasticsearchException;
+import co.elastic.clients.elasticsearch._types.HealthStatus;
+import co.elastic.clients.elasticsearch.cluster.HealthResponse;
+import co.elastic.clients.elasticsearch.core.CountResponse;
+import co.elastic.clients.elasticsearch.core.SearchResponse;
+import co.elastic.clients.elasticsearch.core.search.SourceConfig;
+import co.elastic.clients.elasticsearch.indices.DeleteIndexRequest;
+import co.elastic.clients.elasticsearch.indices.DeleteIndexResponse;
+import co.elastic.clients.json.jackson.JacksonJsonpMapper;
+import co.elastic.clients.transport.ElasticsearchTransport;
+import co.elastic.clients.transport.rest_client.RestClientTransport;
 import co.elastic.logging.log4j2.EcsLayout;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -24,7 +36,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -41,28 +52,16 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
-import org.elasticsearch.ElasticsearchStatusException;
-import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
-import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
-import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.support.master.AcknowledgedResponse;
-import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
-import org.elasticsearch.client.RestClientBuilder;
-import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.cluster.health.ClusterHealthStatus;
-import org.elasticsearch.rest.RestStatus;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -80,7 +79,7 @@ class LogstashIT {
 
     private static final Charset CHARSET = StandardCharsets.UTF_8;
 
-    private static final String HOST_NAME = NetUtils.getLocalHostname();
+    private static final String HOST_NAME = "localhost";
 
     private static final String SERVICE_NAME = "LogstashIT";
 
@@ -127,6 +126,12 @@ class LogstashIT {
 
     private static final String ES_INDEX_MESSAGE_FIELD_NAME = "message";
 
+    private static RestClient REST_CLIENT;
+
+    private static ElasticsearchTransport ES_TRANSPORT;
+
+    private static ElasticsearchClient ES_CLIENT;
+
     /**
      * Constants hardcoded in docker-maven-plugin configuration, do not change!
      */
@@ -159,6 +164,42 @@ class LogstashIT {
         }
     }
 
+    @BeforeAll
+    public static void initClient() throws IOException {
+
+        LOGGER.info("instantiating the ES client");
+        REST_CLIENT = RestClient.builder(
+                        HttpHost.create(String.format("http://%s:%d", HOST_NAME, MavenHardcodedConstants.ES_PORT)))
+                .build();
+        ES_TRANSPORT = new RestClientTransport(REST_CLIENT, new JacksonJsonpMapper());
+        ES_CLIENT = new ElasticsearchClient(ES_TRANSPORT);
+
+        LOGGER.info("verifying the ES connection");
+        HealthResponse healthResponse = ES_CLIENT.cluster().health();
+        Assertions.assertThat(healthResponse.status()).isNotEqualTo(HealthStatus.Red);
+    }
+
+    @BeforeEach
+    void deleteIndex() throws IOException {
+        LOGGER.info("deleting the ES index");
+        try {
+            DeleteIndexResponse deleteIndexResponse = ES_CLIENT
+                    .indices()
+                    .delete(DeleteIndexRequest.of(builder -> builder.index(MavenHardcodedConstants.ES_INDEX_NAME)));
+            Assertions.assertThat(deleteIndexResponse.acknowledged()).isTrue();
+        } catch (ElasticsearchException error) {
+            if (!error.getMessage().contains("index_not_found_exception")) {
+                throw new RuntimeException(error);
+            }
+        }
+    }
+
+    @AfterAll
+    public static void stopClient() throws Exception {
+        ES_TRANSPORT.close();
+        REST_CLIENT.close();
+    }
+
     @Test
     void test_lite_events() throws IOException {
         final List<LogEvent> logEvents = LogEventFixture.createLiteLogEvents(LOG_EVENT_COUNT);
@@ -172,35 +213,33 @@ class LogstashIT {
     }
 
     private static void testEvents(final List<LogEvent> logEvents) throws IOException {
-        try (final RestHighLevelClient client = createClient()) {
-            final Appender appender =
-                    createStartedAppender(JSON_TEMPLATE_GELF_LAYOUT, MavenHardcodedConstants.LS_GELF_INPUT_PORT);
-            try {
+        final Appender appender =
+                createStartedAppender(JSON_TEMPLATE_GELF_LAYOUT, MavenHardcodedConstants.LS_GELF_INPUT_PORT);
+        try {
 
-                // Append events.
-                LOGGER.info("appending events");
-                logEvents.forEach(appender::append);
-                LOGGER.info("completed appending events");
+            // Append events.
+            LOGGER.info("appending events");
+            logEvents.forEach(appender::append);
+            LOGGER.info("completed appending events");
 
-                // Wait all messages to arrive.
-                Awaitility.await()
-                        .atMost(Duration.ofSeconds(60))
-                        .pollDelay(Duration.ofSeconds(2))
-                        .until(() -> queryDocumentCount(client) == LOG_EVENT_COUNT);
+            // Wait all messages to arrive.
+            Awaitility.await()
+                    .atMost(Duration.ofSeconds(60))
+                    .pollDelay(Duration.ofSeconds(2))
+                    .until(() -> checkDocumentCount(LOG_EVENT_COUNT));
 
-                // Verify indexed messages.
-                final Set<String> expectedMessages = logEvents.stream()
-                        .map(LogstashIT::expectedLogstashMessageField)
-                        .collect(Collectors.toSet());
-                final Set<String> actualMessages = queryDocuments(client).stream()
-                        .map(source -> (String) source.get(ES_INDEX_MESSAGE_FIELD_NAME))
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toSet());
-                Assertions.assertThat(actualMessages).isEqualTo(expectedMessages);
+            // Verify indexed messages.
+            final Set<String> expectedMessages = logEvents.stream()
+                    .map(LogstashIT::expectedLogstashMessageField)
+                    .collect(Collectors.toSet());
+            final Set<String> actualMessages = queryDocuments().stream()
+                    .map(source -> (String) source.get(ES_INDEX_MESSAGE_FIELD_NAME))
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+            Assertions.assertThat(actualMessages).isEqualTo(expectedMessages);
 
-            } finally {
-                appender.stop();
-            }
+        } finally {
+            appender.stop();
         }
     }
 
@@ -208,9 +247,9 @@ class LogstashIT {
         final Throwable throwable = logEvent.getThrown();
         if (throwable != null) {
             try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                    final PrintStream printStream = new PrintStream(outputStream, false, CHARSET.name())) {
+                    final PrintStream printStream = new PrintStream(outputStream, false, CHARSET)) {
                 throwable.printStackTrace(printStream);
-                return outputStream.toString(CHARSET.name());
+                return outputStream.toString(CHARSET);
             } catch (final Exception error) {
                 throw new RuntimeException("failed printing stack trace", error);
             }
@@ -245,36 +284,34 @@ class LogstashIT {
                 .setTimeMillis(instantMillis2)
                 .build();
 
-        try (final RestHighLevelClient client = createClient()) {
-            final Appender appender =
-                    createStartedAppender(JSON_TEMPLATE_GELF_LAYOUT, MavenHardcodedConstants.LS_GELF_INPUT_PORT);
-            try {
+        final Appender appender =
+                createStartedAppender(JSON_TEMPLATE_GELF_LAYOUT, MavenHardcodedConstants.LS_GELF_INPUT_PORT);
+        try {
 
-                // Append the event.
-                LOGGER.info("appending events");
-                appender.append(logEvent1);
-                appender.append(logEvent2);
-                LOGGER.info("completed appending events");
+            // Append the event.
+            LOGGER.info("appending events");
+            appender.append(logEvent1);
+            appender.append(logEvent2);
+            LOGGER.info("completed appending events");
 
-                // Wait the message to arrive.
-                Awaitility.await()
-                        .atMost(Duration.ofSeconds(60))
-                        .pollDelay(Duration.ofSeconds(2))
-                        .until(() -> queryDocumentCount(client) == 2);
+            // Wait the message to arrive.
+            Awaitility.await()
+                    .atMost(Duration.ofSeconds(60))
+                    .pollDelay(Duration.ofSeconds(2))
+                    .until(() -> checkDocumentCount(2));
 
-                // Verify indexed messages.
-                final Set<String> expectedMessages = Stream.of(logEvent1, logEvent2)
-                        .map(LogstashIT::expectedLogstashMessageField)
-                        .collect(Collectors.toSet());
-                final Set<String> actualMessages = queryDocuments(client).stream()
-                        .map(source -> (String) source.get(ES_INDEX_MESSAGE_FIELD_NAME))
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toSet());
-                Assertions.assertThat(actualMessages).isEqualTo(expectedMessages);
+            // Verify indexed messages.
+            final Set<String> expectedMessages = Stream.of(logEvent1, logEvent2)
+                    .map(LogstashIT::expectedLogstashMessageField)
+                    .collect(Collectors.toSet());
+            final Set<String> actualMessages = queryDocuments().stream()
+                    .map(source -> (String) source.get(ES_INDEX_MESSAGE_FIELD_NAME))
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+            Assertions.assertThat(actualMessages).isEqualTo(expectedMessages);
 
-            } finally {
-                appender.stop();
-            }
+        } finally {
+            appender.stop();
         }
     }
 
@@ -284,16 +321,23 @@ class LogstashIT {
         // Create log events.
         final List<LogEvent> logEvents = LogEventFixture.createFullLogEvents(LOG_EVENT_COUNT);
 
-        // Append log events and collect persisted sources.
+        // Create a function to uniquely identify each document
         final Function<Map<String, Object>, Integer> keyMapper = (final Map<String, Object> source) -> {
             final String timestamp = (String) source.get("@timestamp");
             final String message = (String) source.get("message");
             final String errorMessage = (String) source.get("error.message");
             return Objects.hash(timestamp, message, errorMessage);
         };
+
+        // Collect documents created by `EcsLayout`
         final Set<String> excludedKeys = Collections.singleton("port");
         final Map<Integer, Object> expectedSourceByKey = appendAndCollect(
                 logEvents, ECS_LAYOUT, MavenHardcodedConstants.LS_TCP_INPUT_PORT, keyMapper, excludedKeys);
+
+        // Reset the index
+        deleteIndex();
+
+        // Collect documents created by `JsonTemplateLayout`
         final Map<Integer, Object> actualSourceByKey = appendAndCollect(
                 logEvents,
                 JSON_TEMPLATE_ECS_LAYOUT,
@@ -312,60 +356,29 @@ class LogstashIT {
             final Function<Map<String, Object>, K> keyMapper,
             final Set<String> excludedKeys)
             throws IOException {
-        try (final RestHighLevelClient client = createClient()) {
-            final Appender appender = createStartedAppender(layout, port);
-            try {
-
-                // Append the event.
-                LOGGER.info("appending events");
-                logEvents.forEach(appender::append);
-                LOGGER.info("completed appending events");
-
-                // Wait the message to arrive.
-                Awaitility.await()
-                        .atMost(Duration.ofSeconds(60))
-                        .pollDelay(Duration.ofSeconds(2))
-                        .until(() -> queryDocumentCount(client) == LOG_EVENT_COUNT);
-
-                // Retrieve the persisted messages.
-                return queryDocuments(client).stream()
-                        .collect(Collectors.toMap(keyMapper, (final Map<String, Object> source) -> {
-                            excludedKeys.forEach(source::remove);
-                            return source;
-                        }));
-
-            } finally {
-                appender.stop();
-            }
-        }
-    }
-
-    private static RestHighLevelClient createClient() throws IOException {
-
-        // Instantiate the client.
-        LOGGER.info("instantiating the ES client");
-        final HttpHost httpHost = new HttpHost(HOST_NAME, MavenHardcodedConstants.ES_PORT);
-        final RestClientBuilder clientBuilder = RestClient.builder(httpHost);
-        final RestHighLevelClient client = new RestHighLevelClient(clientBuilder);
-
-        // Verify the connection.
-        LOGGER.info("verifying the ES connection");
-        final ClusterHealthResponse healthResponse =
-                client.cluster().health(new ClusterHealthRequest(), RequestOptions.DEFAULT);
-        Assertions.assertThat(healthResponse.getStatus()).isNotEqualTo(ClusterHealthStatus.RED);
-
-        // Delete the index.
-        LOGGER.info("deleting the ES index");
-        final DeleteIndexRequest deleteRequest = new DeleteIndexRequest(MavenHardcodedConstants.ES_INDEX_NAME);
+        final Appender appender = createStartedAppender(layout, port);
         try {
-            final AcknowledgedResponse deleteResponse = client.indices().delete(deleteRequest, RequestOptions.DEFAULT);
-            Assertions.assertThat(deleteResponse.isAcknowledged()).isTrue();
-        } catch (ElasticsearchStatusException error) {
-            Assertions.assertThat(error)
-                    .satisfies(ignored -> Assertions.assertThat(error.status()).isEqualTo(RestStatus.NOT_FOUND));
-        }
 
-        return client;
+            // Append the event.
+            LOGGER.info("appending events");
+            logEvents.forEach(appender::append);
+            LOGGER.info("completed appending events");
+
+            // Wait the message to arrive.
+            Awaitility.await()
+                    .atMost(Duration.ofSeconds(60))
+                    .pollDelay(Duration.ofSeconds(2))
+                    .until(() -> checkDocumentCount(LOG_EVENT_COUNT));
+
+            // Retrieve the persisted messages.
+            return queryDocuments().stream().collect(Collectors.toMap(keyMapper, (final Map<String, Object> source) -> {
+                excludedKeys.forEach(source::remove);
+                return source;
+            }));
+
+        } finally {
+            appender.stop();
+        }
     }
 
     private static SocketAppender createStartedAppender(final Layout layout, final int port) {
@@ -385,37 +398,28 @@ class LogstashIT {
         return appender;
     }
 
-    private static long queryDocumentCount(final RestHighLevelClient client) throws IOException {
-        final SearchSourceBuilder searchSourceBuilder =
-                new SearchSourceBuilder().size(0).fetchSource(false);
-        final SearchRequest searchRequest =
-                new SearchRequest(MavenHardcodedConstants.ES_INDEX_NAME).source(searchSourceBuilder);
-        try {
-            final SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
-            return searchResponse.getHits().getTotalHits().value;
-        } catch (ElasticsearchStatusException error) {
-            if (RestStatus.NOT_FOUND.equals(error.status())) {
-                return 0L;
-            }
-            throw new IOException(error);
-        }
+    private static boolean checkDocumentCount(int expectedCount) throws IOException {
+        final CountResponse countResponse =
+                ES_CLIENT.count(builder -> builder.index(MavenHardcodedConstants.ES_INDEX_NAME));
+        final long actualCount = countResponse.count();
+        Assertions.assertThat(actualCount).isLessThanOrEqualTo(expectedCount);
+        return actualCount == expectedCount;
     }
 
-    private static List<Map<String, Object>> queryDocuments(final RestHighLevelClient client) throws IOException {
-        final SearchSourceBuilder searchSourceBuilder =
-                new SearchSourceBuilder().size(LOG_EVENT_COUNT).fetchSource(true);
-        final SearchRequest searchRequest =
-                new SearchRequest(MavenHardcodedConstants.ES_INDEX_NAME).source(searchSourceBuilder);
-        try {
-            final SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
-            return Arrays.stream(searchResponse.getHits().getHits())
-                    .map(SearchHit::getSourceAsMap)
-                    .collect(Collectors.toList());
-        } catch (ElasticsearchStatusException error) {
-            if (RestStatus.NOT_FOUND.equals(error.status())) {
-                return Collections.emptyList();
-            }
-            throw new IOException(error);
-        }
+    private static List<Map<String, Object>> queryDocuments() throws IOException {
+        @SuppressWarnings("rawtypes")
+        SearchResponse<Map> searchResponse = ES_CLIENT.search(
+                searchBuilder -> searchBuilder
+                        .index(MavenHardcodedConstants.ES_INDEX_NAME)
+                        .size(LOG_EVENT_COUNT)
+                        .source(SourceConfig.of(sourceConfigBuilder -> sourceConfigBuilder.fetch(true))),
+                Map.class);
+        return searchResponse.hits().hits().stream()
+                .map(hit -> {
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> source = hit.source();
+                    return source;
+                })
+                .collect(Collectors.toList());
     }
 }
