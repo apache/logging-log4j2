@@ -105,7 +105,6 @@
     <commons-lang3.version>3.17.0</commons-lang3.version>
     <commons-logging.version>1.3.4</commons-logging.version>
     <disruptor.version>4.0.0</disruptor.version>
-    <disruptor.version>3.4.4</disruptor.version>
     <!-- `elastic.version` is used for two purposes:
 
          1. `co.elastic.clients:elasticsearch-java` version
