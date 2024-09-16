@@ -138,9 +138,9 @@
                relying on the system defaults. -->
           <argLine>-Dfile.encoding=US-ASCII</argLine>
           <systemPropertyVariables>
-            <!-- Enable JUnit 5 parallel execution. -->
-            <junit.jupiter.execution.parallel.enabled>true</junit.jupiter.execution.parallel.enabled>
-            <junit.jupiter.execution.parallel.mode.default>concurrent</junit.jupiter.execution.parallel.mode.default>
+            <!--            &lt;!&ndash; Enable JUnit 5 parallel execution. &ndash;&gt;-->
+            <junit.jupiter.execution.parallel.enabled>false</junit.jupiter.execution.parallel.enabled>
+            <!--            <junit.jupiter.execution.parallel.mode.default>concurrent</junit.jupiter.execution.parallel.mode.default>-->
           </systemPropertyVariables>
         </configuration>
       </plugin>
@@ -319,11 +319,13 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
             <configuration>
+              <reuseForks>false</reuseForks>
               <parallel>none</parallel>
               <includes>
                 <include>**/*IT.java</include>
               </includes>
               <systemPropertyVariables>
+                <log4j2.debug>true</log4j2.debug>
                 <log4j.elasticsearch.port>${elasticsearch.port}</log4j.elasticsearch.port>
                 <log4j.logstash.gelf.port>${logstash.gelf.port}</log4j.logstash.gelf.port>
                 <log4j.logstash.tcp.port>${logstash.tcp.port}</log4j.logstash.tcp.port>
