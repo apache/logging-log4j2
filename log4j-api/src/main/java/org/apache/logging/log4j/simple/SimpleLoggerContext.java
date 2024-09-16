@@ -20,12 +20,13 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.PrintStream;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.simple.internal.SimpleProvider;
-import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A simple {@link LoggerContext} implementation.
@@ -40,6 +41,8 @@ public class SimpleLoggerContext implements LoggerContext {
 
     /** All system properties used by <code>SimpleLog</code> start with this */
     protected static final String SYSTEM_PREFIX = "org.apache.logging.log4j.simplelog.";
+
+    private static final MessageFactory DEFAULT_MESSAGE_FACTORY = ParameterizedMessageFactory.INSTANCE;
 
     private final PropertiesUtil props;
 
@@ -96,14 +99,14 @@ public class SimpleLoggerContext implements LoggerContext {
     }
 
     @Override
-    public ExtendedLogger getLogger(final String name, final MessageFactory messageFactory) {
-        // Note: This is the only method where we add entries to the 'loggerRegistry' ivar.
-        final ExtendedLogger extendedLogger = loggerRegistry.getLogger(name, messageFactory);
-        if (extendedLogger != null) {
-            AbstractLogger.checkMessageFactory(extendedLogger, messageFactory);
-            return extendedLogger;
-        }
-        final SimpleLogger simpleLogger = new SimpleLogger(
+    public ExtendedLogger getLogger(final String name, @Nullable final MessageFactory messageFactory) {
+        final MessageFactory effectiveMessageFactory =
+                messageFactory != null ? messageFactory : DEFAULT_MESSAGE_FACTORY;
+        return loggerRegistry.computeIfAbsent(name, effectiveMessageFactory, this::createLogger);
+    }
+
+    private ExtendedLogger createLogger(final String name, @Nullable final MessageFactory messageFactory) {
+        return new SimpleLogger(
                 name,
                 defaultLevel,
                 showLogName,
@@ -114,8 +117,6 @@ public class SimpleLoggerContext implements LoggerContext {
                 messageFactory,
                 props,
                 stream);
-        loggerRegistry.putIfAbsent(name, messageFactory, simpleLogger);
-        return loggerRegistry.getLogger(name, messageFactory);
     }
 
     /**
@@ -131,16 +132,18 @@ public class SimpleLoggerContext implements LoggerContext {
 
     @Override
     public boolean hasLogger(final String name) {
-        return false;
+        return loggerRegistry.hasLogger(name, DEFAULT_MESSAGE_FACTORY);
     }
 
     @Override
     public boolean hasLogger(final String name, final Class<? extends MessageFactory> messageFactoryClass) {
-        return false;
+        return loggerRegistry.hasLogger(name, messageFactoryClass);
     }
 
     @Override
-    public boolean hasLogger(final String name, final MessageFactory messageFactory) {
-        return false;
+    public boolean hasLogger(final String name, @Nullable final MessageFactory messageFactory) {
+        final MessageFactory effectiveMessageFactory =
+                messageFactory != null ? messageFactory : DEFAULT_MESSAGE_FACTORY;
+        return loggerRegistry.hasLogger(name, effectiveMessageFactory);
     }
 }
