@@ -20,24 +20,23 @@ import static org.apache.logging.log4j.fuzz.FuzzingUtil.createLoggerContext;
 import static org.apache.logging.log4j.fuzz.FuzzingUtil.fuzzLogger;
 
 import com.code_intelligence.jazzer.api.FuzzedDataProvider;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.fuzz.FuzzingUtil.Log4jLoggerFacade;
 import org.apache.logging.log4j.fuzz.FuzzingUtil.LoggerFacade;
 import org.apache.logging.log4j.fuzz.JsonEncodingAppender;
+import org.apache.logging.log4j.spi.ExtendedLogger;
 
 public final class JsonTemplateLayoutFuzzer {
 
-    private static final LoggerFacade LOGGER = createLogger();
-
-    private static LoggerFacade createLogger() {
-        final LoggerContext loggerContext = createLoggerContext(
-                JsonEncodingAppender.PLUGIN_NAME, configBuilder -> configBuilder.newLayout("JsonTemplateLayout"));
-        final Logger logger = loggerContext.getLogger(JsonTemplateLayoutFuzzer.class);
-        return new Log4jLoggerFacade(logger);
-    }
-
     public static void fuzzerTestOneInput(final FuzzedDataProvider dataProvider) {
-        fuzzLogger(LOGGER, dataProvider);
+        final String loggerContextName = JsonTemplateLayoutFuzzer.class.getSimpleName() + "LoggerContext";
+        try (final LoggerContext loggerContext = createLoggerContext(
+                loggerContextName,
+                JsonEncodingAppender.PLUGIN_NAME,
+                configBuilder -> configBuilder.newLayout("JsonTemplateLayout"))) {
+            final ExtendedLogger logger = loggerContext.getLogger(JsonTemplateLayoutFuzzer.class);
+            final LoggerFacade loggerFacade = new Log4jLoggerFacade(logger);
+            fuzzLogger(loggerFacade, dataProvider);
+        }
     }
 }

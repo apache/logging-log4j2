@@ -21,6 +21,8 @@ import static java.util.Objects.requireNonNull;
 import org.apache.logging.log4j.fuzz.FuzzingUtil.LoggerFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.spi.CallerBoundaryAware;
+import org.slf4j.spi.LoggingEventBuilder;
 
 public final class Slf4jLoggerFacade implements LoggerFacade {
 
@@ -39,7 +41,7 @@ public final class Slf4jLoggerFacade implements LoggerFacade {
     }
 
     private LoggingEventBuilder atError() {
-        LoggingEventBuilder builder = logger.atError();
+        final LoggingEventBuilder builder = logger.atError();
         if (builder instanceof CallerBoundaryAware) {
             ((CallerBoundaryAware) builder).setCallerBoundary(FQCN);
         }
@@ -52,12 +54,12 @@ public final class Slf4jLoggerFacade implements LoggerFacade {
     }
 
     @Override
-    public void log(String message, Throwable throwable) {
+    public void log(final String message, final Throwable throwable) {
         atError().setCause(throwable).log(message);
     }
 
     @Override
-    public void log(String message, Object[] parameters) {
+    public void log(final String message, final Object[] parameters) {
         atError().log(message, parameters);
     }
 }

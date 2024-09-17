@@ -19,29 +19,29 @@ package org.apache.logging.log4j.fuzz;
 import static java.util.Objects.requireNonNull;
 
 import com.code_intelligence.jazzer.api.FuzzedDataProvider;
-import edu.umd.cs.findbugs.annotations.Nullable;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
+import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.util.Strings;
+import org.jspecify.annotations.Nullable;
 
 public final class FuzzingUtil {
 
     private static final int MAX_STRING_LENGTH = 30;
 
     public static LoggerContext createLoggerContext(
+            final String loggerContextName,
             final String appenderPluginName,
             final Function<ConfigurationBuilder<?>, LayoutComponentBuilder> layoutSupplier) {
 
@@ -66,8 +66,10 @@ public final class FuzzingUtil {
                 .add(loggerComponentBuilder)
                 .build(false);
 
-        // Initialize the configuration
-        return Configurator.initialize(config);
+        // Create the logger context
+        final LoggerContext loggerContext = new LoggerContext(loggerContextName);
+        loggerContext.start(config);
+        return loggerContext;
     }
 
     /**
@@ -86,7 +88,7 @@ public final class FuzzingUtil {
     public static final class Log4jLoggerFacade implements LoggerFacade {
 
         private static final String FQCN = Log4jLoggerFacade.class.getName();
-        
+
         private final ExtendedLogger logger;
 
         public Log4jLoggerFacade(final ExtendedLogger logger) {

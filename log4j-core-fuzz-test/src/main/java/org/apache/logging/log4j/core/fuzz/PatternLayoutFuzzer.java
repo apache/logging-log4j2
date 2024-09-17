@@ -20,27 +20,24 @@ import static org.apache.logging.log4j.fuzz.FuzzingUtil.createLoggerContext;
 import static org.apache.logging.log4j.fuzz.FuzzingUtil.fuzzLogger;
 
 import com.code_intelligence.jazzer.api.FuzzedDataProvider;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.fuzz.EncodingAppender;
 import org.apache.logging.log4j.fuzz.FuzzingUtil.Log4jLoggerFacade;
 import org.apache.logging.log4j.fuzz.FuzzingUtil.LoggerFacade;
+import org.apache.logging.log4j.spi.ExtendedLogger;
 
 public final class PatternLayoutFuzzer {
 
-    private static final LoggerFacade LOGGER = createLogger();
-
-    private static LoggerFacade createLogger() {
-        final LoggerContext loggerContext =
-                createLoggerContext(EncodingAppender.PLUGIN_NAME, configBuilder -> configBuilder
+    public static void fuzzerTestOneInput(final FuzzedDataProvider dataProvider) {
+        final String loggerContextName = PatternLayoutFuzzer.class.getSimpleName() + "LoggerContext";
+        try (final LoggerContext loggerContext =
+                createLoggerContext(loggerContextName, EncodingAppender.PLUGIN_NAME, configBuilder -> configBuilder
                         .newLayout("PatternLayout")
                         // Enforce using a single message-based converter, i.e., `MessagePatternConverter`
-                        .addAttribute("pattern", "%m"));
-        final Logger logger = loggerContext.getLogger(PatternLayoutFuzzer.class);
-        return new Log4jLoggerFacade(logger);
-    }
-
-    public static void fuzzerTestOneInput(final FuzzedDataProvider dataProvider) {
-        fuzzLogger(LOGGER, dataProvider);
+                        .addAttribute("pattern", "%m"))) {
+            final ExtendedLogger logger = loggerContext.getLogger(PatternLayoutFuzzer.class);
+            final LoggerFacade loggerFacade = new Log4jLoggerFacade(logger);
+            fuzzLogger(loggerFacade, dataProvider);
+        }
     }
 }
