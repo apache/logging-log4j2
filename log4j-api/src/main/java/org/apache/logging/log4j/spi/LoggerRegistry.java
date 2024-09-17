@@ -255,7 +255,8 @@ public class LoggerRegistry<T extends ExtendedLogger> {
         writeLock.lock();
         try {
             final Map<MessageFactory, WeakReference<T>> loggerRefByMessageFactory =
-                    loggerRefByMessageFactoryByName.computeIfAbsent(logger.getName(), this::createLoggerRefByMessageFactoryMap);
+                    loggerRefByMessageFactoryByName.computeIfAbsent(
+                            logger.getName(), this::createLoggerRefByMessageFactoryMap);
             final MessageFactory loggerMessageFactory = logger.getMessageFactory();
             final WeakReference<T> loggerRef = loggerRefByMessageFactory.get(loggerMessageFactory);
             if (loggerRef == null || loggerRef.get() == null) {
