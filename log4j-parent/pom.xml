@@ -79,13 +79,6 @@
     <!-- `com.conversantmedia:disruptor` version 1.2.16 requires Java 9: -->
     <conversant.disruptor.version>1.2.15</conversant.disruptor.version>
     <disruptor.version>3.4.4</disruptor.version>
-    <!-- `elastic.version` is used for two purposes:
-
-         1. `co.elastic.clients:elasticsearch-java` version
-         2. The Docker image version of the ELK-stack
-
-         As of 2024-09-16, these all (Maven artifacts and Elastic products) get released with the same version. -->
-    <elastic.version>8.15.1</elastic.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <felix.version>7.0.5</felix.version>
     <groovy.version>3.0.22</groovy.version>
@@ -386,12 +379,6 @@
         <groupId>com.lmax</groupId>
         <artifactId>disruptor</artifactId>
         <version>${disruptor.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>co.elastic.clients</groupId>
-        <artifactId>elasticsearch-java</artifactId>
-        <version>${elastic.version}</version>
       </dependency>
 
       <dependency>
