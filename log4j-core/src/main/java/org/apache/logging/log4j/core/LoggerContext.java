@@ -505,7 +505,7 @@ public class LoggerContext extends AbstractLifeCycle
      */
     @Override
     public Logger getLogger(final String name) {
-        return getLogger(name, null);
+        return getLogger(name, DEFAULT_MESSAGE_FACTORY);
     }
 
     /**
@@ -820,19 +820,7 @@ public class LoggerContext extends AbstractLifeCycle
     }
 
     private Logger newInstance(final String name, final MessageFactory messageFactory) {
-        final Logger logger = newInstance(this, name, messageFactory);
-        final MessageFactory loggerMessageFactory = logger.getMessageFactory();
-        if (!loggerMessageFactory.equals(messageFactory)) {
-            StatusLogger.getLogger()
-                    .error(
-                            "Newly created logger with name `{}` and message factory `{}` was actually requested to be created with a different message factory: `{}`.\n"
-                                    + "This generally hints a problem.\n"
-                                    + "Please report this using the Log4j project issue tracker.",
-                            name,
-                            loggerMessageFactory,
-                            messageFactory);
-        }
-        return logger;
+        return newInstance(this, name, messageFactory);
     }
 
     // LOG4J2-151: changed visibility from private to protected

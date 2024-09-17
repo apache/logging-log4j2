@@ -242,21 +242,20 @@ public class LoggerRegistry<T extends ExtendedLogger> {
     /**
      * Registers the provided logger using the given name – <b>message factory parameter is ignored</b> and the one from the logger will be used instead.
      *
-     * @param name a logger name
+     * @param name ignored – kept for backward compatibility
      * @param messageFactory ignored – kept for backward compatibility
      * @param logger a logger instance
      */
     public void putIfAbsent(final String name, final MessageFactory messageFactory, final T logger) {
 
         // Check arguments
-        requireNonNull(name, "name");
         requireNonNull(logger, "logger");
 
         // Insert the logger
         writeLock.lock();
         try {
             final Map<MessageFactory, WeakReference<T>> loggerRefByMessageFactory =
-                    loggerRefByMessageFactoryByName.computeIfAbsent(name, this::createLoggerRefByMessageFactoryMap);
+                    loggerRefByMessageFactoryByName.computeIfAbsent(logger.getName(), this::createLoggerRefByMessageFactoryMap);
             final MessageFactory loggerMessageFactory = logger.getMessageFactory();
             final WeakReference<T> loggerRef = loggerRefByMessageFactory.get(loggerMessageFactory);
             if (loggerRef == null || loggerRef.get() == null) {
