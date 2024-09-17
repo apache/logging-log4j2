@@ -176,7 +176,7 @@ class LogstashIT {
     }
 
     @BeforeAll
-    public static void initEsClient() throws IOException {
+    public static void initEsClient() {
 
         LOGGER.info(LOG_PREFIX + "instantiating the ES client");
         final String hostUri =
