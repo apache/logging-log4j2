@@ -980,6 +980,9 @@
                       <exclude>META-INF/*.SF</exclude>
                       <exclude>META-INF/*.DSA</exclude>
                       <exclude>META-INF/*.RSA</exclude>
+                      <exclude>META-INF/MANIFEST.MF</exclude>
+                      <exclude>module-info.class</exclude>
+                      <exclude>META-INF/versions/9/module-info.class</exclude>
                     </excludes>
                   </filter>
                 </filters>
