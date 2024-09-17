@@ -230,7 +230,7 @@
     <!-- the parent POM must come first: -->
     <module>log4j-parent</module>
 
-    <!-- Next unpublished modules in alphabetical order: -->
+    <!-- Next unpublished, but internally and *implicitly* (e.g., as a plugin dependency) consumed modules in alphabetical order: -->
     <module>log4j-api-java9</module>
     <module>log4j-core-java9</module>
 
@@ -242,10 +242,12 @@
     <module>log4j-appserver</module>
     <module>log4j-cassandra</module>
     <module>log4j-core</module>
+    <module>log4j-core-fuzz-test</module>
     <module>log4j-core-its</module>
     <module>log4j-core-test</module>
     <module>log4j-couchdb</module>
     <module>log4j-docker</module>
+    <module>log4j-fuzz-test</module>
     <module>log4j-iostreams</module>
     <module>log4j-jakarta-smtp</module>
     <module>log4j-jakarta-web</module>
@@ -255,6 +257,7 @@
     <module>log4j-jdbc-dbcp2</module>
     <module>log4j-jul</module>
     <module>log4j-layout-template-json</module>
+    <module>log4j-layout-template-json-fuzz-test</module>
     <module>log4j-layout-template-json-test</module>
     <module>log4j-mongodb</module>
     <module>log4j-mongodb4</module>
@@ -262,6 +265,7 @@
     <module>log4j-perf-test</module>
     <module>log4j-slf4j-impl</module>
     <module>log4j-slf4j2-impl</module>
+    <module>log4j-slf4j2-impl-fuzz-test</module>
     <module>log4j-spring-boot</module>
     <module>log4j-spring-cloud-config-client</module>
     <module>log4j-taglib</module>
@@ -371,6 +375,10 @@
 
   <dependencyManagement>
     <dependencies>
+
+      <!-- List of managed dependencies (in alphabetical order) that are intended for public consumption.
+           Modules that are not used anywhere (e.g., `log4j-core-its`, `log4j-osgi-test`) should not be placed here.
+           Modules that are used only internally (e.g., `log4j-layout-template-json-test`) should be added to `dependencyManagement > dependencies` in `log4j-parent/pom.xml`. -->
 
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>

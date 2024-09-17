@@ -31,9 +31,8 @@
   <name>Apache Log4j JSON Template Layout tests</name>
 
   <properties>
-
-    <log4j.docgen.skip>true</log4j.docgen.skip>
     <bnd.baseline.skip>true</bnd.baseline.skip>
+    <log4j.docgen.skip>true</log4j.docgen.skip>
     <maven.deploy.skip>true</maven.deploy.skip>
     <sign.skip>true</sign.skip>
 
