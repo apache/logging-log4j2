@@ -20,8 +20,11 @@ You can use the generated fat JAR to run the tests as follows:
 
 [source,bash]
 ----
-java \
-    -cp target/log4j-perf-test-<VERSION>-uber.jar \
-    org.openjdk.jmh.Main \
-    <JMH-ARGS>
+java -jar target/log4j-perf-test-*-uber.jar <JMH-ARGS>
+----
+
+To list the available JMH arguments run:
+[source,bash]
+----
+java -jar target/log4j-perf-test-*-uber.jar -h
 ----
