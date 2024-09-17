@@ -186,8 +186,13 @@ class LogstashIT {
         ES_CLIENT = new ElasticsearchClient(ES_TRANSPORT);
 
         LOGGER.info(LOG_PREFIX + "verifying the ES connection to `{}`", hostUri);
-        HealthResponse healthResponse = ES_CLIENT.cluster().health();
-        assertThat(healthResponse.status()).isNotEqualTo(HealthStatus.Red);
+        await("ES cluster health")
+                .pollDelay(100, TimeUnit.MILLISECONDS)
+                .atMost(1, TimeUnit.MINUTES)
+                .untilAsserted(() -> {
+                    final HealthResponse healthResponse = ES_CLIENT.cluster().health();
+                    assertThat(healthResponse.status()).isNotEqualTo(HealthStatus.Red);
+                });
     }
 
     @BeforeAll

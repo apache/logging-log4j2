@@ -137,6 +137,11 @@
                indeed handles everything in UTF-8 without implicitly
                relying on the system defaults. -->
           <argLine>-Dfile.encoding=US-ASCII</argLine>
+          <systemPropertyVariables>
+            <!-- Enable JUnit 5 parallel execution. -->
+            <junit.jupiter.execution.parallel.enabled>true</junit.jupiter.execution.parallel.enabled>
+            <junit.jupiter.execution.parallel.mode.default>concurrent</junit.jupiter.execution.parallel.mode.default>
+          </systemPropertyVariables>
         </configuration>
       </plugin>
 
@@ -162,9 +167,15 @@
       </activation>
 
       <properties>
+
+        <!-- Suppress `docker-maven-plugin` output -->
+        <docker.showLogs>false</docker.showLogs>
+        <docker.verbose>false</docker.verbose>
+
         <!-- `docker run elasticsearch:<TAG>` exists with code 137 due to insufficient memory.
              We limit the used JVM memory to avoid this OOM failure. -->
-        <elastic.java-opts>-Xms750m -Xmx750m</elastic.java-opts>
+        <elastic.javaOpts>-Xms750m -Xmx750m</elastic.javaOpts>
+
       </properties>
 
       <build>
@@ -174,7 +185,6 @@
             <groupId>io.fabric8</groupId>
             <artifactId>docker-maven-plugin</artifactId>
             <configuration>
-              <verbose>all</verbose>
               <startParallel>true</startParallel>
               <autoCreateCustomNetworks>true</autoCreateCustomNetworks>
               <images>
@@ -185,7 +195,7 @@
                     <env>
                       <discovery.type>single-node</discovery.type>
                       <xpack.security.enabled>false</xpack.security.enabled>
-                      <ES_JAVA_OPTS>${elastic.java-opts}</ES_JAVA_OPTS>
+                      <ES_JAVA_OPTS>${elastic.javaOpts}</ES_JAVA_OPTS>
                     </env>
                     <ports>
                       <!-- Binds an ephemeral port to the `elasticsearch.port` Maven property. -->
@@ -201,7 +211,11 @@
                       <color>cyan</color>
                     </log>
                     <wait>
-                      <log>recovered \[0\] indices into cluster_state</log>
+                      <tcp>
+                        <ports>
+                          <port>9200</port>
+                        </ports>
+                      </tcp>
                       <time>60000</time>
                     </wait>
                   </run>
@@ -219,7 +233,7 @@
                       <alias>logstash</alias>
                     </network>
                     <env>
-                      <LS_JAVA_OPTS>${elastic.java-opts}</LS_JAVA_OPTS>
+                      <LS_JAVA_OPTS>${elastic.javaOpts}</LS_JAVA_OPTS>
                     </env>
                     <ports>
                       <!-- Binds an ephemeral port to the `logstash.gelf.port` Maven property. -->
@@ -284,7 +298,7 @@
                           # Documentation: https://www.elastic.co/guide/en/logstash/current/plugins-filters-elasticsearch.html
                           output {
                             # (Un)comment for debugging purposes
-                            stdout { codec => rubydebug }
+                            # stdout { codec => rubydebug }
                             elasticsearch {
                               hosts => ["http://elasticsearch:9200"]
                               index => "log4j"
@@ -295,7 +309,13 @@
                       </exec>
                     </entrypoint>
                     <wait>
-                      <log>Pipelines running</log>
+                      <tcp>
+                        <host>localhost</host>
+                        <ports>
+                          <port>12222</port>
+                          <port>12345</port>
+                        </ports>
+                      </tcp>
                       <time>60000</time>
                     </wait>
                   </run>
@@ -328,7 +348,6 @@
                 <include>**/*IT.java</include>
               </includes>
               <systemPropertyVariables>
-                <log4j2.debug>true</log4j2.debug>
                 <log4j.elasticsearch.port>${elasticsearch.port}</log4j.elasticsearch.port>
                 <log4j.logstash.gelf.port>${logstash.gelf.port}</log4j.logstash.gelf.port>
                 <log4j.logstash.tcp.port>${logstash.tcp.port}</log4j.logstash.tcp.port>
