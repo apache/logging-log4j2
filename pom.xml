@@ -31,7 +31,7 @@
   <parent>
     <groupId>org.apache.logging</groupId>
     <artifactId>logging-parent</artifactId>
-    <version>11.2.0</version>
+    <version>11.3.0</version>
     <relativePath />
   </parent>
 
@@ -540,6 +540,16 @@
 
     </dependencies>
   </dependencyManagement>
+
+  <repositories>
+    <repository>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>apache.staging</id>
+      <url>https://repository.apache.org/content/repositories/orgapachelogging-1296</url>
+    </repository>
+  </repositories>
 
   <build>
 
