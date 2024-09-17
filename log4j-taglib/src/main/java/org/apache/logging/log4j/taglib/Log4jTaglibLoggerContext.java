@@ -66,7 +66,7 @@ final class Log4jTaglibLoggerContext implements LoggerContext {
 
     @Override
     public Log4jTaglibLogger getLogger(final String name) {
-        return getLogger(name, null);
+        return getLogger(name, DEFAULT_MESSAGE_FACTORY);
     }
 
     @Override
@@ -84,7 +84,7 @@ final class Log4jTaglibLoggerContext implements LoggerContext {
 
     @Override
     public boolean hasLogger(final String name) {
-        return loggerRegistry.hasLogger(name);
+        return loggerRegistry.hasLogger(name, DEFAULT_MESSAGE_FACTORY);
     }
 
     @Override

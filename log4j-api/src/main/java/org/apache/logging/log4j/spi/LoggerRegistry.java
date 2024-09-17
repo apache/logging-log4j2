@@ -259,26 +259,29 @@ public class LoggerRegistry<T extends ExtendedLogger> {
     }
 
     /**
-     * Registers the provided logger using the given name – <b>message factory parameter is ignored</b> and the one from the logger will be used instead.
+     * Registers the provided logger.
+     * <b>Logger name and message factory parameters are ignored</b>, those will be obtained from the logger instead.
      *
-     * @param name a logger name
+     * @param name ignored – kept for backward compatibility
      * @param messageFactory ignored – kept for backward compatibility
      * @param logger a logger instance
      * @deprecated As of version {@code 2.25.0}, planned to be removed!
      * Use {@link #computeIfAbsent(String, MessageFactory, BiFunction)} instead.
      */
     @Deprecated
-    public void putIfAbsent(final String name, @Nullable final MessageFactory messageFactory, final T logger) {
+    public void putIfAbsent(
+            @Nullable final String name, @Nullable final MessageFactory messageFactory, final T logger) {
 
         // Check arguments
-        requireNonNull(name, "name");
         requireNonNull(logger, "logger");
 
         // Insert the logger
         writeLock.lock();
         try {
+            final String loggerName = logger.getName();
             final Map<MessageFactory, WeakReference<T>> loggerRefByMessageFactory =
-                    loggerRefByMessageFactoryByName.computeIfAbsent(name, this::createLoggerRefByMessageFactoryMap);
+                    loggerRefByMessageFactoryByName.computeIfAbsent(
+                            loggerName, this::createLoggerRefByMessageFactoryMap);
             final MessageFactory loggerMessageFactory = logger.getMessageFactory();
             final WeakReference<T> loggerRef = loggerRefByMessageFactory.get(loggerMessageFactory);
             if (loggerRef == null || loggerRef.get() == null) {

@@ -38,7 +38,7 @@ public class SLF4JLoggerContext implements LoggerContext {
 
     @Override
     public ExtendedLogger getLogger(final String name) {
-        return getLogger(name, null);
+        return getLogger(name, DEFAULT_MESSAGE_FACTORY);
     }
 
     @Override

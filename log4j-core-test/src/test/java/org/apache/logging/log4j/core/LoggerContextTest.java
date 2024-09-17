@@ -14,30 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.async;
+package org.apache.logging.log4j.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.MessageFactory2;
-import org.junit.experimental.categories.Category;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
-@Category(AsyncLoggers.class)
-class AsyncLoggerContextTest {
+class LoggerContextTest {
 
     @Test
-    void verify_newInstance(final TestInfo testInfo) {
+    void newInstance_should_honor_name_and_message_factory(final TestInfo testInfo) {
         final String testName = testInfo.getDisplayName();
-        try (final AsyncLoggerContext loggerContext = new AsyncLoggerContext(testName)) {
+        try (final LoggerContext loggerContext = new LoggerContext(testName)) {
             final String loggerName = testName + "-loggerName";
             final MessageFactory2 messageFactory = mock(MessageFactory2.class);
             final Logger logger = loggerContext.newInstance(loggerContext, loggerName, messageFactory);
-            assertThat(logger).isInstanceOf(AsyncLogger.class);
             assertThat(logger.getName()).isEqualTo(loggerName);
             assertThat((MessageFactory) logger.getMessageFactory()).isSameAs(messageFactory);
         }
