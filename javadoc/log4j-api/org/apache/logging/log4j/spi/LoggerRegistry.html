@@ -193,7 +193,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Checks if a logger associated with the given name and message factory type exists.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#putIfAbsent(java.lang.String,org.apache.logging.log4j.message.MessageFactory,T)" class="member-name-link">putIfAbsent</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#putIfAbsent(java.lang.String,org.apache.logging.log4j.message.MessageFactory,T)" class="member-name-link">putIfAbsent</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  @Nullable <a href="../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory,
  <a href="LoggerRegistry.html" title="type parameter in LoggerRegistry">T</a>&nbsp;logger)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
@@ -367,17 +367,18 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="putIfAbsent(java.lang.String,org.apache.logging.log4j.message.MessageFactory,T)">
 <h3 id="putIfAbsent(java.lang.String,org.apache.logging.log4j.message.MessageFactory,org.apache.logging.log4j.spi.ExtendedLogger)">putIfAbsent</h3>
 <div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">putIfAbsent</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">putIfAbsent</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  @Nullable <a href="../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory,
  <a href="LoggerRegistry.html" title="type parameter in LoggerRegistry">T</a>&nbsp;logger)</span></div>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
 <div class="deprecation-comment">As of version <code>2.25.0</code>, planned to be removed!
  Use <a href="#computeIfAbsent(java.lang.String,org.apache.logging.log4j.message.MessageFactory,java.util.function.BiFunction)"><code>computeIfAbsent(String, MessageFactory, BiFunction)</code></a> instead.</div>
 </div>
-<div class="block">Registers the provided logger using the given name – <b>message factory parameter is ignored</b> and the one from the logger will be used instead.</div>
+<div class="block">Registers the provided logger.
+ <b>Logger name and message factory parameters are ignored</b>, those will be obtained from the logger instead.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>name</code> - a logger name</dd>
+<dd><code>name</code> - ignored – kept for backward compatibility</dd>
 <dd><code>messageFactory</code> - ignored – kept for backward compatibility</dd>
 <dd><code>logger</code> - a logger instance</dd>
 </dl>
