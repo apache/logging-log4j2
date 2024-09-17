@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory;
 
 public final class Slf4jLoggerFacade implements LoggerFacade {
 
+    private static final String FQCN = Slf4jLoggerFacade.class.getName();
+
     private final Logger logger;
 
     private Slf4jLoggerFacade(final Logger logger) {
@@ -36,18 +38,26 @@ public final class Slf4jLoggerFacade implements LoggerFacade {
         return new Slf4jLoggerFacade(logger);
     }
 
+    private LoggingEventBuilder atError() {
+        LoggingEventBuilder builder = logger.atError();
+        if (builder instanceof CallerBoundaryAware) {
+            ((CallerBoundaryAware) builder).setCallerBoundary(FQCN);
+        }
+        return builder;
+    }
+
     @Override
     public void log(final String message) {
-        logger.error(message);
+        atError().log(message);
     }
 
     @Override
     public void log(String message, Throwable throwable) {
-        logger.error(message, throwable);
+        atError().setCause(throwable).log(message);
     }
 
     @Override
     public void log(String message, Object[] parameters) {
-        logger.error(message, parameters);
+        atError().log(message, parameters);
     }
 }
