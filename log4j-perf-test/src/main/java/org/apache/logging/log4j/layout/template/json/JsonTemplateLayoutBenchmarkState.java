@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
-import co.elastic.logging.log4j2.EcsLayout;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -42,8 +41,6 @@ public class JsonTemplateLayoutBenchmarkState {
 
     private final Layout jtl4EcsLayout;
 
-    private final Layout ecsLayout;
-
     private final List<LogEvent> fullLogEvents;
 
     private final List<LogEvent> liteLogEvents;
@@ -53,7 +50,6 @@ public class JsonTemplateLayoutBenchmarkState {
     public JsonTemplateLayoutBenchmarkState() {
         this.byteBufferDestination = new BlackHoleByteBufferDestination(1024 * 512);
         this.jtl4EcsLayout = createJtl4EcsLayout();
-        this.ecsLayout = createEcsLayout();
         this.fullLogEvents = LogEventFixture.createFullLogEvents(LOG_EVENT_COUNT);
         this.liteLogEvents = LogEventFixture.createLiteLogEvents(LOG_EVENT_COUNT);
     }
@@ -73,31 +69,12 @@ public class JsonTemplateLayoutBenchmarkState {
                 .build();
     }
 
-    private static EcsLayout createEcsLayout() {
-        final EcsLayout layout = EcsLayout.newBuilder()
-                .setConfiguration(CONFIGURATION)
-                .setServiceName("benchmark")
-                .build();
-        final Charset layoutCharset = layout.getCharset();
-        // Note that EcsLayout doesn't support charset configuration, though it
-        // uses UTF-8 internally.
-        if (!CHARSET.equals(layoutCharset)) {
-            throw new IllegalArgumentException(
-                    "was expecting EcsLayout charset to be: " + CHARSET + ", found: " + layoutCharset);
-        }
-        return layout;
-    }
-
     ByteBufferDestination getByteBufferDestination() {
         return byteBufferDestination;
     }
 
     Layout getJtl4EcsLayout() {
         return jtl4EcsLayout;
-    }
-
-    Layout getEcsLayout() {
-        return ecsLayout;
     }
 
     List<LogEvent> getFullLogEvents() {

@@ -53,16 +53,6 @@ public class JsonTemplateLayoutBenchmark {
         return benchmark(state, state.getJtl4EcsLayout(), state.getLiteLogEvents());
     }
 
-    @Benchmark
-    public static int fullEcsLayout(final JsonTemplateLayoutBenchmarkState state) {
-        return benchmark(state, state.getEcsLayout(), state.getFullLogEvents());
-    }
-
-    @Benchmark
-    public static int liteEcsLayout(final JsonTemplateLayoutBenchmarkState state) {
-        return benchmark(state, state.getEcsLayout(), state.getLiteLogEvents());
-    }
-
     private static int benchmark(
             final JsonTemplateLayoutBenchmarkState state, final Layout layout, final List<LogEvent> logEvents) {
         final int logEventIndex = state.nextLogEventIndex();

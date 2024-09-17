@@ -43,6 +43,14 @@
     <bnd-module-name>org.apache.logging.log4j.layout.template.json.test</bnd-module-name>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
 
+    <!-- `elastic.version` is used for two purposes:
+
+         1. `co.elastic.clients:elasticsearch-java` version
+         2. The Docker image version of the ELK-stack
+
+         As of 2024-09-16, these all (Maven artifacts and Elastic products) get released with the same version. -->
+    <elastic.version>8.15.1</elastic.version>
+
   </properties>
 
   <dependencies>
@@ -85,6 +93,7 @@
     <dependency>
       <groupId>co.elastic.clients</groupId>
       <artifactId>elasticsearch-java</artifactId>
+      <version>${elastic.version}</version>
       <scope>test</scope>
     </dependency>
 
@@ -109,12 +118,6 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>co.elastic.logging</groupId>
-      <artifactId>log4j2-ecs-layout</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -161,9 +164,15 @@
       </activation>
 
       <properties>
+
+        <!-- Suppress `docker-maven-plugin` output -->
+        <docker.showLogs>false</docker.showLogs>
+        <docker.verbose>false</docker.verbose>
+
         <!-- `docker run elasticsearch:<TAG>` exists with code 137 due to insufficient memory.
              We limit the used JVM memory to avoid this OOM failure. -->
-        <elastic.java-opts>-Xms750m -Xmx750m</elastic.java-opts>
+        <elastic.javaOpts>-Xms750m -Xmx750m</elastic.javaOpts>
+
       </properties>
 
       <build>
@@ -173,7 +182,6 @@
             <groupId>io.fabric8</groupId>
             <artifactId>docker-maven-plugin</artifactId>
             <configuration>
-              <verbose>all</verbose>
               <startParallel>true</startParallel>
               <autoCreateCustomNetworks>true</autoCreateCustomNetworks>
               <images>
@@ -184,7 +192,7 @@
                     <env>
                       <discovery.type>single-node</discovery.type>
                       <xpack.security.enabled>false</xpack.security.enabled>
-                      <ES_JAVA_OPTS>${elastic.java-opts}</ES_JAVA_OPTS>
+                      <ES_JAVA_OPTS>${elastic.javaOpts}</ES_JAVA_OPTS>
                     </env>
                     <ports>
                       <!-- Binds an ephemeral port to the `elasticsearch.port` Maven property. -->
@@ -200,7 +208,11 @@
                       <color>cyan</color>
                     </log>
                     <wait>
-                      <log>recovered \[0\] indices into cluster_state</log>
+                      <tcp>
+                        <ports>
+                          <port>9200</port>
+                        </ports>
+                      </tcp>
                       <time>60000</time>
                     </wait>
                   </run>
@@ -218,7 +230,7 @@
                       <alias>logstash</alias>
                     </network>
                     <env>
-                      <LS_JAVA_OPTS>${elastic.java-opts}</LS_JAVA_OPTS>
+                      <LS_JAVA_OPTS>${elastic.javaOpts}</LS_JAVA_OPTS>
                     </env>
                     <ports>
                       <!-- Binds an ephemeral port to the `logstash.gelf.port` Maven property. -->
@@ -237,7 +249,10 @@
                         <arg>1</arg>
                         <arg>-e</arg>
                         <arg><![CDATA[
+
                           input {
+
+                            # Documentation: https://www.elastic.co/guide/en/logstash/current/plugins-inputs-gelf.html
                             gelf {
                               host => "logstash"
                               use_tcp => true
@@ -245,20 +260,24 @@
                               port => 12222
                               type => "gelf"
                             }
+
+                            # Documentation: https://www.elastic.co/guide/en/logstash/current/plugins-inputs-tcp.html
                             tcp {
                               port => 12345
                               codec => json
                               type => "tcp"
                             }
+
                           }
 
                           filter {
                             if [type] == "gelf" {
                               # These are GELF/Syslog logging levels as defined in RFC 3164.
                               # Map the integer level to its human-readable format.
+                              # Documentation: https://www.elastic.co/guide/en/logstash/current/plugins-filters-translate.html
                               translate {
-                                field => "[level]"
-                                destination => "[levelName]"
+                                source => "[level]"
+                                target => "[levelName]"
                                 dictionary => {
                                   "0" => "EMERG"
                                   "1" => "ALERT"
@@ -273,6 +292,7 @@
                             }
                           }
 
+                          # Documentation: https://www.elastic.co/guide/en/logstash/current/plugins-filters-elasticsearch.html
                           output {
                             # (Un)comment for debugging purposes
                             # stdout { codec => rubydebug }
@@ -280,11 +300,19 @@
                               hosts => ["http://elasticsearch:9200"]
                               index => "log4j"
                             }
-                          }]]></arg>
+                          }
+
+                        ]]></arg>
                       </exec>
                     </entrypoint>
                     <wait>
-                      <log>Successfully started Logstash API endpoint</log>
+                      <tcp>
+                        <host>localhost</host>
+                        <ports>
+                          <port>12222</port>
+                          <port>12345</port>
+                        </ports>
+                      </tcp>
                       <time>60000</time>
                     </wait>
                   </run>
