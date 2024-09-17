@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
+
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.ElasticsearchException;
 import co.elastic.clients.elasticsearch._types.HealthStatus;
@@ -32,6 +35,7 @@ import co.elastic.logging.log4j2.EcsLayout;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.Socket;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -41,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -58,8 +63,6 @@ import org.apache.logging.log4j.layout.template.json.util.ThreadLocalRecyclerFac
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
-import org.assertj.core.api.Assertions;
-import org.awaitility.Awaitility;
 import org.elasticsearch.client.RestClient;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -71,13 +74,13 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 @Execution(ExecutionMode.SAME_THREAD)
 class LogstashIT {
 
+    private static final String LOG_PREFIX = LogstashIT.class.getSimpleName() + ' ';
+
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     private static final DefaultConfiguration CONFIGURATION = new DefaultConfiguration();
 
     private static final Charset CHARSET = StandardCharsets.UTF_8;
-
-    private static final String HOST_NAME = "localhost";
 
     private static final String SERVICE_NAME = "LogstashIT";
 
@@ -88,7 +91,7 @@ class LogstashIT {
             .setCharset(CHARSET)
             .setCompressionType(GelfLayout.CompressionType.OFF)
             .setIncludeNullDelimiter(true)
-            .setHost(HOST_NAME)
+            .setHost(MavenHardcodedConstants.HOST_NAME)
             .build();
 
     private static final JsonTemplateLayout JSON_TEMPLATE_GELF_LAYOUT = JsonTemplateLayout.newBuilder()
@@ -99,13 +102,12 @@ class LogstashIT {
             .setEventTemplateAdditionalFields(new EventTemplateAdditionalField[] {
                 EventTemplateAdditionalField.newBuilder()
                         .setKey("host")
-                        .setValue(HOST_NAME)
+                        .setValue(MavenHardcodedConstants.HOST_NAME)
                         .build()
             })
             .build();
 
-    // Note that EcsLayout doesn't support charset configuration, though it uses
-    // UTF-8 internally.
+    // Note that `EcsLayout` doesn't support charset configuration, though it uses UTF-8 internally.
     private static final EcsLayout ECS_LAYOUT = EcsLayout.newBuilder()
             .setConfiguration(CONFIGURATION)
             .setServiceName(SERVICE_NAME)
@@ -140,11 +142,13 @@ class LogstashIT {
     private static ElasticsearchClient ES_CLIENT;
 
     /**
-     * Constants hardcoded in docker-maven-plugin configuration, do not change!
+     * Constants hardcoded in `docker-maven-plugin` configuration, do not change!
      */
     private static final class MavenHardcodedConstants {
 
         private MavenHardcodedConstants() {}
+
+        private static final String HOST_NAME = "localhost";
 
         private static final int LS_GELF_INPUT_PORT = readPort("log4j.logstash.gelf.port");
 
@@ -172,28 +176,46 @@ class LogstashIT {
     }
 
     @BeforeAll
-    public static void initClient() throws IOException {
+    public static void initEsClient() throws IOException {
 
-        LOGGER.info("instantiating the ES client");
-        REST_CLIENT = RestClient.builder(
-                        HttpHost.create(String.format("http://%s:%d", HOST_NAME, MavenHardcodedConstants.ES_PORT)))
-                .build();
+        LOGGER.info(LOG_PREFIX + "instantiating the ES client");
+        final String hostUri =
+                String.format("http://%s:%d", MavenHardcodedConstants.HOST_NAME, MavenHardcodedConstants.ES_PORT);
+        REST_CLIENT = RestClient.builder(HttpHost.create(hostUri)).build();
         ES_TRANSPORT = new RestClientTransport(REST_CLIENT, new JacksonJsonpMapper());
         ES_CLIENT = new ElasticsearchClient(ES_TRANSPORT);
 
-        LOGGER.info("verifying the ES connection");
+        LOGGER.info(LOG_PREFIX + "verifying the ES connection to `{}`", hostUri);
         HealthResponse healthResponse = ES_CLIENT.cluster().health();
-        Assertions.assertThat(healthResponse.status()).isNotEqualTo(HealthStatus.Red);
+        assertThat(healthResponse.status()).isNotEqualTo(HealthStatus.Red);
+    }
+
+    @BeforeAll
+    public static void waitForLsInputSockets() {
+        waitForSocketBinding(MavenHardcodedConstants.LS_GELF_INPUT_PORT, "Logstash GELF input");
+        waitForSocketBinding(MavenHardcodedConstants.LS_TCP_INPUT_PORT, "Logstash TCP input");
+    }
+
+    private static void waitForSocketBinding(final int port, final String name) {
+        LOGGER.info(LOG_PREFIX + "verifying socket binding at port {} for {}", port, name);
+        await("socket binding at port " + port)
+                .pollDelay(100, TimeUnit.MILLISECONDS)
+                .atMost(1, TimeUnit.MINUTES)
+                .untilAsserted(() -> {
+                    try (final Socket socket = new Socket(MavenHardcodedConstants.HOST_NAME, port)) {
+                        assertThat(socket.isConnected()).isTrue();
+                    }
+                });
     }
 
     @BeforeEach
     void deleteIndex() throws IOException {
-        LOGGER.info("deleting the ES index");
+        LOGGER.info(LOG_PREFIX + "deleting the ES index");
         try {
             DeleteIndexResponse deleteIndexResponse = ES_CLIENT
                     .indices()
                     .delete(DeleteIndexRequest.of(builder -> builder.index(MavenHardcodedConstants.ES_INDEX_NAME)));
-            Assertions.assertThat(deleteIndexResponse.acknowledged()).isTrue();
+            assertThat(deleteIndexResponse.acknowledged()).isTrue();
         } catch (ElasticsearchException error) {
             if (!error.getMessage().contains("index_not_found_exception")) {
                 throw new RuntimeException(error);
@@ -225,15 +247,15 @@ class LogstashIT {
         try {
 
             // Append events.
-            LOGGER.info("appending events");
+            LOGGER.info(LOG_PREFIX + "appending events");
             logEvents.forEach(appender::append);
-            LOGGER.info("completed appending events");
+            LOGGER.info(LOG_PREFIX + "completed appending events");
 
             // Wait all messages to arrive.
-            Awaitility.await()
+            await("message delivery")
                     .atMost(Duration.ofSeconds(60))
                     .pollDelay(Duration.ofSeconds(2))
-                    .until(() -> checkDocumentCount(LOG_EVENT_COUNT));
+                    .untilAsserted(() -> assertDocumentCount(LOG_EVENT_COUNT));
 
             // Verify indexed messages.
             final Set<String> expectedMessages = logEvents.stream()
@@ -243,7 +265,7 @@ class LogstashIT {
                     .map(source -> (String) source.get(ES_INDEX_MESSAGE_FIELD_NAME))
                     .filter(Objects::nonNull)
                     .collect(Collectors.toSet());
-            Assertions.assertThat(actualMessages).isEqualTo(expectedMessages);
+            assertThat(actualMessages).isEqualTo(expectedMessages);
 
         } finally {
             appender.stop();
@@ -296,16 +318,16 @@ class LogstashIT {
         try {
 
             // Append the event.
-            LOGGER.info("appending events");
+            LOGGER.info(LOG_PREFIX + "appending events");
             appender.append(logEvent1);
             appender.append(logEvent2);
-            LOGGER.info("completed appending events");
+            LOGGER.info(LOG_PREFIX + "completed appending events");
 
             // Wait the message to arrive.
-            Awaitility.await()
+            await("message delivery")
                     .atMost(Duration.ofSeconds(60))
                     .pollDelay(Duration.ofSeconds(2))
-                    .until(() -> checkDocumentCount(2));
+                    .untilAsserted(() -> assertDocumentCount(2));
 
             // Verify indexed messages.
             final Set<String> expectedMessages = Stream.of(logEvent1, logEvent2)
@@ -315,7 +337,7 @@ class LogstashIT {
                     .map(source -> (String) source.get(ES_INDEX_MESSAGE_FIELD_NAME))
                     .filter(Objects::nonNull)
                     .collect(Collectors.toSet());
-            Assertions.assertThat(actualMessages).isEqualTo(expectedMessages);
+            assertThat(actualMessages).isEqualTo(expectedMessages);
 
         } finally {
             appender.stop();
@@ -352,7 +374,7 @@ class LogstashIT {
                 Collections.emptySet());
 
         // Compare persisted sources.
-        Assertions.assertThat(actualSourceByKey).isEqualTo(expectedSourceByKey);
+        assertThat(actualSourceByKey).isEqualTo(expectedSourceByKey);
     }
 
     @Test
@@ -386,7 +408,7 @@ class LogstashIT {
                 excludedKeys);
 
         // Compare persisted sources.
-        Assertions.assertThat(actualSourceByKey).isEqualTo(expectedSourceByKey);
+        assertThat(actualSourceByKey).isEqualTo(expectedSourceByKey);
     }
 
     private static <K> Map<K, Object> appendAndCollect(
@@ -400,15 +422,15 @@ class LogstashIT {
         try {
 
             // Append the event.
-            LOGGER.info("appending events");
+            LOGGER.info(LOG_PREFIX + "appending events");
             logEvents.forEach(appender::append);
-            LOGGER.info("completed appending events");
+            LOGGER.info(LOG_PREFIX + "completed appending events");
 
             // Wait the message to arrive.
-            Awaitility.await()
+            await("message delivery")
                     .atMost(Duration.ofSeconds(60))
                     .pollDelay(Duration.ofSeconds(2))
-                    .until(() -> checkDocumentCount(LOG_EVENT_COUNT));
+                    .untilAsserted(() -> assertDocumentCount(LOG_EVENT_COUNT));
 
             // Retrieve the persisted messages.
             return queryDocuments().stream().collect(Collectors.toMap(keyMapper, (final Map<String, Object> source) -> {
@@ -422,10 +444,10 @@ class LogstashIT {
     }
 
     private static SocketAppender createStartedAppender(final Layout<?> layout, final int port) {
-        LOGGER.info("creating the appender");
+        LOGGER.info(LOG_PREFIX + "creating the appender");
         final SocketAppender appender = SocketAppender.newBuilder()
                 .setConfiguration(CONFIGURATION)
-                .setHost(HOST_NAME)
+                .setHost(MavenHardcodedConstants.HOST_NAME)
                 .setPort(port)
                 .setReconnectDelayMillis(100)
                 .setName("LogstashItAppender")
@@ -438,7 +460,7 @@ class LogstashIT {
         return appender;
     }
 
-    private static boolean checkDocumentCount(int expectedCount) throws IOException {
+    private static void assertDocumentCount(final int expectedCount) throws IOException {
         final CountResponse countResponse;
         try {
             countResponse = ES_CLIENT.count(builder -> builder.index(MavenHardcodedConstants.ES_INDEX_NAME));
@@ -458,8 +480,7 @@ class LogstashIT {
             throw error;
         }
         final long actualCount = countResponse.count();
-        Assertions.assertThat(actualCount).isLessThanOrEqualTo(expectedCount);
-        return actualCount == expectedCount;
+        assertThat(actualCount).isEqualTo(expectedCount);
     }
 
     private static List<Map<String, Object>> queryDocuments() throws IOException {
@@ -473,7 +494,7 @@ class LogstashIT {
         return searchResponse.hits().hits().stream()
                 .map(hit -> {
                     @SuppressWarnings("unchecked")
-                    Map<String, Object> source = hit.source();
+                    final Map<String, Object> source = hit.source();
                     return source;
                 })
                 .collect(Collectors.toList());

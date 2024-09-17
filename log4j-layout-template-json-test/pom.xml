@@ -137,11 +137,6 @@
                indeed handles everything in UTF-8 without implicitly
                relying on the system defaults. -->
           <argLine>-Dfile.encoding=US-ASCII</argLine>
-          <systemPropertyVariables>
-            <!--            &lt;!&ndash; Enable JUnit 5 parallel execution. &ndash;&gt;-->
-            <junit.jupiter.execution.parallel.enabled>false</junit.jupiter.execution.parallel.enabled>
-            <!--            <junit.jupiter.execution.parallel.mode.default>concurrent</junit.jupiter.execution.parallel.mode.default>-->
-          </systemPropertyVariables>
         </configuration>
       </plugin>
 
@@ -167,9 +162,6 @@
       </activation>
 
       <properties>
-        <elasticsearch.port>9200</elasticsearch.port>
-        <logstash.gelf.port>12222</logstash.gelf.port>
-        <logstash.tcp.port>12345</logstash.tcp.port>
         <!-- `docker run elasticsearch:<TAG>` exists with code 137 due to insufficient memory.
              We limit the used JVM memory to avoid this OOM failure. -->
         <elastic.java-opts>-Xms750m -Xmx750m</elastic.java-opts>
@@ -246,7 +238,10 @@
                         <arg>1</arg>
                         <arg>-e</arg>
                         <arg><![CDATA[
+
                           input {
+
+                            # Documentation: https://www.elastic.co/guide/en/logstash/current/plugins-inputs-gelf.html
                             gelf {
                               host => "logstash"
                               use_tcp => true
@@ -254,20 +249,24 @@
                               port => 12222
                               type => "gelf"
                             }
+
+                            # Documentation: https://www.elastic.co/guide/en/logstash/current/plugins-inputs-tcp.html
                             tcp {
                               port => 12345
                               codec => json
                               type => "tcp"
                             }
+
                           }
 
                           filter {
                             if [type] == "gelf" {
                               # These are GELF/Syslog logging levels as defined in RFC 3164.
                               # Map the integer level to its human-readable format.
+                              # Documentation: https://www.elastic.co/guide/en/logstash/current/plugins-filters-translate.html
                               translate {
-                                field => "[level]"
-                                destination => "[levelName]"
+                                source => "[level]"
+                                target => "[levelName]"
                                 dictionary => {
                                   "0" => "EMERG"
                                   "1" => "ALERT"
@@ -282,18 +281,21 @@
                             }
                           }
 
+                          # Documentation: https://www.elastic.co/guide/en/logstash/current/plugins-filters-elasticsearch.html
                           output {
                             # (Un)comment for debugging purposes
-                            # stdout { codec => rubydebug }
+                            stdout { codec => rubydebug }
                             elasticsearch {
                               hosts => ["http://elasticsearch:9200"]
                               index => "log4j"
                             }
-                          }]]></arg>
+                          }
+
+                        ]]></arg>
                       </exec>
                     </entrypoint>
                     <wait>
-                      <log>Successfully started Logstash API endpoint</log>
+                      <log>Pipelines running</log>
                       <time>60000</time>
                     </wait>
                   </run>
@@ -322,8 +324,6 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
             <configuration>
-              <reuseForks>false</reuseForks>
-              <parallel>none</parallel>
               <includes>
                 <include>**/*IT.java</include>
               </includes>
