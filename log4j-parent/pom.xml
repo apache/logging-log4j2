@@ -53,7 +53,6 @@
     <asciidoctor-maven-plugin.version>2.2.4</asciidoctor-maven-plugin.version>
     <docker-maven-plugin.version>0.45.0</docker-maven-plugin.version>
     <exam-maven-plugin.version>4.13.5</exam-maven-plugin.version>
-    <gmavenplus-plugin.version>3.0.2</gmavenplus-plugin.version>
     <maven-taglib-plugin.version>2.4</maven-taglib-plugin.version>
     <!-- `surefire.version` property used in `apache.org:apache`: -->
     <surefire.version>3.5.0</surefire.version>
@@ -84,7 +83,7 @@
     <felix.version>7.0.5</felix.version>
     <flapdoodle-embed.version>4.13.1</flapdoodle-embed.version>
     <flapdoodle-reverse.version>1.8.0</flapdoodle-reverse.version>
-    <groovy.version>3.0.22</groovy.version>
+    <groovy.version>4.0.22</groovy.version>
     <guava.version>33.3.0-jre</guava.version>
     <h2.version>2.2.224</h2.version>
     <hamcrest.version>3.0</hamcrest.version>
@@ -176,7 +175,7 @@
       <!-- END: Modules that are not published (and hence missing in the BOM) -->
 
       <dependency>
-        <groupId>org.codehaus.groovy</groupId>
+        <groupId>org.apache.groovy</groupId>
         <artifactId>groovy-bom</artifactId>
         <version>${groovy.version}</version>
         <type>pom</type>
@@ -983,21 +982,6 @@
       <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
-        <version>${gmavenplus-plugin.version}</version>
-        <dependencies>
-          <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-ant</artifactId>
-            <version>${groovy.version}</version>
-            <scope>runtime</scope>
-          </dependency>
-          <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy</artifactId>
-            <version>${groovy.version}</version>
-            <scope>runtime</scope>
-          </dependency>
-        </dependencies>
         <executions>
           <execution>
             <id>ban-static-transitive</id>
