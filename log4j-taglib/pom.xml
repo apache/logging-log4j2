@@ -28,14 +28,19 @@
   <name>Apache Log4j Tag Library</name>
   <description>The Apache Log4j Tag Library for Web Applications</description>
   <properties>
-
     <!--
       ~ OSGi and JPMS options
       -->
+    <bnd-extra-package-options>
+      <!-- Annotations only -->
+      org.jspecify.*;resolution:=optional
+    </bnd-extra-package-options>
     <bnd-extra-module-options>
       <!-- Filebased module names: MUST be static -->
       javax.servlet.api;substitute="javax.servlet-api";static=true;transitive=false,
-      javax.servlet.jsp.api;substitute="javax.servlet.jsp-api";static=true;transitive=false
+      javax.servlet.jsp.api;substitute="javax.servlet.jsp-api";static=true;transitive=false,
+      <!-- Remove `transitive` for optional dependencies -->
+      org.jspecify;transitive=false
     </bnd-extra-module-options>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>
@@ -58,6 +63,11 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-web</artifactId>
       <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.jspecify</groupId>
+      <artifactId>jspecify</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>

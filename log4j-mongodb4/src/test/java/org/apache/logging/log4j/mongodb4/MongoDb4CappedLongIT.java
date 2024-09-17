@@ -14,27 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.mongodb;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+package org.apache.logging.log4j.mongodb4;
 
 import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoIterable;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 
-/**
- * Tests MongoDbRule.
- * <p>
- * The test framework {@code de.flapdoodle.embed.mongo} requires Java 8.
- * </p>
- */
-@UsingMongoDb
-public class MongoDbResolverTest {
+@UsingMongoDb4
+@LoggerContextSource("MongoDb4CappedLongIT.xml")
+// Print debug status logger output upon failure
+@UsingStatusListener
+class MongoDb4CappedLongIT extends AbstractMongoDb4CappedIT {
 
     @Test
-    public void testAccess(final MongoClient mongoClient) {
-        final MongoIterable<String> databaseNames = mongoClient.listDatabaseNames();
-        assertNotNull(databaseNames);
-        assertNotNull(databaseNames.first());
+    @Override
+    protected void test(LoggerContext ctx, MongoClient mongoClient) {
+        super.test(ctx, mongoClient);
     }
 }

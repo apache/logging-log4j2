@@ -14,29 +14,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.mongodb4;
+package org.apache.logging.log4j.mongodb;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.message.MapMessage;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.bson.Document;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public abstract class AbstractMongoDb4CappedTest {
+@UsingMongoDb
+@LoggerContextSource("MongoDbMapMessageIT.xml")
+// Print debug status logger output upon failure
+@UsingStatusListener
+class MongoDbMapMessageIT {
 
     @Test
-    public void test(final LoggerContext ctx, final MongoClient mongoClient) {
-        final Logger logger = ctx.getLogger(AbstractMongoDb4CappedTest.class);
-        logger.info("Hello log");
-        final MongoDatabase database = mongoClient.getDatabase(MongoDb4TestConstants.DATABASE_NAME);
+    void test(final LoggerContext ctx, final MongoClient mongoClient) {
+        final Logger logger = ctx.getLogger(MongoDbMapMessageIT.class);
+        final MapMessage<?, Object> mapMessage = new MapMessage<>();
+        mapMessage.with("SomeName", "SomeValue");
+        mapMessage.with("SomeInt", 1);
+        logger.info(mapMessage);
+        final MongoDatabase database = mongoClient.getDatabase(MongoDbTestConstants.DATABASE_NAME);
         Assertions.assertNotNull(database);
-        final MongoCollection<Document> collection = database.getCollection(MongoDb4TestConstants.COLLECTION_NAME);
+        final MongoCollection<Document> collection =
+                database.getCollection(getClass().getSimpleName());
         Assertions.assertNotNull(collection);
         final Document first = collection.find().first();
         Assertions.assertNotNull(first);
-        Assertions.assertEquals("Hello log", first.getString("message"), first.toJson());
+        final String firstJson = first.toJson();
+        Assertions.assertEquals("SomeValue", first.getString("SomeName"), firstJson);
+        Assertions.assertEquals(Integer.valueOf(1), first.getInteger("SomeInt"), firstJson);
     }
 }

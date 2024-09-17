@@ -111,7 +111,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
         this.privateConfig = new PrivateConfig(context.getConfiguration(), this);
     }
 
-    private static MessageFactory getEffectiveMessageFactory(final MessageFactory messageFactory) {
+    static MessageFactory getEffectiveMessageFactory(final MessageFactory messageFactory) {
         return createInstanceFromFactoryProperty(
                 MessageFactory.class,
                 messageFactory,

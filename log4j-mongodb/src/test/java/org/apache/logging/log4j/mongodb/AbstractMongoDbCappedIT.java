@@ -23,17 +23,16 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.bson.Document;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
-public abstract class AbstractMongoDbCappedTest {
+abstract class AbstractMongoDbCappedIT {
 
-    @Test
-    public void test(final LoggerContext ctx, final MongoClient mongoClient) {
-        final Logger logger = ctx.getLogger(AbstractMongoDbCappedTest.class);
+    protected void test(final LoggerContext ctx, final MongoClient mongoClient) {
+        final Logger logger = ctx.getLogger(AbstractMongoDbCappedIT.class);
         logger.info("Hello log");
         final MongoDatabase database = mongoClient.getDatabase(MongoDbTestConstants.DATABASE_NAME);
         Assertions.assertNotNull(database);
-        final MongoCollection<Document> collection = database.getCollection(MongoDbTestConstants.COLLECTION_NAME);
+        final MongoCollection<Document> collection =
+                database.getCollection(getClass().getSimpleName());
         Assertions.assertNotNull(collection);
         final Document first = collection.find().first();
         Assertions.assertNotNull(first);

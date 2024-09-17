@@ -79,11 +79,8 @@
     <!-- `com.conversantmedia:disruptor` version 1.2.16 requires Java 9: -->
     <conversant.disruptor.version>1.2.15</conversant.disruptor.version>
     <disruptor.version>3.4.4</disruptor.version>
-    <elasticsearch-java.version>8.15.1</elasticsearch-java.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <felix.version>7.0.5</felix.version>
-    <flapdoodle-embed.version>4.13.1</flapdoodle-embed.version>
-    <flapdoodle-reverse.version>1.8.0</flapdoodle-reverse.version>
     <groovy.version>3.0.22</groovy.version>
     <guava.version>33.3.0-jre</guava.version>
     <h2.version>2.2.224</h2.version>
@@ -156,7 +153,7 @@
     <commons-pool2.version>2.12.0</commons-pool2.version>
     <httpclient.version>4.5.14</httpclient.version>
     <httpcore.version>4.4.16</httpcore.version>
-    <jna.version>5.14.0</jna.version>
+    <jna.version>5.15.0</jna.version>
 
   </properties>
 
@@ -388,24 +385,6 @@
       </dependency>
 
       <dependency>
-        <groupId>de.flapdoodle.embed</groupId>
-        <artifactId>de.flapdoodle.embed.mongo</artifactId>
-        <version>${flapdoodle-embed.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>de.flapdoodle.embed</groupId>
-        <artifactId>de.flapdoodle.embed.process</artifactId>
-        <version>${flapdoodle-embed.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>de.flapdoodle.reverse</groupId>
-        <artifactId>de.flapdoodle.reverse</artifactId>
-        <version>${flapdoodle-reverse.version}</version>
-      </dependency>
-
-      <dependency>
         <groupId>com.conversantmedia</groupId>
         <artifactId>disruptor</artifactId>
         <version>${conversant.disruptor.version}</version>
@@ -415,12 +394,6 @@
         <groupId>com.lmax</groupId>
         <artifactId>disruptor</artifactId>
         <version>${disruptor.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>co.elastic.clients</groupId>
-        <artifactId>elasticsearch-java</artifactId>
-        <version>${elasticsearch-java.version}</version>
       </dependency>
 
       <dependency>
@@ -915,7 +888,7 @@
     <pluginManagement>
       <plugins>
 
-        <!-- used by `docker` profile in `log4j-layout-template-json-test`: -->
+        <!-- used by `docker` profile -->
         <plugin>
           <groupId>io.fabric8</groupId>
           <artifactId>docker-maven-plugin</artifactId>

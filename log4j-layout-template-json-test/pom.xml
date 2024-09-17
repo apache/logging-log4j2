@@ -42,6 +42,14 @@
     <bnd-module-name>org.apache.logging.log4j.layout.template.json.test</bnd-module-name>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
 
+    <!-- `elastic.version` is used for two purposes:
+
+         1. `co.elastic.clients:elasticsearch-java` version
+         2. The Docker image version of the ELK-stack
+
+         As of 2024-09-16, these all (Maven artifacts and Elastic products) get released with the same version. -->
+    <elastic.version>8.15.1</elastic.version>
+
   </properties>
 
   <dependencies>
@@ -84,6 +92,7 @@
     <dependency>
       <groupId>co.elastic.clients</groupId>
       <artifactId>elasticsearch-java</artifactId>
+      <version>${elastic.version}</version>
       <scope>test</scope>
     </dependency>
 
@@ -128,23 +137,6 @@
   <build>
     <plugins>
 
-      <!-- Disable ITs, which are Docker-dependent, by default. -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -169,15 +161,29 @@
 
       <id>docker</id>
 
+      <!--
+        ~ Only the `ubuntu` CI runners have access to Docker
+        -->
       <activation>
-        <activeByDefault>false</activeByDefault>
+        <os>
+          <family>linux</family>
+        </os>
+        <property>
+          <name>env.CI</name>
+          <value>true</value>
+        </property>
       </activation>
 
       <properties>
-        <elastic.version>8.10.2</elastic.version>
+
+        <!-- Suppress `docker-maven-plugin` output -->
+        <docker.showLogs>false</docker.showLogs>
+        <docker.verbose>false</docker.verbose>
+
         <!-- `docker run elasticsearch:<TAG>` exists with code 137 due to insufficient memory.
              We limit the used JVM memory to avoid this OOM failure. -->
-        <elastic.java-opts>-Xms750m -Xmx750m</elastic.java-opts>
+        <elastic.javaOpts>-Xms750m -Xmx750m</elastic.javaOpts>
+
       </properties>
 
       <build>
@@ -187,7 +193,6 @@
             <groupId>io.fabric8</groupId>
             <artifactId>docker-maven-plugin</artifactId>
             <configuration>
-              <verbose>all</verbose>
               <startParallel>true</startParallel>
               <autoCreateCustomNetworks>true</autoCreateCustomNetworks>
               <images>
@@ -198,10 +203,11 @@
                     <env>
                       <discovery.type>single-node</discovery.type>
                       <xpack.security.enabled>false</xpack.security.enabled>
-                      <ES_JAVA_OPTS>${elastic.java-opts}</ES_JAVA_OPTS>
+                      <ES_JAVA_OPTS>${elastic.javaOpts}</ES_JAVA_OPTS>
                     </env>
                     <ports>
-                      <port>9200:9200</port>
+                      <!-- Binds an ephemeral port to the `elasticsearch.port` Maven property. -->
+                      <port>localhost:elasticsearch.port:9200</port>
                     </ports>
                     <network>
                       <mode>custom</mode>
@@ -213,7 +219,11 @@
                       <color>cyan</color>
                     </log>
                     <wait>
-                      <log>recovered \[0\] indices into cluster_state</log>
+                      <tcp>
+                        <ports>
+                          <port>9200</port>
+                        </ports>
+                      </tcp>
                       <time>60000</time>
                     </wait>
                   </run>
@@ -231,11 +241,13 @@
                       <alias>logstash</alias>
                     </network>
                     <env>
-                      <LS_JAVA_OPTS>${elastic.java-opts}</LS_JAVA_OPTS>
+                      <LS_JAVA_OPTS>${elastic.javaOpts}</LS_JAVA_OPTS>
                     </env>
                     <ports>
-                      <port>12222:12222</port>
-                      <port>12345:12345</port>
+                      <!-- Binds an ephemeral port to the `logstash.gelf.port` Maven property. -->
+                      <port>localhost:logstash.gelf.port:12222</port>
+                      <!-- Binds an ephemeral port to the `logstash.tcp.port` Maven property. -->
+                      <port>localhost:logstash.tcp.port:12345</port>
                     </ports>
                     <log>
                       <prefix>[LS]</prefix>
@@ -247,54 +259,71 @@
                         <arg>--pipeline.batch.size</arg>
                         <arg>1</arg>
                         <arg>-e</arg>
-                        <arg>input {
+                        <arg><![CDATA[
+
+                          input {
+
+                            # Documentation: https://www.elastic.co/guide/en/logstash/current/plugins-inputs-gelf.html
                             gelf {
-                              host =&gt; "logstash"
-                              use_tcp =&gt; true
-                              use_udp =&gt; false
-                              port =&gt; 12222
-                              type =&gt; "gelf"
+                              host => "logstash"
+                              use_tcp => true
+                              use_udp => false
+                              port => 12222
+                              type => "gelf"
                             }
+
+                            # Documentation: https://www.elastic.co/guide/en/logstash/current/plugins-inputs-tcp.html
                             tcp {
-                              port =&gt; 12345
-                              codec =&gt; json
-                              type =&gt; "tcp"
+                              port => 12345
+                              codec => json
+                              type => "tcp"
                             }
+
                           }
 
                           filter {
                             if [type] == "gelf" {
                               # These are GELF/Syslog logging levels as defined in RFC 3164.
-                              # Map the integer level to its human readable format.
+                              # Map the integer level to its human-readable format.
+                              # Documentation: https://www.elastic.co/guide/en/logstash/current/plugins-filters-translate.html
                               translate {
-                                field =&gt; "[level]"
-                                destination =&gt; "[levelName]"
-                                dictionary =&gt; {
-                                  "0" =&gt; "EMERG"
-                                  "1" =&gt; "ALERT"
-                                  "2" =&gt; "CRITICAL"
-                                  "3" =&gt; "ERROR"
-                                  "4" =&gt; "WARN"
-                                  "5" =&gt; "NOTICE"
-                                  "6" =&gt; "INFO"
-                                  "7" =&gt; "DEBUG"
+                                source => "[level]"
+                                target => "[levelName]"
+                                dictionary => {
+                                  "0" => "EMERG"
+                                  "1" => "ALERT"
+                                  "2" => "CRITICAL"
+                                  "3" => "ERROR"
+                                  "4" => "WARN"
+                                  "5" => "NOTICE"
+                                  "6" => "INFO"
+                                  "7" => "DEBUG"
                                 }
                               }
                             }
                           }
 
+                          # Documentation: https://www.elastic.co/guide/en/logstash/current/plugins-filters-elasticsearch.html
                           output {
                             # (Un)comment for debugging purposes
-                            # stdout { codec =&gt; rubydebug }
+                            # stdout { codec => rubydebug }
                             elasticsearch {
-                              hosts =&gt; ["http://elasticsearch:9200"]
-                              index =&gt; "log4j"
+                              hosts => ["http://elasticsearch:9200"]
+                              index => "log4j"
                             }
-                          }</arg>
+                          }
+
+                        ]]></arg>
                       </exec>
                     </entrypoint>
                     <wait>
-                      <log>Successfully started Logstash API endpoint</log>
+                      <tcp>
+                        <host>localhost</host>
+                        <ports>
+                          <port>12222</port>
+                          <port>12345</port>
+                        </ports>
+                      </tcp>
                       <time>60000</time>
                     </wait>
                   </run>
@@ -326,6 +355,11 @@
               <includes>
                 <include>**/*IT.java</include>
               </includes>
+              <systemPropertyVariables>
+                <log4j.elasticsearch.port>${elasticsearch.port}</log4j.elasticsearch.port>
+                <log4j.logstash.gelf.port>${logstash.gelf.port}</log4j.logstash.gelf.port>
+                <log4j.logstash.tcp.port>${logstash.tcp.port}</log4j.logstash.tcp.port>
+              </systemPropertyVariables>
             </configuration>
             <executions>
               <execution>

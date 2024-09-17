@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoIterable;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -29,10 +30,12 @@ import org.junit.jupiter.api.Test;
  * </p>
  */
 @UsingMongoDb4
-public class MongoDb4ResolverTest {
+// Print debug status logger output upon failure
+@UsingStatusListener
+class MongoDb4ResolverIT {
 
     @Test
-    public void testAccess(final MongoClient mongoClient) {
+    void testAccess(final MongoClient mongoClient) {
         final MongoIterable<String> databaseNames = mongoClient.listDatabaseNames();
         assertNotNull(databaseNames);
         assertNotNull(databaseNames.first());
