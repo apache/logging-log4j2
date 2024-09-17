@@ -85,25 +85,27 @@ public final class FuzzingUtil {
 
     public static final class Log4jLoggerFacade implements LoggerFacade {
 
-        private final Logger logger;
+        private static final String FQCN = Log4jLoggerFacade.class.getName();
+        
+        private final ExtendedLogger logger;
 
-        public Log4jLoggerFacade(final Logger logger) {
+        public Log4jLoggerFacade(final ExtendedLogger logger) {
             this.logger = requireNonNull(logger, "logger");
         }
 
         @Override
         public void log(final String message) {
-            logger.error(message);
+            logger.logIfEnabled(FQCN, Level.ERROR, null, message);
         }
 
         @Override
         public void log(final String message, final Throwable throwable) {
-            logger.error(message, throwable);
+            logger.logIfEnabled(FQCN, Level.ERROR, null, message, throwable);
         }
 
         @Override
         public void log(final String message, final Object[] parameters) {
-            logger.error(message, parameters);
+            logger.logIfEnabled(FQCN, Level.ERROR, null, message, parameters);
         }
     }
 
