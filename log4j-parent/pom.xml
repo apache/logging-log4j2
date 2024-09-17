@@ -105,7 +105,6 @@
     <commons-lang3.version>3.17.0</commons-lang3.version>
     <commons-logging.version>1.3.4</commons-logging.version>
     <disruptor.version>4.0.0</disruptor.version>
-    <elasticsearch.version>7.17.24</elasticsearch.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <felix.version>7.0.5</felix.version>
     <graalvm.version>24.0.2</graalvm.version>
@@ -130,7 +129,6 @@
     <junit-pioneer.version>2.2.0</junit-pioneer.version>
     <log4j.version>1.2.17</log4j.version>
     <log4j2-custom-layout.version>1.1.0</log4j2-custom-layout.version>
-    <log4j2-ecs-layout.version>1.6.0</log4j2-ecs-layout.version>
     <log4j2-logstash-layout.version>0.18</log4j2-logstash-layout.version>
     <logback.version>1.4.14</logback.version>
     <maven.version>3.9.9</maven.version>
@@ -322,12 +320,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.elasticsearch.client</groupId>
-        <artifactId>elasticsearch-rest-high-level-client</artifactId>
-        <version>${elasticsearch.version}</version>
-      </dependency>
-
-      <dependency>
         <groupId>org.zapodot</groupId>
         <artifactId>embedded-ldap-junit</artifactId>
         <version>${embedded-ldap.version}</version>
@@ -469,13 +461,6 @@
             <artifactId>log4j-core</artifactId>
           </exclusion>
         </exclusions>
-      </dependency>
-
-      <!-- Used for testing `JsonTemplateLayout`: -->
-      <dependency>
-        <groupId>co.elastic.logging</groupId>
-        <artifactId>log4j2-ecs-layout</artifactId>
-        <version>${log4j2-ecs-layout.version}</version>
       </dependency>
 
       <!-- Tested as a legacy 2.x plugin: -->
