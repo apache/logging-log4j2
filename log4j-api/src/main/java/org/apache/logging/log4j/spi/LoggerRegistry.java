@@ -240,7 +240,8 @@ public class LoggerRegistry<T extends ExtendedLogger> {
     }
 
     /**
-     * Registers the provided logger using the given name – <b>message factory parameter is ignored</b> and the one from the logger will be used instead.
+     * Registers the provided logger.
+     * <b>Logger name and message factory parameters are ignored</b>, those will be obtained from the logger instead.
      *
      * @param name ignored – kept for backward compatibility
      * @param messageFactory ignored – kept for backward compatibility
