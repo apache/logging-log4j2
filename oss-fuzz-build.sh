@@ -198,6 +198,7 @@ jazzer_driver \\
     if grep -q "A fatal error has been detected by the Java Runtime Environment" "\$cmdOutputFile"; then
       echo "WARN: Detected JRE crash; it doesn't qualify as a fuzzing failure."
       echo "WARN: Cleaning up crash reports and exiting with success..."
+      [ -d "\${FUZZ_INPUTS:-}" ] && rm -f -v "\${FUZZ_INPUTS}/*"
       dump_debug
       exit 0
     else
