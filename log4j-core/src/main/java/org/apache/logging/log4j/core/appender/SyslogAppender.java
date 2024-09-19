@@ -131,7 +131,7 @@ public class SyslogAppender extends SocketAppender {
                                 .setExceptionPattern(exceptionPattern)
                                 .setUseTLSMessageFormat(useTlsMessageFormat)
                                 .setLoggerFields(loggerFields)
-                                .setConfig(configuration)
+                                .setConfiguration(configuration)
                                 .build()
                         :
                         // @formatter:off

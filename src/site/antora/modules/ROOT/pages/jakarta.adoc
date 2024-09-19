@@ -267,6 +267,12 @@ include::example$manual/webapp/AsyncServlet.java[tag=manual]
 [#log4j-taglib]
 === Logging in JavaServer Pages
 
+[WARNING]
+====
+*The Log4j Tag library is planned to be removed in the next major release!*
+If you are using this library, please get in touch with the Log4j maintainers using link:{logging-services-url}/support.html[the official support channels].
+====
+
 To help users add logging statements to JavaServer Pages, Log4j provides a JSP tag library modeled after the
 https://web.archive.org/web/20140215182415/http://jakarta.apache.org/taglibs/log/[Jakarta Commons Log Tag library].
 To use it, you need to add the following runtime dependency to your web application project:

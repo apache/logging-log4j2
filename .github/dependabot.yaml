@@ -118,6 +118,9 @@ updates:
       # see https://github.com/apache/logging-log4j2/issues/1736
       - dependency-name: "org.fusesource.jansi:jansi"
         update-types: [ "version-update:semver-major" ]
+      # SLF4J should not perform major version upgrades
+      - dependency-name: "org.slf4j:slf4j-api"
+        update-types: [ "version-update:semver-major" ]
 
   - package-ecosystem: maven
     directories:

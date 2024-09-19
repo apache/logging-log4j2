@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="https://logging.apache.org/xml/ns"
+       xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="changed">
+  <issue id="LOG4J2-3618" link="https://issues.apache.org/jira/browse/LOG4J2-3618"/>
+  <description format="asciidoc">Fixes property source ordering to account for different sources with the same priority.</description>
+</entry>

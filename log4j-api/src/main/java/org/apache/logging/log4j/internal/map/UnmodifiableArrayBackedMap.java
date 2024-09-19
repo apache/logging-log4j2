@@ -57,7 +57,7 @@ import org.apache.logging.log4j.util.TriConsumer;
  * </ul>
  *
  */
-class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements Serializable, ReadOnlyStringMap {
+public class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements Serializable, ReadOnlyStringMap {
     /**
      * Implementation of Map.Entry. The implementation is simple since each instance
      * contains an index in the array, then getKey() and getValue() retrieve from
@@ -160,7 +160,7 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
         return 2 * entryIndex + 1 + NUM_FIXED_ARRAY_ENTRIES;
     }
 
-    static UnmodifiableArrayBackedMap getInstance(Object[] backingArray) {
+    public static UnmodifiableArrayBackedMap getMap(Object[] backingArray) {
         if (backingArray == null || backingArray.length == 1) {
             return EMPTY_MAP;
         } else {
@@ -224,7 +224,7 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
         return false;
     }
 
-    Object[] getBackingArray() {
+    public Object[] getBackingArray() {
         return backingArray;
     }
 
@@ -255,7 +255,7 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
      * @param value
      * @return
      */
-    UnmodifiableArrayBackedMap copyAndPut(String key, String value) {
+    public UnmodifiableArrayBackedMap copyAndPut(String key, String value) {
         UnmodifiableArrayBackedMap newMap = new UnmodifiableArrayBackedMap(numEntries + 1);
         // include the numEntries value (array index 0)
         if (this.numEntries > 0) {
@@ -275,13 +275,14 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
      * @param value
      * @return
      */
-    UnmodifiableArrayBackedMap copyAndPutAll(Map<String, String> entriesToAdd) {
+    public UnmodifiableArrayBackedMap copyAndPutAll(Map<String, String> entriesToAdd) {
         // create a new array that can hold the maximum output size
         UnmodifiableArrayBackedMap newMap = new UnmodifiableArrayBackedMap(numEntries + entriesToAdd.size());
 
         // copy the contents of the current map (if any)
         if (numEntries > 0) {
             System.arraycopy(backingArray, 0, newMap.backingArray, 0, numEntries * 2 + 1);
+            newMap.numEntries = numEntries;
         }
 
         for (Map.Entry<String, String> entry : entriesToAdd.entrySet()) {
@@ -309,9 +310,9 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
      * @param value
      * @return
      */
-    UnmodifiableArrayBackedMap copyAndRemove(String key) {
+    public UnmodifiableArrayBackedMap copyAndRemove(String key) {
         int indexToRemove = -1;
-        for (int oldIndex = 0; oldIndex < numEntries; oldIndex++) {
+        for (int oldIndex = numEntries - 1; oldIndex >= 0; oldIndex--) {
             if (backingArray[getArrayIndexForKey(oldIndex)].hashCode() == key.hashCode()
                     && backingArray[getArrayIndexForKey(oldIndex)].equals(key)) {
                 indexToRemove = oldIndex;
@@ -356,7 +357,7 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
      * @param value
      * @return
      */
-    UnmodifiableArrayBackedMap copyAndRemoveAll(Iterable<String> keysToRemoveIterable) {
+    public UnmodifiableArrayBackedMap copyAndRemoveAll(Iterable<String> keysToRemoveIterable) {
         if (isEmpty()) {
             // shortcut: if this map is empty, the result will continue to be empty
             return EMPTY_MAP;

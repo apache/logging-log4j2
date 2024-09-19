@@ -16,23 +16,30 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.junit.Test;
+import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.MessageFactory2;
 import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 @Category(AsyncLoggers.class)
-public class AsyncLoggerContextTest {
+class AsyncLoggerContextTest {
 
     @Test
-    public void testNewInstanceReturnsAsyncLogger() {
-        final Logger logger = new AsyncLoggerContext("a").newInstance(new LoggerContext("a"), "a", null);
-        assertTrue(logger instanceof AsyncLogger);
-
-        CoreLoggerContexts.stopLoggerContext(); // stop async thread
+    void verify_newInstance(final TestInfo testInfo) {
+        final String testName = testInfo.getDisplayName();
+        try (final AsyncLoggerContext loggerContext = new AsyncLoggerContext(testName)) {
+            final String loggerName = testName + "-loggerName";
+            final MessageFactory2 messageFactory = mock(MessageFactory2.class);
+            final Logger logger = loggerContext.newInstance(loggerContext, loggerName, messageFactory);
+            assertThat(logger).isInstanceOf(AsyncLogger.class);
+            assertThat(logger.getName()).isEqualTo(loggerName);
+            assertThat((MessageFactory) logger.getMessageFactory()).isSameAs(messageFactory);
+        }
     }
 }

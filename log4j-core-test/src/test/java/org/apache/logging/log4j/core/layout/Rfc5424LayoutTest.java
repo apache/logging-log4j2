@@ -16,13 +16,17 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -751,7 +755,7 @@ public class Rfc5424LayoutTest {
                 .withConfigurationNode(new Node())
                 .withConfiguration(new DefaultConfiguration())
                 .build();
-        assertTrue(obj instanceof Rfc5424Layout);
+        assertInstanceOf(Rfc5424Layout.class, obj);
         checkDefaultValues((Rfc5424Layout) obj);
     }
 
@@ -780,5 +784,12 @@ public class Rfc5424LayoutTest {
                 new Rfc5424Layout.Rfc5424LayoutBuilder().setEin(eid).build();
 
         assertNull(layout);
+    }
+
+    @Test
+    void testFQDN() throws UnknownHostException {
+        final String fqdn = InetAddress.getLocalHost().getCanonicalHostName();
+        final Rfc5424Layout layout = Rfc5424Layout.newBuilder().build();
+        assertThat(layout.getLocalHostName()).isEqualTo(fqdn);
     }
 }

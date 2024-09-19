@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.function.Function;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -52,23 +53,35 @@ public final class NetUtils {
      * @return String the name of the local host
      */
     public static String getLocalHostname() {
+        return getHostname(InetAddress::getHostName);
+    }
+
+    /**
+     * This method gets the FQDN of the machine we are running on.
+     * It returns {@value UNKNOWN_LOCALHOST} if the host name cannot be found.
+     *
+     * @return The canonical name of the local host; or {@value UNKNOWN_LOCALHOST}, if cannot be found.
+     */
+    public static String getCanonicalLocalHostname() {
+        return getHostname(InetAddress::getCanonicalHostName);
+    }
+
+    private static String getHostname(final Function<? super InetAddress, ? extends String> callback) {
         try {
-            final InetAddress addr = InetAddress.getLocalHost();
-            return addr == null ? UNKNOWN_LOCALHOST : addr.getHostName();
+            final InetAddress address = InetAddress.getLocalHost();
+            return address == null ? UNKNOWN_LOCALHOST : callback.apply(address);
         } catch (final UnknownHostException uhe) {
             try {
                 final Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-                if (interfaces != null) {
-                    while (interfaces.hasMoreElements()) {
-                        final NetworkInterface nic = interfaces.nextElement();
-                        final Enumeration<InetAddress> addresses = nic.getInetAddresses();
-                        while (addresses.hasMoreElements()) {
-                            final InetAddress address = addresses.nextElement();
-                            if (!address.isLoopbackAddress()) {
-                                final String hostname = address.getHostName();
-                                if (hostname != null) {
-                                    return hostname;
-                                }
+                while (interfaces.hasMoreElements()) {
+                    final NetworkInterface nic = interfaces.nextElement();
+                    final Enumeration<InetAddress> addresses = nic.getInetAddresses();
+                    while (addresses.hasMoreElements()) {
+                        final InetAddress address = addresses.nextElement();
+                        if (!address.isLoopbackAddress()) {
+                            final String hostname = callback.apply(address);
+                            if (hostname != null) {
+                                return hostname;
                             }
                         }
                     }

@@ -16,7 +16,8 @@
  */
 package org.apache.logging.log4j.spi;
 
-import java.util.Collections;
+import static org.apache.logging.log4j.internal.map.UnmodifiableArrayBackedMap.getMap;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -26,102 +27,86 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.TriConsumer;
 
 /**
- * The actual ThreadContext Map. A new ThreadContext Map is created each time it is updated and the Map stored is always
- * immutable. This means the Map can be passed to other threads without concern that it will be updated. Since it is
- * expected that the Map will be passed to many more log events than the number of keys it contains the performance
- * should be much better than if the Map was copied for each event.
+ * The default implementation of {@link ThreadContextMap}
+ * <p>
+ *      An instance of UnmodifiableArrayBackedMap can be represented as a single {@code Object[]}, which can safely
+ *      be stored on the {@code ThreadLocal} with no fear of classloader-related memory leaks.
+ *  </p>
+ *  <p>
+ *      Performance of the underlying {@link org.apache.logging.log4j.internal.map.UnmodifiableArrayBackedMap} exceeds
+ *      {@link HashMap} in all supported operations other than {@code get()}. Note that {@code get()} performance scales
+ *      linearly with the current map size, and callers are advised to minimize this work.
+ * </p>
  */
 public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyStringMap {
-    private static final long serialVersionUID = 8218007901108944053L;
+    private static final long serialVersionUID = -2635197170958057849L;
 
     /**
-     * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
+     * Property name ({@value}) for selecting {@code InheritableThreadLocal} (value "true") or plain
      * {@code ThreadLocal} (value is not "true") in the implementation.
      */
     public static final String INHERITABLE_MAP = "isThreadContextMapInheritable";
 
-    private final boolean useMap;
-    private final ThreadLocal<Map<String, String>> localMap;
+    private ThreadLocal<Object[]> localState;
 
     public DefaultThreadContextMap() {
-        this(true);
+        this(PropertiesUtil.getProperties());
     }
 
     /**
-     * @deprecated Since 2.24.0. See {@link Provider#getThreadContextMap()} on how to obtain a no-op map.
+     * @deprecated Since 2.24.0. Use {@link NoOpThreadContextMap} for a no-op implementation.
      */
     @Deprecated
-    public DefaultThreadContextMap(final boolean useMap) {
-        this(useMap, PropertiesUtil.getProperties());
+    public DefaultThreadContextMap(final boolean ignored) {
+        this(PropertiesUtil.getProperties());
     }
 
-    DefaultThreadContextMap(final boolean useMap, final PropertiesUtil properties) {
-        this.useMap = useMap;
-        localMap = properties.getBooleanProperty(INHERITABLE_MAP)
-                ? new InheritableThreadLocal<Map<String, String>>() {
+    DefaultThreadContextMap(final PropertiesUtil properties) {
+        localState = properties.getBooleanProperty(INHERITABLE_MAP)
+                ? new InheritableThreadLocal<Object[]>() {
                     @Override
-                    protected Map<String, String> childValue(final Map<String, String> parentValue) {
-                        return parentValue != null && useMap
-                                ? Collections.unmodifiableMap(new HashMap<>(parentValue))
-                                : null;
+                    protected Object[] childValue(final Object[] parentValue) {
+                        return parentValue;
                     }
                 }
-                : new ThreadLocal<Map<String, String>>();
+                : new ThreadLocal<>();
     }
 
     @Override
     public void put(final String key, final String value) {
-        if (!useMap) {
-            return;
-        }
-        Map<String, String> map = localMap.get();
-        map = map == null ? new HashMap<>(1) : new HashMap<>(map);
-        map.put(key, value);
-        localMap.set(Collections.unmodifiableMap(map));
+        final Object[] state = localState.get();
+        localState.set(getMap(state).copyAndPut(key, value).getBackingArray());
     }
 
     public void putAll(final Map<String, String> m) {
-        if (!useMap) {
-            return;
-        }
-        Map<String, String> map = localMap.get();
-        map = map == null ? new HashMap<>(m.size()) : new HashMap<>(map);
-        for (final Map.Entry<String, String> e : m.entrySet()) {
-            map.put(e.getKey(), e.getValue());
-        }
-        localMap.set(Collections.unmodifiableMap(map));
+        final Object[] state = localState.get();
+        localState.set(getMap(state).copyAndPutAll(m).getBackingArray());
     }
 
     @Override
     public String get(final String key) {
-        final Map<String, String> map = localMap.get();
-        return map == null ? null : map.get(key);
+        final Object[] state = localState.get();
+        return state == null ? null : getMap(state).get(key);
     }
 
     @Override
     public void remove(final String key) {
-        final Map<String, String> map = localMap.get();
-        if (map != null) {
-            final Map<String, String> copy = new HashMap<>(map);
-            copy.remove(key);
-            localMap.set(Collections.unmodifiableMap(copy));
+        final Object[] state = localState.get();
+        if (state != null) {
+            localState.set(getMap(state).copyAndRemove(key).getBackingArray());
         }
     }
 
     public void removeAll(final Iterable<String> keys) {
-        final Map<String, String> map = localMap.get();
-        if (map != null) {
-            final Map<String, String> copy = new HashMap<>(map);
-            for (final String key : keys) {
-                copy.remove(key);
-            }
-            localMap.set(Collections.unmodifiableMap(copy));
+        final Object[] state = localState.get();
+        if (state != null) {
+            localState.set(getMap(state).copyAndRemoveAll(keys).getBackingArray());
         }
     }
 
     @Override
     public void clear() {
-        localMap.remove();
+        localState.remove();
     }
 
     @Override
@@ -131,81 +116,72 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
 
     @Override
     public boolean containsKey(final String key) {
-        final Map<String, String> map = localMap.get();
-        return map != null && map.containsKey(key);
+        final Object[] state = localState.get();
+        return state != null && getMap(state).containsKey(key);
     }
 
     @Override
     public <V> void forEach(final BiConsumer<String, ? super V> action) {
-        final Map<String, String> map = localMap.get();
-        if (map == null) {
+        final Object[] state = localState.get();
+        if (state == null) {
             return;
         }
-        for (final Map.Entry<String, String> entry : map.entrySet()) {
-            // BiConsumer should be able to handle values of any type V. In our case the values are of type String.
-            @SuppressWarnings("unchecked")
-            final V value = (V) entry.getValue();
-            action.accept(entry.getKey(), value);
-        }
+        getMap(state).forEach(action);
     }
 
     @Override
     public <V, S> void forEach(final TriConsumer<String, ? super V, S> action, final S state) {
-        final Map<String, String> map = localMap.get();
-        if (map == null) {
+        final Object[] localState = this.localState.get();
+        if (localState == null) {
             return;
         }
-        for (final Map.Entry<String, String> entry : map.entrySet()) {
-            // TriConsumer should be able to handle values of any type V. In our case the values are of type String.
-            @SuppressWarnings("unchecked")
-            final V value = (V) entry.getValue();
-            action.accept(entry.getKey(), value, state);
-        }
+        getMap(localState).forEach(action, state);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <V> V getValue(final String key) {
-        final Map<String, String> map = localMap.get();
-        return (V) (map == null ? null : map.get(key));
+        return (V) get(key);
     }
 
     @Override
     public Map<String, String> getCopy() {
-        final Map<String, String> map = localMap.get();
-        return map == null ? new HashMap<>() : new HashMap<>(map);
+        final Object[] state = localState.get();
+        if (state == null) {
+            return new HashMap<>(0);
+        }
+        return new HashMap<>(getMap(state));
     }
 
     @Override
     public Map<String, String> getImmutableMapOrNull() {
-        return localMap.get();
+        final Object[] state = localState.get();
+        return (state == null ? null : getMap(state));
     }
 
     @Override
     public boolean isEmpty() {
-        final Map<String, String> map = localMap.get();
-        return map == null || map.isEmpty();
+        return size() == 0;
     }
 
     @Override
     public int size() {
-        final Map<String, String> map = localMap.get();
-        return map == null ? 0 : map.size();
+        final Object[] state = localState.get();
+        return getMap(state).size();
     }
 
     @Override
     public String toString() {
-        final Map<String, String> map = localMap.get();
-        return map == null ? "{}" : map.toString();
+        final Object[] state = localState.get();
+        return state == null ? "{}" : getMap(state).toString();
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        final Map<String, String> map = this.localMap.get();
-        result = prime * result + ((map == null) ? 0 : map.hashCode());
-        result = prime * result + Boolean.valueOf(this.useMap).hashCode();
+        final Object[] state = localState.get();
+        result = prime * result + ((state == null) ? 0 : getMap(state).hashCode());
         return result;
     }
 
@@ -217,17 +193,11 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
         if (obj == null) {
             return false;
         }
-        if (obj instanceof DefaultThreadContextMap) {
-            final DefaultThreadContextMap other = (DefaultThreadContextMap) obj;
-            if (this.useMap != other.useMap) {
-                return false;
-            }
-        }
         if (!(obj instanceof ThreadContextMap)) {
             return false;
         }
         final ThreadContextMap other = (ThreadContextMap) obj;
-        final Map<String, String> map = this.localMap.get();
+        final Map<String, String> map = getMap(localState.get());
         final Map<String, String> otherMap = other.getImmutableMapOrNull();
         return Objects.equals(map, otherMap);
     }

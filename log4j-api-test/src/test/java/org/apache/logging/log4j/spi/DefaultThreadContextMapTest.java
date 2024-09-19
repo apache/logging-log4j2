@@ -16,67 +16,43 @@
  */
 package org.apache.logging.log4j.spi;
 
-import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
+import org.apache.logging.log4j.test.spi.ThreadContextMapSuite;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.jupiter.api.Test;
 
 /**
  * Tests the {@code DefaultThreadContextMap} class.
  */
 @UsingThreadContextMap
-public class DefaultThreadContextMapTest {
+class DefaultThreadContextMapTest extends ThreadContextMapSuite {
 
-    @Test
-    public void testEqualsVsSameKind() {
-        final DefaultThreadContextMap map1 = createMap();
-        final DefaultThreadContextMap map2 = createMap();
-        assertEquals(map1, map1);
-        assertEquals(map2, map2);
-        assertEquals(map1, map2);
-        assertEquals(map2, map1);
+    private ThreadContextMap createThreadContextMap() {
+        return new DefaultThreadContextMap();
+    }
+
+    private ThreadContextMap createInheritableThreadContextMap() {
+        final Properties props = new Properties();
+        props.setProperty("log4j2.isThreadContextMapInheritable", "true");
+        final PropertiesUtil util = new PropertiesUtil(props);
+        return new DefaultThreadContextMap(util);
     }
 
     @Test
-    public void testHashCodeVsSameKind() {
-        final DefaultThreadContextMap map1 = createMap();
-        final DefaultThreadContextMap map2 = createMap();
-        assertEquals(map1.hashCode(), map2.hashCode());
+    void singleValue() {
+        singleValue(createThreadContextMap());
     }
 
     @Test
-    public void testDoesNothingIfConstructedWithUseMapIsFalse() {
-        final DefaultThreadContextMap map = new DefaultThreadContextMap(false);
-        assertTrue(map.isEmpty());
-        assertFalse(map.containsKey("key"));
-        map.put("key", "value");
-
-        assertTrue(map.isEmpty());
-        assertFalse(map.containsKey("key"));
-        assertNull(map.get("key"));
-    }
-
-    @Test
-    public void testPut() {
-        final DefaultThreadContextMap map = new DefaultThreadContextMap(true);
-        assertTrue(map.isEmpty());
-        assertFalse(map.containsKey("key"));
-        map.put("key", "value");
-
-        assertFalse(map.isEmpty());
-        assertTrue(map.containsKey("key"));
-        assertEquals("value", map.get("key"));
-    }
-
-    @Test
-    public void testPutAll() {
-        final DefaultThreadContextMap map = new DefaultThreadContextMap(true);
+    void testPutAll() {
+        final DefaultThreadContextMap map = new DefaultThreadContextMap();
         assertTrue(map.isEmpty());
         assertFalse(map.containsKey("key"));
         final int mapSize = 10;
@@ -92,24 +68,8 @@ public class DefaultThreadContextMapTest {
         }
     }
 
-    /**
-     * Test method for
-     * {@link org.apache.logging.log4j.spi.DefaultThreadContextMap#remove(java.lang.String)}
-     * .
-     */
     @Test
-    public void testRemove() {
-        final DefaultThreadContextMap map = createMap();
-        assertEquals("value", map.get("key"));
-        assertEquals("value2", map.get("key2"));
-
-        map.remove("key");
-        assertFalse(map.containsKey("key"));
-        assertEquals("value2", map.get("key2"));
-    }
-
-    @Test
-    public void testClear() {
+    void testClear() {
         final DefaultThreadContextMap map = createMap();
 
         map.clear();
@@ -118,11 +78,8 @@ public class DefaultThreadContextMapTest {
         assertFalse(map.containsKey("key2"));
     }
 
-    /**
-     * @return
-     */
     private DefaultThreadContextMap createMap() {
-        final DefaultThreadContextMap map = new DefaultThreadContextMap(true);
+        final DefaultThreadContextMap map = new DefaultThreadContextMap();
         assertTrue(map.isEmpty());
         map.put("key", "value");
         map.put("key2", "value2");
@@ -132,79 +89,28 @@ public class DefaultThreadContextMapTest {
     }
 
     @Test
-    public void testGetCopyReturnsMutableMap() {
-        final DefaultThreadContextMap map = new DefaultThreadContextMap(true);
-        assertTrue(map.isEmpty());
-        final Map<String, String> copy = map.getCopy();
-        assertTrue(copy.isEmpty());
-
-        copy.put("key", "value"); // mutable
-        assertEquals("value", copy.get("key"));
-
-        // thread context map not affected
-        assertTrue(map.isEmpty());
+    void getCopyReturnsMutableCopy() {
+        getCopyReturnsMutableCopy(createThreadContextMap());
     }
 
     @Test
-    public void testGetCopyReturnsMutableCopy() {
-        final DefaultThreadContextMap map = new DefaultThreadContextMap(true);
-        map.put("key1", "value1");
-        assertFalse(map.isEmpty());
-        final Map<String, String> copy = map.getCopy();
-        assertEquals("value1", copy.get("key1")); // copy has values too
-
-        copy.put("key", "value"); // copy is mutable
-        assertEquals("value", copy.get("key"));
-
-        // thread context map not affected
-        assertFalse(map.containsKey("key"));
-
-        // clearing context map does not affect copy
-        map.clear();
-        assertTrue(map.isEmpty());
-
-        assertFalse(copy.isEmpty());
+    void getImmutableMapReturnsNullIfEmpty() {
+        getImmutableMapReturnsNullIfEmpty(createThreadContextMap());
     }
 
     @Test
-    public void testGetImmutableMapReturnsNullIfEmpty() {
-        final DefaultThreadContextMap map = new DefaultThreadContextMap(true);
-        assertTrue(map.isEmpty());
-        assertNull(map.getImmutableMapOrNull());
+    void getImmutableMapReturnsImmutableMapIfNonEmpty() {
+        getImmutableMapReturnsImmutableMapIfNonEmpty(createThreadContextMap());
     }
 
     @Test
-    public void testGetImmutableMapReturnsImmutableMapIfNonEmpty() {
-        final DefaultThreadContextMap map = new DefaultThreadContextMap(true);
-        map.put("key1", "value1");
-        assertFalse(map.isEmpty());
-
-        final Map<String, String> immutable = map.getImmutableMapOrNull();
-        assertEquals("value1", immutable.get("key1")); // copy has values too
-
-        // immutable
-        assertThrows(UnsupportedOperationException.class, () -> immutable.put("key", "value"));
+    void getImmutableMapCopyNotAffectedByContextMapChanges() {
+        getImmutableMapCopyNotAffectedByContextMapChanges(createThreadContextMap());
     }
 
     @Test
-    public void testGetImmutableMapCopyNotAffectdByContextMapChanges() {
-        final DefaultThreadContextMap map = new DefaultThreadContextMap(true);
-        map.put("key1", "value1");
-        assertFalse(map.isEmpty());
-
-        final Map<String, String> immutable = map.getImmutableMapOrNull();
-        assertEquals("value1", immutable.get("key1")); // copy has values too
-
-        // clearing context map does not affect copy
-        map.clear();
-        assertTrue(map.isEmpty());
-
-        assertFalse(immutable.isEmpty());
-    }
-
-    @Test
-    public void testToStringShowsMapContext() {
-        final DefaultThreadContextMap map = new DefaultThreadContextMap(true);
+    void testToStringShowsMapContext() {
+        final DefaultThreadContextMap map = new DefaultThreadContextMap();
         assertEquals("{}", map.toString());
 
         map.put("key1", "value1");
@@ -213,5 +119,15 @@ public class DefaultThreadContextMapTest {
         map.remove("key1");
         map.put("key2", "value2");
         assertEquals("{key2=value2}", map.toString());
+    }
+
+    @Test
+    void threadLocalNotInheritableByDefault() {
+        threadLocalNotInheritableByDefault(createThreadContextMap());
+    }
+
+    @Test
+    void threadLocalInheritableIfConfigured() {
+        threadLocalInheritableIfConfigured(createInheritableThreadContextMap());
     }
 }

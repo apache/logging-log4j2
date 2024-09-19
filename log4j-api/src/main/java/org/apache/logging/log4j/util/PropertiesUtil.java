@@ -27,7 +27,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -36,7 +36,6 @@ import java.util.ResourceBundle;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -101,7 +100,7 @@ public final class PropertiesUtil {
      * @param source a property source
      */
     PropertiesUtil(final PropertySource source) {
-        this.environment = new Environment(source);
+        environment = new Environment(source);
     }
 
     /**
@@ -139,13 +138,21 @@ public final class PropertiesUtil {
     }
 
     /**
-     * Allows a PropertySource to be added after PropertiesUtil has been created.
-     * @param propertySource the PropertySource to add.
+     * Allows a {@link PropertySource} to be added after {@code PropertiesUtil} has been created.
+     * @param propertySource the {@code PropertySource} to add.
+     * @since 2.19.0
      */
     public void addPropertySource(final PropertySource propertySource) {
-        if (environment != null) {
-            environment.addPropertySource(propertySource);
-        }
+        environment.addPropertySource(Objects.requireNonNull(propertySource));
+    }
+
+    /**
+     * Removes a {@link PropertySource}.
+     * @param propertySource the {@code PropertySource} to remove.
+     * @since 2.24.0
+     */
+    public void removePropertySource(final PropertySource propertySource) {
+        environment.removePropertySource(Objects.requireNonNull(propertySource));
     }
 
     /**
@@ -468,10 +475,10 @@ public final class PropertiesUtil {
      * Reloads all properties. This is primarily useful for unit tests.
      *
      * @since 2.10.0
+     * @deprecated since 2.24.0 caching of property values is disabled.
      */
-    public void reload() {
-        environment.reload();
-    }
+    @Deprecated
+    public void reload() {}
 
     /**
      * Provides support for looking up global configuration properties via environment variables, property files,
@@ -488,13 +495,7 @@ public final class PropertiesUtil {
      */
     private static final class Environment {
 
-        private final Set<PropertySource> sources = new ConcurrentSkipListSet<>(new PropertySource.Comparator());
-        /**
-         * Maps a key to its value or the value of its normalization in the lowest priority source that contains it.
-         */
-        private final Map<String, String> literal = new ConcurrentHashMap<>();
-
-        private final Map<List<CharSequence>, String> tokenized = new ConcurrentHashMap<>();
+        private final Set<PropertySource> sources = ConcurrentHashMap.newKeySet();
 
         private Environment(final PropertySource propertySource) {
             final PropertySource sysProps = new PropertyFilePropertySource(LOG4J_SYSTEM_PROPERTIES_FILE_NAME, false);
@@ -517,76 +518,59 @@ public final class PropertiesUtil {
                             ServiceLoader.load(PropertySource.class, PropertiesUtil.class.getClassLoader()),
                             LOGGER)
                     .forEach(sources::add);
-
-            reload();
         }
 
-        /**
-         * Allow a PropertySource to be added.
-         * @param propertySource The PropertySource to add.
-         */
-        public void addPropertySource(final PropertySource propertySource) {
+        private void addPropertySource(final PropertySource propertySource) {
             sources.add(propertySource);
         }
 
-        private synchronized void reload() {
-            literal.clear();
-            tokenized.clear();
-            // 1. Collects all property keys from enumerable sources.
-            final Set<String> keys = new HashSet<>();
-            sources.stream().map(PropertySource::getPropertyNames).forEach(keys::addAll);
-            // 2. Fills the property caches. Sources with higher priority values don't override the previous ones.
-            keys.stream().filter(Strings::isNotBlank).forEach(key -> {
-                final List<CharSequence> tokens = PropertySource.Util.tokenize(key);
-                final boolean hasTokens = !tokens.isEmpty();
-                sources.forEach(source -> {
-                    if (source.containsProperty(key)) {
-                        final String value = source.getProperty(key);
-                        if (hasTokens) {
-                            tokenized.putIfAbsent(tokens, value);
-                        }
-                    }
-                    if (hasTokens) {
-                        final String normalKey = Objects.toString(source.getNormalForm(tokens), null);
-                        if (normalKey != null && source.containsProperty(normalKey)) {
-                            literal.putIfAbsent(key, source.getProperty(normalKey));
-                        } else if (source.containsProperty(key)) {
-                            literal.putIfAbsent(key, source.getProperty(key));
-                        }
-                    }
-                });
-            });
+        private void removePropertySource(final PropertySource propertySource) {
+            sources.remove(propertySource);
         }
 
         private String get(final String key) {
-            if (literal.containsKey(key)) {
-                return literal.get(key);
-            }
             final List<CharSequence> tokens = PropertySource.Util.tokenize(key);
-            final boolean hasTokens = !tokens.isEmpty();
-            for (final PropertySource source : sources) {
-                if (hasTokens) {
-                    final String normalKey = Objects.toString(source.getNormalForm(tokens), null);
-                    if (normalKey != null && source.containsProperty(normalKey)) {
-                        return source.getProperty(normalKey);
-                    }
-                }
-                if (source.containsProperty(key)) {
-                    return source.getProperty(key);
-                }
+            return sources.stream()
+                    .sorted(PropertySource.Comparator.INSTANCE)
+                    .map(source -> {
+                        if (!tokens.isEmpty()) {
+                            final String normalKey = Objects.toString(source.getNormalForm(tokens), null);
+                            if (normalKey != null && sourceContainsProperty(source, normalKey)) {
+                                return sourceGetProperty(source, normalKey);
+                            }
+                        }
+                        return sourceGetProperty(source, key);
+                    })
+                    .filter(Objects::nonNull)
+                    .findFirst()
+                    .orElse(null);
+        }
+
+        private boolean sourceContainsProperty(final PropertySource source, final String key) {
+            try {
+                return source.containsProperty(key);
+            } catch (final Exception e) {
+                LOGGER.warn("Failed to retrieve Log4j property {} from property source {}.", key, source, e);
+                return false;
             }
-            return tokenized.get(tokens);
+        }
+
+        private String sourceGetProperty(final PropertySource source, final String key) {
+            try {
+                return source.getProperty(key);
+            } catch (final Exception e) {
+                LOGGER.warn("Failed to retrieve Log4j property {} from property source {}.", key, source, e);
+                return null;
+            }
         }
 
         private boolean containsKey(final String key) {
             final List<CharSequence> tokens = PropertySource.Util.tokenize(key);
-            return literal.containsKey(key)
-                    || tokenized.containsKey(tokens)
-                    || sources.stream().anyMatch(s -> {
-                        final CharSequence normalizedKey = s.getNormalForm(tokens);
-                        return s.containsProperty(key)
-                                || (normalizedKey != null && s.containsProperty(normalizedKey.toString()));
-                    });
+            return sources.stream().anyMatch(s -> {
+                final CharSequence normalizedKey = tokens.isEmpty() ? null : s.getNormalForm(tokens);
+                return sourceContainsProperty(s, key)
+                        || (normalizedKey != null && sourceContainsProperty(s, normalizedKey.toString()));
+            });
         }
     }
 
@@ -601,13 +585,13 @@ public final class PropertiesUtil {
     public static Properties extractSubset(final Properties properties, final String prefix) {
         final Properties subset = new Properties();
 
-        if (prefix == null || prefix.length() == 0) {
+        if (prefix == null || prefix.isEmpty()) {
             return subset;
         }
 
         final String prefixToMatch = prefix.charAt(prefix.length() - 1) != '.' ? prefix + '.' : prefix;
 
-        final List<String> keys = new ArrayList<>();
+        final Collection<String> keys = new ArrayList<>();
 
         for (final String key : properties.stringPropertyNames()) {
             if (key.startsWith(prefixToMatch)) {

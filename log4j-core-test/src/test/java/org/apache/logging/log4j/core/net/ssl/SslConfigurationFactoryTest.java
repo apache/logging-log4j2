@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Properties;
 import java.util.stream.Stream;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
@@ -29,53 +30,60 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+@UsingStatusListener // Suppresses `StatusLogger` output, unless there is a failure
 public class SslConfigurationFactoryTest {
 
-    private static final String trustStorelocation = "log4j2.trustStoreLocation";
-    private static final String trustStorePassword = "log4j2.trustStorePassword";
-    private static final String trustStoreKeyStoreType = "log4j2.trustStoreKeyStoreType";
-    private static final String keyStoreLocation = "log4j2.keyStoreLocation";
-    private static final String keyStorePassword = "log4j2.keyStorePassword";
-    private static final String keyStoreType = "log4j2.keyStoreType";
+    private static final String TRUSTSTORE_LOCATION_PROP_NAME = "log4j2.trustStoreLocation";
+
+    private static final String TRUSTSTORE_PASSWORD_PROP_NAME = "log4j2.trustStorePassword";
+
+    private static final String TRUSTSTORE_TYPE_PROP_NAME = "log4j2.trustStoreKeyStoreType";
+
+    private static final String KEYSTORE_LOCATION_PROP_NAME = "log4j2.keyStoreLocation";
+
+    private static final String KEYSTORE_PASSWORD_PROP_NAME = "log4j2.keyStorePassword";
+
+    private static final String KEYSTORE_TYPE_PROP_NAME = "log4j2.keyStoreType";
 
     private static void addKeystoreConfiguration(final Properties props) {
-        props.setProperty(keyStoreLocation, TestConstants.KEYSTORE_FILE_RESOURCE);
-        props.setProperty(keyStoreType, TestConstants.KEYSTORE_TYPE);
+        props.setProperty(KEYSTORE_LOCATION_PROP_NAME, SslKeyStoreConstants.KEYSTORE_LOCATION);
+        props.setProperty(KEYSTORE_TYPE_PROP_NAME, SslKeyStoreConstants.KEYSTORE_TYPE);
     }
 
     private static void addTruststoreConfiguration(final Properties props) {
-        props.setProperty(trustStorelocation, TestConstants.TRUSTSTORE_FILE_RESOURCE);
-        props.setProperty(trustStoreKeyStoreType, TestConstants.TRUSTSTORE_TYPE);
+        props.setProperty(TRUSTSTORE_LOCATION_PROP_NAME, SslKeyStoreConstants.TRUSTSTORE_LOCATION);
+        props.setProperty(TRUSTSTORE_TYPE_PROP_NAME, SslKeyStoreConstants.TRUSTSTORE_TYPE);
     }
 
     @Test
     public void testStaticConfiguration() {
+
+        // Case 1: Empty configuration
         final Properties props = new Properties();
         final PropertiesUtil util = new PropertiesUtil(props);
-        // No keystore and truststore -> no SslConfiguration
         SslConfiguration sslConfiguration = SslConfigurationFactory.createSslConfiguration(util);
         assertNull(sslConfiguration);
-        // Only keystore
+
+        // Case 2: Only key store
         props.clear();
         addKeystoreConfiguration(props);
-        util.reload();
         sslConfiguration = SslConfigurationFactory.createSslConfiguration(util);
         assertNotNull(sslConfiguration);
         assertNotNull(sslConfiguration.getKeyStoreConfig());
         assertNull(sslConfiguration.getTrustStoreConfig());
-        // Only truststore
+
+        // Case 3: Only trust store
         props.clear();
         addTruststoreConfiguration(props);
-        util.reload();
         sslConfiguration = SslConfigurationFactory.createSslConfiguration(util);
         assertNotNull(sslConfiguration);
         assertNull(sslConfiguration.getKeyStoreConfig());
         assertNotNull(sslConfiguration.getTrustStoreConfig());
-        // Both
+
+        // Case 4: Both key and trust stores
         props.clear();
         addKeystoreConfiguration(props);
         addTruststoreConfiguration(props);
-        util.reload();
         sslConfiguration = SslConfigurationFactory.createSslConfiguration(util);
         assertNotNull(sslConfiguration);
         assertNotNull(sslConfiguration.getKeyStoreConfig());
@@ -97,19 +105,23 @@ public class SslConfigurationFactoryTest {
     @ParameterizedTest
     @MethodSource("windowsKeystoreConfigs")
     public void testPasswordLessStores(final String location, final String password) {
+
+        // Create the configuration
         final Properties props = new Properties();
-        props.setProperty(keyStoreType, "Windows-MY");
-        props.setProperty(trustStoreKeyStoreType, "Windows-ROOT");
+        props.setProperty(KEYSTORE_TYPE_PROP_NAME, SslKeyStoreConstants.WINDOWS_KEYSTORE_TYPE);
+        props.setProperty(TRUSTSTORE_TYPE_PROP_NAME, SslKeyStoreConstants.WINDOWS_TRUSTSTORE_TYPE);
         if (location != null) {
-            props.setProperty(keyStoreLocation, location);
-            props.setProperty(trustStorelocation, location);
+            props.setProperty(KEYSTORE_LOCATION_PROP_NAME, location);
+            props.setProperty(TRUSTSTORE_LOCATION_PROP_NAME, location);
         }
         if (password != null) {
-            props.setProperty(keyStorePassword, password);
-            props.setProperty(trustStorePassword, password);
+            props.setProperty(KEYSTORE_PASSWORD_PROP_NAME, password);
+            props.setProperty(TRUSTSTORE_PASSWORD_PROP_NAME, password);
         }
         final PropertiesUtil util = new PropertiesUtil(props);
         final SslConfiguration config = SslConfigurationFactory.createSslConfiguration(util);
+
+        // Verify the configuration
         assertNotNull(config);
         final KeyStoreConfiguration keyStoreConfig = config.getKeyStoreConfig();
         assertNotNull(keyStoreConfig);

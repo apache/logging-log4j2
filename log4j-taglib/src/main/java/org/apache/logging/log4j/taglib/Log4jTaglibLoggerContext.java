@@ -16,14 +16,20 @@
  */
 package org.apache.logging.log4j.taglib;
 
+import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.servlet.ServletContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerRegistry;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * This bridge between the tag library and the Log4j API ensures that instances of {@link Log4jTaglibLogger} are
@@ -31,13 +37,21 @@ import org.apache.logging.log4j.spi.LoggerRegistry;
  *
  * @since 2.0
  */
+@NullMarked
 final class Log4jTaglibLoggerContext implements LoggerContext {
-    // These were change to WeakHashMaps to avoid ClassLoader (memory) leak, something that's particularly
-    // important in Servlet containers.
-    private static final WeakHashMap<ServletContext, Log4jTaglibLoggerContext> CONTEXTS = new WeakHashMap<>();
 
-    private final LoggerRegistry<Log4jTaglibLogger> loggerRegistry =
-            new LoggerRegistry<>(new LoggerRegistry.WeakMapFactory<Log4jTaglibLogger>());
+    private static final ReadWriteLock LOCK = new ReentrantReadWriteLock();
+
+    private static final Lock READ_LOCK = LOCK.readLock();
+
+    private static final Lock WRITE_LOCK = LOCK.writeLock();
+
+    private static final Map<ServletContext, Log4jTaglibLoggerContext> LOGGER_CONTEXT_BY_SERVLET_CONTEXT =
+            new WeakHashMap<>();
+
+    private static final MessageFactory DEFAULT_MESSAGE_FACTORY = ParameterizedMessageFactory.INSTANCE;
+
+    private final LoggerRegistry<Log4jTaglibLogger> loggerRegistry = new LoggerRegistry<>();
 
     private final ServletContext servletContext;
 
@@ -47,46 +61,37 @@ final class Log4jTaglibLoggerContext implements LoggerContext {
 
     @Override
     public Object getExternalContext() {
-        return this.servletContext;
+        return servletContext;
     }
 
     @Override
     public Log4jTaglibLogger getLogger(final String name) {
-        return this.getLogger(name, null);
+        return getLogger(name, DEFAULT_MESSAGE_FACTORY);
     }
 
     @Override
-    public Log4jTaglibLogger getLogger(final String name, final MessageFactory messageFactory) {
-        // Note: This is the only method where we add entries to the 'loggerRegistry' ivar.
-        Log4jTaglibLogger logger = this.loggerRegistry.getLogger(name, messageFactory);
-        if (logger != null) {
-            AbstractLogger.checkMessageFactory(logger, messageFactory);
-            return logger;
-        }
+    public Log4jTaglibLogger getLogger(final String name, @Nullable final MessageFactory messageFactory) {
+        final MessageFactory effectiveMessageFactory =
+                messageFactory != null ? messageFactory : DEFAULT_MESSAGE_FACTORY;
+        return loggerRegistry.computeIfAbsent(name, effectiveMessageFactory, this::createLogger);
+    }
 
-        synchronized (this.loggerRegistry) {
-            logger = this.loggerRegistry.getLogger(name, messageFactory);
-            if (logger == null) {
-                final LoggerContext context = LogManager.getContext(false);
-                final ExtendedLogger original =
-                        messageFactory == null ? context.getLogger(name) : context.getLogger(name, messageFactory);
-                // wrap a logger from an underlying implementation
-                logger = new Log4jTaglibLogger(original, name, original.getMessageFactory());
-                this.loggerRegistry.putIfAbsent(name, messageFactory, logger);
-            }
-        }
-
-        return logger;
+    private Log4jTaglibLogger createLogger(final String name, @Nullable final MessageFactory messageFactory) {
+        final LoggerContext loggerContext = LogManager.getContext(false);
+        final ExtendedLogger delegateLogger = loggerContext.getLogger(name, messageFactory);
+        return new Log4jTaglibLogger(delegateLogger, name, delegateLogger.getMessageFactory());
     }
 
     @Override
     public boolean hasLogger(final String name) {
-        return loggerRegistry.hasLogger(name);
+        return loggerRegistry.hasLogger(name, DEFAULT_MESSAGE_FACTORY);
     }
 
     @Override
-    public boolean hasLogger(final String name, final MessageFactory messageFactory) {
-        return loggerRegistry.hasLogger(name, messageFactory);
+    public boolean hasLogger(final String name, @Nullable final MessageFactory messageFactory) {
+        final MessageFactory effectiveMessageFactory =
+                messageFactory != null ? messageFactory : DEFAULT_MESSAGE_FACTORY;
+        return loggerRegistry.hasLogger(name, effectiveMessageFactory);
     }
 
     @Override
@@ -94,20 +99,25 @@ final class Log4jTaglibLoggerContext implements LoggerContext {
         return loggerRegistry.hasLogger(name, messageFactoryClass);
     }
 
-    static synchronized Log4jTaglibLoggerContext getInstance(final ServletContext servletContext) {
-        Log4jTaglibLoggerContext loggerContext = CONTEXTS.get(servletContext);
-        if (loggerContext != null) {
-            return loggerContext;
-        }
+    static Log4jTaglibLoggerContext getInstance(final ServletContext servletContext) {
 
-        synchronized (CONTEXTS) {
-            loggerContext = CONTEXTS.get(servletContext);
-            if (loggerContext == null) {
-                loggerContext = new Log4jTaglibLoggerContext(servletContext);
-                CONTEXTS.put(servletContext, loggerContext);
+        // Get the associated logger context, if exists
+        READ_LOCK.lock();
+        try {
+            final Log4jTaglibLoggerContext loggerContext = LOGGER_CONTEXT_BY_SERVLET_CONTEXT.get(servletContext);
+            if (loggerContext != null) {
+                return loggerContext;
             }
+        } finally {
+            READ_LOCK.unlock();
         }
 
-        return loggerContext;
+        // Create the logger context
+        WRITE_LOCK.lock();
+        try {
+            return LOGGER_CONTEXT_BY_SERVLET_CONTEXT.computeIfAbsent(servletContext, Log4jTaglibLoggerContext::new);
+        } finally {
+            WRITE_LOCK.unlock();
+        }
     }
 }

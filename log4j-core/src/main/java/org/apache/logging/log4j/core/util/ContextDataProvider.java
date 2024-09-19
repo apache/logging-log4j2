@@ -46,4 +46,17 @@ public interface ContextDataProvider {
     default StringMap supplyStringMap() {
         return new JdkMapAdapterStringMap(supplyContextData(), true);
     }
+
+    /**
+     * Retrieves a single context data value.
+     * <p>
+     *     This method avoids the overhead of copying the entire context data, when only a single value is needed.
+     * </p>
+     * @param key The context data key of the value to retrieve.
+     * @return A context data value.
+     * @since 2.24.0
+     */
+    default Object getValue(final String key) {
+        return supplyContextData().get(key);
+    }
 }

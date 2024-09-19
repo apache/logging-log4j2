@@ -48,12 +48,12 @@ public final class ThreadContextMapFactory {
      * and when Log4j is reconfigured.
      */
     public static void init() {
-        ProviderUtil.getProvider().resetThreadContextMap();
+        ProviderUtil.getProvider().getThreadContextMapInstance();
     }
 
     private ThreadContextMapFactory() {}
 
     public static ThreadContextMap createThreadContextMap() {
-        return ProviderUtil.getProvider().createThreadContextMap();
+        return ProviderUtil.getProvider().getThreadContextMapInstance();
     }
 }

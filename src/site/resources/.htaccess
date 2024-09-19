@@ -16,6 +16,11 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+##
+# Custom 404 page
+ErrorDocument 404 "/log4j/2.x/404.html"
+
+# Rewrite rules
 RewriteEngine On
 RewriteBase "/log4j/2.x/"
 
@@ -60,6 +65,7 @@ RewriteRule "^manual/scala-api\.html$" "/log4j/scala/latest/index.html" [R=perma
 RewriteRule "^manual/usage\.html$" "manual/api.html" [R=permanent]
 RewriteRule "^manual/webapp\.html$" "jakarta.html" [R=permanent]
 RewriteRule "^runtime-dependencies\.html$" "manual/installation.html" [R=permanent]
+RewriteRule "^security\.html$" "/security.html" [R=permanent]
 RewriteRule "^thanks\.html$" "/support.html#sponsors" [R=permanent,NE]
 
 # These redirects are special, since:

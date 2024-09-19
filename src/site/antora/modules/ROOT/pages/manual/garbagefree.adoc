@@ -69,7 +69,7 @@ include::partial$manual/systemproperties/properties-meta.adoc[leveloffset=+2]
 
 include::partial$manual/systemproperties/properties-garbage-collection.adoc[leveloffset=+2]
 
-include::partial$manual/systemproperties/properties-thread-context.adoc[leveloffset=+2,tag=gcfree]
+include::partial$manual/systemproperties/properties-thread-context-core.adoc[leveloffset=+2,tag=gcfree]
 
 [#Layouts]
 === Layouts

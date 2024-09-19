@@ -306,9 +306,8 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-flume-ng_org-apache-lo
 === Flume event factories
 
 Flume event factories are Log4j plugins that implement the
-link:../../javadoc/log4j-flume-ng/org/apache/logging/log4j/flume/appender/FlumeEventFactory.html[`FlumeEventFactory`]
-and allow to customize the way log events are transformed into
-link:../../javadoc/log4j-flume-ng/org/apache/logging/log4j/flume/appender/FlumeEvent.html[`FlumeEvent`]s.
+`org.apache.logging.log4j.flume.appender.FlumeEventFactory`
+and allow to customize the way log events are transformed into `org.apache.logging.log4j.flume.appender.FlumeEvent`s.
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-flume-ng_org-apache-logging-log4j-flume-appender-FlumeEventFactory[{plugin-reference-marker} Plugin reference for `FlumeEventFactory`]
 
@@ -679,6 +678,8 @@ include::example$manual/appenders/message-queue/jms-message.properties[tag=appen
 [[KafkaAppender]]
 == Kafka Appender
 
+include::partial$manual/appender-deprecation.adoc[]
+
 The KafkaAppender logs events to an https://kafka.apache.org/[Apache Kafka] topic.
 Each log event is sent as a
 https://kafka.apache.org/30/javadoc/org/apache/kafka/clients/producer/ProducerRecord.html[`ProducerRecord<byte[\], byte[\]>`], where:
@@ -902,6 +903,13 @@ include::example$manual/appenders/message-queue/kafka.properties[tag=loggers]
 
 [[JeroMqAppender]]
 == ZeroMQ/JeroMQ Appender
+
+[WARNING]
+====
+*This appender is planned to be removed in the next major release!*
+Users should consider switching to
+https://github.com/fbacchella/loghublog4j2#zmqappender[a third-party `ZMQ` appender].
+====
 
 The ZeroMQ appender uses the https://github.com/zeromq/jeromq[JeroMQ] library to send log events to one or more ZeroMQ endpoints.
 

@@ -30,8 +30,9 @@ content:
 
 runtime:
   log:
-    # Fail on warnings
-    failure_level: warn
+    # Do not fail on errors until we upgrade to `log4j-docgen` 0.10.0,
+    # which has support for table captions.
+    failure_level: fatal
 
 asciidoc:
   attributes:
@@ -71,6 +72,22 @@ ui:
 
     - path: partials/footer-scripts.hbs
       contents: |
+        <!-- Matomo -->
+        <script>
+          var _paq = window._paq = window._paq || [];
+          _paq.push(["disableCookies"]);
+          _paq.push(['trackPageView']);
+          _paq.push(['enableLinkTracking']);
+          (function() {
+            var u="https://analytics.apache.org/";
+            _paq.push(['setTrackerUrl', u+'matomo.php']);
+            _paq.push(['setSiteId', '42']);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+            g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+          })();
+        </script>
+        <noscript><p><img src="https://analytics.apache.org/matomo.php?idsite=42&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+        <!-- End Matomo Code -->
         <script id="site-script" src="{{{uiRootPath}}}/js/site.js" data-ui-root-path="{{{uiRootPath}}}"></script>
         <script async src="{{{uiRootPath}}}/js/vendor/highlight.js"></script>
         <!-- `@asciidoctor/tabs` extension scripts -->

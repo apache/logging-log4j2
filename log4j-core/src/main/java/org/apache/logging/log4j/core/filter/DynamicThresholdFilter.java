@@ -36,7 +36,6 @@ import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.PerformanceSensitive;
-import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringMap;
 
 /**
@@ -125,10 +124,9 @@ public final class DynamicThresholdFilter extends AbstractFilter {
         return true;
     }
 
-    private Result filter(final Level level, final ReadOnlyStringMap contextMap) {
-        final String value = contextMap.getValue(key);
+    private Result filter(final Level level, final Object value) {
         if (value != null) {
-            Level ctxLevel = levelMap.get(value);
+            Level ctxLevel = levelMap.get(Objects.toString(value, null));
             if (ctxLevel == null) {
                 ctxLevel = defaultThreshold;
             }
@@ -139,35 +137,31 @@ public final class DynamicThresholdFilter extends AbstractFilter {
 
     @Override
     public Result filter(final LogEvent event) {
-        return filter(event.getLevel(), event.getContextData());
+        return filter(event.getLevel(), event.getContextData().getValue(key));
     }
 
     @Override
     public Result filter(
             final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
-        return filter(level, currentContextData());
+        return filter(level, injector.getValue(key));
     }
 
     @Override
     public Result filter(
             final Logger logger, final Level level, final Marker marker, final Object msg, final Throwable t) {
-        return filter(level, currentContextData());
+        return filter(level, injector.getValue(key));
     }
 
     @Override
     public Result filter(
             final Logger logger, final Level level, final Marker marker, final String msg, final Object... params) {
-        return filter(level, currentContextData());
-    }
-
-    private ReadOnlyStringMap currentContextData() {
-        return injector.rawContextData();
+        return filter(level, injector.getValue(key));
     }
 
     @Override
     public Result filter(
             final Logger logger, final Level level, final Marker marker, final String msg, final Object p0) {
-        return filter(level, currentContextData());
+        return filter(level, injector.getValue(key));
     }
 
     @Override
@@ -178,7 +172,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
             final String msg,
             final Object p0,
             final Object p1) {
-        return filter(level, currentContextData());
+        return filter(level, injector.getValue(key));
     }
 
     @Override
@@ -190,7 +184,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
             final Object p0,
             final Object p1,
             final Object p2) {
-        return filter(level, currentContextData());
+        return filter(level, injector.getValue(key));
     }
 
     @Override
@@ -203,7 +197,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
             final Object p1,
             final Object p2,
             final Object p3) {
-        return filter(level, currentContextData());
+        return filter(level, injector.getValue(key));
     }
 
     @Override
@@ -217,7 +211,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
             final Object p2,
             final Object p3,
             final Object p4) {
-        return filter(level, currentContextData());
+        return filter(level, injector.getValue(key));
     }
 
     @Override
@@ -232,7 +226,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
             final Object p3,
             final Object p4,
             final Object p5) {
-        return filter(level, currentContextData());
+        return filter(level, injector.getValue(key));
     }
 
     @Override
@@ -248,7 +242,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
             final Object p4,
             final Object p5,
             final Object p6) {
-        return filter(level, currentContextData());
+        return filter(level, injector.getValue(key));
     }
 
     @Override
@@ -265,7 +259,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
             final Object p5,
             final Object p6,
             final Object p7) {
-        return filter(level, currentContextData());
+        return filter(level, injector.getValue(key));
     }
 
     @Override
@@ -283,7 +277,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
             final Object p6,
             final Object p7,
             final Object p8) {
-        return filter(level, currentContextData());
+        return filter(level, injector.getValue(key));
     }
 
     @Override
@@ -302,7 +296,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
             final Object p7,
             final Object p8,
             final Object p9) {
-        return filter(level, currentContextData());
+        return filter(level, injector.getValue(key));
     }
 
     public String getKey() {

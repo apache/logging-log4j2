@@ -17,16 +17,16 @@
 package org.apache.logging.log4j.simple;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.PrintStream;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.message.ParameterizedMessageFactory;
+import org.apache.logging.log4j.simple.internal.SimpleProvider;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A simple {@link LoggerContext} implementation.
@@ -36,15 +36,13 @@ public class SimpleLoggerContext implements LoggerContext {
     /** Singleton instance. */
     static final SimpleLoggerContext INSTANCE = new SimpleLoggerContext();
 
-    private static final String SYSTEM_OUT = "system.out";
-
-    private static final String SYSTEM_ERR = "system.err";
-
     /** The default format to use when formatting dates */
     protected static final String DEFAULT_DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm:ss:SSS zzz";
 
     /** All system properties used by <code>SimpleLog</code> start with this */
     protected static final String SYSTEM_PREFIX = "org.apache.logging.log4j.simplelog.";
+
+    private static final MessageFactory DEFAULT_MESSAGE_FACTORY = ParameterizedMessageFactory.INSTANCE;
 
     private final PropertiesUtil props;
 
@@ -79,34 +77,15 @@ public class SimpleLoggerContext implements LoggerContext {
             value = "PATH_TRAVERSAL_OUT",
             justification = "Opens a file retrieved from configuration (Log4j properties)")
     public SimpleLoggerContext() {
-        props = new PropertiesUtil("log4j2.simplelog.properties");
-
-        showContextMap = props.getBooleanProperty(SYSTEM_PREFIX + "showContextMap", false);
-        showLogName = props.getBooleanProperty(SYSTEM_PREFIX + "showlogname", false);
-        showShortName = props.getBooleanProperty(SYSTEM_PREFIX + "showShortLogname", true);
-        showDateTime = props.getBooleanProperty(SYSTEM_PREFIX + "showdatetime", false);
-        final String lvl = props.getStringProperty(SYSTEM_PREFIX + "level");
-        defaultLevel = Level.toLevel(lvl, Level.ERROR);
-
-        dateTimeFormat = showDateTime
-                ? props.getStringProperty(
-                        SimpleLoggerContext.SYSTEM_PREFIX + "dateTimeFormat", DEFAULT_DATE_TIME_FORMAT)
-                : null;
-
-        final String fileName = props.getStringProperty(SYSTEM_PREFIX + "logFile", SYSTEM_ERR);
-        PrintStream ps;
-        if (SYSTEM_ERR.equalsIgnoreCase(fileName)) {
-            ps = System.err;
-        } else if (SYSTEM_OUT.equalsIgnoreCase(fileName)) {
-            ps = System.out;
-        } else {
-            try {
-                ps = new PrintStream(new FileOutputStream(fileName));
-            } catch (final FileNotFoundException fnfe) {
-                ps = System.err;
-            }
-        }
-        this.stream = ps;
+        final SimpleProvider.Config config = SimpleProvider.Config.INSTANCE;
+        props = config.props;
+        showContextMap = config.showContextMap;
+        showLogName = config.showLogName;
+        showShortName = config.showShortName;
+        showDateTime = config.showDateTime;
+        defaultLevel = config.defaultLevel;
+        dateTimeFormat = config.dateTimeFormat;
+        stream = config.stream;
     }
 
     @Override
@@ -116,18 +95,18 @@ public class SimpleLoggerContext implements LoggerContext {
 
     @Override
     public ExtendedLogger getLogger(final String name) {
-        return getLogger(name, null);
+        return getLogger(name, DEFAULT_MESSAGE_FACTORY);
     }
 
     @Override
-    public ExtendedLogger getLogger(final String name, final MessageFactory messageFactory) {
-        // Note: This is the only method where we add entries to the 'loggerRegistry' ivar.
-        final ExtendedLogger extendedLogger = loggerRegistry.getLogger(name, messageFactory);
-        if (extendedLogger != null) {
-            AbstractLogger.checkMessageFactory(extendedLogger, messageFactory);
-            return extendedLogger;
-        }
-        final SimpleLogger simpleLogger = new SimpleLogger(
+    public ExtendedLogger getLogger(final String name, @Nullable final MessageFactory messageFactory) {
+        final MessageFactory effectiveMessageFactory =
+                messageFactory != null ? messageFactory : DEFAULT_MESSAGE_FACTORY;
+        return loggerRegistry.computeIfAbsent(name, effectiveMessageFactory, this::createLogger);
+    }
+
+    private ExtendedLogger createLogger(final String name, @Nullable final MessageFactory messageFactory) {
+        return new SimpleLogger(
                 name,
                 defaultLevel,
                 showLogName,
@@ -138,8 +117,6 @@ public class SimpleLoggerContext implements LoggerContext {
                 messageFactory,
                 props,
                 stream);
-        loggerRegistry.putIfAbsent(name, messageFactory, simpleLogger);
-        return loggerRegistry.getLogger(name, messageFactory);
     }
 
     /**
@@ -155,16 +132,18 @@ public class SimpleLoggerContext implements LoggerContext {
 
     @Override
     public boolean hasLogger(final String name) {
-        return false;
+        return loggerRegistry.hasLogger(name, DEFAULT_MESSAGE_FACTORY);
     }
 
     @Override
     public boolean hasLogger(final String name, final Class<? extends MessageFactory> messageFactoryClass) {
-        return false;
+        return loggerRegistry.hasLogger(name, messageFactoryClass);
     }
 
     @Override
-    public boolean hasLogger(final String name, final MessageFactory messageFactory) {
-        return false;
+    public boolean hasLogger(final String name, @Nullable final MessageFactory messageFactory) {
+        final MessageFactory effectiveMessageFactory =
+                messageFactory != null ? messageFactory : DEFAULT_MESSAGE_FACTORY;
+        return loggerRegistry.hasLogger(name, effectiveMessageFactory);
     }
 }

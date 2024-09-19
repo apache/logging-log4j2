@@ -16,6 +16,7 @@
  */
 package org.apache.log4j.xml;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -28,6 +29,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.apache.log4j.Appender;
@@ -51,12 +53,14 @@ import org.apache.log4j.util.JunitTestRunnerFilter;
 import org.apache.log4j.util.LineNumberFilter;
 import org.apache.log4j.util.SunReflectFilter;
 import org.apache.log4j.util.Transformer;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-public class DOMTestCase {
+@SetTestProperty(key = "log4j1.compatibility", value = "true")
+class DOMTestCase {
 
     /**
      * CustomErrorHandler for testCategoryFactory2.
@@ -241,7 +245,7 @@ public class DOMTestCase {
     @Test
     @Disabled
     public void test1() throws Exception {
-        DOMConfigurator.configure("src/test/resources/log4j1-1.2.17/input/xml/DOMTestCase1.xml");
+        DOMConfigurator.configure(DOMTestCase.class.getResource("/DOMTestCase/DOMTestCase1.xml"));
         common();
 
         final ControlFilter cf1 = new ControlFilter(
@@ -268,7 +272,7 @@ public class DOMTestCase {
     @Test
     @Disabled
     public void test4() throws Exception {
-        DOMConfigurator.configure("src/test/resources/log4j1-1.2.17/input/xml/DOMTest4.xml");
+        DOMConfigurator.configure(DOMTestCase.class.getResource("/DOMTestCase/DOMTest4.xml"));
         common();
 
         final ControlFilter cf1 = new ControlFilter(
@@ -295,7 +299,7 @@ public class DOMTestCase {
     @Test
     @Disabled
     public void testCategoryFactory1() {
-        DOMConfigurator.configure("src/test/resources/log4j1-1.2.17/input/xml/categoryfactory1.xml");
+        DOMConfigurator.configure(DOMTestCase.class.getResource("/DOMTestCase/categoryfactory1.xml"));
         //
         // logger not explicitly mentioned in configuration,
         // should use default factory
@@ -319,7 +323,7 @@ public class DOMTestCase {
     @Test
     @Disabled
     public void testCategoryFactory2() {
-        DOMConfigurator.configure("src/test/resources/log4j1-1.2.17/input/xml/categoryfactory2.xml");
+        DOMConfigurator.configure(DOMTestCase.class.getResource("/DOMTestCase/categoryfactory2.xml"));
         //
         // logger not explicitly mentioned in configuration,
         // should use default factory
@@ -343,8 +347,9 @@ public class DOMTestCase {
      * @throws Exception if IO error.
      */
     @Test
-    public void testConfigureAndWatch() throws Exception {
-        DOMConfigurator.configureAndWatch("src/test/resources/log4j1-1.2.17/input/xml/DOMTestCase1.xml");
+    void testConfigureAndWatch() throws Exception {
+        final URL url = DOMTestCase.class.getResource("/DOMTestCase/DOMTestCase1.xml");
+        DOMConfigurator.configureAndWatch(Paths.get(url.toURI()).toString());
         assertNotNull(Logger.getRootLogger().getAppender("A1"));
     }
 
@@ -354,8 +359,9 @@ public class DOMTestCase {
      * @throws IOException if IOException creating properties jar.
      */
     @Test
-    public void testJarURL() throws IOException {
-        final File input = new File("src/test/resources/log4j1-1.2.17/input/xml/defaultInit.xml");
+    void testJarURL() throws Exception {
+        final URL url = DOMTestCase.class.getResource("/DOMTestCase/defaultInit.xml");
+        final File input = Paths.get(url.toURI()).toFile();
         System.out.println(input.getAbsolutePath());
         final File configJar = new File("target/output/xml.jar");
         final File dir = new File("target/output");
@@ -383,7 +389,7 @@ public class DOMTestCase {
     @Test
     @Disabled("TODO")
     public void testLoggerFactory1() {
-        DOMConfigurator.configure("src/test/resources/log4j1-1.2.17/input/xml/loggerfactory1.xml");
+        DOMConfigurator.configure(DOMTestCase.class.getResource("/DOMTestCase/loggerfactory1.xml"));
         //
         // logger not explicitly mentioned in configuration,
         // should use default factory
@@ -411,15 +417,12 @@ public class DOMTestCase {
     @Test
     public void testOverrideSubst() {
         final DOMConfigurator configurator = new DOMConfigurator() {
-            protected String subst(final String value) {
-                if ("target/output/temp.A1".equals(value)) {
-                    return "target/output/subst-test.A1";
-                }
-                return value;
+            private String subst(final String value) {
+                return "target/output/temp.A1".equals(value) ? "target/output/subst-test.A1" : value;
             }
         };
         configurator.doConfigure(
-                "src/test/resources/log4j1-1.2.17/input/xml/DOMTestCase1.xml", LogManager.getLoggerRepository());
+                DOMTestCase.class.getResource("/DOMTestCase/DOMTestCase1.xml"), LogManager.getLoggerRepository());
         final String name = "A1";
         final Appender appender = Logger.getRootLogger().getAppender(name);
         assertNotNull(name, appender);
@@ -451,7 +454,7 @@ public class DOMTestCase {
         final VectorAppender appender = new VectorAppender();
         appender.setName("V1");
         Logger.getRootLogger().addAppender(appender);
-        DOMConfigurator.configure("src/test/resources/log4j1-1.2.17/input/xml/testReset.xml");
+        DOMConfigurator.configure(DOMTestCase.class.getResource("/DOMTestCase/testReset.xml"));
         assertNull(Logger.getRootLogger().getAppender("V1"));
     }
 
@@ -460,14 +463,31 @@ public class DOMTestCase {
      */
     @Test
     public void testThrowableRenderer1() {
-        DOMConfigurator.configure("src/test/resources/log4j1-1.2.17/input/xml/throwableRenderer1.xml");
+        DOMConfigurator.configure(DOMTestCase.class.getResource("/DOMTestCase/throwableRenderer1.xml"));
         final ThrowableRendererSupport repo = (ThrowableRendererSupport) LogManager.getLoggerRepository();
         final MockThrowableRenderer renderer = (MockThrowableRenderer) repo.getThrowableRenderer();
         LogManager.resetConfiguration();
         if (AssumeThrowableRendererSupport) {
             assertNotNull(renderer);
-            assertEquals(true, renderer.isActivated());
-            assertEquals(false, renderer.getShowVersion());
+            assertTrue(renderer.isActivated());
+            assertFalse(renderer.getShowVersion());
         }
+    }
+
+    @Test
+    @SetTestProperty(key = "log4j1.compatibility", value = "false")
+    void when_compatibility_disabled_configurator_is_no_op() throws IOException {
+        final Logger rootLogger = Logger.getRootLogger();
+        final Logger logger = Logger.getLogger("org.apache.log4j.xml");
+        assertThat(logger.getLevel()).isNull();
+        final URL configURL = DOMTestCase.class.getResource("/DOMTestCase/DOMTestCase1.xml");
+        DOMConfigurator.configure(configURL);
+
+        assertThat(rootLogger.getAppender("A1")).isNull();
+        assertThat(rootLogger.getAppender("A2")).isNull();
+        assertThat(rootLogger.getLevel()).isNotEqualTo(Level.TRACE);
+
+        assertThat(logger.getAppender("A1")).isNull();
+        assertThat(logger.getLevel()).isNull();
     }
 }

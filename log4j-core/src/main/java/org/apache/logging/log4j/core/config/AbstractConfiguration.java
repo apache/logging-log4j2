@@ -156,7 +156,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         // The loggerContext is null for the NullConfiguration class.
         // this.loggerContext = new WeakReference(Objects.requireNonNull(loggerContext, "loggerContext is null"));
         this.configurationSource = Objects.requireNonNull(configurationSource, "configurationSource is null");
-        componentMap.put(Configuration.CONTEXT_PROPERTIES, propertyMap);
+        componentMap.put(CONTEXT_PROPERTIES, propertyMap);
         pluginManager = new PluginManager(Node.CATEGORY);
         rootNode = new Node();
         setState(State.INITIALIZING);
@@ -240,6 +240,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 LOGGER.info("Cannot initialize scripting support because this JRE does not support it.", e);
             }
         }
+        if (!pluginPackages.isEmpty()) {
+            LOGGER.warn("The use of package scanning to locate Log4j plugins is deprecated.\n"
+                    + "Please remove the `packages` attribute from your configuration file.\n"
+                    + "See https://logging.apache.org/log4j/2.x/faq.html#package-scanning for details.");
+        }
         pluginManager.collectPlugins(pluginPackages);
         final PluginManager levelPlugins = new PluginManager(Level.CATEGORY);
         levelPlugins.collectPlugins(pluginPackages);
@@ -310,7 +315,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     public void start() {
         // Preserve the prior behavior of initializing during start if not initialized.
-        if (getState().equals(State.INITIALIZING)) {
+        if (getState() == State.INITIALIZING) {
             initialize();
         }
         LOGGER.debug("Starting configuration {}", this);
@@ -884,9 +889,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     /**
      * Associates an Appender with a LoggerConfig. This method is synchronized in case a Logger with the same name is
      * being updated at the same time.
-     *
+     * <p>
      * Note: This method is not used when configuring via configuration. It is primarily used by unit tests.
-     *
+     * </p>
      * @param logger The Logger the Appender will be associated with.
      * @param appender The Appender.
      */
@@ -914,9 +919,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     /**
      * Associates a Filter with a LoggerConfig. This method is synchronized in case a Logger with the same name is being
      * updated at the same time.
-     *
+     * <p>
      * Note: This method is not used when configuring via configuration. It is primarily used by unit tests.
-     *
+     * </p>
      * @param logger The Logger the Footer will be associated with.
      * @param filter The Filter.
      */
@@ -939,9 +944,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     /**
      * Marks a LoggerConfig as additive. This method is synchronized in case a Logger with the same name is being
      * updated at the same time.
-     *
+     * <p>
      * Note: This method is not used when configuring via configuration. It is primarily used by unit tests.
-     *
+     * </p>
      * @param logger The Logger the Appender will be associated with.
      * @param additive True if the LoggerConfig should be additive, false otherwise.
      */
@@ -1098,7 +1103,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * @return The created object or null;
      */
     public Object createPluginObject(final PluginType<?> type, final Node node) {
-        if (this.getState().equals(State.INITIALIZING)) {
+        if (getState() == State.INITIALIZING) {
             return createPluginObject(type, node, null);
         } else {
             LOGGER.warn("Plugin Object creation is not allowed after initialization");
@@ -1116,7 +1121,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * . Parameters with {@link org.apache.logging.log4j.core.config.plugins.PluginElement} may be any plugin class or
      * an array of a plugin class. Collections and Maps are currently not supported, although the factory method that is
      * called can create these from an array.
-     *
+     * <p>
      * Plugins can also be created using a builder class that implements
      * {@link org.apache.logging.log4j.core.util.Builder}. In that case, a static method annotated with
      * {@link org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute} should create the builder class, and
@@ -1124,16 +1129,18 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * of using PluginAttribute, one should use
      * {@link org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute} where the default value can be
      * specified as the default field value instead of as an additional annotation parameter.
-     *
+     * </p>
+     * <p>
      * In either case, there are also annotations for specifying a
      * {@link org.apache.logging.log4j.core.config.Configuration} (
      * {@link org.apache.logging.log4j.core.config.plugins.PluginConfiguration}) or a
      * {@link org.apache.logging.log4j.core.config.Node} (
      * {@link org.apache.logging.log4j.core.config.plugins.PluginNode}).
-     *
+     * </p>
+     * <p>
      * Although the happy path works, more work still needs to be done to log incorrect parameters. These will generally
      * result in unhelpful InvocationTargetExceptions.
-     *
+     * </p>
      * @param type the type of plugin to create.
      * @param node the corresponding configuration node for this plugin to create.
      * @param event the LogEvent that spurred the creation of this plugin
