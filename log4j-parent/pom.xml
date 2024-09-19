@@ -115,7 +115,7 @@
     <HdrHistogram.version>2.2.2</HdrHistogram.version>
     <hsqldb.version>2.7.3</hsqldb.version>
     <jackson-bom.version>2.17.2</jackson-bom.version>
-    <jansi.version>2.4.0</jansi.version>
+    <jansi.version>2.0</jansi.version>
     <javax-jms.version>2.0.1</javax-jms.version>
     <java-allocation-instrumenter.version>3.3.4</java-allocation-instrumenter.version>
     <jctools.version>4.0.5</jctools.version>
