@@ -1073,7 +1073,7 @@
               <dependency>
                 <groupId>org.openrewrite.recipe</groupId>
                 <artifactId>rewrite-logging-frameworks</artifactId>
-                <version>2.1.0</version>
+                <version>2.2.0</version>
               </dependency>
             </dependencies>
           </plugin>
