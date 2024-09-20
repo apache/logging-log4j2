@@ -101,7 +101,7 @@
     <javax-persistence.version>2.2</javax-persistence.version>
     <javax-servlet.version>4.0.1</javax-servlet.version>
     <javax-servlet-jsp.version>2.3.3</javax-servlet-jsp.version>
-    <jansi.version>2.4.1</jansi.version>
+    <jansi.version>2.0</jansi.version>
     <java-allocation-instrumenter.version>3.3.4</java-allocation-instrumenter.version>
     <jazzer.version>0.22.1</jazzer.version>
     <jconsole.version>1.7.0</jconsole.version>
