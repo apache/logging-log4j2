@@ -1031,7 +1031,7 @@
           <plugin>
             <groupId>org.openrewrite.maven</groupId>
             <artifactId>rewrite-maven-plugin</artifactId>
-            <version>5.14.0</version>
+            <version>5.15.0</version>
             <configuration>
               <activeRecipes>
                 <activeRecipe>org.openrewrite.java.logging.log4j.ParameterizedLogging</activeRecipe>
