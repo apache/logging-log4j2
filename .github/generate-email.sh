@@ -38,10 +38,10 @@ fail_for_invalid_args() {
 # Constants
 PROJECT_NAME="Apache Log4j"
 PROJECT_ID="log4j"
-PROJECT_SITE="https://logging.apache.org/log4j/3.x"
+PROJECT_VERSION="$2"
+PROJECT_SITE="https://logging.apache.org/$PROJECT_ID"
 PROJECT_STAGING_SITE="${PROJECT_SITE/apache.org/staged.apache.org}"
 PROJECT_REPO="https://github.com/apache/logging-log4j2"
-PROJECT_VERSION="$2"
 COMMIT_ID="$3"
 PROJECT_DIST_URL="https://dist.apache.org/repos/dist/dev/logging/$PROJECT_ID/$PROJECT_VERSION"
 
@@ -54,8 +54,8 @@ RELEASE_NOTES_FILE="$SCRIPT_DIR/../target/generated-site/antora/modules/ROOT/pag
 
 dump_release_notes() {
     awk "f{print} /^Release date::/{f=1}" "$RELEASE_NOTES_FILE" \
-        | sed -r -e 's|'$PROJECT_REPO'/(issues|pull)/[0-9]+\[([0-9]+)\]|#\2|g
-                     s|https://github.com/([^/]+)/([^/]+)/(pull|issues)/([0-9]+)\[(\1/\2#\4)\]|\5|g'
+        | sed -r -e 's!'$PROJECT_REPO'/(issues|pull)/[0-9]+\[([0-9]+)\]!#\2!g
+                     s!https://github.com/([^/]+)/([^/]+)/(pull|issues)/([0-9]+)\[(\1/\2#\4)\]!\5!g'
 }
 
 case $1 in
@@ -67,13 +67,13 @@ Title: [VOTE] Release $PROJECT_NAME \`$PROJECT_VERSION\`
 
 This is a vote to release the $PROJECT_NAME \`$PROJECT_VERSION\`.
 
-Website: $PROJECT_STAGING_SITE-$PROJECT_VERSION
+Website: $PROJECT_STAGING_SITE/$PROJECT_VERSION/index.html
 GitHub: $PROJECT_REPO
 Commit: $COMMIT_ID
 Distribution: $PROJECT_DIST_URL
 Nexus: https://repository.apache.org/content/repositories/orgapachelogging-<FIXME>
 Signing key: 0x077e8893a6dcc33dd4a4d5b256e73ba9a0b592d0
-Review kit: https://s.apache.org/logging-parent-release-review-kit
+Review kit: https://logging.apache.org/logging-parent/release-review-instructions.html
 
 Please download, test, and cast your votes on this mailing list.
 
@@ -103,7 +103,7 @@ and components to assist the deployment for various use cases.
 For further information (support, download, etc.) see the project
 website[1].
 
-[1] $PROJECT_SITE
+[1] $PROJECT_SITE/3.x/index.html
 
 == Release Notes
 EOF
