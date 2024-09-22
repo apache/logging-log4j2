@@ -541,16 +541,6 @@
     </dependencies>
   </dependencyManagement>
 
-  <repositories>
-    <repository>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <id>apache.staging</id>
-      <url>https://repository.apache.org/content/repositories/orgapachelogging-1297</url>
-    </repository>
-  </repositories>
-
   <build>
 
     <plugins>
