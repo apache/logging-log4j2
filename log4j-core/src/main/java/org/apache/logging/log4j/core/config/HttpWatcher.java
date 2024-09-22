@@ -16,19 +16,16 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import static java.util.Objects.requireNonNull;
-import static org.apache.logging.log4j.core.util.internal.HttpInputStreamUtil.readStream;
-import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.time.Instant;
 import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
+import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
+import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
 import org.apache.logging.log4j.core.util.AbstractWatcher;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.core.util.Source;
@@ -47,6 +44,7 @@ public class HttpWatcher extends AbstractWatcher {
 
     private final Logger LOGGER = StatusLogger.getLogger();
 
+    private final SslConfiguration sslConfiguration;
     private AuthorizationProvider authorizationProvider;
     private URL url;
     private volatile long lastModifiedMillis;
@@ -59,6 +57,7 @@ public class HttpWatcher extends AbstractWatcher {
             final List<ConfigurationListener> configurationListeners,
             final long lastModifiedMillis) {
         super(configuration, reconfigurable, configurationListeners);
+        sslConfiguration = SslConfigurationFactory.getSslConfiguration();
         this.lastModifiedMillis = lastModifiedMillis;
     }
 
@@ -104,50 +103,34 @@ public class HttpWatcher extends AbstractWatcher {
         try {
             final LastModifiedSource source = new LastModifiedSource(url.toURI(), lastModifiedMillis);
             final HttpInputStreamUtil.Result result = HttpInputStreamUtil.getInputStream(source, authorizationProvider);
-            // Update lastModifiedMillis
-            // https://github.com/apache/logging-log4j2/issues/2937
-            lastModifiedMillis = source.getLastModified();
-            // The result of the HTTP/HTTPS request is already logged at `DEBUG` by `HttpInputStreamUtil`
-            // We only log the important events at `INFO` or more.
             switch (result.getStatus()) {
                 case NOT_MODIFIED: {
+                    LOGGER.debug("Configuration Not Modified");
                     return false;
                 }
                 case SUCCESS: {
                     final ConfigurationSource configSource = getConfiguration().getConfigurationSource();
                     try {
-                        // In this case `result.getInputStream()` is not null.
-                        configSource.setData(readStream(requireNonNull(result.getInputStream())));
+                        configSource.setData(HttpInputStreamUtil.readStream(result.getInputStream()));
                         configSource.setModifiedMillis(source.getLastModified());
-                        LOGGER.info(
-                                "{} resource at {} was modified on {}",
-                                () -> toRootUpperCase(url.getProtocol()),
-                                () -> url.toExternalForm(),
-                                () -> Instant.ofEpochMilli(source.getLastModified()));
+                        LOGGER.debug("Content was modified for {}", url.toString());
                         return true;
                     } catch (final IOException e) {
-                        // Dead code since result.getInputStream() is a ByteArrayInputStream
-                        LOGGER.error("Error accessing configuration at {}", url.toExternalForm(), e);
+                        LOGGER.error("Error accessing configuration at {}: {}", url, e.getMessage());
                         return false;
                     }
                 }
                 case NOT_FOUND: {
-                    LOGGER.warn(
-                            "{} resource at {} was not found",
-                            () -> toRootUpperCase(url.getProtocol()),
-                            () -> url.toExternalForm());
+                    LOGGER.info("Unable to locate configuration at {}", url.toString());
                     return false;
                 }
                 default: {
-                    LOGGER.warn(
-                            "Unexpected error retrieving {} resource at {}",
-                            () -> toRootUpperCase(url.getProtocol()),
-                            () -> url.toExternalForm());
+                    LOGGER.warn("Unexpected error accessing configuration at {}", url.toString());
                     return false;
                 }
             }
         } catch (final URISyntaxException ex) {
-            LOGGER.error("Bad configuration file URL {}", url.toExternalForm(), ex);
+            LOGGER.error("Bad configuration URL: {}, {}", url.toString(), ex.getMessage());
             return false;
         }
     }

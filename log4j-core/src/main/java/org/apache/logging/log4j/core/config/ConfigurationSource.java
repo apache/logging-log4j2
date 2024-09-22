@@ -33,12 +33,10 @@ import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Source;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.LoaderUtil;
 
@@ -46,8 +44,6 @@ import org.apache.logging.log4j.util.LoaderUtil;
  * Represents the source for the logging configuration.
  */
 public class ConfigurationSource {
-
-    private static final Logger LOGGER = StatusLogger.getLogger();
 
     /**
      * ConfigurationSource to use with Configurations that do not require a "real" configuration source.
@@ -62,7 +58,7 @@ public class ConfigurationSource {
 
     private final InputStream stream;
     private volatile byte[] data;
-    private final Source source;
+    private volatile Source source;
     private final long lastModified;
     // Set when the configuration has been updated so reset can use it for the next lastModified timestamp.
     private volatile long modifiedMillis;
@@ -84,7 +80,7 @@ public class ConfigurationSource {
         } catch (Exception ex) {
             // There is a problem with the file. It will be handled somewhere else.
         }
-        this.modifiedMillis = this.lastModified = modified;
+        this.lastModified = modified;
     }
 
     /**
@@ -104,7 +100,7 @@ public class ConfigurationSource {
         } catch (Exception ex) {
             // There is a problem with the file. It will be handled somewhere else.
         }
-        this.modifiedMillis = this.lastModified = modified;
+        this.lastModified = modified;
     }
 
     /**
@@ -115,7 +111,10 @@ public class ConfigurationSource {
      * @param url the URL where the input stream originated
      */
     public ConfigurationSource(final InputStream stream, final URL url) {
-        this(stream, url, 0);
+        this.stream = Objects.requireNonNull(stream, "stream is null");
+        this.data = null;
+        this.lastModified = 0;
+        this.source = new Source(url);
     }
 
     /**
@@ -129,7 +128,7 @@ public class ConfigurationSource {
     public ConfigurationSource(final InputStream stream, final URL url, final long lastModified) {
         this.stream = Objects.requireNonNull(stream, "stream is null");
         this.data = null;
-        this.modifiedMillis = this.lastModified = lastModified;
+        this.lastModified = lastModified;
         this.source = new Source(url);
     }
 
@@ -155,15 +154,19 @@ public class ConfigurationSource {
         Objects.requireNonNull(source, "source is null");
         this.data = Objects.requireNonNull(data, "data is null");
         this.stream = new ByteArrayInputStream(data);
-        this.modifiedMillis = this.lastModified = lastModified;
+        this.lastModified = lastModified;
         this.source = source;
     }
 
     private ConfigurationSource(final byte[] data, final URL url, final long lastModified) {
         this.data = Objects.requireNonNull(data, "data is null");
         this.stream = new ByteArrayInputStream(data);
-        this.modifiedMillis = this.lastModified = lastModified;
-        this.source = url == null ? null : new Source(url);
+        this.lastModified = lastModified;
+        if (url == null) {
+            this.data = data;
+        } else {
+            this.source = new Source(url);
+        }
     }
 
     /**
@@ -196,8 +199,16 @@ public class ConfigurationSource {
         return source == null ? null : source.getFile();
     }
 
+    private boolean isFile() {
+        return source == null ? false : source.getFile() != null;
+    }
+
+    private boolean isURL() {
+        return source == null ? false : source.getURI() != null;
+    }
+
     private boolean isLocation() {
-        return source != null && source.getLocation() != null;
+        return source == null ? false : source.getLocation() != null;
     }
 
     /**
@@ -211,11 +222,11 @@ public class ConfigurationSource {
     }
 
     /**
-     * @deprecated Not used internally, no replacement.
+     * @deprecated Not used internally, no replacement. TODO remove and make source final.
      */
     @Deprecated
-    public void setSource(final Source ignored) {
-        LOGGER.warn("Ignoring call of deprecated method `ConfigurationSource#setSource()`.");
+    public void setSource(final Source source) {
+        this.source = source;
     }
 
     public void setData(final byte[] data) {
@@ -269,23 +280,16 @@ public class ConfigurationSource {
      */
     public ConfigurationSource resetInputStream() throws IOException {
         if (source != null && data != null) {
-            return new ConfigurationSource(source, data, modifiedMillis);
-        }
-        File file = getFile();
-        if (file != null) {
-            return new ConfigurationSource(Files.newInputStream(file.toPath()), getFile());
-        }
-        URL url = getURL();
-        if (url != null && data != null) {
+            return new ConfigurationSource(source, data, this.lastModified);
+        } else if (isFile()) {
+            return new ConfigurationSource(new FileInputStream(getFile()), getFile());
+        } else if (isURL() && data != null) {
             // Creates a ConfigurationSource without accessing the URL since the data was provided.
-            return new ConfigurationSource(data, url, modifiedMillis);
-        }
-        URI uri = getURI();
-        if (uri != null) {
-            return fromUri(uri);
-        }
-        if (data != null) {
-            return new ConfigurationSource(data, null, modifiedMillis);
+            return new ConfigurationSource(data, getURL(), modifiedMillis == 0 ? lastModified : modifiedMillis);
+        } else if (isURL()) {
+            return fromUri(getURI());
+        } else if (data != null) {
+            return new ConfigurationSource(data, null, lastModified);
         }
         return null;
     }

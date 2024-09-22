@@ -16,24 +16,20 @@
  */
 package org.apache.logging.log4j.core.net;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static java.util.Objects.requireNonNull;
+import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static javax.servlet.http.HttpServletResponse.SC_NOT_MODIFIED;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
-import static org.apache.logging.log4j.core.config.ConfigurationSourceTest.PATH_IN_JAR;
-import static org.apache.logging.log4j.core.net.WireMockUtil.createMapping;
-import static org.assertj.core.api.Assertions.assertThat;
+import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import com.github.tomakehurst.wiremock.client.BasicCredentials;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
-import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import com.sun.management.UnixOperatingSystemMXBean;
-import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.management.ManagementFactory;
@@ -42,102 +38,101 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import org.apache.commons.io.IOUtils;
+import java.util.Base64;
+import java.util.Enumeration;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.ConfigurationSourceTest;
-import org.apache.logging.log4j.core.util.AuthorizationProvider;
-import org.apache.logging.log4j.test.junit.SetTestProperty;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.junit.jupiter.api.AfterEach;
+import org.eclipse.jetty.http.HttpHeader;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.servlet.DefaultServlet;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
-import org.junit.jupiter.api.io.TempDir;
 import org.junitpioneer.jupiter.RetryingTest;
 
 /**
  * Tests the UrlConnectionFactory
  */
-@WireMockTest
-@SetTestProperty(key = "log4j2.configurationAllowedProtocols", value = "jar,http")
-class UrlConnectionFactoryTest {
+public class UrlConnectionFactoryTest {
 
     private static final Logger LOGGER = LogManager.getLogger(UrlConnectionFactoryTest.class);
+    private static final String BASIC = "Basic ";
+    private static final String expectedCreds = "testuser:password";
+    private static Server server;
+    private static final Base64.Decoder decoder = Base64.getDecoder();
+    private static int port;
+    private static final int BUF_SIZE = 1024;
 
-    private static final String URL_PATH = "/log4j2-config.xml";
-    private static final BasicCredentials CREDENTIALS = new BasicCredentials("testUser", "password");
-    private static final byte[] CONFIG_FILE_BODY;
-    private static final String CONTENT_TYPE = "application/xml";
+    @BeforeAll
+    public static void startServer() throws Exception {
+        try {
+            server = new Server(0);
+            final ServletContextHandler context = new ServletContextHandler();
+            final ServletHolder defaultServ = new ServletHolder("default", TestServlet.class);
+            defaultServ.setInitParameter("resourceBase", System.getProperty("user.dir"));
+            defaultServ.setInitParameter("dirAllowed", "true");
+            context.addServlet(defaultServ, "/");
+            server.setHandler(context);
 
-    static {
-        try (InputStream input = requireNonNull(
-                UrlConnectionFactoryTest.class.getClassLoader().getResourceAsStream("log4j2-config.xml"))) {
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
-            IOUtils.copy(input, output);
-            CONFIG_FILE_BODY = output.toByteArray();
-        } catch (IOException e) {
-            throw new AssertionError(e);
+            // Start Server
+            server.start();
+            port = ((ServerConnector) server.getConnectors()[0]).getLocalPort();
+        } catch (Throwable ex) {
+            ex.printStackTrace();
+            throw ex;
         }
     }
 
-    @AfterEach
-    void cleanup(WireMockRuntimeInfo info) {
-        info.getWireMock().removeMappings();
+    @AfterAll
+    public static void stopServer() throws Exception {
+        server.stop();
     }
 
     @Test
-    @SetTestProperty(key = "log4j2.configurationUsername", value = "foo")
-    @SetTestProperty(key = "log4j2.configurationPassword", value = "bar")
-    void testBadCredentials(WireMockRuntimeInfo info) throws Exception {
-        WireMock wireMock = info.getWireMock();
-        // RFC 1123 format rounds to full seconds
-        ZonedDateTime now = ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-        wireMock.importStubMappings(createMapping(URL_PATH, CREDENTIALS, CONFIG_FILE_BODY, CONTENT_TYPE, now));
-        final URI uri = new URI(info.getHttpBaseUrl() + URL_PATH);
+    public void testBadCrdentials() throws Exception {
+        System.setProperty("log4j2.Configuration.username", "foo");
+        System.setProperty("log4j2.Configuration.password", "bar");
+        System.setProperty("log4j2.Configuration.allowedProtocols", "http");
+        final URI uri = new URI("http://localhost:" + port + "/log4j2-config.xml");
         final ConfigurationSource source = ConfigurationSource.fromUri(uri);
         assertNull(source, "A ConfigurationSource should not have been returned");
     }
 
     @Test
-    @SetTestProperty(key = "log4j2.configurationUsername", value = "testUser")
-    @SetTestProperty(key = "log4j2.configurationPassword", value = "password")
-    public void withAuthentication(WireMockRuntimeInfo info) throws Exception {
-        WireMock wireMock = info.getWireMock();
-        // RFC 1123 format rounds to full seconds
-        ZonedDateTime now = ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-        wireMock.importStubMappings(createMapping(URL_PATH, CREDENTIALS, CONFIG_FILE_BODY, CONTENT_TYPE, now));
-        final URI uri = new URI(info.getHttpBaseUrl() + URL_PATH);
+    public void withAuthentication() throws Exception {
+        System.setProperty("log4j2.Configuration.username", "testuser");
+        System.setProperty("log4j2.Configuration.password", "password");
+        System.setProperty("log4j2.Configuration.allowedProtocols", "http");
+        final URI uri = new URI("http://localhost:" + port + "/log4j2-config.xml");
         final ConfigurationSource source = ConfigurationSource.fromUri(uri);
         assertNotNull(source, "No ConfigurationSource returned");
         final InputStream is = source.getInputStream();
         assertNotNull(is, "No data returned");
         is.close();
         final long lastModified = source.getLastModified();
-        assertThat(lastModified).isEqualTo(now.toInstant().toEpochMilli());
         int result = verifyNotModified(uri, lastModified);
         assertEquals(SC_NOT_MODIFIED, result, "File was modified");
-
-        wireMock.removeMappings();
-        now = now.plusMinutes(5);
-        wireMock.importStubMappings(createMapping(URL_PATH, CREDENTIALS, CONFIG_FILE_BODY, CONTENT_TYPE, now));
+        final File file = new File("target/classes/log4j2-config.xml");
+        if (!file.setLastModified(System.currentTimeMillis())) {
+            fail("Unable to set last modified time");
+        }
         result = verifyNotModified(uri, lastModified);
         assertEquals(SC_OK, result, "File was not modified");
     }
 
     private int verifyNotModified(final URI uri, final long lastModifiedMillis) throws Exception {
-        AuthorizationProvider provider = ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
-        HttpURLConnection urlConnection =
-                UrlConnectionFactory.createConnection(uri.toURL(), lastModifiedMillis, null, provider);
+        final HttpURLConnection urlConnection =
+                UrlConnectionFactory.createConnection(uri.toURL(), lastModifiedMillis, null, null);
         urlConnection.connect();
 
         try {
@@ -150,39 +145,20 @@ class UrlConnectionFactoryTest {
 
     @RetryingTest(maxAttempts = 5, suspendForMs = 1000)
     @DisabledOnOs(value = OS.WINDOWS, disabledReason = "Fails frequently on Windows (#2011)")
-    @SetTestProperty(key = "log4j2.configurationUsername", value = "testUser")
-    @SetTestProperty(key = "log4j2.configurationPassword", value = "password")
-    void testNoJarFileLeak(@TempDir Path dir, WireMockRuntimeInfo info) throws Exception {
-        Path jarFile = ConfigurationSourceTest.prepareJarConfigURL(dir);
+    public void testNoJarFileLeak() throws Exception {
+        ConfigurationSourceTest.prepareJarConfigURL();
+        final URL url = new File("target/test-classes/jarfile.jar").toURI().toURL();
         // Retrieve using 'file:'
-        URL jarUrl = new URL("jar:" + jarFile.toUri().toURL() + "!" + PATH_IN_JAR);
+        URL jarUrl = new URL("jar:" + url.toString() + "!/config/console.xml");
         long expected = getOpenFileDescriptorCount();
         UrlConnectionFactory.createConnection(jarUrl).getInputStream().close();
         assertEquals(expected, getOpenFileDescriptorCount());
-
-        // Prepare mock
-        ByteArrayOutputStream body = new ByteArrayOutputStream();
-        try (InputStream inputStream = Files.newInputStream(jarFile)) {
-            IOUtils.copy(inputStream, body);
-        }
-        WireMock wireMock = info.getWireMock();
-        wireMock.register(WireMock.get("/jarFile.jar")
-                .willReturn(
-                        aResponse().withStatus(200).withBodyFile("jarFile.jar").withBody(body.toByteArray())));
         // Retrieve using 'http:'
-        jarUrl = new URL("jar:" + info.getHttpBaseUrl() + "/jarFile.jar!" + PATH_IN_JAR);
-        // URLConnection leaves JAR files in the temporary directory
-        Path tmpDir = Paths.get(System.getProperty("java.io.tmpdir"));
-        List<Path> expectedFiles;
-        try (Stream<Path> stream = Files.list(tmpDir)) {
-            expectedFiles = stream.collect(Collectors.toList());
-        }
+        jarUrl = new URL("jar:http://localhost:" + port + "/jarfile.jar!/config/console.xml");
+        final File tmpDir = new File(System.getProperty("java.io.tmpdir"));
+        expected = tmpDir.list().length;
         UrlConnectionFactory.createConnection(jarUrl).getInputStream().close();
-        List<Path> actualFiles;
-        try (Stream<Path> stream = Files.list(tmpDir)) {
-            actualFiles = stream.collect(Collectors.toList());
-        }
-        assertThat(actualFiles).containsExactlyElementsOf(expectedFiles);
+        assertEquals(expected, tmpDir.list().length, "File descriptor leak");
     }
 
     private long getOpenFileDescriptorCount() {
@@ -191,5 +167,54 @@ class UrlConnectionFactoryTest {
             return ((UnixOperatingSystemMXBean) os).getOpenFileDescriptorCount();
         }
         return 0L;
+    }
+
+    public static class TestServlet extends DefaultServlet {
+
+        private static final long serialVersionUID = -2885158530511450659L;
+
+        @Override
+        protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
+                throws ServletException, IOException {
+            final Enumeration<String> headers = request.getHeaders(HttpHeader.AUTHORIZATION.toString());
+            if (headers == null) {
+                response.sendError(SC_UNAUTHORIZED, "No Auth header");
+                return;
+            }
+            while (headers.hasMoreElements()) {
+                final String authData = headers.nextElement();
+                assertTrue(authData.startsWith(BASIC), "Not a Basic auth header");
+                final String credentials = new String(decoder.decode(authData.substring(BASIC.length())));
+                if (!expectedCreds.equals(credentials)) {
+                    response.sendError(SC_UNAUTHORIZED, "Invalid credentials");
+                    return;
+                }
+            }
+            final String servletPath = request.getServletPath();
+            if (servletPath != null) {
+                File file = new File("target/classes" + servletPath);
+                if (!file.exists()) {
+                    file = new File("target/test-classes" + servletPath);
+                }
+                if (!file.exists()) {
+                    response.sendError(SC_NOT_FOUND);
+                    return;
+                }
+                final long modifiedSince = request.getDateHeader(HttpHeader.IF_MODIFIED_SINCE.toString());
+                final long lastModified = (file.lastModified() / 1000) * 1000;
+                LOGGER.debug("LastModified: {}, modifiedSince: {}", lastModified, modifiedSince);
+                if (modifiedSince > 0 && lastModified <= modifiedSince) {
+                    response.setStatus(SC_NOT_MODIFIED);
+                    return;
+                }
+                response.setDateHeader(HttpHeader.LAST_MODIFIED.toString(), lastModified);
+                response.setContentLengthLong(file.length());
+                Files.copy(file.toPath(), response.getOutputStream());
+                response.getOutputStream().flush();
+                response.setStatus(SC_OK);
+            } else {
+                response.sendError(SC_BAD_REQUEST, "Unsupported request");
+            }
+        }
     }
 }

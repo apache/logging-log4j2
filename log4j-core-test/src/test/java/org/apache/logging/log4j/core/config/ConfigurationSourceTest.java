@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -33,28 +32,21 @@ import java.lang.management.OperatingSystemMXBean;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
-import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 public class ConfigurationSourceTest {
-    /**
-     * The path inside the jar created by {@link #prepareJarConfigURL} containing the configuration.
-     */
-    public static final String PATH_IN_JAR = "/config/console.xml";
-
-    private static final String CONFIG_FILE = "/config/ConfigurationSourceTest.xml";
-
-    @TempDir
-    private Path tempDir;
+    private static final Path JAR_FILE = Paths.get("target", "test-classes", "jarfile.jar");
+    private static final Path CONFIG_FILE = Paths.get("target", "test-classes", "log4j2-console.xml");
+    private static final byte[] buffer = new byte[1024];
 
     @Test
-    void testJira_LOG4J2_2770_byteArray() throws Exception {
+    public void testJira_LOG4J2_2770_byteArray() throws Exception {
         final ConfigurationSource configurationSource =
                 new ConfigurationSource(new ByteArrayInputStream(new byte[] {'a', 'b'}));
         assertNotNull(configurationSource.resetInputStream());
@@ -62,19 +54,20 @@ public class ConfigurationSourceTest {
 
     /**
      * Checks if the usage of 'jar:' URLs does not increase the file descriptor
-     * count, and the jar file can be deleted.
+     * count and the jar file can be deleted.
+     *
+     * @throws Exception
      */
     @Test
-    void testNoJarFileLeak() throws Exception {
-        final Path jarFile = prepareJarConfigURL(tempDir);
-        final URL jarConfigURL = new URL("jar:" + jarFile.toUri().toURL() + "!" + PATH_IN_JAR);
+    public void testNoJarFileLeak() throws Exception {
+        final URL jarConfigURL = prepareJarConfigURL();
         final long expected = getOpenFileDescriptorCount();
         UrlConnectionFactory.createConnection(jarConfigURL).getInputStream().close();
         // This can only fail on UNIX
         assertEquals(expected, getOpenFileDescriptorCount());
         // This can only fail on Windows
         try {
-            Files.delete(jarFile);
+            Files.delete(JAR_FILE);
         } catch (IOException e) {
             fail(e);
         }
@@ -82,8 +75,7 @@ public class ConfigurationSourceTest {
 
     @Test
     public void testLoadConfigurationSourceFromJarFile() throws Exception {
-        final Path jarFile = prepareJarConfigURL(tempDir);
-        final URL jarConfigURL = new URL("jar:" + jarFile.toUri().toURL() + "!" + PATH_IN_JAR);
+        final URL jarConfigURL = prepareJarConfigURL();
         final long expectedFdCount = getOpenFileDescriptorCount();
         ConfigurationSource configSource = ConfigurationSource.fromUri(jarConfigURL.toURI());
         assertNotNull(configSource);
@@ -98,7 +90,7 @@ public class ConfigurationSourceTest {
         assertEquals(expectedFdCount, getOpenFileDescriptorCount());
         // This can only fail on Windows
         try {
-            Files.delete(jarFile);
+            Files.delete(JAR_FILE);
         } catch (IOException e) {
             fail(e);
         }
@@ -112,18 +104,22 @@ public class ConfigurationSourceTest {
         return 0L;
     }
 
-    public static Path prepareJarConfigURL(Path dir) throws IOException {
-        Path jarFile = dir.resolve("jarFile.jar");
-        final Manifest manifest = new Manifest();
-        manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
-        try (final OutputStream os = Files.newOutputStream(jarFile);
-                final JarOutputStream jar = new JarOutputStream(os, manifest);
-                final InputStream config =
-                        requireNonNull(ConfigurationSourceTest.class.getResourceAsStream(CONFIG_FILE))) {
-            final JarEntry jarEntry = new JarEntry("config/console.xml");
-            jar.putNextEntry(jarEntry);
-            IOUtils.copy(config, os);
+    public static URL prepareJarConfigURL() throws IOException {
+        if (!Files.exists(JAR_FILE)) {
+            final Manifest manifest = new Manifest();
+            manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
+            try (final OutputStream os = Files.newOutputStream(JAR_FILE);
+                    final JarOutputStream jar = new JarOutputStream(os, manifest);
+                    final InputStream config = Files.newInputStream(CONFIG_FILE)) {
+                final JarEntry jarEntry = new JarEntry("config/console.xml");
+                jar.putNextEntry(jarEntry);
+                int len;
+                while ((len = config.read(buffer)) != -1) {
+                    jar.write(buffer, 0, len);
+                }
+                jar.closeEntry();
+            }
         }
-        return jarFile;
+        return new URL("jar:" + JAR_FILE.toUri().toURL() + "!/config/console.xml");
     }
 }

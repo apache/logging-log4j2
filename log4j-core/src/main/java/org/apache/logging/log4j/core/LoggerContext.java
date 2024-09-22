@@ -93,7 +93,7 @@ public class LoggerContext extends AbstractLifeCycle
     private volatile Configuration configuration = new DefaultConfiguration();
 
     private static final String EXTERNAL_CONTEXT_KEY = "__EXTERNAL_CONTEXT_KEY__";
-    private final ConcurrentMap<String, Object> externalMap = new ConcurrentHashMap<>();
+    private ConcurrentMap<String, Object> externalMap = new ConcurrentHashMap<>();
     private String contextName;
     private volatile URI configLocation;
     private Cancellable shutdownCallback;
@@ -128,7 +128,9 @@ public class LoggerContext extends AbstractLifeCycle
      */
     public LoggerContext(final String name, final Object externalContext, final URI configLocn) {
         this.contextName = name;
-        if (externalContext != null) {
+        if (externalContext == null) {
+            externalMap.remove(EXTERNAL_CONTEXT_KEY);
+        } else {
             externalMap.put(EXTERNAL_CONTEXT_KEY, externalContext);
         }
         this.configLocation = configLocn;
@@ -147,7 +149,9 @@ public class LoggerContext extends AbstractLifeCycle
             justification = "The configLocn comes from a secure source (Log4j properties)")
     public LoggerContext(final String name, final Object externalContext, final String configLocn) {
         this.contextName = name;
-        if (externalContext != null) {
+        if (externalContext == null) {
+            externalMap.remove(EXTERNAL_CONTEXT_KEY);
+        } else {
             externalMap.put(EXTERNAL_CONTEXT_KEY, externalContext);
         }
         if (configLocn != null) {
@@ -168,7 +172,7 @@ public class LoggerContext extends AbstractLifeCycle
         if (listeners == null) {
             synchronized (this) {
                 if (listeners == null) {
-                    listeners = new CopyOnWriteArrayList<>();
+                    listeners = new CopyOnWriteArrayList<LoggerContextShutdownAware>();
                 }
             }
         }
@@ -279,7 +283,7 @@ public class LoggerContext extends AbstractLifeCycle
      * @param config The new Configuration.
      */
     public void start(final Configuration config) {
-        LOGGER.info("Starting {}[name={}] with configuration {}...", getClass().getSimpleName(), getName(), config);
+        LOGGER.debug("Starting LoggerContext[name={}, {}] with configuration {}...", getName(), this, config);
         if (configLock.tryLock()) {
             try {
                 if (this.isInitialized() || this.isStopped()) {
@@ -293,7 +297,7 @@ public class LoggerContext extends AbstractLifeCycle
             }
         }
         setConfiguration(config);
-        LOGGER.info("{}[name={}] started with configuration {}.", getClass().getSimpleName(), getName(), config);
+        LOGGER.debug("LoggerContext[name={}, {}] started OK with configuration {}.", getName(), this, config);
     }
 
     private void setUpShutdownHook() {
@@ -308,6 +312,7 @@ public class LoggerContext extends AbstractLifeCycle
                     this.shutdownCallback = ((ShutdownCallbackRegistry) factory).addShutdownCallback(new Runnable() {
                         @Override
                         public void run() {
+                            @SuppressWarnings("resource")
                             final LoggerContext context = LoggerContext.this;
                             LOGGER.debug(
                                     SHUTDOWN_HOOK_MARKER,
@@ -709,7 +714,7 @@ public class LoggerContext extends AbstractLifeCycle
      */
     private void reconfigure(final URI configURI) {
         final Object externalContext = externalMap.get(EXTERNAL_CONTEXT_KEY);
-        final ClassLoader cl = externalContext instanceof ClassLoader ? (ClassLoader) externalContext : null;
+        final ClassLoader cl = ClassLoader.class.isInstance(externalContext) ? (ClassLoader) externalContext : null;
         LOGGER.debug(
                 "Reconfiguration started for context[name={}] at URI {} ({}) with optional ClassLoader: {}",
                 contextName,

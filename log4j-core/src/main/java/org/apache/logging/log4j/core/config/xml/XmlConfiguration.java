@@ -18,9 +18,9 @@ package org.apache.logging.log4j.core.config.xml;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -73,6 +73,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             justification = "The `newDocumentBuilder` method disables DTD processing.")
     public XmlConfiguration(final LoggerContext loggerContext, final ConfigurationSource configSource) {
         super(loggerContext, configSource);
+        final File configFile = configSource.getFile();
         byte[] buffer = null;
 
         try {
@@ -174,7 +175,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
      *
      * @param xIncludeAware enabled XInclude
      * @return a new DocumentBuilder
-     * @throws ParserConfigurationException if a DocumentBuilder cannot be created, which satisfies the configuration requested.
+     * @throws ParserConfigurationException
      */
     static DocumentBuilder newDocumentBuilder(final boolean xIncludeAware) throws ParserConfigurationException {
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -240,7 +241,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             return;
         }
         constructHierarchy(rootNode, rootElement);
-        if (!status.isEmpty()) {
+        if (status.size() > 0) {
             for (final Status s : status) {
                 LOGGER.error("Error processing element {} ({}): {}", s.name, s.element, s.errorType);
             }
@@ -294,7 +295,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         }
 
         final String text = buffer.toString().trim();
-        if (!text.isEmpty() || (!node.hasChildren() && !node.isRoot())) {
+        if (text.length() > 0 || (!node.hasChildren() && !node.isRoot())) {
             node.setValue(text);
         }
     }
@@ -336,8 +337,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[location=" + getConfigurationSource() + ", lastModified="
-                + Instant.ofEpochMilli(getConfigurationSource().getLastModified()) + "]";
+        return getClass().getSimpleName() + "[location=" + getConfigurationSource() + "]";
     }
 
     /**
