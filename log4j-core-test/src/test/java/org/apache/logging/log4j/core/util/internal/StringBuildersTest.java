@@ -28,7 +28,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class StringBuildersTest {
 
-    static Stream<Arguments> testTruncateLines_happyCases() {
+    static Stream<Arguments> truncateAfterDelimiter_should_succeed_inputs() {
         return Stream.of(
                 // maxOccurrenceCount < lines count
                 Arguments.of("abc#def#ghi#jkl#", "#", 2),
@@ -64,8 +64,9 @@ class StringBuildersTest {
     }
 
     @ParameterizedTest
-    @MethodSource("testTruncateLines_happyCases")
-    void testTruncateLinesHappyCases(final String input, final String delimiter, final int maxOccurrenceCount) {
+    @MethodSource("truncateAfterDelimiter_should_succeed_inputs")
+    void truncateAfterDelimiter_should_succeed(
+            final String input, final String delimiter, final int maxOccurrenceCount) {
         final StringBuilder buffer = new StringBuilder(input);
         StringBuilders.truncateAfterDelimiter(buffer, delimiter, maxOccurrenceCount);
         final String expected;
@@ -81,7 +82,7 @@ class StringBuildersTest {
         assertThat(buffer.toString()).isEqualTo(expected);
     }
 
-    static Stream<Arguments> testTruncateLines_failCases() {
+    static Stream<Arguments> truncateAfterDelimiter_should_fail_inputs() {
         return Stream.of(
                 // negative maxOccurrenceCount
                 Arguments.of("abc#def#ghi#jkl#", "#", -1, IllegalArgumentException.class),
@@ -92,8 +93,8 @@ class StringBuildersTest {
     }
 
     @ParameterizedTest
-    @MethodSource("testTruncateLines_failCases")
-    void testTruncateLinesFailCases(
+    @MethodSource("truncateAfterDelimiter_should_fail_inputs")
+    void truncateAfterDelimiter_should_fail(
             final String input, final String delimiter, final int maxOccurrenceCount, final Class<Throwable> expected) {
         final StringBuilder buffer = input == null ? null : new StringBuilder(input);
         assertThatThrownBy(() -> StringBuilders.truncateAfterDelimiter(buffer, delimiter, maxOccurrenceCount))
