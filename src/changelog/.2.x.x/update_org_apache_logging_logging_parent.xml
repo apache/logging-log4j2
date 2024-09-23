@@ -3,6 +3,5 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="2983" link="https://github.com/apache/logging-log4j2/pull/2983"/>
-  <description format="asciidoc">Update `org.openrewrite.maven:rewrite-maven-plugin` to version `5.15.0`</description>
+  <description format="asciidoc">Update `org.apache.logging:logging-parent` to version `11.3.0`</description>
 </entry>

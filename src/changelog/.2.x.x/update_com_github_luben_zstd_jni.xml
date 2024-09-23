@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="2983" link="https://github.com/apache/logging-log4j2/pull/2983"/>
-  <description format="asciidoc">Update `org.openrewrite.maven:rewrite-maven-plugin` to version `5.15.0`</description>
+  <issue id="2998" link="https://github.com/apache/logging-log4j2/pull/2998"/>
+  <description format="asciidoc">Update `com.github.luben:zstd-jni` to version `1.5.6-6`</description>
 </entry>

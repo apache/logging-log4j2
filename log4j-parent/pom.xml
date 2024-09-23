@@ -53,7 +53,6 @@
     <asciidoctor-maven-plugin.version>2.2.4</asciidoctor-maven-plugin.version>
     <docker-maven-plugin.version>0.45.0</docker-maven-plugin.version>
     <exam-maven-plugin.version>4.13.5</exam-maven-plugin.version>
-    <gmavenplus-plugin.version>3.0.2</gmavenplus-plugin.version>
     <maven-taglib-plugin.version>2.4</maven-taglib-plugin.version>
     <!-- `surefire.version` property used in `apache.org:apache`: -->
     <surefire.version>3.5.0</surefire.version>
@@ -73,7 +72,7 @@
     <commons-compress.version>1.27.1</commons-compress.version>
     <commons-csv.version>1.11.0</commons-csv.version>
     <commons-dbcp2.version>2.12.0</commons-dbcp2.version>
-    <commons-io.version>2.16.1</commons-io.version>
+    <commons-io.version>2.17.0</commons-io.version>
     <commons-lang3.version>3.17.0</commons-lang3.version>
     <commons-logging.version>1.3.4</commons-logging.version>
     <!-- `com.conversantmedia:disruptor` version 1.2.16 requires Java 9: -->
@@ -81,7 +80,7 @@
     <disruptor.version>3.4.4</disruptor.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <felix.version>7.0.5</felix.version>
-    <groovy.version>3.0.22</groovy.version>
+    <groovy.version>4.0.22</groovy.version>
     <guava.version>33.3.0-jre</guava.version>
     <h2.version>2.2.224</h2.version>
     <hamcrest.version>3.0</hamcrest.version>
@@ -134,12 +133,12 @@
     <spring-boot.version>2.7.18</spring-boot.version>
     <spring-framework.version>5.3.39</spring-framework.version>
     <system-stubs.version>2.0.3</system-stubs.version>
-    <tomcat-juli.version>10.0.27</tomcat-juli.version>
+    <tomcat-juli.version>10.1.30</tomcat-juli.version>
     <velocity.version>1.7</velocity.version>
     <wiremock.version>2.35.2</wiremock.version>
     <xmlunit.version>2.10.0</xmlunit.version>
     <xz.version>1.10</xz.version>
-    <zstd.version>1.5.6-5</zstd.version>
+    <zstd.version>1.5.6-6</zstd.version>
 
     <!-- =====================================================
          Pinned transitive dependency version properties (in alphabetical order)
@@ -177,7 +176,7 @@
       <!-- END: Modules that are consumed only internally -->
 
       <dependency>
-        <groupId>org.codehaus.groovy</groupId>
+        <groupId>org.apache.groovy</groupId>
         <artifactId>groovy-bom</artifactId>
         <version>${groovy.version}</version>
         <type>pom</type>
@@ -1042,21 +1041,6 @@
       <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
-        <version>${gmavenplus-plugin.version}</version>
-        <dependencies>
-          <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-ant</artifactId>
-            <version>${groovy.version}</version>
-            <scope>runtime</scope>
-          </dependency>
-          <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy</artifactId>
-            <version>${groovy.version}</version>
-            <scope>runtime</scope>
-          </dependency>
-        </dependencies>
         <executions>
           <execution>
             <id>ban-static-transitive</id>
