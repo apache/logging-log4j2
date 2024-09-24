@@ -96,23 +96,29 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">Abstract base class for implementations of Action.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="AbstractPathAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">AbstractPathAction</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="AbstractCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">AbstractCompressAction</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">&nbsp;</div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="AbstractPathAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">AbstractPathAction</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">Abstract action for processing files that are accepted by the specified PathFilters.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab1"><a href="Action.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">Action</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab1">
+<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="Action.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">Action</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab1">
 <div class="block">The Action interface should be implemented by any class that performs
  file system actions for RollingFileAppenders after the close of
  the active log file.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="CommonsCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">CommonsCompressAction</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">
-<div class="block">Compresses a file using bzip2 compression.</div>
-</div>
 <div class="col-first even-row-color class-summary class-summary-tab2"><a href="CompositeAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">CompositeAction</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">A group of Actions to be executed in sequence.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="CompressActionFactory.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">CompressActionFactory</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab1">
+<div class="block">A factory to produce actions that compress log files.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="CompressActionFactoryProvider.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">CompressActionFactoryProvider</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">
+<div class="block">Interface for plugins that provide additional compression algorithms.</div>
 </div>
 <div class="col-first odd-row-color class-summary class-summary-tab2"><a href="DeleteAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">DeleteAction</a></div>
 <div class="col-last odd-row-color class-summary class-summary-tab2">
@@ -126,72 +132,64 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">File rename action.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="GzCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">GzCompressAction</a></div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="IfAccumulatedFileCount.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">IfAccumulatedFileCount</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab2">
-<div class="block">Compresses a file using GZ compression.</div>
-</div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="IfAccumulatedFileCount.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">IfAccumulatedFileCount</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">PathCondition that accepts paths after some count threshold is exceeded during the file tree walk.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="IfAccumulatedFileSize.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">IfAccumulatedFileSize</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="IfAccumulatedFileSize.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">IfAccumulatedFileSize</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">PathCondition that accepts paths after the accumulated file size threshold is exceeded during the file tree walk.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="IfAll.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">IfAll</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="IfAll.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">IfAll</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">Composite <code>PathCondition</code> that only accepts objects that are accepted by <em>all</em> component conditions.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="IfAny.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">IfAny</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="IfAny.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">IfAny</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">Composite <code>PathCondition</code> that accepts objects that are accepted by <em>any</em> component conditions.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="IfFileName.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">IfFileName</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="IfFileName.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">IfFileName</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">PathCondition that accepts files for deletion if their relative path matches either a glob pattern or a regular
  expression.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="IfLastModified.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">IfLastModified</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="IfLastModified.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">IfLastModified</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">PathCondition that accepts paths that are older than the specified duration.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="IfLastModified.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">IfLastModified.Builder</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">&nbsp;</div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="IfNot.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">IfNot</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="IfLastModified.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">IfLastModified.Builder</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">&nbsp;</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="IfNot.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">IfNot</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">Wrapper <code>PathCondition</code> that accepts objects that are rejected by the wrapped component filter.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="PathCondition.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">PathCondition</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab1">
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="PathCondition.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">PathCondition</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">
 <div class="block">Filter that accepts or rejects a candidate <code>Path</code> for deletion.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="PathSortByModificationTime.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PathSortByModificationTime</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="PathSortByModificationTime.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PathSortByModificationTime</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block"><a href="PathSorter.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action"><code>PathSorter</code></a> that sorts path by their LastModified attribute.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="PathSorter.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">PathSorter</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab1">
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="PathSorter.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">PathSorter</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">
 <div class="block">Defines the interface of classes that can sort Paths.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="PathWithAttributes.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PathWithAttributes</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="PathWithAttributes.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PathWithAttributes</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">Tuple of a <code>Path</code> and <code>BasicFileAttributes</code>, used for sorting.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="PosixViewAttributeAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="PosixViewAttributeAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">File POSIX attribute view action.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">Builder for the POSIX view attribute action.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="SortingVisitor.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">SortingVisitor</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">
-<div class="block">FileVisitor that sorts files.</div>
-</div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="ZipCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">ZipCompressAction</a></div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="SortingVisitor.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">SortingVisitor</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab2">
-<div class="block">Compresses a file using Zip compression.</div>
+<div class="block">FileVisitor that sorts files.</div>
 </div>
 </div>
 </div>

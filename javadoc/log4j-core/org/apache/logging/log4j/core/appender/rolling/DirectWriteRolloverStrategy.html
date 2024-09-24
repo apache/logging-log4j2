@@ -47,13 +47,13 @@ loadScripts(document, 'script');</script>
 <li>Summary:&nbsp;</li>
 <li><a href="#nested-class-summary">Nested</a>&nbsp;|&nbsp;</li>
 <li><a href="#field-summary">Field</a>&nbsp;|&nbsp;</li>
-<li><a href="#constructor-summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method-summary">Method</a></li>
 </ul>
 <ul class="sub-nav-list">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor-detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method-detail">Method</a></li>
 </ul>
 </div>
@@ -129,29 +129,6 @@ implements <a href="DirectFileRolloverStrategy.html" title="interface in org.apa
 <code><a href="AbstractRolloverStrategy.html#LOGGER">LOGGER</a>, <a href="AbstractRolloverStrategy.html#PATTERN_COUNTER">PATTERN_COUNTER</a>, <a href="AbstractRolloverStrategy.html#strSubstitutor">strSubstitutor</a></code></div>
 </section>
 </li>
-<!-- ======== CONSTRUCTOR SUMMARY ======== -->
-<li>
-<section class="constructor-summary" id="constructor-summary">
-<h2>Constructor Summary</h2>
-<div class="caption"><span>Constructors</span></div>
-<div class="summary-table three-column-summary">
-<div class="table-header col-first">Modifier</div>
-<div class="table-header col-second">Constructor</div>
-<div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>protected </code></div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(int,int,org.apache.logging.log4j.core.lookup.StrSubstitutor,org.apache.logging.log4j.core.appender.rolling.action.Action%5B%5D,boolean,java.lang.String,org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">DirectWriteRolloverStrategy</a><wbr>(int&nbsp;maxFiles,
- int&nbsp;compressionLevel,
- <a href="../../lookup/StrSubstitutor.html" title="class in org.apache.logging.log4j.core.lookup">StrSubstitutor</a>&nbsp;strSubstitutor,
- <a href="action/Action.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">Action</a>[]&nbsp;customActions,
- boolean&nbsp;stopCustomActionsOnError,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;tempCompressedFilePatternString,
- <a href="../../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
-<div class="col-last even-row-color">
-<div class="block">Constructs a new instance.</div>
-</div>
-</div>
-</section>
-</li>
 <!-- ========== METHOD SUMMARY =========== -->
 <li>
 <section class="method-summary" id="method-summary">
@@ -166,35 +143,32 @@ implements <a href="DirectFileRolloverStrategy.html" title="interface in org.apa
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#clearCurrentFileName()" class="member-name-link">clearCurrentFileName</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getCurrentFileName(org.apache.logging.log4j.core.appender.rolling.RollingFileManager)" class="member-name-link">getCurrentFileName</a><wbr>(<a href="RollingFileManager.html" title="class in org.apache.logging.log4j.core.appender.rolling">RollingFileManager</a>&nbsp;manager)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="action/Action.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">Action</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getCustomActions()" class="member-name-link">getCustomActions</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getCompressionLevel()" class="member-name-link">getCompressionLevel</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getMaxFiles()" class="member-name-link">getMaxFiles</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getCurrentFileName(org.apache.logging.log4j.core.appender.rolling.RollingFileManager)" class="member-name-link">getCurrentFileName</a><wbr>(<a href="RollingFileManager.html" title="class in org.apache.logging.log4j.core.appender.rolling">RollingFileManager</a>&nbsp;manager)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="PatternProcessor.html" title="class in org.apache.logging.log4j.core.appender.rolling">PatternProcessor</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTempCompressedFilePattern()" class="member-name-link">getTempCompressedFilePattern</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="action/Action.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">Action</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getCustomActions()" class="member-name-link">getCustomActions</a>()</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isStopCustomActionsOnError()" class="member-name-link">isStopCustomActionsOnError</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getMaxFiles()" class="member-name-link">getMaxFiles</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="PatternProcessor.html" title="class in org.apache.logging.log4j.core.appender.rolling">PatternProcessor</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTempCompressedFilePattern()" class="member-name-link">getTempCompressedFilePattern</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isStopCustomActionsOnError()" class="member-name-link">isStopCustomActionsOnError</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="DirectWriteRolloverStrategy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">DirectWriteRolloverStrategy.Builder</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#newBuilder()" class="member-name-link">newBuilder</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="RolloverDescription.html" title="interface in org.apache.logging.log4j.core.appender.rolling">RolloverDescription</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#rollover(org.apache.logging.log4j.core.appender.rolling.RollingFileManager)" class="member-name-link">rollover</a><wbr>(<a href="RollingFileManager.html" title="class in org.apache.logging.log4j.core.appender.rolling">RollingFileManager</a>&nbsp;manager)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="DirectWriteRolloverStrategy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">DirectWriteRolloverStrategy.Builder</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#newBuilder()" class="member-name-link">newBuilder</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="RolloverDescription.html" title="interface in org.apache.logging.log4j.core.appender.rolling">RolloverDescription</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#rollover(org.apache.logging.log4j.core.appender.rolling.RollingFileManager)" class="member-name-link">rollover</a><wbr>(<a href="RollingFileManager.html" title="class in org.apache.logging.log4j.core.appender.rolling">RollingFileManager</a>&nbsp;manager)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Performs the rollover.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toString()" class="member-name-link">toString</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toString()" class="member-name-link">toString</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -210,35 +184,6 @@ implements <a href="DirectFileRolloverStrategy.html" title="interface in org.apa
 </section>
 <section class="details">
 <ul class="details-list">
-<!-- ========= CONSTRUCTOR DETAIL ======== -->
-<li>
-<section class="constructor-details" id="constructor-detail">
-<h2>Constructor Details</h2>
-<ul class="member-list">
-<li>
-<section class="detail" id="&lt;init&gt;(int,int,org.apache.logging.log4j.core.lookup.StrSubstitutor,org.apache.logging.log4j.core.appender.rolling.action.Action[],boolean,java.lang.String,org.apache.logging.log4j.core.config.Configuration)">
-<h3>DirectWriteRolloverStrategy</h3>
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="element-name">DirectWriteRolloverStrategy</span><wbr><span class="parameters">(int&nbsp;maxFiles,
- int&nbsp;compressionLevel,
- <a href="../../lookup/StrSubstitutor.html" title="class in org.apache.logging.log4j.core.lookup">StrSubstitutor</a>&nbsp;strSubstitutor,
- <a href="action/Action.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">Action</a>[]&nbsp;customActions,
- boolean&nbsp;stopCustomActionsOnError,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;tempCompressedFilePatternString,
- <a href="../../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</span></div>
-<div class="block">Constructs a new instance.</div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>maxFiles</code> - The maximum number of files that match the date portion of the pattern to keep.</dd>
-<dd><code>customActions</code> - custom actions to perform asynchronously after rollover</dd>
-<dd><code>stopCustomActionsOnError</code> - whether to stop executing asynchronous actions if an error occurs</dd>
-<dd><code>tempCompressedFilePatternString</code> - File pattern of the working file
-                                     used during compression, if null no temporary file are used</dd>
-</dl>
-</section>
-</li>
-</ul>
-</section>
-</li>
 <!-- ============ METHOD DETAIL ========== -->
 <li>
 <section class="method-details" id="method-detail">
@@ -249,12 +194,6 @@ implements <a href="DirectFileRolloverStrategy.html" title="interface in org.apa
 <h3>newBuilder</h3>
 <div class="member-signature"><span class="annotations"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/PluginFactory.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@PluginFactory</a>
 </span><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="DirectWriteRolloverStrategy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">DirectWriteRolloverStrategy.Builder</a></span>&nbsp;<span class="element-name">newBuilder</span>()</div>
-</section>
-</li>
-<li>
-<section class="detail" id="getCompressionLevel()">
-<h3>getCompressionLevel</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">getCompressionLevel</span>()</div>
 </section>
 </li>
 <li>

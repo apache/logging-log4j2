@@ -530,30 +530,6 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier</div>
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>protected </code></div>
-<div class="col-second even-row-color"><code><a href="../../appender/rolling/DefaultRolloverStrategy.html#%3Cinit%3E(int,int,boolean,int,org.apache.logging.log4j.core.lookup.StrSubstitutor,org.apache.logging.log4j.core.appender.rolling.action.Action%5B%5D,boolean,java.lang.String,org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">DefaultRolloverStrategy</a><wbr>(int&nbsp;minIndex,
- int&nbsp;maxIndex,
- boolean&nbsp;useMax,
- int&nbsp;compressionLevel,
- <a href="../../lookup/StrSubstitutor.html" title="class in org.apache.logging.log4j.core.lookup">StrSubstitutor</a>&nbsp;strSubstitutor,
- <a href="../../appender/rolling/action/Action.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">Action</a>[]&nbsp;customActions,
- boolean&nbsp;stopCustomActionsOnError,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;tempCompressedFilePatternString,
- <a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
-<div class="col-last even-row-color">
-<div class="block">Constructs a new instance.</div>
-</div>
-<div class="col-first odd-row-color"><code>protected </code></div>
-<div class="col-second odd-row-color"><code><a href="../../appender/rolling/DirectWriteRolloverStrategy.html#%3Cinit%3E(int,int,org.apache.logging.log4j.core.lookup.StrSubstitutor,org.apache.logging.log4j.core.appender.rolling.action.Action%5B%5D,boolean,java.lang.String,org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">DirectWriteRolloverStrategy</a><wbr>(int&nbsp;maxFiles,
- int&nbsp;compressionLevel,
- <a href="../../lookup/StrSubstitutor.html" title="class in org.apache.logging.log4j.core.lookup">StrSubstitutor</a>&nbsp;strSubstitutor,
- <a href="../../appender/rolling/action/Action.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">Action</a>[]&nbsp;customActions,
- boolean&nbsp;stopCustomActionsOnError,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;tempCompressedFilePatternString,
- <a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
-<div class="col-last odd-row-color">
-<div class="block">Constructs a new instance.</div>
-</div>
 <div class="col-first even-row-color"><code>&nbsp;</code></div>
 <div class="col-second even-row-color"><code><a href="../../appender/rolling/PatternProcessor.html#%3Cinit%3E(org.apache.logging.log4j.core.config.Configuration,java.lang.String)" class="member-name-link">PatternProcessor</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pattern)</code></div>
@@ -631,9 +607,12 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">
 <div class="block">Create a DeleteAction.</div>
 </div>
-<div class="col-first odd-row-color"><code><a href="../../appender/rolling/action/PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">PosixViewAttributeAction.Builder.</span><code><a href="../../appender/rolling/action/PosixViewAttributeAction.Builder.html#setConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfiguration</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
-<div class="col-last odd-row-color">
+<div class="col-first odd-row-color"><code>static <a href="../../appender/rolling/action/CompressActionFactoryProvider.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">CompressActionFactoryProvider</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">CompressActionFactoryProvider.</span><code><a href="../../appender/rolling/action/CompressActionFactoryProvider.html#newInstance(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">newInstance</a><wbr>(@Nullable <a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code><a href="../../appender/rolling/action/PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">PosixViewAttributeAction.Builder.</span><code><a href="../../appender/rolling/action/PosixViewAttributeAction.Builder.html#setConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfiguration</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
+<div class="col-last even-row-color">
 <div class="block">Define required configuration, used to retrieve string substituter.</div>
 </div>
 </div>

@@ -714,6 +714,32 @@ This means that even with immediateFlush=false, there will never be any items le
 </div>
 </div>
 <div class="sect2">
+<h3 id="org-apache-logging-log4j_log4j-compress"><a class="anchor" href="#org-apache-logging-log4j_log4j-compress"></a><code>org.apache.logging.log4j:log4j-compress</code></h3>
+<div class="sect3">
+<h4 id="org-apache-logging-log4j_log4j-compress_org-apache-logging-log4j-compress-commons-CommonsCompressActionFactoryProvider"><a class="anchor" href="#org-apache-logging-log4j_log4j-compress_org-apache-logging-log4j-compress-commons-CommonsCompressActionFactoryProvider"></a>CommonsCompressActionFactoryProvider</h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Class</dt>
+<dd>
+<p><code>org.apache.logging.log4j.compress.commons.CommonsCompressActionFactoryProvider</code></p>
+</dd>
+<dt class="hdlist1">Provider</dt>
+<dd>
+<p><code>org.apache.logging.log4j:log4j-compress</code></p>
+</dd>
+</dl>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-compress_org-apache-logging-log4j-compress-commons-CommonsCompressActionFactoryProvider_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-compress_org-apache-logging-log4j-compress-commons-CommonsCompressActionFactoryProvider_XML-snippet"></a>XML snippet</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;CommonsCompressActionFactoryProvider/&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
 <h3 id="org-apache-logging-log4j_log4j-config-properties"><a class="anchor" href="#org-apache-logging-log4j_log4j-config-properties"></a><code>org.apache.logging.log4j:log4j-config-properties</code></h3>
 <div class="sect3">
 <h4 id="org-apache-logging-log4j_log4j-config-properties_org-apache-logging-log4j-config-properties-JavaPropsConfigurationFactory"><a class="anchor" href="#org-apache-logging-log4j_log4j-config-properties_org-apache-logging-log4j-config-properties-JavaPropsConfigurationFactory"></a>JavaPropsConfigurationFactory</h4>
@@ -5122,8 +5148,7 @@ log" be the value of the <strong>ActiveFile</strong> option and "foo.
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-DefaultRolloverStrategy_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-DefaultRolloverStrategy_XML-snippet"></a>XML snippet</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;DefaultRolloverStrategy compressionLevel=""
-                         fileIndex=""
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;DefaultRolloverStrategy fileIndex=""
                          max=""
                          min=""
                          stopCustomActionsOnError=""
@@ -5154,14 +5179,6 @@ log" be the value of the <strong>ActiveFile</strong> option and "foo.
 </tr>
 </thead>
 <tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>compressionLevel</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Defines compression level.</p>
-</div></div></td>
-</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>fileIndex</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
@@ -5290,8 +5307,7 @@ log" be the value of the <strong>ActiveFile</strong> option and "foo.
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-DirectWriteRolloverStrategy_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-DirectWriteRolloverStrategy_XML-snippet"></a>XML snippet</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;DirectWriteRolloverStrategy compressionLevel=""
-                             maxFiles=""
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;DirectWriteRolloverStrategy maxFiles=""
                              stopCustomActionsOnError=""
                              tempCompressedFilePattern=""&gt;
     &lt;a-Action-implementation/&gt;&lt;!-- multiple occurrences allowed --&gt;
@@ -5320,14 +5336,6 @@ log" be the value of the <strong>ActiveFile</strong> option and "foo.
 </tr>
 </thead>
 <tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>compressionLevel</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Defines compression level.</p>
-</div></div></td>
-</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>maxFiles</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
@@ -5754,6 +5762,37 @@ log" be the value of the <strong>ActiveFile</strong> option and "foo.
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-PosixViewAttributeAction">PosixViewAttributeAction</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-CompressActionFactoryProvider"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-CompressActionFactoryProvider"></a><code>org.apache.logging.log4j.core.appender.rolling.action.CompressActionFactoryProvider</code></h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Class</dt>
+<dd>
+<p><code>org.apache.logging.log4j.core.appender.rolling.action.CompressActionFactoryProvider</code></p>
+</dd>
+<dt class="hdlist1">Provider</dt>
+<dd>
+<p><code>org.apache.logging.log4j:log4j-core</code></p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Interface for plugins that provide additional compression algorithms.</p>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-CompressActionFactoryProvider_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-CompressActionFactoryProvider_implementations"></a>Known implementations</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-compress_org-apache-logging-log4j-compress-commons-CommonsCompressActionFactoryProvider">CommonsCompressActionFactoryProvider</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-internal-JreCompressActionFactoryProvider">JreCompressActionFactoryProvider</a></p>
 </li>
 </ul>
 </div>
@@ -6705,6 +6744,29 @@ A glob is a simplified pattern expression described in <code>java.nio.file.FileS
 </tr>
 </tbody>
 </table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-internal-JreCompressActionFactoryProvider"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-internal-JreCompressActionFactoryProvider"></a>JreCompressActionFactoryProvider</h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Class</dt>
+<dd>
+<p><code>org.apache.logging.log4j.core.appender.rolling.action.internal.JreCompressActionFactoryProvider</code></p>
+</dd>
+<dt class="hdlist1">Provider</dt>
+<dd>
+<p><code>org.apache.logging.log4j:log4j-core</code></p>
+</dd>
+</dl>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-internal-JreCompressActionFactoryProvider_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-internal-JreCompressActionFactoryProvider_XML-snippet"></a>XML snippet</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;JreCompressActionFactoryProvider/&gt;</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="sect3">

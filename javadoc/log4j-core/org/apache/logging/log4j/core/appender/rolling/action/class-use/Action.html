@@ -159,30 +159,6 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier</div>
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>protected </code></div>
-<div class="col-second even-row-color"><code><a href="../../DefaultRolloverStrategy.html#%3Cinit%3E(int,int,boolean,int,org.apache.logging.log4j.core.lookup.StrSubstitutor,org.apache.logging.log4j.core.appender.rolling.action.Action%5B%5D,boolean,java.lang.String,org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">DefaultRolloverStrategy</a><wbr>(int&nbsp;minIndex,
- int&nbsp;maxIndex,
- boolean&nbsp;useMax,
- int&nbsp;compressionLevel,
- <a href="../../../../lookup/StrSubstitutor.html" title="class in org.apache.logging.log4j.core.lookup">StrSubstitutor</a>&nbsp;strSubstitutor,
- <a href="../Action.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">Action</a>[]&nbsp;customActions,
- boolean&nbsp;stopCustomActionsOnError,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;tempCompressedFilePatternString,
- <a href="../../../../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
-<div class="col-last even-row-color">
-<div class="block">Constructs a new instance.</div>
-</div>
-<div class="col-first odd-row-color"><code>protected </code></div>
-<div class="col-second odd-row-color"><code><a href="../../DirectWriteRolloverStrategy.html#%3Cinit%3E(int,int,org.apache.logging.log4j.core.lookup.StrSubstitutor,org.apache.logging.log4j.core.appender.rolling.action.Action%5B%5D,boolean,java.lang.String,org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">DirectWriteRolloverStrategy</a><wbr>(int&nbsp;maxFiles,
- int&nbsp;compressionLevel,
- <a href="../../../../lookup/StrSubstitutor.html" title="class in org.apache.logging.log4j.core.lookup">StrSubstitutor</a>&nbsp;strSubstitutor,
- <a href="../Action.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">Action</a>[]&nbsp;customActions,
- boolean&nbsp;stopCustomActionsOnError,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;tempCompressedFilePatternString,
- <a href="../../../../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
-<div class="col-last odd-row-color">
-<div class="block">Constructs a new instance.</div>
-</div>
 <div class="col-first even-row-color"><code>&nbsp;</code></div>
 <div class="col-second even-row-color"><code><a href="../../RolloverDescriptionImpl.html#%3Cinit%3E(java.lang.String,boolean,org.apache.logging.log4j.core.appender.rolling.action.Action,org.apache.logging.log4j.core.appender.rolling.action.Action)" class="member-name-link">RolloverDescriptionImpl</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;activeFileName,
  boolean&nbsp;append,
@@ -208,14 +184,12 @@ loadScripts(document, 'script');</script>
 <div class="block">Abstract base class for implementations of Action.</div>
 </div>
 <div class="col-first odd-row-color"><code>class&nbsp;</code></div>
-<div class="col-second odd-row-color"><code><a href="../AbstractPathAction.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">AbstractPathAction</a></code></div>
-<div class="col-last odd-row-color">
-<div class="block">Abstract action for processing files that are accepted by the specified PathFilters.</div>
-</div>
-<div class="col-first even-row-color"><code>final class&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../CommonsCompressAction.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">CommonsCompressAction</a></code></div>
+<div class="col-second odd-row-color"><code><a href="../AbstractCompressAction.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">AbstractCompressAction</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../AbstractPathAction.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">AbstractPathAction</a></code></div>
 <div class="col-last even-row-color">
-<div class="block">Compresses a file using bzip2 compression.</div>
+<div class="block">Abstract action for processing files that are accepted by the specified PathFilters.</div>
 </div>
 <div class="col-first odd-row-color"><code>class&nbsp;</code></div>
 <div class="col-second odd-row-color"><code><a href="../CompositeAction.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">CompositeAction</a></code></div>
@@ -232,20 +206,10 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color">
 <div class="block">File rename action.</div>
 </div>
-<div class="col-first even-row-color"><code>final class&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../GzCompressAction.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">GzCompressAction</a></code></div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../PosixViewAttributeAction.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction</a></code></div>
 <div class="col-last even-row-color">
-<div class="block">Compresses a file using GZ compression.</div>
-</div>
-<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
-<div class="col-second odd-row-color"><code><a href="../PosixViewAttributeAction.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction</a></code></div>
-<div class="col-last odd-row-color">
 <div class="block">File POSIX attribute view action.</div>
-</div>
-<div class="col-first even-row-color"><code>final class&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../ZipCompressAction.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">ZipCompressAction</a></code></div>
-<div class="col-last even-row-color">
-<div class="block">Compresses a file using Zip compression.</div>
 </div>
 </div>
 <div class="caption"><span>Methods in <a href="../package-summary.html">org.apache.logging.log4j.core.appender.rolling.action</a> that return <a href="../Action.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">Action</a></span></div>
@@ -253,6 +217,20 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>default <a href="../Action.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">Action</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">CompressActionFactory.</span><code><a href="../CompressActionFactory.html#createCompressAction(java.lang.String,java.lang.String,java.util.Map)" class="member-name-link">createCompressAction</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;source,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;destination,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;options)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Returns an action that compresses a file.</div>
+</div>
+<div class="col-first odd-row-color"><code><a href="../Action.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">Action</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">CompressActionFactory.</span><code><a href="../CompressActionFactory.html#createCompressAction(java.nio.file.Path,java.nio.file.Path,java.util.Map)" class="member-name-link">createCompressAction</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/Path.html" title="class or interface in java.nio.file" class="external-link">Path</a>&nbsp;source,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/Path.html" title="class or interface in java.nio.file" class="external-link">Path</a>&nbsp;destination,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;options)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Returns an action that compresses a file.</div>
+</div>
 <div class="col-first even-row-color"><code><a href="../Action.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">Action</a>[]</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">CompositeAction.</span><code><a href="../CompositeAction.html#getActions()" class="member-name-link">getActions</a>()</code></div>
 <div class="col-last even-row-color">&nbsp;</div>

@@ -84,6 +84,10 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/appender/SocketAppender.AbstractBuilder.html#%3Cinit%3E()" class="member-name-link">AbstractBuilder()</a> - Constructor for class org.apache.logging.log4j.core.appender.<a href="org/apache/logging/log4j/core/appender/SocketAppender.AbstractBuilder.html" title="class in org.apache.logging.log4j.core.appender">SocketAppender.AbstractBuilder</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/AbstractCompressAction.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">AbstractCompressAction</a> - Class in <a href="org/apache/logging/log4j/core/appender/rolling/action/package-summary.html">org.apache.logging.log4j.core.appender.rolling.action</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/AbstractCompressAction.html#%3Cinit%3E(java.nio.file.Path,java.nio.file.Path)" class="member-name-link">AbstractCompressAction(Path, Path)</a> - Constructor for class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/AbstractCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">AbstractCompressAction</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/config/AbstractConfiguration.html" class="type-name-link" title="class in org.apache.logging.log4j.core.config">AbstractConfiguration</a> - Class in <a href="org/apache/logging/log4j/core/config/package-summary.html">org.apache.logging.log4j.core.config</a></dt>
 <dd>
 <div class="block">The base Configuration.</div>
@@ -255,7 +259,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/AbstractRolloverStrategy.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling">AbstractRolloverStrategy</a> - Class in <a href="org/apache/logging/log4j/core/appender/rolling/package-summary.html">org.apache.logging.log4j.core.appender.rolling</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/AbstractRolloverStrategy.html#%3Cinit%3E(org.apache.logging.log4j.core.lookup.StrSubstitutor)" class="member-name-link">AbstractRolloverStrategy(StrSubstitutor)</a> - Constructor for class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/AbstractRolloverStrategy.html" title="class in org.apache.logging.log4j.core.appender.rolling">AbstractRolloverStrategy</a></dt>
+<dt><a href="org/apache/logging/log4j/core/appender/rolling/AbstractRolloverStrategy.html#%3Cinit%3E(org.apache.logging.log4j.core.appender.rolling.action.CompressActionFactoryProvider,org.apache.logging.log4j.core.lookup.StrSubstitutor)" class="member-name-link">AbstractRolloverStrategy(CompressActionFactoryProvider, StrSubstitutor)</a> - Constructor for class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/AbstractRolloverStrategy.html" title="class in org.apache.logging.log4j.core.appender.rolling">AbstractRolloverStrategy</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/net/AbstractSocketManager.html" class="type-name-link" title="class in org.apache.logging.log4j.core.net">AbstractSocketManager</a> - Class in <a href="org/apache/logging/log4j/core/net/package-summary.html">org.apache.logging.log4j.core.net</a></dt>
 <dd>
@@ -1133,6 +1137,8 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/util/ExtensionLanguageMapping.html#BSH" class="member-name-link">BSH</a> - Enum constant in enum class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/ExtensionLanguageMapping.html" title="enum class in org.apache.logging.log4j.core.util">ExtensionLanguageMapping</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/AbstractCompressAction.html#BUF_SIZE" class="member-name-link">BUF_SIZE</a> - Static variable in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/AbstractCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">AbstractCompressAction</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/db/AbstractDatabaseManager.html#buffer(org.apache.logging.log4j.core.LogEvent)" class="member-name-link">buffer(LogEvent)</a> - Method in class org.apache.logging.log4j.core.appender.db.<a href="org/apache/logging/log4j/core/appender/db/AbstractDatabaseManager.html" title="class in org.apache.logging.log4j.core.appender.db">AbstractDatabaseManager</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/AppenderSet.Builder.html#build()" class="member-name-link">build()</a> - Method in class org.apache.logging.log4j.core.appender.<a href="org/apache/logging/log4j/core/appender/AppenderSet.Builder.html" title="class in org.apache.logging.log4j.core.appender">AppenderSet.Builder</a></dt>
@@ -1384,8 +1390,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Helper class for ByteBufferDestination implementors.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/FileExtension.html#BZIP2" class="member-name-link">BZIP2</a> - Enum constant in enum class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/FileExtension.html" title="enum class in org.apache.logging.log4j.core.appender.rolling">FileExtension</a></dt>
-<dd>&nbsp;</dd>
 </dl>
 <h2 class="title" id="I:C">C</h2>
 <dl class="index">
@@ -1622,14 +1626,6 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/appender/nosql/NoSqlDatabaseManager.html#commitAndClose()" class="member-name-link">commitAndClose()</a> - Method in class org.apache.logging.log4j.core.appender.nosql.<a href="org/apache/logging/log4j/core/appender/nosql/NoSqlDatabaseManager.html" title="class in org.apache.logging.log4j.core.appender.nosql">NoSqlDatabaseManager</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/CommonsCompressAction.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">CommonsCompressAction</a> - Class in <a href="org/apache/logging/log4j/core/appender/rolling/action/package-summary.html">org.apache.logging.log4j.core.appender.rolling.action</a></dt>
-<dd>
-<div class="block">Compresses a file using bzip2 compression.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/CommonsCompressAction.html#%3Cinit%3E(java.lang.String,java.io.File,java.io.File,boolean)" class="member-name-link">CommonsCompressAction(String, File, File, boolean)</a> - Constructor for class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/CommonsCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">CommonsCompressAction</a></dt>
-<dd>
-<div class="block">Creates new instance of Bzip2CompressAction.</div>
-</dd>
 <dt><a href="org/apache/logging/log4j/core/config/OrderComparator.html#compare(java.lang.Class,java.lang.Class)" class="member-name-link">compare(Class&lt;?&gt;, Class&lt;?&gt;)</a> - Method in class org.apache.logging.log4j.core.config.<a href="org/apache/logging/log4j/core/config/OrderComparator.html" title="class in org.apache.logging.log4j.core.config">OrderComparator</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/PathSortByModificationTime.html#compare(org.apache.logging.log4j.core.appender.rolling.action.PathWithAttributes,org.apache.logging.log4j.core.appender.rolling.action.PathWithAttributes)" class="member-name-link">compare(PathWithAttributes, PathWithAttributes)</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/PathSortByModificationTime.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PathSortByModificationTime</a></dt>
@@ -1687,6 +1683,14 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/CompositeTriggeringPolicy.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling">CompositeTriggeringPolicy</a> - Class in <a href="org/apache/logging/log4j/core/appender/rolling/package-summary.html">org.apache.logging.log4j.core.appender.rolling</a></dt>
 <dd>
 <div class="block">Triggering policy that wraps other triggering policies.</div>
+</dd>
+<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/CompressActionFactory.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.appender.rolling.action">CompressActionFactory</a> - Interface in <a href="org/apache/logging/log4j/core/appender/rolling/action/package-summary.html">org.apache.logging.log4j.core.appender.rolling.action</a></dt>
+<dd>
+<div class="block">A factory to produce actions that compress log files.</div>
+</dd>
+<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/CompressActionFactoryProvider.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.appender.rolling.action">CompressActionFactoryProvider</a> - Interface in <a href="org/apache/logging/log4j/core/appender/rolling/action/package-summary.html">org.apache.logging.log4j.core.appender.rolling.action</a></dt>
+<dd>
+<div class="block">Interface for plugins that provide additional compression algorithms.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/Logger.PrivateConfig.html#config" class="member-name-link">config</a> - Variable in class org.apache.logging.log4j.core.<a href="org/apache/logging/log4j/core/Logger.PrivateConfig.html" title="class in org.apache.logging.log4j.core">Logger.PrivateConfig</a></dt>
 <dd>
@@ -2191,6 +2195,14 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/script/ScriptManager.html#createBindings(org.apache.logging.log4j.core.script.Script)" class="member-name-link">createBindings(Script)</a> - Method in interface org.apache.logging.log4j.core.script.<a href="org/apache/logging/log4j/core/script/ScriptManager.html" title="interface in org.apache.logging.log4j.core.script">ScriptManager</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/CompressActionFactory.html#createCompressAction(java.lang.String,java.lang.String,java.util.Map)" class="member-name-link">createCompressAction(String, String, Map&lt;String, String&gt;)</a> - Method in interface org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/CompressActionFactory.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">CompressActionFactory</a></dt>
+<dd>
+<div class="block">Returns an action that compresses a file.</div>
+</dd>
+<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/CompressActionFactory.html#createCompressAction(java.nio.file.Path,java.nio.file.Path,java.util.Map)" class="member-name-link">createCompressAction(Path, Path, Map&lt;String, String&gt;)</a> - Method in interface org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/CompressActionFactory.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">CompressActionFactory</a></dt>
+<dd>
+<div class="block">Returns an action that compresses a file.</div>
+</dd>
 <dt><a href="org/apache/logging/log4j/core/config/AbstractConfiguration.html#createConfiguration(org.apache.logging.log4j.plugins.Node,org.apache.logging.log4j.core.LogEvent)" class="member-name-link">createConfiguration(Node, LogEvent)</a> - Method in class org.apache.logging.log4j.core.config.<a href="org/apache/logging/log4j/core/config/AbstractConfiguration.html" title="class in org.apache.logging.log4j.core.config">AbstractConfiguration</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/config/Configuration.html#createConfiguration(org.apache.logging.log4j.plugins.Node,org.apache.logging.log4j.core.LogEvent)" class="member-name-link">createConfiguration(Node, LogEvent)</a> - Method in interface org.apache.logging.log4j.core.config.<a href="org/apache/logging/log4j/core/config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a></dt>
@@ -2253,6 +2265,14 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/async/LinkedTransferQueueFactory.html#createFactory()" class="member-name-link">createFactory()</a> - Static method in class org.apache.logging.log4j.core.async.<a href="org/apache/logging/log4j/core/async/LinkedTransferQueueFactory.html" title="class in org.apache.logging.log4j.core.async">LinkedTransferQueueFactory</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/CompressActionFactoryProvider.html#createFactoryForAlgorithm(java.lang.String)" class="member-name-link">createFactoryForAlgorithm(String)</a> - Method in interface org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/CompressActionFactoryProvider.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">CompressActionFactoryProvider</a></dt>
+<dd>
+<div class="block">Creates the appropriate <a href="org/apache/logging/log4j/core/appender/rolling/action/CompressActionFactory.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action"><code>CompressActionFactory</code></a> for the given compression algorithm.</div>
+</dd>
+<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/CompressActionFactoryProvider.html#createFactoryForFileName(java.lang.String)" class="member-name-link">createFactoryForFileName(String)</a> - Method in interface org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/CompressActionFactoryProvider.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">CompressActionFactoryProvider</a></dt>
+<dd>
+<div class="block">Creates the appropriate <a href="org/apache/logging/log4j/core/appender/rolling/action/CompressActionFactory.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action"><code>CompressActionFactory</code></a> for the given file name.</div>
+</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/FailoversPlugin.html#createFailovers(org.apache.logging.log4j.core.config.AppenderRef...)" class="member-name-link">createFailovers(AppenderRef...)</a> - Static method in class org.apache.logging.log4j.core.appender.<a href="org/apache/logging/log4j/core/appender/FailoversPlugin.html" title="class in org.apache.logging.log4j.core.appender">FailoversPlugin</a></dt>
 <dd>
 <div class="block">Returns the appender references.</div>
@@ -2833,10 +2853,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">When rolling over, <code>DefaultRolloverStrategy</code> renames files according to an algorithm as described below.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/DefaultRolloverStrategy.html#%3Cinit%3E(int,int,boolean,int,org.apache.logging.log4j.core.lookup.StrSubstitutor,org.apache.logging.log4j.core.appender.rolling.action.Action%5B%5D,boolean,java.lang.String,org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">DefaultRolloverStrategy(int, int, boolean, int, StrSubstitutor, Action[], boolean, String, Configuration)</a> - Constructor for class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/DefaultRolloverStrategy.html" title="class in org.apache.logging.log4j.core.appender.rolling">DefaultRolloverStrategy</a></dt>
-<dd>
-<div class="block">Constructs a new instance.</div>
-</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/DefaultRolloverStrategy.Builder.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling">DefaultRolloverStrategy.Builder</a> - Class in <a href="org/apache/logging/log4j/core/appender/rolling/package-summary.html">org.apache.logging.log4j.core.appender.rolling</a></dt>
 <dd>
 <div class="block">Builds DefaultRolloverStrategy instances.</div>
@@ -2881,8 +2897,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Define file POSIX attribute view on a path/file.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/FileExtension.html#DEFLATE" class="member-name-link">DEFLATE</a> - Enum constant in enum class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/FileExtension.html" title="enum class in org.apache.logging.log4j.core.appender.rolling">FileExtension</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/DeleteAction.html#delete(java.nio.file.Path)" class="member-name-link">delete(Path)</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/DeleteAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">DeleteAction</a></dt>
 <dd>
 <div class="block">Deletes the specified file.</div>
@@ -2933,10 +2947,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">When rolling over, <code>DirectWriteRolloverStrategy</code> writes directly to the file as resolved by the file
  pattern.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/DirectWriteRolloverStrategy.html#%3Cinit%3E(int,int,org.apache.logging.log4j.core.lookup.StrSubstitutor,org.apache.logging.log4j.core.appender.rolling.action.Action%5B%5D,boolean,java.lang.String,org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">DirectWriteRolloverStrategy(int, int, StrSubstitutor, Action[], boolean, String, Configuration)</a> - Constructor for class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/DirectWriteRolloverStrategy.html" title="class in org.apache.logging.log4j.core.appender.rolling">DirectWriteRolloverStrategy</a></dt>
-<dd>
-<div class="block">Constructs a new instance.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/DirectWriteRolloverStrategy.Builder.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling">DirectWriteRolloverStrategy.Builder</a> - Class in <a href="org/apache/logging/log4j/core/appender/rolling/package-summary.html">org.apache.logging.log4j.core.appender.rolling</a></dt>
 <dd>
@@ -3403,15 +3413,13 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Performs action.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/AbstractCompressAction.html#execute()" class="member-name-link">execute()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/AbstractCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">AbstractCompressAction</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/AbstractPathAction.html#execute()" class="member-name-link">execute()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/AbstractPathAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">AbstractPathAction</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/Action.html#execute()" class="member-name-link">execute()</a> - Method in interface org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/Action.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">Action</a></dt>
 <dd>
 <div class="block">Perform an action.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/CommonsCompressAction.html#execute()" class="member-name-link">execute()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/CommonsCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">CommonsCompressAction</a></dt>
-<dd>
-<div class="block">Compresses.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/CompositeAction.html#execute()" class="member-name-link">execute()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/CompositeAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">CompositeAction</a></dt>
 <dd>
@@ -3423,29 +3431,9 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Rename file.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html#execute()" class="member-name-link">execute()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">GzCompressAction</a></dt>
-<dd>
-<div class="block">Compress.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html#execute()" class="member-name-link">execute()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">ZipCompressAction</a></dt>
-<dd>
-<div class="block">Compresses.</div>
-</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/FileRenameAction.html#execute(java.io.File,java.io.File,boolean)" class="member-name-link">execute(File, File, boolean)</a> - Static method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/FileRenameAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">FileRenameAction</a></dt>
 <dd>
 <div class="block">Rename file.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html#execute(java.io.File,java.io.File,boolean,int)" class="member-name-link">execute(File, File, boolean, int)</a> - Static method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">GzCompressAction</a></dt>
-<dd>
-<div class="block">Compress a file.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html#execute(java.io.File,java.io.File,boolean,int)" class="member-name-link">execute(File, File, boolean, int)</a> - Static method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">ZipCompressAction</a></dt>
-<dd>
-<div class="block">Compresses a file.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/CommonsCompressAction.html#execute(java.lang.String,java.io.File,java.io.File,boolean)" class="member-name-link">execute(String, File, File, boolean)</a> - Static method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/CommonsCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">CommonsCompressAction</a></dt>
-<dd>
-<div class="block">Compresses a file.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/script/ScriptManager.html#execute(java.lang.String,org.apache.logging.log4j.core.script.ScriptBindings)" class="member-name-link">execute(String, ScriptBindings)</a> - Method in interface org.apache.logging.log4j.core.script.<a href="org/apache/logging/log4j/core/script/ScriptManager.html" title="interface in org.apache.logging.log4j.core.script">ScriptManager</a></dt>
 <dd>&nbsp;</dd>
@@ -3616,10 +3604,6 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/core/pattern/FileDatePatternConverter.html" class="type-name-link" title="class in org.apache.logging.log4j.core.pattern">FileDatePatternConverter</a> - Class in <a href="org/apache/logging/log4j/core/pattern/package-summary.html">org.apache.logging.log4j.core.pattern</a></dt>
 <dd>
 <div class="block">Formats a date by delegating to <a href="org/apache/logging/log4j/core/pattern/DatePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern"><code>DatePatternConverter</code></a>.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/FileExtension.html" class="type-name-link" title="enum class in org.apache.logging.log4j.core.appender.rolling">FileExtension</a> - Enum Class in <a href="org/apache/logging/log4j/core/appender/rolling/package-summary.html">org.apache.logging.log4j.core.appender.rolling</a></dt>
-<dd>
-<div class="block">Enumerates over supported file extensions for compression.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/util/FileUtils.html#fileFromUri(java.net.URI)" class="member-name-link">fileFromUri(URI)</a> - Static method in class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/FileUtils.html" title="class in org.apache.logging.log4j.core.util">FileUtils</a></dt>
 <dd>
@@ -4783,6 +4767,14 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/IfLastModified.html#getAge()" class="member-name-link">getAge()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/IfLastModified.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">IfLastModified</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/AbstractCompressAction.html#getAlgorithmName()" class="member-name-link">getAlgorithmName()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/AbstractCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">AbstractCompressAction</a></dt>
+<dd>
+<div class="block">The name of this compression algorithm.</div>
+</dd>
+<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/CompressActionFactory.html#getAlgorithmName()" class="member-name-link">getAlgorithmName()</a> - Method in interface org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/CompressActionFactory.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">CompressActionFactory</a></dt>
+<dd>
+<div class="block">The name of this compression algorithm.</div>
+</dd>
 <dt><a href="org/apache/logging/log4j/core/config/plugins/util/PluginAliasesProvider.html#getAliases(org.apache.logging.log4j.core.config.plugins.PluginAliases)" class="member-name-link">getAliases(PluginAliases)</a> - Method in class org.apache.logging.log4j.core.config.plugins.util.<a href="org/apache/logging/log4j/core/config/plugins/util/PluginAliasesProvider.html" title="class in org.apache.logging.log4j.core.config.plugins.util">PluginAliasesProvider</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
@@ -5017,13 +5009,9 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/config/builder/api/Component.html#getComponents()" class="member-name-link">getComponents()</a> - Method in class org.apache.logging.log4j.core.config.builder.api.<a href="org/apache/logging/log4j/core/config/builder/api/Component.html" title="class in org.apache.logging.log4j.core.config.builder.api">Component</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/DefaultRolloverStrategy.html#getCompressionLevel()" class="member-name-link">getCompressionLevel()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/DefaultRolloverStrategy.html" title="class in org.apache.logging.log4j.core.appender.rolling">DefaultRolloverStrategy</a></dt>
+<dt><a href="org/apache/logging/log4j/core/appender/rolling/PatternProcessor.html#getCompressActionFactory()" class="member-name-link">getCompressActionFactory()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/PatternProcessor.html" title="class in org.apache.logging.log4j.core.appender.rolling">PatternProcessor</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/DirectWriteRolloverStrategy.html#getCompressionLevel()" class="member-name-link">getCompressionLevel()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/DirectWriteRolloverStrategy.html" title="class in org.apache.logging.log4j.core.appender.rolling">DirectWriteRolloverStrategy</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/DefaultRolloverStrategy.Builder.html#getCompressionLevelStr()" class="member-name-link">getCompressionLevelStr()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/DefaultRolloverStrategy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">DefaultRolloverStrategy.Builder</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/DirectWriteRolloverStrategy.Builder.html#getCompressionLevelStr()" class="member-name-link">getCompressionLevelStr()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/DirectWriteRolloverStrategy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">DirectWriteRolloverStrategy.Builder</a></dt>
+<dt><a href="org/apache/logging/log4j/core/appender/rolling/RollingFileManager.html#getCompressActionFactory()" class="member-name-link">getCompressActionFactory()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/RollingFileManager.html" title="class in org.apache.logging.log4j.core.appender.rolling">RollingFileManager</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/DefaultRolloverStrategy.Builder.html#getConfig()" class="member-name-link">getConfig()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/DefaultRolloverStrategy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">DefaultRolloverStrategy.Builder</a></dt>
 <dd>&nbsp;</dd>
@@ -5400,16 +5388,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/IfAny.html#getDeleteFilters()" class="member-name-link">getDeleteFilters()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/IfAny.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">IfAny</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/CommonsCompressAction.html#getDestination()" class="member-name-link">getDestination()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/CommonsCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">CommonsCompressAction</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/FileRenameAction.html#getDestination()" class="member-name-link">getDestination()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/FileRenameAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">FileRenameAction</a></dt>
 <dd>
 <div class="block">Gets the destination.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html#getDestination()" class="member-name-link">getDestination()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">GzCompressAction</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html#getDestination()" class="member-name-link">getDestination()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">ZipCompressAction</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/async/DiscardingAsyncQueueFullPolicy.html#getDiscardCount(org.apache.logging.log4j.core.async.AsyncQueueFullPolicy)" class="member-name-link">getDiscardCount(AsyncQueueFullPolicy)</a> - Static method in class org.apache.logging.log4j.core.async.<a href="org/apache/logging/log4j/core/async/DiscardingAsyncQueueFullPolicy.html" title="class in org.apache.logging.log4j.core.async">DiscardingAsyncQueueFullPolicy</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/layout/LoggerFields.html#getDiscardIfAllFieldsAreEmpty()" class="member-name-link">getDiscardIfAllFieldsAreEmpty()</a> - Method in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/LoggerFields.html" title="class in org.apache.logging.log4j.core.layout">LoggerFields</a></dt>
@@ -5505,6 +5487,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Formats the stack trace including packaging information.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/CompressActionFactory.html#getExtension()" class="member-name-link">getExtension()</a> - Method in interface org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/CompressActionFactory.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">CompressActionFactory</a></dt>
+<dd>
+<div class="block">Returns the natural file extension for this compression algorithm.</div>
+</dd>
 <dt><a href="org/apache/logging/log4j/core/util/ExtensionLanguageMapping.html#getExtension()" class="member-name-link">getExtension()</a> - Method in enum class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/ExtensionLanguageMapping.html" title="enum class in org.apache.logging.log4j.core.util">ExtensionLanguageMapping</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/config/AbstractConfiguration.html#getExtension(java.lang.Class)" class="member-name-link">getExtension(Class&lt;T&gt;)</a> - Method in class org.apache.logging.log4j.core.config.<a href="org/apache/logging/log4j/core/config/AbstractConfiguration.html" title="class in org.apache.logging.log4j.core.config">AbstractConfiguration</a></dt>
@@ -5555,10 +5541,6 @@ loadScripts(document, 'script');</script>
 <div class="block">Gets the file configuration source, or <code>null</code> if this configuration source is based on an URL or has
  neither a file nor an URL.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/PatternProcessor.html#getFileExtension()" class="member-name-link">getFileExtension()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/PatternProcessor.html" title="class in org.apache.logging.log4j.core.appender.rolling">PatternProcessor</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/RollingFileManager.html#getFileExtension()" class="member-name-link">getFileExtension()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/RollingFileManager.html" title="class in org.apache.logging.log4j.core.appender.rolling">RollingFileManager</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/util/FileUtils.html#getFileExtension(java.io.File)" class="member-name-link">getFileExtension(File)</a> - Static method in class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/FileUtils.html" title="class in org.apache.logging.log4j.core.util">FileUtils</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/AbstractFileAppender.Builder.html#getFileGroup()" class="member-name-link">getFileGroup()</a> - Method in class org.apache.logging.log4j.core.appender.<a href="org/apache/logging/log4j/core/appender/AbstractFileAppender.Builder.html" title="class in org.apache.logging.log4j.core.appender">AbstractFileAppender.Builder</a></dt>
@@ -5979,8 +5961,6 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/AbstractLogEvent.html#getLevel()" class="member-name-link">getLevel()</a> - Method in class org.apache.logging.log4j.core.<a href="org/apache/logging/log4j/core/AbstractLogEvent.html" title="class in org.apache.logging.log4j.core">AbstractLogEvent</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html#getLevel()" class="member-name-link">getLevel()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">ZipCompressAction</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/config/AppenderRef.html#getLevel()" class="member-name-link">getLevel()</a> - Method in class org.apache.logging.log4j.core.config.<a href="org/apache/logging/log4j/core/config/AppenderRef.html" title="class in org.apache.logging.log4j.core.config">AppenderRef</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/config/LoggerConfig.Builder.html#getLevel()" class="member-name-link">getLevel()</a> - Method in class org.apache.logging.log4j.core.config.<a href="org/apache/logging/log4j/core/config/LoggerConfig.Builder.html" title="class in org.apache.logging.log4j.core.config">LoggerConfig.Builder</a></dt>
@@ -6343,8 +6323,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Gets the name of this Appender.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/CommonsCompressAction.html#getName()" class="member-name-link">getName()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/CommonsCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">CommonsCompressAction</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/config/AbstractConfiguration.html#getName()" class="member-name-link">getName()</a> - Method in class org.apache.logging.log4j.core.config.<a href="org/apache/logging/log4j/core/config/AbstractConfiguration.html" title="class in org.apache.logging.log4j.core.config">AbstractConfiguration</a></dt>
 <dd>
 <div class="block">Returns the name of the configuration.</div>
@@ -6842,16 +6820,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/db/ColumnMapping.html#getSource()" class="member-name-link">getSource()</a> - Method in class org.apache.logging.log4j.core.appender.db.<a href="org/apache/logging/log4j/core/appender/db/ColumnMapping.html" title="class in org.apache.logging.log4j.core.appender.db">ColumnMapping</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/CommonsCompressAction.html#getSource()" class="member-name-link">getSource()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/CommonsCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">CommonsCompressAction</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/FileRenameAction.html#getSource()" class="member-name-link">getSource()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/FileRenameAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">FileRenameAction</a></dt>
 <dd>
 <div class="block">Gets the source.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html#getSource()" class="member-name-link">getSource()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">GzCompressAction</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html#getSource()" class="member-name-link">getSource()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">ZipCompressAction</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/impl/Log4jLogEvent.html#getSource()" class="member-name-link">getSource()</a> - Method in class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/Log4jLogEvent.html" title="class in org.apache.logging.log4j.core.impl">Log4jLogEvent</a></dt>
 <dd>
 <div class="block">Returns the StackTraceElement for the caller.</div>
@@ -7296,16 +7268,6 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/util/ExtensionLanguageMapping.html#GVY" class="member-name-link">GVY</a> - Enum constant in enum class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/ExtensionLanguageMapping.html" title="enum class in org.apache.logging.log4j.core.util">ExtensionLanguageMapping</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/FileExtension.html#GZ" class="member-name-link">GZ</a> - Enum constant in enum class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/FileExtension.html" title="enum class in org.apache.logging.log4j.core.appender.rolling">FileExtension</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">GzCompressAction</a> - Class in <a href="org/apache/logging/log4j/core/appender/rolling/action/package-summary.html">org.apache.logging.log4j.core.appender.rolling.action</a></dt>
-<dd>
-<div class="block">Compresses a file using GZ compression.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html#%3Cinit%3E(java.io.File,java.io.File,boolean,int)" class="member-name-link">GzCompressAction(File, File, boolean, int)</a> - Constructor for class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">GzCompressAction</a></dt>
-<dd>
-<div class="block">Create new instance of GzCompressAction.</div>
-</dd>
 </dl>
 <h2 class="title" id="I:H">H</h2>
 <dl class="index">
@@ -7987,12 +7949,6 @@ loadScripts(document, 'script');</script>
 <div class="block">Returns the lazy-create.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/appender/RollingFileAppender.Builder.html#isCreateOnDemand()" class="member-name-link">isCreateOnDemand()</a> - Method in class org.apache.logging.log4j.core.appender.<a href="org/apache/logging/log4j/core/appender/RollingFileAppender.Builder.html" title="class in org.apache.logging.log4j.core.appender">RollingFileAppender.Builder</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/CommonsCompressAction.html#isDeleteSource()" class="member-name-link">isDeleteSource()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/CommonsCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">CommonsCompressAction</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html#isDeleteSource()" class="member-name-link">isDeleteSource()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">GzCompressAction</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html#isDeleteSource()" class="member-name-link">isDeleteSource()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">ZipCompressAction</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/RollingFileManager.html#isDirectWrite()" class="member-name-link">isDirectWrite()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/RollingFileManager.html" title="class in org.apache.logging.log4j.core.appender.rolling">RollingFileManager</a></dt>
 <dd>&nbsp;</dd>
@@ -9106,8 +9062,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Logs a warning to the <code>StatusLogger</code> explaining why a message appears out of order in the appender.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/FileExtension.html#lookup(java.lang.String)" class="member-name-link">lookup(String)</a> - Static method in enum class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/FileExtension.html" title="enum class in org.apache.logging.log4j.core.appender.rolling">FileExtension</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/lookup/AbstractLookup.html#lookup(java.lang.String)" class="member-name-link">lookup(String)</a> - Method in class org.apache.logging.log4j.core.lookup.<a href="org/apache/logging/log4j/core/lookup/AbstractLookup.html" title="class in org.apache.logging.log4j.core.lookup">AbstractLookup</a></dt>
 <dd>
 <div class="block">Calls <code>lookup(null, key)</code> in the super class.</div>
@@ -9206,8 +9160,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Plugin namespace for <a href="org/apache/logging/log4j/core/lookup/StrLookup.html" title="interface in org.apache.logging.log4j.core.lookup"><code>StrLookup</code></a> plugins.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/FileExtension.html#lookupForFile(java.lang.String)" class="member-name-link">lookupForFile(String)</a> - Static method in enum class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/FileExtension.html" title="enum class in org.apache.logging.log4j.core.appender.rolling">FileExtension</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/lookup/LowerLookup.html" class="type-name-link" title="class in org.apache.logging.log4j.core.lookup">LowerLookup</a> - Class in <a href="org/apache/logging/log4j/core/lookup/package-summary.html">org.apache.logging.log4j.core.lookup</a></dt>
 <dd>
 <div class="block">Converts values to lower case.</div>
@@ -9568,6 +9520,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Constructor.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/CompressActionFactoryProvider.html#NAMESPACE" class="member-name-link">NAMESPACE</a> - Static variable in interface org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/CompressActionFactoryProvider.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">CompressActionFactoryProvider</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/config/ConfigurationFactory.html#NAMESPACE" class="member-name-link">NAMESPACE</a> - Static variable in class org.apache.logging.log4j.core.config.<a href="org/apache/logging/log4j/core/config/ConfigurationFactory.html" title="class in org.apache.logging.log4j.core.config">ConfigurationFactory</a></dt>
 <dd>
 <div class="block">Plugin category used to inject a ConfigurationFactory <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Plugin.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link"><code>Plugin</code></a>
@@ -9852,6 +9806,8 @@ loadScripts(document, 'script');</script>
 <div class="block">Returns a builder for creating Filters.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/config/builder/impl/DefaultConfigurationBuilder.html#newFilter(java.lang.String,org.apache.logging.log4j.core.Filter.Result,org.apache.logging.log4j.core.Filter.Result)" class="member-name-link">newFilter(String, Filter.Result, Filter.Result)</a> - Method in class org.apache.logging.log4j.core.config.builder.impl.<a href="org/apache/logging/log4j/core/config/builder/impl/DefaultConfigurationBuilder.html" title="class in org.apache.logging.log4j.core.config.builder.impl">DefaultConfigurationBuilder</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/CompressActionFactoryProvider.html#newInstance(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">newInstance(Configuration)</a> - Static method in interface org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/CompressActionFactoryProvider.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">CompressActionFactoryProvider</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/AbstractStyleNameConverter.html#newInstance(java.lang.Class,java.lang.String,org.apache.logging.log4j.core.config.Configuration,java.lang.String%5B%5D)" class="member-name-link">newInstance(Class&lt;T&gt;, String, Configuration, String[])</a> - Static method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/AbstractStyleNameConverter.html" title="class in org.apache.logging.log4j.core.pattern">AbstractStyleNameConverter</a></dt>
 <dd>
@@ -10487,8 +10443,6 @@ loadScripts(document, 'script');</script>
 </dl>
 <h2 class="title" id="I:P">P</h2>
 <dl class="index">
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/FileExtension.html#PACK200" class="member-name-link">PACK200</a> - Enum constant in enum class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/FileExtension.html" title="enum class in org.apache.logging.log4j.core.appender.rolling">FileExtension</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/layout/Rfc5424Layout.html#PARAM_VALUE_ESCAPE_PATTERN" class="member-name-link">PARAM_VALUE_ESCAPE_PATTERN</a> - Static variable in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/Rfc5424Layout.html" title="class in org.apache.logging.log4j.core.layout">Rfc5424Layout</a></dt>
 <dd>
 <div class="block">Match characters which require escaping.</div>
@@ -10563,6 +10517,10 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/config/plugins/convert/CoreTypeConverters.PathConverter.html#%3Cinit%3E()" class="member-name-link">PathConverter()</a> - Constructor for class org.apache.logging.log4j.core.config.plugins.convert.<a href="org/apache/logging/log4j/core/config/plugins/convert/CoreTypeConverters.PathConverter.html" title="class in org.apache.logging.log4j.core.config.plugins.convert">CoreTypeConverters.PathConverter</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/util/FileUtils.html#pathFromUri(java.net.URI)" class="member-name-link">pathFromUri(URI)</a> - Static method in class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/FileUtils.html" title="class in org.apache.logging.log4j.core.util">FileUtils</a></dt>
+<dd>
+<div class="block">Transforms an <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link"><code>URI</code></a> into a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/Path.html" title="class or interface in java.nio.file" class="external-link"><code>Path</code></a>.</div>
+</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/PathSortByModificationTime.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">PathSortByModificationTime</a> - Class in <a href="org/apache/logging/log4j/core/appender/rolling/action/package-summary.html">org.apache.logging.log4j.core.appender.rolling.action</a></dt>
 <dd>
 <div class="block"><a href="org/apache/logging/log4j/core/appender/rolling/action/PathSorter.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action"><code>PathSorter</code></a> that sorts path by their LastModified attribute.</div>
@@ -11328,17 +11286,9 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Captures exception.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/CommonsCompressAction.html#reportException(java.lang.Exception)" class="member-name-link">reportException(Exception)</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/CommonsCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">CommonsCompressAction</a></dt>
-<dd>
-<div class="block">Reports exception.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html#reportException(java.lang.Exception)" class="member-name-link">reportException(Exception)</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">GzCompressAction</a></dt>
+<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/AbstractCompressAction.html#reportException(java.lang.Exception)" class="member-name-link">reportException(Exception)</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/AbstractCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">AbstractCompressAction</a></dt>
 <dd>
 <div class="block">Capture exception.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html#reportException(java.lang.Exception)" class="member-name-link">reportException(Exception)</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">ZipCompressAction</a></dt>
-<dd>
-<div class="block">Captures exception.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/appender/AbstractAppender.html#requiresLocation()" class="member-name-link">requiresLocation()</a> - Method in class org.apache.logging.log4j.core.appender.<a href="org/apache/logging/log4j/core/appender/AbstractAppender.html" title="class in org.apache.logging.log4j.core.appender">AbstractAppender</a></dt>
 <dd>&nbsp;</dd>
@@ -11890,14 +11840,6 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/config/Configuration.html#setComponent(org.apache.logging.log4j.plugins.di.Key,java.util.function.Supplier)" class="member-name-link">setComponent(Key&lt;T&gt;, Supplier&lt;? extends T&gt;)</a> - Method in interface org.apache.logging.log4j.core.config.<a href="org/apache/logging/log4j/core/config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/DefaultRolloverStrategy.Builder.html#setCompressionLevelStr(java.lang.String)" class="member-name-link">setCompressionLevelStr(String)</a> - Method in class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/DefaultRolloverStrategy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">DefaultRolloverStrategy.Builder</a></dt>
-<dd>
-<div class="block">Defines compression level.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/DirectWriteRolloverStrategy.Builder.html#setCompressionLevelStr(java.lang.String)" class="member-name-link">setCompressionLevelStr(String)</a> - Method in class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/DirectWriteRolloverStrategy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">DirectWriteRolloverStrategy.Builder</a></dt>
-<dd>
-<div class="block">Defines compression level.</div>
-</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/DefaultRolloverStrategy.Builder.html#setConfig(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfig(Configuration)</a> - Method in class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/DefaultRolloverStrategy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">DefaultRolloverStrategy.Builder</a></dt>
 <dd>
 <div class="block">Defines configuration.</div>
@@ -13785,15 +13727,13 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rewrite/PropertiesRewritePolicy.html#toString()" class="member-name-link">toString()</a> - Method in class org.apache.logging.log4j.core.appender.rewrite.<a href="org/apache/logging/log4j/core/appender/rewrite/PropertiesRewritePolicy.html" title="class in org.apache.logging.log4j.core.appender.rewrite">PropertiesRewritePolicy</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/AbstractPathAction.html#toString()" class="member-name-link">toString()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/AbstractPathAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">AbstractPathAction</a></dt>
+<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/AbstractCompressAction.html#toString()" class="member-name-link">toString()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/AbstractCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">AbstractCompressAction</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/CommonsCompressAction.html#toString()" class="member-name-link">toString()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/CommonsCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">CommonsCompressAction</a></dt>
+<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/AbstractPathAction.html#toString()" class="member-name-link">toString()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/AbstractPathAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">AbstractPathAction</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/CompositeAction.html#toString()" class="member-name-link">toString()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/CompositeAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">CompositeAction</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/FileRenameAction.html#toString()" class="member-name-link">toString()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/FileRenameAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">FileRenameAction</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html#toString()" class="member-name-link">toString()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">GzCompressAction</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/IfAccumulatedFileCount.html#toString()" class="member-name-link">toString()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/IfAccumulatedFileCount.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">IfAccumulatedFileCount</a></dt>
 <dd>&nbsp;</dd>
@@ -13812,8 +13752,6 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/PathWithAttributes.html#toString()" class="member-name-link">toString()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/PathWithAttributes.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PathWithAttributes</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/PosixViewAttributeAction.html#toString()" class="member-name-link">toString()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/PosixViewAttributeAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html#toString()" class="member-name-link">toString()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">ZipCompressAction</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/CompositeTriggeringPolicy.html#toString()" class="member-name-link">toString()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/CompositeTriggeringPolicy.html" title="class in org.apache.logging.log4j.core.appender.rolling">CompositeTriggeringPolicy</a></dt>
 <dd>&nbsp;</dd>
@@ -14320,10 +14258,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Returns the enum constant of this class with the specified name.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/FileExtension.html#valueOf(java.lang.String)" class="member-name-link">valueOf(String)</a> - Static method in enum class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/FileExtension.html" title="enum class in org.apache.logging.log4j.core.appender.rolling">FileExtension</a></dt>
-<dd>
-<div class="block">Returns the enum constant of this class with the specified name.</div>
-</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/RolloverFrequency.html#valueOf(java.lang.String)" class="member-name-link">valueOf(String)</a> - Static method in enum class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/RolloverFrequency.html" title="enum class in org.apache.logging.log4j.core.appender.rolling">RolloverFrequency</a></dt>
 <dd>
 <div class="block">Returns the enum constant of this class with the specified name.</div>
@@ -14378,11 +14312,6 @@ loadScripts(document, 'script');</script>
 the order they are declared.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rewrite/MapRewritePolicy.Mode.html#values()" class="member-name-link">values()</a> - Static method in enum class org.apache.logging.log4j.core.appender.rewrite.<a href="org/apache/logging/log4j/core/appender/rewrite/MapRewritePolicy.Mode.html" title="enum class in org.apache.logging.log4j.core.appender.rewrite">MapRewritePolicy.Mode</a></dt>
-<dd>
-<div class="block">Returns an array containing the constants of this enum class, in
-the order they are declared.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/FileExtension.html#values()" class="member-name-link">values()</a> - Static method in enum class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/FileExtension.html" title="enum class in org.apache.logging.log4j.core.appender.rolling">FileExtension</a></dt>
 <dd>
 <div class="block">Returns an array containing the constants of this enum class, in
 the order they are declared.</div>
@@ -14552,6 +14481,10 @@ the order they are declared.</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/impl/CoreProperties.QueueFullPolicyProperties.html#withType(java.lang.String)" class="member-name-link">withType(String)</a> - Method in record class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/CoreProperties.QueueFullPolicyProperties.html" title="class in org.apache.logging.log4j.core.impl">CoreProperties.QueueFullPolicyProperties</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/AbstractCompressAction.html#wrapOutputStream(java.io.OutputStream)" class="member-name-link">wrapOutputStream(OutputStream)</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/AbstractCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">AbstractCompressAction</a></dt>
+<dd>
+<div class="block">Wraps an output stream into a compressing output stream.</div>
+</dd>
 <dt><a href="org/apache/logging/log4j/core/util/WrappedFileWatcher.html" class="type-name-link" title="class in org.apache.logging.log4j.core.util">WrappedFileWatcher</a> - Class in <a href="org/apache/logging/log4j/core/util/package-summary.html">org.apache.logging.log4j.core.util</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/util/WrappedFileWatcher.html#%3Cinit%3E(org.apache.logging.log4j.core.util.FileWatcher)" class="member-name-link">WrappedFileWatcher(FileWatcher)</a> - Constructor for class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/WrappedFileWatcher.html" title="class in org.apache.logging.log4j.core.util">WrappedFileWatcher</a></dt>
@@ -14720,8 +14653,6 @@ the order they are declared.</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/layout/HtmlLayout.FontSize.html#XXSMALL" class="member-name-link">XXSMALL</a> - Enum constant in enum class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/HtmlLayout.FontSize.html" title="enum class in org.apache.logging.log4j.core.layout">HtmlLayout.FontSize</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/FileExtension.html#XZ" class="member-name-link">XZ</a> - Enum constant in enum class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/FileExtension.html" title="enum class in org.apache.logging.log4j.core.appender.rolling">FileExtension</a></dt>
-<dd>&nbsp;</dd>
 </dl>
 <h2 class="title" id="I:Y">Y</h2>
 <dl class="index">
@@ -14736,16 +14667,6 @@ the order they are declared.</div>
 </dl>
 <h2 class="title" id="I:Z">Z</h2>
 <dl class="index">
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/FileExtension.html#ZIP" class="member-name-link">ZIP</a> - Enum constant in enum class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/FileExtension.html" title="enum class in org.apache.logging.log4j.core.appender.rolling">FileExtension</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">ZipCompressAction</a> - Class in <a href="org/apache/logging/log4j/core/appender/rolling/action/package-summary.html">org.apache.logging.log4j.core.appender.rolling.action</a></dt>
-<dd>
-<div class="block">Compresses a file using Zip compression.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html#%3Cinit%3E(java.io.File,java.io.File,boolean,int)" class="member-name-link">ZipCompressAction(File, File, boolean, int)</a> - Constructor for class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">ZipCompressAction</a></dt>
-<dd>
-<div class="block">Creates new instance of GzCompressAction.</div>
-</dd>
 <dt><a href="org/apache/logging/log4j/core/config/plugins/convert/CoreTypeConverters.ZoneIdConverter.html#%3Cinit%3E()" class="member-name-link">ZoneIdConverter()</a> - Constructor for class org.apache.logging.log4j.core.config.plugins.convert.<a href="org/apache/logging/log4j/core/config/plugins/convert/CoreTypeConverters.ZoneIdConverter.html" title="class in org.apache.logging.log4j.core.config.plugins.convert">CoreTypeConverters.ZoneIdConverter</a></dt>
 <dd>&nbsp;</dd>
 </dl>

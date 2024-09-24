@@ -124,7 +124,8 @@ implements <a href="RolloverStrategy.html" title="interface in org.apache.loggin
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>protected </code></div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.apache.logging.log4j.core.lookup.StrSubstitutor)" class="member-name-link">AbstractRolloverStrategy</a><wbr>(<a href="../../lookup/StrSubstitutor.html" title="class in org.apache.logging.log4j.core.lookup">StrSubstitutor</a>&nbsp;strSubstitutor)</code></div>
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.apache.logging.log4j.core.appender.rolling.action.CompressActionFactoryProvider,org.apache.logging.log4j.core.lookup.StrSubstitutor)" class="member-name-link">AbstractRolloverStrategy</a><wbr>(<a href="action/CompressActionFactoryProvider.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">CompressActionFactoryProvider</a>&nbsp;compressActionFactoryProvider,
+ <a href="../../lookup/StrSubstitutor.html" title="class in org.apache.logging.log4j.core.lookup">StrSubstitutor</a>&nbsp;strSubstitutor)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -166,7 +167,7 @@ implements <a href="RolloverStrategy.html" title="interface in org.apache.loggin
  boolean&nbsp;stopOnError)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected int</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#suffixLength(java.lang.String)" class="member-name-link">suffixLength</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;lowFilename)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#suffixLength(java.lang.String)" class="member-name-link">suffixLength</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
@@ -216,9 +217,10 @@ implements <a href="RolloverStrategy.html" title="interface in org.apache.loggin
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(org.apache.logging.log4j.core.lookup.StrSubstitutor)">
+<section class="detail" id="&lt;init&gt;(org.apache.logging.log4j.core.appender.rolling.action.CompressActionFactoryProvider,org.apache.logging.log4j.core.lookup.StrSubstitutor)">
 <h3>AbstractRolloverStrategy</h3>
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="element-name">AbstractRolloverStrategy</span><wbr><span class="parameters">(<a href="../../lookup/StrSubstitutor.html" title="class in org.apache.logging.log4j.core.lookup">StrSubstitutor</a>&nbsp;strSubstitutor)</span></div>
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="element-name">AbstractRolloverStrategy</span><wbr><span class="parameters">(<a href="action/CompressActionFactoryProvider.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">CompressActionFactoryProvider</a>&nbsp;compressActionFactoryProvider,
+ <a href="../../lookup/StrSubstitutor.html" title="class in org.apache.logging.log4j.core.lookup">StrSubstitutor</a>&nbsp;strSubstitutor)</span></div>
 </section>
 </li>
 </ul>
@@ -246,7 +248,7 @@ implements <a href="RolloverStrategy.html" title="interface in org.apache.loggin
 <li>
 <section class="detail" id="suffixLength(java.lang.String)">
 <h3>suffixLength</h3>
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">suffixLength</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;lowFilename)</span></div>
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">suffixLength</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName)</span></div>
 </section>
 </li>
 <li>

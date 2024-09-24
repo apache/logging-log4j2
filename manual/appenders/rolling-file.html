@@ -1356,13 +1356,6 @@ Use the <code>DirectWriteRolloverStrategy</code> instead by omitting the <code>f
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="RolloverStrategy-attr-compressionLevel"></a>compressionLevel</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>7</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Determine the compression level of archived log files.</p>
-<p class="tableblock">See <a href="#RolloverStrategy-compress">Compressing archived files</a> for more details.</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="RolloverStrategy-attr-tempCompressedFilePattern"></a>tempCompressedFilePattern</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html"><code>Path</code></a></p></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -1620,77 +1613,32 @@ It is <strong>not</strong> the default strategy of Log4j 2.</p>
 Compression is activated, based on the extension of the archived file name.
 The following extensions are recognized:</p>
 </div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Extension</th>
-<th class="tableblock halign-left valign-top">Supports <code>compressionLevel</code></th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a id="RolloverStrategy-compress-zip"></a><code>.zip</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&#x2713;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ZIP archive using the
-<a href="https://docs.oracle.com/javase/8/docs/api/java/util/zip/DeflaterOutputStream.html">DEFLATE</a>
-algorithm</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a id="RolloverStrategy-compress-gz"></a><code>.gz</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&#x2713;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/util/zip/GZIPOutputStream.html">GZIP</a> archive using the DEFLATE algorithm</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a id="RolloverStrategy-compress-bz2"></a><code>.bz2</code><a href="#commons-compress-dep"><sup>dep</sup></a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&#x2717;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://commons.apache.org/proper/commons-compress/apidocs/org/apache/commons/compress/compressors/bzip2/BZip2CompressorOutputStream.html">BZip2</a> algorithm</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a id="RolloverStrategy-compress-deflate"></a><code>.deflate</code><a href="#commons-compress-dep"><sup>dep</sup></a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&#x2717;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://commons.apache.org/proper/commons-compress/apidocs/org/apache/commons/compress/compressors/deflate/DeflateCompressorOutputStream.html">DEFLATE</a> algorithm</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a id="RolloverStrategy-compress-pack200"></a><code>.pack200</code><a href="#commons-compress-dep"><sup>dep</sup></a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&#x2717;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://commons.apache.org/proper/commons-compress/apidocs/org/apache/commons/compress/compressors/pack200/package-summary.html">Pack200</a> algorithm</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a id="RolloverStrategy-compress-xz"></a><code>.xz</code> <a href="#commons-compress-dep"><sup>dep</sup></a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&#x2717;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://commons.apache.org/proper/commons-compress/apidocs/org/apache/commons/compress/compressors/xz/package-summary.html">XZ</a> algorithm</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a id="RolloverStrategy-compress-zst"></a><code>.zst</code> <a href="#commons-compress-dep"><sup>dep</sup></a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&#x2717;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://commons.apache.org/proper/commons-compress/apidocs/org/apache/commons/compress/compressors/zstandard/package-summary.html">ZStandard</a> algorithm</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>If the <a href="#RolloverStrategy-attr-tempCompressedFilePattern"><code>tempCompressedFilePattern</code></a> attribute is set, the current log file:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>will be compressed and stored in the location given by <code>tempCompressedFilePattern</code></p>
-</li>
-<li>
-<p>and then it will be moved to the location given by <a href="#attr-filePattern"><code>filePattern</code></a>.</p>
-</li>
-</ul>
-</div>
-<div id="commons-compress-dep" class="dlist">
+<div class="dlist">
 <dl>
-<dt class="hdlist1"><sup>dep</sup></dt>
+<dt class="hdlist1"><code>.zip</code></dt>
 <dd>
-<p>Additional dependencies are required to use these compression algorithms:</p>
+<p>ZIP archive using the
+<a href="https://docs.oracle.com/javase/8/docs/api/java/util/zip/DeflaterOutputStream.html">DEFLATE</a>
+algorithm.</p>
+</dd>
+<dt class="hdlist1"><code>.gz</code></dt>
+<dd>
+<p><a href="https://docs.oracle.com/javase/8/docs/api/java/util/zip/GZIPOutputStream.html">GZIP</a>
+archive using the DEFLATE algorithm.</p>
+</dd>
+</dl>
+</div>
+<div id="RolloverStrategy-compress-commons" class="dlist">
+<dl>
+<dt class="hdlist1"><code>.&lt;algorithmName&gt;</code></dt>
+<dd>
+<div class="paragraph">
+<p>Log4j Core supports all the compression algorithms available through
+<a href="https://commons.apache.org/proper/commons-compress/index.html">Apache Commons Compress</a>.
+To use these algorithms, an additional dependency is required:</p>
+</div>
+<div class="openblock">
+<div class="content">
 <div id="_tabs_2" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
@@ -1704,34 +1652,96 @@ algorithm</p></td>
 </ul>
 </div>
 <div id="_tabs_2_maven--panel" class="tabpanel" aria-labelledby="_tabs_2_maven">
+<div class="paragraph">
+<p>We assume you use <a href="../../components.html#log4j-bom" class="xref page"><code>log4j-bom</code></a> for dependency management.</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
-  &lt;groupId&gt;org.apache.commons&lt;/groupId&gt;
-  &lt;artifactId&gt;commons-compress&lt;/artifactId&gt;
-  &lt;version&gt;1.27.1&lt;/version&gt;
+  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+  &lt;artifactId&gt;log4j-compress&lt;/artifactId&gt;
   &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
 </div>
 <div id="_tabs_2_gradle--panel" class="tabpanel" aria-labelledby="_tabs_2_gradle">
+<div class="paragraph">
+<p>We assume you use <a href="../../components.html#log4j-bom" class="xref page"><code>log4j-bom</code></a> for dependency management.</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.commons:commons-compress:1.27.1'</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-compress'</code></pre>
 </div>
 </div>
 </div>
 </div>
 </div>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
 <div class="paragraph">
-<p>The <code>.xz</code> and <code>.zst</code> extensions require <strong>additional</strong> Commons Compress dependencies.
+<p>Apache Commons Compress currently supports the following values of <code>algorithmName</code>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>gzip</code>, <code>bzip2</code>, <code>deflate</code>, <code>snappy-framed</code>, <code>lz4-block</code>, <code>lz4-framed</code> are supported without <strong>any</strong> external dependency.</p>
+</li>
+<li>
+<p><code>lzma</code>, <code>.xz</code> and <code>.zst</code> extensions require <strong>additional</strong> dependencies.
 See
 <a href="https://commons.apache.org/proper/commons-compress/index.html">Commons Compress documentation</a>
 for more details.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The <code>pack200</code> algorithm is not a general purpose compression algorithm and has been disabled.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Support for additional compression algorithms can be obtained by extending Apache Commons Compress.</p>
+</div>
+<div class="paragraph">
+<p>See
+<a href="https://commons.apache.org/proper/commons-compress/examples.html#Extending_Commons_Compress_Compressors">Extending Commons Compress Compressors</a> for details.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </dd>
 </dl>
+</div>
+<div class="paragraph">
+<p>If the <a href="#RolloverStrategy-attr-tempCompressedFilePattern"><code>tempCompressedFilePattern</code></a> attribute is set, the current log file:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>will be compressed and stored in the location given by <code>tempCompressedFilePattern</code></p>
+</li>
+<li>
+<p>and then it will be moved to the location given by <a href="#attr-filePattern"><code>filePattern</code></a>.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>

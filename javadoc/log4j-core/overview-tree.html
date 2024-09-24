@@ -94,17 +94,15 @@ loadScripts(document, 'script');</script>
 <ul>
 <li class="circle">org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/AbstractAction.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">AbstractAction</a> (implements org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/Action.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">Action</a>)
 <ul>
+<li class="circle">org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/AbstractCompressAction.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">AbstractCompressAction</a></li>
 <li class="circle">org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/AbstractPathAction.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">AbstractPathAction</a>
 <ul>
 <li class="circle">org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/DeleteAction.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">DeleteAction</a></li>
 <li class="circle">org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/PosixViewAttributeAction.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction</a></li>
 </ul>
 </li>
-<li class="circle">org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/CommonsCompressAction.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">CommonsCompressAction</a></li>
 <li class="circle">org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/CompositeAction.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">CompositeAction</a></li>
 <li class="circle">org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/FileRenameAction.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">FileRenameAction</a></li>
-<li class="circle">org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">GzCompressAction</a></li>
-<li class="circle">org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">ZipCompressAction</a></li>
 </ul>
 </li>
 <li class="circle">org.apache.logging.log4j.plugins.di.resolver.<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/di/resolver/AbstractAttributeFactoryResolver.html" class="type-name-link external-link" title="class or interface in org.apache.logging.log4j.plugins.di.resolver">AbstractAttributeFactoryResolver</a>&lt;T,<wbr>A&gt; (implements org.apache.logging.log4j.plugins.di.spi.<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/di/spi/FactoryResolver.html" title="class or interface in org.apache.logging.log4j.plugins.di.spi" class="external-link">FactoryResolver</a>&lt;T&gt;)
@@ -830,6 +828,8 @@ loadScripts(document, 'script');</script>
 <li class="circle">org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/PathSorter.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.appender.rolling.action">PathSorter</a></li>
 </ul>
 </li>
+<li class="circle">org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/CompressActionFactory.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.appender.rolling.action">CompressActionFactory</a></li>
+<li class="circle">org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/CompressActionFactoryProvider.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.appender.rolling.action">CompressActionFactoryProvider</a></li>
 <li class="circle">org.apache.logging.log4j.core.config.<a href="org/apache/logging/log4j/core/config/ConfigurationAware.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.config">ConfigurationAware</a></li>
 <li class="circle">org.apache.logging.log4j.core.config.<a href="org/apache/logging/log4j/core/config/ConfigurationExtension.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.config">ConfigurationExtension</a></li>
 <li class="circle">org.apache.logging.log4j.core.<a href="org/apache/logging/log4j/core/ContextDataInjector.html" class="type-name-link" title="interface in org.apache.logging.log4j.core">ContextDataInjector</a></li>
@@ -989,7 +989,6 @@ loadScripts(document, 'script');</script>
 <li class="circle">org.apache.logging.log4j.core.async.<a href="org/apache/logging/log4j/core/async/EventRoute.html" class="type-name-link" title="enum class in org.apache.logging.log4j.core.async">EventRoute</a></li>
 <li class="circle">org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/ExtensionLanguageMapping.html" class="type-name-link" title="enum class in org.apache.logging.log4j.core.util">ExtensionLanguageMapping</a></li>
 <li class="circle">org.apache.logging.log4j.core.net.<a href="org/apache/logging/log4j/core/net/Facility.html" class="type-name-link" title="enum class in org.apache.logging.log4j.core.net">Facility</a></li>
-<li class="circle">org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/FileExtension.html" class="type-name-link" title="enum class in org.apache.logging.log4j.core.appender.rolling">FileExtension</a></li>
 <li class="circle">org.apache.logging.log4j.core.<a href="org/apache/logging/log4j/core/Filter.Result.html" class="type-name-link" title="enum class in org.apache.logging.log4j.core">Filter.Result</a></li>
 <li class="circle">org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/HtmlLayout.FontSize.html" class="type-name-link" title="enum class in org.apache.logging.log4j.core.layout">HtmlLayout.FontSize</a></li>
 <li class="circle">org.apache.logging.log4j.core.<a href="org/apache/logging/log4j/core/LifeCycle.State.html" class="type-name-link" title="enum class in org.apache.logging.log4j.core">LifeCycle.State</a></li>
