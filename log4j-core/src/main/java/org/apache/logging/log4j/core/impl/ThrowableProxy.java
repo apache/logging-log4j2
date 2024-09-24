@@ -298,30 +298,8 @@ public class ThrowableProxy implements Serializable {
             final String suffix,
             final String lineSeparator) {
         final StringBuilder sb = new StringBuilder();
-        ThrowableProxyRenderer.formatCauseStackTraceTo(
-                this, sb, ignorePackages, textRenderer, suffix, lineSeparator, Integer.MAX_VALUE);
+        ThrowableProxyRenderer.formatCauseStackTrace(this, sb, ignorePackages, textRenderer, suffix, lineSeparator);
         return sb.toString();
-    }
-
-    /**
-     * Formats the stack trace with cause exception.
-     *
-     * @param sb Destination.
-     * @param ignorePackages List of packages to be ignored in the trace.
-     * @param textRenderer The message renderer.
-     * @param suffix Append this to the end of each stack frame.
-     * @param lineSeparator The end-of-line separator.
-     * @param maxLineCount The total line count of final result
-     */
-    public void formatCauseStackTraceTo(
-            final StringBuilder sb,
-            final List<String> ignorePackages,
-            final TextRenderer textRenderer,
-            final String suffix,
-            final String lineSeparator,
-            final int maxLineCount) {
-        ThrowableProxyRenderer.formatCauseStackTraceTo(
-                this, sb, ignorePackages, textRenderer, suffix, lineSeparator, maxLineCount);
     }
 
     /**
@@ -412,7 +390,7 @@ public class ThrowableProxy implements Serializable {
             final String suffix,
             final String lineSeparator) {
         final StringBuilder sb = new StringBuilder(1024);
-        formatExtendedStackTraceTo(sb, ignorePackages, textRenderer, suffix, lineSeparator, Integer.MAX_VALUE);
+        formatExtendedStackTraceTo(sb, ignorePackages, textRenderer, suffix, lineSeparator);
         return sb.toString();
     }
 
@@ -424,9 +402,7 @@ public class ThrowableProxy implements Serializable {
      * @param textRenderer The message renderer.
      * @param suffix Append this to the end of each stack frame.
      * @param lineSeparator The end-of-line separator.
-     * @deprecated since 2.24.0. Use {@link #formatExtendedStackTraceTo(StringBuilder, List, TextRenderer, String, String, int)}.
      */
-    @Deprecated
     public void formatExtendedStackTraceTo(
             final StringBuilder sb,
             final List<String> ignorePackages,
@@ -434,28 +410,7 @@ public class ThrowableProxy implements Serializable {
             final String suffix,
             final String lineSeparator) {
         ThrowableProxyRenderer.formatExtendedStackTraceTo(
-                this, sb, ignorePackages, textRenderer, suffix, lineSeparator, Integer.MAX_VALUE);
-    }
-
-    /**
-     * Formats the stack trace including packaging information.
-     *
-     * @param sb Destination.
-     * @param ignorePackages List of packages to be ignored in the trace.
-     * @param textRenderer The message renderer.
-     * @param suffix Append this to the end of each stack frame.
-     * @param lineSeparator The end-of-line separator.
-     * @param maxLineCount The total line count of final result
-     */
-    public void formatExtendedStackTraceTo(
-            final StringBuilder sb,
-            final List<String> ignorePackages,
-            final TextRenderer textRenderer,
-            final String suffix,
-            final String lineSeparator,
-            final int maxLineCount) {
-        ThrowableProxyRenderer.formatExtendedStackTraceTo(
-                this, sb, ignorePackages, textRenderer, suffix, lineSeparator, maxLineCount);
+                this, sb, ignorePackages, textRenderer, suffix, lineSeparator);
     }
 
     public String getLocalizedMessage() {
