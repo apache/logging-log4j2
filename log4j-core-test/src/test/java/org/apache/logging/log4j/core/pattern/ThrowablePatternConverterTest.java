@@ -105,7 +105,10 @@ public class ThrowablePatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
-        assertEquals(packageName + "ThrowablePatternConverterTest" + Strings.LINE_SEPARATOR, result, "The class names should be same");
+        assertEquals(
+                packageName + "ThrowablePatternConverterTest" + Strings.LINE_SEPARATOR,
+                result,
+                "The class names should be same");
     }
 
     @Test
@@ -124,7 +127,8 @@ public class ThrowablePatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
-        assertEquals("ThrowablePatternConverterTest.java" + Strings.LINE_SEPARATOR, result, "The file names should be same");
+        assertEquals(
+                "ThrowablePatternConverterTest.java" + Strings.LINE_SEPARATOR, result, "The file names should be same");
     }
 
     @Test
