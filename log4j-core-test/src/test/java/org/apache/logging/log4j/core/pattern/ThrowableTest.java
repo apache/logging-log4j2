@@ -97,14 +97,14 @@ public class ThrowableTest {
 
     static Stream<Arguments> renderers_dataSource() {
         return Stream.of(
-                Arguments.of(new ThrowableRenderer<>(Collections.emptyList(), Integer.MAX_VALUE)),
-                Arguments.of(new RootThrowableRenderer(Collections.emptyList(), Integer.MAX_VALUE)),
-                Arguments.of(new ExtendedThrowableRenderer(Collections.emptyList(), Integer.MAX_VALUE)));
+                Arguments.of(new ThrowableStackTraceRenderer<>(Collections.emptyList(), Integer.MAX_VALUE)),
+                Arguments.of(new ThrowableInvertedStackTraceRenderer(Collections.emptyList(), Integer.MAX_VALUE)),
+                Arguments.of(new ThrowableExtendedStackTraceRenderer(Collections.emptyList(), Integer.MAX_VALUE)));
     }
 
     @ParameterizedTest
     @MethodSource("renderers_dataSource")
-    void testCircularSuppressedExceptions(final ThrowableRenderer<?> renderer) {
+    void testCircularSuppressedExceptions(final ThrowableStackTraceRenderer<?> renderer) {
         final Exception e1 = new Exception();
         final Exception e2 = new Exception();
         e2.addSuppressed(e1);
@@ -115,7 +115,7 @@ public class ThrowableTest {
 
     @ParameterizedTest
     @MethodSource("renderers_dataSource")
-    void testCircularSuppressedNestedException(final ThrowableRenderer<?> renderer) {
+    void testCircularSuppressedNestedException(final ThrowableStackTraceRenderer<?> renderer) {
         final Exception e1 = new Exception();
         final Exception e2 = new Exception(e1);
         e2.addSuppressed(e1);
@@ -126,7 +126,7 @@ public class ThrowableTest {
 
     @ParameterizedTest
     @MethodSource("renderers_dataSource")
-    void testCircularCauseExceptions(final ThrowableRenderer<?> renderer) {
+    void testCircularCauseExceptions(final ThrowableStackTraceRenderer<?> renderer) {
         final Exception e1 = new Exception();
         final Exception e2 = new Exception(e1);
         e1.initCause(e2);
@@ -139,12 +139,13 @@ public class ThrowableTest {
     @Test
     public void testThrowableRenderer() {
         final Throwable throwable = createException("r", 1, 3);
-        final ThrowableRenderer<?> renderer = new ThrowableRenderer<>(Collections.emptyList(), Integer.MAX_VALUE);
+        final ThrowableStackTraceRenderer<?> renderer =
+                new ThrowableStackTraceRenderer<>(Collections.emptyList(), Integer.MAX_VALUE);
         String actual = render(renderer, throwable);
         assertThat(actual).isEqualTo(getStandardThrowableStackTrace(throwable));
     }
 
-    private static String render(final ThrowableRenderer<?> renderer, final Throwable throwable) {
+    private static String render(final ThrowableStackTraceRenderer<?> renderer, final Throwable throwable) {
         final StringBuilder stringBuilder = new StringBuilder();
         renderer.renderThrowable(stringBuilder, throwable, System.lineSeparator());
         return stringBuilder.toString();

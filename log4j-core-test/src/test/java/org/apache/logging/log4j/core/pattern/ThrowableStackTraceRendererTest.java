@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-class ThrowableRendererTest {
+class ThrowableStackTraceRendererTest {
 
     static final String NEWLINE = System.lineSeparator();
 
@@ -68,7 +68,7 @@ class ThrowableRendererTest {
                 asList(
                         "foo.TestFriendlyException: r",
                         "	... suppressed 2 lines",
-                        "	at org.apache.logging.log4j.core.pattern.ThrowableRendererTest.<clinit>(ThrowableRendererTest.java:%DIGITS%)",
+                        "	at org.apache.logging.log4j.core.pattern.ThrowableStackTraceRendererTest.<clinit>(ThrowableStackTraceRendererTest.java:%DIGITS%)",
                         "	Suppressed: foo.TestFriendlyException: r_s",
                         "		... suppressed 2 lines",
                         "		... 2 more",
@@ -128,8 +128,8 @@ class ThrowableRendererTest {
     }
 
     private static String renderStackTraceUsingLog4j(final List<String> ignoredPackageNames, final int maxLineCount) {
-        final ThrowableRenderer<ThrowableRenderer.Context> renderer =
-                new ThrowableRenderer<>(ignoredPackageNames, maxLineCount);
+        final ThrowableStackTraceRenderer<?> renderer =
+                new ThrowableStackTraceRenderer<>(ignoredPackageNames, maxLineCount);
         final StringBuilder rendererOutputBuilder = new StringBuilder();
         renderer.renderThrowable(rendererOutputBuilder, EXCEPTION, NEWLINE);
         return rendererOutputBuilder.toString();

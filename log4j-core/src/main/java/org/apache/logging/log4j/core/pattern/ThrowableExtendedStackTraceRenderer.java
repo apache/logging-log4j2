@@ -29,9 +29,13 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 
-final class ExtendedThrowableRenderer extends ThrowableRenderer<ExtendedThrowableRenderer.ExtendedContext> {
+/**
+ * {@link ThrowableStackTraceRenderer} variant where the rendered {@link StackTraceElement}s are enriched with the enclosing JAR file and its version information, if available.
+ */
+final class ThrowableExtendedStackTraceRenderer
+        extends ThrowableStackTraceRenderer<ThrowableExtendedStackTraceRenderer.ExtendedContext> {
 
-    ExtendedThrowableRenderer(final List<String> ignoredPackageNames, final int maxLineCount) {
+    ThrowableExtendedStackTraceRenderer(final List<String> ignoredPackageNames, final int maxLineCount) {
         super(ignoredPackageNames, maxLineCount);
     }
 
@@ -72,7 +76,7 @@ final class ExtendedThrowableRenderer extends ThrowableRenderer<ExtendedThrowabl
         buffer.append(lineSeparator);
     }
 
-    static final class ExtendedContext extends ThrowableRenderer.Context {
+    static final class ExtendedContext extends ThrowableStackTraceRenderer.Context {
 
         private final Map<String, ClassResourceInfo> classResourceInfoByName;
 
@@ -164,7 +168,7 @@ final class ExtendedThrowableRenderer extends ThrowableRenderer<ExtendedThrowabl
                             // 2. Try the `LoaderUtil` magic
                             () -> LoaderUtil.loadClass(className),
                             // 3. Try the current class loader
-                            () -> ExtendedThrowableRenderer.class
+                            () -> ThrowableExtendedStackTraceRenderer.class
                                     .getClassLoader()
                                     .loadClass(className))
                     .map(provider -> {

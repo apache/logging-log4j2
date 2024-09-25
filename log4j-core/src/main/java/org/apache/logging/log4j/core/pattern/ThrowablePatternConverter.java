@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import java.io.PrintWriter;
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,14 +27,13 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.impl.ThrowableFormatOptions;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.core.util.StringBuilderWriter;
-import org.apache.logging.log4j.util.Strings;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
- * Outputs the Throwable portion of the LoggingEvent as a full stack trace
- * unless this converter's option is 'short', where it just outputs the first line of the trace, or if
- * the number of lines to print is explicitly specified.
+ * Outputs certain information extracted from the {@link Throwable} associated with a {@link LogEvent}.
  */
+@NullMarked
 @Plugin(name = "ThrowablePatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({"ex", "throwable", "exception"})
 public class ThrowablePatternConverter extends LogEventPatternConverter {
@@ -49,63 +48,81 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
 
     private final Function<LogEvent, String> effectiveLineSeparatorProvider;
 
-    private String rawOption;
-
-    private final boolean subShortOption;
-
-    private ThrowableRenderer<ThrowableRenderer.Context> renderer;
-
     protected final ThrowableFormatOptions options;
 
+    private final ThrowableRenderer renderer;
+
     /**
-     * Constructor.
-     * @param name Name of converter.
-     * @param style CSS style for output.
-     * @param options options, may be null.
-     * @deprecated Use ThrowablePatternConverter(String name, String stule, String[] options, Configuration config)
+     * @deprecated Use {@link #ThrowablePatternConverter(String, String, String[], Configuration, Function)} instead.
      */
     @Deprecated
-    protected ThrowablePatternConverter(final String name, final String style, final String[] options) {
-        this(name, style, options, null);
+    protected ThrowablePatternConverter(final String name, final String style, @Nullable final String[] options) {
+        this(name, style, options, null, null);
     }
 
     /**
-     * Constructor.
-     * @param name name of converter
-     * @param style CSS style for output
-     * @param options options, may be null.
-     * @param config the Configuration or {@code null}
+     * @deprecated Use {@link #ThrowablePatternConverter(String, String, String[], Configuration, Function)} instead.
      */
+    @Deprecated
     protected ThrowablePatternConverter(
-            final String name, final String style, final String[] options, final Configuration config) {
+            final String name,
+            final String style,
+            @Nullable final String[] options,
+            @Nullable final Configuration config) {
+        this(name, style, options, config, null);
+    }
+
+    /**
+     * The canonical constructor.
+     *
+     * @param name name of the converter
+     * @param style CSS style for output
+     * @param options array of options
+     * @param config a configuration
+     * @param stackTraceRendererFactory a renderer factory
+     * @since 2.25.0
+     */
+    ThrowablePatternConverter(
+            final String name,
+            final String style,
+            @Nullable final String[] options,
+            @Nullable final Configuration config,
+            @Nullable
+                    final Function<ThrowableFormatOptions, ThrowableStackTraceRenderer<?>> stackTraceRendererFactory) {
+
+        // Process `name`, `style`, and `options`
         super(name, style);
         this.options = ThrowableFormatOptions.newInstance(options);
-        if (options != null && options.length > 0) {
-            rawOption = options[0];
-        }
+
+        // Determine the effective line separator
         final List<PatternFormatter> suffixFormatters = new ArrayList<>();
         this.effectiveLineSeparatorProvider = createEffectiveLineSeparator(
                 this.options.getSeparator(), this.options.getSuffix(), config, suffixFormatters);
         this.formatters = Collections.unmodifiableList(suffixFormatters);
-        subShortOption = ThrowableFormatOptions.MESSAGE.equalsIgnoreCase(rawOption)
-                || ThrowableFormatOptions.LOCALIZED_MESSAGE.equalsIgnoreCase(rawOption)
-                || ThrowableFormatOptions.FILE_NAME.equalsIgnoreCase(rawOption)
-                || ThrowableFormatOptions.LINE_NUMBER.equalsIgnoreCase(rawOption)
-                || ThrowableFormatOptions.METHOD_NAME.equalsIgnoreCase(rawOption)
-                || ThrowableFormatOptions.CLASS_NAME.equalsIgnoreCase(rawOption);
-        createRenderer(this.options);
+
+        // Create the effective renderer
+        final ThrowablePropertyRenderer propertyRenderer = ThrowablePropertyRenderer.fromOptions(options);
+        if (propertyRenderer != null) {
+            this.renderer = propertyRenderer;
+        } else {
+            final Function<ThrowableFormatOptions, ThrowableStackTraceRenderer<?>> effectiveRendererFactory =
+                    stackTraceRendererFactory != null
+                            ? stackTraceRendererFactory
+                            : ThrowablePatternConverter::createRenderer;
+            this.renderer = effectiveRendererFactory.apply(this.options);
+        }
     }
 
     /**
-     * Gets an instance of the class.
+     * Creates an instance of the class.
      *
-     * @param config The Configuration or {@code null}.
-     * @param options pattern options, may be null.  If first element is "short",
-     *                only the first line of the throwable will be formatted.
-     * @return instance of class.
+     * @param config a configuration
+     * @param options the pattern options
+     * @return a new instance
      */
-    public static ThrowablePatternConverter newInstance(final Configuration config, final String[] options) {
-        return new ThrowablePatternConverter("Throwable", "throwable", options, config);
+    public static ThrowablePatternConverter newInstance(
+            @Nullable final Configuration config, @Nullable final String[] options) {
+        return new ThrowablePatternConverter("Throwable", "throwable", options, config, null);
     }
 
     /**
@@ -113,75 +130,27 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
      */
     @Override
     public void format(final LogEvent event, final StringBuilder buffer) {
+        requireNonNull(event, "event");
+        requireNonNull(buffer, "buffer");
         final Throwable throwable = event.getThrown();
-        final String effectiveLineSeparator = effectiveLineSeparator(event);
-        if (subShortOption) {
-            formatSubShortOption(throwable, effectiveLineSeparator, buffer);
-        } else if (throwable != null && options.anyLines()) {
-            formatOption(throwable, effectiveLineSeparator, buffer);
+        if (throwable != null) {
+            final String lineSeparator = effectiveLineSeparatorProvider.apply(event);
+            ensureWhitespaceSuffix(buffer);
+            renderer.renderThrowable(buffer, throwable, lineSeparator);
         }
     }
 
-    private void formatSubShortOption(final Throwable t, final String lineSeparator, final StringBuilder buffer) {
-        StackTraceElement[] trace;
-        StackTraceElement throwingMethod = null;
-        int len;
-
-        if (t != null) {
-            trace = t.getStackTrace();
-            if (trace != null && trace.length > 0) {
-                throwingMethod = trace[0];
-            }
-        }
-
-        if (t != null && throwingMethod != null) {
-            String toAppend = Strings.EMPTY;
-
-            if (ThrowableFormatOptions.CLASS_NAME.equalsIgnoreCase(rawOption)) {
-                toAppend = throwingMethod.getClassName();
-            } else if (ThrowableFormatOptions.METHOD_NAME.equalsIgnoreCase(rawOption)) {
-                toAppend = throwingMethod.getMethodName();
-            } else if (ThrowableFormatOptions.LINE_NUMBER.equalsIgnoreCase(rawOption)) {
-                toAppend = String.valueOf(throwingMethod.getLineNumber());
-            } else if (ThrowableFormatOptions.MESSAGE.equalsIgnoreCase(rawOption)) {
-                toAppend = t.getMessage();
-            } else if (ThrowableFormatOptions.LOCALIZED_MESSAGE.equalsIgnoreCase(rawOption)) {
-                toAppend = t.getLocalizedMessage();
-            } else if (ThrowableFormatOptions.FILE_NAME.equalsIgnoreCase(rawOption)) {
-                toAppend = throwingMethod.getFileName();
-            }
-
-            len = buffer.length();
-            if (len > 0 && !Character.isWhitespace(buffer.charAt(len - 1))) {
-                buffer.append(' ');
-            }
-            buffer.append(toAppend);
-
-            buffer.append(lineSeparator);
-        }
-    }
-
-    @SuppressFBWarnings(
-            value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
-            justification = "Formatting a throwable is the main purpose of this class.")
-    private void formatOption(
-            final Throwable throwable, final String effectiveLineSeparator, final StringBuilder buffer) {
+    private static void ensureWhitespaceSuffix(final StringBuilder buffer) {
         final int bufferLength = buffer.length();
         if (bufferLength > 0 && !Character.isWhitespace(buffer.charAt(bufferLength - 1))) {
             buffer.append(' ');
         }
-        final boolean customRenderingRequired = isCustomRenderingRequired(effectiveLineSeparator);
-        if (customRenderingRequired) {
-            renderer.renderThrowable(buffer, throwable, effectiveLineSeparator);
-        } else {
-            throwable.printStackTrace(new PrintWriter(new StringBuilderWriter(buffer)));
-        }
     }
 
     /**
-     * This converter obviously handles throwables.
+     * Indicates this converter handles {@link Throwable}s.
      *
-     * @return true.
+     * @return {@code true}
      */
     @Override
     public boolean handlesThrowable() {
@@ -190,10 +159,6 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
 
     public ThrowableFormatOptions getOptions() {
         return options;
-    }
-
-    private boolean isCustomRenderingRequired(final String effectiveLineSeparator) {
-        return !options.allLines() || !System.lineSeparator().equals(effectiveLineSeparator) || options.hasPackages();
     }
 
     /**
@@ -223,14 +188,16 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
      * @param separator the user-provided {@code separator} option
      * @param suffix the user-provided {@code suffix} option containing a Pattern Layout conversion pattern
      * @param config the configuration to create the Pattern Layout conversion pattern parser
-     * @param suffixFormatters the list of pattern formatters to format the suffix
+     * @param suffixFormatters the list of pattern formatters employed to format the suffix
      * @return a lambda that returns the <em>effective</em> line separator by concatenating the formatted {@code suffix} with the {@code separator}
      */
     private static Function<LogEvent, String> createEffectiveLineSeparator(
             final String separator,
-            final String suffix,
-            final Configuration config,
+            @Nullable final String suffix,
+            @Nullable final Configuration config,
             final List<PatternFormatter> suffixFormatters) {
+        requireNonNull(separator, "separator");
+        requireNonNull(suffixFormatters, "suffixFormatters");
         if (suffix != null) {
 
             // Suffix is allowed to be a Pattern Layout conversion pattern, hence we need to parse it
@@ -265,19 +232,8 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         }
     }
 
-    void createRenderer(final ThrowableFormatOptions options) {
-        this.renderer = new ThrowableRenderer<>(options.getIgnorePackages(), options.getLines());
-    }
-
-    /**
-     * Returns the <em>effective</em> line separator by concatenating the formatted {@code suffix} with the {@code separator}.
-     *
-     * @param logEvent the log event to use while formatting the suffix pattern
-     * @return the concatenation of the formatted {@code suffix} with the {@code separator}
-     * @see #createEffectiveLineSeparator(String, String, Configuration, List)
-     */
-    String effectiveLineSeparator(final LogEvent logEvent) {
-        return effectiveLineSeparatorProvider.apply(logEvent);
+    private static ThrowableStackTraceRenderer<?> createRenderer(final ThrowableFormatOptions options) {
+        return new ThrowableStackTraceRenderer<>(options.getIgnorePackages(), options.getLines());
     }
 
     /**
@@ -285,11 +241,12 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
      *
      * @param logEvent the log event to use while formatting the suffix pattern
      * @return the formatted suffix
-     * @deprecated Use {@link #effectiveLineSeparator(LogEvent)} instead
+     * @deprecated Planned to be removed without a replacement
      */
     @Deprecated
     protected String getSuffix(final LogEvent logEvent) {
-        final String effectiveLineSeparator = effectiveLineSeparator(logEvent);
+        requireNonNull(logEvent, "logEvent");
+        final String effectiveLineSeparator = effectiveLineSeparatorProvider.apply(logEvent);
         if (options.getSeparator().equals(effectiveLineSeparator)) {
             return "";
         }

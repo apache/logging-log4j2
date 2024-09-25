@@ -18,19 +18,19 @@ package org.apache.logging.log4j.core.pattern;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static org.apache.logging.log4j.core.pattern.ThrowableRendererTest.EXCEPTION;
-import static org.apache.logging.log4j.core.pattern.ThrowableRendererTest.NEWLINE;
-import static org.apache.logging.log4j.core.pattern.ThrowableRendererTest.assertStackTraceLineMatches;
+import static org.apache.logging.log4j.core.pattern.ThrowableStackTraceRendererTest.EXCEPTION;
+import static org.apache.logging.log4j.core.pattern.ThrowableStackTraceRendererTest.NEWLINE;
+import static org.apache.logging.log4j.core.pattern.ThrowableStackTraceRendererTest.assertStackTraceLineMatches;
 
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-class RootThrowableRendererTest {
+class ThrowableInvertedStackTraceRendererTest {
 
     static int[] maxLineCounts() {
-        return ThrowableRendererTest.maxLineCounts();
+        return ThrowableStackTraceRendererTest.maxLineCounts();
     }
 
     @ParameterizedTest
@@ -56,8 +56,8 @@ class RootThrowableRendererTest {
                         "Wrapped by: foo.TestFriendlyException: r",
                         "	at foo.TestFriendlyException.create(TestFriendlyException.java:%DIGITS%)",
                         "	at foo.TestFriendlyException.<clinit>(TestFriendlyException.java:%DIGITS%)",
-                        "	at org.apache.logging.log4j.core.pattern.ThrowableRendererTest.<clinit>(ThrowableRendererTest.java:%DIGITS%)",
-                        "	at org.apache.logging.log4j.core.pattern.RootThrowableRendererTest.maxLineCounts(RootThrowableRendererTest.java:%DIGITS%)",
+                        "	at org.apache.logging.log4j.core.pattern.ThrowableStackTraceRendererTest.<clinit>(ThrowableStackTraceRendererTest.java:%DIGITS%)",
+                        "	at org.apache.logging.log4j.core.pattern.ThrowableInvertedStackTraceRendererTest.maxLineCounts(ThrowableInvertedStackTraceRendererTest.java:%DIGITS%)",
                         "	Suppressed: foo.TestFriendlyException: r_s_c",
                         "		at foo.TestFriendlyException.create(TestFriendlyException.java:%DIGITS%)",
                         "		at foo.TestFriendlyException.create(TestFriendlyException.java:%DIGITS%)",
@@ -91,8 +91,8 @@ class RootThrowableRendererTest {
                         "		... 4 more",
                         "Wrapped by: foo.TestFriendlyException: r",
                         "	... suppressed 2 lines",
-                        "	at org.apache.logging.log4j.core.pattern.ThrowableRendererTest.<clinit>(ThrowableRendererTest.java:%DIGITS%)",
-                        "	at org.apache.logging.log4j.core.pattern.RootThrowableRendererTest.maxLineCounts(RootThrowableRendererTest.java:%DIGITS%)",
+                        "	at org.apache.logging.log4j.core.pattern.ThrowableStackTraceRendererTest.<clinit>(ThrowableStackTraceRendererTest.java:%DIGITS%)",
+                        "	at org.apache.logging.log4j.core.pattern.ThrowableInvertedStackTraceRendererTest.maxLineCounts(ThrowableInvertedStackTraceRendererTest.java:%DIGITS%)",
                         "	Suppressed: foo.TestFriendlyException: r_s_c",
                         "		... suppressed 2 lines",
                         "		... 4 more",
@@ -143,8 +143,8 @@ class RootThrowableRendererTest {
     }
 
     private static String renderStackTrace(final List<String> ignoredPackageNames, final int maxLineCount) {
-        final ThrowableRenderer<ThrowableRenderer.Context> renderer =
-                new RootThrowableRenderer(ignoredPackageNames, maxLineCount);
+        final ThrowableStackTraceRenderer<?> renderer =
+                new ThrowableInvertedStackTraceRenderer(ignoredPackageNames, maxLineCount);
         final StringBuilder rendererOutputBuilder = new StringBuilder();
         renderer.renderThrowable(rendererOutputBuilder, EXCEPTION, NEWLINE);
         return rendererOutputBuilder.toString();

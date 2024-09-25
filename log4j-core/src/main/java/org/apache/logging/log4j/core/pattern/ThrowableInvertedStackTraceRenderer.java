@@ -19,11 +19,15 @@ package org.apache.logging.log4j.core.pattern;
 import java.util.List;
 import java.util.Set;
 
-final class RootThrowableRenderer extends ThrowableRenderer<ThrowableRenderer.Context> {
+/**
+ * {@link ThrowableStackTraceRenderer} variant where the stack trace causal chain is rendered in reverse order.
+ */
+final class ThrowableInvertedStackTraceRenderer
+        extends ThrowableStackTraceRenderer<ThrowableStackTraceRenderer.Context> {
 
     private static final String WRAPPED_BY_CAPTION = "Wrapped by: ";
 
-    RootThrowableRenderer(final List<String> ignoredPackageNames, final int maxLineCount) {
+    ThrowableInvertedStackTraceRenderer(final List<String> ignoredPackageNames, final int maxLineCount) {
         super(ignoredPackageNames, maxLineCount);
     }
 

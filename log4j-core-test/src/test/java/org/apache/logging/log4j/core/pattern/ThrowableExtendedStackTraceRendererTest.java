@@ -19,21 +19,21 @@ package org.apache.logging.log4j.core.pattern;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static org.apache.logging.log4j.core.pattern.ThrowableRendererTest.assertStackTraceLineMatches;
+import static org.apache.logging.log4j.core.pattern.ThrowableStackTraceRendererTest.assertStackTraceLineMatches;
 
 import foo.TestFriendlyException;
 import java.util.List;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-class ExtendedThrowableRendererTest {
+class ThrowableExtendedStackTraceRendererTest {
 
     static final String NEWLINE = System.lineSeparator();
 
     static final Exception EXCEPTION = TestFriendlyException.INSTANCE;
 
     static int[] maxLineCounts() {
-        return ThrowableRendererTest.maxLineCounts();
+        return ThrowableStackTraceRendererTest.maxLineCounts();
     }
 
     @ParameterizedTest
@@ -47,7 +47,7 @@ class ExtendedThrowableRendererTest {
                         "foo.TestFriendlyException: r",
                         "	at foo.TestFriendlyException.create(TestFriendlyException.java:%DIGITS%) ~[test-classes/:?]",
                         "	at foo.TestFriendlyException.<clinit>(TestFriendlyException.java:%DIGITS%) ~[test-classes/:?]",
-                        "	at org.apache.logging.log4j.core.pattern.ExtendedThrowableRendererTest.<clinit>(ExtendedThrowableRendererTest.java:%DIGITS%) [test-classes/:?]",
+                        "	at org.apache.logging.log4j.core.pattern.ThrowableExtendedStackTraceRendererTest.<clinit>(ThrowableExtendedStackTraceRendererTest.java:%DIGITS%) [test-classes/:?]",
                         "	Suppressed: foo.TestFriendlyException: r_s",
                         "		at foo.TestFriendlyException.create(TestFriendlyException.java:%DIGITS%) ~[test-classes/:?]",
                         "		at foo.TestFriendlyException.create(TestFriendlyException.java:%DIGITS%) ~[test-classes/:?]",
@@ -84,7 +84,7 @@ class ExtendedThrowableRendererTest {
                 asList(
                         "foo.TestFriendlyException: r",
                         "	... suppressed 2 lines",
-                        "	at org.apache.logging.log4j.core.pattern.ExtendedThrowableRendererTest.<clinit>(ExtendedThrowableRendererTest.java:%DIGITS%) [test-classes/:?]",
+                        "	at org.apache.logging.log4j.core.pattern.ThrowableExtendedStackTraceRendererTest.<clinit>(ThrowableExtendedStackTraceRendererTest.java:%DIGITS%) [test-classes/:?]",
                         "	Suppressed: foo.TestFriendlyException: r_s",
                         "		... suppressed 2 lines",
                         "		... 2 more",
@@ -144,7 +144,8 @@ class ExtendedThrowableRendererTest {
     }
 
     private static String renderStackTraceUsingLog4j(final List<String> ignoredPackageNames, final int maxLineCount) {
-        final ThrowableRenderer<?> renderer = new ExtendedThrowableRenderer(ignoredPackageNames, maxLineCount);
+        final ThrowableStackTraceRenderer<?> renderer =
+                new ThrowableExtendedStackTraceRenderer(ignoredPackageNames, maxLineCount);
         final StringBuilder rendererOutputBuilder = new StringBuilder();
         renderer.renderThrowable(rendererOutputBuilder, EXCEPTION, NEWLINE);
         return rendererOutputBuilder.toString();
