@@ -105,7 +105,10 @@ public class ThrowablePatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
-        assertEquals(packageName + "ThrowablePatternConverterTest\n", result, "The class names should be same");
+        assertEquals(
+                packageName + "ThrowablePatternConverterTest" + Strings.LINE_SEPARATOR,
+                result,
+                "The class names should be same");
     }
 
     @Test
@@ -124,7 +127,8 @@ public class ThrowablePatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
-        assertEquals("ThrowablePatternConverterTest.java\n", result, "The file names should be same");
+        assertEquals(
+                "ThrowablePatternConverterTest.java" + Strings.LINE_SEPARATOR, result, "The file names should be same");
     }
 
     @Test
@@ -164,7 +168,7 @@ public class ThrowablePatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
-        assertEquals("I am localized.\n", result, "The messages should be same");
+        assertEquals("I am localized." + Strings.LINE_SEPARATOR, result, "The messages should be same");
     }
 
     @Test
@@ -183,7 +187,7 @@ public class ThrowablePatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
-        assertEquals("IllegalArgument\n", result, "The messages should be same");
+        assertEquals("IllegalArgument" + Strings.LINE_SEPARATOR, result, "The messages should be same");
     }
 
     @Test
@@ -202,7 +206,7 @@ public class ThrowablePatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
-        assertEquals("testShortMethodName\n", result, "The method names should be same");
+        assertEquals("testShortMethodName" + Strings.LINE_SEPARATOR, result, "The method names should be same");
     }
 
     @Test
