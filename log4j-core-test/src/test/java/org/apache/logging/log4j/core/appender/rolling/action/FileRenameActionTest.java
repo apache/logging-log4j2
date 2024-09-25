@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.PrintStream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.Issue;
 
 public class FileRenameActionTest {
 
@@ -95,6 +96,30 @@ public class FileRenameActionTest {
         boolean renameResult = action.execute();
         assertTrue(renameResult, "Rename action returned false");
         assertTrue(dest.exists(), "Renamed file does not exist");
+        assertFalse(file.exists(), "Old file exists");
+    }
+
+    @Test
+    @Issue("https://github.com/apache/logging-log4j2/issues/2592")
+    public void testRenameForMissingFile() throws Exception {
+        final File file = new File("fileRename.log");
+        final File dest = new File(tempDir, "newFile.log");
+        FileRenameAction action = new FileRenameAction(file, dest, true);
+        boolean renameResult = action.execute();
+        assertTrue(renameResult, "Rename action returned false");
+        assertTrue(dest.exists(), "Renamed file does not exist");
+        assertFalse(file.exists(), "Old file exists");
+    }
+
+    @Test
+    @Issue("https://github.com/apache/logging-log4j2/issues/2592")
+    public void testRenameForMissingFileWithoutEmptyFilesRenaming() throws Exception {
+        final File file = new File("fileRename.log");
+        final File dest = new File(tempDir, "newFile.log");
+        FileRenameAction action = new FileRenameAction(file, dest, false);
+        boolean renameResult = action.execute();
+        assertTrue(renameResult, "Rename action returned false");
+        assertFalse(dest.exists(), "Renamed file should not exist");
         assertFalse(file.exists(), "Old file exists");
     }
 }
