@@ -16,12 +16,14 @@
  */
 package org.apache.logging.log4j.dbcp2.appender;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.jdbc.appender.JdbcH2TestHelper;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PoolingDriverConnectionSourceTest {
 
@@ -76,9 +78,9 @@ public class PoolingDriverConnectionSourceTest {
     }
 
     private void openAndClose(final PoolingDriverConnectionSource source) throws SQLException {
-        Assert.assertNotNull("PoolingDriverConnectionSource is null", source);
+        assertNotNull(source, "PoolingDriverConnectionSource is null");
         try (final Connection conn = source.getConnection()) {
-            Assert.assertFalse(conn.isClosed());
+            assertFalse(conn.isClosed());
         } finally {
             source.stop();
         }
