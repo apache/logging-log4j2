@@ -983,23 +983,22 @@
         </property>
       </activation>
 
-      <!-- There are certain Java 8 bugs[1] that cause Mockito failures[2].
-           Adding necessary dependencies to workaround them.
-           [1] https://bugs.openjdk.org/browse/JDK-8152174
-           [2] https://github.com/mockito/mockito/issues/1449 -->
-      <dependencies>
-        <dependency>
-          <groupId>org.jspecify</groupId>
-          <artifactId>jspecify</artifactId>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
-
       <build>
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
+            <!-- There are certain Java 8 bugs[1] that cause Mockito failures[2].
+                 Adding necessary dependencies to workaround them.
+                 [1] https://bugs.openjdk.org/browse/JDK-8152174
+                 [2] https://github.com/mockito/mockito/issues/1449 -->
+            <dependencies>
+              <dependency>
+                <groupId>org.jspecify</groupId>
+                <artifactId>jspecify</artifactId>
+                <version>${jspecify.version}</version>
+              </dependency>
+            </dependencies>
             <executions>
               <!-- Modifies only the `default-test` run -->
               <execution>
