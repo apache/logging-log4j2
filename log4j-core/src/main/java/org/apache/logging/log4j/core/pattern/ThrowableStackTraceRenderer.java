@@ -21,14 +21,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.apache.logging.log4j.core.util.internal.StringBuilders;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * {@link ThrowableRenderer} implementation for rendering stack traces.
  *
  * @param <C> the context type
  */
+@NullMarked
 class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context> implements ThrowableRenderer {
+
+    private static final RuntimeException MAX_LINE_COUNT_EXCEEDED = new RuntimeException("max-line-count-exceeded");
 
     private static final String CAUSED_BY_CAPTION = "Caused by: ";
 
@@ -46,9 +50,16 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
     @Override
     public final void renderThrowable(
             final StringBuilder buffer, final Throwable throwable, final String lineSeparator) {
-        C context = createContext(throwable);
-        renderThrowable(buffer, throwable, context, new HashSet<>(), lineSeparator);
-        StringBuilders.truncateAfterDelimiter(buffer, lineSeparator, maxLineCount);
+        if (maxLineCount > 0) {
+            try {
+                C context = createContext(throwable);
+                renderThrowable(buffer, throwable, context, new HashSet<>(), lineSeparator);
+            } catch (final Exception error) {
+                if (error != MAX_LINE_COUNT_EXCEEDED) {
+                    throw error;
+                }
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -77,6 +88,7 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
         if (visitedThrowables.contains(throwable)) {
             return;
         }
+        acquireLineCapacity(context);
         visitedThrowables.add(throwable);
         buffer.append(prefix);
         buffer.append(caption);
@@ -85,6 +97,14 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
         renderStackTraceElements(buffer, throwable, context, prefix, lineSeparator);
         renderSuppressed(buffer, throwable.getSuppressed(), context, visitedThrowables, prefix + '\t', lineSeparator);
         renderCause(buffer, throwable.getCause(), context, visitedThrowables, prefix, lineSeparator);
+    }
+
+    void acquireLineCapacity(final C context) {
+        if (context.lineCount < maxLineCount) {
+            context.lineCount++;
+        } else {
+            throw MAX_LINE_COUNT_EXCEEDED;
+        }
     }
 
     void renderSuppressed(
@@ -100,9 +120,9 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
         }
     }
 
-    void renderCause(
+    private void renderCause(
             final StringBuilder buffer,
-            final Throwable cause,
+            @Nullable final Throwable cause,
             final C context,
             final Set<Throwable> visitedThrowables,
             final String prefix,
@@ -113,7 +133,7 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
     }
 
     static void renderThrowableMessage(final StringBuilder buffer, final Throwable throwable) {
-        final String message = throwable.getMessage();
+        final String message = throwable.getLocalizedMessage();
         buffer.append(throwable.getClass().getName());
         if (message != null) {
             buffer.append(": ");
@@ -134,9 +154,10 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
             renderStackTraceElement(buffer, stackTraceElements[i], context, prefix, lineSeparator);
         }
         if (context.ignoredStackTraceElementCount > 0) {
-            renderSuppressedCount(buffer, context.ignoredStackTraceElementCount, prefix, lineSeparator);
+            renderSuppressedCount(buffer, context, prefix, lineSeparator);
         }
         if (metadata.commonElementCount != 0) {
+            acquireLineCapacity(context);
             buffer.append(prefix);
             buffer.append("\t... ");
             buffer.append(metadata.commonElementCount);
@@ -153,28 +174,31 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
             final String lineSeparator) {
 
         // Short-circuit on ignored stack trace elements
-        final boolean stackTraceElementIgnored = isStackTraceElementIgnored(stackTraceElement, ignoredPackageNames);
+        final boolean stackTraceElementIgnored = isStackTraceElementIgnored(stackTraceElement);
         if (stackTraceElementIgnored) {
             context.ignoredStackTraceElementCount += 1;
             return;
         }
 
-        // Render the stack trace element
+        // Render the suppressed stack trace element count
         if (context.ignoredStackTraceElementCount > 0) {
-            renderSuppressedCount(buffer, context.ignoredStackTraceElementCount, prefix, lineSeparator);
+            renderSuppressedCount(buffer, context, prefix, lineSeparator);
             context.ignoredStackTraceElementCount = 0;
         }
+
+        // Render the stack trace element
+        acquireLineCapacity(context);
         buffer.append(prefix);
         buffer.append("\tat ");
         buffer.append(stackTraceElement.toString());
         buffer.append(lineSeparator);
     }
 
-    static boolean isStackTraceElementIgnored(final StackTraceElement element, final List<String> ignorePackages) {
-        if (ignorePackages != null) {
+    boolean isStackTraceElementIgnored(final StackTraceElement element) {
+        if (ignoredPackageNames != null) {
             final String className = element.getClassName();
-            for (final String ignoredPackage : ignorePackages) {
-                if (className.startsWith(ignoredPackage)) {
+            for (final String ignoredPackageName : ignoredPackageNames) {
+                if (className.startsWith(ignoredPackageName)) {
                     return true;
                 }
             }
@@ -182,20 +206,26 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
         return false;
     }
 
-    static void renderSuppressedCount(
-            final StringBuilder buffer, final int count, final String prefix, final String lineSeparator) {
+    void renderSuppressedCount(
+            final StringBuilder buffer, final C context, final String prefix, final String lineSeparator) {
+        acquireLineCapacity(context);
         buffer.append(prefix);
-        if (count == 1) {
-            buffer.append("\t... ");
+        if (context.ignoredStackTraceElementCount == 1) {
+            buffer.append("\t...");
         } else {
             buffer.append("\t... suppressed ");
-            buffer.append(count);
+            buffer.append(context.ignoredStackTraceElementCount);
             buffer.append(" lines");
         }
         buffer.append(lineSeparator);
     }
 
     static class Context {
+
+        /**
+         * Number of lines consumed from the {@link Throwable} causal chain so far.
+         */
+        int lineCount = 0;
 
         /**
          * Number of stack trace elements ignored.
@@ -247,10 +277,11 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
             private static void populateMetadata(
                     final Map<Throwable, Metadata> metadataByThrowable,
                     final Set<Throwable> visitedThrowables,
-                    final Throwable parentThrowable,
+                    @Nullable final Throwable parentThrowable,
                     final Throwable throwable) {
 
                 // Populate metadata of the current throwable
+                @Nullable
                 final StackTraceElement[] rootTrace = parentThrowable == null ? null : parentThrowable.getStackTrace();
                 final Metadata metadata = populateMetadata(rootTrace, throwable.getStackTrace());
                 metadataByThrowable.put(throwable, metadata);
@@ -264,7 +295,7 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
                 }
 
                 // Populate metadata of the causal chain
-                final Throwable cause = throwable.getCause();
+                @Nullable final Throwable cause = throwable.getCause();
                 if (cause != null && !visitedThrowables.contains(cause)) {
                     visitedThrowables.add(cause);
                     populateMetadata(metadataByThrowable, visitedThrowables, throwable, cause);
@@ -272,7 +303,7 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
             }
 
             private static Metadata populateMetadata(
-                    final StackTraceElement[] parentTrace, final StackTraceElement[] currentTrace) {
+                    @Nullable final StackTraceElement[] parentTrace, final StackTraceElement[] currentTrace) {
                 int commonElementCount;
                 int stackLength;
                 if (parentTrace != null) {

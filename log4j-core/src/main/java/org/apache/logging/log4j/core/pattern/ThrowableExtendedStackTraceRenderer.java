@@ -53,17 +53,20 @@ final class ThrowableExtendedStackTraceRenderer
             final String lineSeparator) {
 
         // Short-circuit on ignored stack trace elements
-        final boolean stackTraceElementIgnored = isStackTraceElementIgnored(stackTraceElement, ignoredPackageNames);
+        final boolean stackTraceElementIgnored = isStackTraceElementIgnored(stackTraceElement);
         if (stackTraceElementIgnored) {
             context.ignoredStackTraceElementCount += 1;
             return;
         }
 
-        // Render the stack trace element
+        // Render the suppressed stack trace element count
         if (context.ignoredStackTraceElementCount > 0) {
-            renderSuppressedCount(buffer, context.ignoredStackTraceElementCount, prefix, lineSeparator);
+            renderSuppressedCount(buffer, context, prefix, lineSeparator);
             context.ignoredStackTraceElementCount = 0;
         }
+
+        // Render the stack trace element
+        acquireLineCapacity(context);
         buffer.append(prefix);
         buffer.append("\tat ");
         buffer.append(stackTraceElement.toString());

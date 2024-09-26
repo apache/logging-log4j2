@@ -16,132 +16,153 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static java.util.Arrays.asList;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.message.SimpleMessage;
-import org.junit.jupiter.api.Test;
+import java.util.List;
+import org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.AbstractPropertyTest;
+import org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.AbstractStackTraceTest;
+import org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.DepthTestCase;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-public class RootThrowablePatternConverterTest {
+/**
+ * {@link RootThrowablePatternConverter} tests.
+ */
+class RootThrowablePatternConverterTest {
 
-    @Test
-    public void testSuffix() {
-        final String suffix = "suffix(test suffix)";
-        final String[] options = {suffix};
-        final RootThrowablePatternConverter converter = RootThrowablePatternConverter.newInstance(null, options);
-        final Throwable cause = new NullPointerException("null pointer");
-        final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
-        final LogEvent event = Log4jLogEvent.newBuilder() //
-                .setLoggerName("testLogger") //
-                .setLoggerFqcn(this.getClass().getName()) //
-                .setLevel(Level.DEBUG) //
-                .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent)
-                .build();
-        final StringBuilder sb = new StringBuilder();
-        converter.format(event, sb);
-        final String result = sb.toString();
-        assertTrue(result.contains("test suffix"), "No suffix");
-    }
+    @Nested
+    class PropertyTest extends AbstractPropertyTest {
 
-    @Test
-    public void testSuffixFromNormalPattern() {
-        final String suffix = "suffix(%mdc{key})";
-        ThreadContext.put("key", "test suffix ");
-        final String[] options = {suffix};
-        final RootThrowablePatternConverter converter = RootThrowablePatternConverter.newInstance(null, options);
-        final Throwable cause = new NullPointerException("null pointer");
-        final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
-        final LogEvent event = Log4jLogEvent.newBuilder() //
-                .setLoggerName("testLogger") //
-                .setLoggerFqcn(this.getClass().getName()) //
-                .setLevel(Level.DEBUG) //
-                .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent)
-                .build();
-        final StringBuilder sb = new StringBuilder();
-        converter.format(event, sb);
-        final String result = sb.toString();
-        assertTrue(result.contains("test suffix"), "No suffix");
-    }
-
-    @Test
-    public void testSuffixWillIgnoreThrowablePattern() {
-        final String suffix = "suffix(%xEx{suffix(inner suffix)})";
-        final String[] options = {suffix};
-        final RootThrowablePatternConverter converter = RootThrowablePatternConverter.newInstance(null, options);
-        final Throwable cause = new NullPointerException("null pointer");
-        final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
-        final LogEvent event = Log4jLogEvent.newBuilder() //
-                .setLoggerName("testLogger") //
-                .setLoggerFqcn(this.getClass().getName()) //
-                .setLevel(Level.DEBUG) //
-                .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent)
-                .build();
-        final StringBuilder sb = new StringBuilder();
-        converter.format(event, sb);
-        final String result = sb.toString();
-        assertFalse(result.contains("inner suffix"), "Has unexpected suffix");
-    }
-
-    @Test
-    public void testFull1() {
-        final RootThrowablePatternConverter converter = RootThrowablePatternConverter.newInstance(null, null);
-        final Throwable cause = new NullPointerException("null pointer");
-        final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
-        final LogEvent event = Log4jLogEvent.newBuilder() //
-                .setLoggerName("testLogger") //
-                .setLoggerFqcn(this.getClass().getName()) //
-                .setLevel(Level.DEBUG) //
-                .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent)
-                .build();
-        final StringBuilder sb = new StringBuilder();
-        converter.format(event, sb);
-        final String result = sb.toString();
-        // System.out.print(result);
-        assertTrue(
-                result.contains("Wrapped by: java.lang.IllegalArgumentException: IllegalArgument"),
-                "Missing Exception");
-        assertTrue(result.startsWith("java.lang.NullPointerException: null pointer"), "Incorrect start of msg");
-    }
-
-    /**
-     * Sanity check for testFull1() above, makes sure that the way testFull1 is written matches actually throwing
-     * exceptions.
-     */
-    @Test
-    public void testFull2() {
-        final RootThrowablePatternConverter converter = RootThrowablePatternConverter.newInstance(null, null);
-        Throwable parent;
-        try {
-            try {
-                throw new NullPointerException("null pointer");
-            } catch (final NullPointerException e) {
-                throw new IllegalArgumentException("IllegalArgument", e);
-            }
-        } catch (final IllegalArgumentException e) {
-            parent = e;
+        PropertyTest() {
+            super("%rEx");
         }
-        final LogEvent event = Log4jLogEvent.newBuilder() //
-                .setLoggerName("testLogger") //
-                .setLoggerFqcn(this.getClass().getName()) //
-                .setLevel(Level.DEBUG) //
-                .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent)
-                .build();
-        final StringBuilder sb = new StringBuilder();
-        converter.format(event, sb);
-        final String result = sb.toString();
-        // System.out.print(result);
-        assertTrue(
-                result.contains("Wrapped by: java.lang.IllegalArgumentException: IllegalArgument"),
-                "Missing Exception");
-        assertTrue(result.startsWith("java.lang.NullPointerException: null pointer"), "Incorrect start of msg");
+    }
+
+    private static final List<String> EXPECTED_FULL_STACK_TRACE_LINES = asList(
+            "foo.TestFriendlyException: r_c_c [localized]",
+            "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
+            "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
+            "	... 3 more",
+            "Wrapped by: foo.TestFriendlyException: r_c [localized]",
+            "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
+            "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
+            "	... 2 more",
+            "	Suppressed: foo.TestFriendlyException: r_c_s [localized]",
+            "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
+            "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
+            "		... 3 more",
+            "Wrapped by: foo.TestFriendlyException: r [localized]",
+            "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
+            "	at foo.TestFriendlyException.<clinit>(TestFriendlyException.java:0)",
+            "	at org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.<clinit>(ThrowablePatternConverterTest.java:0)",
+            "	Suppressed: foo.TestFriendlyException: r_s_c [localized]",
+            "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
+            "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
+            "		... 3 more",
+            "	Wrapped by: foo.TestFriendlyException: r_s [localized]",
+            "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
+            "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
+            "		... 2 more",
+            "		Suppressed: foo.TestFriendlyException: r_s_s [localized]",
+            "			at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
+            "			at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
+            "			... 3 more");
+
+    @Nested
+    class StackTraceTest extends AbstractStackTraceTest {
+
+        StackTraceTest() {
+            super("%rEx");
+        }
+
+        @ParameterizedTest
+        @MethodSource("org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest#fullStackTracePatterns")
+        void full_output_should_match(final String pattern) {
+            final String effectivePattern = patternPrefix + pattern;
+            assertStackTraceLines(null, effectivePattern, EXPECTED_FULL_STACK_TRACE_LINES);
+        }
+
+        @ParameterizedTest
+        @MethodSource("org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest#depthTestCases")
+        void depth_limited_output_should_match(final DepthTestCase depthTestCase) {
+            final String pattern = String.format(
+                    "%s{%d}%s",
+                    patternPrefix, depthTestCase.maxLineCount, depthTestCase.separatorTestCase.patternAddendum);
+            assertStackTraceLines(depthTestCase, pattern, EXPECTED_FULL_STACK_TRACE_LINES);
+        }
+
+        @ParameterizedTest
+        @MethodSource("org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest#depthTestCases")
+        void depth_and_package_limited_output_should_match_1(final DepthTestCase depthTestCase) {
+            final String pattern = String.format(
+                    "%s{%d}{filters(foo)}%s",
+                    patternPrefix, depthTestCase.maxLineCount, depthTestCase.separatorTestCase.patternAddendum);
+            assertStackTraceLines(
+                    depthTestCase,
+                    pattern,
+                    asList(
+                            "foo.TestFriendlyException: r_c_c [localized]",
+                            "	... suppressed 2 lines",
+                            "	... 3 more",
+                            "Wrapped by: foo.TestFriendlyException: r_c [localized]",
+                            "	... suppressed 2 lines",
+                            "	... 2 more",
+                            "	Suppressed: foo.TestFriendlyException: r_c_s [localized]",
+                            "		... suppressed 2 lines",
+                            "		... 3 more",
+                            "Wrapped by: foo.TestFriendlyException: r [localized]",
+                            "	... suppressed 2 lines",
+                            "	at org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.<clinit>(ThrowablePatternConverterTest.java:0)",
+                            "	Suppressed: foo.TestFriendlyException: r_s_c [localized]",
+                            "		... suppressed 2 lines",
+                            "		... 3 more",
+                            "	Wrapped by: foo.TestFriendlyException: r_s [localized]",
+                            "		... suppressed 2 lines",
+                            "		... 2 more",
+                            "		Suppressed: foo.TestFriendlyException: r_s_s [localized]",
+                            "			... suppressed 2 lines",
+                            "			... 3 more"));
+        }
+
+        @ParameterizedTest
+        @MethodSource("org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest#depthTestCases")
+        void depth_and_package_limited_output_should_match_2(final DepthTestCase depthTestCase) {
+            final String pattern = String.format(
+                    "%s{%d}{filters(org.apache)}%s",
+                    patternPrefix, depthTestCase.maxLineCount, depthTestCase.separatorTestCase.patternAddendum);
+            assertStackTraceLines(
+                    depthTestCase,
+                    pattern,
+                    asList(
+                            "foo.TestFriendlyException: r_c_c [localized]",
+                            "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
+                            "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
+                            "	... 3 more",
+                            "Wrapped by: foo.TestFriendlyException: r_c [localized]",
+                            "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
+                            "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
+                            "	... 2 more",
+                            "	Suppressed: foo.TestFriendlyException: r_c_s [localized]",
+                            "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
+                            "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
+                            "		... 3 more",
+                            "Wrapped by: foo.TestFriendlyException: r [localized]",
+                            "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
+                            "	at foo.TestFriendlyException.<clinit>(TestFriendlyException.java:0)",
+                            "	...",
+                            "	Suppressed: foo.TestFriendlyException: r_s_c [localized]",
+                            "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
+                            "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
+                            "		... 3 more",
+                            "	Wrapped by: foo.TestFriendlyException: r_s [localized]",
+                            "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
+                            "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
+                            "		... 2 more",
+                            "		Suppressed: foo.TestFriendlyException: r_s_s [localized]",
+                            "			at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
+                            "			at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
+                            "			... 3 more"));
+        }
     }
 }

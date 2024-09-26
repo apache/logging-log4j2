@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.pattern;
 
 import java.util.List;
 import java.util.Set;
+import org.jspecify.annotations.Nullable;
 
 /**
  * {@link ThrowableStackTraceRenderer} variant where the stack trace causal chain is rendered in reverse order.
@@ -38,7 +39,7 @@ final class ThrowableInvertedStackTraceRenderer
             final Context context,
             final Set<Throwable> visitedThrowables,
             final String lineSeparator) {
-        renderThrowable(buffer, throwable, context, visitedThrowables, "", lineSeparator);
+        renderThrowable(buffer, throwable, context, visitedThrowables, "", lineSeparator, false);
     }
 
     private void renderThrowable(
@@ -47,31 +48,44 @@ final class ThrowableInvertedStackTraceRenderer
             final Context context,
             final Set<Throwable> visitedThrowables,
             final String prefix,
-            final String lineSeparator) {
+            final String lineSeparator,
+            boolean lineCapacityAcquired) {
         if (visitedThrowables.contains(throwable)) {
             return;
         }
         visitedThrowables.add(throwable);
-        renderCause(buffer, throwable.getCause(), context, visitedThrowables, prefix, lineSeparator);
+        if (!renderCause(
+                buffer,
+                throwable.getCause(),
+                context,
+                visitedThrowables,
+                prefix,
+                lineSeparator,
+                lineCapacityAcquired)) {
+            acquireLineCapacity(context);
+        }
         renderThrowableMessage(buffer, throwable);
         buffer.append(lineSeparator);
         renderStackTraceElements(buffer, throwable, context, prefix, lineSeparator);
         renderSuppressed(buffer, throwable.getSuppressed(), context, visitedThrowables, prefix + '\t', lineSeparator);
     }
 
-    @Override
-    void renderCause(
+    private boolean renderCause(
             final StringBuilder buffer,
-            final Throwable cause,
+            @Nullable final Throwable cause,
             final Context context,
             final Set<Throwable> visitedThrowables,
             final String prefix,
-            final String lineSeparator) {
+            final String lineSeparator,
+            final boolean lineCapacityAcquired) {
         if (cause != null) {
-            renderThrowable(buffer, cause, context, visitedThrowables, prefix, lineSeparator);
+            renderThrowable(buffer, cause, context, visitedThrowables, prefix, lineSeparator, lineCapacityAcquired);
+            acquireLineCapacity(context);
             buffer.append(prefix);
             buffer.append(WRAPPED_BY_CAPTION);
+            return true;
         }
+        return lineCapacityAcquired;
     }
 
     @Override
@@ -82,11 +96,23 @@ final class ThrowableInvertedStackTraceRenderer
             final Set<Throwable> visitedThrowables,
             final String prefix,
             final String lineSeparator) {
-        if (suppressedThrowables != null && suppressedThrowables.length != 0) {
+        if (suppressedThrowables.length > 0) {
+            acquireLineCapacity(context);
             buffer.append(prefix);
             buffer.append(SUPPRESSED_CAPTION);
-            for (final Throwable suppressedThrowable : suppressedThrowables) {
-                renderThrowable(buffer, suppressedThrowable, context, visitedThrowables, prefix, lineSeparator);
+            for (int suppressedThrowableIndex = 0;
+                    suppressedThrowableIndex < suppressedThrowables.length;
+                    suppressedThrowableIndex++) {
+                final Throwable suppressedThrowable = suppressedThrowables[suppressedThrowableIndex];
+                final boolean lineCapacityAcquired = suppressedThrowableIndex == 0;
+                renderThrowable(
+                        buffer,
+                        suppressedThrowable,
+                        context,
+                        visitedThrowables,
+                        prefix,
+                        lineSeparator,
+                        lineCapacityAcquired);
             }
         }
     }

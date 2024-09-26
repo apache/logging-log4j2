@@ -23,6 +23,7 @@ import java.util.Arrays;
 /**
  * A testing friendly exception featuring
  * <ul>
+ * <li>Distinct localized message</li>
  * <li>Non-Log4j package origin<sup>1</sup></li>
  * <li>Sufficient causal chain depth</li>
  * <li>Decorated with suppressed exceptions</li>
@@ -78,5 +79,10 @@ public final class TestFriendlyException extends RuntimeException {
                 })
                 .toArray(StackTraceElement[]::new);
         setStackTrace(newStackTrace);
+    }
+
+    @Override
+    public String getLocalizedMessage() {
+        return getMessage() + " [localized]";
     }
 }
