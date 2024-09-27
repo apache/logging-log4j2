@@ -46,6 +46,7 @@ import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.net.TcpSocketManager;
 import org.apache.logging.log4j.core.net.TcpSocketManager.HostResolver;
 import org.apache.logging.log4j.core.net.ssl.SslKeyStoreConstants;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.CleanupMode;
@@ -55,6 +56,8 @@ import org.junit.jupiter.api.io.TempDir;
  * Tests reconnection support of {@link org.apache.logging.log4j.core.appender.SocketAppender}.
  */
 public class SocketAppenderReconnectTest {
+
+    private static final String CLASS_NAME = SocketAppenderReconnectTest.class.getSimpleName();
 
     private static final int EPHEMERAL_PORT = 0;
 
@@ -340,6 +343,9 @@ public class SocketAppenderReconnectTest {
             final BufferingErrorHandler errorHandler)
             throws Exception {
 
+        // Report status
+        StatusLogger.getLogger().trace("[{}] verifying logging success", CLASS_NAME);
+
         // Create messages to log
         final int messageCount = 2;
         assertThat(messageCount)
@@ -380,11 +386,18 @@ public class SocketAppenderReconnectTest {
 
     private static void verifyLoggingFailure(
             final LoggerContext loggerContext, final BufferingErrorHandler errorHandler) {
+
+        // Report status
+        StatusLogger.getLogger().trace("[{}] verifying logging failure", CLASS_NAME);
+
+        // Verify the configuration
         final Logger logger = loggerContext.getRootLogger();
         final int retryCount = 3;
         assertThat(retryCount)
                 .as("expecting `retryCount > 1` due to LOG4J2-2829")
                 .isGreaterThan(1);
+
+        // Verify the failure
         for (int i = 0; i < retryCount; i++) {
             try {
                 logger.info("should fail #" + i);
