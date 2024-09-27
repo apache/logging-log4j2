@@ -50,26 +50,38 @@ final class ThrowableInvertedStackTraceRenderer
             final String prefix,
             final String lineSeparator,
             boolean lineCapacityAcquired) {
-        if (visitedThrowables.contains(throwable)) {
-            return;
+        final boolean circular = !visitedThrowables.add(throwable);
+        if (circular) {
+            if (!lineCapacityAcquired) {
+                acquireLineCapacity(context);
+            }
+            buffer.append("[CIRCULAR REFERENCE: ");
+            renderThrowableMessage(buffer, throwable);
+            buffer.append(']');
+            buffer.append(lineSeparator);
+        } else {
+            lineCapacityAcquired = renderCause(
+                    buffer,
+                    throwable.getCause(),
+                    context,
+                    visitedThrowables,
+                    prefix,
+                    lineSeparator,
+                    lineCapacityAcquired);
+            if (!lineCapacityAcquired) {
+                acquireLineCapacity(context);
+            }
+            renderThrowableMessage(buffer, throwable);
+            buffer.append(lineSeparator);
+            renderStackTraceElements(buffer, throwable, context, prefix, lineSeparator);
+            renderSuppressed(
+                    buffer, throwable.getSuppressed(), context, visitedThrowables, prefix + '\t', lineSeparator);
         }
-        visitedThrowables.add(throwable);
-        if (!renderCause(
-                buffer,
-                throwable.getCause(),
-                context,
-                visitedThrowables,
-                prefix,
-                lineSeparator,
-                lineCapacityAcquired)) {
-            acquireLineCapacity(context);
-        }
-        renderThrowableMessage(buffer, throwable);
-        buffer.append(lineSeparator);
-        renderStackTraceElements(buffer, throwable, context, prefix, lineSeparator);
-        renderSuppressed(buffer, throwable.getSuppressed(), context, visitedThrowables, prefix + '\t', lineSeparator);
     }
 
+    /**
+     * @return {@code true}, if line capacity is acquired; {@code false}, otherwise
+     */
     private boolean renderCause(
             final StringBuilder buffer,
             @Nullable final Throwable cause,

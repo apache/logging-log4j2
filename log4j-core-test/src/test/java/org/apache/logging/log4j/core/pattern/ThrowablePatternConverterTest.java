@@ -285,10 +285,12 @@ public class ThrowablePatternConverterTest {
                             "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
                             "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
                             "		... 3 more",
+                            "	Caused by: [CIRCULAR REFERENCE: foo.TestFriendlyException: r_c [localized]]",
                             "Caused by: foo.TestFriendlyException: r_c_c [localized]",
                             "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
                             "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
-                            "	... 3 more"));
+                            "	... 3 more",
+                            "Caused by: [CIRCULAR REFERENCE: foo.TestFriendlyException: r_c [localized]]"));
         }
 
         @ParameterizedTest
@@ -319,9 +321,11 @@ public class ThrowablePatternConverterTest {
                             "	Suppressed: foo.TestFriendlyException: r_c_s [localized]",
                             "		... suppressed 2 lines",
                             "		... 3 more",
+                            "	Caused by: [CIRCULAR REFERENCE: foo.TestFriendlyException: r_c [localized]]",
                             "Caused by: foo.TestFriendlyException: r_c_c [localized]",
                             "	... suppressed 2 lines",
-                            "	... 3 more"));
+                            "	... 3 more",
+                            "Caused by: [CIRCULAR REFERENCE: foo.TestFriendlyException: r_c [localized]]"));
         }
 
         @ParameterizedTest
@@ -358,10 +362,12 @@ public class ThrowablePatternConverterTest {
                             "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
                             "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
                             "		... 3 more",
+                            "	Caused by: [CIRCULAR REFERENCE: foo.TestFriendlyException: r_c [localized]]",
                             "Caused by: foo.TestFriendlyException: r_c_c [localized]",
                             "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
                             "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
-                            "	... 3 more"));
+                            "	... 3 more",
+                            "Caused by: [CIRCULAR REFERENCE: foo.TestFriendlyException: r_c [localized]]"));
         }
     }
 
@@ -407,7 +413,7 @@ public class ThrowablePatternConverterTest {
         }
 
         private static String truncateStackTraceLineNumbers(final String stackTrace) {
-            return stackTrace.replaceAll("\\.java:[0-9]+\\)", ".java:0");
+            return stackTrace.replaceAll("\\.java:[0-9]+\\)", ".java:0)");
         }
     }
 

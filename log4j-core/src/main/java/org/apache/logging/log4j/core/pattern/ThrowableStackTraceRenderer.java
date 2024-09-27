@@ -85,18 +85,23 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
             final String prefix,
             final String lineSeparator,
             final String caption) {
-        if (visitedThrowables.contains(throwable)) {
-            return;
-        }
         acquireLineCapacity(context);
-        visitedThrowables.add(throwable);
+        final boolean circular = !visitedThrowables.add(throwable);
         buffer.append(prefix);
         buffer.append(caption);
-        renderThrowableMessage(buffer, throwable);
-        buffer.append(lineSeparator);
-        renderStackTraceElements(buffer, throwable, context, prefix, lineSeparator);
-        renderSuppressed(buffer, throwable.getSuppressed(), context, visitedThrowables, prefix + '\t', lineSeparator);
-        renderCause(buffer, throwable.getCause(), context, visitedThrowables, prefix, lineSeparator);
+        if (circular) {
+            buffer.append("[CIRCULAR REFERENCE: ");
+            renderThrowableMessage(buffer, throwable);
+            buffer.append(']');
+            buffer.append(lineSeparator);
+        } else {
+            renderThrowableMessage(buffer, throwable);
+            buffer.append(lineSeparator);
+            renderStackTraceElements(buffer, throwable, context, prefix, lineSeparator);
+            renderSuppressed(
+                    buffer, throwable.getSuppressed(), context, visitedThrowables, prefix + '\t', lineSeparator);
+            renderCause(buffer, throwable.getCause(), context, visitedThrowables, prefix, lineSeparator);
+        }
     }
 
     void acquireLineCapacity(final C context) {

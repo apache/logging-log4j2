@@ -26,6 +26,7 @@ import java.util.Arrays;
  * <li>Distinct localized message</li>
  * <li>Non-Log4j package origin<sup>1</sup></li>
  * <li>Sufficient causal chain depth</li>
+ * <li>Cyclic causal chain</li>
  * <li>Decorated with suppressed exceptions</li>
  * <li>A stack trace free of clutter (i.e., elements from JUnit, JDK, etc.)</li>
  * </ul>
@@ -39,18 +40,27 @@ public final class TestFriendlyException extends RuntimeException {
         "java.lang", "jdk.internal", "org.junit", "sun.reflect"
     };
 
-    public static final TestFriendlyException INSTANCE = create("r", 0, 2);
+    public static final TestFriendlyException INSTANCE = create("r", 0, 2, new boolean[] {false});
 
     static {
         // Ensure the distinct packaging
         assertThat(TestFriendlyException.class.getPackage().getName()).doesNotStartWith("org.apache");
     }
 
-    private static TestFriendlyException create(final String name, final int depth, final int maxDepth) {
+    private static TestFriendlyException create(
+            final String name, final int depth, final int maxDepth, final boolean[] circular) {
         final TestFriendlyException error = new TestFriendlyException(name);
         if (depth < maxDepth) {
-            error.initCause(create(name + "_c", depth + 1, maxDepth));
-            error.addSuppressed(create(name + "_s", depth + 1, maxDepth));
+            final TestFriendlyException cause = create(name + "_c", depth + 1, maxDepth, circular);
+            error.initCause(cause);
+            final TestFriendlyException suppressed = create(name + "_s", depth + 1, maxDepth, circular);
+            error.addSuppressed(suppressed);
+            final boolean circularAllowed = depth + 1 == maxDepth && !circular[0];
+            if (circularAllowed) {
+                cause.initCause(error);
+                suppressed.initCause(error);
+                circular[0] = true;
+            }
         }
         return error;
     }

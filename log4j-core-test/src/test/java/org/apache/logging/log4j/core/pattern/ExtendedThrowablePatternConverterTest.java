@@ -64,10 +64,12 @@ class ExtendedThrowablePatternConverterTest {
             "		at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
             "		at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
             "		... 3 more",
+            "	Caused by: [CIRCULAR REFERENCE: foo.TestFriendlyException: r_c [localized]]",
             "Caused by: foo.TestFriendlyException: r_c_c [localized]",
             "	at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
             "	at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
-            "	... 3 more");
+            "	... 3 more",
+            "Caused by: [CIRCULAR REFERENCE: foo.TestFriendlyException: r_c [localized]]");
 
     @Nested
     class StackTraceTest extends AbstractStackTraceTest {
@@ -120,9 +122,11 @@ class ExtendedThrowablePatternConverterTest {
                             "	Suppressed: foo.TestFriendlyException: r_c_s [localized]",
                             "		... suppressed 2 lines",
                             "		... 3 more",
+                            "	Caused by: [CIRCULAR REFERENCE: foo.TestFriendlyException: r_c [localized]]",
                             "Caused by: foo.TestFriendlyException: r_c_c [localized]",
                             "	... suppressed 2 lines",
-                            "	... 3 more"));
+                            "	... 3 more",
+                            "Caused by: [CIRCULAR REFERENCE: foo.TestFriendlyException: r_c [localized]]"));
         }
 
         @ParameterizedTest
@@ -159,10 +163,12 @@ class ExtendedThrowablePatternConverterTest {
                             "		at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
                             "		at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
                             "		... 3 more",
+                            "	Caused by: [CIRCULAR REFERENCE: foo.TestFriendlyException: r_c [localized]]",
                             "Caused by: foo.TestFriendlyException: r_c_c [localized]",
                             "	at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
                             "	at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
-                            "	... 3 more"));
+                            "	... 3 more",
+                            "Caused by: [CIRCULAR REFERENCE: foo.TestFriendlyException: r_c [localized]]"));
         }
     }
 }
