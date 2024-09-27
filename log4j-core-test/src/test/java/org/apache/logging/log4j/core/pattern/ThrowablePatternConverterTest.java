@@ -231,10 +231,11 @@ public class ThrowablePatternConverterTest {
             int startIndex = 0;
             int newlineIndex;
             while (lineCount < maxLineCount && (newlineIndex = text.indexOf(NEWLINE, startIndex)) != -1) {
-                final String line = text.substring(startIndex, newlineIndex + NEWLINE.length());
+                final int endIndex = newlineIndex + NEWLINE.length();
+                final String line = text.substring(startIndex, endIndex);
                 buffer.append(line);
                 lineCount++;
-                startIndex = newlineIndex + 1;
+                startIndex = endIndex;
             }
             return buffer.toString();
         }
