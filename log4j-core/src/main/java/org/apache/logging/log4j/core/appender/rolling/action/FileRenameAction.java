@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender.rolling.action;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -25,7 +26,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import org.apache.commons.io.input.NullInputStream;
 
 /**
  * File rename action.
@@ -183,7 +183,7 @@ public class FileRenameAction extends AbstractAction {
                                         exCopy.getMessage());
                                 try {
                                     Files.copy(
-                                            new NullInputStream(),
+                                            new ByteArrayInputStream(new byte[0]),
                                             destination.toPath(),
                                             StandardCopyOption.REPLACE_EXISTING);
                                     result = true;
