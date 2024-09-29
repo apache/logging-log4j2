@@ -195,7 +195,7 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
         acquireLineCapacity(context);
         buffer.append(prefix);
         buffer.append("\tat ");
-        buffer.append(stackTraceElement.toString());
+        buffer.append(stackTraceElement);
         buffer.append(lineSeparator);
     }
 

@@ -69,7 +69,7 @@ final class ThrowableExtendedStackTraceRenderer
         acquireLineCapacity(context);
         buffer.append(prefix);
         buffer.append("\tat ");
-        buffer.append(stackTraceElement.toString());
+        buffer.append(stackTraceElement);
         final ClassResourceInfo classResourceInfo =
                 context.classResourceInfoByName.get(stackTraceElement.getClassName());
         if (classResourceInfo != null) {
