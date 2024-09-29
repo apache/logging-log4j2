@@ -61,9 +61,14 @@ See {logging-services-url}/logging-parent/usage.html#website[the Logging Parent 
 Branch triggering the CI logic to start {logging-services-url}/logging-parent/release-instructions-project.html[the release process]
 
 [#building]
-== How can I build Log4j from sources?
+== How can I build the project?
 
 See {project-github-url}/BUILDING.adoc[the build instructions].
+
+[#fuzzing]
+== How can I run fuzz tests?
+
+See {project-github-url}/FUZZING.adoc[the fuzzing instructions].
 
 [#contributor]
 == I am **not** a committer. How shall I submit a patch?

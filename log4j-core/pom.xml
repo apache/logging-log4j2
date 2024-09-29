@@ -98,6 +98,7 @@
       java.naming;transitive=false,
       org.apache.commons.csv;transitive=false,
       org.fusesource.jansi;transitive=false,
+      org.jspecify;transitive=false,
       org.zeromq.jeromq;transitive=false,
       <!-- A module descriptor is only available in version 1.2.16+, hence it is not detected -->
       com.conversantmedia.disruptor;substitute="disruptor";transitive=false;static=true,

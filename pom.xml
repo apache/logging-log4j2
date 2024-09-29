@@ -31,7 +31,7 @@
   <parent>
     <groupId>org.apache.logging</groupId>
     <artifactId>logging-parent</artifactId>
-    <version>11.2.0</version>
+    <version>11.3.0</version>
     <relativePath />
   </parent>
 
@@ -230,7 +230,7 @@
     <!-- the parent POM must come first: -->
     <module>log4j-parent</module>
 
-    <!-- Next unpublished modules in alphabetical order: -->
+    <!-- Next unpublished, but internally and *implicitly* (e.g., as a plugin dependency) consumed modules in alphabetical order: -->
     <module>log4j-api-java9</module>
     <module>log4j-core-java9</module>
 
@@ -242,10 +242,12 @@
     <module>log4j-appserver</module>
     <module>log4j-cassandra</module>
     <module>log4j-core</module>
+    <module>log4j-core-fuzz-test</module>
     <module>log4j-core-its</module>
     <module>log4j-core-test</module>
     <module>log4j-couchdb</module>
     <module>log4j-docker</module>
+    <module>log4j-fuzz-test</module>
     <module>log4j-iostreams</module>
     <module>log4j-jakarta-smtp</module>
     <module>log4j-jakarta-web</module>
@@ -255,6 +257,7 @@
     <module>log4j-jdbc-dbcp2</module>
     <module>log4j-jul</module>
     <module>log4j-layout-template-json</module>
+    <module>log4j-layout-template-json-fuzz-test</module>
     <module>log4j-layout-template-json-test</module>
     <module>log4j-mongodb</module>
     <module>log4j-mongodb4</module>
@@ -262,6 +265,7 @@
     <module>log4j-perf-test</module>
     <module>log4j-slf4j-impl</module>
     <module>log4j-slf4j2-impl</module>
+    <module>log4j-slf4j2-impl-fuzz-test</module>
     <module>log4j-spring-boot</module>
     <module>log4j-spring-cloud-config-client</module>
     <module>log4j-taglib</module>
@@ -302,7 +306,11 @@
   <properties>
 
     <!-- project version -->
-    <revision>2.24.1-SNAPSHOT</revision>
+    <revision>2.25.0-SNAPSHOT</revision>
+    <!-- Versions used on the site: no snapshots! -->
+    <site-log4j-api.version>2.24.1</site-log4j-api.version>
+    <site-log4j-core.version>2.24.1</site-log4j-core.version>
+    <site-log4j-layout-template-json.version>2.24.1</site-log4j-layout-template-json.version>
 
     <!-- =================
          Common properties
@@ -316,7 +324,7 @@
          2. This value is employed in various places while creating the distribution
          To mitigate these, we define a *dummy* value here and let the CI replace it during a release.
          Hence, *DO NOT MANUALLY EDIT THIS VALUE*! -->
-    <project.build.outputTimestamp>2024-09-03T16:00:23Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-09-24T13:33:09Z</project.build.outputTimestamp>
 
     <!-- ========================
          Site-specific properties
@@ -336,16 +344,13 @@
     <site-conversant.version>1.2.21</site-conversant.version>
     <site-disruptor.version>4.0.0</site-disruptor.version>
     <site-flume.version>1.11.0</site-flume.version>
-    <site-jackson.version>2.17.2</site-jackson.version>
+    <site-jackson.version>2.18.0</site-jackson.version>
     <site-jansi.version>1.18</site-jansi.version>
     <site-javax-mail.version>1.6.2</site-javax-mail.version>
     <site-jctools.version>4.0.5</site-jctools.version>
     <site-je.version>18.3.12</site-je.version>
     <site-jeromq.version>0.6.0</site-jeromq.version>
     <site-kafka.version>3.8.0</site-kafka.version>
-    <site-log4j-api.version>2.24.0</site-log4j-api.version>
-    <site-log4j-core.version>2.24.0</site-log4j-core.version>
-    <site-log4j-layout-template-json.version>2.24.0</site-log4j-layout-template-json.version>
     <site-logback.version>1.5.5</site-logback.version>
     <site-slf4j.version>2.0.16</site-slf4j.version>
 
@@ -371,6 +376,10 @@
 
   <dependencyManagement>
     <dependencies>
+
+      <!-- List of managed dependencies (in alphabetical order) that are intended for public consumption.
+           Modules that are not used anywhere (e.g., `log4j-core-its`, `log4j-osgi-test`) should not be placed here.
+           Modules that are used only internally (e.g., `log4j-layout-template-json-test`) should be added to `dependencyManagement > dependencies` in `log4j-parent/pom.xml`. -->
 
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -963,14 +972,30 @@
 
   <profiles>
 
+    <!-- `java8-tests` profile to force using Java 8 while running tests -->
     <profile>
+
       <id>java8-tests</id>
+
       <activation>
         <property>
           <name>env.CI</name>
           <value>true</value>
         </property>
       </activation>
+
+      <!-- There are certain Java 8 bugs[1] that cause Mockito failures[2].
+           Adding necessary dependencies to workaround them.
+           [1] https://bugs.openjdk.org/browse/JDK-8152174
+           [2] https://github.com/mockito/mockito/issues/1449 -->
+      <dependencies>
+        <dependency>
+          <groupId>org.jspecify</groupId>
+          <artifactId>jspecify</artifactId>
+          <version>${jspecify.version}</version>
+        </dependency>
+      </dependencies>
+
       <build>
         <plugins>
           <plugin>
@@ -990,6 +1015,7 @@
           </plugin>
         </plugins>
       </build>
+
     </profile>
 
     <profile>
@@ -1033,7 +1059,7 @@
           <plugin>
             <groupId>org.openrewrite.maven</groupId>
             <artifactId>rewrite-maven-plugin</artifactId>
-            <version>5.13.0</version>
+            <version>5.15.0</version>
             <configuration>
               <activeRecipes>
                 <activeRecipe>org.openrewrite.java.logging.log4j.ParameterizedLogging</activeRecipe>
@@ -1043,12 +1069,12 @@
               <dependency>
                 <groupId>org.openrewrite.recipe</groupId>
                 <artifactId>rewrite-migrate-java</artifactId>
-                <version>2.3.0</version>
+                <version>2.4.0</version>
               </dependency>
               <dependency>
                 <groupId>org.openrewrite.recipe</groupId>
                 <artifactId>rewrite-logging-frameworks</artifactId>
-                <version>2.1.0</version>
+                <version>2.3.0</version>
               </dependency>
             </dependencies>
           </plugin>

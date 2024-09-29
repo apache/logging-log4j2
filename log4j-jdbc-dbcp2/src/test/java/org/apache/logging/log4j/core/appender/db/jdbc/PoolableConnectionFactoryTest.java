@@ -16,22 +16,20 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Assert;
-import org.junit.ClassRule;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.junit.jupiter.api.Test;
+
+@LoggerContextSource(value = "log4j2-jdbc-dbcp2.xml", timeout = 10)
 public class PoolableConnectionFactoryTest {
 
     private static final String REL_PATH = "src/test/resources/log4j2-jdbc-dbcp2.xml";
 
-    @ClassRule
-    public static final LoggerContextRule LCR = LoggerContextRule.createShutdownTimeoutLoggerContextRule(REL_PATH);
-
     @Test
-    public void test() {
-        final Appender appender = LCR.getAppender("databaseAppender");
-        Assert.assertNotNull("Problem loading configuration from " + REL_PATH, appender);
+    public void test(@Named("databaseAppender") final Appender appender) {
+        assertNotNull(appender, "Problem loading configuration from " + REL_PATH);
     }
 }

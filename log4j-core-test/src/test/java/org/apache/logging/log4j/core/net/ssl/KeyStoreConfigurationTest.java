@@ -81,8 +81,9 @@ public class KeyStoreConfigurationTest {
                         (Supplier<char[]>) SslKeyStoreConstants::KEYSTORE_P12_NOPASS_PWD,
                         SslKeyStoreConstants.KEYSTORE_P12_NOPASS_TYPE));
         if (OS.WINDOWS.isCurrentOs()) {
-            builder.add(Arguments.of(null, (Supplier<char[]>) () -> null, "Windows-MY"))
-                    .add(Arguments.of(null, (Supplier<char[]>) () -> null, "Windows-ROOT"));
+            builder.add(Arguments.of(null, (Supplier<char[]>) () -> null, SslKeyStoreConstants.WINDOWS_KEYSTORE_TYPE))
+                    .add(Arguments.of(
+                            null, (Supplier<char[]>) () -> null, SslKeyStoreConstants.WINDOWS_TRUSTSTORE_TYPE));
         }
         return builder.build();
     }
@@ -151,8 +152,10 @@ public class KeyStoreConfigurationTest {
                         (Supplier<char[]>) SslKeyStoreConstants::KEYSTORE_P12_NOPASS_PWD,
                         SslKeyStoreConstants.KEYSTORE_P12_TYPE));
         if (OS.WINDOWS.isCurrentOs()) {
-            builder.add(Arguments.of(null, (Supplier<char[]>) () -> new char[0], "Windows-MY"))
-                    .add(Arguments.of(null, (Supplier<char[]>) () -> new char[0], "Windows-ROOT"));
+            builder.add(Arguments.of(
+                            null, (Supplier<char[]>) () -> new char[0], SslKeyStoreConstants.WINDOWS_KEYSTORE_TYPE))
+                    .add(Arguments.of(
+                            null, (Supplier<char[]>) () -> new char[0], SslKeyStoreConstants.WINDOWS_TRUSTSTORE_TYPE));
         }
         return builder.build();
     }
