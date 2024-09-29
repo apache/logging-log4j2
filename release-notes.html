@@ -457,6 +457,64 @@
 </div>
 </div>
 <div class="sect1">
+<h2 id="release-notes-2-24-1"><a class="anchor" href="#release-notes-2-24-1"></a>2.24.1</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Release date</dt>
+<dd>
+<p>2024-09-24</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>This release contains mainly bug fixes of problems encountered with the thread context map, logger registry and configuration reloading.</p>
+</div>
+<div class="paragraph">
+<p>It also enhances integration tests to use Docker images of the most recent releases of MongoDB and Elastic Search.</p>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-24-1-changed"><a class="anchor" href="#release-notes-2-24-1-changed"></a>Changed</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Rework <code>LoggerRegistry</code> to make it <code>MessageFactory</code>-namespaced. This effectively allows loggers of same name, but different message factory. (<a href="https://github.com/apache/logging-log4j2/pull/2936">2936</a>)</p>
+</li>
+<li>
+<p>Enable Docker-based tests in CI for JSON Template Layout (<a href="https://github.com/apache/logging-log4j2/pull/2953">2953</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-24-1-fixed"><a class="anchor" href="#release-notes-2-24-1-fixed"></a>Fixed</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Switch MongoDB tests to use Docker. (<a href="https://github.com/apache/logging-log4j2/issues/2229">2229</a>)</p>
+</li>
+<li>
+<p>Fix reloading of the configuration from an HTTP(S) source (<a href="https://github.com/apache/logging-log4j2/issues/2937">2937</a>)</p>
+</li>
+<li>
+<p>Fix <code>putAll()</code> in the default thread context map implementation (<a href="https://github.com/apache/logging-log4j2/pull/2942">2942</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-24-1-updated"><a class="anchor" href="#release-notes-2-24-1-updated"></a>Updated</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Update <code>org.apache.logging:logging-parent</code> to version <code>11.3.0</code></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="release-notes-2-24-0"><a class="anchor" href="#release-notes-2-24-0"></a>2.24.0</h2>
 <div class="sectionbody">
 <div class="dlist">
