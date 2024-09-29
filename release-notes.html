@@ -349,6 +349,163 @@
 <article class="doc">
 <h1 class="page">Release Notes</h1>
 <div class="sect1">
+<h2 id="release-notes-2-x-x"><a class="anchor" href="#release-notes-2-x-x"></a>2.x.x</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This releases contains &#8230;&#8203;</p>
+</div>
+<div class="sect2">
+<h3 id="_jmx_changes"><a class="anchor" href="#_jmx_changes"></a>JMX changes</h3>
+<div class="paragraph">
+<p>Starting in version 2.24.0, JMX support is disabled by default and can be re-enabled via the <code>log4j2.disableJmx=false</code> system property.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-x-x-added"><a class="anchor" href="#release-notes-2-x-x-added"></a>Added</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Add Google OSS-Fuzz integration (<a href="https://github.com/apache/logging-log4j2/pull/2949">2949</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-x-x-deprecated"><a class="anchor" href="#release-notes-2-x-x-deprecated"></a>Deprecated</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Deprecate <code>AbstractLogger.checkMessageFactory()</code>, since all created <code>Logger`s are already `MessageFactory</code>-namespaced (<a href="https://github.com/apache/logging-log4j2/pull/2936">2936</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-x-x-fixed"><a class="anchor" href="#release-notes-2-x-x-fixed"></a>Fixed</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Switch MongoDB tests to use Docker. (<a href="https://github.com/apache/logging-log4j2/issues/2229">2229</a>)</p>
+</li>
+<li>
+<p>Fix reloading of the configuration from an HTTP(S) source (<a href="https://github.com/apache/logging-log4j2/issues/2937">2937</a>)</p>
+</li>
+<li>
+<p>Fix <code>putAll()</code> in the default thread context map implementation (<a href="https://github.com/apache/logging-log4j2/pull/2942">2942</a>)</p>
+</li>
+<li>
+<p>Avoid surrogate character handling in <code>JsonWriter</code></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-x-x-updated"><a class="anchor" href="#release-notes-2-x-x-updated"></a>Updated</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Update <code>ch.qos.logback:logback-core</code> to version <code>1.4.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/2975">2975</a>)</p>
+</li>
+<li>
+<p>Update <code>com.fasterxml.jackson:jackson-bom</code> to version <code>2.18.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3027">3027</a>)</p>
+</li>
+<li>
+<p>Update <code>com.github.luben:zstd-jni</code> to version <code>1.5.6-6</code> (<a href="https://github.com/apache/logging-log4j2/pull/2998">2998</a>)</p>
+</li>
+<li>
+<p>Update <code>commons-io:commons-io</code> to version <code>2.17.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/2984">2984</a>)</p>
+</li>
+<li>
+<p>Update <code>net.java.dev.jna:jna</code> to version <code>5.15.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/2956">2956</a>)</p>
+</li>
+<li>
+<p>Update <code>org.apache.logging:logging-parent</code> to version <code>11.3.0</code></p>
+</li>
+<li>
+<p>Update <code>org.apache.tomcat:tomcat-juli</code> to version <code>10.1.30</code> (<a href="https://github.com/apache/logging-log4j2/pull/2999">2999</a>)</p>
+</li>
+<li>
+<p>Update <code>org.eclipse.platform:org.eclipse.osgi</code> to version <code>3.21.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/2940">2940</a>)</p>
+</li>
+<li>
+<p>Update <code>org.openrewrite.maven:rewrite-maven-plugin</code> to version <code>5.15.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/2983">2983</a>)</p>
+</li>
+<li>
+<p>Update <code>org.openrewrite.recipe:rewrite-logging-frameworks</code> to version <code>2.3.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/2986">2986</a>)</p>
+</li>
+<li>
+<p>Update <code>org.openrewrite.recipe:rewrite-migrate-java</code> to version <code>2.4.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/2989">2989</a>)</p>
+</li>
+<li>
+<p>Update <code>org.slf4j:slf4j-nop</code> to version <code>2.0.16</code> (<a href="https://github.com/apache/logging-log4j2/pull/2955">2955</a>)</p>
+</li>
+<li>
+<p>Update <code>org.springframework.cloud:spring-cloud-context</code> to version <code>4.1.4</code> (<a href="https://github.com/apache/logging-log4j2/pull/2985">2985</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="release-notes-2-24-1"><a class="anchor" href="#release-notes-2-24-1"></a>2.24.1</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Release date</dt>
+<dd>
+<p>2024-09-24</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>This release contains mainly bug fixes of problems encountered with the thread context map, logger registry and configuration reloading.</p>
+</div>
+<div class="paragraph">
+<p>It also enhances integration tests to use Docker images of the most recent releases of MongoDB and Elastic Search.</p>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-24-1-changed"><a class="anchor" href="#release-notes-2-24-1-changed"></a>Changed</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Rework <code>LoggerRegistry</code> to make it <code>MessageFactory</code>-namespaced. This effectively allows loggers of same name, but different message factory. (<a href="https://github.com/apache/logging-log4j2/pull/2936">2936</a>)</p>
+</li>
+<li>
+<p>Enable Docker-based tests in CI for JSON Template Layout (<a href="https://github.com/apache/logging-log4j2/pull/2953">2953</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-24-1-fixed"><a class="anchor" href="#release-notes-2-24-1-fixed"></a>Fixed</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Switch MongoDB tests to use Docker. (<a href="https://github.com/apache/logging-log4j2/issues/2229">2229</a>)</p>
+</li>
+<li>
+<p>Fix reloading of the configuration from an HTTP(S) source (<a href="https://github.com/apache/logging-log4j2/issues/2937">2937</a>)</p>
+</li>
+<li>
+<p>Fix <code>putAll()</code> in the default thread context map implementation (<a href="https://github.com/apache/logging-log4j2/pull/2942">2942</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-24-1-updated"><a class="anchor" href="#release-notes-2-24-1-updated"></a>Updated</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Update <code>org.apache.logging:logging-parent</code> to version <code>11.3.0</code></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="release-notes-2-24-0"><a class="anchor" href="#release-notes-2-24-0"></a>2.24.0</h2>
 <div class="sectionbody">
 <div class="dlist">
@@ -421,7 +578,7 @@ Please migrate to <a href="components.html#log4j-mongodb" class="xref page"><cod
 </div>
 </div>
 <div class="sect2">
-<h3 id="_jmx_changes"><a class="anchor" href="#_jmx_changes"></a>JMX changes</h3>
+<h3 id="_jmx_changes_2"><a class="anchor" href="#_jmx_changes_2"></a>JMX changes</h3>
 <div class="paragraph">
 <p>Starting in version 2.24.0, JMX support is disabled by default and can be re-enabled via the <code>log4j2.disableJmx=false</code> system property.</p>
 </div>

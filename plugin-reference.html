@@ -2495,7 +2495,7 @@ It is recommended that, where possible, Filter implementations create a generic 
 <div class="paragraph">
 <p>In Log4j, the main interface for handling the life cycle context of an object is this one.
 An object first starts in the <code>org.apache.logging.log4j.core.State#INITIALIZED</code> state by default to indicate the class has been loaded.
-From here, calling the <a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-LifeCycle">LifeCycle</a> method will change this state to <code>org.apache.logging.log4j.core.State#STARTING</code>. After successfully being started, this state is changed to <code>org.apache.logging.log4j.core.State#STARTED</code>. When the <a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-LifeCycle">LifeCycle</a> is called, this goes into the <code>org.apache.logging.log4j.core.State#STOPPING</code> state.
+From here, calling the <a href="#org-apache-logging-log4j_log4j-fuzz-test_org-apache-logging-log4j-core-LifeCycle">LifeCycle</a> method will change this state to <code>org.apache.logging.log4j.core.State#STARTING</code>. After successfully being started, this state is changed to <code>org.apache.logging.log4j.core.State#STARTED</code>. When the <a href="#org-apache-logging-log4j_log4j-fuzz-test_org-apache-logging-log4j-core-LifeCycle">LifeCycle</a> is called, this goes into the <code>org.apache.logging.log4j.core.State#STOPPING</code> state.
 After successfully being stopped, this goes into the <code>org.apache.logging.log4j.core.State#STOPPED</code> state.
 In most circumstances, implementation classes should store their <code>org.apache.logging.log4j.core.State</code> in a <code>volatile</code> field or inside an <code>org.apache.logging.log4j.core.java.util.concurrent.atomic.AtomicReference</code> dependent on synchronization and concurrency requirements.</p>
 </div>
@@ -7873,7 +7873,7 @@ However, configurations set up for the 2.0 version of the JMS appenders will sti
 </dl>
 </div>
 <div class="paragraph">
-<p>Abstract convenience class for triggering policies that extend <a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-AbstractLifeCycle">AbstractLifeCycle</a> and implement <a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-TriggeringPolicy">TriggeringPolicy</a>.</p>
+<p>Abstract convenience class for triggering policies that extend <a href="#org-apache-logging-log4j_log4j-fuzz-test_org-apache-logging-log4j-core-AbstractLifeCycle">AbstractLifeCycle</a> and implement <a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-TriggeringPolicy">TriggeringPolicy</a>.</p>
 </div>
 <div class="sect4">
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-AbstractTriggeringPolicy_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-AbstractTriggeringPolicy_implementations"></a>Known implementations</h5>
@@ -13571,7 +13571,7 @@ DENY.</p>
 <p>Interface implemented by Classes that allow filtering to occur.</p>
 </div>
 <div class="paragraph">
-<p>Extends <a href="#org-apache-logging-log4j_log4j-core-test_org-apache-logging-log4j-core-LifeCycle">LifeCycle</a> since filters have a life cycle.</p>
+<p>Extends <a href="#org-apache-logging-log4j_log4j-fuzz-test_org-apache-logging-log4j-core-LifeCycle">LifeCycle</a> since filters have a life cycle.</p>
 </div>
 <div class="sect4">
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-Filterable_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-Filterable_implementations"></a>Known implementations</h5>
