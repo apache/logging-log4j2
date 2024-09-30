@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import static java.util.Objects.requireNonNull;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -34,6 +32,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
 import org.apache.logging.log4j.core.util.FileUtils;
@@ -78,7 +77,16 @@ public class ConfigurationSource {
      * @param file the file where the input stream originated
      */
     public ConfigurationSource(final InputStream stream, final File file) {
-        this(null, new Source(file), stream, getLastModified(file.toPath()));
+        this.stream = Objects.requireNonNull(stream, "stream is null");
+        this.data = null;
+        this.source = new Source(file);
+        long modified = 0;
+        try {
+            modified = file.lastModified();
+        } catch (Exception ex) {
+            // There is a problem with the file. It will be handled somewhere else.
+        }
+        this.currentLastModified = this.initialLastModified = modified;
     }
 
     /**
@@ -89,16 +97,16 @@ public class ConfigurationSource {
      * @param path the path where the input stream originated.
      */
     public ConfigurationSource(final InputStream stream, final Path path) {
-        this(null, new Source(path), stream, getLastModified(path));
-    }
-
-    private static long getLastModified(Path path) {
+        this.stream = Objects.requireNonNull(stream, "stream is null");
+        this.data = null;
+        this.source = new Source(path);
+        long modified = 0;
         try {
-            return Files.getLastModifiedTime(path).toMillis();
-        } catch (Exception ignored) {
+            modified = Files.getLastModifiedTime(path).toMillis();
+        } catch (Exception ex) {
             // There is a problem with the file. It will be handled somewhere else.
         }
-        return 0L;
+        this.currentLastModified = this.initialLastModified = modified;
     }
 
     /**
@@ -120,8 +128,11 @@ public class ConfigurationSource {
      * @param url the URL where the input stream originated
      * @param lastModified when the source was last modified.
      */
-    public ConfigurationSource(InputStream stream, final URL url, final long lastModified) {
-        this(null, new Source(url), stream, lastModified);
+    public ConfigurationSource(final InputStream stream, final URL url, final long lastModified) {
+        this.stream = Objects.requireNonNull(stream, "stream is null");
+        this.data = null;
+        this.currentLastModified = this.initialLastModified = lastModified;
+        this.source = new Source(url);
     }
 
     /**
@@ -142,26 +153,19 @@ public class ConfigurationSource {
      * @param data data from the source
      * @param lastModified when the source was last modified.
      */
-    public ConfigurationSource(Source source, byte[] data, long lastModified) {
-        this(data, requireNonNull(source, "source is null"), lastModified);
-    }
-
-    private ConfigurationSource(byte[] data, /*@Nullable*/ Source source, long lastModified) {
-        this(requireNonNull(data, "data is null"), source, new ByteArrayInputStream(data), lastModified);
-    }
-
-    /**
-     * @throws NullPointerException if both {@code stream} and {@code data} are {@code null}.
-     */
-    private ConfigurationSource(
-            byte /*@Nullable*/[] data, /*@Nullable*/ Source source, InputStream stream, long lastModified) {
-        if (data == null && source == null) {
-            throw new NullPointerException("both `data` and `source` are null");
-        }
-        this.stream = stream;
-        this.data = data;
-        this.source = source;
+    public ConfigurationSource(final Source source, final byte[] data, final long lastModified) {
+        Objects.requireNonNull(source, "source is null");
+        this.data = Objects.requireNonNull(data, "data is null");
+        this.stream = new ByteArrayInputStream(data);
         this.currentLastModified = this.initialLastModified = lastModified;
+        this.source = source;
+    }
+
+    private ConfigurationSource(final byte[] data, final URL url, final long lastModified) {
+        this.data = Objects.requireNonNull(data, "data is null");
+        this.stream = new ByteArrayInputStream(data);
+        this.currentLastModified = this.initialLastModified = lastModified;
+        this.source = url == null ? null : new Source(url);
     }
 
     /**
@@ -192,6 +196,10 @@ public class ConfigurationSource {
      */
     public /*@Nullable*/ File getFile() {
         return source == null ? null : source.getFile();
+    }
+
+    private boolean isLocation() {
+        return source != null && source.getLocation() != null;
     }
 
     /**
@@ -279,13 +287,13 @@ public class ConfigurationSource {
         URL url = getURL();
         if (url != null && data != null) {
             // Creates a ConfigurationSource without accessing the URL since the data was provided.
-            return new ConfigurationSource(data, new Source(url), currentLastModified);
+            return new ConfigurationSource(data, url, currentLastModified);
         }
         URI uri = getURI();
         if (uri != null) {
             return fromUri(uri);
         }
-        return data == null ? null : new ConfigurationSource(data, null, currentLastModified);
+        return data != null ? new ConfigurationSource(data, null, currentLastModified) : null;
     }
 
     @Override

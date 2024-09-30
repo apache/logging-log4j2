@@ -36,6 +36,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.core.config.ConfigurationScheduler;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -143,10 +144,9 @@ class WatchManagerTest {
      */
     @Test
     void testWatchManagerCallsWatcher() {
-        Source source = mock(Source.class);
         Watcher watcher = mock(Watcher.class);
         when(watcher.isModified()).thenReturn(false);
-        watchManager.watch(source, watcher);
+        watchManager.watch(new Source(ConfigurationSource.NULL_SOURCE), watcher);
         verify(watcher, timeout(2000)).isModified();
         verify(watcher, never()).modified();
         when(watcher.isModified()).thenReturn(true);
