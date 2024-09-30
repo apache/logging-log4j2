@@ -339,7 +339,9 @@ public class ConfigurationSource {
             if (url.getProtocol().equals(HTTPS)) {
                 final SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration(env);
                 if (sslConfiguration != null) {
-                    ((HttpsURLConnection) urlConnection).setSSLSocketFactory(sslConfiguration.getSslSocketFactory());
+                    ((HttpsURLConnection) urlConnection)
+                            .setSSLSocketFactory(
+                                    sslConfiguration.getSslContext().getSocketFactory());
                     if (!sslConfiguration.isVerifyHostName()) {
                         ((HttpsURLConnection) urlConnection).setHostnameVerifier(LaxHostnameVerifier.INSTANCE);
                     }

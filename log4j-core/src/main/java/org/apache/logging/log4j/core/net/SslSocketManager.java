@@ -21,7 +21,13 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.security.KeyStoreException;
+import java.security.cert.X509Certificate;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import org.apache.logging.log4j.core.Layout;
@@ -125,6 +131,8 @@ public class SslSocketManager extends TcpSocketManager {
             final Layout layout,
             final int bufferSize,
             final SocketOptions socketOptions) {
+
+        // Check arguments
         if (Strings.isEmpty(host)) {
             throw new IllegalArgumentException("A host name is required");
         }
@@ -134,7 +142,14 @@ public class SslSocketManager extends TcpSocketManager {
         if (reconnectDelayMillis == 0) {
             reconnectDelayMillis = DEFAULT_RECONNECTION_DELAY_MILLIS;
         }
-        final String name = "TLS:" + host + ':' + port;
+
+        // Create an ID associated with the SSL configuration. This is necessary to make sure a new `name` is generated
+        // (and consequently a new connection pool is created) upon reconfiguration with a different configuration;
+        // e.g., change in the SSL certificate content, even though the certificate file locations are still the same.
+        // See #2767 and LOG4J2-2988 for details.
+        final String sslConfigId = createSslConfigurationId(sslConfig);
+        final String name = String.format("%s:%s:%d:%s", sslConfig.getProtocol(), host, port, sslConfigId);
+
         return (SslSocketManager) getManager(
                 name,
                 new SslFactoryData(
@@ -150,6 +165,49 @@ public class SslSocketManager extends TcpSocketManager {
                 FACTORY);
     }
 
+    /**
+     * Creates a unique identifier using the certificate issuers and serial numbers of the given SSL configuration.
+     *
+     * @param sslConfig an SSL configuration
+     * @return a unique identifier extracted from the given SSL configuration
+     */
+    private static String createSslConfigurationId(final SslConfiguration sslConfig) {
+        return String.valueOf(Stream.of(sslConfig.getKeyStoreConfig(), sslConfig.getTrustStoreConfig())
+                .flatMap(keyStoreConfig -> {
+                    final Enumeration<String> aliases;
+                    try {
+                        aliases = keyStoreConfig.getKeyStore().aliases();
+                    } catch (final KeyStoreException error) {
+                        LOGGER.error(
+                                "Failed reading the aliases for the key store located at `{}`",
+                                keyStoreConfig.getLocation(),
+                                error);
+                        return Stream.empty();
+                    }
+                    return Collections.list(aliases).stream().sorted().flatMap(alias -> {
+                        final X509Certificate certificate;
+                        try {
+                            certificate = (X509Certificate)
+                                    keyStoreConfig.getKeyStore().getCertificate(alias);
+                        } catch (final KeyStoreException error) {
+                            LOGGER.error(
+                                    "Failed reading the certificate of alias `{}` for the key store located at `{}`",
+                                    alias,
+                                    keyStoreConfig.getLocation(),
+                                    error);
+                            return Stream.empty();
+                        }
+                        final String issuer =
+                                certificate.getIssuerX500Principal().getName();
+                        final String serialNumber =
+                                certificate.getSerialNumber().toString();
+                        return Stream.of(issuer, serialNumber);
+                    });
+                })
+                .collect(Collectors.toList())
+                .hashCode());
+    }
+
     @Override
     protected Socket createSocket(final InetSocketAddress socketAddress) throws IOException {
         final SSLSocketFactory socketFactory = createSslSocketFactory(sslConfig);
@@ -162,7 +220,7 @@ public class SslSocketManager extends TcpSocketManager {
         final SSLSocketFactory socketFactory;
 
         if (sslConf != null) {
-            socketFactory = sslConf.getSslSocketFactory();
+            socketFactory = sslConf.getSslContext().getSocketFactory();
         } else {
             socketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
         }

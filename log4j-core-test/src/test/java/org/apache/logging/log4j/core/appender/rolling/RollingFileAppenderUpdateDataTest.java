@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -25,14 +29,15 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Test;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests LOG4J2-2009 Rolling appender managers broken on pattern/policy reconfiguration
  */
-public class RollingFileAppenderUpdateDataTest {
+@UsingStatusListener // To disable the status logger unless an error occurs
+class RollingFileAppenderUpdateDataTest {
 
     private ConfigurationBuilder<BuiltConfiguration> buildConfigA() {
         return buildConfigurationBuilder("target/rolling-update-date/foo.log.%i");
@@ -64,8 +69,8 @@ public class RollingFileAppenderUpdateDataTest {
     private LoggerContext loggerContext1 = null;
     private LoggerContext loggerContext2 = null;
 
-    @After
-    public void after() {
+    @AfterEach
+    void after() {
         if (loggerContext1 != null) {
             loggerContext1.close();
             loggerContext1 = null;
@@ -77,7 +82,7 @@ public class RollingFileAppenderUpdateDataTest {
     }
 
     @Test
-    public void testClosingLoggerContext() {
+    void testClosingLoggerContext() {
         // initial config with indexed rollover
         try (final LoggerContext loggerContext1 =
                 Configurator.initialize(buildConfigA().build())) {
@@ -92,20 +97,20 @@ public class RollingFileAppenderUpdateDataTest {
     }
 
     @Test
-    public void testNotClosingLoggerContext() {
+    void testNotClosingLoggerContext() {
         // initial config with indexed rollover
         loggerContext1 = Configurator.initialize(buildConfigA().build());
         validateAppender(loggerContext1, "target/rolling-update-date/foo.log.%i");
 
         // rebuild config with date based rollover
         loggerContext2 = Configurator.initialize(buildConfigB().build());
-        Assert.assertNotNull("No LoggerContext", loggerContext2);
-        Assert.assertSame("Expected same logger context to be returned", loggerContext1, loggerContext2);
+        assertNotNull(loggerContext2, "No LoggerContext");
+        assertSame(loggerContext1, loggerContext2, "Expected same logger context to be returned");
         validateAppender(loggerContext1, "target/rolling-update-date/foo.log.%i");
     }
 
     @Test
-    public void testReconfigure() {
+    void testReconfigure() {
         // initial config with indexed rollover
         loggerContext1 = Configurator.initialize(buildConfigA().build());
         validateAppender(loggerContext1, "target/rolling-update-date/foo.log.%i");
@@ -117,8 +122,8 @@ public class RollingFileAppenderUpdateDataTest {
 
     private void validateAppender(final LoggerContext loggerContext, final String expectedFilePattern) {
         final RollingFileAppender appender = loggerContext.getConfiguration().getAppender("fooAppender");
-        Assert.assertNotNull(appender);
-        Assert.assertEquals(expectedFilePattern, appender.getFilePattern());
+        assertNotNull(appender);
+        assertEquals(expectedFilePattern, appender.getFilePattern());
         LogManager.getLogger("root").info("just to show it works.");
     }
 }

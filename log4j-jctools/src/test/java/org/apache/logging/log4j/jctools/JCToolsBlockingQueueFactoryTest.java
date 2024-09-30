@@ -16,11 +16,15 @@
  */
 package org.apache.logging.log4j.jctools;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -37,7 +41,7 @@ class JCToolsBlockingQueueFactoryTest {
         final Exception parent = new IllegalStateException("Test");
         final Throwable child = new LoggingException("This is a test", parent);
         logger.error("This is a test", child);
-        final ListAppender appender = context.getConfiguration().getAppender("List");
+        final ListAppender appender = context.getConfiguration().getAppender("LIST");
         final List<String> messages;
         try {
             messages = appender.getMessages(1, 2, TimeUnit.SECONDS);
@@ -53,7 +57,7 @@ class JCToolsBlockingQueueFactoryTest {
         final ExtendedLogger logger = context.getLogger(AsyncAppender.class);
         logger.error("This is a test");
         logger.warn("Hello world!");
-        final ListAppender appender = context.getConfiguration().getAppender("List");
+        final ListAppender appender = context.getConfiguration().getAppender("LIST");
         final List<String> messages;
         try {
             messages = appender.getMessages(2, 2, TimeUnit.SECONDS);
@@ -62,14 +66,25 @@ class JCToolsBlockingQueueFactoryTest {
         }
         assertNotNull(messages);
         assertEquals(2, messages.size());
-        final String messagePrefix = JCToolsBlockingQueueFactoryTest.class.getName() + " rewriteTest ";
-        assertEquals(messagePrefix + "This is a test", messages.get(0));
-        assertEquals(messagePrefix + "Hello world!", messages.get(1));
+        assertEquals("This is a test", messages.get(0));
+        assertEquals("Hello world!", messages.get(1));
+    }
+
+    private static void assertJCToolsIsUsed(final LoggerContext context) {
+        final AsyncAppender appender = context.getConfiguration().getAppender("ASYNC");
+        assertThat(appender).isNotNull();
+        final BlockingQueue<?> queue = (BlockingQueue<?>) assertDoesNotThrow(() -> {
+            Field queueField = AsyncAppender.class.getDeclaredField("queue");
+            queueField.setAccessible(true);
+            return queueField.get(appender);
+        });
+        assertThat(queue).isInstanceOf(JCToolsBlockingQueueFactory.MpscBlockingQueue.class);
     }
 
     @Test
     @LoggerContextSource("JCToolsBlockingQueueFactoryTest.xml")
     public void testJcToolsBlockingQueue(final LoggerContext context) throws InterruptedException {
+        assertJCToolsIsUsed(context);
         rewriteTest(context);
         exceptionTest(context);
     }

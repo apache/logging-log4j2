@@ -36,7 +36,8 @@
       -->
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
 
-    <!-- Dependency versions -->
+    <!-- Dependency properties -->
+    <mongodb.version>5.1.4</mongodb.version>
     <slf4j2.version>2.0.16</slf4j2.version>
   </properties>
 
@@ -44,8 +45,26 @@
     <dependencies>
 
       <dependency>
+        <groupId>org.mongodb</groupId>
+        <artifactId>bson</artifactId>
+        <version>${mongodb.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mongodb</groupId>
+        <artifactId>mongodb-driver-core</artifactId>
+        <version>${mongodb.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mongodb</groupId>
+        <artifactId>mongodb-driver-sync</artifactId>
+        <version>${mongodb.version}</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-simple</artifactId>
+        <artifactId>slf4j-nop</artifactId>
         <version>${slf4j2.version}</version>
       </dependency>
 
@@ -118,24 +137,6 @@
     </dependency>
 
     <dependency>
-      <groupId>de.flapdoodle.embed</groupId>
-      <artifactId>de.flapdoodle.embed.mongo</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>de.flapdoodle.embed</groupId>
-      <artifactId>de.flapdoodle.embed.process</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>de.flapdoodle.reverse</groupId>
-      <artifactId>de.flapdoodle.reverse</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
       <scope>test</scope>
@@ -150,8 +151,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <!-- TODO: fix concurrent download of MongoDB distribution. -->
-          <forkCount>1</forkCount>
+          <skip>true</skip>
         </configuration>
         <dependencies>
 
@@ -172,5 +172,111 @@
 
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+
+      <id>docker</id>
+
+      <!--
+        ~ Only the `ubuntu` CI runners have access to Docker
+        -->
+      <activation>
+        <os>
+          <family>linux</family>
+        </os>
+        <property>
+          <name>env.CI</name>
+          <value>true</value>
+        </property>
+      </activation>
+
+      <build>
+        <plugins>
+
+          <plugin>
+            <groupId>io.fabric8</groupId>
+            <artifactId>docker-maven-plugin</artifactId>
+            <configuration>
+              <verbose>all</verbose>
+              <startParallel>true</startParallel>
+              <autoCreateCustomNetworks>true</autoCreateCustomNetworks>
+              <images>
+                <image>
+                  <alias>mongo</alias>
+                  <name>mongo:latest</name>
+                  <run>
+                    <ports>
+                      <!--
+                        ~ Binds an ephemeral port on the host to port 27017 in the container.
+                        ~ Assigns the value of the port to the `mongo.port` property.
+                        -->
+                      <port>localhost:mongo.port:27017</port>
+                    </ports>
+                  </run>
+                </image>
+              </images>
+            </configuration>
+            <executions>
+              <execution>
+                <id>start-mongo</id>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>stop-mongo</id>
+                <goals>
+                  <goal>stop</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <dependencies>
+              <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+                <version>${junit-jupiter.version}</version>
+              </dependency>
+              <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-nop</artifactId>
+                <version>${slf4j2.version}</version>
+              </dependency>
+            </dependencies>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>integration-test</goal>
+                  <goal>verify</goal>
+                </goals>
+                <configuration>
+                  <reuseForks>true</reuseForks>
+                  <includes>
+                    <include>**/*IT.java</include>
+                  </includes>
+                  <systemPropertyVariables>
+                    <!--
+                      ~ Silence the tests.
+                      ~ Annotate tests with `@UsingStatusListener` to see debug output on error
+                      -->
+                    <log4j.statusLogger.level>OFF</log4j.statusLogger.level>
+                    <!-- The `mongo.port` variable is created by `docker-maven-plugin` -->
+                    <log4j.mongo.port>${mongo.port}</log4j.mongo.port>
+                  </systemPropertyVariables>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+        </plugins>
+      </build>
+
+    </profile>
+  </profiles>
 
 </project>

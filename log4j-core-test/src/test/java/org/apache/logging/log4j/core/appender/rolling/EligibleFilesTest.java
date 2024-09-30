@@ -16,42 +16,66 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
+import org.apache.logging.log4j.core.appender.rolling.action.CompressActionFactoryProvider;
 import org.apache.logging.log4j.core.pattern.NotANumber;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 /**
  * Test getEligibleFiles method.
  */
-public class EligibleFilesTest {
+class EligibleFilesTest {
 
-    @Test
-    public void runTest() throws Exception {
-        final String path = "target/test-classes/rolloverPath/log4j.txt.20170112_09-" + NotANumber.VALUE + ".gz";
-        final TestRolloverStrategy strategy = new TestRolloverStrategy();
-        final Map<Integer, Path> files = strategy.findFilesInPath(path);
-        assertTrue(files.size() > 0, "No files found");
-        assertEquals(30, files.size(), "Incorrect number of files found. Should be 30, was " + files.size());
+    private static final int COUNT_1 = 20;
+    private static final int COUNT_2 = 30;
+    private static final String PREFIX_1 = "log4j.txt.20170112_09-";
+    private static final String PREFIX_2 = "log4j.20211028T194500+0200.";
+
+    @TempLoggingDir
+    private static Path loggingPath;
+
+    @BeforeAll
+    static void setup() throws IOException {
+        int i;
+        // Create files for tests
+        for (i = 1; i < COUNT_1; i++) {
+            Files.createFile(loggingPath.resolve(String.format("%s%02d%s", PREFIX_1, i, ".gz")));
+        }
+        Files.createFile(loggingPath.resolve(String.format("%s%02d", PREFIX_1, i)));
+
+        for (i = 1; i < COUNT_2; i++) {
+            Files.createFile(loggingPath.resolve(String.format("%s%d%s", PREFIX_2, i, ".log.gz")));
+        }
+        Files.createFile(loggingPath.resolve(String.format("%s%d%s", PREFIX_2, i, ".log")));
     }
 
     @Test
-    public void runTestWithPlusCharacter() throws Exception {
-        final String path =
-                "target/test-classes/rolloverPath/log4j.20211028T194500+0200." + NotANumber.VALUE + ".log.gz";
+    void runTest() throws Exception {
+        final String path = loggingPath + "/" + PREFIX_1 + NotANumber.VALUE + ".gz";
+        final TestRolloverStrategy strategy = new TestRolloverStrategy();
+        final Map<Integer, Path> files = strategy.findFilesInPath(path);
+        assertThat(files).isNotEmpty().hasSize(COUNT_1);
+    }
+
+    @Test
+    void runTestWithPlusCharacter() throws Exception {
+        final String path = loggingPath + "/" + PREFIX_2 + NotANumber.VALUE + ".log.gz";
         final TestRolloverStrategy strategy = new TestRolloverStrategy();
         final Map<Integer, Path> files = strategy.findFilesWithPlusInPath(path);
-        assertTrue(files.size() > 0, "No files found");
-        assertEquals(30, files.size(), "Incorrect number of files found. Should be 30, was " + files.size());
+        assertThat(files).isNotEmpty().hasSize(COUNT_2);
     }
 
     private static class TestRolloverStrategy extends AbstractRolloverStrategy {
 
         public TestRolloverStrategy() {
-            super(null);
+            super(CompressActionFactoryProvider.newInstance(null), null);
         }
 
         @Override

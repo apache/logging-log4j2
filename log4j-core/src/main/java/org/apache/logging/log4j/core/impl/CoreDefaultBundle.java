@@ -238,8 +238,10 @@ public final class CoreDefaultBundle {
     @SingletonFactory
     @Named("StatusLogger")
     @ConditionalOnMissingBinding
-    public Level defaultStatusLevel() {
-        return Level.ERROR;
+    public Level defaultStatusLevel(PropertyEnvironment environment) {
+        return environment
+                .getProperty(CoreProperties.StatusLoggerProperties.class)
+                .level();
     }
 
     @SingletonFactory

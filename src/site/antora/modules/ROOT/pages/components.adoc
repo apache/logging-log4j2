@@ -53,6 +53,23 @@ See xref:manual/async.adoc[asynchronous loggers] for more details.
 
 include::partial$components/log4j-async-logger.adoc[]
 
+[#log4j-compress]
+== `log4j-compress`
+
+[cols="1h,5"]
+|===
+| JPMS module
+| `org.apache.logging.log4j.compress`
+|===
+
+The `log4j-compress` artifact provides additional compression algorithms.
+Having this artifact in the classpath makes these automatically accessible to
+xref:manual/appenders/rolling-file.adoc[].
+See
+xref:manual/appenders/rolling-file.adoc#RolloverStrategy-compress-commons[Compressing archived files] for more details.
+
+include::partial$components/log4j-compress.adoc[]
+
 [#log4j-config-jackson]
 == `log4j-config-jackson`
 
@@ -102,6 +119,23 @@ The `log4j-config-properties` artifact provides support for the YAML configurati
 See xref:manual/configuration.adoc#configuration-factories[predefined `ConfigurationFactory` plugins] for more details.
 
 include::partial$components/log4j-config-yaml.adoc[]
+
+[#log4j-conversant]
+== `log4j-conversant`
+
+|===
+| JPMS module
+| `org.apache.logging.log4j.conversant`
+|===
+
+The `log4j-conversant` artifact contains a
+xref:manual/appenders/delegating.adoc#BlockingQueueFactory[blocking queue factory]
+that uses
+https://github.com/conversant/disruptor[Conversant Disruptor BlockingQueue].
+
+See xref:manual/appenders/delegating.adoc#DisruptorBlockingQueueFactory[Conversant Disruptor Blocking Queue] for more details.
+
+include::partial$components/log4j-conversant.adoc[]
 
 [#log4j-core]
 == `log4j-core`

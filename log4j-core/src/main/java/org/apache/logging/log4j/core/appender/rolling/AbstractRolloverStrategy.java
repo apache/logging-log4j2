@@ -32,6 +32,8 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
+import org.apache.logging.log4j.core.appender.rolling.action.CompressActionFactory;
+import org.apache.logging.log4j.core.appender.rolling.action.CompressActionFactoryProvider;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.pattern.NotANumber;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -48,9 +50,12 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
 
     public static final Pattern PATTERN_COUNTER = Pattern.compile(".*%(?<ZEROPAD>0)?(?<PADDING>\\d+)?i.*");
 
+    private final CompressActionFactoryProvider compressActionFactoryProvider;
     protected final StrSubstitutor strSubstitutor;
 
-    protected AbstractRolloverStrategy(final StrSubstitutor strSubstitutor) {
+    protected AbstractRolloverStrategy(
+            CompressActionFactoryProvider compressActionFactoryProvider, final StrSubstitutor strSubstitutor) {
+        this.compressActionFactoryProvider = compressActionFactoryProvider;
         this.strSubstitutor = strSubstitutor;
     }
 
@@ -71,13 +76,9 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
         return new CompositeAction(all, stopOnError);
     }
 
-    protected int suffixLength(final String lowFilename) {
-        for (final FileExtension extension : FileExtension.values()) {
-            if (extension.isExtensionFor(lowFilename)) {
-                return extension.length();
-            }
-        }
-        return 0;
+    protected int suffixLength(final String fileName) {
+        CompressActionFactory factory = compressActionFactoryProvider.createFactoryForFileName(fileName);
+        return factory != null ? factory.getExtension().length() : 0;
     }
 
     protected SortedMap<Integer, Path> getEligibleFiles(final RollingFileManager manager) {

@@ -644,13 +644,6 @@ Both rollover strategies support the following configuration parameters:
 |===
 | Attribute | Type | Default value | Description
 
-| [[RolloverStrategy-attr-compressionLevel]]compressionLevel
-| `int`
-| `7`
-| Determine the compression level of archived log files.
-
-See <<RolloverStrategy-compress>> for more details.
-
 | [[RolloverStrategy-attr-tempCompressedFilePattern]]tempCompressedFilePattern
 | https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[`Path`]
 |
@@ -926,79 +919,51 @@ When the current log file is archived, the rolling file appender can compress it
 Compression is activated, based on the extension of the archived file name.
 The following extensions are recognized:
 
-[cols="1,1,2"]
-|===
-| Extension | Supports `compressionLevel` | Description
-
-
-| [[RolloverStrategy-compress-zip]]`.zip`
-| {check-mark}
-| ZIP archive using the
+`.zip`::
+ZIP archive using the
 https://docs.oracle.com/javase/8/docs/api/java/util/zip/DeflaterOutputStream.html[DEFLATE]
-algorithm
+algorithm.
 
-| [[RolloverStrategy-compress-gz]]`.gz`
-| {check-mark}
-| https://docs.oracle.com/javase/8/docs/api/java/util/zip/GZIPOutputStream.html[GZIP] archive using the DEFLATE algorithm
+`.gz`::
+https://docs.oracle.com/javase/8/docs/api/java/util/zip/GZIPOutputStream.html[GZIP]
+archive using the DEFLATE algorithm.
 
-| [[RolloverStrategy-compress-bz2]]`.bz2`<<commons-compress-dep,^dep^>>
-| {x-mark}
-|https://commons.apache.org/proper/commons-compress/apidocs/org/apache/commons/compress/compressors/bzip2/BZip2CompressorOutputStream.html[BZip2] algorithm
+[#RolloverStrategy-compress-commons]
+`.<algorithmName>`::
++
+Log4j Core supports all the compression algorithms available through
+https://commons.apache.org/proper/commons-compress/index.html[Apache Commons Compress].
+To use these algorithms, an additional dependency is required:
++
+--
+include::partial$features/compression.adoc[]
+--
++
+[NOTE]
+====
+Apache Commons Compress currently supports the following values of `algorithmName`:
 
-| [[RolloverStrategy-compress-deflate]]`.deflate`<<commons-compress-dep,^dep^>>
-| {x-mark}
-| https://commons.apache.org/proper/commons-compress/apidocs/org/apache/commons/compress/compressors/deflate/DeflateCompressorOutputStream.html[DEFLATE] algorithm
+* `gzip`, `bzip2`, `deflate`, `snappy-framed`, `lz4-block`, `lz4-framed` are supported without **any** external dependency.
+* `lzma`, `.xz` and `.zst` extensions require **additional** dependencies.
+See
+https://commons.apache.org/proper/commons-compress/index.html[Commons Compress documentation]
+for more details.
 
-| [[RolloverStrategy-compress-pack200]]`.pack200`<<commons-compress-dep,^dep^>>
-| {x-mark}
-| https://commons.apache.org/proper/commons-compress/apidocs/org/apache/commons/compress/compressors/pack200/package-summary.html[Pack200] algorithm
+The `pack200` algorithm is not a general purpose compression algorithm and has been disabled.
+====
++
+[TIP]
+====
+Support for additional compression algorithms can be obtained by extending Apache Commons Compress.
 
-| [[RolloverStrategy-compress-xz]]`.xz` <<commons-compress-dep,^dep^>>
-| {x-mark}
-| https://commons.apache.org/proper/commons-compress/apidocs/org/apache/commons/compress/compressors/xz/package-summary.html[XZ] algorithm
-
-| [[RolloverStrategy-compress-zst]]`.zst` <<commons-compress-dep,^dep^>>
-| {x-mark}
-| https://commons.apache.org/proper/commons-compress/apidocs/org/apache/commons/compress/compressors/zstandard/package-summary.html[ZStandard] algorithm
-
-|===
+See
+https://commons.apache.org/proper/commons-compress/examples.html#Extending_Commons_Compress_Compressors[Extending Commons Compress Compressors] for details.
+====
 
 If the <<RolloverStrategy-attr-tempCompressedFilePattern,`tempCompressedFilePattern`>> attribute is set, the current log file:
 
 * will be compressed and stored in the location given by `tempCompressedFilePattern`
 * and then it will be moved to the location given by <<attr-filePattern,`filePattern`>>.
-
-[[commons-compress-dep]]
-^dep^::
-Additional dependencies are required to use these compression algorithms:
-+
-[tabs]
-====
-Maven::
-+
-[source,xml,subs=+attributes]
-----
-<dependency>
-  <groupId>org.apache.commons</groupId>
-  <artifactId>commons-compress</artifactId>
-  <version>{commons-compress-version}</version>
-  <scope>runtime</scope>
-</dependency>
-----
-
-Gradle::
-+
-[source,groovy,subs=+attributes]
-----
-runtimeOnly 'org.apache.commons:commons-compress:{commons-compress-version}'
-----
-
-====
-+
-The `.xz` and `.zst` extensions require **additional** Commons Compress dependencies.
-See
-https://commons.apache.org/proper/commons-compress/index.html[Commons Compress documentation]
-for more details.
 
 [#AbstractPathAction]
 == Optional actions
