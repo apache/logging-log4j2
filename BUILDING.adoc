@@ -148,18 +148,27 @@ You can follow below steps for casual development needs:
 ./mvnw verify -DskipTests -pl :log4j-core,:log4j-core-test
 ----
 
-[TIP]
-====
+[#development-ide-debug]
+=== Debugging `./mvnw test` with IDE
+
 You can connect your IDE to a `./mvnw test` run by
 
 . Run `./mvnw test -pl :log4j-core-test -Dtest=FooBarTest -Dmaven.surefire.debug`
 . Use _"Run > Attach to process"_ in IntelliJ IDEA
-====
 
-[#development-faq]
-=== F.A.Q
+[#development-ci]
+=== Activating CI profiles
+
+There are certain Maven profiles activated only for CI.
+As a consequence of this, you can observe certain CI failures that you can't reproduce locally.
+To work around this, you can activate CI profiles by running Maven commands as follows:
+
+[source,bash]
+----
+CI=true ./mvnw ...
+----
 
 [#development-faq-idea-plugin-not-found]
-==== Compilation in IntelliJ IDEA fails with `java: plug-in not found: ErrorProne`
+=== Compilation in IntelliJ IDEA fails with `java: plug-in not found: ErrorProne`
 
 Try removing all _"Override compiler parameters per-module"_ entries in _"Settings > Build, Execution, Deployment > Compiler > Java Compiler"_.
