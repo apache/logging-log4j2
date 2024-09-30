@@ -224,22 +224,30 @@ public final class JeroMqAppender extends AbstractAppender {
         return stopped;
     }
 
-    // not public, handy for testing
-    int getSendRcFalse() {
+    /**
+     * Used in tests
+     */
+    synchronized int getSendRcFalse() {
         return sendRcFalse;
     }
 
-    // not public, handy for testing
-    int getSendRcTrue() {
+    /**
+     * Used in tests
+     */
+    synchronized int getSendRcTrue() {
         return sendRcTrue;
     }
 
-    // not public, handy for testing
-    void resetSendRcs() {
+    /**
+     * Used in tests
+     */
+    synchronized void resetSendRcs() {
         sendRcTrue = sendRcFalse = 0;
     }
 
-    // not public, handy for testing
+    /**
+     * Used in tests
+     */
     JeroMqManager getManager() {
         return manager;
     }
