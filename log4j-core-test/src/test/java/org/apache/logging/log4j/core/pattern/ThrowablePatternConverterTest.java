@@ -263,6 +263,7 @@ public class ThrowablePatternConverterTest {
                     pattern,
                     asList(
                             "foo.TestFriendlyException: r [localized]",
+                            "	at " + TestFriendlyException.NAMED_MODULE_STACK_TRACE_ELEMENT,
                             "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
                             "	at foo.TestFriendlyException.<clinit>(TestFriendlyException.java:0)",
                             "	at org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.<clinit>(ThrowablePatternConverterTest.java:0)",
@@ -305,6 +306,7 @@ public class ThrowablePatternConverterTest {
                     pattern,
                     asList(
                             "foo.TestFriendlyException: r [localized]",
+                            "	at " + TestFriendlyException.NAMED_MODULE_STACK_TRACE_ELEMENT,
                             "	... suppressed 2 lines",
                             "	at org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.<clinit>(ThrowablePatternConverterTest.java:0)",
                             "	Suppressed: foo.TestFriendlyException: r_s [localized]",
@@ -340,6 +342,7 @@ public class ThrowablePatternConverterTest {
                     pattern,
                     asList(
                             "foo.TestFriendlyException: r [localized]",
+                            "	at " + TestFriendlyException.NAMED_MODULE_STACK_TRACE_ELEMENT,
                             "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
                             "	at foo.TestFriendlyException.<clinit>(TestFriendlyException.java:0)",
                             "	...",

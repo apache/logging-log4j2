@@ -18,7 +18,10 @@ package foo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.net.Socket;
 import java.util.Arrays;
+import java.util.stream.Stream;
+import org.apache.logging.log4j.util.Constants;
 
 /**
  * A testing friendly exception featuring
@@ -27,33 +30,64 @@ import java.util.Arrays;
  * <li>Non-Log4j package origin<sup>1</sup></li>
  * <li>Sufficient causal chain depth</li>
  * <li>Cyclic causal chain</li>
- * <li>Decorated with suppressed exceptions</li>
- * <li>A stack trace free of clutter (i.e., elements from JUnit, JDK, etc.)</li>
+ * <li>Suppressed exceptions</li>
+ * <li>Clutter-free stack trace (i.e., elements from JUnit, JDK, etc.)</li>
+ * <li>Stack trace elements from named modules<sup>2</sup></li>
  * </ul>
  * <p>
- * <sup>1</sup> This becomes handy for tests observing stack trace manipulation effects of Log4j.
+ * <sup>1</sup> Helps with observing stack trace manipulation effects of Log4j.
+ * </p>
+ * <p>
+ * <sup>2</sup> Helps with testing module name serialization.
  * </p>
  */
 public final class TestFriendlyException extends RuntimeException {
-
-    private static final String[] EXCLUDED_CLASS_NAME_PREFIXES = {
-        "java.lang", "jdk.internal", "org.junit", "sun.reflect"
-    };
-
-    public static final TestFriendlyException INSTANCE = create("r", 0, 2, new boolean[] {false});
 
     static {
         // Ensure the distinct packaging
         assertThat(TestFriendlyException.class.getPackage().getName()).doesNotStartWith("org.apache");
     }
 
+    public static final StackTraceElement NAMED_MODULE_STACK_TRACE_ELEMENT = namedModuleStackTraceElement();
+
+    @SuppressWarnings("resource")
+    private static StackTraceElement namedModuleStackTraceElement() {
+        try {
+            new Socket("0.0.0.0", -1);
+        } catch (final Exception error) {
+            final StackTraceElement[] stackTraceElements = error.getStackTrace();
+            final String socketClassName = Socket.class.getCanonicalName();
+            for (final StackTraceElement stackTraceElement : stackTraceElements) {
+                if (stackTraceElement.getClassName().equals(socketClassName)) {
+                    if (Constants.JAVA_MAJOR_VERSION > 8) {
+                        final String stackTraceElementString = stackTraceElement.toString();
+                        assertThat(stackTraceElementString).startsWith("java.base/");
+                    }
+                    return stackTraceElement;
+                }
+            }
+        }
+        throw new IllegalStateException("should not have reached here");
+    }
+
+    private static final String[] EXCLUDED_CLASS_NAME_PREFIXES = {
+        "java.lang", "jdk.internal", "org.junit", "sun.reflect"
+    };
+
+    public static final TestFriendlyException INSTANCE = create("r", 0, 2, new boolean[] {false}, new boolean[] {true});
+
     private static TestFriendlyException create(
-            final String name, final int depth, final int maxDepth, final boolean[] circular) {
-        final TestFriendlyException error = new TestFriendlyException(name);
+            final String name,
+            final int depth,
+            final int maxDepth,
+            final boolean[] circular,
+            final boolean[] namedModuleAllowed) {
+        final TestFriendlyException error = new TestFriendlyException(name, namedModuleAllowed);
         if (depth < maxDepth) {
-            final TestFriendlyException cause = create(name + "_c", depth + 1, maxDepth, circular);
+            final TestFriendlyException cause = create(name + "_c", depth + 1, maxDepth, circular, namedModuleAllowed);
             error.initCause(cause);
-            final TestFriendlyException suppressed = create(name + "_s", depth + 1, maxDepth, circular);
+            final TestFriendlyException suppressed =
+                    create(name + "_s", depth + 1, maxDepth, circular, namedModuleAllowed);
             error.addSuppressed(suppressed);
             final boolean circularAllowed = depth + 1 == maxDepth && !circular[0];
             if (circularAllowed) {
@@ -65,30 +99,53 @@ public final class TestFriendlyException extends RuntimeException {
         return error;
     }
 
-    private TestFriendlyException(final String message) {
+    private TestFriendlyException(final String message, final boolean[] namedModuleAllowed) {
         super(message);
-        removeExcludedStackTraceElements();
+        removeExcludedStackTraceElements(namedModuleAllowed);
     }
 
-    private void removeExcludedStackTraceElements() {
+    private void removeExcludedStackTraceElements(final boolean[] namedModuleAllowed) {
         final StackTraceElement[] oldStackTrace = getStackTrace();
         final boolean[] seenExcludedStackTraceElement = {false};
         final StackTraceElement[] newStackTrace = Arrays.stream(oldStackTrace)
-                .filter(stackTraceElement -> {
-                    if (seenExcludedStackTraceElement[0]) {
-                        return false;
-                    }
-                    final String className = stackTraceElement.getClassName();
-                    for (final String excludedClassNamePrefix : EXCLUDED_CLASS_NAME_PREFIXES) {
-                        if (className.startsWith(excludedClassNamePrefix)) {
-                            seenExcludedStackTraceElement[0] = true;
-                            return false;
-                        }
-                    }
-                    return true;
-                })
+                .flatMap(stackTraceElement ->
+                        mapStackTraceElement(stackTraceElement, namedModuleAllowed, seenExcludedStackTraceElement))
                 .toArray(StackTraceElement[]::new);
         setStackTrace(newStackTrace);
+    }
+
+    private static Stream<StackTraceElement> mapStackTraceElement(
+            final StackTraceElement stackTraceElement,
+            final boolean[] namedModuleAllowed,
+            final boolean[] seenExcludedStackTraceElement) {
+        final Stream<StackTraceElement> filteredStackTraceElement =
+                filterStackTraceElement(stackTraceElement, seenExcludedStackTraceElement);
+        final Stream<StackTraceElement> javaBaseIncludedStackTraceElement =
+                namedModuleIncludedStackTraceElement(namedModuleAllowed);
+        return Stream.concat(javaBaseIncludedStackTraceElement, filteredStackTraceElement);
+    }
+
+    private static Stream<StackTraceElement> filterStackTraceElement(
+            final StackTraceElement stackTraceElement, final boolean[] seenExcludedStackTraceElement) {
+        if (seenExcludedStackTraceElement[0]) {
+            return Stream.empty();
+        }
+        final String className = stackTraceElement.getClassName();
+        for (final String excludedClassNamePrefix : EXCLUDED_CLASS_NAME_PREFIXES) {
+            if (className.startsWith(excludedClassNamePrefix)) {
+                seenExcludedStackTraceElement[0] = true;
+                return Stream.empty();
+            }
+        }
+        return Stream.of(stackTraceElement);
+    }
+
+    private static Stream<StackTraceElement> namedModuleIncludedStackTraceElement(final boolean[] namedModuleAllowed) {
+        if (!namedModuleAllowed[0]) {
+            return Stream.of();
+        }
+        namedModuleAllowed[0] = false;
+        return Stream.of(NAMED_MODULE_STACK_TRACE_ELEMENT);
     }
 
     @Override

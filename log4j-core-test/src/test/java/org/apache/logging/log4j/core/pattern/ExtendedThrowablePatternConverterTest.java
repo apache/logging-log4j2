@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.pattern;
 
 import static java.util.Arrays.asList;
 
+import foo.TestFriendlyException;
 import java.util.List;
 import org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.AbstractPropertyTest;
 import org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.AbstractStackTraceTest;
@@ -41,6 +42,7 @@ class ExtendedThrowablePatternConverterTest {
 
     private static final List<String> EXPECTED_FULL_STACK_TRACE_LINES = asList(
             "foo.TestFriendlyException: r [localized]",
+            "	at " + TestFriendlyException.NAMED_MODULE_STACK_TRACE_ELEMENT + " ~[?:?]",
             "	at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
             "	at foo.TestFriendlyException.<clinit>(TestFriendlyException.java:0) ~[test-classes/:?]",
             "	at org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.<clinit>(ThrowablePatternConverterTest.java:0) [test-classes/:?]",
@@ -105,6 +107,7 @@ class ExtendedThrowablePatternConverterTest {
                     pattern,
                     asList(
                             "foo.TestFriendlyException: r [localized]",
+                            "	at " + TestFriendlyException.NAMED_MODULE_STACK_TRACE_ELEMENT + " ~[?:?]",
                             "	... suppressed 2 lines",
                             "	at org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.<clinit>(ThrowablePatternConverterTest.java:0) [test-classes/:?]",
                             "	Suppressed: foo.TestFriendlyException: r_s [localized]",
@@ -140,6 +143,7 @@ class ExtendedThrowablePatternConverterTest {
                     pattern,
                     asList(
                             "foo.TestFriendlyException: r [localized]",
+                            "	at " + TestFriendlyException.NAMED_MODULE_STACK_TRACE_ELEMENT + " ~[?:?]",
                             "	at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
                             "	at foo.TestFriendlyException.<clinit>(TestFriendlyException.java:0) ~[test-classes/:?]",
                             "	...",

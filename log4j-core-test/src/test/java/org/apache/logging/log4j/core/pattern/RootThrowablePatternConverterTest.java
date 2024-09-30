@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.pattern;
 
 import static java.util.Arrays.asList;
 
+import foo.TestFriendlyException;
 import java.util.List;
 import org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.AbstractPropertyTest;
 import org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.AbstractStackTraceTest;
@@ -55,6 +56,7 @@ class RootThrowablePatternConverterTest {
             "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
             "		... 3 more",
             "Wrapped by: foo.TestFriendlyException: r [localized]",
+            "	at " + TestFriendlyException.NAMED_MODULE_STACK_TRACE_ELEMENT,
             "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
             "	at foo.TestFriendlyException.<clinit>(TestFriendlyException.java:0)",
             "	at org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.<clinit>(ThrowablePatternConverterTest.java:0)",
@@ -116,6 +118,7 @@ class RootThrowablePatternConverterTest {
                             "		... suppressed 2 lines",
                             "		... 3 more",
                             "Wrapped by: foo.TestFriendlyException: r [localized]",
+                            "	at " + TestFriendlyException.NAMED_MODULE_STACK_TRACE_ELEMENT,
                             "	... suppressed 2 lines",
                             "	at org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.<clinit>(ThrowablePatternConverterTest.java:0)",
                             "	Suppressed: foo.TestFriendlyException: r_s_c [localized]",
@@ -154,6 +157,7 @@ class RootThrowablePatternConverterTest {
                             "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
                             "		... 3 more",
                             "Wrapped by: foo.TestFriendlyException: r [localized]",
+                            "	at " + TestFriendlyException.NAMED_MODULE_STACK_TRACE_ELEMENT,
                             "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
                             "	at foo.TestFriendlyException.<clinit>(TestFriendlyException.java:0)",
                             "	...",
