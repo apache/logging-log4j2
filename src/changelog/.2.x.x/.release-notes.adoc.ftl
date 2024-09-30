@@ -22,8 +22,51 @@
 
 This releases contains ...
 
-=== JMX changes
+=== SLF4J implementations (bridges)
 
-Starting in version 2.24.0, JMX support is disabled by default and can be re-enabled via the `log4j2.disableJmx=false` system property.
+To prepare for the migration between Log4j Core 2 and Log4j Core 3, the
+xref:components.adoc#log4j-slf4j-impl[`log4j-slf4j-impl`]
+and
+xref:components.adoc#log4j-slf4j-impl[`log4j-slf4j2-impl`]
+bridges between SLF4J and Log4j API, no longer depend on Log4j Core 2.
+Users should specify the logging implementation of their choice explicitly in their dependency manager:
+
+[tabs]
+====
+Maven::
++
+We assume you use xref:components.adoc#log4j-bom[`log4j-bom`] for dependency management.
++
+[source,xml]
+----
+<!-- Bridge from SLF4J 2 to Log4j API -->
+<dependency>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-slf4j2-impl</artifactId>
+  <scope>runtime</scope>
+</dependency>
+
+<!-- Log4j API implementation -->
+<dependency>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-core</artifactId>
+  <scope>runtime</scope>
+</dependency>
+----
+
+Gradle::
++
+We assume you use xref:components.adoc#log4j-bom[`log4j-bom`] for dependency management.
++
+[source,groovy]
+----
+// Bridge from SLF4J 2 to Log4j API
+runtimeOnly 'org.apache.logging.log4j:log4j-slf4j2-impl'
+// Log4j API implementation
+runtimeOnly 'org.apache.logging.log4j:log4j-core'
+----
+====
+
+See xref:manual/installation.adoc#impl-core[Installing Log4j Core] for more details.
 
 <#include "../.changelog.adoc.ftl">
