@@ -16,7 +16,7 @@
  */
 package org.apache.logging.slf4j;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.testUtil.StringListAppender;
@@ -37,9 +37,9 @@ public class CallerInformationTest {
         logger.warn("Verifying the caller class is still correct.");
         logger.error("Hopefully nobody breaks me!");
         final List<String> messages = app.strList;
-        assertEquals("Incorrect number of messages.", 3, messages.size());
+        assertEquals(3, messages.size(), "Incorrect number of messages.");
         for (final String message : messages) {
-            assertEquals("Incorrect caller class name.", this.getClass().getName(), message);
+            assertEquals(this.getClass().getName(), message, "Incorrect caller class name.");
         }
     }
 
@@ -53,9 +53,9 @@ public class CallerInformationTest {
         logger.warn("brains~~~");
         logger.info("Itchy. Tasty.");
         final List<String> messages = app.strList;
-        assertEquals("Incorrect number of messages.", 5, messages.size());
+        assertEquals(5, messages.size(), "Incorrect number of messages.");
         for (final String message : messages) {
-            assertEquals("Incorrect caller method name.", "testMethodLogger", message);
+            assertEquals("testMethodLogger", message, "Incorrect caller method name.");
         }
     }
 }
