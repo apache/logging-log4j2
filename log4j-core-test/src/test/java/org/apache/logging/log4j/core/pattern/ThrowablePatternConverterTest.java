@@ -409,15 +409,20 @@ public class ThrowablePatternConverterTest {
                     .limit(maxLineCount)
                     .map(expectedStackTraceLine -> expectedStackTraceLine + conversionEnding)
                     .collect(Collectors.joining());
-            final String truncatedActualStackTrace = truncateStackTraceLineNumbers(actualStackTrace);
-            final String truncatedExpectedStackTrace = truncateStackTraceLineNumbers(expectedStackTrace);
+            final String truncatedActualStackTrace = normalizeStackTrace(actualStackTrace, conversionEnding);
+            final String truncatedExpectedStackTrace = normalizeStackTrace(expectedStackTrace, conversionEnding);
             assertThat(truncatedActualStackTrace)
                     .as("depthTestCase=%s, pattern=`%s`", depthTestCase, pattern)
                     .isEqualTo(truncatedExpectedStackTrace);
         }
 
-        private static String truncateStackTraceLineNumbers(final String stackTrace) {
-            return stackTrace.replaceAll("\\.java:[0-9]+\\)", ".java:0)");
+        private static String normalizeStackTrace(final String stackTrace, final String conversionEnding) {
+            return stackTrace
+                    // Normalize line numbers
+                    .replaceAll("\\.java:[0-9]+\\)", ".java:0)")
+                    // Normalize extended stack trace resource information for Java Standard library classes.
+                    // We replace the `~[?:1.8.0_422]` suffix of such classes with `~[?:0]`.
+                    .replaceAll(" ~\\[\\?:[^]]+](\\Q" + conversionEnding + "\\E|$)", " ~[?:0]$1");
         }
     }
 
