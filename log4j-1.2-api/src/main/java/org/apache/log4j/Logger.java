@@ -30,7 +30,7 @@ public class Logger extends Category {
      */
     private static final String FQCN = Logger.class.getName();
 
-    public static Logger getLogger(final Class<?> clazz) {
+    public static Logger getLogger(@SuppressWarnings("rawtypes") final Class clazz) {
         // Depth 2 gets the call site of this method.
         return LogManager.getLogger(clazz.getName(), StackLocatorUtil.getCallerClassLoader(2));
     }
