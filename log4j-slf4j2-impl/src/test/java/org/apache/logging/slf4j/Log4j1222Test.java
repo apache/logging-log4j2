@@ -16,9 +16,9 @@
  */
 package org.apache.logging.slf4j;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +47,9 @@ public class Log4j1222Test {
 
         private void trigger() {
             Holder.LOGGER.info("Attempt to trigger");
-            assertTrue("Logger is of type " + Holder.LOGGER.getClass().getName(), Holder.LOGGER instanceof Log4jLogger);
+            assertTrue(
+                    Holder.LOGGER instanceof Log4jLogger,
+                    "Logger is of type " + Holder.LOGGER.getClass().getName());
         }
     }
 }

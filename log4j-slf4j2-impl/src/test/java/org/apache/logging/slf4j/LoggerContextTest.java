@@ -16,12 +16,12 @@
  */
 package org.apache.logging.slf4j;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Set;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.spi.LoggerContext;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -35,9 +35,9 @@ public class LoggerContextTest {
         factory.getLogger("test");
         Set<LoggerContext> set = factory.getLoggerContexts();
         final LoggerContext ctx1 = set.toArray(LoggerContext.EMPTY_ARRAY)[0];
-        assertTrue("LoggerContext is not enabled for shutdown", ctx1 instanceof LifeCycle);
+        assertTrue(ctx1 instanceof LifeCycle, "LoggerContext is not enabled for shutdown");
         ((LifeCycle) ctx1).stop();
         set = factory.getLoggerContexts();
-        assertTrue("Expected no LoggerContexts", set.isEmpty());
+        assertTrue(set.isEmpty(), "Expected no LoggerContexts");
     }
 }
