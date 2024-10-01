@@ -366,12 +366,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     public void start() {
         // Preserve the prior behavior of initializing during start if not initialized.
-        if (getState().equals(State.INITIALIZING)) {
+        if (getState() == State.INITIALIZING) {
             initialize();
         }
         LOGGER.info("Starting configuration {}...", this);
         this.setStarting();
-        if (watchManager.getIntervalSeconds() > 0) {
+        if (watchManager.getIntervalSeconds() >= 0) {
             LOGGER.info(
                     "Start watching for changes to {} every {} seconds",
                     getConfigurationSource(),
