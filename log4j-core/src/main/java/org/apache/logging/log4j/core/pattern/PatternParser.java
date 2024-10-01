@@ -212,10 +212,37 @@ public final class PatternParser {
             list.add(new PatternFormatter(pc, field));
         }
         if (alwaysWriteExceptions && !handlesThrowable) {
+            final boolean newlineSuffixed = isNewlineSuffixed(list);
+            if (!newlineSuffixed) {
+                appendNewlineIfMissing(list);
+            }
             final LogEventPatternConverter pc = ExtendedThrowablePatternConverter.newInstance(config, new String[0]);
             list.add(new PatternFormatter(pc, FormattingInfo.getDefault()));
         }
         return list;
+    }
+
+    private void appendNewlineIfMissing(final List<PatternFormatter> formatters) {
+        final boolean newlineSuffixed = isNewlineSuffixed(formatters);
+        if (newlineSuffixed) {
+            return;
+        }
+        final LiteralPatternConverter converter = new LiteralPatternConverter(config, " ", false);//System.lineSeparator(), false);
+        final PatternFormatter formatter = new PatternFormatter(converter, FormattingInfo.getDefault());
+        formatters.add(formatter);
+    }
+
+    private static boolean isNewlineSuffixed(List<PatternFormatter> formatters) {
+        if (formatters.isEmpty()) {
+            return false;
+        }
+        final PatternFormatter lastFormatter = formatters.get(formatters.size() - 1);
+        final LogEventPatternConverter lastConverter = lastFormatter.getConverter();
+        if (!(lastConverter instanceof LiteralPatternConverter)) {
+            return false;
+        }
+        final String suffix = ((LiteralPatternConverter) lastConverter).getLiteral();
+        return !suffix.isEmpty() && suffix.charAt(suffix.length() - 1) == '\n';
     }
 
     /**
