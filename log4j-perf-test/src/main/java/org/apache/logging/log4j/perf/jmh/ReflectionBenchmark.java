@@ -29,20 +29,7 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 
 /**
- * <p>
- * Benchmarks the different ways the caller class can be obtained. To run this in sampling mode (latency test):
- * </p>
- *
- * <pre>
- *     java -jar benchmarks.jar ".*ReflectionBenchmark.*" -i 5 -f 1 -wi 5 -bm sample -tu ns
- * </pre>
- * <p>
- * To run this in throughput testing mode:
- * </p>
- *
- * <pre>
- *     java -jar benchmarks.jar ".*ReflectionBenchmark.*" -i 5 -f 1 -wi 5 -bm Throughput -tu ms
- * </pre>
+ * Benchmarks the different ways the caller class can be obtained.
  */
 public class ReflectionBenchmark {
 

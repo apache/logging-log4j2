@@ -28,17 +28,6 @@ import org.openjdk.jmh.annotations.State;
 /**
  * This benchmark is not in the perf.jmh package because it tests the package-protected ParameterFormatter class.
  */
-// ============================== HOW TO RUN THIS TEST: ====================================
-//
-// single thread:
-// java -jar log4j-perf/target/benchmarks.jar ".*ParameterFormatterBench.*" -f 1 -wi 5 -i 10
-//
-// multiple threads (for example, 4 threads):
-// java -jar log4j-perf/target/benchmarks.jar ".*ParameterFormatterBench.*" -f 1 -wi 5 -i 10 -t 4 -si true
-//
-// Usage help:
-// java -jar log4j-perf/target/benchmarks.jar -help
-//
 @State(Scope.Benchmark)
 public class ParameterFormatterBenchmark {
 

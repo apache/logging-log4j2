@@ -37,16 +37,6 @@ import org.openjdk.jmh.annotations.State;
 /**
  * Tests Log4j2 PatternLayout performance.
  */
-// ============================== HOW TO RUN THIS TEST: ====================================
-//
-// single thread:
-// java -jar log4j-perf/target/benchmarks.jar ".*PatternLayoutBench.*" -f 1 -wi 5 -i 10
-// java -Dfile.encoding=UTF8       -jar log4j-perf/target/benchmarks.jar ".*PatternLayoutBench.*" -f 1 -wi 5 -i 10
-// java -Dfile.encoding=ISO-8859-1 -jar log4j-perf/target/benchmarks.jar ".*PatternLayoutBench.*" -f 1 -wi 5 -i 10
-//
-// Usage help:
-// java -jar log4j-perf/target/benchmarks.jar -help
-//
 @State(Scope.Thread)
 public class PatternLayoutBenchmark {
 

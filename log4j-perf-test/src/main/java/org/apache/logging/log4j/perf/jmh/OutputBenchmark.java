@@ -36,11 +36,6 @@ import org.openjdk.jmh.annotations.TearDown;
  * Benchmarks Log4j 2, Log4j 1, Logback and JUL using the DEBUG level which is enabled for this test. The configuration
  * for each uses a FileAppender
  */
-// HOW TO RUN THIS TEST
-// java -jar log4j-perf/target/benchmarks.jar ".*OutputBenchmark.*" -f 1 -wi 10 -i 20
-//
-// RUNNING THIS TEST WITH 4 THREADS:
-// java -jar log4j-perf/target/benchmarks.jar ".*OutputBenchmark.*" -f 1 -wi 10 -i 20 -t 4
 @State(Scope.Thread)
 public class OutputBenchmark {
     public static final String MESSAGE = "This is a debug message";

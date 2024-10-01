@@ -41,8 +41,6 @@ import org.openjdk.jmh.annotations.TearDown;
 /**
  * Benchmarks Log4j 2 GelfLayout.
  */
-// HOW TO RUN THIS TEST
-// java -jar target/benchmarks.jar GelfLayoutBenchmark -f 1 -i 5 -wi 5 -bm sample -tu ns
 @State(Scope.Thread)
 public class GelfLayoutBenchmark {
     private static final CharSequence MESSAGE =

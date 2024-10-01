@@ -40,17 +40,6 @@ import org.openjdk.jmh.annotations.Warmup;
 /**
  * Tests Log4j2 Async Appender performance when including caller location information.
  */
-// ============================== HOW TO RUN THIS TEST: ====================================
-//
-// single thread:
-// java -jar log4j-perf/target/benchmarks.jar ".*AsyncAppenderLog4j2LocationBenchmark.*"
-//
-// multiple threads (for example, 4 threads):
-// java -jar log4j-perf/target/benchmarks.jar ".*AsyncAppenderLog4j2LocationBenchmark.*" -t 4 -si true
-//
-// Usage help:
-// java -jar log4j-perf/target/benchmarks.jar -help
-//
 @State(Scope.Benchmark)
 @Fork(1)
 @Warmup(iterations = 10)

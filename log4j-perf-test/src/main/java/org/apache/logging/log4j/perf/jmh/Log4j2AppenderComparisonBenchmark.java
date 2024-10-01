@@ -41,11 +41,6 @@ import org.openjdk.jmh.annotations.TearDown;
 /**
  * Benchmarks Log4j 2's Console, File, RandomAccessFile, MemoryMappedFile and Rewrite appender.
  */
-// HOW TO RUN THIS TEST
-// java -jar log4j-perf/target/benchmarks.jar ".*Log4j2AppenderComparisonBenchmark.*" -f 1 -wi 10 -i 20
-//
-// RUNNING THIS TEST WITH 4 THREADS:
-// java -jar log4j-perf/target/benchmarks.jar ".*Log4j2AppenderComparisonBenchmark.*" -f 1 -wi 10 -i 20 -t 4
 @State(Scope.Benchmark)
 public class Log4j2AppenderComparisonBenchmark {
     public static final String MESSAGE = "Short message";

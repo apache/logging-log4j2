@@ -46,17 +46,6 @@ import org.openjdk.jmh.annotations.State;
  * Tests JUL (java.util.logging) Memory Handler performance.
  * We explicitly specify the location so that JUL will not try to look up caller location information.
  */
-// ============================== HOW TO RUN THIS TEST: ====================================
-//
-// single thread:
-// java -jar log4j-perf/target/benchmarks.jar ".*MemoryHandlerJULBenchmark.*" -f 1 -wi 10 -i 20
-//
-// multiple threads (for example, 4 threads):
-// java -jar log4j-perf/target/benchmarks.jar ".*MemoryHandlerJULBenchmark.*" -f 1 -wi 10 -i 20 -t 4 -si true
-//
-// Usage help:
-// java -jar log4j-perf/target/benchmarks.jar -help
-//
 @State(Scope.Benchmark)
 public class MemoryHandlerJULBenchmark {
 

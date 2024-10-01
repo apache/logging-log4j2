@@ -35,14 +35,6 @@ import org.openjdk.jmh.annotations.TearDown;
 /**
  * Tests Log4j2 Formatter Logger performance.
  */
-// ============================== HOW TO RUN THIS TEST: ====================================
-//
-// single thread:
-// java -jar log4j-perf/target/benchmarks.jar ".*FormatterLogger.*" -f 1 -wi 5 -i 5
-//
-// Usage help:
-// java -jar log4j-perf/target/benchmarks.jar -help
-//
 @State(Scope.Thread)
 public class FormatterLoggerBenchmark {
 

@@ -25,17 +25,6 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.infra.Blackhole;
 
-// ============================== HOW TO RUN THIS TEST: ====================================
-//
-// In sampling mode (latency test):
-// java -jar log4j-perf/target/benchmarks.jar ".*CollectionsBenchmark.*" -i 10 -f 1 -wi 5 -bm sample -tu ns
-//
-// Multi-threading test:
-// java -jar benchmarks.jar ".*CollectionsBenchmark.*"  -i 10 -f 1 -wi 5 -bm sample -tu ns -t 4
-//
-// Usage help:
-// java -jar log4j-perf/target/benchmarks.jar -help
-//
 @State(Scope.Benchmark)
 public class CollectionsBenchmark {
     private final ConcurrentHashMap<String, Long> map1 = new ConcurrentHashMap<>();

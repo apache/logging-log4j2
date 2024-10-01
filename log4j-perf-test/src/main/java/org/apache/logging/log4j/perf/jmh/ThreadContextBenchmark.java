@@ -50,18 +50,6 @@ import org.openjdk.jmh.annotations.Warmup;
 /**
  * Compares performance of ThreadContextMap implementations.
  */
-// ============================== HOW TO RUN THIS TEST: ====================================
-// (Quick build: mvn -DskipTests=true clean package -pl log4j-perf -am )
-//
-// single thread:
-// java -jar log4j-perf/target/benchmarks.jar ".*ThreadContextBench.*"
-//
-// four threads:
-// java -jar log4j-perf/target/benchmarks.jar ".*ThreadContextBench.*" -f 1 -wi 10 -i 20 -tu ns -bm sample -t 4
-//
-// Usage help:
-// java -jar log4j-perf/target/benchmarks.jar -help
-//
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
 @Warmup(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)

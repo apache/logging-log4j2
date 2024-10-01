@@ -32,11 +32,6 @@ import org.slf4j.MarkerFactory;
  * Benchmarks Log4j 2 and Logback using a global MarkerFilter which will not be matched for this test. The Marker
  * provided will have a
  */
-// HOW TO RUN THIS TEST
-// single thread:
-// java -jar target/benchmarks.jar ".*MarkerFilterBenchmark.*" -f 1 -i 5 -wi 5 -bm sample -tu ns
-// multiple threads (for example, 4 threads):
-// java -jar target/benchmarks.jar ".*MarkerFilterBenchmark.*" -f 1 -i 5 -wi 5 -t 4 -si true -bm sample -tu ns
 @State(Scope.Benchmark)
 public class MarkerFilterBenchmark {
     Logger log4jLogger;

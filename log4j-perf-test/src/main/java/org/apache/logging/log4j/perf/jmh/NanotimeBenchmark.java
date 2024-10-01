@@ -27,17 +27,6 @@ import org.openjdk.jmh.annotations.State;
 /**
  * From <a href="http://shipilev.net/blog/2014/nanotrusting-nanotime/">http://shipilev.net/blog/2014/nanotrusting-nanotime/</a>.
  */
-// ============================== HOW TO RUN THIS TEST: ====================================
-//
-// single thread:
-// java -jar log4j-perf/target/benchmarks.jar ".*Nanotime.*" -f 1 -wi 5 -i 5
-//
-// multiple threads (for example, 4 threads):
-// java -jar log4j-perf/target/benchmarks.jar ".*Nanotime.*" -f 1 -wi 5 -i 5 -t 4 -si true
-//
-// Usage help:
-// java -jar log4j-perf/target/benchmarks.jar -help
-//
 @State(Scope.Benchmark)
 public class NanotimeBenchmark {
 

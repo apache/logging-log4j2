@@ -42,17 +42,6 @@ import org.openjdk.jmh.annotations.State;
 /**
  * Tests Log4j2 StringBuilderEncoder performance.
  */
-// ============================== HOW TO RUN THIS TEST: ====================================
-//
-// single thread:
-// java -Dfile.encoding=ISO-8859-1 -Dlog4j2.enableThreadlocals=true -jar
-// log4j-perf/target/benchmarks.jar ".*StringBuilderEncoder.*" -f 1 -wi 5 -i 10
-// java -Dfile.encoding=UTF8 -Dlog4j2.enableThreadlocals=true -jar
-// log4j-perf/target/benchmarks.jar ".*StringBuilderEncoder.*" -f 1 -wi 5 -i 10
-//
-// Usage help:
-// java -jar log4j-perf/target/benchmarks.jar -help
-//
 @State(Scope.Thread)
 public class TextEncoderHelperBenchmark {
 

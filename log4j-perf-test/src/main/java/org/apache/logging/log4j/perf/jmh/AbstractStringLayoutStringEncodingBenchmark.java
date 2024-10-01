@@ -44,8 +44,6 @@ import org.openjdk.jmh.annotations.State;
  * Benchmarks the two different ways of encoding String to bytes in
  * {@link org.apache.logging.log4j.core.layout.AbstractStringLayout} for different Charsets.
  */
-// HOW TO RUN THIS TEST
-// java -jar target/benchmarks.jar AbstractStringLayoutStringEncodingBenchmark -f 1 -i 5 -wi 5 -bm sample -tu ns
 @State(Scope.Thread)
 public class AbstractStringLayoutStringEncodingBenchmark {
     private static final String MESSAGE =

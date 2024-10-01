@@ -34,18 +34,7 @@ import org.openjdk.jmh.annotations.Threads;
 import org.openjdk.jmh.annotations.Warmup;
 
 /**
- * Tests Log4j2 NamePatternConverter's performance.<br>
- *
- * How to run these benchmarks:<br>
- *
- * Single thread:<br>
- * <pre>java -jar log4j-perf/target/benchmarks.jar ".*NamePatternConverterBenchmark.*" -f 1 -wi 2 -i 3 -r 3s -jvmArgs '-server -XX:+AggressiveOpts'</pre>
- *
- * Multiple threads (for example, 4 threads):<br>
- * <pre>java -jar log4j-perf/target/benchmarks.jar ".*NamePatternConverterBenchmark.*" -f 1 -wi 4 -i 20 -t 4 -si true</pre>
- *
- * Usage help:<br>
- * <pre>java -jar log4j-perf/target/benchmarks.jar -help</pre>
+ * Tests Log4j2 NamePatternConverter's performance.
  */
 @Fork(1)
 @Threads(1)

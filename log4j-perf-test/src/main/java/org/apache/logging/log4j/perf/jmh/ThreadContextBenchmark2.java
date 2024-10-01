@@ -46,16 +46,6 @@ import org.openjdk.jmh.infra.Blackhole;
 /**
  * Compares performance of ThreadContextMap implementations and ScopedContext
  */
-// ============================== HOW TO RUN THIS TEST: ====================================
-// (Quick build: mvn -DskipTests=true clean package -pl log4j-perf -am )
-//
-// single thread:
-// java -jar log4j-perf/target/benchmarks.jar ".*ThreadContextBenchmark2.*"
-//
-// Usage help:
-// java -jar log4j-perf/target/benchmarks.jar -help
-//
-
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
 public class ThreadContextBenchmark2 {
