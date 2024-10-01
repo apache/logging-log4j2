@@ -135,15 +135,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         final Throwable throwable = event.getThrown();
         if (throwable != null) {
             final String lineSeparator = effectiveLineSeparatorProvider.apply(event);
-            ensureWhitespaceSuffix(buffer);
             renderer.renderThrowable(buffer, throwable, lineSeparator);
-        }
-    }
-
-    private static void ensureWhitespaceSuffix(final StringBuilder buffer) {
-        final int bufferLength = buffer.length();
-        if (bufferLength > 0 && !Character.isWhitespace(buffer.charAt(bufferLength - 1))) {
-            buffer.append(' ');
         }
     }
 
