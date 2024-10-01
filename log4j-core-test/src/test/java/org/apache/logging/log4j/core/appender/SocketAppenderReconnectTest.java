@@ -367,10 +367,10 @@ public class SocketAppenderReconnectTest {
         await("first socket append")
                 .pollInterval(100, TimeUnit.MILLISECONDS)
                 .atMost(120, TimeUnit.SECONDS)
-                .until(() -> {
+                .ignoreExceptions()
+                .untilAsserted(() -> {
                     final String message = expectedMessages.get(0);
                     logger.info(message);
-                    return true;
                 });
 
         // Reset the error handler
