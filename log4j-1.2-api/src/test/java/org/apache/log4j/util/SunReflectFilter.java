@@ -16,27 +16,23 @@
  */
 package org.apache.log4j.util;
 
-import org.apache.oro.text.perl.Perl5Util;
+import org.jspecify.annotations.Nullable;
 
 /**
  * The sun.reflect.* and java.lang.reflect.* lines are not present in all JDKs.
  */
 public class SunReflectFilter implements Filter {
-    Perl5Util util = new Perl5Util();
 
     @Override
-    public String filter(final String in) {
-        if ((in == null) || util.match("/at sun.reflect/", in) || (in.indexOf("at java.lang.reflect.") >= 0)) {
+    public @Nullable String filter(final String in) {
+        if (in.contains("at sun.reflect") || in.contains("at java.lang.reflect")) {
             return null;
         }
-        if (in.indexOf("Compiled Code") >= 0) {
-            if (in.indexOf("junit.framework.TestSuite") >= 0) {
-                return util.substitute("s/Compiled Code/TestSuite.java:XXX/", in);
+        if (in.contains("Compiled Code")) {
+            if (in.contains("junit.framework.TestSuite")) {
+                return in.replaceFirst("Compiled Code", "TestSuite.java:XXX");
             }
         }
-        if (util.match("/\\(Method.java:.*\\)/", in)) {
-            return util.substitute("s/\\(Method.java:.*\\)/(Native Method)/", in);
-        }
-        return in;
+        return in.replaceFirst("\\(Method.java:.*\\)", "(Native Method)");
     }
 }

@@ -16,35 +16,32 @@
  */
 package org.apache.log4j.util;
 
-import org.apache.oro.text.perl.Perl5Util;
+import java.util.regex.Pattern;
+import org.jspecify.annotations.Nullable;
 
 public class JunitTestRunnerFilter implements Filter {
-    Perl5Util util = new Perl5Util();
 
     /**
      * Filter out stack trace lines coming from the various JUnit TestRunners.
      */
     @Override
-    public String filter(final String in) {
-        if (in == null) {
-            return null;
-        }
+    public @Nullable String filter(final String in) {
 
-        if (util.match("/at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner/", in)) {
+        if (in.contains("at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner")) {
             return null;
-        } else if (util.match("/at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner/", in)) {
+        } else if (in.contains("at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner")) {
             return null;
-        } else if (util.match("/at com.intellij/", in)) {
+        } else if (in.contains("at com.intellij")) {
             return null;
-        } else if (in.indexOf("at junit.") >= 0 && in.indexOf("ui.TestRunner") >= 0) {
+        } else if (in.contains("at junit.") && in.contains("ui.TestRunner")) {
             return null;
-        } else if (in.indexOf("org.apache.maven") >= 0) {
+        } else if (in.contains("org.apache.maven")) {
             return null;
-        } else if (in.indexOf("junit.internal") >= 0) {
+        } else if (in.contains("junit.internal")) {
             return null;
-        } else if (in.indexOf("JUnit4TestAdapter") >= 0) {
+        } else if (in.contains("JUnit4TestAdapter")) {
             return null;
-        } else if (util.match("/\\sat /", in)) {
+        } else if (Pattern.compile("\\sat ").matcher(in).find()) {
             return "\t" + in.trim();
         } else {
             return in;

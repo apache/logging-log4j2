@@ -17,66 +17,12 @@
 package org.apache.log4j.util;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 public class Compare {
 
-    static final int B1_NULL = -1;
-    static final int B2_NULL = -2;
-
-    public static boolean compare(final Class testClass, final String file1, final String file2) throws IOException {
-        try (final BufferedReader in1 = new BufferedReader(new FileReader(file1));
-                final BufferedReader in2 = new BufferedReader(new InputStreamReader(open(testClass, file2)))) {
-            return compare(testClass, file1, file2, in1, in2);
-        }
-    }
-
-    public static boolean compare(
-            final Class testClass,
-            final String file1,
-            final String file2,
-            final BufferedReader in1,
-            final BufferedReader in2)
-            throws IOException {
-
-        String s1;
-        int lineCounter = 0;
-
-        while ((s1 = in1.readLine()) != null) {
-            lineCounter++;
-
-            final String s2 = in2.readLine();
-
-            if (!s1.equals(s2)) {
-                System.out.println("Files [" + file1 + "] and [" + file2 + "] differ on line " + lineCounter);
-                System.out.println("One reads:  [" + s1 + "].");
-                System.out.println("Other reads:[" + s2 + "].");
-                outputFile(testClass, file1);
-                outputFile(testClass, file2);
-
-                return false;
-            }
-        }
-
-        // the second file is longer
-        if (in2.read() != -1) {
-            System.out.println("File [" + file2 + "] longer than file [" + file1 + "].");
-            outputFile(testClass, file1);
-            outputFile(testClass, file2);
-
-            return false;
-        }
-
-        return true;
-    }
-
-    public static boolean compare(final String file1, final String file2) throws FileNotFoundException, IOException {
+    public static boolean compare(final String file1, final String file2) throws IOException {
         try (final BufferedReader in1 = new BufferedReader(new FileReader(file1));
                 final BufferedReader in2 = new BufferedReader(new FileReader(file2))) {
 
@@ -100,56 +46,6 @@ public class Compare {
             }
 
             return true;
-        }
-    }
-
-    private static final InputStream open(final Class testClass, final String fileName) throws IOException {
-        String resourceName = fileName;
-        if (fileName.startsWith("witness/")) {
-            resourceName = fileName.substring(fileName.lastIndexOf('/') + 1);
-        }
-        InputStream is = testClass.getResourceAsStream(resourceName);
-        if (is == null) {
-            final File file = new File(fileName);
-            if (file.exists()) {
-                is = new FileInputStream(file);
-            } else {
-                throw new FileNotFoundException("Resource " + resourceName + " not found");
-            }
-        }
-        return is;
-    }
-
-    /**
-     *
-     * Prints file on the console.
-     *
-     */
-    private static void outputFile(final Class testClass, final String file) throws IOException {
-        try (final InputStream is = open(testClass, file);
-                final BufferedReader in1 = new BufferedReader(new InputStreamReader(is))) {
-
-            String s1;
-            int lineCounter = 0;
-            System.out.println("--------------------------------");
-            System.out.println("Contents of " + file + ":");
-
-            while ((s1 = in1.readLine()) != null) {
-                lineCounter++;
-                System.out.print(lineCounter);
-
-                if (lineCounter < 10) {
-                    System.out.print("   : ");
-                } else if (lineCounter < 100) {
-                    System.out.print("  : ");
-                } else if (lineCounter < 1000) {
-                    System.out.print(" : ");
-                } else {
-                    System.out.print(": ");
-                }
-
-                System.out.println(s1);
-            }
         }
     }
 }

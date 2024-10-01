@@ -16,20 +16,19 @@
  */
 package org.apache.log4j.util;
 
-import org.apache.oro.text.perl.Perl5Util;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class LineNumberFilter implements Filter {
 
-    Perl5Util util = new Perl5Util();
+    private static final Pattern LINE_NUMBER_PATTERN = Pattern.compile(":\\d+\\)");
 
     @Override
     public String filter(final String in) {
-        if (util.match("/\\(.*:\\d{1,4}\\)/", in)) {
-            return util.substitute("s/:\\d{1,4}\\)/:XXX)/", in);
+        Matcher matcher = LINE_NUMBER_PATTERN.matcher(in);
+        if (matcher.find()) {
+            return matcher.replaceFirst(":XXX");
         }
-        if (in.indexOf(", Compiled Code") >= 0) {
-            return util.substitute("s/, Compiled Code/:XXX/", in);
-        }
-        return in;
+        return in.replaceFirst(", Compiled Code", ":XXX");
     }
 }

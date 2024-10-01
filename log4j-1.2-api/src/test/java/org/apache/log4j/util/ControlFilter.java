@@ -17,11 +17,8 @@
 package org.apache.log4j.util;
 
 import java.util.Arrays;
-import org.apache.oro.text.perl.Perl5Util;
 
 public class ControlFilter implements Filter {
-
-    Perl5Util util = new Perl5Util();
 
     String[] allowedPatterns;
 
@@ -31,11 +28,8 @@ public class ControlFilter implements Filter {
 
     @Override
     public String filter(final String in) throws UnexpectedFormatException {
-        final int len = allowedPatterns.length;
-        for (int i = 0; i < len; i++) {
-            // System.out.println("["+allowedPatterns[i]+"]");
-            if (util.match("/" + allowedPatterns[i] + "/", in)) {
-                // System.out.println("["+in+"] matched ["+allowedPatterns[i]);
+        for (String allowedPattern : allowedPatterns) {
+            if (in.matches(allowedPattern)) {
                 return in;
             }
         }
