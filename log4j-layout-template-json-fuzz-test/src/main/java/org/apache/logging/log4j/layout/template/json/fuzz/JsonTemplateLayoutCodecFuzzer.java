@@ -36,7 +36,7 @@ public final class JsonTemplateLayoutCodecFuzzer {
     // 2. Short enough to avoid stack overflows, which are interpreted as fuzzer failures, though they are not.
     //    Consider a JSON document containing more than 1024 nested objects.
     //    This triggers a stack overflow, which is expected, hence nothing to signal.
-    private static final int MAX_STRING_LENGTH = 1024;
+    public static final int MAX_STRING_LENGTH = 512;
 
     public static void fuzzerTestOneInput(final FuzzedDataProvider dataProvider) {
         final boolean encodeFirst = dataProvider.consumeBoolean();
