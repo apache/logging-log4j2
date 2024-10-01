@@ -32,6 +32,7 @@ import org.apache.logging.log4j.util.LoaderUtil;
  * {@link ThrowableProxyHelper} provides utilities required to initialize a new {@link ThrowableProxy}
  * instance.
  */
+@Deprecated
 final class ThrowableProxyHelper {
 
     private ThrowableProxyHelper() {

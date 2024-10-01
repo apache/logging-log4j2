@@ -24,6 +24,7 @@ import org.apache.logging.log4j.util.Strings;
  * {@link ThrowableProxyRenderer} is an internal utility providing the code to render a {@link ThrowableProxy}
  * to a {@link StringBuilder}.
  */
+@Deprecated
 final class ThrowableProxyRenderer {
 
     private static final String TAB = "\t";

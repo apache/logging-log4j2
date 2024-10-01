@@ -24,6 +24,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -79,7 +80,10 @@ public class CatchingTagTest {
         final List<String> events = listApp.getMessages();
         try {
             assertEquals("Incorrect number of messages.", 1, events.size());
-            assertEquals("Incorrect message.", "o.a.l.l.t.CatchingTagTest " + expected, events.get(0));
+            assertEquals(
+                    "Incorrect message.",
+                    "o.a.l.l.t.CatchingTagTest " + expected + Strings.LINE_SEPARATOR,
+                    events.get(0));
         } finally {
             listApp.clear();
         }
