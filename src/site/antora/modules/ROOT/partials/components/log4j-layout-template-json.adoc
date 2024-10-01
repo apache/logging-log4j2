@@ -25,7 +25,7 @@ We assume you use xref:components.adoc#log4j-bom[`log4j-bom`] for dependency man
 ----
 <dependency>
   <groupId>org.apache.logging.log4j</groupId>
-  <artifactId>log4j-json-template-layout</artifactId>
+  <artifactId>log4j-layout-template-json</artifactId>
   <scope>runtime</scope>
 </dependency>
 ----
@@ -36,6 +36,6 @@ We assume you use xref:components.adoc#log4j-bom[`log4j-bom`] for dependency man
 +
 [source,groovy,subs="+attributes"]
 ----
-runtimeOnly 'org.apache.logging.log4j:log4j-json-template-layout'
+runtimeOnly 'org.apache.logging.log4j:log4j-layout-template-json'
 ----
 ====
