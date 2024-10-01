@@ -16131,10 +16131,10 @@ Supports Lookup expressions.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
 </div>
 <div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
 </div></div></td>
 </tr>
 <tr>
@@ -17428,10 +17428,10 @@ Supports Lookup expressions.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
 </div>
 <div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
 </div></div></td>
 </tr>
 <tr>
@@ -17627,10 +17627,10 @@ Supports Lookup expressions.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
 </div>
 <div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
 </div></div></td>
 </tr>
 <tr>
@@ -19989,10 +19989,7 @@ Each of which is responsible for converting an object in a converter specific ma
 </dl>
 </div>
 <div class="paragraph">
-<p>Outputs the Throwable portion of the LoggingEvent as a full stack trace unless this converter&#8217;s option is 'short', where it just outputs the first line of the trace, or if the number of lines to print is explicitly specified.</p>
-</div>
-<div class="paragraph">
-<p>The extended stack trace will also include the location of where the class was loaded from and the version of the jar if available.</p>
+<p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-ThrowablePatternConverter">ThrowablePatternConverter</a> variant where the rendered <code>java.lang.StackTraceElement</code>s are enriched with the enclosing JAR file and its version information, if available.</p>
 </div>
 <div class="sect4">
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-ExtendedThrowablePatternConverter_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-ExtendedThrowablePatternConverter_XML-snippet"></a>XML snippet</h5>
@@ -21127,10 +21124,7 @@ toString(), or to output the value of a specific key within the property bundle 
 </dl>
 </div>
 <div class="paragraph">
-<p>Outputs the Throwable portion of the LoggingEvent as a full stack trace unless this converter&#8217;s option is 'short', where it just outputs the first line of the trace, or if the number of lines to print is explicitly specified.</p>
-</div>
-<div class="paragraph">
-<p>The extended stack trace will also include the location of where the class was loaded from and the version of the jar if available.</p>
+<p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-ThrowablePatternConverter">ThrowablePatternConverter</a> variant where the stack trace causal chain is rendered in reverse order.</p>
 </div>
 <div class="sect4">
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-RootThrowablePatternConverter_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-RootThrowablePatternConverter_XML-snippet"></a>XML snippet</h5>
@@ -21292,7 +21286,7 @@ toString(), or to output the value of a specific key within the property bundle 
 </dl>
 </div>
 <div class="paragraph">
-<p>Outputs the Throwable portion of the LoggingEvent as a full stack trace unless this converter&#8217;s option is 'short', where it just outputs the first line of the trace, or if the number of lines to print is explicitly specified.</p>
+<p>Outputs certain information extracted from the <code>java.lang.Throwable</code> associated with a <code>org.apache.logging.log4j.core.LogEvent</code>.</p>
 </div>
 <div class="sect4">
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-ThrowablePatternConverter_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-ThrowablePatternConverter_XML-snippet"></a>XML snippet</h5>

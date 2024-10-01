@@ -212,9 +212,7 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first even-row-color"><a href="class-use/ExtendedThrowablePatternConverter.html#org.apache.logging.log4j.core.pattern">ExtendedThrowablePatternConverter</a></div>
 <div class="col-last even-row-color">
-<div class="block">Outputs the Throwable portion of the LoggingEvent as a full stack trace
- unless this converter's option is 'short', where it just outputs the first line of the trace, or if
- the number of lines to print is explicitly specified.</div>
+<div class="block"><a href="ThrowablePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern"><code>ThrowablePatternConverter</code></a> variant where the rendered <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/StackTraceElement.html" title="class or interface in java.lang" class="external-link"><code>StackTraceElement</code></a>s are enriched with the enclosing JAR file and its version information, if available.</div>
 </div>
 <div class="col-first odd-row-color"><a href="class-use/FileLocationPatternConverter.html#org.apache.logging.log4j.core.pattern">FileLocationPatternConverter</a></div>
 <div class="col-last odd-row-color">
@@ -349,9 +347,7 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first odd-row-color"><a href="class-use/RootThrowablePatternConverter.html#org.apache.logging.log4j.core.pattern">RootThrowablePatternConverter</a></div>
 <div class="col-last odd-row-color">
-<div class="block">Outputs the Throwable portion of the LoggingEvent as a full stack trace
- unless this converter's option is 'short', where it just outputs the first line of the trace, or if
- the number of lines to print is explicitly specified.</div>
+<div class="block"><a href="ThrowablePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern"><code>ThrowablePatternConverter</code></a> variant where the stack trace causal chain is rendered in reverse order.</div>
 </div>
 <div class="col-first even-row-color"><a href="class-use/SequenceNumberPatternConverter.html#org.apache.logging.log4j.core.pattern">SequenceNumberPatternConverter</a></div>
 <div class="col-last even-row-color">
@@ -379,9 +375,7 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first even-row-color"><a href="class-use/ThrowablePatternConverter.html#org.apache.logging.log4j.core.pattern">ThrowablePatternConverter</a></div>
 <div class="col-last even-row-color">
-<div class="block">Outputs the Throwable portion of the LoggingEvent as a full stack trace
- unless this converter's option is 'short', where it just outputs the first line of the trace, or if
- the number of lines to print is explicitly specified.</div>
+<div class="block">Outputs certain information extracted from the <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link"><code>Throwable</code></a> associated with a <a href="../LogEvent.html" title="interface in org.apache.logging.log4j.core"><code>LogEvent</code></a>.</div>
 </div>
 <div class="col-first odd-row-color"><a href="class-use/UuidPatternConverter.html#org.apache.logging.log4j.core.pattern">UuidPatternConverter</a></div>
 <div class="col-last odd-row-color">

@@ -79,8 +79,14 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">
 <div class="deprecation-comment">since 2.24.0. A <a href="https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html" title="class or interface in java.time" class="external-link"><code>Duration</code></a> converter will be available in 3.0.0.</div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/layout/SerializedLayout.html" title="class in org.apache.logging.log4j.core.layout">org.apache.logging.log4j.core.layout.SerializedLayout</a></div>
-<div class="col-last odd-row-color">
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/impl/ExtendedClassInfo.html" title="class in org.apache.logging.log4j.core.impl">org.apache.logging.log4j.core.impl.ExtendedClassInfo</a></div>
+<div class="col-last odd-row-color"></div>
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/impl/ExtendedStackTraceElement.html" title="class in org.apache.logging.log4j.core.impl">org.apache.logging.log4j.core.impl.ExtendedStackTraceElement</a></div>
+<div class="col-last even-row-color"></div>
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/impl/ThrowableProxy.html" title="class in org.apache.logging.log4j.core.impl">org.apache.logging.log4j.core.impl.ThrowableProxy</a></div>
+<div class="col-last odd-row-color"></div>
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/layout/SerializedLayout.html" title="class in org.apache.logging.log4j.core.layout">org.apache.logging.log4j.core.layout.SerializedLayout</a></div>
+<div class="col-last even-row-color">
 <div class="deprecation-comment">Java Serialization has inherent security weaknesses, see https://www.owasp.org/index.php/Deserialization_of_untrusted_data .
  Using this layout is no longer recommended. An alternative layout containing the same information is
  <a href="org/apache/logging/log4j/core/layout/JsonLayout.html" title="class in org.apache.logging.log4j.core.layout"><code>JsonLayout</code></a> when configured with properties="true". Deprecated since 2.9.</div>
@@ -113,17 +119,21 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/layout/Rfc5424Layout.html#PARAM_VALUE_ESCAPE_PATTERN">org.apache.logging.log4j.core.layout.Rfc5424Layout.PARAM_VALUE_ESCAPE_PATTERN</a></div>
 <div class="col-last even-row-color"></div>
-<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/util/Constants.html#FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS">org.apache.logging.log4j.core.util.Constants.FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS</a></div>
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html#formatters">org.apache.logging.log4j.core.pattern.ThrowablePatternConverter.formatters</a></div>
 <div class="col-last odd-row-color">
+<div class="deprecation-comment">Kept for binary backward compatibility.</div>
+</div>
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/util/Constants.html#FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS">org.apache.logging.log4j.core.util.Constants.FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS</a></div>
+<div class="col-last even-row-color">
 <div class="deprecation-comment">no longer used, lookups are only used when <code>%m{lookups}</code> is specified</div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/util/Constants.html#LOG4J_DEFAULT_STATUS_LEVEL">org.apache.logging.log4j.core.util.Constants.LOG4J_DEFAULT_STATUS_LEVEL</a></div>
-<div class="col-last even-row-color">
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/util/Constants.html#LOG4J_DEFAULT_STATUS_LEVEL">org.apache.logging.log4j.core.util.Constants.LOG4J_DEFAULT_STATUS_LEVEL</a></div>
+<div class="col-last odd-row-color">
 <div class="deprecation-comment">since 2.24.0 use
  <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/status/StatusLogger.html#DEFAULT_STATUS_LISTENER_LEVEL" title="class or interface in org.apache.logging.log4j.status" class="external-link"><code>StatusLogger.DEFAULT_STATUS_LISTENER_LEVEL</code></a> instead.</div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/util/NullOutputStream.html#NULL_OUTPUT_STREAM">org.apache.logging.log4j.core.util.NullOutputStream.NULL_OUTPUT_STREAM</a></div>
-<div class="col-last odd-row-color">
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/util/NullOutputStream.html#NULL_OUTPUT_STREAM">org.apache.logging.log4j.core.util.NullOutputStream.NULL_OUTPUT_STREAM</a></div>
+<div class="col-last even-row-color">
 <div class="deprecation-comment">Deprecated in 2.7: use <a href="org/apache/logging/log4j/core/util/NullOutputStream.html#getInstance()"><code>NullOutputStream.getInstance()</code></a>.</div>
 </div>
 </div>
@@ -560,30 +570,34 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color">
 <div class="deprecation-comment">Use <a href="org/apache/logging/log4j/core/net/TcpSocketManager.html#getSocketManager(java.lang.String,int,int,int,boolean,org.apache.logging.log4j.core.Layout,int,org.apache.logging.log4j.core.net.SocketOptions)"><code>TcpSocketManager.getSocketManager(String, int, int, int, boolean, Layout, int, SocketOptions)</code></a>.</div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/util/datetime/FastDatePrinter.html#applyRules(java.util.Calendar,java.lang.StringBuffer)">org.apache.logging.log4j.core.util.datetime.FastDatePrinter.applyRules<wbr>(Calendar, StringBuffer)</a></div>
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html#getSuffix(org.apache.logging.log4j.core.LogEvent)">org.apache.logging.log4j.core.pattern.ThrowablePatternConverter.getSuffix<wbr>(LogEvent)</a></div>
 <div class="col-last even-row-color">
+<div class="deprecation-comment">Planned to be removed without a replacement</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/util/datetime/FastDatePrinter.html#applyRules(java.util.Calendar,java.lang.StringBuffer)">org.apache.logging.log4j.core.util.datetime.FastDatePrinter.applyRules<wbr>(Calendar, StringBuffer)</a></div>
+<div class="col-last odd-row-color">
 <div class="deprecation-comment">use <a href="org/apache/logging/log4j/core/util/datetime/FastDatePrinter.html#format(java.util.Calendar)"><code>FastDatePrinter.format(Calendar)</code></a> or <a href="org/apache/logging/log4j/core/util/datetime/FastDatePrinter.html#format(java.util.Calendar,B)"><code>FastDatePrinter.format(Calendar, Appendable)</code></a></div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/util/datetime/FastDatePrinter.html#format(java.lang.Object,java.lang.StringBuilder,java.text.FieldPosition)">org.apache.logging.log4j.core.util.datetime.FastDatePrinter.format<wbr>(Object, StringBuilder, FieldPosition)</a></div>
-<div class="col-last odd-row-color">
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/util/datetime/FastDatePrinter.html#format(java.lang.Object,java.lang.StringBuilder,java.text.FieldPosition)">org.apache.logging.log4j.core.util.datetime.FastDatePrinter.format<wbr>(Object, StringBuilder, FieldPosition)</a></div>
+<div class="col-last even-row-color">
 <div class="deprecation-comment">Use {<a href="org/apache/logging/log4j/core/util/datetime/FastDatePrinter.html#format(java.util.Date)"><code>FastDatePrinter.format(Date)</code></a>, {<a href="org/apache/logging/log4j/core/util/datetime/FastDatePrinter.html#format(java.util.Calendar)"><code>FastDatePrinter.format(Calendar)</code></a>, {<a href="org/apache/logging/log4j/core/util/datetime/FastDatePrinter.html#format(long)"><code>FastDatePrinter.format(long)</code></a>, or {<code>FastDatePrinter.format(Object)</code></div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/util/NameUtil.html#md5(java.lang.String)">org.apache.logging.log4j.core.util.NameUtil.md5<wbr>(String)</a></div>
-<div class="col-last even-row-color"></div>
-<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/util/StringEncoder.html#encodeIsoChars(java.lang.CharSequence,int,byte%5B%5D,int,int)">org.apache.logging.log4j.core.util.StringEncoder.encodeIsoChars<wbr>(CharSequence, int, byte[], int, int)</a></div>
-<div class="col-last odd-row-color">
-<div class="deprecation-comment">No longer necessary given better performance in Java 8</div>
-</div>
-<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/util/StringEncoder.html#encodeSingleByteChars(java.lang.CharSequence)">org.apache.logging.log4j.core.util.StringEncoder.encodeSingleByteChars<wbr>(CharSequence)</a></div>
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/util/NameUtil.html#md5(java.lang.String)">org.apache.logging.log4j.core.util.NameUtil.md5<wbr>(String)</a></div>
+<div class="col-last odd-row-color"></div>
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/util/StringEncoder.html#encodeIsoChars(java.lang.CharSequence,int,byte%5B%5D,int,int)">org.apache.logging.log4j.core.util.StringEncoder.encodeIsoChars<wbr>(CharSequence, int, byte[], int, int)</a></div>
 <div class="col-last even-row-color">
 <div class="deprecation-comment">No longer necessary given better performance in Java 8</div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/util/StringEncoder.html#encodeString(java.lang.CharSequence,int,int,byte%5B%5D)">org.apache.logging.log4j.core.util.StringEncoder.encodeString<wbr>(CharSequence, int, int, byte[])</a></div>
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/util/StringEncoder.html#encodeSingleByteChars(java.lang.CharSequence)">org.apache.logging.log4j.core.util.StringEncoder.encodeSingleByteChars<wbr>(CharSequence)</a></div>
 <div class="col-last odd-row-color">
 <div class="deprecation-comment">No longer necessary given better performance in Java 8</div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/util/WatchManager.html#getWatchers()">org.apache.logging.log4j.core.util.WatchManager.getWatchers()</a></div>
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/util/StringEncoder.html#encodeString(java.lang.CharSequence,int,int,byte%5B%5D)">org.apache.logging.log4j.core.util.StringEncoder.encodeString<wbr>(CharSequence, int, int, byte[])</a></div>
 <div class="col-last even-row-color">
+<div class="deprecation-comment">No longer necessary given better performance in Java 8</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/util/WatchManager.html#getWatchers()">org.apache.logging.log4j.core.util.WatchManager.getWatchers()</a></div>
+<div class="col-last odd-row-color">
 <div class="deprecation-comment">use getConfigurationWatchers.</div>
 </div>
 </div>
@@ -766,10 +780,14 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String%5B%5D)">org.apache.logging.log4j.core.pattern.ThrowablePatternConverter<wbr>(String, String, String[])</a></div>
 <div class="col-last odd-row-color">
-<div class="deprecation-comment">Use ThrowablePatternConverter(String name, String stule, String[] options, Configuration config)</div>
+<div class="deprecation-comment">Use <code>ThrowablePatternConverter(String, String, String[], Configuration, Function)</code> instead.</div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/util/Source.html#%3Cinit%3E(java.net.URI,long)">org.apache.logging.log4j.core.util.Source<wbr>(URI, long)</a></div>
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String%5B%5D,org.apache.logging.log4j.core.config.Configuration)">org.apache.logging.log4j.core.pattern.ThrowablePatternConverter<wbr>(String, String, String[], Configuration)</a></div>
 <div class="col-last even-row-color">
+<div class="deprecation-comment">Use <code>ThrowablePatternConverter(String, String, String[], Configuration, Function)</code> instead.</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/util/Source.html#%3Cinit%3E(java.net.URI,long)">org.apache.logging.log4j.core.util.Source<wbr>(URI, long)</a></div>
+<div class="col-last odd-row-color">
 <div class="deprecation-comment">Use <a href="org/apache/logging/log4j/core/util/Source.html#%3Cinit%3E(java.net.URI)"><code>Source(URI)</code></a>.</div>
 </div>
 </div>

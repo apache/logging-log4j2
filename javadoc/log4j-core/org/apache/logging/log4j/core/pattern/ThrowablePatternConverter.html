@@ -89,13 +89,12 @@ loadScripts(document, 'script');</script>
 <dd><code><a href="ExtendedThrowablePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">ExtendedThrowablePatternConverter</a></code>, <code><a href="RootThrowablePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">RootThrowablePatternConverter</a></code></dd>
 </dl>
 <hr>
-<div class="type-signature"><span class="annotations"><a href="../config/plugins/Plugin.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@Plugin</a>(<a href="../config/plugins/Plugin.html#name()">name</a>="ThrowablePatternConverter",
+<div class="type-signature"><span class="annotations">@NullMarked
+<a href="../config/plugins/Plugin.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@Plugin</a>(<a href="../config/plugins/Plugin.html#name()">name</a>="ThrowablePatternConverter",
         <a href="../config/plugins/Plugin.html#category()">category</a>="Converter")
 </span><span class="modifiers">public class </span><span class="element-name type-name-label">ThrowablePatternConverter</span>
 <span class="extends-implements">extends <a href="LogEventPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">LogEventPatternConverter</a></span></div>
-<div class="block">Outputs the Throwable portion of the LoggingEvent as a full stack trace
- unless this converter's option is 'short', where it just outputs the first line of the trace, or if
- the number of lines to print is explicitly specified.</div>
+<div class="block">Outputs certain information extracted from the <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link"><code>Throwable</code></a> associated with a <a href="../LogEvent.html" title="interface in org.apache.logging.log4j.core"><code>LogEvent</code></a>.</div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -111,13 +110,13 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>protected final <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="PatternFormatter.html" title="class in org.apache.logging.log4j.core.pattern">PatternFormatter</a>&gt;</code></div>
 <div class="col-second even-row-color"><code><a href="#formatters" class="member-name-link">formatters</a></code></div>
 <div class="col-last even-row-color">
-<div class="block">Lists <a href="PatternFormatter.html" title="class in org.apache.logging.log4j.core.pattern"><code>PatternFormatter</code></a>s for the suffix attribute.</div>
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Kept for binary backward compatibility.</div>
+</div>
 </div>
 <div class="col-first odd-row-color"><code>protected final <a href="../impl/ThrowableFormatOptions.html" title="class in org.apache.logging.log4j.core.impl">ThrowableFormatOptions</a></code></div>
 <div class="col-second odd-row-color"><code><a href="#options" class="member-name-link">options</a></code></div>
-<div class="col-last odd-row-color">
-<div class="block">Options.</div>
-</div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 <div class="inherited-list">
 <h3 id="fields-inherited-from-class-org.apache.logging.log4j.core.pattern.AbstractPatternConverter">Fields inherited from class&nbsp;org.apache.logging.log4j.core.pattern.<a href="AbstractPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">AbstractPatternConverter</a></h3>
@@ -139,19 +138,21 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>protected </code></div>
 <div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String%5B%5D)" class="member-name-link">ThrowablePatternConverter</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;style,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;options)</code></div>
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;options)</code></div>
 <div class="col-last even-row-color">
 <div class="block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use ThrowablePatternConverter(String name, String stule, String[] options, Configuration config)</div>
+<div class="deprecation-comment">Use <code>ThrowablePatternConverter(String, String, String[], Configuration, Function)</code> instead.</div>
 </div>
 </div>
 <div class="col-first odd-row-color"><code>protected </code></div>
 <div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String%5B%5D,org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">ThrowablePatternConverter</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;style,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;options,
- <a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config)</code></div>
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;options,
+ @Nullable <a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config)</code></div>
 <div class="col-last odd-row-color">
-<div class="block">Constructor.</div>
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use <code>ThrowablePatternConverter(String, String, String[], Configuration, Function)</code> instead.</div>
+</div>
 </div>
 </div>
 </section>
@@ -161,7 +162,7 @@ loadScripts(document, 'script');</script>
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button><button id="method-summary-table-tab6" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab6', 3)" class="table-tab">Deprecated Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
@@ -176,19 +177,23 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../impl/ThrowableFormatOptions.html" title="class in org.apache.logging.log4j.core.impl">ThrowableFormatOptions</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getOptions()" class="member-name-link">getOptions</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getSuffix(org.apache.logging.log4j.core.LogEvent)" class="member-name-link">getSuffix</a><wbr>(<a href="../LogEvent.html" title="interface in org.apache.logging.log4j.core">LogEvent</a>&nbsp;event)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>protected <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getSuffix(org.apache.logging.log4j.core.LogEvent)" class="member-name-link">getSuffix</a><wbr>(<a href="../LogEvent.html" title="interface in org.apache.logging.log4j.core">LogEvent</a>&nbsp;logEvent)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Planned to be removed without a replacement</div>
+</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#handlesThrowable()" class="member-name-link">handlesThrowable</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">This converter obviously handles throwables.</div>
+<div class="block">Indicates this converter handles <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link"><code>Throwable</code></a>s.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ThrowablePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">ThrowablePatternConverter</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#newInstance(org.apache.logging.log4j.core.config.Configuration,java.lang.String%5B%5D)" class="member-name-link">newInstance</a><wbr>(<a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;options)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#newInstance(org.apache.logging.log4j.core.config.Configuration,java.lang.String%5B%5D)" class="member-name-link">newInstance</a><wbr>(@Nullable <a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;options)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Gets an instance of the class.</div>
+<div class="block">Creates an instance of the class.</div>
 </div>
 </div>
 </div>
@@ -216,15 +221,18 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="formatters">
 <h3>formatters</h3>
-<div class="member-signature"><span class="modifiers">protected final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="PatternFormatter.html" title="class in org.apache.logging.log4j.core.pattern">PatternFormatter</a>&gt;</span>&nbsp;<span class="element-name">formatters</span></div>
-<div class="block">Lists <a href="PatternFormatter.html" title="class in org.apache.logging.log4j.core.pattern"><code>PatternFormatter</code></a>s for the suffix attribute.</div>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">protected final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="PatternFormatter.html" title="class in org.apache.logging.log4j.core.pattern">PatternFormatter</a>&gt;</span>&nbsp;<span class="element-name">formatters</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Kept for binary backward compatibility.</div>
+</div>
+<div class="block">Returns the list of formatters used to render the suffix.</div>
 </section>
 </li>
 <li>
 <section class="detail" id="options">
 <h3>options</h3>
 <div class="member-signature"><span class="modifiers">protected final</span>&nbsp;<span class="return-type"><a href="../impl/ThrowableFormatOptions.html" title="class in org.apache.logging.log4j.core.impl">ThrowableFormatOptions</a></span>&nbsp;<span class="element-name">options</span></div>
-<div class="block">Options.</div>
 </section>
 </li>
 </ul>
@@ -241,34 +249,23 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
 </span><span class="modifiers">protected</span>&nbsp;<span class="element-name">ThrowablePatternConverter</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;style,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;options)</span></div>
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;options)</span></div>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use ThrowablePatternConverter(String name, String stule, String[] options, Configuration config)</div>
+<div class="deprecation-comment">Use <code>ThrowablePatternConverter(String, String, String[], Configuration, Function)</code> instead.</div>
 </div>
-<div class="block">Constructor.</div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>name</code> - Name of converter.</dd>
-<dd><code>style</code> - CSS style for output.</dd>
-<dd><code>options</code> - options, may be null.</dd>
-</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="&lt;init&gt;(java.lang.String,java.lang.String,java.lang.String[],org.apache.logging.log4j.core.config.Configuration)">
 <h3>ThrowablePatternConverter</h3>
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="element-name">ThrowablePatternConverter</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">protected</span>&nbsp;<span class="element-name">ThrowablePatternConverter</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;style,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;options,
- <a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config)</span></div>
-<div class="block">Constructor.</div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>name</code> - name of converter</dd>
-<dd><code>style</code> - CSS style for output</dd>
-<dd><code>options</code> - options, may be null.</dd>
-<dd><code>config</code> - the Configuration or <code>null</code></dd>
-</dl>
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;options,
+ @Nullable <a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use <code>ThrowablePatternConverter(String, String, String[], Configuration, Function)</code> instead.</div>
+</div>
 </section>
 </li>
 </ul>
@@ -282,16 +279,15 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="newInstance(org.apache.logging.log4j.core.config.Configuration,java.lang.String[])">
 <h3>newInstance</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ThrowablePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">ThrowablePatternConverter</a></span>&nbsp;<span class="element-name">newInstance</span><wbr><span class="parameters">(<a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;options)</span></div>
-<div class="block">Gets an instance of the class.</div>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ThrowablePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">ThrowablePatternConverter</a></span>&nbsp;<span class="element-name">newInstance</span><wbr><span class="parameters">(@Nullable <a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;options)</span></div>
+<div class="block">Creates an instance of the class.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>config</code> - The Configuration or <code>null</code>.</dd>
-<dd><code>options</code> - pattern options, may be null.  If first element is "short",
-                only the first line of the throwable will be formatted.</dd>
+<dd><code>config</code> - a configuration</dd>
+<dd><code>options</code> - the pattern options</dd>
 <dt>Returns:</dt>
-<dd>instance of class.</dd>
+<dd>a new instance</dd>
 </dl>
 </section>
 </li>
@@ -314,25 +310,36 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="handlesThrowable()">
 <h3>handlesThrowable</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">handlesThrowable</span>()</div>
-<div class="block">This converter obviously handles throwables.</div>
+<div class="block">Indicates this converter handles <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link"><code>Throwable</code></a>s.</div>
 <dl class="notes">
 <dt>Overrides:</dt>
 <dd><code><a href="LogEventPatternConverter.html#handlesThrowable()">handlesThrowable</a></code>&nbsp;in class&nbsp;<code><a href="LogEventPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">LogEventPatternConverter</a></code></dd>
 <dt>Returns:</dt>
-<dd>true.</dd>
+<dd><code>true</code></dd>
 </dl>
-</section>
-</li>
-<li>
-<section class="detail" id="getSuffix(org.apache.logging.log4j.core.LogEvent)">
-<h3>getSuffix</h3>
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getSuffix</span><wbr><span class="parameters">(<a href="../LogEvent.html" title="interface in org.apache.logging.log4j.core">LogEvent</a>&nbsp;event)</span></div>
 </section>
 </li>
 <li>
 <section class="detail" id="getOptions()">
 <h3>getOptions</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../impl/ThrowableFormatOptions.html" title="class in org.apache.logging.log4j.core.impl">ThrowableFormatOptions</a></span>&nbsp;<span class="element-name">getOptions</span>()</div>
+</section>
+</li>
+<li>
+<section class="detail" id="getSuffix(org.apache.logging.log4j.core.LogEvent)">
+<h3>getSuffix</h3>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getSuffix</span><wbr><span class="parameters">(<a href="../LogEvent.html" title="interface in org.apache.logging.log4j.core">LogEvent</a>&nbsp;logEvent)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Planned to be removed without a replacement</div>
+</div>
+<div class="block">Returns the formatted suffix pattern.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>logEvent</code> - the log event to use while formatting the suffix pattern</dd>
+<dt>Returns:</dt>
+<dd>the formatted suffix</dd>
+</dl>
 </section>
 </li>
 </ul>

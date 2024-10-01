@@ -985,22 +985,16 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/util/ExecutorServices.html" title="class in org.apache.logging.log4j.core.util">ExecutorServices</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
 <div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/impl/ExtendedClassInfo.html" title="class in org.apache.logging.log4j.core.impl">ExtendedClassInfo</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
-<div class="block">Class and package data used with a <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/StackTraceElement.html" title="class or interface in java.lang" class="external-link"><code>StackTraceElement</code></a> in a <a href="org/apache/logging/log4j/core/impl/ExtendedStackTraceElement.html" title="class in org.apache.logging.log4j.core.impl"><code>ExtendedStackTraceElement</code></a>.</div>
-</div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">Deprecated.</div>
 <div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/tools/ExtendedLoggerGenerator.html" title="class in org.apache.logging.log4j.core.tools">ExtendedLoggerGenerator</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Wrapper around <a href="org/apache/logging/log4j/core/tools/Generate.ExtendedLogger.html" title="class in org.apache.logging.log4j.core.tools"><code>Generate.ExtendedLogger</code></a>.</div>
 </div>
 <div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/impl/ExtendedStackTraceElement.html" title="class in org.apache.logging.log4j.core.impl">ExtendedStackTraceElement</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
-<div class="block">Wraps and extends the concept of the JRE's final class <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/StackTraceElement.html" title="class or interface in java.lang" class="external-link"><code>StackTraceElement</code></a> by adding more location information.</div>
-</div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">Deprecated.</div>
 <div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/pattern/ExtendedThrowablePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">ExtendedThrowablePatternConverter</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">
-<div class="block">Outputs the Throwable portion of the LoggingEvent as a full stack trace
- unless this converter's option is 'short', where it just outputs the first line of the trace, or if
- the number of lines to print is explicitly specified.</div>
+<div class="block"><a href="org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern"><code>ThrowablePatternConverter</code></a> variant where the rendered <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/StackTraceElement.html" title="class or interface in java.lang" class="external-link"><code>StackTraceElement</code></a>s are enriched with the enclosing JAR file and its version information, if available.</div>
 </div>
 <div class="col-first odd-row-color all-classes-table all-classes-table-tab3"><a href="org/apache/logging/log4j/core/util/ExtensionLanguageMapping.html" title="enum in org.apache.logging.log4j.core.util">ExtensionLanguageMapping</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab3">&nbsp;</div>
@@ -2300,9 +2294,7 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/pattern/RootThrowablePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">RootThrowablePatternConverter</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
-<div class="block">Outputs the Throwable portion of the LoggingEvent as a full stack trace
- unless this converter's option is 'short', where it just outputs the first line of the trace, or if
- the number of lines to print is explicitly specified.</div>
+<div class="block"><a href="org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern"><code>ThrowablePatternConverter</code></a> variant where the stack trace causal chain is rendered in reverse order.</div>
 </div>
 <div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/appender/routing/Route.html" title="class in org.apache.logging.log4j.core.appender.routing">Route</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">
@@ -2672,14 +2664,10 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">ThrowablePatternConverter</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
-<div class="block">Outputs the Throwable portion of the LoggingEvent as a full stack trace
- unless this converter's option is 'short', where it just outputs the first line of the trace, or if
- the number of lines to print is explicitly specified.</div>
+<div class="block">Outputs certain information extracted from the <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link"><code>Throwable</code></a> associated with a <a href="org/apache/logging/log4j/core/LogEvent.html" title="interface in org.apache.logging.log4j.core"><code>LogEvent</code></a>.</div>
 </div>
 <div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/impl/ThrowableProxy.html" title="class in org.apache.logging.log4j.core.impl">ThrowableProxy</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
-<div class="block">Wraps a Throwable to add packaging information about each stack trace element.</div>
-</div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">Deprecated.</div>
 <div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/util/Throwables.html" title="class in org.apache.logging.log4j.core.util">Throwables</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Helps with Throwable objects.</div>

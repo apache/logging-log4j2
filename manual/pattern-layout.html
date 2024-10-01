@@ -1384,7 +1384,7 @@ equalsIgnoreCase{pattern}{test}{substitution}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>By default this will output the full trace as one would normally find with a call to <code>Throwable#printStackTrace()</code>.</p>
+<p>By default this will output the full stack trace as one would normally find with a call to <code>Throwable#printStackTrace()</code>.</p>
 </div>
 <div class="paragraph">
 <p>You can follow the throwable conversion word with an option in the form <code>%throwable{option}</code>.</p>
@@ -1396,13 +1396,13 @@ equalsIgnoreCase{pattern}{test}{substitution}</code></pre>
 <p><code>%throwable{short.className}</code> outputs the name of the class where the exception occurred.</p>
 </div>
 <div class="paragraph">
-<p><code>%throwable{short.methodName}</code> outputs the method name where the exception occurred.</p>
+<p><code>%throwable{short.methodName}</code> outputs the name of the method where the exception occurred.</p>
 </div>
 <div class="paragraph">
-<p><code>%throwable{short.fileName}</code> outputs the name of the class where the exception occurred.</p>
+<p><code>%throwable{short.fileName}</code> outputs the name of the file containing the class where the exception occurred.</p>
 </div>
 <div class="paragraph">
-<p><code>%throwable{short.lineNumber}</code> outputs the line number where the exception occurred.</p>
+<p><code>%throwable{short.lineNumber}</code> outputs the line number of the file containing the class where the exception occurred.</p>
 </div>
 <div class="paragraph">
 <p><code>%throwable{short.message}</code> outputs the message.</p>
@@ -1417,14 +1417,36 @@ equalsIgnoreCase{pattern}{test}{substitution}</code></pre>
 <p>Specifying <code>%throwable{none}</code> or <code>%throwable{0}</code> suppresses output of the exception.</p>
 </div>
 <div class="paragraph">
-<p>Use <code>{filters(packages)}</code> where <em>packages</em> is a list of package names to suppress matching stack frames from stack traces.</p>
+<p>Use <code>{filters(packages)}</code>, where <code>packages</code> is a list of package names, to suppress matching stack frames from stack traces.</p>
 </div>
 <div class="paragraph">
-<p>Use <code>{suffix(pattern)}</code> to add the output of <em>pattern</em> at the end of each stack frame.</p>
+<p>You can change the used line separator in multiple ways:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Use <code>{separator(separator)}</code> to set the separator string literal.
+It defaults to <code>System.lineSeparator()</code>.
+The contents of <code>separator</code> will be rendered verbatim without being subject to any processing.</p>
+</li>
+<li>
+<p><code>{suffix(pattern)}</code> is identical to <code>{separator(separator)}</code> with the exception that the provided <code>pattern</code> will be processed as a <a href="pattern-layout.html" class="xref page">Pattern Layout</a> conversion pattern before being rendered.
+Exception-rendering directives in the <code>pattern</code> (<code>%ex</code>, <code>%rEx</code>, etc.) will be discarded.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>Use a <code>{separator(&#8230;&#8203;)}</code> as the end-of-line string, e.g., <code>separator(\|)</code>.
-The default value is the <code>line.separator</code> system property, which is operating system dependent.</p>
+<p><code>{separator(&#8230;&#8203;)}</code> and <code>{suffix(pattern)}</code> get concatenated to produce <em>the effective line separator</em> as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">String effectiveLineSeparator(String separator, String suffix, LogEvent event) {
+    String formattedSuffix = format(suffix, event);
+    return isNotBlank(formattedSuffix)
+           ? (' ' + formattedSuffix + lineSeparator)
+           : lineSeparator;
+}</code></pre>
+</div>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -1444,7 +1466,7 @@ The default value is the <code>line.separator</code> system property, which is o
 <div class="sect3">
 <h4 id="converter-exception-extended"><a class="anchor" href="#converter-exception-extended"></a>Exception (Extended)</h4>
 <div class="paragraph">
-<p>The same as <a href="#converter-exception">the <code>%throwable</code> conversion</a>, but also includes class packaging information</p>
+<p>The same as <a href="#converter-exception">the <code>exception</code> converter</a>, but also includes class packaging information</p>
 </div>
 <div class="listingblock">
 <div class="title"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html"><code>ThrowablePatternConverter</code></a> specifier grammar</div>
@@ -2095,34 +2117,21 @@ For instance, <code>%replace{%logger %msg}{\.}{/}</code> will replace all dots i
 <div class="title"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/RootThrowablePatternConverter.html"><code>RootThrowablePatternConverter</code></a> specifier grammar</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">rEx|rException|rThrowable
-  {
-    ["none" | "short" | "full" | depth]
-    [,filters(package,package,...)]
-    [,separator(separator)]
+  { "none"
+  | "full"
+  | depth
+  | "short"
+  | "short.className"
+  | "short.fileName"
+  | "short.lineNumber"
+  | "short.methodName"
+  | "short.message"
+  | "short.localizedMessage"
   }
-  {ansi(
-    Key=Value,Value,...
-    Key=Value,Value,...
-    ...)
-  }
-  {suffix(pattern)}</code></pre>
+  {filters(package,package,...)}
+  {suffix(pattern)}
+  {separator(separator)}</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>The throwable conversion specifier can be followed by an option in the form <code>%rEx{short}</code>, which will only output the first line of the <code>Throwable</code>, or <code>%rEx{n}</code>, where the first <code>n</code> lines of the stack trace will be printed.</p>
-</div>
-<div class="paragraph">
-<p>Specifying <code>%rEx{none}</code> or <code>%rEx{0}</code> will suppress printing of the exception.</p>
-</div>
-<div class="paragraph">
-<p>Use <code>filters(packages)</code>, where <code>packages</code> is a list of package names to suppress matching stack frames from stack traces.</p>
-</div>
-<div class="paragraph">
-<p>Use a <code>separator</code> string to separate the lines of a stack trace, e.g., <code>separator(|)</code>.
-The default value is the <code>line.separator</code> system property, which is platform dependent.</p>
-</div>
-<div class="paragraph">
-<p>Use <code>rEx{suffix(pattern)}</code> to add the output of <code>pattern</code> to the output only when there is a <code>Throwable</code> to print.</p>
 </div>
 </div>
 <div class="sect3">

@@ -371,9 +371,22 @@
 </div>
 </div>
 <div class="sect2">
+<h3 id="release-notes-2-x-x-changed"><a class="anchor" href="#release-notes-2-x-x-changed"></a>Changed</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Consolidate exception rendering logic and improve circular reference support in Pattern Layout (<a href="https://github.com/apache/logging-log4j2/pull/2691">2691</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
 <h3 id="release-notes-2-x-x-deprecated"><a class="anchor" href="#release-notes-2-x-x-deprecated"></a>Deprecated</h3>
 <div class="ulist">
 <ul>
+<li>
+<p>Deprecate <code>ThrowableProxy</code> and all its usages (<a href="https://github.com/apache/logging-log4j2/pull/2691">2691</a>)</p>
+</li>
 <li>
 <p>Deprecate <code>AbstractLogger.checkMessageFactory()</code>, since all created <code>Logger`s are already `MessageFactory</code>-namespaced (<a href="https://github.com/apache/logging-log4j2/pull/2936">2936</a>)</p>
 </li>
@@ -386,6 +399,9 @@
 <ul>
 <li>
 <p>Switch MongoDB tests to use Docker. (<a href="https://github.com/apache/logging-log4j2/issues/2229">2229</a>)</p>
+</li>
+<li>
+<p>Fix certain exception rendering issues in Pattern Layout (<a href="https://issues.apache.org/jira/browse/LOG4J2-2170">LOG4J2-2170</a>, <a href="https://issues.apache.org/jira/browse/LOG4J2-3627">LOG4J2-3627</a>, <a href="https://github.com/apache/logging-log4j2/issues/1729">1729</a>, <a href="https://github.com/apache/logging-log4j2/pull/2691">2691</a>)</p>
 </li>
 <li>
 <p>Reload key &amp; trust stores while reconfiguring network appenders containing a TLS (formerly known as SSL) configuration (<a href="https://issues.apache.org/jira/browse/LOG4J2-2988">LOG4J2-2988</a>, <a href="https://github.com/apache/logging-log4j2/pull/2767">2767</a>)</p>
@@ -416,7 +432,7 @@
 <p>Update <code>ch.qos.logback:logback-core</code> to version <code>1.4.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/2975">2975</a>)</p>
 </li>
 <li>
-<p>Update <code>co.elastic.clients:elasticsearch-java</code> to version <code>8.15.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/2925">2925</a>)</p>
+<p>Update <code>co.elastic.clients:elasticsearch-java</code> to version <code>8.15.2</code> (<a href="https://github.com/apache/logging-log4j2/pull/3024">3024</a>)</p>
 </li>
 <li>
 <p>Update <code>com.fasterxml.jackson:jackson-bom</code> to version <code>2.18.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3027">3027</a>)</p>
@@ -435,6 +451,9 @@
 </li>
 <li>
 <p>Update <code>org.apache.commons:commons-csv</code> to version <code>1.12.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3014">3014</a>)</p>
+</li>
+<li>
+<p>Update <code>org.apache.groovy:groovy-bom</code> to version <code>4.0.23</code> (<a href="https://github.com/apache/logging-log4j2/pull/3000">3000</a>)</p>
 </li>
 <li>
 <p>Update <code>org.apache.logging:logging-parent</code> to version <code>11.3.0</code></p>
