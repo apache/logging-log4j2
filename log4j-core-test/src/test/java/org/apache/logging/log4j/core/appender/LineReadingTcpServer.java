@@ -23,6 +23,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -82,7 +83,8 @@ final class LineReadingTcpServer implements AutoCloseable {
     }
 
     private ServerSocket createServerSocket(final int port) throws IOException {
-        final ServerSocket serverSocket = serverSocketFactory.createServerSocket(port);
+        final ServerSocket serverSocket =
+                serverSocketFactory.createServerSocket(port, 1, InetAddress.getLoopbackAddress());
         serverSocket.setReuseAddress(true);
         serverSocket.setSoTimeout(0); // Zero indicates `accept()` will block indefinitely
         await("server socket binding")
