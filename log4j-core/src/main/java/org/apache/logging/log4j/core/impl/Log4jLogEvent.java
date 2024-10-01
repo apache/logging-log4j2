@@ -49,7 +49,6 @@ public class Log4jLogEvent implements LogEvent {
     private Message message;
     private final MutableInstant instant = new MutableInstant();
     private final Throwable thrown;
-    private ThrowableProxy thrownProxy;
     private final StringMap contextData;
     private final ThreadContext.ContextStack contextStack;
     private long threadId;
@@ -73,7 +72,6 @@ public class Log4jLogEvent implements LogEvent {
         private Message message;
         private Throwable thrown;
         private final MutableInstant instant = new MutableInstant();
-        private ThrowableProxy thrownProxy;
         private StringMap contextData;
         private ThreadContext.ContextStack contextStack = ThreadContext.getImmutableStack();
         private long threadId;
@@ -113,7 +111,6 @@ public class Log4jLogEvent implements LogEvent {
             if (other instanceof Log4jLogEvent) {
                 final Log4jLogEvent evt = (Log4jLogEvent) other;
                 this.contextData = evt.contextData;
-                this.thrownProxy = evt.thrownProxy;
                 this.source = evt.source;
                 this.threadId = evt.threadId;
                 this.threadName = evt.threadName;
@@ -129,7 +126,6 @@ public class Log4jLogEvent implements LogEvent {
                     }
                     this.contextData.putAll(other.getContextData());
                 }
-                this.thrownProxy = other.getThrownProxy();
                 this.source = other.getSource();
                 this.threadId = other.getThreadId();
                 this.threadName = other.getThreadName();
@@ -174,11 +170,6 @@ public class Log4jLogEvent implements LogEvent {
 
         public Builder setInstant(final Instant instant) {
             this.instant.initFrom(instant);
-            return this;
-        }
-
-        public Builder setThrownProxy(final ThrowableProxy thrownProxy) {
-            this.thrownProxy = thrownProxy;
             return this;
         }
 
@@ -253,7 +244,6 @@ public class Log4jLogEvent implements LogEvent {
                     level,
                     message,
                     thrown,
-                    thrownProxy,
                     contextData,
                     contextStack,
                     threadId,
@@ -293,7 +283,7 @@ public class Log4jLogEvent implements LogEvent {
     }
 
     public Log4jLogEvent() {
-        this(Strings.EMPTY, null, Strings.EMPTY, null, null, null, null, null, null, 0, null, 0, null, 0, 0, 0);
+        this(Strings.EMPTY, null, Strings.EMPTY, null, null, null, null, null, 0, null, 0, null, 0, 0, 0);
     }
 
     /**
@@ -304,7 +294,6 @@ public class Log4jLogEvent implements LogEvent {
      * @param level The logging Level.
      * @param message The Message.
      * @param thrown A Throwable or null.
-     * @param thrownProxy A ThrowableProxy or null.
      * @param contextData The key-value pairs from the context.
      * @param contextStack the nested diagnostic context.
      * @param threadId the thread ID
@@ -323,7 +312,6 @@ public class Log4jLogEvent implements LogEvent {
             final Level level,
             final Message message,
             final Throwable thrown,
-            final ThrowableProxy thrownProxy,
             final StringMap contextData,
             final ThreadContext.ContextStack contextStack,
             final long threadId,
@@ -339,7 +327,6 @@ public class Log4jLogEvent implements LogEvent {
         this.level = level == null ? Level.OFF : level; // LOG4J2-462, LOG4J2-465
         this.message = message;
         this.thrown = thrown;
-        this.thrownProxy = thrownProxy;
         this.contextData = contextData == null ? ContextDataFactory.createContextData() : contextData;
         this.contextStack = contextStack == null ? ThreadContext.EMPTY_STACK : contextStack;
         this.threadId = threadId;
@@ -454,18 +441,6 @@ public class Log4jLogEvent implements LogEvent {
     @Override
     public Throwable getThrown() {
         return thrown;
-    }
-
-    /**
-     * Returns the ThrowableProxy associated with the event, or null.
-     * @return The ThrowableProxy associated with the event.
-     */
-    @Override
-    public ThrowableProxy getThrownProxy() {
-        if (thrownProxy == null && thrown != null) {
-            thrownProxy = new ThrowableProxy(thrown);
-        }
-        return thrownProxy;
     }
 
     /**
@@ -617,9 +592,6 @@ public class Log4jLogEvent implements LogEvent {
         if (!Objects.equals(thrown, that.thrown)) {
             return false;
         }
-        if (!Objects.equals(thrownProxy, that.thrownProxy)) {
-            return false;
-        }
 
         return true;
     }
@@ -635,7 +607,6 @@ public class Log4jLogEvent implements LogEvent {
         result = 31 * result + instant.hashCode();
         result = 31 * result + (int) (nanoTime ^ (nanoTime >>> 32));
         result = 31 * result + (thrown != null ? thrown.hashCode() : 0);
-        result = 31 * result + (thrownProxy != null ? thrownProxy.hashCode() : 0);
         result = 31 * result + (contextData != null ? contextData.hashCode() : 0);
         result = 31 * result + (contextStack != null ? contextStack.hashCode() : 0);
         result = 31 * result + (int) (threadId ^ (threadId >>> 32));

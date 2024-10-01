@@ -62,7 +62,6 @@ public class MutableLogEvent implements ReusableLogEvent, ReusableMessage, Param
     private StringBuilder messageText;
     private Object[] parameters;
     private Throwable thrown;
-    private ThrowableProxy thrownProxy;
     private StringMap contextData = ContextDataFactory.createContextData();
     private Marker marker;
     private ThreadContext.ContextStack contextStack;
@@ -99,7 +98,6 @@ public class MutableLogEvent implements ReusableLogEvent, ReusableMessage, Param
         this.level = event.getLevel();
         this.loggerName = event.getLoggerName();
         this.thrown = event.getThrown();
-        this.thrownProxy = event.getThrownProxy();
 
         this.instant.initFrom(event.getInstant());
 
@@ -130,7 +128,6 @@ public class MutableLogEvent implements ReusableLogEvent, ReusableMessage, Param
         message = null;
         messageFormat = null;
         thrown = null;
-        thrownProxy = null;
         if (contextData != null) {
             if (contextData.isFrozen()) { // came from CopyOnWrite thread context
                 contextData = null;
@@ -352,18 +349,6 @@ public class MutableLogEvent implements ReusableLogEvent, ReusableMessage, Param
         this.instant.initFrom(instant);
     }
 
-    /**
-     * Returns the ThrowableProxy associated with the event, or null.
-     * @return The ThrowableProxy associated with the event.
-     */
-    @Override
-    public ThrowableProxy getThrownProxy() {
-        if (thrownProxy == null && thrown != null) {
-            thrownProxy = new ThrowableProxy(thrown);
-        }
-        return thrownProxy;
-    }
-
     @Override
     public void setSource(final StackTraceElement source) {
         this.source = source;
@@ -483,8 +468,7 @@ public class MutableLogEvent implements ReusableLogEvent, ReusableMessage, Param
                 .setThreadId(threadId) //
                 .setThreadName(threadName) //
                 .setThreadPriority(threadPriority) //
-                .setThrown(getThrown()) // may deserialize from thrownProxy
-                .setThrownProxy(thrownProxy) // avoid unnecessarily creating thrownProxy
+                .setThrown(getThrown()) //
                 .setInstant(instant) //
         ;
     }
