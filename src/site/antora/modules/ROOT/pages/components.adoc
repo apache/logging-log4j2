@@ -346,21 +346,21 @@ Don't deploy this artifact together with <<log4j-to-jul>>.
 
 include::partial$components/log4j-jul.adoc[]
 
-[#log4j-json-template-layout]
-== `log4j-json-template-layout`
+[#log4j-layout-template-json]
+== `log4j-layout-template-json`
 
 |===
 | JPMS module
 | `org.apache.logging.log4j.json.template.layout`
 |===
 
-The `log4j-json-template-layout` contains a highly extensible and configurable
+The `log4j-layout-template-json` contains a highly extensible and configurable
 xref:manual/layouts.adoc[layout]
 to format log events as JSON.
 
 See xref:manual/json-template-layout.adoc[] for details.
 
-include::partial$components/log4j-json-template-layout.adoc[]
+include::partial$components/log4j-layout-template-json.adoc[]
 
 [#log4j-mongodb]
 == `log4j-mongodb`
