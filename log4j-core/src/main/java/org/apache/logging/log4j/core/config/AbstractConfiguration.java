@@ -371,7 +371,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         LOGGER.info("Starting configuration {}...", this);
         this.setStarting();
-        if (watchManager.getIntervalSeconds() >= 0) {
+        if (watchManager.getIntervalSeconds() > 0) {
             LOGGER.info(
                     "Start watching for changes to {} every {} seconds",
                     getConfigurationSource(),
