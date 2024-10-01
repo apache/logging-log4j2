@@ -344,7 +344,7 @@ public class SocketAppenderReconnectTest {
             throws Exception {
 
         // Report status
-        StatusLogger.getLogger().trace("[{}] verifying logging success", CLASS_NAME);
+        StatusLogger.getLogger().debug("[{}] verifying logging success", CLASS_NAME);
 
         // Create messages to log
         final int messageCount = 2;
@@ -388,7 +388,7 @@ public class SocketAppenderReconnectTest {
             final LoggerContext loggerContext, final BufferingErrorHandler errorHandler) {
 
         // Report status
-        StatusLogger.getLogger().trace("[{}] verifying logging failure", CLASS_NAME);
+        StatusLogger.getLogger().debug("[{}] verifying logging failure", CLASS_NAME);
 
         // Verify the configuration
         final Logger logger = loggerContext.getRootLogger();
