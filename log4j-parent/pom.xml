@@ -80,7 +80,7 @@
     <disruptor.version>3.4.4</disruptor.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <felix.version>7.0.5</felix.version>
-    <groovy.version>4.0.22</groovy.version>
+    <groovy.version>4.0.23</groovy.version>
     <guava.version>33.3.0-jre</guava.version>
     <h2.version>2.2.224</h2.version>
     <hamcrest.version>3.0</hamcrest.version>
