@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="https://logging.apache.org/xml/ns"
+       xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="fixed">
+  <issue id="3030" link="https://github.com/apache/logging-log4j2/pull/3030"/>
+  <description format="asciidoc">Fix `getLogger()` source incompatibility in Log4j 1 to Log4j 2 API Bridge (i.e., `log4j-1.2-api`)</description>
+</entry>
