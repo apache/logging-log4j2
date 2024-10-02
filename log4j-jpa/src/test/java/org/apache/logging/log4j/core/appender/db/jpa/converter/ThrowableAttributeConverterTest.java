@@ -16,21 +16,20 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.sql.SQLException;
-import org.apache.logging.log4j.core.test.categories.Appenders;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-@Category(Appenders.Jpa.class)
+@Tag("Appenders.Jpa")
 public class ThrowableAttributeConverterTest {
     private ThrowableAttributeConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.converter = new ThrowableAttributeConverter();
     }
@@ -43,13 +42,13 @@ public class ThrowableAttributeConverterTest {
 
         final String converted = this.converter.convertToDatabaseColumn(exception);
 
-        assertNotNull("The converted value is not correct.", converted);
-        assertEquals("The converted value is not correct.", stackTrace, converted);
+        assertNotNull(converted, "The converted value is not correct.");
+        assertEquals(stackTrace, converted, "The converted value is not correct.");
 
         final Throwable reversed = this.converter.convertToEntityAttribute(converted);
 
-        assertNotNull("The reversed value should not be null.", reversed);
-        assertEquals("The reversed value is not correct.", stackTrace, getStackTrace(reversed));
+        assertNotNull(reversed, "The reversed value should not be null.");
+        assertEquals(stackTrace, getStackTrace(reversed), "The reversed value is not correct.");
     }
 
     @Test
@@ -62,24 +61,24 @@ public class ThrowableAttributeConverterTest {
 
         final String converted = this.converter.convertToDatabaseColumn(exception);
 
-        assertNotNull("The converted value is not correct.", converted);
-        assertEquals("The converted value is not correct.", stackTrace, converted);
+        assertNotNull(converted, "The converted value is not correct.");
+        assertEquals(stackTrace, converted, "The converted value is not correct.");
 
         final Throwable reversed = this.converter.convertToEntityAttribute(converted);
 
-        assertNotNull("The reversed value should not be null.", reversed);
-        assertEquals("The reversed value is not correct.", stackTrace, getStackTrace(reversed));
+        assertNotNull(reversed, "The reversed value should not be null.");
+        assertEquals(stackTrace, getStackTrace(reversed), "The reversed value is not correct.");
     }
 
     @Test
     public void testConvertNullToDatabaseColumn() {
-        assertNull("The converted value should be null.", this.converter.convertToDatabaseColumn(null));
+        assertNull(this.converter.convertToDatabaseColumn(null), "The converted value should be null.");
     }
 
     @Test
     public void testConvertNullOrBlankToEntityAttribute() {
-        assertNull("The converted attribute should be null (1).", this.converter.convertToEntityAttribute(null));
-        assertNull("The converted attribute should be null (2).", this.converter.convertToEntityAttribute(""));
+        assertNull(this.converter.convertToEntityAttribute(null), "The converted attribute should be null (1).");
+        assertNull(this.converter.convertToEntityAttribute(""), "The converted attribute should be null (2).");
     }
 
     private static String getStackTrace(final Throwable throwable) {

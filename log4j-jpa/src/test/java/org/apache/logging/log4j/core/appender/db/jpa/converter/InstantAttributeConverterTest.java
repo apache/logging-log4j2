@@ -16,25 +16,24 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-@Category(Appenders.Jpa.class)
+@Tag("Appenders.Jpa")
 public class InstantAttributeConverterTest {
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     private InstantAttributeConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.converter = new InstantAttributeConverter();
     }
@@ -46,24 +45,24 @@ public class InstantAttributeConverterTest {
 
         final String converted = this.converter.convertToDatabaseColumn(instant);
 
-        assertNotNull("The converted value should not be null.", converted);
-        assertEquals("The converted value is not correct.", "1234567,89012", converted);
+        assertNotNull(converted, "The converted value should not be null.");
+        assertEquals("1234567,89012", converted, "The converted value is not correct.");
 
         final Instant reversed = this.converter.convertToEntityAttribute(converted);
 
-        assertNotNull("The reversed value should not be null.", reversed);
-        assertEquals("epoch sec", 1234567, reversed.getEpochSecond());
-        assertEquals("nanoOfSecond", 89012, reversed.getNanoOfSecond());
+        assertNotNull(reversed, "The reversed value should not be null.");
+        assertEquals(1234567, reversed.getEpochSecond(), "epoch sec");
+        assertEquals(89012, reversed.getNanoOfSecond(), "nanoOfSecond");
     }
 
     @Test
     public void testConvertNullToDatabaseColumn() {
-        assertNull("The converted value should be null.", this.converter.convertToDatabaseColumn(null));
+        assertNull(this.converter.convertToDatabaseColumn(null), "The converted value should be null.");
     }
 
     @Test
     public void testConvertNullOrBlankToEntityAttribute() {
-        assertNull("The converted attribute should be null (1).", this.converter.convertToEntityAttribute(null));
-        assertNull("The converted attribute should be null (2).", this.converter.convertToEntityAttribute(""));
+        assertNull(this.converter.convertToEntityAttribute(null), "The converted attribute should be null (1).");
+        assertNull(this.converter.convertToEntityAttribute(""), "The converted attribute should be null (2).");
     }
 }
