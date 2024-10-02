@@ -904,19 +904,9 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/util/ExecutorServices.html" title="class in org.apache.logging.log4j.core.util">ExecutorServices</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/impl/ExtendedClassInfo.html" title="class in org.apache.logging.log4j.core.impl">ExtendedClassInfo</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
-<div class="block">Class and package data used with a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StackTraceElement.html" title="class or interface in java.lang" class="external-link"><code>StackTraceElement</code></a> in a <a href="org/apache/logging/log4j/core/impl/ExtendedStackTraceElement.html" title="class in org.apache.logging.log4j.core.impl"><code>ExtendedStackTraceElement</code></a>.</div>
-</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/impl/ExtendedStackTraceElement.html" title="class in org.apache.logging.log4j.core.impl">ExtendedStackTraceElement</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
-<div class="block">Wraps and extends the concept of the JRE's final class <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StackTraceElement.html" title="class or interface in java.lang" class="external-link"><code>StackTraceElement</code></a> by adding more location information.</div>
-</div>
 <div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/pattern/ExtendedThrowablePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">ExtendedThrowablePatternConverter</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
-<div class="block">Outputs the Throwable portion of the LoggingEvent as a full stack trace
- unless this converter's option is 'short', where it just outputs the first line of the trace, or if
- the number of lines to print is explicitly specified.</div>
+<div class="block"><a href="org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern"><code>ThrowablePatternConverter</code></a> variant where the rendered <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StackTraceElement.html" title="class or interface in java.lang" class="external-link"><code>StackTraceElement</code></a>s are enriched with the enclosing JAR file and its version information, if available.</div>
 </div>
 <div class="col-first even-row-color all-classes-table all-classes-table-tab3"><a href="org/apache/logging/log4j/core/util/ExtensionLanguageMapping.html" title="enum class in org.apache.logging.log4j.core.util">ExtensionLanguageMapping</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab3">&nbsp;</div>
@@ -1886,9 +1876,7 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/pattern/RootThrowablePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">RootThrowablePatternConverter</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
-<div class="block">Outputs the Throwable portion of the LoggingEvent as a full stack trace
- unless this converter's option is 'short', where it just outputs the first line of the trace, or if
- the number of lines to print is explicitly specified.</div>
+<div class="block"><a href="org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern"><code>ThrowablePatternConverter</code></a> variant where the stack trace causal chain is rendered in reverse order.</div>
 </div>
 <div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/appender/routing/Route.html" title="class in org.apache.logging.log4j.core.appender.routing">Route</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">
@@ -2171,114 +2159,108 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">ThrowablePatternConverter</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
-<div class="block">Outputs the Throwable portion of the LoggingEvent as a full stack trace
- unless this converter's option is 'short', where it just outputs the first line of the trace, or if
- the number of lines to print is explicitly specified.</div>
+<div class="block">Outputs certain information extracted from the <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link"><code>Throwable</code></a> associated with a <a href="org/apache/logging/log4j/core/LogEvent.html" title="interface in org.apache.logging.log4j.core"><code>LogEvent</code></a>.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/impl/ThrowableProxy.html" title="class in org.apache.logging.log4j.core.impl">ThrowableProxy</a></div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/util/Throwables.html" title="class in org.apache.logging.log4j.core.util">Throwables</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">
-<div class="block">Wraps a Throwable to add packaging information about each stack trace element.</div>
-</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/util/Throwables.html" title="class in org.apache.logging.log4j.core.util">Throwables</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Helps with Throwable objects.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/appender/rolling/TimeBasedTriggeringPolicy.html" title="class in org.apache.logging.log4j.core.appender.rolling">TimeBasedTriggeringPolicy</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/appender/rolling/TimeBasedTriggeringPolicy.html" title="class in org.apache.logging.log4j.core.appender.rolling">TimeBasedTriggeringPolicy</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Rolls a file over based on time.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/appender/rolling/TimeBasedTriggeringPolicy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">TimeBasedTriggeringPolicy.Builder</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/filter/TimeFilter.html" title="class in org.apache.logging.log4j.core.filter">TimeFilter</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/appender/rolling/TimeBasedTriggeringPolicy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">TimeBasedTriggeringPolicy.Builder</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/filter/TimeFilter.html" title="class in org.apache.logging.log4j.core.filter">TimeFilter</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Filters events that fall within a specified time period in each day.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/filter/TimeFilter.Builder.html" title="class in org.apache.logging.log4j.core.filter">TimeFilter.Builder</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/appender/TlsSyslogFrame.html" title="class in org.apache.logging.log4j.core.appender">TlsSyslogFrame</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/filter/TimeFilter.Builder.html" title="class in org.apache.logging.log4j.core.filter">TimeFilter.Builder</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/appender/TlsSyslogFrame.html" title="class in org.apache.logging.log4j.core.appender">TlsSyslogFrame</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Wraps messages that are formatted according to RFC 5425.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/util/Transform.html" title="class in org.apache.logging.log4j.core.util">Transform</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/util/Transform.html" title="class in org.apache.logging.log4j.core.util">Transform</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Utility class for transforming strings.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/apache/logging/log4j/core/appender/rolling/TriggeringPolicy.html" title="interface in org.apache.logging.log4j.core.appender.rolling">TriggeringPolicy</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/apache/logging/log4j/core/appender/rolling/TriggeringPolicy.html" title="interface in org.apache.logging.log4j.core.appender.rolling">TriggeringPolicy</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
 <div class="block">A <code>TriggeringPolicy</code> controls the conditions under which rollover
  occurs.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/net/ssl/TrustStoreConfiguration.html" title="class in org.apache.logging.log4j.core.net.ssl">TrustStoreConfiguration</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/net/ssl/TrustStoreConfiguration.html" title="class in org.apache.logging.log4j.core.net.ssl">TrustStoreConfiguration</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Configuration of the TrustStore</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab5"><a href="org/apache/logging/log4j/core/net/ssl/TrustStoreConfigurationException.html" title="class in org.apache.logging.log4j.core.net.ssl">TrustStoreConfigurationException</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab5">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/util/TypeUtil.html" title="class in org.apache.logging.log4j.core.util">TypeUtil</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab5"><a href="org/apache/logging/log4j/core/net/ssl/TrustStoreConfigurationException.html" title="class in org.apache.logging.log4j.core.net.ssl">TrustStoreConfigurationException</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab5">&nbsp;</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/util/TypeUtil.html" title="class in org.apache.logging.log4j.core.util">TypeUtil</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Utility class for working with Java <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/Type.html" title="class or interface in java.lang.reflect" class="external-link"><code>Type</code></a>s and derivatives.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/lookup/UpperLookup.html" title="class in org.apache.logging.log4j.core.lookup">UpperLookup</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/lookup/UpperLookup.html" title="class in org.apache.logging.log4j.core.lookup">UpperLookup</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Converts values to upper case.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/apache/logging/log4j/core/config/URIConfigurationFactory.html" title="interface in org.apache.logging.log4j.core.config">URIConfigurationFactory</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/apache/logging/log4j/core/config/URIConfigurationFactory.html" title="interface in org.apache.logging.log4j.core.config">URIConfigurationFactory</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
 <div class="block">Creates configuration from an <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link"><code>URI</code></a>.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/net/UrlConnectionFactory.html" title="class in org.apache.logging.log4j.core.net">UrlConnectionFactory</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/net/UrlConnectionFactory.html" title="class in org.apache.logging.log4j.core.net">UrlConnectionFactory</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Constructs an HTTPURLConnection.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/pattern/UuidPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">UuidPatternConverter</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/pattern/UuidPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">UuidPatternConverter</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Formats the event sequence number.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/util/UuidUtil.html" title="class in org.apache.logging.log4j.core.util">UuidUtil</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/util/UuidUtil.html" title="class in org.apache.logging.log4j.core.util">UuidUtil</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Generates a unique ID.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/pattern/VariablesNotEmptyReplacementConverter.html" title="class in org.apache.logging.log4j.core.pattern">VariablesNotEmptyReplacementConverter</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/pattern/VariablesNotEmptyReplacementConverter.html" title="class in org.apache.logging.log4j.core.pattern">VariablesNotEmptyReplacementConverter</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">VariablesNotEmpty pattern converter.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/Version.html" title="class in org.apache.logging.log4j.core">Version</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/apache/logging/log4j/core/util/Watcher.html" title="interface in org.apache.logging.log4j.core.util">Watcher</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/Version.html" title="class in org.apache.logging.log4j.core">Version</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/apache/logging/log4j/core/util/Watcher.html" title="interface in org.apache.logging.log4j.core.util">Watcher</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
 <div class="block">Watches for changes in a Source and performs an action when it is modified.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/util/WatcherFactory.html" title="class in org.apache.logging.log4j.core.util">WatcherFactory</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/util/WatcherFactory.html" title="class in org.apache.logging.log4j.core.util">WatcherFactory</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Creates Watchers of various types.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="org/apache/logging/log4j/core/util/WatchEventService.html" title="interface in org.apache.logging.log4j.core.util">WatchEventService</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/util/WatchManager.html" title="class in org.apache.logging.log4j.core.util">WatchManager</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/apache/logging/log4j/core/util/WatchEventService.html" title="interface in org.apache.logging.log4j.core.util">WatchEventService</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab1">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/util/WatchManager.html" title="class in org.apache.logging.log4j.core.util">WatchManager</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Manages <a href="org/apache/logging/log4j/core/util/FileWatcher.html" title="interface in org.apache.logging.log4j.core.util"><code>FileWatcher</code></a>s.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/util/WrappedFileWatcher.html" title="class in org.apache.logging.log4j.core.util">WrappedFileWatcher</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/appender/WriterAppender.html" title="class in org.apache.logging.log4j.core.appender">WriterAppender</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/util/WrappedFileWatcher.html" title="class in org.apache.logging.log4j.core.util">WrappedFileWatcher</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/appender/WriterAppender.html" title="class in org.apache.logging.log4j.core.appender">WriterAppender</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Appends log events to a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Writer.html" title="class or interface in java.io" class="external-link"><code>Writer</code></a>.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/appender/WriterAppender.Builder.html" title="class in org.apache.logging.log4j.core.appender">WriterAppender.Builder</a>&lt;<a href="org/apache/logging/log4j/core/appender/WriterAppender.Builder.html" title="type parameter in WriterAppender.Builder">B</a> extends <a href="org/apache/logging/log4j/core/appender/WriterAppender.Builder.html" title="class in org.apache.logging.log4j.core.appender">WriterAppender.Builder</a>&lt;<a href="org/apache/logging/log4j/core/appender/WriterAppender.Builder.html" title="type parameter in WriterAppender.Builder">B</a>&gt;&gt;</div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/appender/WriterAppender.Builder.html" title="class in org.apache.logging.log4j.core.appender">WriterAppender.Builder</a>&lt;<a href="org/apache/logging/log4j/core/appender/WriterAppender.Builder.html" title="type parameter in WriterAppender.Builder">B</a> extends <a href="org/apache/logging/log4j/core/appender/WriterAppender.Builder.html" title="class in org.apache.logging.log4j.core.appender">WriterAppender.Builder</a>&lt;<a href="org/apache/logging/log4j/core/appender/WriterAppender.Builder.html" title="type parameter in WriterAppender.Builder">B</a>&gt;&gt;</div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Builds WriterAppender instances.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/appender/WriterManager.html" title="class in org.apache.logging.log4j.core.appender">WriterManager</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/appender/WriterManager.html" title="class in org.apache.logging.log4j.core.appender">WriterManager</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Manages a Writer so that it can be shared by multiple Appenders and will
  allow appenders to reconfigure without requiring a new writer.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/config/xml/XmlConfiguration.html" title="class in org.apache.logging.log4j.core.config.xml">XmlConfiguration</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/config/xml/XmlConfiguration.html" title="class in org.apache.logging.log4j.core.config.xml">XmlConfiguration</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Creates a Node hierarchy from an XML file.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/config/xml/XmlConfigurationFactory.html" title="class in org.apache.logging.log4j.core.config.xml">XmlConfigurationFactory</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/config/xml/XmlConfigurationFactory.html" title="class in org.apache.logging.log4j.core.config.xml">XmlConfigurationFactory</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Factory to construct an XmlConfiguration.</div>
 </div>
 </div>

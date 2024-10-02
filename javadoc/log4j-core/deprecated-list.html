@@ -237,6 +237,10 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/Core.html#CATEGORY_NAME">org.apache.logging.log4j.core.Core.CATEGORY_NAME</a></div>
 <div class="col-last even-row-color"></div>
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html#formatters">org.apache.logging.log4j.core.pattern.ThrowablePatternConverter.formatters</a></div>
+<div class="col-last odd-row-color">
+<div class="deprecation-comment">Kept for binary backward compatibility.</div>
+</div>
 </div>
 </div>
 </li>
@@ -270,10 +274,14 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/net/UrlConnectionFactory.html#createConnection(java.net.URL,long,org.apache.logging.log4j.core.net.ssl.SslConfiguration,org.apache.logging.log4j.core.util.AuthorizationProvider)">org.apache.logging.log4j.core.net.UrlConnectionFactory.createConnection<wbr>(URL, long, SslConfiguration, AuthorizationProvider)</a></div>
 <div class="col-last odd-row-color"></div>
-<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/time/ClockFactory.html#clock(org.apache.logging.log4j.kit.env.PropertyEnvironment)">org.apache.logging.log4j.core.time.ClockFactory.clock<wbr>(PropertyEnvironment)</a></div>
-<div class="col-last even-row-color"></div>
-<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/time/ClockFactory.html#getClock()">org.apache.logging.log4j.core.time.ClockFactory.getClock()</a></div>
-<div class="col-last odd-row-color">
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html#getSuffix(org.apache.logging.log4j.core.LogEvent)">org.apache.logging.log4j.core.pattern.ThrowablePatternConverter.getSuffix<wbr>(LogEvent)</a></div>
+<div class="col-last even-row-color">
+<div class="deprecation-comment">Planned to be removed without a replacement</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/time/ClockFactory.html#clock(org.apache.logging.log4j.kit.env.PropertyEnvironment)">org.apache.logging.log4j.core.time.ClockFactory.clock<wbr>(PropertyEnvironment)</a></div>
+<div class="col-last odd-row-color"></div>
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/time/ClockFactory.html#getClock()">org.apache.logging.log4j.core.time.ClockFactory.getClock()</a></div>
+<div class="col-last even-row-color">
 <div class="deprecation-comment">use dependency injection instead to obtain a <a href="org/apache/logging/log4j/core/time/Clock.html" title="interface in org.apache.logging.log4j.core.time"><code>Clock</code></a> instance</div>
 </div>
 </div>
@@ -307,6 +315,14 @@ loadScripts(document, 'script');</script>
 <div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/net/ssl/TrustStoreConfiguration.html#%3Cinit%3E(java.lang.String,char%5B%5D,java.lang.String,java.lang.String)">org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration<wbr>(String, char[], String, String)</a></div>
 <div class="col-last odd-row-color">
 <div class="deprecation-comment">Use <a href="org/apache/logging/log4j/core/net/ssl/TrustStoreConfiguration.html#%3Cinit%3E(java.lang.String,org.apache.logging.log4j.core.net.ssl.PasswordProvider,java.lang.String,java.lang.String)"><code>TrustStoreConfiguration(String, PasswordProvider, String, String)</code></a> instead</div>
+</div>
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String%5B%5D)">org.apache.logging.log4j.core.pattern.ThrowablePatternConverter<wbr>(String, String, String[])</a></div>
+<div class="col-last even-row-color">
+<div class="deprecation-comment">Use <code>ThrowablePatternConverter(String, String, String[], Configuration, Function)</code> instead.</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String%5B%5D,org.apache.logging.log4j.core.config.Configuration)">org.apache.logging.log4j.core.pattern.ThrowablePatternConverter<wbr>(String, String, String[], Configuration)</a></div>
+<div class="col-last odd-row-color">
+<div class="deprecation-comment">Use <code>ThrowablePatternConverter(String, String, String[], Configuration, Function)</code> instead.</div>
 </div>
 </div>
 </div>

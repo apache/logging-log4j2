@@ -87,16 +87,12 @@ loadScripts(document, 'script');</script>
 <dd><code><a href="PatternConverter.html" title="interface in org.apache.logging.log4j.core.pattern">PatternConverter</a></code></dd>
 </dl>
 <hr>
-<div class="type-signature"><span class="annotations"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Namespace.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@Namespace</a>("Converter")
+<div class="type-signature"><span class="annotations">@NullMarked
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Namespace.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@Namespace</a>("Converter")
 <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Plugin.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@Plugin</a>("RootThrowablePatternConverter")
 </span><span class="modifiers">public final class </span><span class="element-name type-name-label">RootThrowablePatternConverter</span>
 <span class="extends-implements">extends <a href="ThrowablePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">ThrowablePatternConverter</a></span></div>
-<div class="block">Outputs the Throwable portion of the LoggingEvent as a full stack trace
- unless this converter's option is 'short', where it just outputs the first line of the trace, or if
- the number of lines to print is explicitly specified.
- <p>
- The extended stack trace will also include the location of where the class was loaded from and the
- version of the jar if available.</div>
+<div class="block"><a href="ThrowablePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern"><code>ThrowablePatternConverter</code></a> variant where the stack trace causal chain is rendered in reverse order.</div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -120,30 +116,24 @@ loadScripts(document, 'script');</script>
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#format(org.apache.logging.log4j.core.LogEvent,java.lang.StringBuilder)" class="member-name-link">format</a><wbr>(<a href="../LogEvent.html" title="interface in org.apache.logging.log4j.core">LogEvent</a>&nbsp;event,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&nbsp;toAppendTo)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Formats an event into a string buffer.</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="RootThrowablePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">RootThrowablePatternConverter</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#newInstance(org.apache.logging.log4j.core.config.Configuration,java.lang.String%5B%5D)" class="member-name-link">newInstance</a><wbr>(<a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;options)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Gets an instance of the class.</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="RootThrowablePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">RootThrowablePatternConverter</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#newInstance(org.apache.logging.log4j.core.config.Configuration,java.lang.String%5B%5D)" class="member-name-link">newInstance</a><wbr>(@Nullable <a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;options)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Creates an instance of the class.</div>
 </div>
 </div>
 </div>
 </div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-org.apache.logging.log4j.core.pattern.ThrowablePatternConverter">Methods inherited from class&nbsp;org.apache.logging.log4j.core.pattern.<a href="ThrowablePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">ThrowablePatternConverter</a></h3>
-<code><a href="ThrowablePatternConverter.html#getOptions()">getOptions</a>, <a href="ThrowablePatternConverter.html#getSuffix(org.apache.logging.log4j.core.LogEvent)">getSuffix</a>, <a href="ThrowablePatternConverter.html#handlesThrowable()">handlesThrowable</a></code></div>
+<code><a href="ThrowablePatternConverter.html#format(org.apache.logging.log4j.core.LogEvent,java.lang.StringBuilder)">format</a>, <a href="ThrowablePatternConverter.html#getOptions()">getOptions</a>, <a href="ThrowablePatternConverter.html#getSuffix(org.apache.logging.log4j.core.LogEvent)">getSuffix</a>, <a href="ThrowablePatternConverter.html#handlesThrowable()">handlesThrowable</a></code></div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-org.apache.logging.log4j.core.pattern.LogEventPatternConverter">Methods inherited from class&nbsp;org.apache.logging.log4j.core.pattern.<a href="LogEventPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">LogEventPatternConverter</a></h3>
 <code><a href="LogEventPatternConverter.html#emptyVariableOutput()">emptyVariableOutput</a>, <a href="LogEventPatternConverter.html#format(java.lang.Object,java.lang.StringBuilder)">format</a>, <a href="LogEventPatternConverter.html#isVariable()">isVariable</a>, <a href="LogEventPatternConverter.html#requiresLocation()">requiresLocation</a></code></div>
@@ -167,31 +157,15 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="newInstance(org.apache.logging.log4j.core.config.Configuration,java.lang.String[])">
 <h3>newInstance</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="RootThrowablePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">RootThrowablePatternConverter</a></span>&nbsp;<span class="element-name">newInstance</span><wbr><span class="parameters">(<a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;options)</span></div>
-<div class="block">Gets an instance of the class.</div>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="RootThrowablePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">RootThrowablePatternConverter</a></span>&nbsp;<span class="element-name">newInstance</span><wbr><span class="parameters">(@Nullable <a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;options)</span></div>
+<div class="block">Creates an instance of the class.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>config</code> - </dd>
-<dd><code>options</code> - pattern options, may be null.  If first element is "short",
-                only the first line of the throwable will be formatted.</dd>
+<dd><code>config</code> - a configuration</dd>
+<dd><code>options</code> - the pattern options</dd>
 <dt>Returns:</dt>
-<dd>instance of class.</dd>
-</dl>
-</section>
-</li>
-<li>
-<section class="detail" id="format(org.apache.logging.log4j.core.LogEvent,java.lang.StringBuilder)">
-<h3>format</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">format</span><wbr><span class="parameters">(<a href="../LogEvent.html" title="interface in org.apache.logging.log4j.core">LogEvent</a>&nbsp;event,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&nbsp;toAppendTo)</span></div>
-<div class="block">Formats an event into a string buffer.</div>
-<dl class="notes">
-<dt>Overrides:</dt>
-<dd><code><a href="ThrowablePatternConverter.html#format(org.apache.logging.log4j.core.LogEvent,java.lang.StringBuilder)">format</a></code>&nbsp;in class&nbsp;<code><a href="ThrowablePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">ThrowablePatternConverter</a></code></dd>
-<dt>Parameters:</dt>
-<dd><code>event</code> - event to format, may not be null.</dd>
-<dd><code>toAppendTo</code> - string buffer to which the formatted event will be appended.  May not be null.</dd>
+<dd>a new instance</dd>
 </dl>
 </section>
 </li>
