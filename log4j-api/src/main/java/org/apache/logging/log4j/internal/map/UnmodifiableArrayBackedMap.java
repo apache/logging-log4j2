@@ -20,12 +20,11 @@ import java.io.Serializable;
 import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.TriConsumer;
 
@@ -361,10 +360,15 @@ public class UnmodifiableArrayBackedMap extends AbstractMap<String, String> impl
         }
 
         // Collect distinct keys to remove
-        final Set<String> keysToRemove = keysToRemoveIterable instanceof Set
-                ? (Set<String>) keysToRemoveIterable
-                : StreamSupport.stream(keysToRemoveIterable.spliterator(), false)
-                        .collect(Collectors.toSet());
+        final Set<String> keysToRemove;
+        if (keysToRemoveIterable instanceof Set) {
+            keysToRemove = (Set<String>) keysToRemoveIterable;
+        } else {
+            keysToRemove = new HashSet<>();
+            for (final String key : keysToRemoveIterable) {
+                keysToRemove.add(key);
+            }
+        }
 
         // Create the new map
         final UnmodifiableArrayBackedMap oldMap = this;
