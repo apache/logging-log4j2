@@ -235,7 +235,6 @@ class RingBufferLogEventTest {
         assertThat(actual.getInstant().getNanoOfMillisecond())
                 .isEqualTo(evt.getInstant().getNanoOfMillisecond());
         assertThat(actual.getSource()).isEqualTo(evt.getSource());
-        assertThat(actual.getThrownProxy()).isEqualTo(evt.getThrownProxy());
     }
 
     @Test

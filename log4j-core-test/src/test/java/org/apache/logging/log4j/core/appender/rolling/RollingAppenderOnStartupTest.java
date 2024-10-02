@@ -50,8 +50,8 @@ public class RollingAppenderOnStartupTest {
 
     @BeforeAll
     static void setUp() throws IOException {
-        final Path target =
-                Files.copy(SOURCE.resolve(FILENAME), loggingPath.resolve(FILENAME), StandardCopyOption.COPY_ATTRIBUTES);
+        final Path target = Files.copy(
+                SOURCE.resolve(FILENAME), loggingPath.resolve(FILENAME), StandardCopyOption.REPLACE_EXISTING);
         final FileTime newTime = FileTime.from(Instant.now().minus(1, ChronoUnit.DAYS));
         final BasicFileAttributeView attrs = Files.getFileAttributeView(target, BasicFileAttributeView.class);
         attrs.setTimes(newTime, newTime, newTime);

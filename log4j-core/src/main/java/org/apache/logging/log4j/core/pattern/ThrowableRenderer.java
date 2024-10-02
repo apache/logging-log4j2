@@ -14,25 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.impl;
-
-import java.util.ArrayList;
-import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
-import org.junit.jupiter.api.Test;
+package org.apache.logging.log4j.core.pattern;
 
 /**
- * Tests ThrowableProxyRenderer.
+ * Contract for rendering {@link Throwable}s in {@link ThrowablePatternConverter} et al.
  */
-public class ThrowableProxyRendererTest {
+interface ThrowableRenderer {
 
-    @Test
-    public void test_formatExtendedStackTraceTo() {
-        ThrowableProxyRenderer.formatExtendedStackTraceTo(
-                new ThrowableProxy(),
-                new StringBuilder(),
-                new ArrayList<>(),
-                new PlainTextRenderer(),
-                "",
-                System.lineSeparator());
-    }
+    void renderThrowable(final StringBuilder buffer, final Throwable throwable, final String lineSeparator);
 }

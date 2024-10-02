@@ -101,7 +101,6 @@ public class CsvLogEventLayout extends AbstractCsvLayout {
             format.print(event.getLoggerFqcn(), buffer, false);
             format.print(event.getLoggerName(), buffer, false);
             format.print(event.getMarker(), buffer, false);
-            format.print(event.getThrownProxy(), buffer, false);
             format.print(event.getSource(), buffer, false);
             format.print(event.getContextData(), buffer, false);
             format.print(event.getContextStack(), buffer, false);

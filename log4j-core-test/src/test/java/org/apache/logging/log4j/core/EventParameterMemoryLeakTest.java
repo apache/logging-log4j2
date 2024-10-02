@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -61,15 +62,20 @@ public class EventParameterMemoryLeakTest {
         final String line1 = reader.readLine();
         final String line2 = reader.readLine();
         final String line3 = reader.readLine();
+        // line4 is empty line because of the line separator after throwable pattern
         final String line4 = reader.readLine();
         final String line5 = reader.readLine();
+        final String line6 = reader.readLine();
+        final String line7 = reader.readLine();
         reader.close();
         file.delete();
         assertThat(line1, containsString("Message with parameter paramValue"));
         assertThat(line2, containsString("paramValue"));
         assertThat(line3, containsString("paramValue"));
-        assertThat(line4, containsString("paramValue"));
-        assertNull(line5, "Expected only three lines");
+        assertThat(line4, is(""));
+        assertThat(line5, containsString("paramValue"));
+        assertThat(line6, is(""));
+        assertNull(line7, "Expected only six lines");
         try (final GarbageCollectionHelper gcHelper = new GarbageCollectionHelper()) {
             gcHelper.run();
             assertTrue(latch.await(30, TimeUnit.SECONDS), "Parameter should have been garbage collected");
