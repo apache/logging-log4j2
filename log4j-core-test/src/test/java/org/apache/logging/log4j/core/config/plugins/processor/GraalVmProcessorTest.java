@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.config.plugins.processor;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
 
@@ -23,6 +26,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 import org.apache.commons.io.IOUtils;
@@ -34,91 +39,69 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class GraalVmProcessorTest {
 
-    private static final String FAKE_PLUGIN = String.join(
-            "",
-            "  {",
-            "    \"name\": \"org.apache.logging.log4j.core.config.plugins.processor.FakePlugin\",",
-            "    \"methods\": [",
-            "      {",
-            "        \"name\": \"<init>\",",
-            "        \"parameterTypes\": []",
-            "      },",
-            "      {",
-            "        \"name\": \"newPlugin\",",
-            "        \"parameterTypes\": [",
-            "          \"int\",",
-            "          \"org.apache.logging.log4j.core.Layout\",",
-            "          \"org.apache.logging.log4j.core.config.Configuration\",",
-            "          \"org.apache.logging.log4j.core.config.Node\",",
-            "          \"org.apache.logging.log4j.core.LoggerContext\",",
-            "          \"java.lang.String\"",
-            "        ]",
-            "      }",
-            "    ],",
-            "    \"fields\": []",
-            "  }");
-    private static final String FAKE_PLUGIN_BUILDER = String.join(
-            "\n",
-            "{",
-            "    \"name\": \"org.apache.logging.log4j.core.config.plugins.processor.FakePlugin$Builder\",",
-            "    \"methods\": [],",
-            "    \"fields\": [",
-            "      {",
-            "        \"name\": \"attribute\"",
-            "      },",
-            "      {",
-            "        \"name\": \"config\"",
-            "      },",
-            "      {",
-            "        \"name\": \"layout\"",
-            "      },",
-            "      {",
-            "        \"name\": \"loggerContext\"",
-            "      },",
-            "      {",
-            "        \"name\": \"node\"",
-            "      },",
-            "      {",
-            "        \"name\": \"value\"",
-            "      }",
-            "    ]",
-            "  }");
-    private static final String FAKE_PLUGIN_NESTED = String.join(
-            "\n",
-            "  {",
-            "    \"name\": \"org.apache.logging.log4j.core.config.plugins.processor.FakePlugin$Nested\",",
-            "    \"methods\": [",
-            "      {",
-            "        \"name\": \"<init>\",",
-            "        \"parameterTypes\": []",
-            "      }",
-            "    ],",
-            "    \"fields\": []",
-            "  }");
-    private static final String FAKE_CONSTRAINT_VALIDATOR = String.join(
-            "\n",
-            "  {",
-            "    \"name\": \"org.apache.logging.log4j.core.config.plugins.processor.FakeAnnotations$FakeConstraintValidator\",",
-            "    \"methods\": [",
-            "      {",
-            "        \"name\": \"<init>\",",
-            "        \"parameterTypes\": []",
-            "      }",
-            "    ],",
-            "    \"fields\": []",
-            "  }");
-    private static final String FAKE_PLUGIN_VISITOR = String.join(
-            "\n",
-            "  {",
-            "    \"name\": \"org.apache.logging.log4j.core.config.plugins.processor.FakeAnnotations$FakePluginVisitor\",",
-            "    \"methods\": [",
-            "      {",
-            "        \"name\": \"<init>\",",
-            "        \"parameterTypes\": []",
-            "      }",
-            "    ],",
-            "    \"fields\": []",
-            "  }");
+    private static final Object FAKE_PLUGIN = asMap(
+            "name",
+            FakePlugin.class.getName(),
+            "methods",
+            asList(
+                    asMap("name", "<init>", "parameterTypes", emptyList()),
+                    asMap(
+                            "name",
+                            "newPlugin",
+                            "parameterTypes",
+                            asList(
+                                    "int",
+                                    "org.apache.logging.log4j.core.Layout",
+                                    "org.apache.logging.log4j.core.config.Configuration",
+                                    "org.apache.logging.log4j.core.config.Node",
+                                    "org.apache.logging.log4j.core.LoggerContext",
+                                    "java.lang.String"))),
+            "fields",
+            emptyList());
+    private static final Object FAKE_PLUGIN_BUILDER = asMap(
+            "name",
+            FakePlugin.Builder.class.getName(),
+            "methods",
+            emptyList(),
+            "fields",
+            asList(
+                    asMap("name", "attribute"),
+                    asMap("name", "config"),
+                    asMap("name", "layout"),
+                    asMap("name", "loggerContext"),
+                    asMap("name", "node"),
+                    asMap("name", "value")));
+    private static final Object FAKE_PLUGIN_NESTED = onlyNoArgsConstructor(FakePlugin.Nested.class);
+    private static final Object FAKE_CONSTRAINT_VALIDATOR =
+            onlyNoArgsConstructor(FakeAnnotations.FakeConstraintValidator.class);
+    private static final Object FAKE_PLUGIN_VISITOR = onlyNoArgsConstructor(FakeAnnotations.FakePluginVisitor.class);
+
+    /**
+     * Generates a metadata element with just a single no-arg constructor.
+     *
+     * @param clazz The name of the metadata element.
+     * @return A GraalVM metadata element.
+     */
+    private static Object onlyNoArgsConstructor(Class<?> clazz) {
+        return asMap(
+                "name",
+                clazz.getName(),
+                "methods",
+                singletonList(asMap("name", "<init>", "parameterTypes", emptyList())),
+                "fields",
+                emptyList());
+    }
+
+    private static Map<String, ?> asMap(Object... pairs) {
+        final Map<String, Object> map = new LinkedHashMap<>();
+        if (pairs.length % 2 != 0) {
+            throw new IllegalArgumentException("odd number of arguments: " + pairs.length);
+        }
+        for (int i = 0; i < pairs.length; i += 2) {
+            map.put((String) pairs[i], pairs[i + 1]);
+        }
+        return map;
+    }
 
     private static String reachabilityMetadata;
 
@@ -150,7 +133,7 @@ class GraalVmProcessorTest {
 
     @ParameterizedTest
     @MethodSource
-    void containsSpecificEntries(Class<?> clazz, String expectedJson) {
+    void containsSpecificEntries(Class<?> clazz, Object expectedJson) {
         assertThatJson(reachabilityMetadata)
                 .inPath(filterByName(clazz))
                 .isArray()
