@@ -77,7 +77,7 @@ public class GraalVmProcessor extends AbstractProcessor {
 
     private static final String GROUP_ID = "log4j.graalvm.groupId";
     private static final String ARTIFACT_ID = "log4j.graalvm.artifactId";
-    private static final String PROCESSOR_NAME = GraalVmProcessor.class.getName();
+    private static final String PROCESSOR_NAME = GraalVmProcessor.class.getSimpleName();
 
     private final Map<String, ReachabilityMetadata.Type> reachableTypes = new HashMap<>();
     private final List<Element> processedElements = new ArrayList<>();
@@ -188,24 +188,22 @@ public class GraalVmProcessor extends AbstractProcessor {
         // Many users will have `log4j-core` on the annotation processor path, but do not have Log4j Plugins.
         // Therefore, we check for the annotation processor required options only if some elements were processed.
         //
-        Messager messager = processingEnv.getMessager();
         String reachabilityMetadataPath = getReachabilityMetadataPath();
-        try {
-            messager.printMessage(
-                    Diagnostic.Kind.NOTE,
-                    String.format(
-                            "%s: writing GraalVM metadata for %d Java classes to `%s`.",
-                            PROCESSOR_NAME, reachableTypes.size(), reachabilityMetadataPath));
-            try (OutputStream output = processingEnv
-                    .getFiler()
-                    .createResource(
-                            StandardLocation.CLASS_OUTPUT,
-                            Strings.EMPTY,
-                            reachabilityMetadataPath,
-                            processedElements.toArray(new Element[0]))
-                    .openOutputStream()) {
-                ReachabilityMetadata.writeReflectConfig(reachableTypes.values(), output);
-            }
+        Messager messager = processingEnv.getMessager();
+        messager.printMessage(
+                Diagnostic.Kind.NOTE,
+                String.format(
+                        "%s: writing GraalVM metadata for %d Java classes to `%s`.",
+                        PROCESSOR_NAME, reachableTypes.size(), reachabilityMetadataPath));
+        try (OutputStream output = processingEnv
+                .getFiler()
+                .createResource(
+                        StandardLocation.CLASS_OUTPUT,
+                        Strings.EMPTY,
+                        reachabilityMetadataPath,
+                        processedElements.toArray(new Element[0]))
+                .openOutputStream()) {
+            ReachabilityMetadata.writeReflectConfig(reachableTypes.values(), output);
         } catch (IOException e) {
             String message = String.format(
                     "%s: unable to write reachability metadata to file `%s`", PROCESSOR_NAME, reachabilityMetadataPath);

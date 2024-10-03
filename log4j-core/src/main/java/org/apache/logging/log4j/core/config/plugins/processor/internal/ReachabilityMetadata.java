@@ -19,14 +19,15 @@ package org.apache.logging.log4j.core.config.plugins.processor.internal;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.stream.IntStream;
+import org.apache.logging.log4j.core.util.JsonUtils;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -61,31 +62,7 @@ public final class ReachabilityMetadata {
      */
     public static final String METHODS = "methods";
 
-    private static class MinimalJsonWriter {
-
-        private static final int ESCAPED_CHARS_LENGHT = 128;
-
-        /**
-         * BitSet of 7-bit ASCII characters that would require quoting in JSON.
-         */
-        private static final BitSet ESCAPED_CHARS;
-
-        static {
-            BitSet requiresLookup = new BitSet(ESCAPED_CHARS_LENGHT);
-            // Control chars need generic escape sequence
-            for (int i = 0; i < 32; ++i) {
-                requiresLookup.set(i);
-            }
-            // Others (and some within that range too) have explicit shorter sequences
-            requiresLookup.set('"');
-            requiresLookup.set('\\');
-            requiresLookup.set(0x08);
-            requiresLookup.set(0x09);
-            requiresLookup.set(0x0C);
-            requiresLookup.set(0x0A);
-            requiresLookup.set(0x0D);
-            ESCAPED_CHARS = requiresLookup;
-        }
+    private static final class MinimalJsonWriter {
 
         private final Appendable output;
 
@@ -93,18 +70,11 @@ public final class ReachabilityMetadata {
             this.output = output;
         }
 
-        /**
-         * Writes a JSON String ignoring characters that need quoting.
-         */
         public void writeString(CharSequence input) throws IOException {
             output.append('"');
-            int limit = input.length();
-            for (int i = 0; i < limit; ++i) {
-                char c = input.charAt(i);
-                if (c >= ESCAPED_CHARS_LENGHT || !ESCAPED_CHARS.get(c)) {
-                    output.append(c);
-                }
-            }
+            StringBuilder sb = new StringBuilder();
+            JsonUtils.quoteAsString(input, sb);
+            output.append(sb);
             output.append('"');
         }
 
@@ -137,7 +107,7 @@ public final class ReachabilityMetadata {
     /**
      * Specifies a field that needs to be accessed through reflection.
      */
-    public static class Field implements Comparable<Field> {
+    public static final class Field implements Comparable<Field> {
 
         private final String name;
 
@@ -165,7 +135,7 @@ public final class ReachabilityMetadata {
     /**
      * Specifies a method that needs to be accessed through reflection.
      */
-    public static class Method implements Comparable<Method> {
+    public static final class Method implements Comparable<Method> {
 
         private final String name;
         private final List<String> parameterTypes = new ArrayList<>();
@@ -221,7 +191,7 @@ public final class ReachabilityMetadata {
     /**
      * Specifies a Java type that needs to be accessed through reflection.
      */
-    public static class Type {
+    public static final class Type {
 
         private final String type;
         private final Collection<Method> methods = new TreeSet<>();
@@ -280,7 +250,7 @@ public final class ReachabilityMetadata {
     /**
      * Collection of reflection metadata.
      */
-    public static class Reflection {
+    public static final class Reflection {
 
         private final Collection<Type> types = new TreeSet<>(Comparator.comparing(Type::getType));
 
@@ -309,9 +279,11 @@ public final class ReachabilityMetadata {
      * @param output The object to use as output.
      */
     public static void writeReflectConfig(Collection<Type> types, OutputStream output) throws IOException {
-        Reflection reflection = new Reflection(types);
-        MinimalJsonWriter jsonWriter = new MinimalJsonWriter(new OutputStreamWriter(output, StandardCharsets.UTF_8));
-        reflection.toJson(jsonWriter);
+        try (Writer writer = new OutputStreamWriter(output, StandardCharsets.UTF_8)) {
+            Reflection reflection = new Reflection(types);
+            MinimalJsonWriter jsonWriter = new MinimalJsonWriter(writer);
+            reflection.toJson(jsonWriter);
+        }
     }
 
     private ReachabilityMetadata() {}
