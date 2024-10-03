@@ -197,9 +197,25 @@ This annotation validates that a value corresponds to a valid port number betwee
 [#plugin-registry]
 == Registering plugins
 
-Registering plugins are done by placing a *Log4j plugin descriptor* (i.e., `Log4j2Plugins.dat`) into the classpath.
-This file is generated using the link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/processor/PluginProcessor.html[`PluginProcessor`] annotation processor at compile-time.
-You need to configure your build tool as follows to employ `PluginProcessor` by the Java compiler:
+To properly work, each Log4j plugin needs:
+
+* To be registered in the *Log4j Plugin Descriptor* (i.e., `Log4j2Plugins.dat`).
+This file is generated using the
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/processor/PluginProcessor.html[`PluginProcessor`]
+annotation processor at compile-time.
+* (Optionally) To be registered in the
+https://www.graalvm.org/latest/reference-manual/native-image/metadata/#specifying-metadata-with-json[GraalVM reachability metadata descriptor], which will allow the plugin to be used in GraalVM native applications.
+The
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/processor/GraalVmProcessor.html[`GraalVmProcessor`]
+annotation processor creates such a file at compile-time.
+
+[WARNING]
+====
+The `GraalVmProcessor` needs to know the `groupId` and `artifactId` coordinates of your project.
+These must be supplied to the processor using the `log4j.graalvm.groupId` and `log4j.graalvm.artifactId` annotation processor options.
+====
+
+You need to configure your build tool as follows to use both plugin processors:
 
 [tabs]
 ====
@@ -229,9 +245,16 @@ Maven::
           </path>
         </annotationProcessorPaths>
         <annotationProcessors>
-          <!-- Process sources using `org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor` to generate `Log4j2Plugins.dat` -->
+          <!-- Process sources using `PluginProcessor` to generate `Log4j2Plugins.dat` -->
           <processor>org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor</processor>
+          <!-- Process sources using `GraalVmProcessor` to generate a GraalVM reachability metadata file -->
+          <processor>org.apache.logging.log4j.core.config.plugins.processor.GraalVmProcessor</processor>
         </annotationProcessors>
+        <compilerArgs>
+          <!-- Provide the project coordinates to the `GraalVmProcessor`: -->
+          <arg>-Alog4j.graalvm.groupId=${project.groupId}</arg>
+          <arg>-Alog4j.graalvm.artifactId=${project.artifactId}</arg>
+        </compilerArgs>
       </configuration>
     </execution>
   </executions>
@@ -242,8 +265,16 @@ Gradle::
 +
 [source,groovy,subs="+attributes"]
 ----
+compileJava {
+  // Provide the project coordinates to the `GraalVmProcessor`:
+  options.compilerArgs << '-Alog4j.graalvm.groupId=org.example'
+  options.compilerArgs << '-Alog4j.graalvm.artifactId=example'
+}
+
 dependencies {
-  // Process sources using `log4j-core` providing `org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor` that generates `Log4j2Plugins.dat` -->
+  // Process sources using:
+  // * `PluginProcessor` to generate `Log4j2Plugins.dat`
+  // * `GraalVmProcessor` to generate a GraalVM reachability metadata file
   annotationProcessor('org.apache.logging.log4j:log4j-core:{log4j-core-version}')
 }
 ----

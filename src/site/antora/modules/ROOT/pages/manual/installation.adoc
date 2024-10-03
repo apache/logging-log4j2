@@ -169,6 +169,30 @@ h| Gradle
 |===
 ====
 
+[#impl-simple]
+=== Installing Simple Logger
+
+The
+xref:manual/simple-logger.adoc[Simple Logger]
+implementation is embedded in the Log4j API and does not need any external dependency.
+
+Its usage is, however, opt-in and Log4j API will log an error to the
+xref:manual/status-logger.adoc[Status Logger]:
+
+----
+2024-10-03T11:53:34.281462230Z main ERROR Log4j API could not find a logging provider.
+----
+
+To remove the warning and confirm that you want to use Simple Logger, add a
+xref:manual/systemproperties.adoc#property-sources[`log4j2.component.properties` file]
+at the root of your class path with content:
+
+[source,properties]
+----
+# Activate Simple Logger implementation
+log4j.provider = org.apache.logging.log4j.simple.internal.SimpleProvider
+----
+
 [#impl-core]
 === Installing Log4j Core
 
@@ -385,19 +409,16 @@ log4j2.xml::
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xsi:schemaLocation="https://logging.apache.org/xml/ns
                                    https://logging.apache.org/xml/ns/log4j-config-2.xsd">
-
-  <appenders>
+  <Appenders>
     <Console name="CONSOLE">
       <PatternLayout pattern="%d [%t] %5p %c{1.} - %m%n"/><!--1-->
     </Console>
-  </appenders>
-
-  <loggers>
-    <root level="INFO">
+  </Appenders>
+  <Loggers>
+    <Root level="INFO">
       <AppenderRef ref="CONSOLE"/>
-    </root>
-  </loggers>
-
+    </Root>
+  </Loggers>
 </Configuration>
 ----
 
