@@ -21,6 +21,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.net.URL;
@@ -28,10 +29,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Stream;
 import org.apache.commons.io.IOUtils;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -117,9 +116,8 @@ class GraalVmProcessorTest {
                 break;
             }
         }
-        Assertions.assertThat(reachabilityMetadataUrl).isNotNull();
-        reachabilityMetadata =
-                IOUtils.toString(Objects.requireNonNull(reachabilityMetadataUrl), StandardCharsets.UTF_8);
+        assertThat(reachabilityMetadataUrl).isNotNull();
+        reachabilityMetadata = IOUtils.toString(reachabilityMetadataUrl, StandardCharsets.UTF_8);
     }
 
     static Stream<Arguments> containsSpecificEntries() {

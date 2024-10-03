@@ -17,6 +17,9 @@
 package org.apache.logging.log4j.core.config.plugins.processor.internal;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
@@ -281,8 +284,8 @@ public final class ReachabilityMetadata {
 
         private final Collection<Type> types = new TreeSet<>(Comparator.comparing(Type::getType));
 
-        public void addType(Type type) {
-            types.add(type);
+        public Reflection(Collection<Type> types) {
+            this.types.addAll(types);
         }
 
         void toJson(MinimalJsonWriter jsonWriter) throws IOException {
@@ -302,11 +305,12 @@ public final class ReachabilityMetadata {
     /**
      * Writes the contents of a {@code reflect-config.json} file.
      *
-     * @param reflection The reflection metadata.
+     * @param types The reflection metadata for types.
      * @param output The object to use as output.
      */
-    public static void writeReflectConfig(Reflection reflection, Appendable output) throws IOException {
-        MinimalJsonWriter jsonWriter = new MinimalJsonWriter(output);
+    public static void writeReflectConfig(Collection<Type> types, OutputStream output) throws IOException {
+        Reflection reflection = new Reflection(types);
+        MinimalJsonWriter jsonWriter = new MinimalJsonWriter(new OutputStreamWriter(output, StandardCharsets.UTF_8));
         reflection.toJson(jsonWriter);
     }
 
