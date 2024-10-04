@@ -39,6 +39,7 @@ import org.apache.logging.log4j.core.impl.ExtendedStackTraceElement;
     ExtendedStackTraceElementMixIn.ATTR_VERSION
     // @formatter:on
 })
+@Deprecated
 abstract class ExtendedStackTraceElementMixIn implements Serializable {
 
     protected static final String ATTR_CLASS_LOADER_NAME = StackTraceElementConstants.ATTR_CLASS_LOADER_NAME;

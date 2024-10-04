@@ -80,8 +80,8 @@
     <disruptor.version>3.4.4</disruptor.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <felix.version>7.0.5</felix.version>
-    <groovy.version>4.0.22</groovy.version>
-    <guava.version>33.3.0-jre</guava.version>
+    <groovy.version>4.0.23</groovy.version>
+    <guava.version>33.3.1-jre</guava.version>
     <h2.version>2.2.224</h2.version>
     <hamcrest.version>3.0</hamcrest.version>
     <HdrHistogram.version>2.2.2</HdrHistogram.version>
@@ -108,7 +108,6 @@
     <jeromq.version>0.6.0</jeromq.version>
     <jmdns.version>3.5.12</jmdns.version>
     <jmh.version>1.37</jmh.version>
-    <json-unit.version>2.40.1</json-unit.version>
     <junit.version>4.13.2</junit.version>
     <junit-jupiter.version>5.10.3</junit-jupiter.version>
     <junit-pioneer.version>1.9.1</junit-pioneer.version>
@@ -574,12 +573,6 @@
         <groupId>net.java.dev.jna</groupId>
         <artifactId>jna</artifactId>
         <version>${jna.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>net.javacrumbs.json-unit</groupId>
-        <artifactId>json-unit</artifactId>
-        <version>${json-unit.version}</version>
       </dependency>
 
       <dependency>
@@ -1189,6 +1182,8 @@
                     <processor>org.apache.logging.log4j.docgen.processor.DescriptorGenerator</processor>
                     <!-- Process sources using `org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor` to generate `Log4j2Plugins.dat` -->
                     <processor>org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor</processor>
+                    <!-- Generates GraalVM reachability metadata -->
+                    <processor>org.apache.logging.log4j.core.config.plugins.processor.GraalVmProcessor</processor>
                   </annotationProcessors>
                   <compilerArgs>
                     <!-- Provide `org.apache.logging.log4j.docgen.processor.DescriptorGenerator` arguments: -->
@@ -1198,6 +1193,9 @@
                     <arg>-Alog4j.docgen.version=${project.version}</arg>
                     <arg>-Alog4j.docgen.description=${project.description}</arg>
                     <arg>-Alog4j.docgen.typeFilter.excludePattern=${log4j.docgen.typeFilter.excludePattern}</arg>
+                    <!-- Provide arguments for the GraalVM processor -->
+                    <arg>-Alog4j.graalvm.groupId=${project.groupId}</arg>
+                    <arg>-Alog4j.graalvm.artifactId=${project.artifactId}</arg>
                   </compilerArgs>
                   <proc>only</proc>
                 </configuration>

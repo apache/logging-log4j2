@@ -1027,5 +1027,5 @@ While annotating your lookup with `@Plugin`, you need to make sure that
 
 You can check out the following files for examples:
 
-* {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/lookup/DateLookup.java[`LowerLookup.java`] – <<LowerLookup>> lower-cases its input
+* {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/lookup/LowerLookup.java[`LowerLookup.java`] – <<LowerLookup>> lower-cases its input
 * {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/lookup/EventLookup.java[`EventLookup.java`] – <<EventLookup>> extracts specified fields from the effective `LogEvent` in the context
