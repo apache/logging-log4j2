@@ -22,9 +22,12 @@ import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceProvider;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -39,7 +42,7 @@ import javax.lang.model.element.ElementVisitor;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.SimpleElementVisitor7;
-import javax.tools.Diagnostic.Kind;
+import javax.tools.Diagnostic;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -50,7 +53,7 @@ import org.apache.logging.log4j.util.Strings;
  * Annotation processor for pre-scanning Log4j 2 plugins.
  */
 @ServiceProvider(value = Processor.class, resolution = Resolution.OPTIONAL)
-@SupportedAnnotationTypes("org.apache.logging.log4j.core.config.plugins.*")
+@SupportedAnnotationTypes("org.apache.logging.log4j.core.config.plugins.Plugin")
 public class PluginProcessor extends AbstractProcessor {
 
     // TODO: this could be made more abstract to allow for compile-time and run-time plugin processing
@@ -64,6 +67,7 @@ public class PluginProcessor extends AbstractProcessor {
     public static final String PLUGIN_CACHE_FILE =
             "META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat";
 
+    private final List<Element> processedElements = new ArrayList<>();
     private final PluginCache pluginCache = new PluginCache();
 
     @Override
@@ -74,26 +78,33 @@ public class PluginProcessor extends AbstractProcessor {
     @Override
     public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
         final Messager messager = processingEnv.getMessager();
-        messager.printMessage(Kind.NOTE, "Processing Log4j annotations");
-        try {
+        // Process the elements for this round
+        if (!annotations.isEmpty()) {
             final Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(Plugin.class);
-            if (elements.isEmpty()) {
-                messager.printMessage(Kind.NOTE, "No elements to process");
-                return false;
-            }
             collectPlugins(elements);
-            writeCacheFile(elements.toArray(EMPTY_ELEMENT_ARRAY));
-            messager.printMessage(Kind.NOTE, "Annotations processed");
-            return true;
-        } catch (final Exception ex) {
-            ex.printStackTrace();
-            error(ex.getMessage());
-            return false;
+            processedElements.addAll(elements);
         }
-    }
-
-    private void error(final CharSequence message) {
-        processingEnv.getMessager().printMessage(Kind.ERROR, message);
+        // Write the cache file
+        if (roundEnv.processingOver() && !processedElements.isEmpty()) {
+            try {
+                messager.printMessage(
+                        Diagnostic.Kind.NOTE,
+                        String.format(
+                                "%s: writing plugin descriptor for %d Log4j Plugins to `%s`.",
+                                PluginProcessor.class.getSimpleName(), processedElements.size(), PLUGIN_CACHE_FILE));
+                writeCacheFile(processedElements.toArray(EMPTY_ELEMENT_ARRAY));
+            } catch (final Exception e) {
+                StringWriter sw = new StringWriter();
+                sw.append(PluginProcessor.class.getSimpleName())
+                        .append(": unable to write plugin descriptor to file ")
+                        .append(PLUGIN_CACHE_FILE)
+                        .append("\n");
+                e.printStackTrace(new PrintWriter(sw));
+                processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, sw.toString());
+            }
+        }
+        // Do not claim the annotations to allow other annotation processors to run
+        return false;
     }
 
     private void collectPlugins(final Iterable<? extends Element> elements) {
@@ -159,7 +170,7 @@ public class PluginProcessor extends AbstractProcessor {
         private final Elements elements;
 
         private PluginAliasesElementVisitor(final Elements elements) {
-            super(Collections.<PluginEntry>emptyList());
+            super(Collections.emptyList());
             this.elements = elements;
         }
 
