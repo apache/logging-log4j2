@@ -22,8 +22,12 @@
 
 This releases contains ...
 
-=== JMX changes
+=== GraalVM reachability metadata
 
-Starting in version 2.24.0, JMX support is disabled by default and can be re-enabled via the `log4j2.disableJmx=false` system property.
+Log4j Core and all its extension modules have been enhanced with embedded
+https://www.graalvm.org/latest/reference-manual/native-image/metadata/[GraalVM reachability metadata].
+This will allow the generation of GraalVM native images out-of-the-box, without any additional step necessary.
+
+See our xref:graalvm.adoc[GraalVM guide] for more details.
 
 <#include "../.changelog.adoc.ftl">
