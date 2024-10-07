@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 @UsingTestProperties
 public class TempLoggingDirectoryTest {
 
-    private static final Pattern PER_CLASS_PATH = Pattern.compile("TempLoggingDirectoryTest\\d+");
+    private static final Pattern PER_CLASS_PATH = Pattern.compile("TempLoggingDirectoryTest_\\d{2}_\\d+");
     private static final Path PER_TEST_PATH = Paths.get("testInjectedFields");
 
     @TempLoggingDir
