@@ -16,28 +16,23 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
-import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.appender.internal.DefaultConsoleStreamSupplier;
-import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
-import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.plugins.Configurable;
-import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
-import org.jspecify.annotations.Nullable;
 
 /**
  * Appends log events to <code>System.out</code> or <code>System.err</code> using a layout specified by the user. The
@@ -166,30 +161,15 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
 
         @Override
         public ConsoleAppender build() {
+            if (direct && follow) {
+                LOGGER.error("Cannot use both `direct` and `follow` on ConsoleAppender.");
+                return null;
+            }
             final Layout layout = getOrCreateLayout(target.getDefaultCharset());
 
-            final Configuration configuration = getConfiguration();
-            final PropertyEnvironment propertyEnvironment;
-            final List<ConsoleStreamSupplier> suppliers;
-            if (configuration != null) {
-                propertyEnvironment = configuration.getLoggerContext() != null
-                        ? configuration.getLoggerContext().getEnvironment()
-                        : PropertyEnvironment.getGlobal();
-
-                suppliers = configuration.getComponent(new @Namespace(ConsoleStreamSupplier.NAMESPACE) Key<>() {});
-            } else {
-                propertyEnvironment = PropertyEnvironment.getGlobal();
-                suppliers = List.of(new DefaultConsoleStreamSupplier());
-            }
-
-            final OutputStream stream = suppliers.stream()
-                    .map(s -> s.getOutputStream(follow, direct, target, propertyEnvironment))
-                    .filter(Objects::nonNull)
-                    .findFirst()
-                    .orElse(null);
-            if (stream == null) {
-                LOGGER.warn("No output stream found for target {}", target);
-            }
+            OutputStream stream = direct
+                    ? getDirectOutputStream(target)
+                    : follow ? getFollowOutputStream(target) : getDefaultOutputStream(target);
 
             final String managerName = target.name() + '.' + follow + '.' + direct;
             final OutputStreamManager manager =
@@ -205,6 +185,83 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         // LOG4J2-1176 DefaultConfiguration should not share OutputStreamManager instances to avoid memory leaks.
         final String managerName = ConsoleAppender.DEFAULT_TARGET.name() + ".false.false-" + COUNT.get();
         return OutputStreamManager.getManager(managerName, new FactoryData(os, managerName, layout), factory);
+    }
+
+    private static OutputStream getDefaultOutputStream(Target target) {
+        return new CloseShieldOutputStream(target == Target.SYSTEM_OUT ? System.out : System.err);
+    }
+
+    private static OutputStream getDirectOutputStream(Target target) {
+        return new CloseShieldOutputStream(
+                new FileOutputStream(target == Target.SYSTEM_OUT ? FileDescriptor.out : FileDescriptor.err));
+    }
+
+    private static OutputStream getFollowOutputStream(Target target) {
+        return target == Target.SYSTEM_OUT ? new SystemOutStream() : new SystemErrStream();
+    }
+
+    /**
+     * An implementation of OutputStream that redirects to the current System.err.
+     */
+    private static class SystemErrStream extends OutputStream {
+        public SystemErrStream() {}
+
+        @Override
+        public void close() {
+            // do not close sys err!
+        }
+
+        @Override
+        public void flush() {
+            System.err.flush();
+        }
+
+        @Override
+        public void write(final byte[] b) throws IOException {
+            System.err.write(b);
+        }
+
+        @Override
+        public void write(final byte[] b, final int off, final int len) throws IOException {
+            System.err.write(b, off, len);
+        }
+
+        @Override
+        public void write(final int b) {
+            System.err.write(b);
+        }
+    }
+
+    /**
+     * An implementation of OutputStream that redirects to the current System.out.
+     */
+    private static class SystemOutStream extends OutputStream {
+        public SystemOutStream() {}
+
+        @Override
+        public void close() {
+            // do not close sys out!
+        }
+
+        @Override
+        public void flush() {
+            System.out.flush();
+        }
+
+        @Override
+        public void write(final byte[] b) throws IOException {
+            System.out.write(b);
+        }
+
+        @Override
+        public void write(final byte[] b, final int off, final int len) throws IOException {
+            System.out.write(b, off, len);
+        }
+
+        @Override
+        public void write(final int b) throws IOException {
+            System.out.write(b);
+        }
     }
 
     /**
@@ -249,24 +306,5 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
 
     public Target getTarget() {
         return target;
-    }
-
-    /**
-     * Abstracts the various ways `System.out` can be accessed.
-     *
-     * @since 3.0.0
-     */
-    public interface ConsoleStreamSupplier {
-
-        /**
-         * The Log4j plugin namespace of plugins implementing this interface.
-         */
-        String NAMESPACE = "Console";
-
-        /**
-         * @return Selects the output stream to use or {@code null} in case of error.
-         */
-        @Nullable
-        OutputStream getOutputStream(boolean follow, boolean direct, Target target, PropertyEnvironment properties);
     }
 }
