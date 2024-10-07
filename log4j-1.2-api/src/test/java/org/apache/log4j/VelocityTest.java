@@ -23,9 +23,9 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * Note that this test must clean up after itself or it may cause other tests to fail.
@@ -34,13 +34,13 @@ public class VelocityTest {
 
     private static LoggerContext context;
 
-    @BeforeClass
-    public static void setupClass() {
+    @BeforeAll
+    public static void setupAll() {
         context = LoggerContext.getContext(false);
     }
 
-    @AfterClass
-    public static void tearDownClass() {
+    @AfterAll
+    public static void tearDownAll() {
         Configurator.shutdown(context);
         StatusLogger.getLogger().reset();
     }
