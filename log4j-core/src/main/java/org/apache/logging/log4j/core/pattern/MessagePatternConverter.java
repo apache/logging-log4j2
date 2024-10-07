@@ -52,7 +52,7 @@ public class MessagePatternConverter extends LogEventPatternConverter {
             for (final String option : options) {
                 switch (toRootUpperCase(option)) {
                     case "ANSI":
-                        return new JAnsiTextRenderer(options, JAnsiTextRenderer.DEFAULT_MESSAGE_STYLE_MAP);
+                        return new AnsiTextRenderer(options, AnsiTextRenderer.DEFAULT_MESSAGE_STYLE_MAP);
                     case "HTML":
                         return new HtmlTextRenderer(options);
                 }

@@ -211,12 +211,6 @@ The optional footer to include at the bottom of each log file
 
 If `true`, do not output ANSI escape codes.
 
-[NOTE]
-====
-If you use a Console Appender in xref:manual/appenders.adoc#ConsoleAppender-jansi[`JANSI` mode], you should keep this setting at its default `false` value.
-The JAnsi library will take care of stripping ANSI Escape if the output of the console is not a terminal.
-====
-
 [#plugin-attr-noConsoleNoAnsi]
 ==== `noConsoleNoAnsi`
 
@@ -226,7 +220,7 @@ The JAnsi library will take care of stripping ANSI Escape if the output of the c
 |Default value |`false`
 |===
 
-If `true` and `System.console()` is null, do not output ANSI escape codes
+If `true` and `System.console()` is `null`, do not output ANSI escape codes
 
 [#plugin-elements]
 === Plugin elements
@@ -745,7 +739,7 @@ fqcn
 ==== Highlight
 
 Adds ANSI colors to the result of the enclosed pattern based on the current event's {log4j2-url}/manual/customloglevels.html[logging level].
-Windows users should refer to <<jansi>>.
+Windows users should refer to <<ansi-windows>>.
 
 .link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/HighlightConverter.html[`HighlightConverter`] specifier grammar
 [source,text]
@@ -1047,7 +1041,7 @@ message{lookups}{ansi}
 ----
 
 Add `\{ansi}` to render messages with ANSI escape codes.
-Windows users should refer to <<jansi>>.
+Windows users should refer to <<ansi-windows>>.
 
 The default syntax for embedded ANSI codes is:
 
@@ -1241,7 +1235,7 @@ The counter is a static variable, so will only be unique within applications tha
 
 Use ANSI escape sequences to style the result of the enclosed pattern.
 The syntax of the `style_expression` parameter is described in <<ansi-modifiers>>.
-Windows users should also refer to <<jansi>>.
+Windows users should also refer to <<ansi-windows>>.
 
 .link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/StyleConverter.html[`StyleConverter`] specifier grammar
 [source,text]
@@ -1591,22 +1585,17 @@ If your terminal supports 24-bit colors, you can specify:
 * the text color using the `#rrggbb` syntax, e.g. `#dc143c` will color your text crimson,
 * the background color using the `bg_#rrggbb` syntax, e.g. `bg_#87ceeb` will use a sky blue background.
 
-[#jansi]
+[#ansi-windows]
 ==== ANSI styling on Windows
 
-ANSI escape sequences are supported natively on many platforms, but not by default on Windows.
-To enable ANSI support add the
-http://fusesource.github.io/jansi/[Jansi]
-dependency to your application, and set xref:manual/systemproperties.adoc#log4j.console.jansiEnabled[the `log4j.console.jansiEnabled` system property] to `true`.
-This allows Log4j to use Jansi to add ANSI escape codes when writing to the console.
+ANSI escape sequences are supported natively on many platforms, but is disabled by default in `cmd.exe` on Windows.
+To enable ANSI escape sequences, create a registry key of name `HKEY_CURRENT_USER\Console\VirtualTerminalLevel` of type `DWORD` and set its value to `0x1`.
 
-[NOTE]
-====
-Before Log4j 2.10, Jansi was enabled by default.
-The fact that Jansi requires native code means that Jansi can only be loaded by a single class loader.
-For web applications, this means the Jansi jar has to be in the web container's classpath.
-To avoid causing problems for web applications, Log4j no longer automatically tries to load Jansi without explicit configuration from Log4j 2.10 onward.
-====
+See
+https://devblogs.microsoft.com/commandline/understanding-windows-console-host-settings/[Understanding Windows Console Host Settings]
+and
+https://learn.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences[Console Virtual Terminal Sequences]
+Microsoft documentation for more details.
 
 [#garbage-free]
 === Garbage-free configuration

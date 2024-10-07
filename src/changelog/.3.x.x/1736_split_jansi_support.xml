@@ -4,5 +4,5 @@
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="changed">
   <issue id="1736" link="https://github.com/apache/logging-log4j2/issues/1736"/>
-  <description format="asciidoc">Move JAnsi support to a new `log4j-jansi` module and upgrade to version 2.x of the library.</description>
+  <description format="asciidoc">Remove JAnsi library support, since Windows console supports ANSI escapes now.</description>
 </entry>

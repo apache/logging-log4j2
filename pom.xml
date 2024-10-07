@@ -243,7 +243,6 @@
     <module>log4j-csv</module>
     <module>log4j-docker</module>
     <module>log4j-gc-test</module>
-    <module>log4j-jansi</module>
     <module>log4j-jctools</module>
     <module>log4j-jdbc</module>
     <module>log4j-jdbc-dbcp2</module>
@@ -344,7 +343,6 @@
     <site-commons-logging.version>1.3.4</site-commons-logging.version>
     <site-conversant.version>1.2.21</site-conversant.version>
     <site-flume.version>1.11.0</site-flume.version>
-    <site-jansi.version>1.18</site-jansi.version>
     <site-je.version>18.3.12</site-je.version>
     <site-log4j-core.version>3.0.0-beta2</site-log4j-core.version>
     <site-log4j-jakarta.version>3.0.0-alpha1</site-log4j-jakarta.version>
@@ -455,12 +453,6 @@
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-iostreams</artifactId>
         <version>${log4j-api.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-jansi</artifactId>
-        <version>${project.version}</version>
       </dependency>
 
       <dependency>
@@ -821,12 +813,6 @@
             <groupId>org.apache.flume</groupId>
             <artifactId>flume-ng-embedded-agent</artifactId>
             <version>${site-flume.version}</version>
-          </dependency>
-
-          <dependency>
-            <groupId>org.fusesource.jansi</groupId>
-            <artifactId>jansi</artifactId>
-            <version>${site-jansi.version}</version>
           </dependency>
 
           <dependency>

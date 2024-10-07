@@ -59,7 +59,6 @@ asciidoc:
     disruptor-version: "1.2.3-disruptor"
     flume-version: "1.2.3-flume"
     jackson-version: "1.2.3-jackson"
-    jansi-version: "1.2.3-jansi"
     je-version: "1.2.3-je"
     log4j-api-version: "1.2.3-api"
     log4j-core-version: "1.2.3-core"

@@ -170,13 +170,6 @@ include::partial$manual/systemproperties/properties-log-event.adoc[leveloffset=+
 
 include::partial$manual/systemproperties/properties-garbage-collection.adoc[leveloffset=+2]
 
-[id=properties-jansi]
-=== JANSI
-
-If the https://fusesource.github.io/jansi/[JANSI] library is on the runtime classpath of the application, the following property can be used to control its usage:
-
-include::partial$manual/systemproperties/properties-jansi.adoc[leveloffset=+2]
-
 [id=properties-log4j-core-thread-context]
 === Thread context
 

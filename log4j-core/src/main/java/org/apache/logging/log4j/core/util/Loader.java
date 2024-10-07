@@ -276,26 +276,6 @@ public final class Loader {
     }
 
     /**
-     * Determines if a named Class can be loaded or not.
-     *
-     * @param className The class name.
-     * @return {@code true} if the class could be found or {@code false} otherwise.
-     */
-    public static boolean isClassAvailable(final String className) {
-        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        try {
-            Thread.currentThread().setContextClassLoader(getClassLoader());
-            return LoaderUtil.isClassAvailable(className);
-        } finally {
-            Thread.currentThread().setContextClassLoader(contextClassLoader);
-        }
-    }
-
-    public static boolean isJansiAvailable() {
-        return isClassAvailable("org.fusesource.jansi.AnsiRenderer");
-    }
-
-    /**
      * Loads a class by name. This method respects the {@link LoaderProperties#ignoreTccl()} Log4j property. If this
      * property is
      * specified and set to anything besides {@code false}, then the default ClassLoader will be used.

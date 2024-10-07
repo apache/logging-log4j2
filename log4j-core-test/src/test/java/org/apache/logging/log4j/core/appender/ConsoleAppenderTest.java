@@ -33,9 +33,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.ConsoleAppender.Target;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.core.test.TestConstants;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,7 +42,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-@SetTestProperty(key = TestConstants.CONSOLE_JANSI_ENABLED, value = "false")
 public class ConsoleAppenderTest {
 
     ByteArrayOutputStream baos;

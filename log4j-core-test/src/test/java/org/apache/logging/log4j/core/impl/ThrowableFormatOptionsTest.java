@@ -28,7 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.core.pattern.AnsiEscape;
-import org.apache.logging.log4j.core.pattern.JAnsiTextRenderer;
+import org.apache.logging.log4j.core.pattern.AnsiTextRenderer;
 import org.apache.logging.log4j.core.pattern.TextRenderer;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
@@ -131,9 +131,9 @@ final class ThrowableFormatOptionsTest {
     private void testFullAnsiEmptyConfig(final ThrowableFormatOptions tfo) {
         final TextRenderer textRenderer = tfo.getTextRenderer();
         assertNotNull(textRenderer);
-        assertInstanceOf(JAnsiTextRenderer.class, textRenderer);
-        final JAnsiTextRenderer jansiRenderer = (JAnsiTextRenderer) textRenderer;
-        final Map<String, String> styleMap = jansiRenderer.getStyleMap();
+        assertInstanceOf(AnsiTextRenderer.class, textRenderer);
+        final AnsiTextRenderer ansiRenderer = (AnsiTextRenderer) textRenderer;
+        final Map<String, String> styleMap = ansiRenderer.getStyleMap();
         // We have defaults
         assertFalse(styleMap.isEmpty());
         assertNotNull(styleMap.get(toRootUpperCase("Name")));
@@ -148,9 +148,9 @@ final class ThrowableFormatOptionsTest {
                 test(new String[] {"full", "ansi(Warning=red)"}, Integer.MAX_VALUE, Strings.LINE_SEPARATOR, null);
         final TextRenderer textRenderer = tfo.getTextRenderer();
         assertNotNull(textRenderer);
-        assertInstanceOf(JAnsiTextRenderer.class, textRenderer);
-        final JAnsiTextRenderer jansiRenderer = (JAnsiTextRenderer) textRenderer;
-        final Map<String, String> styleMap = jansiRenderer.getStyleMap();
+        assertInstanceOf(AnsiTextRenderer.class, textRenderer);
+        final AnsiTextRenderer ansiRenderer = (AnsiTextRenderer) textRenderer;
+        final Map<String, String> styleMap = ansiRenderer.getStyleMap();
         assertThat(styleMap.get(toRootUpperCase("Warning"))).isEqualTo(AnsiEscape.createSequence("RED"));
     }
 
@@ -166,9 +166,9 @@ final class ThrowableFormatOptionsTest {
                 null);
         final TextRenderer textRenderer = tfo.getTextRenderer();
         assertNotNull(textRenderer);
-        assertInstanceOf(JAnsiTextRenderer.class, textRenderer);
-        final JAnsiTextRenderer jansiRenderer = (JAnsiTextRenderer) textRenderer;
-        final Map<String, String> styleMap = jansiRenderer.getStyleMap();
+        assertInstanceOf(AnsiTextRenderer.class, textRenderer);
+        final AnsiTextRenderer ansiRenderer = (AnsiTextRenderer) textRenderer;
+        final Map<String, String> styleMap = ansiRenderer.getStyleMap();
         assertThat(styleMap.get(toRootUpperCase("Warning"))).isEqualTo(AnsiEscape.createSequence("RED"));
         assertThat(styleMap.get(toRootUpperCase("Key"))).isEqualTo(AnsiEscape.createSequence("BLUE"));
         assertThat(styleMap.get(toRootUpperCase("Value"))).isEqualTo(AnsiEscape.createSequence("CYAN"));
@@ -186,9 +186,9 @@ final class ThrowableFormatOptionsTest {
                 null);
         final TextRenderer textRenderer = tfo.getTextRenderer();
         assertNotNull(textRenderer);
-        assertInstanceOf(JAnsiTextRenderer.class, textRenderer);
-        final JAnsiTextRenderer jansiRenderer = (JAnsiTextRenderer) textRenderer;
-        final Map<String, String> styleMap = jansiRenderer.getStyleMap();
+        assertInstanceOf(AnsiTextRenderer.class, textRenderer);
+        final AnsiTextRenderer ansiRenderer = (AnsiTextRenderer) textRenderer;
+        final Map<String, String> styleMap = ansiRenderer.getStyleMap();
         assertThat(styleMap.get(toRootUpperCase("Warning"))).isEqualTo(AnsiEscape.createSequence("RED"));
         assertThat(styleMap.get(toRootUpperCase("Key"))).isEqualTo(AnsiEscape.createSequence("BLUE", "BG_RED"));
         assertThat(styleMap.get(toRootUpperCase("Value")))

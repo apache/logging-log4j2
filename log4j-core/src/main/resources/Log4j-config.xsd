@@ -696,7 +696,7 @@
                <annotation>
                   <documentation>
                      Write directly to java.io.FileDescriptor and bypass java.lang.System.out/.err. Can give up to 10x performance boost when the
-                     output is redirected to file or other process. Cannot be used with Jansi on Windows. Cannot be used with follow.
+                     output is redirected to file or other process. Cannot be used with follow.
                   </documentation>
                </annotation>
             </attribute>
@@ -704,7 +704,7 @@
                <annotation>
                   <documentation>
                      Identifies whether the appender honors reassignments of System.out or System.err via System.setOut or System.setErr made after
-                     configuration. Note that the follow attribute cannot be used with Jansi on Windows. Cannot be used with direct.
+                     configuration. Cannot be used with direct.
                   </documentation>
                </annotation>
             </attribute>

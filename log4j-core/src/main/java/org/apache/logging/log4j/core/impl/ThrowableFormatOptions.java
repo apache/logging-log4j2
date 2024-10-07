@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import org.apache.logging.log4j.core.pattern.JAnsiTextRenderer;
+import org.apache.logging.log4j.core.pattern.AnsiTextRenderer;
 import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
 import org.apache.logging.log4j.core.pattern.TextRenderer;
 import org.apache.logging.log4j.core.util.Patterns;
@@ -290,8 +290,8 @@ public final class ThrowableFormatOptions {
                     final String styleMapStr = option.equals("ansi")
                             ? Strings.EMPTY
                             : option.substring("ansi(".length(), option.length() - 1);
-                    ansiRenderer = new JAnsiTextRenderer(
-                            new String[] {null, styleMapStr}, JAnsiTextRenderer.DEFAULT_EXCEPTION_STYLE_MAP);
+                    ansiRenderer = new AnsiTextRenderer(
+                            new String[] {null, styleMapStr}, AnsiTextRenderer.DEFAULT_EXCEPTION_STYLE_MAP);
                 } else if (option.startsWith("S(") && option.endsWith(")")) {
                     suffix = option.substring("S(".length(), option.length() - 1);
                 } else if (option.startsWith("suffix(") && option.endsWith(")")) {

@@ -54,7 +54,6 @@ import org.jspecify.annotations.Nullable;
 public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputStreamManager> {
 
     public static final String PLUGIN_NAME = "Console";
-    private static final String JANSI_CLASS = "org.fusesource.jansi.WindowsAnsiOutputStream";
     private static final ConsoleManagerFactory factory = new ConsoleManagerFactory();
     private static final Target DEFAULT_TARGET = Target.SYSTEM_OUT;
     private static final AtomicInteger COUNT = new AtomicInteger();

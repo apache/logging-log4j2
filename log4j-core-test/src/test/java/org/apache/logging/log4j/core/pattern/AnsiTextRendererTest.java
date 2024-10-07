@@ -25,7 +25,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-class JAnsiTextRendererTest {
+class AnsiTextRendererTest {
 
     public static Stream<Arguments> testRendering() {
         return Stream.of(
@@ -47,7 +47,7 @@ class JAnsiTextRendererTest {
     @ParameterizedTest
     @MethodSource
     void testRendering(final String format, final String text, final String expected) {
-        final JAnsiTextRenderer renderer = new JAnsiTextRenderer(new String[] {"ansi", format}, Map.of());
+        final AnsiTextRenderer renderer = new AnsiTextRenderer(new String[] {"ansi", format}, Map.of());
         final StringBuilder actual = new StringBuilder();
         renderer.render(new StringBuilder(text), actual);
         assertThat(actual.toString())

@@ -33,7 +33,9 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Renders an input as ANSI escaped output.
  * <p>
- * Uses the JAnsi rendering syntax as the default to render a message into an ANSI escaped string.
+ * Uses the
+ * <a href="https://www.javadoc.io/doc/org.jline/jline/latest/org/jline/jansi/AnsiRenderer.html">JLine AnsiRenderer syntax</a>
+ * to render a message into an ANSI escaped string.
  * </p>
  * <p>
  * The default syntax for embedded ANSI codes is:
@@ -72,10 +74,13 @@ import org.apache.logging.log4j.status.StatusLogger;
  * logger.info("@|KeyStyle {}|@ = @|ValueStyle {}|@", entry.getKey(), entry.getValue());
  * </pre>
  *
- * Note: This class originally copied and then heavily modified code from JAnsi's AnsiRenderer (which is licensed as
- * Apache 2.0.)
+ * <p>
+ *     <strong>Note:</strong> this class was originally copied and then heavily modified from
+ *     <a href="https://www.javadoc.io/doc/org.jline/jline/latest/org/jline/jansi/AnsiRenderer.html">JAnsi/JLine AnsiRenderer</a>,
+ *     licensed under an Apache Software License, version 2.0.
+ * </p>
  */
-public final class JAnsiTextRenderer implements TextRenderer {
+public final class AnsiTextRenderer implements TextRenderer {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -165,7 +170,7 @@ public final class JAnsiTextRenderer implements TextRenderer {
     private final int endTokenLen;
     private final Map<String, String> styleMap;
 
-    public JAnsiTextRenderer(final String[] formats, final Map<String, String> defaultStyleMap) {
+    public AnsiTextRenderer(final String[] formats, final Map<String, String> defaultStyleMap) {
         // The format string is a list of whitespace-separated expressions:
         // Key=AnsiEscape(,AnsiEscape)*
         if (formats.length > 1) {
@@ -283,7 +288,7 @@ public final class JAnsiTextRenderer implements TextRenderer {
 
     @Override
     public String toString() {
-        return "JAnsiMessageRenderer [beginToken=" + beginToken + ", beginTokenLen=" + beginTokenLen + ", endToken="
+        return "AnsiMessageRenderer [beginToken=" + beginToken + ", beginTokenLen=" + beginTokenLen + ", endToken="
                 + endToken + ", endTokenLen=" + endTokenLen + ", styleMap=" + styleMap + "]";
     }
 }

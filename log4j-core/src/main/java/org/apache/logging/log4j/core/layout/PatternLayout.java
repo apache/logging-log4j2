@@ -644,8 +644,7 @@ public final class PatternLayout extends AbstractStringLayout {
 
         /**
          * @param disableAnsi
-         *        If {@code "true"} (default is value of system property `log4j.skipJansi`, or `true` if undefined),
-         *        do not output ANSI escape codes
+         *        If {@code true}, do not output ANSI escape codes.
          */
         public Builder setDisableAnsi(final boolean disableAnsi) {
             this.disableAnsi = disableAnsi;

@@ -98,13 +98,6 @@
       <artifactId>log4j-plugins</artifactId>
     </dependency>
 
-    <!-- Required for console color support in Windows -->
-    <dependency>
-      <groupId>org.fusesource.jansi</groupId>
-      <artifactId>jansi</artifactId>
-      <optional>true</optional>
-    </dependency>
-
     <!-- The dependency on the plugin processor is only required to ensure the processor is built before core. We
    don't want the dependency to be included by consumers -->
     <dependency>

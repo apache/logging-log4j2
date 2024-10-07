@@ -214,7 +214,7 @@ They are documented in separate pages based on their target resource:
 === Console Appender
 
 As one might expect, the Console Appender writes its output to either the standard output or standard error output.
-The appender supports four different ways to access the output streams:
+The appender supports three different ways to access the output streams:
 
 `direct`::
 This mode gives the best performance.
@@ -233,39 +233,6 @@ It can be enabled by setting the <<ConsoleAppender-attr-follow,`follow`>> attrib
 This setting might be useful in multi-application environments.
 Some application servers modify `System.out` and `System.err` to always point to the currently running application.
 ====
-
-[#ConsoleAppender-jansi]
-`JANSI`::
-If the
-xref:components.adoc#log4j-jansi[`log4j-jansi` extension]
-is available, the Console appender will use the
-https://fusesource.github.io/jansi/[JAnsi library]
-to handle ANSI escapes.
-The library:
-+
---
-* Implement ANSI escape handling on old Windows consoles.
-* Strips ANSI escape codes if process output is being redirected and not attached to a terminal
---
-+
-See https://github.com/fusesource/jansi?tab=readme-ov-file#features[Features of JAnsi] for more details.
-+
-[TIP]
-====
-Support for ANSI escape sequences was added to Windows 10 console around 2017.
-See
-https://superuser.com/questions/413073/windows-console-with-ansi-colors-handling[Windows console with ANSI colors handling]
-for more details.
-====
-+
-The `JANSI` mode can be disabled by setting the
-xref:manual/systemproperties.adoc#log4j.console.jansiEnabled[`log4j.console.jansiEnabled`]
-configuration attribute to `false`.
-Additional runtime dependencies are required to use JAnsi:
-+
---
-include::partial$components/log4j-jansi.adoc[]
---
 
 [#ConsoleAppender-attributes]
 .Console Appender configuration attributes
@@ -311,9 +278,7 @@ If other logging backends or the application itself uses `System.out/System.err`
 ====
 
 This setting is incompatible with the
-<<ConsoleAppender-attr-follow,`follow` attribute>>
-and
-xref:manual/systemproperties.adoc#log4j.console.jansiEnabled[JANSI support].
+<<ConsoleAppender-attr-follow,`follow` attribute>>.
 
 | [[ConsoleAppender-attr-follow]]
 follow
@@ -328,9 +293,7 @@ https://docs.oracle.com/javase/8/docs/api/java/lang/System.html#setOut-java.io.P
 Otherwise, the value of `System.out` (resp. `System.err`) at configuration time will be used.
 
 This setting is incompatible with the
-<<ConsoleAppender-attr-direct,`direct` attribute>>
-and
-xref:manual/systemproperties.adoc#log4j.console.jansiEnabled[JANSI support].
+<<ConsoleAppender-attr-direct,`direct` attribute>>.
 
 | [[ConsoleAppender-attr-ignoreExceptions]]
 ignoreExceptions
