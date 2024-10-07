@@ -15,25 +15,23 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="OFF" name="JCToolsBlockingQueueFactoryTest">
-
+<Configuration xmlns="https://logging.apache.org/xml/ns"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="
+                   https://logging.apache.org/xml/ns
+                   https://logging.apache.org/xml/ns/log4j-config-2.xsd">
   <Appenders>
-    <Console name="STDOUT">
-      <PatternLayout pattern="%m%n"/>
-    </Console>
-    <List name="List">
-      <PatternLayout pattern="%C %M %m"/>
+    <List name="LIST">
+      <PatternLayout pattern="%m"/>
     </List>
-    <Async name="Async" includeLocation="true" error-ref="STDOUT">
-      <AppenderRef ref="List"/>
+    <Async name="ASYNC">
+      <AppenderRef ref="LIST"/>
       <JCToolsBlockingQueue/>
     </Async>
   </Appenders>
-
   <Loggers>
-    <Root level="debug">
-      <AppenderRef ref="Async"/>
+    <Root level="DEBUG">
+      <AppenderRef ref="ASYNC"/>
     </Root>
   </Loggers>
-
 </Configuration>

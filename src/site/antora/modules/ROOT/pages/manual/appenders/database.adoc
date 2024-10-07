@@ -311,7 +311,7 @@ See <<JdbcAppender-MapMessage>> for more details.
 
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-JdbcAppender[{plugin-reference-marker} Plugin reference for `JDBC`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-JdbcAppender[{plugin-reference-marker} Plugin reference for `JDBC`]
 
 Additional runtime dependencies are required to use the JDBC Appender:
 
@@ -325,7 +325,7 @@ link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/db/jdbc/Con
 that the appender will use to get
 https://docs.oracle.com/javase/8/docs/api/java/sql/Connection.html[`Connection`] objects.
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-ConnectionSource[{plugin-reference-marker} Plugin reference for `ConnectionSource`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-ConnectionSource[{plugin-reference-marker} Plugin reference for `ConnectionSource`]
 
 The following connection sources are available out-of-the-box:
 
@@ -362,9 +362,9 @@ Only the `java:` JNDI protocol is supported.
 
 Additional runtime dependencies are required to use `DataSource`:
 
-include::partial$components/log4j-jndi.adoc[]
+include::partial$components/log4j-jdbc-jndi.adoc[]
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-DataSourceConnectionSource[{plugin-reference-marker} Plugin reference for `DataSource`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-jdbc-jndi_org-apache-logging-log4j-jdbc-jndi-DataSourceConnectionSource[{plugin-reference-marker} Plugin reference for `DataSource`]
 
 [#FactoryMethodConnectionSource]
 ==== `ConnectionFactory`
@@ -402,7 +402,7 @@ The name of the factory method.
 **Required**
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-FactoryMethodConnectionSource[{plugin-reference-marker} Plugin reference for `ConnectionFactory`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-FactoryMethodConnectionSource[{plugin-reference-marker} Plugin reference for `ConnectionFactory`]
 
 [#DriverManagerConnectionSource]
 ==== `DriverManager`
@@ -472,7 +472,7 @@ A list of key/value pairs to pass to `DriverManager`.
 If supplied, the <<DriverManagerConnectionSource-attr-userName,`userName`>> and <<DriverManagerConnectionSource-attr-password,`password`>> attributes will be ignored.
 |===
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-db-jdbc-DriverManagerConnectionSource[{plugin-reference-marker} Plugin reference for `DriverManager`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-jdbc_org-apache-logging-log4j-jdbc-appender-DriverManagerConnectionSource[{plugin-reference-marker} Plugin reference for `DriverManager`]
 
 [#PoolingDriverConnectionSource]
 ==== `PoolingDriver`
@@ -538,7 +538,7 @@ A list of key/value pairs to pass to `DriverManager`.
 
 If supplied, the <<DriverManagerConnectionSource-attr-userName,`userName`>> and <<DriverManagerConnectionSource-attr-password,`password`>> attributes will be ignored.
 
-| [[PoolingDriverConnectionSource-element-PoolingConnectionFactoryConfig]]xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-core-appender-db-jdbc-PoolableConnectionFactoryConfig[`PoolableConnectionFactory`]
+| [[PoolingDriverConnectionSource-element-PoolingConnectionFactoryConfig]]xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-dbcp2-appender-PoolableConnectionFactoryConfig[`PoolableConnectionFactory`]
 | zero or one
 |
 Allows finely tuning the configuration of the DBCP 2 connection pool.
@@ -546,14 +546,14 @@ The available parameters are the same as those provided by DBCP 2.
 See
 https://commons.apache.org/proper/commons-dbcp/configuration.html[DBCP 2 configuration] for more details.
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-core-appender-db-jdbc-PoolableConnectionFactoryConfig[{plugin-reference-marker} Plugin reference for `PoolableConnectionFactory`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-dbcp2-appender-PoolableConnectionFactoryConfig[{plugin-reference-marker} Plugin reference for `PoolableConnectionFactory`]
 |===
 
 Additional runtime dependencies are required for using `PoolingDriver`:
 
 include::partial$components/log4j-jdbc-dbcp2.adoc[]
 
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-core-appender-db-jdbc-PoolingDriverConnectionSource[{plugin-reference-marker} Plugin reference for `PoolingDriver`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-dbcp2-appender-PoolingDriverConnectionSource[{plugin-reference-marker} Plugin reference for `PoolingDriver`]
 
 [#JdbcAppender-MapMessage]
 === Map Message handling

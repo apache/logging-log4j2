@@ -27,7 +27,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import org.apache.commons.compress.utils.IOUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
@@ -69,8 +69,7 @@ public class RollingAppenderSizeWithTimeTest {
                 try {
                     IOUtils.copy(fis, baos);
                 } catch (final Exception ex) {
-                    ex.printStackTrace();
-                    fail("Unable to read " + file.getAbsolutePath());
+                    fail("Unable to read " + file.getAbsolutePath(), ex);
                 }
             }
             final String text = baos.toString(Charset.defaultCharset());

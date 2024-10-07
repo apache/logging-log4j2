@@ -28,7 +28,6 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.DefaultThreadContextStack;
 import org.apache.logging.log4j.util.StringMap;
@@ -56,7 +55,6 @@ public class LogEventFixtures {
         final IOException ioException = new IOException("testIOEx", cause);
         ioException.addSuppressed(new IndexOutOfBoundsException("I am suppressed exception 1"));
         ioException.addSuppressed(new IndexOutOfBoundsException("I am suppressed exception 2"));
-        final ThrowableProxy throwableProxy = new ThrowableProxy(ioException);
         final StringMap contextData = ContextDataFactory.createContextData();
         contextData.putValue("MDC.A", "A_Value");
         contextData.putValue("MDC.B", "B_Value");
@@ -71,7 +69,6 @@ public class LogEventFixtures {
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("Msg")) //
                 .setThrown(ioException) //
-                .setThrownProxy(throwableProxy) //
                 .setContextData(contextData) //
                 .setContextStack(contextStack) //
                 .setThreadName("MyThreadName") //
@@ -103,14 +100,11 @@ public class LogEventFixtures {
         assertEquals(expected.getThreadName(), actual.getThreadName());
         assertNotNull("original should have an exception", expected.getThrown());
         assertNull("exception should not be serialized", actual.getThrown());
-        if (includeStacktrace) { // TODO should compare the rest of the ThrowableProxy
-            assertEquals(expected.getThrownProxy(), actual.getThrownProxy());
-        }
         assertEquals(expected.isEndOfBatch(), actual.isEndOfBatch());
         assertEquals(expected.isIncludeLocation(), actual.isIncludeLocation());
 
-        // original: non-null thrown & null thrownProxy
-        // deserialized: null thrown & non-null thrownProxy
+        // original: non-null thrown
+        // deserialized: null thrown
         assertNotEquals(expected.hashCode(), actual.hashCode());
         assertNotEquals(expected, actual);
     }

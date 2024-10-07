@@ -18,11 +18,14 @@ package org.apache.logging.log4j.script.appender.rolling;
 
 import static org.apache.logging.log4j.core.test.TestConstants.setSystemProperty;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assume.assumeFalse;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.LockSupport;
@@ -37,9 +40,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 
-/**
- *
- */
 public class RollingAppenderDeleteScriptFri13thTest {
 
     private static final String CONFIG = "log4j-rolling-with-custom-delete-script-fri13th.xml";
@@ -58,6 +58,9 @@ public class RollingAppenderDeleteScriptFri13thTest {
 
     @Test
     public void testAppender() throws Exception {
+        LocalDate now = LocalDate.now();
+        // Ignore on Friday 13th
+        assumeFalse(now.getDayOfWeek() == DayOfWeek.FRIDAY && now.getDayOfMonth() == 13);
         final var dir = Path.of(DIR);
         Files.createDirectories(dir);
         for (int i = 1; i <= 30; i++) {

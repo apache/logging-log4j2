@@ -76,7 +76,6 @@ public class MutableLogEventTest {
 
     @Test
     public void testInitFromCopiesAllFields() {
-        //        private ThrowableProxy thrownProxy;
         final Log4jLogEvent source = Log4jLogEvent.newBuilder() //
                 .setContextData(CONTEXT_DATA) //
                 .setContextStack(STACK) //
@@ -112,7 +111,6 @@ public class MutableLogEventTest {
         assertEquals(source.getThreadName(), mutable.getThreadName(), "tname");
         assertEquals(source.getThreadPriority(), mutable.getThreadPriority(), "tpriority");
         assertEquals(source.getThrown(), mutable.getThrown(), "throwns");
-        assertEquals(source.getThrownProxy(), mutable.getThrownProxy(), "proxy");
         assertEquals(source.getTimeMillis(), mutable.getTimeMillis(), "millis");
     }
 
@@ -216,7 +214,6 @@ public class MutableLogEventTest {
         assertEquals(0, mutable.getTimeMillis(), "timeMs");
 
         assertNull(mutable.getSource(), "source");
-        assertNull(mutable.getThrownProxy(), "thrownProxy");
 
         mutable.setContextData(CONTEXT_DATA);
         mutable.setContextStack(STACK);
@@ -250,7 +247,6 @@ public class MutableLogEventTest {
         assertNotEquals(0, mutable.getTimeMillis(), "timeMs");
 
         assertNotNull(mutable.getSource(), "source");
-        assertNotNull(mutable.getThrownProxy(), "thrownProxy");
 
         mutable.clear();
         assertEquals(0, mutable.getContextData().size(), "context map");
@@ -263,7 +259,6 @@ public class MutableLogEventTest {
         assertNull(mutable.getThrown(), "thrwn");
 
         assertNull(mutable.getSource(), "source");
-        assertNull(mutable.getThrownProxy(), "thrownProxy");
 
         // primitive fields are NOT reset:
         assertTrue(mutable.isEndOfBatch(), "end of batch");

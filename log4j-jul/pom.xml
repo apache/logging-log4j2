@@ -29,8 +29,6 @@
   <description>The Apache Log4j implementation of java.util.logging</description>
 
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
-
     <!--
       ~ OSGi and JPMS options
       -->
@@ -38,6 +36,10 @@
       <!-- Log4j Core is optional -->
       org.apache.logging.log4j.core.*;resolution:=optional
     </bnd-extra-package-options>
+    <bnd-extra-module-options>
+      <!-- Optional dependencies can not be transitive -->
+      org.apache.logging.log4j.core;transitive=false
+    </bnd-extra-module-options>
 
     <!-- PTS requires using the JUnit Platform, which interferes with JUL initialization -->
     <predictive.test.selection.enabled>false</predictive.test.selection.enabled>

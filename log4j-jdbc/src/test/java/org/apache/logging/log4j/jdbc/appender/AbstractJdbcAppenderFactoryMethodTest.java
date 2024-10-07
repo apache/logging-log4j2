@@ -50,8 +50,7 @@ public abstract class AbstractJdbcAppenderFactoryMethodTest {
     protected AbstractJdbcAppenderFactoryMethodTest(final JdbcRule jdbcRule, final String databaseType) {
         this.rules = RuleChain.emptyRuleChain()
                 .around(jdbcRule)
-                .around(new LoggerContextRule(
-                        "org/apache/logging/log4j/jdbc/appender/log4j2-" + databaseType + "-factory-method.xml"));
+                .around(new LoggerContextRule(getClass().getSimpleName() + ".xml"));
         this.jdbcRule = jdbcRule;
     }
 

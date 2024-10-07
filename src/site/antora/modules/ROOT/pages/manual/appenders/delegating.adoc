@@ -265,31 +265,10 @@ The `SpinPolicy` to apply, when adding elements to the queue.
 .Additional dependencies are required to use `DisruptorBlockingQueue`
 [%collapsible]
 =====
-[tabs]
-====
-Maven::
-+
-[source,xml,subs="+attributes"]
-----
-<dependency>
-  <groupId>com.conversantmedia</groupId>
-  <artifactId>disruptor</artifactId>
-  <version>{conversant-version}</version>
-  <scope>runtime</scope>
-</dependency>
-----
-
-Gradle::
-+
-[source,groovy,subs="+attributes"]
-----
-runtimeOnly 'com.conversantmedia:disruptor:{conversant-version}'
-----
-
-====
+include::partial$features/queue-conversant.adoc[]
 =====
 +
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-DisruptorBlockingQueueFactory[{plugin-reference-marker} Plugin reference for `DisruptorBlockingQueue`]
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-conversant_org-apache-logging-log4j-conversant-DisruptorBlockingQueueFactory[{plugin-reference-marker} Plugin reference for `DisruptorBlockingQueue`]
 
 [#JCToolsBlockingQueueFactory]
 `JCToolsBlockingQueue`::
@@ -541,7 +520,7 @@ It allows adding or updating the keys of the `MapMessage`.
 
 | [[MapRewritePolicy-attr-mode]]mode
 | link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rewrite/MapRewritePolicy.Mode.html[`MapRewritePolicy.Mode`]
-| link:../https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/appender/rewrite/MapRewritePolicy.Mode.html#Add[`Add`]
+| link:../../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rewrite/MapRewritePolicy.Mode.html#Add[`Add`]
 a|
 It determines which map entries to modify:
 

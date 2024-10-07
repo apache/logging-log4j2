@@ -56,7 +56,7 @@ public final class JCToolsBlockingQueueFactory implements BlockingQueueFactory {
     /**
      * BlockingQueue wrapper for JCTools multiple producer single consumer array queue.
      */
-    private static final class MpscBlockingQueue<E> extends MpscArrayQueue<E> implements BlockingQueue<E> {
+    static final class MpscBlockingQueue<E> extends MpscArrayQueue<E> implements BlockingQueue<E> {
 
         private final JCToolsBlockingQueueFactory.WaitStrategy waitStrategy;
 

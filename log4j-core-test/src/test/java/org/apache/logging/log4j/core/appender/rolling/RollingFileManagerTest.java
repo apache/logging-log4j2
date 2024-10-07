@@ -29,6 +29,7 @@ import java.nio.file.Files;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.appender.rolling.action.AbstractAction;
+import org.apache.logging.log4j.core.appender.rolling.action.CompressActionFactoryProvider;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
@@ -49,7 +50,7 @@ public class RollingFileManagerTest {
             final File file;
 
             CustomDirectFileRolloverStrategy(final File file, final StrSubstitutor strSubstitutor) {
-                super(strSubstitutor);
+                super(CompressActionFactoryProvider.newInstance(null), strSubstitutor);
                 this.file = file;
             }
 

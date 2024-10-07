@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.kit.recycler;
 
+import static org.apache.logging.log4j.kit.recycler.internal.CapacityUtil.DEFAULT_CAPACITY;
+
 import org.apache.logging.log4j.kit.env.Log4jProperty;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.jspecify.annotations.NullMarked;
@@ -30,11 +32,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @Log4jProperty(name = "recycler")
 public record RecyclerProperties(@Nullable String factory, @Nullable Integer capacity) {
-    /**
-     * The default recycler capacity: {@code max(2C+1, 8)}, {@code C} denoting the number of available processors
-     */
-    private static final int DEFAULT_CAPACITY =
-            Math.max(2 * Runtime.getRuntime().availableProcessors() + 1, 8);
 
     public RecyclerProperties {
         capacity = validateCapacity(capacity);
@@ -49,5 +46,11 @@ public record RecyclerProperties(@Nullable String factory, @Nullable Integer cap
                     .warn("Invalid recycler capacity {}, using default capacity {}.", capacity, DEFAULT_CAPACITY);
         }
         return DEFAULT_CAPACITY;
+    }
+
+    @Override
+    public Integer capacity() {
+        assert capacity != null;
+        return capacity;
     }
 }

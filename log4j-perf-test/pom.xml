@@ -37,7 +37,29 @@
     <bnd.baseline.skip>true</bnd.baseline.skip>
     <maven.deploy.skip>true</maven.deploy.skip>
     <module.name>org.apache.logging.log4j.perf</module.name>
+
+    <!-- Dependency versions -->
+    <reload4j.version>1.2.25</reload4j.version>
+    <slf4j2.version>2.0.16</slf4j2.version>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j2.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>ch.qos.reload4j</groupId>
+        <artifactId>reload4j</artifactId>
+        <version>${reload4j.version}</version>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <dependency>
@@ -52,6 +74,10 @@
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-async-logger</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-conversant</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -76,14 +102,6 @@
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-plugins</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.conversantmedia</groupId>
-      <artifactId>disruptor</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.lmax</groupId>
-      <artifactId>disruptor</artifactId>
     </dependency>
     <dependency>
       <groupId>com.h2database</groupId>
@@ -113,14 +131,6 @@
       <artifactId>jmh-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>co.elastic.logging</groupId>
-      <artifactId>log4j2-ecs-layout</artifactId>
-    </dependency>
-    <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <scope>compile</scope>
@@ -129,6 +139,10 @@
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
       <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.reload4j</groupId>
+      <artifactId>reload4j</artifactId>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -153,7 +167,7 @@
       </plugin>
 
       <!--
-        ~ Unban Logback.
+        ~ Unban Logback and Reload4j
         -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -166,6 +180,7 @@
                 <bannedDependencies>
                   <includes>
                     <include>ch.qos.logback:*</include>
+                    <include>ch.qos.reload4j:reload4j</include>
                   </includes>
                 </bannedDependencies>
               </rules>

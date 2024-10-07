@@ -17,9 +17,8 @@
 package org.apache.logging.log4j.core.net.ssl;
 
 import java.nio.file.Path;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.Objects;
 import javax.net.ssl.TrustManagerFactory;
 import org.apache.logging.log4j.core.impl.CoreProperties;
 import org.apache.logging.log4j.plugins.Configurable;
@@ -121,21 +120,6 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
         }
     }
 
-    public TrustManagerFactory initTrustManagerFactory() throws NoSuchAlgorithmException, KeyStoreException {
-        final TrustManagerFactory tmFactory = TrustManagerFactory.getInstance(this.trustManagerFactoryAlgorithm);
-        tmFactory.init(this.getKeyStore());
-        return tmFactory;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result =
-                prime * result + ((trustManagerFactoryAlgorithm == null) ? 0 : trustManagerFactoryAlgorithm.hashCode());
-        return result;
-    }
-
     @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
@@ -148,11 +132,7 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
             return false;
         }
         final TrustStoreConfiguration other = (TrustStoreConfiguration) obj;
-        if (trustManagerFactoryAlgorithm == null) {
-            if (other.trustManagerFactoryAlgorithm != null) {
-                return false;
-            }
-        } else if (!trustManagerFactoryAlgorithm.equals(other.trustManagerFactoryAlgorithm)) {
+        if (!Objects.equals(trustManagerFactoryAlgorithm, other.trustManagerFactoryAlgorithm)) {
             return false;
         }
         return true;

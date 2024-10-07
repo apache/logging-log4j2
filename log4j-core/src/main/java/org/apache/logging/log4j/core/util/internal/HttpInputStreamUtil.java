@@ -16,17 +16,24 @@
  */
 package org.apache.logging.log4j.core.util.internal;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.time.Instant;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
+import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Supplier;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Utility method for reading data from an HTTP InputStream.
@@ -36,9 +43,20 @@ public final class HttpInputStreamUtil {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final int NOT_MODIFIED = 304;
     private static final int NOT_AUTHORIZED = 401;
+    private static final int FORBIDDEN = 403;
     private static final int NOT_FOUND = 404;
     private static final int OK = 200;
 
+    /**
+     * Retrieves an HTTP resource if it has been modified.
+     * <p>
+     *     Side effects: if the request is successful, the last modified time of the {@code source}
+     *     parameter is modified.
+     * </p>
+     * @param source The location of the HTTP resource
+     * @param authorizationProvider The authentication data for the HTTP request
+     * @return A {@link Result} object containing the status code and body of the response
+     */
     public static Result getInputStream(
             final LastModifiedSource source,
             final PropertyEnvironment props,
@@ -54,12 +72,16 @@ public final class HttpInputStreamUtil {
                 final int code = connection.getResponseCode();
                 switch (code) {
                     case NOT_MODIFIED: {
-                        LOGGER.debug("Configuration not modified");
+                        LOGGER.debug(
+                                "{} resource {}: not modified since {}",
+                                formatProtocol(source),
+                                () -> source,
+                                () -> Instant.ofEpochMilli(lastModified));
                         result.status = Status.NOT_MODIFIED;
                         return result;
                     }
                     case NOT_FOUND: {
-                        LOGGER.debug("Unable to access {}: Not Found", source.toString());
+                        LOGGER.debug("{} resource {}: not found", formatProtocol(source), () -> source);
                         result.status = Status.NOT_FOUND;
                         return result;
                     }
@@ -67,60 +89,88 @@ public final class HttpInputStreamUtil {
                         try (final InputStream is = connection.getInputStream()) {
                             source.setLastModified(connection.getLastModified());
                             LOGGER.debug(
-                                    "Content was modified for {}. previous lastModified: {}, new lastModified: {}",
-                                    source.toString(),
-                                    lastModified,
-                                    connection.getLastModified());
+                                    "{} resource {}: last modified on {}",
+                                    formatProtocol(source),
+                                    () -> source,
+                                    () -> Instant.ofEpochMilli(connection.getLastModified()));
                             result.status = Status.SUCCESS;
-                            result.inputStream = new ByteArrayInputStream(is.readAllBytes());
+                            result.bytes = is.readAllBytes();
                             return result;
                         } catch (final IOException e) {
                             try (final InputStream es = connection.getErrorStream()) {
-                                LOGGER.info(
-                                        "Error accessing configuration at {}: {}",
-                                        source.toString(),
-                                        es.readAllBytes());
+                                if (LOGGER.isDebugEnabled()) {
+                                    LOGGER.debug(
+                                            "Error accessing {} resource at {}: {}",
+                                            formatProtocol(source).get(),
+                                            source,
+                                            es.readAllBytes(),
+                                            e);
+                                }
                             } catch (final IOException ioe) {
-                                LOGGER.error(
-                                        "Error accessing configuration at {}: {}", source.toString(), e.getMessage());
+                                LOGGER.debug(
+                                        "Error accessing {} resource at {}",
+                                        formatProtocol(source),
+                                        () -> source,
+                                        () -> e);
                             }
-                            throw new ConfigurationException("Unable to access " + source.toString(), e);
+                            throw new ConfigurationException("Unable to access " + source, e);
                         }
                     }
                     case NOT_AUTHORIZED: {
-                        throw new ConfigurationException("Authorization failed");
+                        throw new ConfigurationException("Authentication required for " + source);
+                    }
+                    case FORBIDDEN: {
+                        throw new ConfigurationException("Access denied to " + source);
                     }
                     default: {
                         if (code < 0) {
-                            LOGGER.info("Invalid response code returned");
+                            LOGGER.debug("{} resource {}: invalid response code", formatProtocol(source), source);
                         } else {
-                            LOGGER.info("Unexpected response code returned {}", code);
+                            LOGGER.debug(
+                                    "{} resource {}: unexpected response code {}",
+                                    formatProtocol(source),
+                                    source,
+                                    code);
                         }
-                        throw new ConfigurationException("Unable to access " + source.toString());
+                        throw new ConfigurationException("Unable to access " + source);
                     }
                 }
             } finally {
                 connection.disconnect();
             }
         } catch (IOException e) {
-            LOGGER.warn("Error accessing {}: {}", source.toString(), e.getMessage());
-            throw new ConfigurationException("Unable to access " + source.toString(), e);
+            LOGGER.debug("Error accessing {} resource at {}", formatProtocol(source), source, e);
+            throw new ConfigurationException("Unable to access " + source, e);
         }
     }
 
+    private static Supplier<String> formatProtocol(Source source) {
+        return () -> toRootUpperCase(source.getURI().getScheme());
+    }
+
+    @NullMarked
     public static class Result {
 
-        private InputStream inputStream;
+        private byte @Nullable [] bytes = null;
         private Status status;
 
-        public Result() {}
+        public Result() {
+            this(Status.ERROR);
+        }
 
         public Result(final Status status) {
             this.status = status;
         }
 
-        public InputStream getInputStream() {
-            return inputStream;
+        /**
+         * Returns the data if the status is {@link Status#SUCCESS}.
+         * <p>
+         *     In any other case the result is {@code null}.
+         * </p>
+         * @return The contents of the HTTP response or null if empty.
+         */
+        public @Nullable InputStream getInputStream() {
+            return bytes != null ? new ByteArrayInputStream(bytes) : null;
         }
 
         public Status getStatus() {

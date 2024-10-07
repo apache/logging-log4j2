@@ -17,9 +17,6 @@
 package org.apache.logging.log4j.core.net.ssl;
 
 import java.nio.file.Path;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
 import java.util.Arrays;
 import javax.net.ssl.KeyManagerFactory;
 import org.apache.logging.log4j.core.impl.CoreProperties;
@@ -147,20 +144,6 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
         } catch (final Exception ex) {
             throw new StoreConfigurationException("Could not configure KeyStore", ex);
         }
-    }
-
-    public KeyManagerFactory initKeyManagerFactory()
-            throws NoSuchAlgorithmException, UnrecoverableKeyException, KeyStoreException {
-        final KeyManagerFactory kmFactory = KeyManagerFactory.getInstance(this.keyManagerFactoryAlgorithm);
-        final char[] password = this.getPassword();
-        try {
-            kmFactory.init(this.getKeyStore(), password != null ? password : DEFAULT_PASSWORD);
-        } finally {
-            if (password != null) {
-                Arrays.fill(password, '\0');
-            }
-        }
-        return kmFactory;
     }
 
     @Override

@@ -127,7 +127,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
     private final String name;
     private final boolean ignoreExceptions;
     private final Layout layout;
-    private ErrorHandler handler = new DefaultErrorHandler(this);
+    private volatile ErrorHandler handler = new DefaultErrorHandler(this);
 
     /**
      * Constructor.
@@ -246,10 +246,6 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
     public void setHandler(final ErrorHandler handler) {
         if (handler == null) {
             LOGGER.error("The handler cannot be set to null");
-            return;
-        }
-        if (isStarted()) {
-            LOGGER.error("The handler cannot be changed once the appender is started");
             return;
         }
         this.handler = handler;

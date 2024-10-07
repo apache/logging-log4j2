@@ -23,6 +23,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.appender.rolling.action.CompressActionFactory;
+import org.apache.logging.log4j.core.appender.rolling.action.CompressActionFactoryProvider;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.pattern.ArrayPatternConverter;
@@ -52,7 +54,7 @@ public class PatternProcessor {
 
     private final ArrayPatternConverter[] patternConverters;
     private final FormattingInfo[] patternFields;
-    private final FileExtension fileExtension;
+    private final CompressActionFactory compressActionFactory;
 
     private long prevFileTime = 0;
     private long nextFileTime = 0;
@@ -87,7 +89,8 @@ public class PatternProcessor {
         patternFields = fields.toArray(FormattingInfo[]::new);
         patternConverters =
                 converters.stream().map(ArrayPatternConverter.class::cast).toArray(ArrayPatternConverter[]::new);
-        this.fileExtension = FileExtension.lookupForFile(pattern);
+        compressActionFactory =
+                CompressActionFactoryProvider.newInstance(configuration).createFactoryForFileName(pattern);
 
         for (final ArrayPatternConverter converter : patternConverters) {
             // TODO: extract common interface
@@ -145,8 +148,8 @@ public class PatternProcessor {
         this.prevFileTime = prevFileTime;
     }
 
-    public FileExtension getFileExtension() {
-        return fileExtension;
+    public CompressActionFactory getCompressActionFactory() {
+        return compressActionFactory;
     }
 
     /**

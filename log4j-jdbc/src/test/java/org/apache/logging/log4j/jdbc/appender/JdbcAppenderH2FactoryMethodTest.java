@@ -19,9 +19,6 @@ package org.apache.logging.log4j.jdbc.appender;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-/**
- *
- */
 public class JdbcAppenderH2FactoryMethodTest extends AbstractJdbcAppenderFactoryMethodTest {
     public JdbcAppenderH2FactoryMethodTest() {
         super(

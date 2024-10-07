@@ -137,7 +137,7 @@ This property specifies the maximum number of primitive arguments to a log messa
 |===
 | Env. variable | `LOG4J_RECYCLER_CAPACITY`
 | Type          | `int`
-| Default value | `2C+1` (`C` denoting the number of available processors)
+| Default value | `2C` rounded to the next power of `2` (`C` denoting the number of available processors)
 |===
 
 Denotes the buffer capacity for a recycler.
@@ -159,3 +159,24 @@ If an invalid capacity is provided (i.e., if the capacity is zero or negative), 
 If provided, available recycler factory providers will be sorted in order, and the first one whose name matching with this property value will be used.
 
 If missing or the selection fails, the default will be used.
+
+[id=log4j.recycler.conversant.spinPolicy]
+== `log4j.recycler.conversant.spinPolicy`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_RECYCLER_CONVERSANT_SPIN_POLICY`
+
+| Type
+| https://javadoc.io/doc/com.conversantmedia/disruptor/latest/com.conversantmedia.disruptor/com/conversantmedia/util/concurrent/SpinPolicy.html[`SpinPolicy`]
+
+| Default value
+| https://javadoc.io/doc/com.conversantmedia/disruptor/latest/com.conversantmedia.disruptor/com/conversantmedia/util/concurrent/SpinPolicy.html#WAITING[`WAITING`]
+|===
+
+Denotes the strategy adopted by the Conversant Disruptor, when the queue is fully used.
+This configuration property is only used if the
+xref:manual/garbagefree.adoc#recyclers-conversant[`conversant-disrutor` recycler]
+is used.
+
+See https://javadoc.io/doc/com.conversantmedia/disruptor/latest/com.conversantmedia.disruptor/com/conversantmedia/util/concurrent/SpinPolicy.html[Conversant Disruptor Javadoc] for details.

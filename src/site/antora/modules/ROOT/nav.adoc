@@ -56,6 +56,7 @@
 
 .Resources
 * xref:faq.adoc[F.A.Q.]
+* xref:migrate-from-log4j2.adoc[]
 * xref:migrate-from-logback.adoc[]
 * xref:migrate-from-slf4j.adoc[]
 * xref:hibernate.adoc[]

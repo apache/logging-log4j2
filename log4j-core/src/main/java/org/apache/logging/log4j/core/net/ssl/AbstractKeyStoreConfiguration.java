@@ -24,6 +24,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.Arrays;
+import java.util.Objects;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.util.NetUtils;
 
@@ -31,37 +32,35 @@ import org.apache.logging.log4j.core.util.NetUtils;
  * Configuration of the KeyStore
  */
 public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> {
-    static final char[] DEFAULT_PASSWORD = "changeit".toCharArray();
+
+    private final String keyStoreType;
 
     private final KeyStore keyStore;
-    private final String keyStoreType;
 
     public AbstractKeyStoreConfiguration(
             final String location, final PasswordProvider passwordProvider, final String keyStoreType)
             throws StoreConfigurationException {
         super(location, passwordProvider);
         this.keyStoreType = keyStoreType == null ? SslConfigurationDefaults.KEYSTORE_TYPE : keyStoreType;
-        this.keyStore = this.load();
+        this.keyStore = load();
     }
 
-    @Override
-    protected KeyStore load() throws StoreConfigurationException {
+    private KeyStore load() throws StoreConfigurationException {
         final String loadLocation = this.getLocation();
+        final char[] password = this.getPassword();
         LOGGER.debug("Loading keystore from location {}", loadLocation);
         try {
+            final KeyStore ks = KeyStore.getInstance(this.keyStoreType);
             if (loadLocation == null) {
-                throw new IOException("The location is null");
+                if (keyStoreType.equalsIgnoreCase("JKS") || keyStoreType.equalsIgnoreCase("PKCS12")) {
+                    throw new IOException("The location is null");
+                }
+                ks.load(null, password);
+                LOGGER.debug("KeyStore successfully loaded");
+                return ks;
             }
             try (final InputStream fin = openInputStream(loadLocation)) {
-                final KeyStore ks = KeyStore.getInstance(this.keyStoreType);
-                final char[] password = this.getPassword();
-                try {
-                    ks.load(fin, password != null ? password : DEFAULT_PASSWORD);
-                } finally {
-                    if (password != null) {
-                        Arrays.fill(password, '\0');
-                    }
-                }
+                ks.load(fin, password);
                 LOGGER.debug("KeyStore successfully loaded from location {}", loadLocation);
                 return ks;
             }
@@ -90,10 +89,14 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
                     loadLocation,
                     e);
             throw new StoreConfigurationException(loadLocation, e);
+        } finally {
+            if (password != null) {
+                Arrays.fill(password, '\0');
+            }
         }
     }
 
-    private InputStream openInputStream(final String filePathOrUri) {
+    private static InputStream openInputStream(final String filePathOrUri) {
         return ConfigurationSource.fromUri(NetUtils.toURI(filePathOrUri)).getInputStream();
     }
 
@@ -105,7 +108,6 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + ((keyStore == null) ? 0 : keyStore.hashCode());
         result = prime * result + ((keyStoreType == null) ? 0 : keyStoreType.hashCode());
         return result;
     }
@@ -122,18 +124,7 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
             return false;
         }
         final AbstractKeyStoreConfiguration other = (AbstractKeyStoreConfiguration) obj;
-        if (keyStore == null) {
-            if (other.keyStore != null) {
-                return false;
-            }
-        } else if (!keyStore.equals(other.keyStore)) {
-            return false;
-        }
-        if (keyStoreType == null) {
-            if (other.keyStoreType != null) {
-                return false;
-            }
-        } else if (!keyStoreType.equals(other.keyStoreType)) {
+        if (!Objects.equals(keyStoreType, other.keyStoreType)) {
             return false;
         }
         return true;

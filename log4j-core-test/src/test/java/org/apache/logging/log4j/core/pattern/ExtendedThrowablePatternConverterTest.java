@@ -16,166 +16,163 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static java.util.Arrays.asList;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import foo.TestFriendlyException;
 import java.util.List;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.impl.ThrowableFormatOptions;
-import org.apache.logging.log4j.core.impl.ThrowableProxy;
-import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.util.Strings;
-import org.junit.jupiter.api.Test;
+import org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.AbstractPropertyTest;
+import org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.AbstractStackTraceTest;
+import org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.DepthTestCase;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-public class ExtendedThrowablePatternConverterTest {
+/**
+ * {@link ExtendedThrowablePatternConverter} tests.
+ */
+class ExtendedThrowablePatternConverterTest {
 
-    @Test
-    public void testSuffixFromNormalPattern() {
-        final String suffix = "suffix(%mdc{key})";
-        ThreadContext.put("key", "test suffix ");
-        final String[] options = {suffix};
-        final ExtendedThrowablePatternConverter converter =
-                ExtendedThrowablePatternConverter.newInstance(null, options);
-        final Throwable cause = new NullPointerException("null pointer");
-        final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
-        final LogEvent event = Log4jLogEvent.newBuilder() //
-                .setLoggerName("testLogger") //
-                .setLoggerFqcn(this.getClass().getName()) //
-                .setLevel(Level.DEBUG) //
-                .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent)
-                .build();
-        final StringBuilder sb = new StringBuilder();
-        converter.format(event, sb);
-        final String result = sb.toString();
-        assertTrue(result.contains("test suffix"), "No suffix");
+    @Nested
+    class PropertyTest extends AbstractPropertyTest {
+
+        PropertyTest() {
+            super("%xEx");
+        }
     }
 
-    @Test
-    public void testSuffix() {
-        final String suffix = "suffix(test suffix)";
-        final String[] options = {suffix};
-        final ExtendedThrowablePatternConverter converter =
-                ExtendedThrowablePatternConverter.newInstance(null, options);
-        final Throwable cause = new NullPointerException("null pointer");
-        final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
-        final LogEvent event = Log4jLogEvent.newBuilder() //
-                .setLoggerName("testLogger") //
-                .setLoggerFqcn(this.getClass().getName()) //
-                .setLevel(Level.DEBUG) //
-                .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent)
-                .build();
-        final StringBuilder sb = new StringBuilder();
-        converter.format(event, sb);
-        final String result = sb.toString();
-        assertTrue(result.contains("test suffix"), "No suffix");
-    }
+    private static final List<String> EXPECTED_FULL_STACK_TRACE_LINES = asList(
+            "foo.TestFriendlyException: r [localized]",
+            "	at " + TestFriendlyException.NAMED_MODULE_STACK_TRACE_ELEMENT + " ~[?:?]",
+            "	at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
+            "	at foo.TestFriendlyException.<clinit>(TestFriendlyException.java:0) ~[test-classes/:?]",
+            "	at org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.<clinit>(ThrowablePatternConverterTest.java:0) [test-classes/:?]",
+            "	Suppressed: foo.TestFriendlyException: r_s [localized]",
+            "		at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
+            "		at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
+            "		... 2 more",
+            "		Suppressed: foo.TestFriendlyException: r_s_s [localized]",
+            "			at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
+            "			at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
+            "			... 3 more",
+            "	Caused by: foo.TestFriendlyException: r_s_c [localized]",
+            "		at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
+            "		at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
+            "		... 3 more",
+            "Caused by: foo.TestFriendlyException: r_c [localized]",
+            "	at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
+            "	at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
+            "	... 2 more",
+            "	Suppressed: foo.TestFriendlyException: r_c_s [localized]",
+            "		at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
+            "		at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
+            "		... 3 more",
+            "	Caused by: [CIRCULAR REFERENCE: foo.TestFriendlyException: r_c [localized]]",
+            "Caused by: foo.TestFriendlyException: r_c_c [localized]",
+            "	at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
+            "	at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
+            "	... 3 more",
+            "Caused by: [CIRCULAR REFERENCE: foo.TestFriendlyException: r_c [localized]]");
 
-    @Test
-    public void testSuffixWillIgnoreThrowablePattern() {
-        final String suffix = "suffix(%xEx{suffix(inner suffix)})";
-        final String[] options = {suffix};
-        final ExtendedThrowablePatternConverter converter =
-                ExtendedThrowablePatternConverter.newInstance(null, options);
-        final Throwable cause = new NullPointerException("null pointer");
-        final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
-        final LogEvent event = Log4jLogEvent.newBuilder() //
-                .setLoggerName("testLogger") //
-                .setLoggerFqcn(this.getClass().getName()) //
-                .setLevel(Level.DEBUG) //
-                .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent)
-                .build();
-        final StringBuilder sb = new StringBuilder();
-        converter.format(event, sb);
-        final String result = sb.toString();
-        assertFalse(result.contains("inner suffix"), "Has unexpected suffix");
-    }
+    @Nested
+    class StackTraceTest extends AbstractStackTraceTest {
 
-    @Test
-    public void testDeserializedLogEventWithThrowableProxyButNoThrowable() {
-        final ExtendedThrowablePatternConverter converter = ExtendedThrowablePatternConverter.newInstance(null, null);
-        final Throwable originalThrowable = new Exception("something bad happened");
-        final ThrowableProxy throwableProxy = new ThrowableProxy(originalThrowable);
-        final Throwable deserializedThrowable = null;
-        final Log4jLogEvent event = Log4jLogEvent.newBuilder() //
-                .setLoggerName("testLogger") //
-                .setLoggerFqcn(this.getClass().getName()) //
-                .setLevel(Level.DEBUG) //
-                .setMessage(new SimpleMessage("")) //
-                .setThrown(deserializedThrowable) //
-                .setThrownProxy(throwableProxy) //
-                .setTimeMillis(0)
-                .build();
-        final StringBuilder sb = new StringBuilder();
-        converter.format(event, sb);
-        final String result = sb.toString();
-        assertTrue(result.contains(originalThrowable.getMessage()), result);
-        assertTrue(result.contains(originalThrowable.getStackTrace()[0].getMethodName()), result);
-    }
+        StackTraceTest() {
+            super("%xEx");
+        }
 
-    @Test
-    public void testFiltering() {
-        final String packages = "filters(org.junit, org.apache.maven, sun.reflect, java.lang.reflect)";
-        final String[] options = {packages};
-        final ExtendedThrowablePatternConverter converter =
-                ExtendedThrowablePatternConverter.newInstance(null, options);
-        final Throwable cause = new NullPointerException("null pointer");
-        final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
-        final LogEvent event = Log4jLogEvent.newBuilder() //
-                .setLoggerName("testLogger") //
-                .setLoggerFqcn(this.getClass().getName()) //
-                .setLevel(Level.DEBUG) //
-                .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent)
-                .build();
-        final StringBuilder sb = new StringBuilder();
-        converter.format(event, sb);
-        final String result = sb.toString();
-        assertTrue(result.contains(" suppressed "), "No suppressed lines");
-    }
+        @ParameterizedTest
+        @MethodSource("org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest#fullStackTracePatterns")
+        void full_output_should_match(final String pattern) {
+            final String effectivePattern = patternPrefix + pattern;
+            assertStackTraceLines(null, effectivePattern, EXPECTED_FULL_STACK_TRACE_LINES);
+        }
 
-    @Test
-    public void testFull() {
-        final ExtendedThrowablePatternConverter converter = ExtendedThrowablePatternConverter.newInstance(null, null);
-        final Throwable cause = new NullPointerException("null pointer");
-        final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
-        final LogEvent event = Log4jLogEvent.newBuilder() //
-                .setLoggerName("testLogger") //
-                .setLoggerFqcn(this.getClass().getName()) //
-                .setLevel(Level.DEBUG) //
-                .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent)
-                .build();
-        final StringBuilder sb = new StringBuilder();
-        converter.format(event, sb);
-        final StringWriter sw = new StringWriter();
-        final PrintWriter pw = new PrintWriter(sw);
-        parent.printStackTrace(pw);
-        String result = sb.toString();
-        result = result.replaceAll(" ~?\\[.*\\]", Strings.EMPTY);
-        final String expected = sw.toString(); // .replaceAll("\r", Strings.EMPTY);
-        assertEquals(expected, result);
-    }
+        @ParameterizedTest
+        @MethodSource("org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest#depthTestCases")
+        void depth_limited_output_should_match(final DepthTestCase depthTestCase) {
+            final String pattern = String.format(
+                    "%s{%d}%s",
+                    patternPrefix, depthTestCase.maxLineCount, depthTestCase.separatorTestCase.patternAddendum);
+            assertStackTraceLines(depthTestCase, pattern, EXPECTED_FULL_STACK_TRACE_LINES);
+        }
 
-    @Test
-    public void testFiltersAndSeparator() {
-        final ExtendedThrowablePatternConverter exConverter = ExtendedThrowablePatternConverter.newInstance(
-                null, new String[] {"full", "filters(org.junit,org.eclipse)", "separator(|)"});
-        final ThrowableFormatOptions options = exConverter.getOptions();
-        final List<String> ignorePackages = options.getIgnorePackages();
-        assertNotNull(ignorePackages);
-        final String ignorePackagesString = ignorePackages.toString();
-        assertTrue(ignorePackages.contains("org.junit"), ignorePackagesString);
-        assertTrue(ignorePackages.contains("org.eclipse"), ignorePackagesString);
-        assertEquals("|", options.getSeparator());
+        @ParameterizedTest
+        @MethodSource("org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest#depthTestCases")
+        void depth_and_package_limited_output_should_match_1(final DepthTestCase depthTestCase) {
+            final String pattern = String.format(
+                    "%s{%d}{filters(foo)}%s",
+                    patternPrefix, depthTestCase.maxLineCount, depthTestCase.separatorTestCase.patternAddendum);
+            assertStackTraceLines(
+                    depthTestCase,
+                    pattern,
+                    asList(
+                            "foo.TestFriendlyException: r [localized]",
+                            "	at " + TestFriendlyException.NAMED_MODULE_STACK_TRACE_ELEMENT + " ~[?:?]",
+                            "	... suppressed 2 lines",
+                            "	at org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.<clinit>(ThrowablePatternConverterTest.java:0) [test-classes/:?]",
+                            "	Suppressed: foo.TestFriendlyException: r_s [localized]",
+                            "		... suppressed 2 lines",
+                            "		... 2 more",
+                            "		Suppressed: foo.TestFriendlyException: r_s_s [localized]",
+                            "			... suppressed 2 lines",
+                            "			... 3 more",
+                            "	Caused by: foo.TestFriendlyException: r_s_c [localized]",
+                            "		... suppressed 2 lines",
+                            "		... 3 more",
+                            "Caused by: foo.TestFriendlyException: r_c [localized]",
+                            "	... suppressed 2 lines",
+                            "	... 2 more",
+                            "	Suppressed: foo.TestFriendlyException: r_c_s [localized]",
+                            "		... suppressed 2 lines",
+                            "		... 3 more",
+                            "	Caused by: [CIRCULAR REFERENCE: foo.TestFriendlyException: r_c [localized]]",
+                            "Caused by: foo.TestFriendlyException: r_c_c [localized]",
+                            "	... suppressed 2 lines",
+                            "	... 3 more",
+                            "Caused by: [CIRCULAR REFERENCE: foo.TestFriendlyException: r_c [localized]]"));
+        }
+
+        @ParameterizedTest
+        @MethodSource("org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest#depthTestCases")
+        void depth_and_package_limited_output_should_match_2(final DepthTestCase depthTestCase) {
+            final String pattern = String.format(
+                    "%s{%d}{filters(org.apache)}%s",
+                    patternPrefix, depthTestCase.maxLineCount, depthTestCase.separatorTestCase.patternAddendum);
+            assertStackTraceLines(
+                    depthTestCase,
+                    pattern,
+                    asList(
+                            "foo.TestFriendlyException: r [localized]",
+                            "	at " + TestFriendlyException.NAMED_MODULE_STACK_TRACE_ELEMENT + " ~[?:?]",
+                            "	at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
+                            "	at foo.TestFriendlyException.<clinit>(TestFriendlyException.java:0) ~[test-classes/:?]",
+                            "	...",
+                            "	Suppressed: foo.TestFriendlyException: r_s [localized]",
+                            "		at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
+                            "		at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
+                            "		... 2 more",
+                            "		Suppressed: foo.TestFriendlyException: r_s_s [localized]",
+                            "			at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
+                            "			at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
+                            "			... 3 more",
+                            "	Caused by: foo.TestFriendlyException: r_s_c [localized]",
+                            "		at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
+                            "		at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
+                            "		... 3 more",
+                            "Caused by: foo.TestFriendlyException: r_c [localized]",
+                            "	at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
+                            "	at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
+                            "	... 2 more",
+                            "	Suppressed: foo.TestFriendlyException: r_c_s [localized]",
+                            "		at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
+                            "		at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
+                            "		... 3 more",
+                            "	Caused by: [CIRCULAR REFERENCE: foo.TestFriendlyException: r_c [localized]]",
+                            "Caused by: foo.TestFriendlyException: r_c_c [localized]",
+                            "	at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
+                            "	at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
+                            "	... 3 more",
+                            "Caused by: [CIRCULAR REFERENCE: foo.TestFriendlyException: r_c [localized]]"));
+        }
     }
 }

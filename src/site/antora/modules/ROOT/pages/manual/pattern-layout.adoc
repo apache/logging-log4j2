@@ -634,7 +634,7 @@ ex|exception|throwable
   {separator(separator)}
 ----
 
-By default this will output the full trace as one would normally find with a call to `Throwable#printStackTrace()`.
+By default this will output the full stack trace as one would normally find with a call to `Throwable#printStackTrace()`.
 
 You can follow the throwable conversion word with an option in the form `%throwable\{option}`.
 
@@ -642,11 +642,11 @@ You can follow the throwable conversion word with an option in the form `%throwa
 
 `%throwable{short.className}` outputs the name of the class where the exception occurred.
 
-`%throwable{short.methodName}` outputs the method name where the exception occurred.
+`%throwable{short.methodName}` outputs the name of the method where the exception occurred.
 
-`%throwable{short.fileName}` outputs the name of the class where the exception occurred.
+`%throwable{short.fileName}` outputs the name of the file containing the class where the exception occurred.
 
-`%throwable{short.lineNumber}` outputs the line number where the exception occurred.
+`%throwable{short.lineNumber}` outputs the line number of the file containing the class where the exception occurred.
 
 `%throwable{short.message}` outputs the message.
 
@@ -656,12 +656,28 @@ You can follow the throwable conversion word with an option in the form `%throwa
 
 Specifying `%throwable\{none}` or `%throwable\{0}` suppresses output of the exception.
 
-Use `{filters(packages)}` where _packages_ is a list of package names to suppress matching stack frames from stack traces.
+Use `{filters(packages)}`, where `packages` is a list of package names, to suppress matching stack frames from stack traces.
 
-Use `{suffix(pattern)}` to add the output of _pattern_ at the end of each stack frame.
+You can change the used line separator in multiple ways:
 
-Use a `{separator(...)}` as the end-of-line string, e.g., `separator(\|)`.
-The default value is the `line.separator` system property, which is operating system dependent.
+* Use `{separator(separator)}` to set the separator string literal.
+It defaults to `System.lineSeparator()`.
+The contents of `separator` will be rendered verbatim without being subject to any processing.
+
+* `{suffix(pattern)}` is identical to `{separator(separator)}` with the exception that the provided `pattern` will be processed as a xref:manual/pattern-layout.adoc[] conversion pattern before being rendered.
+Exception-rendering directives in the `pattern` (`%ex`, `%rEx`, etc.) will be discarded.
+
+`{separator(...)}` and `{suffix(pattern)}` get concatenated to produce _the effective line separator_ as follows:
+
+[source,java]
+----
+String effectiveLineSeparator(String separator, String suffix, LogEvent event) {
+    String formattedSuffix = format(suffix, event);
+    return isNotBlank(formattedSuffix)
+           ? (' ' + formattedSuffix + lineSeparator)
+           : lineSeparator;
+}
+----
 
 [WARNING]
 ====
@@ -671,7 +687,7 @@ Exception converter is not garbage-free.
 [#converter-exception-extended]
 ==== Exception (Extended)
 
-The same as <<converter-exception,the `%throwable` conversion>>, but also includes class packaging information
+The same as <<converter-exception,the `exception` converter>>, but also includes class packaging information
 
 .link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html[`ThrowablePatternConverter`] specifier grammar
 [source,text]
@@ -1190,29 +1206,21 @@ The same as <<converter-exception,the `exception` converter>>, but the stack tra
 [source,text]
 ----
 rEx|rException|rThrowable
-  {
-    ["none" | "short" | "full" | depth]
-    [,filters(package,package,...)]
-    [,separator(separator)]
+  { "none"
+  | "full"
+  | depth
+  | "short"
+  | "short.className"
+  | "short.fileName"
+  | "short.lineNumber"
+  | "short.methodName"
+  | "short.message"
+  | "short.localizedMessage"
   }
-  {ansi(
-    Key=Value,Value,...
-    Key=Value,Value,...
-    ...)
-  }
+  {filters(package,package,...)}
   {suffix(pattern)}
+  {separator(separator)}
 ----
-
-The throwable conversion specifier can be followed by an option in the form `%rEx\{short}`, which will only output the first line of the `Throwable`, or `%rEx\{n}`, where the first `n` lines of the stack trace will be printed.
-
-Specifying `%rEx\{none}` or `%rEx\{0}` will suppress printing of the exception.
-
-Use `filters(packages)`, where `packages` is a list of package names to suppress matching stack frames from stack traces.
-
-Use a `separator` string to separate the lines of a stack trace, e.g., `separator(|)`.
-The default value is the `line.separator` system property, which is platform dependent.
-
-Use `rEx{suffix(pattern)}` to add the output of `pattern` to the output only when there is a `Throwable` to print.
 
 [#converter-seq]
 ==== Sequence number

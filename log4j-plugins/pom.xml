@@ -37,17 +37,24 @@
       com.google.errorprone.annotations.concurrent;resolution:=optional,
       org.jspecify.annotations.*;resolution:=optional
     </bnd-extra-package-options>
+    <bnd-extra-module-options>
+      <!-- Optional dependencies should not be `static` -->
+      org.jspecify;transitive=false
+    </bnd-extra-module-options>
   </properties>
 
   <dependencies>
+
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-kit</artifactId>
     </dependency>
+
   </dependencies>
 
   <build>

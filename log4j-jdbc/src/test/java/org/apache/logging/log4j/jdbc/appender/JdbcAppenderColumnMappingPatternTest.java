@@ -49,9 +49,8 @@ public class JdbcAppenderColumnMappingPatternTest {
     }
 
     protected JdbcAppenderColumnMappingPatternTest(final JdbcRule jdbcRule) {
-        this.rules = RuleChainFactory.create(
-                jdbcRule,
-                new LoggerContextRule("org/apache/logging/log4j/jdbc/appender/log4j2-dm-column-mapping-pattern.xml"));
+        this.rules =
+                RuleChainFactory.create(jdbcRule, new LoggerContextRule("JdbcAppenderColumnMappingPatternTest.xml"));
         this.jdbcRule = jdbcRule;
     }
 

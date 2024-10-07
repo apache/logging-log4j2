@@ -16,11 +16,14 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static java.util.Objects.requireNonNull;
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.time.Instant;
 import java.util.List;
 import java.util.function.Consumer;
 import org.apache.logging.log4j.Logger;
@@ -112,37 +115,51 @@ public class HttpWatcher extends AbstractWatcher {
             final LastModifiedSource source = new LastModifiedSource(url.toURI(), lastModifiedMillis);
             final HttpInputStreamUtil.Result result =
                     HttpInputStreamUtil.getInputStream(source, properties, authorizationProvider, sslConfiguration);
+            // Update lastModifiedMillis
+            // https://github.com/apache/logging-log4j2/issues/2937
+            lastModifiedMillis = source.getLastModified();
+            // The result of the HTTP/HTTPS request is already logged at `DEBUG` by `HttpInputStreamUtil`
+            // We only log the important events at `INFO` or more.
             switch (result.getStatus()) {
                 case NOT_MODIFIED: {
-                    LOGGER.debug("Configuration Not Modified");
                     return false;
                 }
                 case SUCCESS: {
                     final ConfigurationSource configSource = getConfiguration().getConfigurationSource();
                     try {
-                        final InputStream is = result.getInputStream();
-                        configSource.setData(is.readAllBytes());
-                        final long lastModified = source.getLastModified();
-                        configSource.setModifiedMillis(lastModified);
-                        lastModifiedMillis = lastModified;
-                        LOGGER.debug("Content was modified for {}", url.toString());
+                        // In this case `result.getInputStream()` is not null.
+                        configSource.setData(
+                                requireNonNull(result.getInputStream()).readAllBytes());
+                        configSource.setModifiedMillis(source.getLastModified());
+                        LOGGER.info(
+                                "{} resource at {} was modified on {}",
+                                () -> toRootUpperCase(url.getProtocol()),
+                                () -> url.toExternalForm(),
+                                () -> Instant.ofEpochMilli(source.getLastModified()));
                         return true;
                     } catch (final IOException e) {
-                        LOGGER.error("Error accessing configuration at {}: {}", url, e.getMessage());
+                        // Dead code since result.getInputStream() is a ByteArrayInputStream
+                        LOGGER.error("Error accessing configuration at {}", url.toExternalForm(), e);
                         return false;
                     }
                 }
                 case NOT_FOUND: {
-                    LOGGER.info("Unable to locate configuration at {}", url.toString());
+                    LOGGER.warn(
+                            "{} resource at {} was not found",
+                            () -> toRootUpperCase(url.getProtocol()),
+                            () -> url.toExternalForm());
                     return false;
                 }
                 default: {
-                    LOGGER.warn("Unexpected error accessing configuration at {}", url.toString());
+                    LOGGER.warn(
+                            "Unexpected error retrieving {} resource at {}",
+                            () -> toRootUpperCase(url.getProtocol()),
+                            () -> url.toExternalForm());
                     return false;
                 }
             }
         } catch (final URISyntaxException ex) {
-            LOGGER.error("Bad configuration URL: {}, {}", url.toString(), ex.getMessage());
+            LOGGER.error("Bad configuration file URL {}", url.toExternalForm(), ex);
             return false;
         }
     }

@@ -34,6 +34,10 @@
       <!-- Annotations only -->
       org.jspecify.*;resolution:=optional
     </bnd-extra-package-options>
+    <bnd-extra-module-options>
+      <!-- Remove `transitive` for optional dependencies -->
+      org.jspecify;transitive=false
+    </bnd-extra-module-options>
   </properties>
 
   <dependencies>

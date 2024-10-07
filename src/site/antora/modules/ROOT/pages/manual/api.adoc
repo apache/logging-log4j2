@@ -32,7 +32,7 @@ See xref:manual/getting-started.adoc[].
 You can also check out xref:manual/installation.adoc[] for the complete installation instructions.
 ====
 
-Starting with version `2.24.4`, Log4j API is embraced as the target logging API for both Log4j 2 and Log4j 3.
+Starting with version `2.24.0`, Log4j API is embraced as the target logging API for both Log4j 2 and Log4j 3.
 Hence, **Log4j 3 does not contain a Log4j API module**, but instead implements _"the"_ Log4j API developed in Log4j 2 branch.
 This ensures Log4j 2 users can safely migrate to Log4j 3 without any Log4j API compatibility concerns.
 

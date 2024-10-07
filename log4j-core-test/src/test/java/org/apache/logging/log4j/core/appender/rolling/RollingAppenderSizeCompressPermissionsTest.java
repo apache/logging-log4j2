@@ -26,6 +26,8 @@ import java.nio.file.attribute.PosixFilePermissions;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.rolling.action.CompressActionFactory;
+import org.apache.logging.log4j.core.appender.rolling.action.CompressActionFactoryProvider;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
@@ -68,7 +70,8 @@ public class RollingAppenderSizeCompressPermissionsTest {
         int gzippedFiles1 = 0;
         int gzippedFiles2 = 0;
         for (final File file : files) {
-            final FileExtension ext = FileExtension.lookupForFile(file.getName());
+            final CompressActionFactory ext = CompressActionFactoryProvider.newInstance(context.getConfiguration())
+                    .createFactoryForFileName(file.getName());
             if (ext != null) {
                 if (file.getName().startsWith("test1")) {
                     gzippedFiles1++;

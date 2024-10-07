@@ -25,6 +25,7 @@ import java.net.URL;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.GroupPrincipal;
 import java.nio.file.attribute.PosixFileAttributeView;
 import java.nio.file.attribute.PosixFilePermission;
@@ -88,6 +89,23 @@ public final class FileUtils {
             }
         }
         return null;
+    }
+
+    /**
+     * Transforms an {@link URI} into a {@link Path}.
+     * <p>
+     *
+     * </p>
+     * @param uri The {@link URI} to transform, never {@code null}
+     * @return A {@link Path} or {@code null} if the URI does not use a valid {@link java.nio.file.FileSystem} scheme.
+     */
+    public static Path pathFromUri(final URI uri) {
+        Objects.requireNonNull(uri, "uri");
+        if (uri.isAbsolute()) {
+            return Paths.get(uri);
+        } else {
+            return Paths.get(uri.getPath());
+        }
     }
 
     public static boolean isFile(final URL url) {
