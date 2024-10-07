@@ -16,13 +16,16 @@
  */
 package org.apache.log4j;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Locale;
@@ -35,10 +38,10 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Used for internal unit testing the Logger class.
@@ -57,26 +60,26 @@ public class LoggerTest {
 
     static ConfigurationFactory configurationFactory = new BasicConfigurationFactory();
 
-    @BeforeClass
-    public static void setUpClass() {
+    @BeforeAll
+    public static void setUpAll() {
         rbUS = ResourceBundle.getBundle("L7D", new Locale("en", "US"));
         assertNotNull(rbUS);
 
         rbFR = ResourceBundle.getBundle("L7D", new Locale("fr", "FR"));
-        assertNotNull("Got a null resource bundle.", rbFR);
+        assertNotNull(rbFR, "Got a null resource bundle.");
 
         rbCH = ResourceBundle.getBundle("L7D", new Locale("fr", "CH"));
-        assertNotNull("Got a null resource bundle.", rbCH);
+        assertNotNull(rbCH, "Got a null resource bundle.");
 
         ConfigurationFactory.setConfigurationFactory(configurationFactory);
     }
 
-    @AfterClass
-    public static void tearDownClass() {
+    @AfterAll
+    public static void tearDownAll() {
         ConfigurationFactory.removeConfigurationFactory(configurationFactory);
     }
 
-    @Before
+    @BeforeEach
     public void resetTest() {
         Objects.requireNonNull(LogManager.getHierarchy()).resetConfiguration();
         a1 = null;
@@ -485,9 +488,9 @@ public class LoggerTest {
             root.log(Priority.INFO, "Test msg2", null);
             root.log(Priority.INFO, "Test msg3");
             final List<String> msgs = appender.getMessages();
-            assertTrue("Incorrect number of messages", msgs.size() == 3);
+            assertTrue(msgs.size() == 3, "Incorrect number of messages");
             final String msg = msgs.get(0);
-            assertTrue("Message contains incorrect class name: " + msg, msg.contains(LoggerTest.class.getName()));
+            assertTrue(msg.contains(LoggerTest.class.getName()), "Message contains incorrect class name: " + msg);
             appender.stop();
         } finally {
             ((org.apache.logging.log4j.core.Logger) root.getLogger()).removeAppender(appender);
@@ -500,21 +503,22 @@ public class LoggerTest {
         final Logger a_b = Logger.getLogger("a.b");
         final Logger a_b_c = Logger.getLogger("a.b.c");
         // test default for this test
-        assertThat(a.getLevel()).isNull();
-        assertThat(a_b.getLevel()).isNull();
-        assertThat(a_b_c.getLevel()).isNull();
-        assertThat(a.getEffectiveLevel()).isEqualTo(Level.DEBUG);
-        assertThat(a_b.getEffectiveLevel()).isEqualTo(Level.DEBUG);
-        assertThat(a_b_c.getEffectiveLevel()).isEqualTo(Level.DEBUG);
+        assertThat(a.getLevel(), nullValue());
+        assertThat(a_b.getLevel(), nullValue());
+        assertThat(a_b_c.getLevel(), nullValue());
+        assertThat(a.getEffectiveLevel(), is(equalTo(Level.DEBUG)));
+        assertThat(a_b.getEffectiveLevel(), is(equalTo(Level.DEBUG)));
+        assertThat(a_b_c.getEffectiveLevel(), is(equalTo(Level.DEBUG)));
+
         // all
         for (final Level level :
                 new Level[] {Level.DEBUG, Level.ERROR, Level.FATAL, Level.INFO, Level.TRACE, Level.WARN}) {
             a.setLevel(level);
-            assertThat(a.getLevel()).isEqualTo(level);
-            assertThat(a_b.getLevel()).isNull();
-            assertThat(a_b.getEffectiveLevel()).isEqualTo(level);
-            assertThat(a_b.getLevel()).isNull();
-            assertThat(a_b_c.getEffectiveLevel()).isEqualTo(level);
+            assertThat(a.getLevel(), is(equalTo(level)));
+            assertThat(a_b.getLevel(), nullValue());
+            assertThat(a_b.getEffectiveLevel(), is(equalTo(level)));
+            assertThat(a_b_c.getLevel(), nullValue());
+            assertThat(a_b_c.getEffectiveLevel(), is(equalTo(level)));
         }
     }
 
@@ -524,20 +528,22 @@ public class LoggerTest {
         final Logger a_b = Logger.getLogger("a.b");
         final Logger a_b_c = Logger.getLogger("a.b.c");
         // test default for this test
-        assertThat(a.getPriority()).isNull();
-        assertThat(a_b.getPriority()).isNull();
-        assertThat(a_b_c.getPriority()).isNull();
-        assertThat(a.getEffectiveLevel()).isEqualTo(Level.DEBUG);
-        assertThat(a_b.getEffectiveLevel()).isEqualTo(Level.DEBUG);
-        assertThat(a_b_c.getEffectiveLevel()).isEqualTo(Level.DEBUG);
+        assertThat(a.getPriority(), nullValue());
+        assertThat(a_b.getPriority(), nullValue());
+        assertThat(a_b_c.getPriority(), nullValue());
+
+        assertThat(a.getEffectiveLevel(), is(equalTo(Level.DEBUG)));
+        assertThat(a_b.getEffectiveLevel(), is(equalTo(Level.DEBUG)));
+        assertThat(a_b_c.getEffectiveLevel(), is(equalTo(Level.DEBUG)));
+
         // all
         for (final Priority level : Level.getAllPossiblePriorities()) {
             a.setPriority(level);
-            assertThat(a.getPriority()).isEqualTo(level);
-            assertThat(a_b.getPriority()).isNull();
-            assertThat(a_b.getEffectiveLevel()).isEqualTo(level);
-            assertThat(a_b.getPriority()).isNull();
-            assertThat(a_b_c.getEffectiveLevel()).isEqualTo(level);
+            assertThat(a.getPriority(), is(equalTo(level)));
+            assertThat(a_b.getPriority(), nullValue());
+            assertThat(a_b.getEffectiveLevel(), is(equalTo(level)));
+            assertThat(a_b.getPriority(), nullValue());
+            assertThat(a_b_c.getEffectiveLevel(), is(equalTo(level)));
         }
     }
 

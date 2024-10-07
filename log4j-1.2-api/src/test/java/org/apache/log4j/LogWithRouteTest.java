@@ -16,39 +16,34 @@
  */
 package org.apache.log4j;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test passing MDC values to the Routing appender.
  */
+@LoggerContextSource("log-RouteWithMDC.xml")
 public class LogWithRouteTest {
 
-    private static final String CONFIG = "log-RouteWithMDC.xml";
-
-    @ClassRule
-    public static final LoggerContextRule CTX = new LoggerContextRule(CONFIG);
-
     @Test
-    public void testMDC() {
+    public void testMDC(@Named("List") final ListAppender listApp) {
         MDC.put("Type", "Service");
         MDC.put("Name", "John Smith");
         try {
             final Logger logger = Logger.getLogger("org.apache.test.logging");
             logger.debug("This is a test");
-            final ListAppender listApp = (ListAppender) CTX.getAppender("List");
             assertNotNull(listApp);
             final List<String> msgs = listApp.getMessages();
-            assertNotNull("No messages received", msgs);
+            assertNotNull(msgs, "No messages received");
             assertTrue(msgs.size() == 1);
-            assertTrue("Type is missing", msgs.get(0).contains("Type=Service"));
-            assertTrue("Name is missing", msgs.get(0).contains("Name=John Smith"));
+            assertTrue(msgs.get(0).contains("Type=Service"), "Type is missing");
+            assertTrue(msgs.get(0).contains("Name=John Smith"), "Name is missing");
         } finally {
             MDC.remove("Type");
             MDC.remove("Name");

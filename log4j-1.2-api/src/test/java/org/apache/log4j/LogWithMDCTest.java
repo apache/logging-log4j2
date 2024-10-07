@@ -16,39 +16,34 @@
  */
 package org.apache.log4j;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test logging with MDC values.
  */
+@LoggerContextSource("logWithMDC.xml")
 public class LogWithMDCTest {
 
-    private static final String CONFIG = "logWithMDC.xml";
-
-    @ClassRule
-    public static final LoggerContextRule CTX = new LoggerContextRule(CONFIG);
-
     @Test
-    public void testMDC() {
+    public void testMDC(@Named("List") final ListAppender listApp) {
         MDC.put("Key1", "John");
         MDC.put("Key2", "Smith");
         try {
             final Logger logger = Logger.getLogger("org.apache.test.logging");
             logger.debug("This is a test");
-            final ListAppender listApp = (ListAppender) CTX.getAppender("List");
             assertNotNull(listApp);
             final List<String> msgs = listApp.getMessages();
-            assertNotNull("No messages received", msgs);
+            assertNotNull(msgs, "No messages received");
             assertTrue(msgs.size() == 1);
-            assertTrue("Key1 is missing", msgs.get(0).contains("Key1=John"));
-            assertTrue("Key2 is missing", msgs.get(0).contains("Key2=Smith"));
+            assertTrue(msgs.get(0).contains("Key1=John"), "Key1 is missing");
+            assertTrue(msgs.get(0).contains("Key2=Smith"), "Key2 is missing");
         } finally {
             MDC.remove("Key1");
             MDC.remove("Key2");
