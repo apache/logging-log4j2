@@ -20,10 +20,12 @@
 
 <#if release.date?has_content>Release date:: ${release.date}</#if>
 
-This releases contains ...
+This minor release contains bug fixes and behavioral improvements.
 
-=== JMX changes
+=== Exception handling in Pattern Layout
 
-Starting in version 2.24.0, JMX support is disabled by default and can be re-enabled via the `log4j2.disableJmx=false` system property.
+Exception handling in Pattern Layout went through a major rewrite.
+This effectively helped with fixing some bugs by matching the feature parity of all exception converters.
+Additionally, rendered stack traces are ensured to be prefixed with a newline, which used to be a whitespace in earlier versions.
 
 <#include "../.changelog.adoc.ftl">

@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.taglib;
 
+import static org.apache.logging.log4j.util.Strings.LINE_SEPARATOR;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
@@ -24,7 +25,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.apache.logging.log4j.util.Strings;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -34,6 +34,7 @@ import org.springframework.mock.web.MockPageContext;
  *
  */
 public class CatchingTagTest {
+
     private static final String CONFIG = "log4j-test1.xml";
 
     @ClassRule
@@ -54,7 +55,7 @@ public class CatchingTagTest {
         this.tag.setException(new Exception("This is a test."));
 
         assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
-        verify("Catching ERROR M-CATCHING[ EXCEPTION ] Ejava.lang.Exception: This is a test.");
+        verify("Catching ERROR M-CATCHING[ EXCEPTION ] E" + LINE_SEPARATOR + "java.lang.Exception: This is a test.");
     }
 
     @Test
@@ -63,7 +64,8 @@ public class CatchingTagTest {
         this.tag.setException(new RuntimeException("This is another test."));
 
         assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
-        verify("Catching INFO M-CATCHING[ EXCEPTION ] Ejava.lang.RuntimeException: This is another test.");
+        verify("Catching INFO M-CATCHING[ EXCEPTION ] E" + LINE_SEPARATOR
+                + "java.lang.RuntimeException: This is another test.");
     }
 
     @Test
@@ -72,7 +74,7 @@ public class CatchingTagTest {
         this.tag.setException(new Error("This is the last test."));
 
         assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
-        verify("Catching WARN M-CATCHING[ EXCEPTION ] Ejava.lang.Error: This is the last test.");
+        verify("Catching WARN M-CATCHING[ EXCEPTION ] E" + LINE_SEPARATOR + "java.lang.Error: This is the last test.");
     }
 
     private void verify(final String expected) {
@@ -80,10 +82,7 @@ public class CatchingTagTest {
         final List<String> events = listApp.getMessages();
         try {
             assertEquals("Incorrect number of messages.", 1, events.size());
-            assertEquals(
-                    "Incorrect message.",
-                    "o.a.l.l.t.CatchingTagTest " + expected + Strings.LINE_SEPARATOR,
-                    events.get(0));
+            assertEquals("Incorrect message.", "o.a.l.l.t.CatchingTagTest " + expected + LINE_SEPARATOR, events.get(0));
         } finally {
             listApp.clear();
         }

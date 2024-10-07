@@ -44,7 +44,7 @@ class PatternLayoutDefaultExceptionHandlerTest {
     @Test
     void default_exception_handler_should_not_be_provided_if_user_provides_one() {
         final String className = EXCEPTION.getStackTrace()[0].getClassName();
-        assertThatPatternEncodes("%ex{short.className}", true).isEqualTo("%s%n", className);
+        assertThatPatternEncodes("%ex{short.className}", true).isEqualTo(className);
     }
 
     @Test

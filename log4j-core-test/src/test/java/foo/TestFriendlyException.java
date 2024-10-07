@@ -27,18 +27,21 @@ import org.apache.logging.log4j.util.Constants;
  * A testing friendly exception featuring
  * <ul>
  * <li>Distinct localized message</li>
- * <li>Non-Log4j package origin<sup>1</sup></li>
+ * <li>Non-Log4j<sup>1</sup> and fixed<sup>2</sup> (to {@code bar}) package origin</li>
  * <li>Sufficient causal chain depth</li>
- * <li>Cyclic causal chain</li>
+ * <li>Circular causal chain</li>
  * <li>Suppressed exceptions</li>
  * <li>Clutter-free stack trace (i.e., elements from JUnit, JDK, etc.)</li>
- * <li>Stack trace elements from named modules<sup>2</sup></li>
+ * <li>Stack trace elements from named modules<sup>3</sup></li>
  * </ul>
  * <p>
  * <sup>1</sup> Helps with observing stack trace manipulation effects of Log4j.
  * </p>
  * <p>
- * <sup>2</sup> Helps with testing module name serialization.
+ * <sup>2</sup> Helps to make the origin of {@link #INSTANCE} independent of the first test accessing to it.
+ * </p>
+ * <p>
+ * <sup>3</sup> Helps with testing module name serialization.
  * </p>
  */
 public final class TestFriendlyException extends RuntimeException {
@@ -47,6 +50,9 @@ public final class TestFriendlyException extends RuntimeException {
         // Ensure the distinct packaging
         assertThat(TestFriendlyException.class.getPackage().getName()).doesNotStartWith("org.apache");
     }
+
+    public static final StackTraceElement ORG_APACHE_REPLACEMENT_STACK_TRACE_ELEMENT =
+            new StackTraceElement("bar.OrgApacheReplacement", "someMethod", "OrgApacheReplacement.java", 0);
 
     public static final StackTraceElement NAMED_MODULE_STACK_TRACE_ELEMENT = namedModuleStackTraceElement();
 
@@ -127,9 +133,13 @@ public final class TestFriendlyException extends RuntimeException {
 
     private static Stream<StackTraceElement> filterStackTraceElement(
             final StackTraceElement stackTraceElement, final boolean[] seenExcludedStackTraceElement) {
+
+        // Short-circuit if we have already encountered an excluded stack trace element
         if (seenExcludedStackTraceElement[0]) {
             return Stream.empty();
         }
+
+        // Check if the class name is excluded
         final String className = stackTraceElement.getClassName();
         for (final String excludedClassNamePrefix : EXCLUDED_CLASS_NAME_PREFIXES) {
             if (className.startsWith(excludedClassNamePrefix)) {
@@ -137,6 +147,15 @@ public final class TestFriendlyException extends RuntimeException {
                 return Stream.empty();
             }
         }
+
+        // Replace `org.apache`-originating entries with a constant one.
+        // Without this, `INSTANCE` might yield different origin depending on the first class accessing to it.
+        // We remove this ambiguity and fix our origin to a constant instead.
+        if (className.startsWith("org.apache")) {
+            return Stream.of(ORG_APACHE_REPLACEMENT_STACK_TRACE_ELEMENT);
+        }
+
+        // Otherwise, it looks good
         return Stream.of(stackTraceElement);
     }
 

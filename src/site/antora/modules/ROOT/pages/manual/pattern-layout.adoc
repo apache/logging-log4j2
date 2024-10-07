@@ -142,7 +142,7 @@ xref:manual/lookups.adoc#event-context[event evaluation context].
 
 [WARNING]
 ====
-If the provided pattern does not contain an exception converter and <<plugin-attr-alwaysWriteExceptions>> is not disabled, an implicit <<converter-exception-extended,`%xEX`>> is appended to the pattern.
+If the provided pattern does not contain an exception converter and <<plugin-attr-alwaysWriteExceptions>> is not disabled, an implicit <<converter-exception-extended,`%xEx`>> is appended to the pattern.
 ====
 
 [#plugin-attr-patternSelector]
@@ -176,7 +176,7 @@ If configured, the `replace` element must specify the regular expression to matc
 |Default value |`true`
 |===
 
-If `true` and the user-provided pattern does not contain an exception converter, an implicit <<converter-exception-extended,`%xEX`>> pattern is appended.
+If `true` and the user-provided pattern does not contain an exception converter, an implicit <<converter-exception-extended,`%xEx`>> pattern is appended.
 This means that if you do not include a way to output exceptions in your pattern, the default exception formatter will be added to the end of the pattern.
 Setting this to `false` disables this behavior and allows you to exclude exceptions from your pattern output.
 
@@ -595,69 +595,76 @@ equals{pattern}{test}{substitution}
 equalsIgnoreCase{pattern}{test}{substitution}
 ----
 
-For example, `%equals{[%marker]}{[]}\{}` will replace `[]` strings produced by events without markers with an empty string.
+For example, `%equals{[%marker]}{[]}{}` will replace `[]` strings produced by events without markers with an empty string.
 
 The pattern can be arbitrarily complex and in particular can contain multiple conversion keywords.
 
 [#converter-exception]
 ==== Exception
 
-Outputs the `Throwable` attached to the log event
+Outputs information extracted from the `Throwable` attached to the log event.
+It features two modes:
 
-.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html[`ThrowablePatternConverter`] specifier grammar
+. <<converter-exception-stack-trace,Rendering the exception stack trace>> (the default mode)
+. <<converter-exception-property,Extracting an exception property>> (message, class name, line number, etc.)
+
+[WARNING]
+====
+Exception converter is not garbage-free.
+====
+
+[#converter-exception-stack-trace]
+===== Exception stack trace
+
+In this mode, the exception stack trace will be rendered according to the configuration provided.
+
+[IMPORTANT]
+====
+All rendered exception stack traces are ensured to be prefixed with a new line obtained using `System.lineSeparator()`.
+====
+
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html[`ThrowablePatternConverter`] specifier grammar **for rendering stack traces**:
 [source,text]
 ----
 ex|exception|throwable
   { "none"
-  | "full"
-  | depth
   | "short"
-  | "short.className"
-  | "short.fileName"
-  | "short.lineNumber"
-  | "short.methodName"
-  | "short.message"
-  | "short.localizedMessage"
+  | depth
+  | "full"
   }
   {filters(package,package,...)}
+  {separator(text)}
   {suffix(pattern)}
-  {separator(separator)}
 ----
 
-By default this will output the full stack trace as one would normally find with a call to `Throwable#printStackTrace()`.
+If this mode is employed without any configuration, the output will be identical to the one obtained from `Throwable#printStackTrace()`.
 
-You can follow the throwable conversion word with an option in the form `%throwable\{option}`.
+`none`:: Suppress the output of the converter
 
-`%throwable\{short}` outputs the first line of the `Throwable`.
+`short`:: Outputs the first line of the stack trace (analogous to `%ex\{1}`)
 
-`%throwable{short.className}` outputs the name of the class where the exception occurred.
+`depth`:: Outputs the first `depth` lines of the stack trace (`%ex\{0}` is analogous to `%ex\{none}`)
 
-`%throwable{short.methodName}` outputs the name of the method where the exception occurred.
+`full`:: Outputs the complete stack trace (analogous to no configuration)
 
-`%throwable{short.fileName}` outputs the name of the file containing the class where the exception occurred.
+`filters(package,package,...)`:: Suppresses stack trace elements of classes located in packages whose names start with the package names provided.
+Suppressed stack trace elements will be denoted in the output.
+For instance, `%ex{filters(org.junit)}` can be used to suppress JUnit classes in the rendered stack trace.
 
-`%throwable{short.lineNumber}` outputs the line number of the file containing the class where the exception occurred.
-
-`%throwable{short.message}` outputs the message.
-
-`%throwable{short.localizedMessage}` outputs the localized message.
-
-`%throwable\{n}` outputs the first `n` lines of the stack trace.
-
-Specifying `%throwable\{none}` or `%throwable\{0}` suppresses output of the exception.
-
-Use `{filters(packages)}`, where `packages` is a list of package names, to suppress matching stack frames from stack traces.
-
+`separator(text)`::
+`suffix(pattern)`::
++
+--
 You can change the used line separator in multiple ways:
 
-* Use `{separator(separator)}` to set the separator string literal.
+* Use `separator(text)` to set the separator string literal.
 It defaults to `System.lineSeparator()`.
-The contents of `separator` will be rendered verbatim without being subject to any processing.
+The contents of `text` will be rendered verbatim without being subject to any processing.
 
-* `{suffix(pattern)}` is identical to `{separator(separator)}` with the exception that the provided `pattern` will be processed as a xref:manual/pattern-layout.adoc[] conversion pattern before being rendered.
+* `suffix(pattern)` is identical to `{separator(text)}` with the exception that the provided `pattern` will be processed as a xref:manual/pattern-layout.adoc[] conversion pattern before being rendered.
 Exception-rendering directives in the `pattern` (`%ex`, `%rEx`, etc.) will be discarded.
 
-`{separator(...)}` and `{suffix(pattern)}` get concatenated to produce _the effective line separator_ as follows:
+`{separator(text)}` and `{suffix(pattern)}` get concatenated to produce _the effective line separator_ as follows:
 
 [source,java]
 ----
@@ -669,38 +676,52 @@ String effectiveLineSeparator(String separator, String suffix, LogEvent event) {
 }
 ----
 
-[WARNING]
+[TIP]
 ====
-Exception converter is not garbage-free.
+You are strongly advised to avoid using both `separator(text)` and `suffix(pattern)` at the same time; simply use one instead.
 ====
+--
 
-[#converter-exception-extended]
-==== Exception (Extended)
+[#converter-exception-property]
+===== Exception property
 
-The same as <<converter-exception,the `exception` converter>>, but also includes class packaging information
+In this mode, extracted attributes of the `Throwable` are injected _verbatim_.
+That is, no newlines, suffixes, prefixes, etc. will be added.
 
-.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html[`ThrowablePatternConverter`] specifier grammar
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html[`ThrowablePatternConverter`] specifier grammar **for extracting properties**:
 [source,text]
 ----
-xEx|xException|xThrowable
-  { "none"
-  | "full"
-  | depth
-  | "short"
-  | "short.className"
+ex|exception|throwable
+  { "short.className"
   | "short.fileName"
   | "short.lineNumber"
   | "short.methodName"
   | "short.message"
   | "short.localizedMessage"
   }
-  {filters(package,package,...)}
-  {suffix(pattern)}
-  {separator(separator)}
 ----
 
-Different from <<converter-exception,the `%throwable` conversion>>, at the end of each stack element of the exception, a string containing the name of the JAR file that contains the class or the directory the class is located in and the `Implementation-Version` as found in that JAR's manifest will be added.
-If the information is uncertain, then the class packaging data will be preceded by a `~` (tilde) character.
+`short.className`:: Class name of the first stack trace element in the causal chain
+`short.fileName`:: File name of the first stack trace element in the causal chain
+`short.lineNumber`:: Line number of the first stack trace element in the causal chain
+`short.methodName`:: Method name of the first stack trace element in the causal chain
+`short.message`:: Exception message
+`short.message`:: Localized exception message
+
+[#converter-exception-extended]
+==== Exception (Extended)
+
+The same as <<converter-exception,the `exception` converter>>, but additionally includes class packaging information in the rendered stack traces.
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/ExtendedThrowablePatternConverter.html[`ExtendedThrowablePatternConverter`] specifier grammar
+[source,text]
+----
+xEx|xException|xThrowable
+  [... same as the exception converter grammar ...]
+----
+
+Each stack trace element is suffixed with a string containing the name of the JAR file that contains the class (or the directory the class is located in) and the `Implementation-Version` as found in that JAR's manifest.
+If the information is uncertain, then the class packaging information will be preceded by a `~` (tilde) character.
 
 [#converter-file]
 ==== File
@@ -1190,27 +1211,20 @@ For instance, `%replace{%logger %msg}{\.}{/}` will replace all dots in the logge
 [#converter-rootException]
 ==== Root exception
 
-The same as <<converter-exception,the `exception` converter>>, but the stack trace is printed starting with the first exception in the causal chain that was thrown followed by each subsequent wrapping exception
+Same as <<converter-exception,the `exception` converter>>, but the stack trace causal chain is processed in reverse order.
 
 .link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/RootThrowablePatternConverter.html[`RootThrowablePatternConverter`] specifier grammar
 [source,text]
 ----
 rEx|rException|rThrowable
-  { "none"
-  | "full"
-  | depth
-  | "short"
-  | "short.className"
-  | "short.fileName"
-  | "short.lineNumber"
-  | "short.methodName"
-  | "short.message"
-  | "short.localizedMessage"
-  }
-  {filters(package,package,...)}
-  {suffix(pattern)}
-  {separator(separator)}
+  [... same as the exception converter grammar ...]
 ----
+
+[IMPORTANT]
+====
+Note that the inverted causal chain will not only affect the stack trace, but also extracted properties.
+That is, for instance, `%rEx{short.className}` and `%ex{short.className}` might yield different results.
+====
 
 [#converter-seq]
 ==== Sequence number

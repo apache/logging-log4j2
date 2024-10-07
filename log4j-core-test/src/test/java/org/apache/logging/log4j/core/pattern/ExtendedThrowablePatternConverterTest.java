@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.pattern;
 
 import static java.util.Arrays.asList;
+import static org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.THROWING_METHOD;
 
 import foo.TestFriendlyException;
 import java.util.List;
@@ -36,7 +37,7 @@ class ExtendedThrowablePatternConverterTest {
     class PropertyTest extends AbstractPropertyTest {
 
         PropertyTest() {
-            super("%xEx");
+            super("%xEx", THROWING_METHOD);
         }
     }
 
@@ -45,7 +46,7 @@ class ExtendedThrowablePatternConverterTest {
             "	at " + TestFriendlyException.NAMED_MODULE_STACK_TRACE_ELEMENT + " ~[?:?]",
             "	at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
             "	at foo.TestFriendlyException.<clinit>(TestFriendlyException.java:0) ~[test-classes/:?]",
-            "	at org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.<clinit>(ThrowablePatternConverterTest.java:0) [test-classes/:?]",
+            "	at " + TestFriendlyException.ORG_APACHE_REPLACEMENT_STACK_TRACE_ELEMENT + " ~[?:0]",
             "	Suppressed: foo.TestFriendlyException: r_s [localized]",
             "		at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
             "		at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
@@ -109,7 +110,7 @@ class ExtendedThrowablePatternConverterTest {
                             "foo.TestFriendlyException: r [localized]",
                             "	at " + TestFriendlyException.NAMED_MODULE_STACK_TRACE_ELEMENT + " ~[?:?]",
                             "	... suppressed 2 lines",
-                            "	at org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.<clinit>(ThrowablePatternConverterTest.java:0) [test-classes/:?]",
+                            "	at " + TestFriendlyException.ORG_APACHE_REPLACEMENT_STACK_TRACE_ELEMENT + " ~[?:0]",
                             "	Suppressed: foo.TestFriendlyException: r_s [localized]",
                             "		... suppressed 2 lines",
                             "		... 2 more",
@@ -136,7 +137,7 @@ class ExtendedThrowablePatternConverterTest {
         @MethodSource("org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest#depthTestCases")
         void depth_and_package_limited_output_should_match_2(final DepthTestCase depthTestCase) {
             final String pattern = String.format(
-                    "%s{%d}{filters(org.apache)}%s",
+                    "%s{%d}{filters(bar)}%s",
                     patternPrefix, depthTestCase.maxLineCount, depthTestCase.separatorTestCase.patternAddendum);
             assertStackTraceLines(
                     depthTestCase,

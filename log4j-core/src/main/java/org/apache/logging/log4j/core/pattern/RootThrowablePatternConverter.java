@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.impl.ThrowableFormatOptions;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -31,11 +30,13 @@ import org.jspecify.annotations.Nullable;
 public final class RootThrowablePatternConverter extends ThrowablePatternConverter {
 
     private RootThrowablePatternConverter(@Nullable final Configuration config, @Nullable final String[] options) {
-        super("RootThrowable", "throwable", options, config, RootThrowablePatternConverter::createRenderer);
-    }
-
-    private static ThrowableInvertedStackTraceRenderer createRenderer(final ThrowableFormatOptions options) {
-        return new ThrowableInvertedStackTraceRenderer(options.getIgnorePackages(), options.getLines());
+        super(
+                "RootThrowable",
+                "throwable",
+                options,
+                config,
+                ThrowableInvertedPropertyRendererFactory.INSTANCE,
+                ThrowableInvertedStackTraceRendererFactory.INSTANCE);
     }
 
     /**

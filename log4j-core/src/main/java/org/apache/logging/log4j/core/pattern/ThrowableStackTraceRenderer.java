@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.apache.logging.log4j.util.Strings.LINE_SEPARATOR;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -53,12 +55,20 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
         if (maxLineCount > 0) {
             try {
                 C context = createContext(throwable);
+                ensureNewlineSuffix(buffer);
                 renderThrowable(buffer, throwable, context, new HashSet<>(), lineSeparator);
             } catch (final Exception error) {
                 if (error != MAX_LINE_COUNT_EXCEEDED) {
                     throw error;
                 }
             }
+        }
+    }
+
+    private static void ensureNewlineSuffix(final StringBuilder buffer) {
+        final int bufferLength = buffer.length();
+        if (bufferLength > 0 && buffer.charAt(bufferLength - 1) != '\n') {
+            buffer.append(LINE_SEPARATOR);
         }
     }
 
