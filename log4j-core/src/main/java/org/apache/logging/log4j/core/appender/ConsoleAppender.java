@@ -20,29 +20,19 @@ import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Constructor;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.impl.CoreProperties.ConsoleProperties;
 import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
-import org.apache.logging.log4j.core.util.Loader;
-import org.apache.logging.log4j.core.util.Throwables;
-import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
-import org.apache.logging.log4j.util.Chars;
-import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Appends log events to <code>System.out</code> or <code>System.err</code> using a layout specified by the user. The
@@ -59,7 +49,6 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputStreamManager> {
 
     public static final String PLUGIN_NAME = "Console";
-    private static final String JANSI_CLASS = "org.fusesource.jansi.WindowsAnsiOutputStream";
     private static final ConsoleManagerFactory factory = new ConsoleManagerFactory();
     private static final Target DEFAULT_TARGET = Target.SYSTEM_OUT;
     private static final AtomicInteger COUNT = new AtomicInteger();
@@ -127,7 +116,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
                 "DefaultConsole-" + COUNT.incrementAndGet(),
                 layout,
                 null,
-                getDefaultManager(DEFAULT_TARGET, false, false, layout),
+                getDefaultManager(layout),
                 true,
                 DEFAULT_TARGET,
                 null);
@@ -172,91 +161,43 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
 
         @Override
         public ConsoleAppender build() {
-            if (follow && direct) {
-                throw new IllegalArgumentException(
-                        "Cannot use both follow and direct on ConsoleAppender '" + getName() + "'");
+            if (direct && follow) {
+                LOGGER.error("Cannot use both `direct` and `follow` on ConsoleAppender.");
+                return null;
             }
             final Layout layout = getOrCreateLayout(target.getDefaultCharset());
-            final Configuration configuration = getConfiguration();
-            final PropertyEnvironment propertyEnvironment =
-                    configuration != null && configuration.getLoggerContext() != null
-                            ? configuration.getLoggerContext().getEnvironment()
-                            : PropertyEnvironment.getGlobal();
+
+            OutputStream stream = direct
+                    ? getDirectOutputStream(target)
+                    : follow ? getFollowOutputStream(target) : getDefaultOutputStream(target);
+
+            final String managerName = target.name() + '.' + follow + '.' + direct;
+            final OutputStreamManager manager =
+                    OutputStreamManager.getManager(managerName, new FactoryData(stream, managerName, layout), factory);
             return new ConsoleAppender(
-                    getName(),
-                    layout,
-                    getFilter(),
-                    getManager(target, follow, direct, layout, propertyEnvironment),
-                    isIgnoreExceptions(),
-                    target,
-                    getPropertyArray());
+                    getName(), layout, getFilter(), manager, isIgnoreExceptions(), target, getPropertyArray());
         }
     }
 
-    private static OutputStreamManager getDefaultManager(
-            final Target target, final boolean follow, final boolean direct, final Layout layout) {
-        final OutputStream os = getOutputStream(follow, direct, target, PropertyEnvironment.getGlobal());
-
+    private static OutputStreamManager getDefaultManager(final Layout layout) {
+        final OutputStream os = new CloseShieldOutputStream(
+                ConsoleAppender.DEFAULT_TARGET == Target.SYSTEM_ERR ? System.err : System.out);
         // LOG4J2-1176 DefaultConfiguration should not share OutputStreamManager instances to avoid memory leaks.
-        final String managerName = target.name() + '.' + follow + '.' + direct + "-" + COUNT.get();
+        final String managerName = ConsoleAppender.DEFAULT_TARGET.name() + ".false.false-" + COUNT.get();
         return OutputStreamManager.getManager(managerName, new FactoryData(os, managerName, layout), factory);
     }
 
-    private static OutputStreamManager getManager(
-            final Target target,
-            final boolean follow,
-            final boolean direct,
-            final Layout layout,
-            final PropertyEnvironment properties) {
-        final OutputStream os = getOutputStream(follow, direct, target, properties);
-        final String managerName = target.name() + '.' + follow + '.' + direct;
-        return OutputStreamManager.getManager(managerName, new FactoryData(os, managerName, layout), factory);
+    private static OutputStream getDefaultOutputStream(Target target) {
+        return new CloseShieldOutputStream(target == Target.SYSTEM_OUT ? System.out : System.err);
     }
 
-    private static OutputStream getOutputStream(
-            final boolean follow, final boolean direct, final Target target, final PropertyEnvironment properties) {
-        final String enc = Charset.defaultCharset().name();
-        OutputStream outputStream;
-        try {
-            // @formatter:off
-            outputStream = target == Target.SYSTEM_OUT
-                    ? direct
-                            ? new FileOutputStream(FileDescriptor.out)
-                            : (follow ? new PrintStream(new SystemOutStream(), true, enc) : System.out)
-                    : direct
-                            ? new FileOutputStream(FileDescriptor.err)
-                            : (follow ? new PrintStream(new SystemErrStream(), true, enc) : System.err);
-            // @formatter:on
-            outputStream = new CloseShieldOutputStream(outputStream);
-        } catch (final UnsupportedEncodingException ex) { // should never happen
-            throw new IllegalStateException("Unsupported default encoding " + enc, ex);
-        }
-        if (!PropertiesUtil.getProperties().isOsWindows()
-                || !Boolean.FALSE.equals(
-                        properties.getProperty(ConsoleProperties.class).jansiEnabled())
-                || direct) {
-            return outputStream;
-        }
-        try {
-            // We type the parameter as a wildcard to avoid a hard reference to Jansi.
-            final Class<?> clazz = Loader.loadClass(JANSI_CLASS);
-            final Constructor<?> constructor = clazz.getConstructor(OutputStream.class);
-            return new CloseShieldOutputStream((OutputStream) constructor.newInstance(outputStream));
-        } catch (final ClassNotFoundException cnfe) {
-            LOGGER.debug("Jansi is not installed, cannot find {}", JANSI_CLASS);
-        } catch (final NoSuchMethodException nsme) {
-            LOGGER.warn("{} is missing the proper constructor", JANSI_CLASS);
-        } catch (final Exception ex) {
-            LOGGER.warn(
-                    "Unable to instantiate {} due to {}",
-                    JANSI_CLASS,
-                    clean(Throwables.getRootCause(ex).toString()).trim());
-        }
-        return outputStream;
+    private static OutputStream getDirectOutputStream(Target target) {
+        return new CloseShieldOutputStream(
+                new FileOutputStream(target == Target.SYSTEM_OUT ? FileDescriptor.out : FileDescriptor.err));
     }
 
-    private static String clean(final String string) {
-        return string.replace(Chars.NUL, Chars.SPACE);
+    private static OutputStream getFollowOutputStream(Target target) {
+        return target == Target.SYSTEM_OUT ? new SystemOutStream() : new SystemErrStream();
     }
 
     /**

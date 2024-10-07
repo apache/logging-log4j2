@@ -67,8 +67,6 @@ public final class TestConstants {
 
     public static final String CONFIGURATION_USE_PRECISE_CLOCK = CONFIGURATION + "usePreciseClock";
 
-    public static final String CONSOLE_JANSI_ENABLED = "log4j.console.jansiEnabled";
-
     private static final String GC = "log4j.gc.";
 
     public static final String GC_ENABLE_DIRECT_ENCODERS = GC + "enableDirectEncoders";
