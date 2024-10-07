@@ -16,8 +16,21 @@
  */
 package org.apache.logging.log4j.core.config.plugins.processor;
 
+import java.io.Serializable;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.PluginLoggerContext;
+import org.apache.logging.log4j.core.config.plugins.PluginNode;
+import org.apache.logging.log4j.core.config.plugins.PluginValue;
 
 /**
  * Test plugin class for unit tests.
@@ -28,4 +41,45 @@ public class FakePlugin {
 
     @Plugin(name = "Nested", category = "Test")
     public static class Nested {}
+
+    @PluginFactory
+    public static FakePlugin newPlugin(
+            @PluginAttribute("attribute") int attribute,
+            @PluginElement("layout") Layout<? extends Serializable> layout,
+            @PluginConfiguration Configuration config,
+            @PluginNode Node node,
+            @PluginLoggerContext LoggerContext loggerContext,
+            @PluginValue("value") String value) {
+        return null;
+    }
+
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    public static class Builder implements org.apache.logging.log4j.core.util.Builder<FakePlugin> {
+
+        @PluginBuilderAttribute
+        private int attribute;
+
+        @PluginElement("layout")
+        private Layout<? extends Serializable> layout;
+
+        @PluginConfiguration
+        private Configuration config;
+
+        @PluginNode
+        private Node node;
+
+        @PluginLoggerContext
+        private LoggerContext loggerContext;
+
+        @PluginValue("value")
+        private String value;
+
+        @Override
+        public FakePlugin build() {
+            return null;
+        }
+    }
 }

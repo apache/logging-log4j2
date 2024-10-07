@@ -20,8 +20,17 @@
 
 <#if release.date?has_content>Release date:: ${release.date}</#if>
 
-This minor release contains bug fixes and behavioral improvements.
+This minor release contains bug fixes, behavioral improvements, and a fully-fledged support for the GraalVM native image generation.
 
+[#release-notes-2-25-0-graalvm]
+=== GraalVM reachability metadata
+
+Log4j Core and all its extension modules have been enriched with embedded
+https://www.graalvm.org/latest/reference-manual/native-image/metadata/[GraalVM reachability metadata].
+This allows the generation of GraalVM native images out-of-the-box without any additional steps.
+See our xref:graalvm.adoc[GraalVM guide] for details.
+
+[#release-notes-2-25-0-PL-ex]
 === Exception handling in Pattern Layout
 
 Exception handling in Pattern Layout went through a major rewrite.

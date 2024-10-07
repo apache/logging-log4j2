@@ -1,0 +1,9 @@
+{
+  "resources": {
+    "includes": [
+      {
+        "pattern": "((Ecs|Gcp|Gelf|Json|StackTraceElement)Layout|LogstashJsonEventLayoutV1)\\.json"
+      }
+    ]
+  }
+}
