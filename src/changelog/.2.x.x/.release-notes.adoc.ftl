@@ -30,4 +30,10 @@ This will allow the generation of GraalVM native images out-of-the-box, without 
 
 See our xref:graalvm.adoc[GraalVM guide] for more details.
 
+=== ANSI support on Windows
+
+Since 2017, Windows 10 and newer have offered native support for ANSI escapes.
+The support for the outdated Jansi 1.x library has therefore been removed.
+See xref:manual/pattern-layout.adoc#jansi[ANSI styling on Windows] for more information.
+
 <#include "../.changelog.adoc.ftl">

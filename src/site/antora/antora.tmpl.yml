@@ -59,7 +59,6 @@ asciidoc:
     disruptor-version: "${site-disruptor.version}"
     flume-version: "${site-flume.version}"
     jackson-version: "${site-jackson.version}"
-    jansi-version: "${site-jansi.version}"
     javax-mail-version: "${site-javax-mail.version}"
     jctools-version: "${site-jctools.version}"
     je-version: "${site-je.version}"
