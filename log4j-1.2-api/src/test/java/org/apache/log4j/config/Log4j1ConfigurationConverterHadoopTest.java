@@ -24,19 +24,16 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 public class Log4j1ConfigurationConverterHadoopTest extends AbstractLog4j1ConfigurationConverterTest {
 
-    // @Parameterized.Parameters(name = "{0}")
     public static List<Path> data() throws IOException {
         return getPaths("src/test/resources/config-1.2/hadoop");
     }
 
-    public Log4j1ConfigurationConverterHadoopTest(final Path path) {
-        super(path);
+    public Log4j1ConfigurationConverterHadoopTest() {
+        super();
     }
 
-    // ParameterizedTest replacing the JUnit 4 @Test in abstract class
     @ParameterizedTest
     @MethodSource("data")
-    // @Override
     public void test(Path path) throws Exception {
         super.test(path);
     }

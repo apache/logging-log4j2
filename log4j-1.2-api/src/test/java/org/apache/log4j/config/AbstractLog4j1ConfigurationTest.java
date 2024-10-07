@@ -481,22 +481,18 @@ public abstract class AbstractLog4j1ConfigurationTest {
 
         try (final LoggerContext loggerContext = configure("log4j-multipleFilters")) {
             final Configuration configuration = loggerContext.getConfiguration();
-            System.out.println("#############" + configuration);
 
             assertNotNull(configuration);
 
             // Check only number of filters.
             final Filterable console = configuration.getAppender("CONSOLE");
-            System.out.println("############# console.getFilter" + console.getFilter());
             assertNotNull(console);
             assertEquals(4, checkFilters(console.getFilter()));
             final Filterable file = configuration.getAppender("FILE");
             assertNotNull(file);
-            System.out.println("############# file.getFilter" + file.getFilter());
             assertEquals(4, checkFilters(file.getFilter()));
             final Filterable rfa = configuration.getAppender("RFA");
             assertNotNull(rfa);
-            System.out.println("############# rfa.getFilter" + rfa.getFilter());
             assertEquals(4, checkFilters(rfa.getFilter()));
             final Filterable drfa = configuration.getAppender("DRFA");
             assertNotNull(drfa);
@@ -508,7 +504,6 @@ public abstract class AbstractLog4j1ConfigurationTest {
             final ListAppender legacyAppender = (ListAppender) ((Adapter) appender).getAppender();
             final org.apache.logging.log4j.core.test.appender.ListAppender nativeAppender =
                     configuration.getAppender("LIST2");
-            System.out.println("############# list2appender.getFilter " + nativeAppender.getFilter());
             assertEquals(3, checkFilters(((Filterable) nativeAppender).getFilter()));
 
             final Logger logger = LogManager.getLogger(PropertiesConfigurationTest.class);
@@ -529,11 +524,6 @@ public abstract class AbstractLog4j1ConfigurationTest {
             // message accepted by "StartsWith" filter
             logger.warn("ACCEPT message");
             expected++;
-            System.out.println("#############expected" + expected);
-            System.out.println("#############legacyAppender.getEvents().size()"
-                    + legacyAppender.getEvents().size());
-            System.out.println("#############nativeAppender.getEvents().size()"
-                    + nativeAppender.getEvents().size());
             assertEquals(expected, legacyAppender.getEvents().size());
             assertEquals(expected, nativeAppender.getEvents().size());
             // message blocked by "StartsWith" filter

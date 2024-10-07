@@ -106,7 +106,7 @@ public class CyclicBufferTestCase extends TestCase {
         final int size = 2;
 
         CyclicBuffer cb = new CyclicBuffer(size);
-        assertEquals(cb.getMaxSize(), size);
+        assertEquals(size, cb.getMaxSize());
 
         cb.add(e[0]);
         assertEquals(cb.length(), 1);

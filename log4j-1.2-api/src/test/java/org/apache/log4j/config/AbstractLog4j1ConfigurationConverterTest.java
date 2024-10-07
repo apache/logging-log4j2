@@ -29,12 +29,11 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.xml.sax.SAXException;
-// import org.junit.jupiter.params.ParameterizedTest;
-// import org.junit.jupiter.params.provider.MethodSource;
 
-// import org.junit.runner.RunWith;
-// import org.junit.runners.Parameterized;
 
 public abstract class AbstractLog4j1ConfigurationConverterTest {
 
@@ -50,20 +49,15 @@ public abstract class AbstractLog4j1ConfigurationConverterTest {
         return paths;
     }
 
-    protected final Path pathIn;
+    public AbstractLog4j1ConfigurationConverterTest() {}
 
-    public AbstractLog4j1ConfigurationConverterTest(final Path path) {
-        this.pathIn = path;
-    }
-
-    // @ParameterizedTest
-    // @MethodSource("data")
-    public void test(final Path path) throws Exception {
+    @Test
+    public void test(Path path) throws Exception {
         final Path tempFile = Files.createTempFile("log4j2", ".xml");
         try {
             final Log4j1ConfigurationConverter.CommandLineArguments cla =
                     new Log4j1ConfigurationConverter.CommandLineArguments();
-            cla.setPathIn(pathIn);
+            cla.setPathIn(path);
             cla.setPathOut(tempFile);
             Log4j1ConfigurationConverter.run(cla);
             checkWellFormedXml(tempFile);
