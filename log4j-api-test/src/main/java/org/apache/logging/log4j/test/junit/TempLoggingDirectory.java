@@ -28,6 +28,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.TestProperties;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -39,10 +40,13 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.jupiter.api.io.CleanupMode;
+import org.junit.platform.commons.PreconditionViolationException;
 import org.junit.platform.commons.support.AnnotationSupport;
 import org.junit.platform.commons.support.ModifierSupport;
 
 public class TempLoggingDirectory implements BeforeAllCallback, BeforeEachCallback, ParameterResolver {
+
+    private final AtomicInteger counter = new AtomicInteger();
 
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
@@ -51,8 +55,8 @@ public class TempLoggingDirectory implements BeforeAllCallback, BeforeEachCallba
         Path loggingPath = null;
         for (final Field field : fields) {
             if (loggingPath != null) {
-                StatusLogger.getLogger()
-                        .warn("Multiple static fields with @TempLoggingDir annotation are not supported.");
+                throw new PreconditionViolationException(
+                        "Multiple static fields with @TempLoggingDir annotation are not supported.");
             } else {
                 final CleanupMode cleanup = determineCleanupMode(field);
                 loggingPath = createLoggingPath(context, cleanup).getPath();
@@ -79,8 +83,8 @@ public class TempLoggingDirectory implements BeforeAllCallback, BeforeEachCallba
         final Object instance = context.getRequiredTestInstance();
         for (final Field field : fields) {
             if (loggingPath != null) {
-                StatusLogger.getLogger()
-                        .warn("Multiple instance fields with @TempLoggingDir annotation are not supported.");
+                throw new PreconditionViolationException(
+                        "Multiple instance fields with @TempLoggingDir annotation are not supported.");
             } else {
                 final CleanupMode cleanup = determineCleanupMode(field);
                 loggingPath = createLoggingPath(context, cleanup).getPath();
@@ -102,8 +106,11 @@ public class TempLoggingDirectory implements BeforeAllCallback, BeforeEachCallba
     @Override
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
             throws ParameterResolutionException {
-        final TempLoggingDir annotation =
-                parameterContext.findAnnotation(TempLoggingDir.class).get();
+        final TempLoggingDir annotation = parameterContext
+                .findAnnotation(TempLoggingDir.class)
+                .orElseThrow(() -> new PreconditionViolationException(String.format(
+                        "Missing `%s` annotation on parameter `%s`",
+                        TempLoggingDir.class.getSimpleName(), parameterContext)));
         // Get or create a temporary directory
         PathHolder holder = ExtensionContextAnchor.getAttribute(PathHolder.class, PathHolder.class, extensionContext);
         if (holder == null || !extensionContext.equals(holder.getMainContext())) {
@@ -142,12 +149,14 @@ public class TempLoggingDirectory implements BeforeAllCallback, BeforeEachCallba
                 final Path basePath = (baseDir != null ? Paths.get(baseDir, "target") : Paths.get(".")).resolve("logs");
                 final Class<?> clazz = context.getRequiredTestClass();
                 final Package pkg = clazz.getPackage();
-                final String dir =
-                        pkg.getName().replaceAll("[.$]", File.separatorChar == '\\' ? "\\\\" : File.separator);
+                final String dir = pkg.getName()
+                        .replaceAll("org\\.apache\\.(logging\\.)?log4j\\.", "")
+                        .replaceAll("[.$]", File.separatorChar == '\\' ? "\\\\" : File.separator);
                 // Create a temporary directory that uses the simple class name as prefix
                 Path packagePath = basePath.resolve(dir);
                 Files.createDirectories(packagePath);
-                return Files.createTempDirectory(packagePath, clazz.getSimpleName());
+                return Files.createTempDirectory(
+                        packagePath, String.format("%s_%02d_", clazz.getSimpleName(), counter.incrementAndGet()));
             } catch (final IOException e) {
                 throw new ExtensionContextException("Failed to create temporary directory.", e);
             }
