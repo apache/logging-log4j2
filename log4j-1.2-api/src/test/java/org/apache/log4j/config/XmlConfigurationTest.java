@@ -16,8 +16,8 @@
  */
 package org.apache.log4j.config;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
@@ -41,7 +41,7 @@ import org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy;
 import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test configuration from XML.
@@ -57,7 +57,7 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
         final ConfigurationSource source = new ConfigurationSource(inputStream);
         final LoggerContext context = LoggerContext.getContext(false);
         final Configuration configuration = new XmlConfigurationFactory().getConfiguration(context, source);
-        assertNotNull("No configuration created", configuration);
+        assertNotNull(configuration, "No configuration created");
         configuration.initialize();
         return configuration;
     }
@@ -78,12 +78,12 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
                 eventAppender = (ListAppender) ((AppenderAdapter.Adapter) entry.getValue()).getAppender();
             }
         }
-        assertNotNull("No Event Appender", eventAppender);
-        assertNotNull("No Message Appender", messageAppender);
+        assertNotNull(eventAppender, "No Event Appender");
+        assertNotNull(messageAppender, "No Message Appender");
         final List<LoggingEvent> events = eventAppender.getEvents();
-        assertTrue("No events", events != null && events.size() > 0);
+        assertTrue(events != null && events.size() > 0, "No events");
         final List<String> messages = messageAppender.getMessages();
-        assertTrue("No messages", messages != null && messages.size() > 0);
+        assertTrue(messages != null && messages.size() > 0, "No messages");
     }
 
     @Test
@@ -92,11 +92,11 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
         final Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
         File file = new File("target/temp.A1");
-        assertTrue("File A1 was not created", file.exists());
-        assertTrue("File A1 is empty", file.length() > 0);
+        assertTrue(file.exists(), "File A1 was not created");
+        assertTrue(file.length() > 0, "File A1 is empty");
         file = new File("target/temp.A2");
-        assertTrue("File A2 was not created", file.exists());
-        assertTrue("File A2 is empty", file.length() > 0);
+        assertTrue(file.exists(), "File A2 was not created");
+        assertTrue(file.length() > 0, "File A2 is empty");
     }
 
     @Override
@@ -191,13 +191,13 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
             testEnhancedRollingFileAppender(configuration);
             // Only supported through XML configuration
             final Appender appender = configuration.getAppender("MIXED");
-            assertTrue("is RollingFileAppender", appender instanceof RollingFileAppender);
+            assertTrue(appender instanceof RollingFileAppender, "is RollingFileAppender");
             final TriggeringPolicy policy = ((RollingFileAppender) appender).getTriggeringPolicy();
-            assertTrue("is CompositeTriggeringPolicy", policy instanceof CompositeTriggeringPolicy);
+            assertTrue(policy instanceof CompositeTriggeringPolicy, "is CompositeTriggeringPolicy");
             final TriggeringPolicy[] policies = ((CompositeTriggeringPolicy) policy).getTriggeringPolicies();
             assertEquals(2, policies.length);
-            assertTrue("is TimeBasedTriggeringPolicy", policies[0] instanceof TimeBasedTriggeringPolicy);
-            assertTrue("is SizeBasedTriggeringPolicy", policies[1] instanceof SizeBasedTriggeringPolicy);
+            assertTrue(policies[0] instanceof TimeBasedTriggeringPolicy, "is TimeBasedTriggeringPolicy");
+            assertTrue(policies[1] instanceof SizeBasedTriggeringPolicy, "is SizeBasedTriggeringPolicy");
         }
     }
 
