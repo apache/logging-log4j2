@@ -15,10 +15,10 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<appender name="A2" class="org.apache.log4j.FileAppender">
-  <param name="File" value="output/temp.A2.4" />
-  <param name="Append" value="false" />
-  <layout class="org.apache.log4j.TTCCLayout">
-    <param name="DateFormat" value="ISO8601" />
-  </layout>
-</appender>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+  <!-- This class does not exist -->
+  <throwableRenderer class="foo.bar.ThrowableRenderer">
+    <param name="showVersion" value="false"/>
+  </throwableRenderer>
+</log4j:configuration>
