@@ -28,13 +28,6 @@ import org.openjdk.jmh.annotations.State;
 /**
  * This benchmark tests encoding implementations.
  */
-// ============================== HOW TO RUN THIS TEST: ====================================
-//
-// java -jar log4j-perf/target/benchmarks.jar ".*StringBuilderEscapeBenchmark.*" -f 1 -wi 5 -i 10
-//
-// Usage help:
-// java -jar log4j-perf/target/benchmarks.jar -help
-//
 @State(Scope.Benchmark)
 public class StringBuilderEscapeBenchmark {
 

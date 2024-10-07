@@ -41,14 +41,6 @@ import org.openjdk.jmh.annotations.State;
 /**
  * Compares Log4j2 with Logback PatternLayout performance.
  */
-// ============================== HOW TO RUN THIS TEST: ====================================
-//
-// single thread:
-// java -jar log4j-perf/target/benchmarks.jar ".*PatternLayoutComparison.*" -f 1 -wi 10 -i 10 -tu ns -bm sample
-//
-// Usage help:
-// java -jar log4j-perf/target/benchmarks.jar -help
-//
 @State(Scope.Thread)
 public class PatternLayoutComparisonBenchmark {
 

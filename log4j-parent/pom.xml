@@ -51,12 +51,11 @@
          Plugin version properties (in alphabetical order)
          ================================================= -->
     <asciidoctor-maven-plugin.version>2.2.4</asciidoctor-maven-plugin.version>
-    <docker-maven-plugin.version>0.45.0</docker-maven-plugin.version>
+    <docker-maven-plugin.version>0.45.1</docker-maven-plugin.version>
     <exam-maven-plugin.version>4.13.5</exam-maven-plugin.version>
-    <gmavenplus-plugin.version>3.0.2</gmavenplus-plugin.version>
     <maven-taglib-plugin.version>2.4</maven-taglib-plugin.version>
     <!-- `surefire.version` property used in `apache.org:apache`: -->
-    <surefire.version>3.5.0</surefire.version>
+    <surefire.version>3.5.1</surefire.version>
 
     <!-- =====================================================
          Direct dependency version properties (in alphabetical order)
@@ -71,24 +70,23 @@
     <cassandra-driver.version>3.11.5</cassandra-driver.version>
     <commons-codec.version>1.17.1</commons-codec.version>
     <commons-compress.version>1.27.1</commons-compress.version>
-    <commons-csv.version>1.11.0</commons-csv.version>
+    <commons-csv.version>1.12.0</commons-csv.version>
     <commons-dbcp2.version>2.12.0</commons-dbcp2.version>
-    <commons-io.version>2.16.1</commons-io.version>
+    <commons-io.version>2.17.0</commons-io.version>
     <commons-lang3.version>3.17.0</commons-lang3.version>
     <commons-logging.version>1.3.4</commons-logging.version>
     <!-- `com.conversantmedia:disruptor` version 1.2.16 requires Java 9: -->
     <conversant.disruptor.version>1.2.15</conversant.disruptor.version>
     <disruptor.version>3.4.4</disruptor.version>
-    <elasticsearch-java.version>8.15.1</elasticsearch-java.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <felix.version>7.0.5</felix.version>
-    <groovy.version>3.0.22</groovy.version>
-    <guava.version>33.3.0-jre</guava.version>
+    <groovy.version>4.0.23</groovy.version>
+    <guava.version>33.3.1-jre</guava.version>
     <h2.version>2.2.224</h2.version>
     <hamcrest.version>3.0</hamcrest.version>
     <HdrHistogram.version>2.2.2</HdrHistogram.version>
     <hsqldb.version>2.7.3</hsqldb.version>
-    <jackson-bom.version>2.17.2</jackson-bom.version>
+    <jackson-bom.version>2.18.0</jackson-bom.version>
     <!-- Override the version in Jakarta EE 9 BOM: -->
     <jakarta-activation.version>2.1.3</jakarta-activation.version>
     <jakarta-mail.version>2.1.3</jakarta-mail.version>
@@ -104,19 +102,19 @@
     <javax-servlet-jsp.version>2.3.3</javax-servlet-jsp.version>
     <jansi.version>2.4.1</jansi.version>
     <java-allocation-instrumenter.version>3.3.4</java-allocation-instrumenter.version>
+    <jazzer.version>0.22.1</jazzer.version>
     <jconsole.version>1.7.0</jconsole.version>
     <jctools.version>4.0.5</jctools.version>
     <jeromq.version>0.6.0</jeromq.version>
-    <jetty.version>9.4.56.v20240826</jetty.version>
     <jmdns.version>3.5.12</jmdns.version>
     <jmh.version>1.37</jmh.version>
-    <json-unit.version>2.40.1</json-unit.version>
     <junit.version>4.13.2</junit.version>
     <junit-jupiter.version>5.11.1</junit-jupiter.version>
     <junit-pioneer.version>1.9.1</junit-pioneer.version>
     <kafka.version>3.8.0</kafka.version>
     <lightcouch.version>0.2.0</lightcouch.version>
     <log4j.version>1.2.17</log4j.version>
+    <log4j-transform.version>0.1.0</log4j-transform.version>
     <log4j2-cachefile-transformer.version>2.15.0</log4j2-cachefile-transformer.version>
     <log4j2-ecs-layout.version>1.6.0</log4j2-ecs-layout.version>
     <logback.version>1.3.14</logback.version>
@@ -133,12 +131,11 @@
     <spring-boot.version>2.7.18</spring-boot.version>
     <spring-framework.version>5.3.39</spring-framework.version>
     <system-stubs.version>2.0.3</system-stubs.version>
-    <tomcat-juli.version>10.0.27</tomcat-juli.version>
     <velocity.version>1.7</velocity.version>
     <wiremock.version>2.35.2</wiremock.version>
     <xmlunit.version>2.10.0</xmlunit.version>
     <xz.version>1.10</xz.version>
-    <zstd.version>1.5.6-5</zstd.version>
+    <zstd.version>1.5.6-6</zstd.version>
 
     <!-- =====================================================
          Pinned transitive dependency version properties (in alphabetical order)
@@ -152,18 +149,18 @@
     <commons-pool2.version>2.12.0</commons-pool2.version>
     <httpclient.version>4.5.14</httpclient.version>
     <httpcore.version>4.4.16</httpcore.version>
-    <jna.version>5.14.0</jna.version>
+    <jna.version>5.15.0</jna.version>
 
   </properties>
 
   <dependencyManagement>
     <dependencies>
 
-      <!-- BEGIN: Modules that are not published (and hence missing in the BOM) -->
+      <!-- BEGIN: Modules that are consumed only internally -->
 
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-osgi-test</artifactId>
+        <artifactId>log4j-fuzz-test</artifactId>
         <version>${project.version}</version>
       </dependency>
 
@@ -173,10 +170,10 @@
         <version>${project.version}</version>
       </dependency>
 
-      <!-- END: Modules that are not published (and hence missing in the BOM) -->
+      <!-- END: Modules that are consumed only internally -->
 
       <dependency>
-        <groupId>org.codehaus.groovy</groupId>
+        <groupId>org.apache.groovy</groupId>
         <artifactId>groovy-bom</artifactId>
         <version>${groovy.version}</version>
         <type>pom</type>
@@ -195,14 +192,6 @@
         <groupId>jakarta.platform</groupId>
         <artifactId>jakarta.jakartaee-bom</artifactId>
         <version>${jakartaee-bom.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-bom</artifactId>
-        <version>${jetty.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -245,6 +234,13 @@
         <type>zip</type>
       </dependency>
 
+      <!-- Dummy dependency to trick `dependabot` into updating the `log4j-transform.version` property: -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-transform-maven-shade-plugin-extensions</artifactId>
+        <version>${log4j-transform.version}</version>
+      </dependency>
+
       <dependency>
         <groupId>org.apache.activemq</groupId>
         <artifactId>activemq-broker</artifactId>
@@ -267,6 +263,12 @@
         <groupId>org.awaitility</groupId>
         <artifactId>awaitility</artifactId>
         <version>${awaitility.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.code-intelligence</groupId>
+        <artifactId>jazzer</artifactId>
+        <version>${jazzer.version}</version>
       </dependency>
 
       <dependency>
@@ -380,12 +382,6 @@
         <groupId>com.lmax</groupId>
         <artifactId>disruptor</artifactId>
         <version>${disruptor.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>co.elastic.clients</groupId>
-        <artifactId>elasticsearch-java</artifactId>
-        <version>${elasticsearch-java.version}</version>
       </dependency>
 
       <dependency>
@@ -577,12 +573,6 @@
         <groupId>net.java.dev.jna</groupId>
         <artifactId>jna</artifactId>
         <version>${jna.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>net.javacrumbs.json-unit</groupId>
-        <artifactId>json-unit</artifactId>
-        <version>${json-unit.version}</version>
       </dependency>
 
       <dependency>
@@ -795,12 +785,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>tomcat-juli</artifactId>
-        <version>${tomcat-juli.version}</version>
-      </dependency>
-
-      <dependency>
         <groupId>org.apache.velocity</groupId>
         <artifactId>velocity</artifactId>
         <version>${velocity.version}</version>
@@ -901,6 +885,61 @@
           <version>${maven-taglib-plugin.version}</version>
         </plugin>
 
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <dependencies>
+            <dependency>
+              <groupId>org.apache.logging.log4j</groupId>
+              <artifactId>log4j-transform-maven-shade-plugin-extensions</artifactId>
+              <version>${log4j-transform.version}</version>
+            </dependency>
+          </dependencies>
+          <executions>
+            <execution>
+              <id>generate-uber-jar</id>
+              <goals>
+                <goal>shade</goal>
+              </goals>
+              <phase>package</phase>
+              <configuration>
+                <createDependencyReducedPom>false</createDependencyReducedPom>
+                <!-- Minimization causes `@Plugin`-annotated classes to be omitted, hence disabling it: -->
+                <minimizeJar>false</minimizeJar>
+                <finalName>${project.artifactId}-${project.version}-uber</finalName>
+                <transformers>
+                  <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
+                  <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer" />
+                  <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                    <manifestEntries>
+                      <Multi-Release>true</Multi-Release>
+                    </manifestEntries>
+                  </transformer>
+                  <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                  <transformer implementation="org.apache.logging.log4j.maven.plugins.shade.transformer.Log4j2PluginCacheFileTransformer" />
+                </transformers>
+                <filters>
+                  <filter>
+                    <!--
+                      Shading signed JARs will fail without this.
+                      http://stackoverflow.com/questions/999489/invalid-signature-file-when-attempting-to-run-a-jar
+                    -->
+                    <artifact>*:*</artifact>
+                    <excludes>
+                      <exclude>META-INF/*.SF</exclude>
+                      <exclude>META-INF/*.DSA</exclude>
+                      <exclude>META-INF/*.RSA</exclude>
+                      <exclude>META-INF/MANIFEST.MF</exclude>
+                      <exclude>module-info.class</exclude>
+                      <exclude>META-INF/versions/9/module-info.class</exclude>
+                    </excludes>
+                  </filter>
+                </filters>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+
       </plugins>
     </pluginManagement>
 
@@ -979,21 +1018,6 @@
       <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
-        <version>${gmavenplus-plugin.version}</version>
-        <dependencies>
-          <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-ant</artifactId>
-            <version>${groovy.version}</version>
-            <scope>runtime</scope>
-          </dependency>
-          <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy</artifactId>
-            <version>${groovy.version}</version>
-            <scope>runtime</scope>
-          </dependency>
-        </dependencies>
         <executions>
           <execution>
             <id>ban-static-transitive</id>
@@ -1158,6 +1182,8 @@
                     <processor>org.apache.logging.log4j.docgen.processor.DescriptorGenerator</processor>
                     <!-- Process sources using `org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor` to generate `Log4j2Plugins.dat` -->
                     <processor>org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor</processor>
+                    <!-- Generates GraalVM reachability metadata -->
+                    <processor>org.apache.logging.log4j.core.config.plugins.processor.GraalVmProcessor</processor>
                   </annotationProcessors>
                   <compilerArgs>
                     <!-- Provide `org.apache.logging.log4j.docgen.processor.DescriptorGenerator` arguments: -->
@@ -1167,6 +1193,9 @@
                     <arg>-Alog4j.docgen.version=${project.version}</arg>
                     <arg>-Alog4j.docgen.description=${project.description}</arg>
                     <arg>-Alog4j.docgen.typeFilter.excludePattern=${log4j.docgen.typeFilter.excludePattern}</arg>
+                    <!-- Provide arguments for the GraalVM processor -->
+                    <arg>-Alog4j.graalvm.groupId=${project.groupId}</arg>
+                    <arg>-Alog4j.graalvm.artifactId=${project.artifactId}</arg>
                   </compilerArgs>
                   <proc>only</proc>
                 </configuration>

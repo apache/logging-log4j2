@@ -20,6 +20,7 @@ import aQute.bnd.annotation.Cardinality;
 import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.io.File;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -49,8 +50,9 @@ import org.apache.logging.log4j.util.ServiceLoaderUtil;
 @ServiceConsumer(value = WatchEventService.class, resolution = Resolution.OPTIONAL, cardinality = Cardinality.MULTIPLE)
 public class WatchManager extends AbstractLifeCycle {
 
-    private final class ConfigurationMonitor {
+    private static final class ConfigurationMonitor {
         private final Watcher watcher;
+        // Only used for logging
         private volatile long lastModifiedMillis;
 
         public ConfigurationMonitor(final long lastModifiedMillis, final Watcher watcher) {
@@ -76,7 +78,6 @@ public class WatchManager extends AbstractLifeCycle {
         private static final long LOW_MASK = 0xffffffffL;
         private static final long MID_MASK = 0xffff00000000L;
         private static final long HIGH_MASK = 0xfff000000000000L;
-        private static final int NODE_SIZE = 8;
         private static final int SHIFT_2 = 16;
         private static final int SHIFT_4 = 32;
         private static final int SHIFT_6 = 48;
@@ -84,8 +85,6 @@ public class WatchManager extends AbstractLifeCycle {
         private static final long NUM_100NS_INTERVALS_SINCE_UUID_EPOCH = 0x01b21dd213814000L;
         private static final AtomicInteger COUNT = new AtomicInteger(0);
         private static final long TYPE1 = 0x1000L;
-        private static final byte VARIANT = (byte) 0x80;
-        private static final int SEQUENCE_MASK = 0x3FFF;
 
         public static UUID get() {
             final long time =
@@ -112,15 +111,11 @@ public class WatchManager extends AbstractLifeCycle {
                 final ConfigurationMonitor monitor = entry.getValue();
                 if (monitor.getWatcher().isModified()) {
                     final long lastModified = monitor.getWatcher().getLastModified();
-                    if (logger.isInfoEnabled()) {
-                        logger.info(
-                                "Source '{}' was modified on {} ({}), previous modification was on {} ({})",
-                                source,
-                                millisToString(lastModified),
-                                lastModified,
-                                millisToString(monitor.lastModifiedMillis),
-                                monitor.lastModifiedMillis);
-                    }
+                    logger.info(
+                            "Configuration source at `{}` was modified on `{}`, previous modification was on `{}`",
+                            () -> source,
+                            () -> Instant.ofEpochMilli(lastModified),
+                            () -> Instant.ofEpochMilli(monitor.lastModifiedMillis));
                     monitor.lastModifiedMillis = lastModified;
                     monitor.getWatcher().modified();
                 }
@@ -200,7 +195,7 @@ public class WatchManager extends AbstractLifeCycle {
     }
 
     public boolean hasEventListeners() {
-        return eventServiceList.size() > 0;
+        return !eventServiceList.isEmpty();
     }
 
     private String millisToString(final long millis) {

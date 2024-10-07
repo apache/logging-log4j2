@@ -23,13 +23,6 @@ import org.openjdk.jmh.annotations.Benchmark;
 /**
  * Compares random UUID generation with time-based UUID generation.
  */
-// ============================== HOW TO RUN THIS TEST: ====================================
-//
-// java -jar log4j-perf/target/benchmarks.jar ".*UuidGeneratorBenchmark.*" -f 1 -wi 5 -i 5
-//
-// Usage help:
-// java -jar log4j-perf/target/benchmarks.jar -help
-//
 public class UuidGeneratorBenchmark {
 
     @Benchmark

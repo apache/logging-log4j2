@@ -1,0 +1,9 @@
+{
+  "resources": {
+    "includes": [
+      {
+        "pattern": "log4j2\\.(component|simplelog|StatusLogger)\\.properties"
+      }
+    ]
+  }
+}

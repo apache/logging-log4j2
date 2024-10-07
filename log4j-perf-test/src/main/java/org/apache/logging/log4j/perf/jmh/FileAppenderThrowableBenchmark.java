@@ -47,8 +47,6 @@ import org.slf4j.LoggerFactory;
  * Benchmarks Log4j 2, Log4j 1, Logback and JUL using the ERROR level which is enabled for this test.
  * The configuration for each writes to disk.
  */
-// HOW TO RUN THIS TEST
-// java -jar target/benchmarks.jar ".*FileAppenderThrowableBenchmark.*" -f 1 -i 10 -wi 20 -bm sample -tu ns
 @State(Scope.Benchmark)
 @Threads(1)
 @Fork(1)

@@ -579,9 +579,7 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
      * Quote text contents using JSON standard quoting.
      */
     private void quoteString(final CharSequence seq, final int offset, final int length) {
-        final int surrogateCorrection =
-                length > 0 && Character.isHighSurrogate(seq.charAt(offset + length - 1)) ? -1 : 0;
-        final int limit = offset + length + surrogateCorrection;
+        final int limit = offset + length;
         int i = offset;
         outer:
         while (i < limit) {
@@ -643,8 +641,7 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
      * Quote text contents using JSON standard quoting.
      */
     private void quoteString(final char[] buffer, final int offset, final int length) {
-        final int surrogateCorrection = length > 0 && Character.isHighSurrogate(buffer[offset + length - 1]) ? -1 : 0;
-        final int limit = offset + length + surrogateCorrection;
+        final int limit = offset + length;
         int i = offset;
         outer:
         while (i < limit) {

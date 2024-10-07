@@ -45,7 +45,7 @@ import org.apache.logging.log4j.util.Strings;
  * Usage:
  * <pre>
  * java \
- *     -cp log4j-perf/target/benchmarks.jar \
+ *     -cp target/log4j-perf-test-*-uber.jar \
  *     org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutBenchmarkReport \
  *     log4j-perf/target/JsonTemplateLayoutBenchmarkResult.json \
  *     log4j-perf/target/JsonTemplateLayoutBenchmarkReport.adoc

@@ -29,7 +29,7 @@ import org.openjdk.jmh.annotations.Benchmark;
  * You can run this test as follows:
  * <pre>{@code
  * java \
- *     -jar log4j-perf/target/benchmarks.jar \
+ *     -cp target/log4j-perf-test-*-uber.jar org.openjdk.jmh.Main \
  *     -f 2 \
  *     -wi 3 -w 20s \
  *     -i 5 -r 30s \

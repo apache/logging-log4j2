@@ -189,7 +189,7 @@ public final class ThrowableFormatOptions {
      * @return The number of lines to print.
      */
     public int minLines(final int maxLines) {
-        return this.lines > maxLines ? maxLines : this.lines;
+        return Math.min(this.lines, maxLines);
     }
 
     /**
@@ -267,13 +267,13 @@ public final class ThrowableFormatOptions {
                     separator = option.substring("separator(".length(), option.length() - 1);
                 } else if (option.startsWith("filters(") && option.endsWith(")")) {
                     final String filterStr = option.substring("filters(".length(), option.length() - 1);
-                    if (filterStr.length() > 0) {
+                    if (!filterStr.isEmpty()) {
                         final String[] array = filterStr.split(Patterns.COMMA_SEPARATOR);
                         if (array.length > 0) {
                             packages = new ArrayList<>(array.length);
                             for (String token : array) {
                                 token = token.trim();
-                                if (token.length() > 0) {
+                                if (!token.isEmpty()) {
                                     packages.add(token);
                                 }
                             }

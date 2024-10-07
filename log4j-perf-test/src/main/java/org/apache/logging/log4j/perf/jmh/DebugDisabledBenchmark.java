@@ -31,8 +31,6 @@ import org.slf4j.LoggerFactory;
  * all logging in production, while others disable finer logging levels in production. This benchmark demonstrates the
  * overhead in calling {@code logger.isDebugEnabled()} and {@code logger.debug()}.
  */
-// HOW TO RUN THIS TEST
-// java -jar target/benchmarks.jar ".*DebugDisabledBenchmark.*" -f 1 -i 5 -wi 5 -bm sample -tu ns
 @State(Scope.Thread)
 public class DebugDisabledBenchmark {
     Logger log4jLogger;

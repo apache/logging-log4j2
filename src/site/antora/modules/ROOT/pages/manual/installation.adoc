@@ -268,7 +268,7 @@ See xref:log4j-jul.adoc[] for more information.
 
 You can translate {jpl-link} calls to Log4j API using the `log4j-jpl` artifact:
 
-include::partial$components/log4j-jpa.adoc[]
+include::partial$components/log4j-jpl.adoc[]
 
 [#impl-core-bridge-jcl]
 ===== Installing JCL-to-Log4j bridge

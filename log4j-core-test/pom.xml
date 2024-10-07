@@ -63,60 +63,73 @@
 
     <!-- Additional version of LMAX Disruptor to test -->
     <disruptor4.version>4.0.0</disruptor4.version>
+    <json-unit.version>2.40.1</json-unit.version>
   </properties>
 
   <dependencies>
-    <!-- Pull in useful test classes from API -->
+
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api-test</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.awaitility</groupId>
       <artifactId>awaitility</artifactId>
     </dependency>
+
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest</artifactId>
     </dependency>
+
     <!-- GC-free -->
     <dependency>
       <groupId>com.google.code.java-allocation-instrumenter</groupId>
       <artifactId>java-allocation-instrumenter</artifactId>
     </dependency>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.junit.platform</groupId>
       <artifactId>junit-platform-commons</artifactId>
     </dependency>
+
     <!-- Needed for JNDI mocks using `org.springframework.mock.jndi` -->
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
     </dependency>
+
     <!-- JNDI and JMS tests -->
     <dependency>
       <groupId>org.apache.activemq</groupId>
@@ -129,65 +142,77 @@
         </exclusion>
       </exclusions>
     </dependency>
+
     <dependency>
       <groupId>org.apache-extras.beanshell</groupId>
       <artifactId>bsh</artifactId>
       <scope>test</scope>
     </dependency>
+
     <!-- Other -->
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
       <scope>test</scope>
     </dependency>
+
     <!-- Used for compressing to formats other than zip and gz -->
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-compress</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-csv</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
       <scope>test</scope>
     </dependency>
+
     <!-- Alternative implementation of BlockingQueue using Conversant Disruptor for AsyncAppender -->
     <dependency>
       <groupId>com.conversantmedia</groupId>
       <artifactId>disruptor</artifactId>
       <scope>test</scope>
     </dependency>
+
     <!-- Required for AsyncLoggers -->
     <dependency>
       <groupId>com.lmax</groupId>
       <artifactId>disruptor</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.zapodot</groupId>
       <artifactId>embedded-ldap-junit</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
-      <groupId>org.codehaus.groovy</groupId>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-dateutil</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
-      <groupId>org.codehaus.groovy</groupId>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-jsr223</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <scope>test</scope>
     </dependency>
+
     <!-- Embedded JDBC drivers for database appender tests -->
     <dependency>
       <groupId>org.hsqldb</groupId>
@@ -195,34 +220,45 @@
       <classifier>jdk8</classifier>
       <scope>test</scope>
     </dependency>
+
     <!-- Required for JSON support -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
       <scope>test</scope>
     </dependency>
+
     <!-- Required for XML layout and receiver support -->
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-xml</artifactId>
       <scope>test</scope>
     </dependency>
+
     <!-- Required for YAML support (including JSON requirements) -->
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-yaml</artifactId>
       <scope>test</scope>
     </dependency>
+
     <!-- Required for console color support in Windows -->
     <dependency>
       <groupId>org.fusesource.jansi</groupId>
       <artifactId>jansi</artifactId>
       <scope>test</scope>
     </dependency>
+
     <!-- Used for JMS appenders (needs an implementation of course) -->
     <dependency>
       <groupId>javax.jms</groupId>
       <artifactId>javax.jms-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jspecify</groupId>
+      <artifactId>jspecify</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -230,110 +266,138 @@
       <artifactId>javax.mail</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>javax.mail</groupId>
       <artifactId>javax.mail-api</artifactId>
       <scope>test</scope>
     </dependency>
+
     <!-- Alternative implementation of BlockingQueue using JCTools for AsyncAppender -->
     <dependency>
       <groupId>org.jctools</groupId>
       <artifactId>jctools-core</artifactId>
       <scope>test</scope>
     </dependency>
+
     <!-- Used for ZeroMQ JeroMQ appender -->
     <dependency>
       <groupId>org.zeromq</groupId>
       <artifactId>jeromq</artifactId>
       <scope>test</scope>
     </dependency>
+
     <!-- Zeroconf advertiser tests -->
     <dependency>
       <groupId>org.jmdns</groupId>
       <artifactId>jmdns</artifactId>
       <scope>test</scope>
     </dependency>
-    <!--  GELF -->
+
+    <!--  GELF and other tests that use JSON -->
+    <dependency>
+      <groupId>net.javacrumbs.json-unit</groupId>
+      <artifactId>json-unit-assertj</artifactId>
+      <version>${json-unit.version}</version>
+      <scope>test</scope>
+    </dependency>
+
     <dependency>
       <groupId>net.javacrumbs.json-unit</groupId>
       <artifactId>json-unit</artifactId>
+      <version>${json-unit.version}</version>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.junit-pioneer</groupId>
       <artifactId>junit-pioneer</artifactId>
       <scope>test</scope>
     </dependency>
+
     <!-- JUnit, naturally -->
     <dependency>
       <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>
       <scope>test</scope>
     </dependency>
+
     <!-- Used for Kafka appender -->
     <dependency>
       <groupId>org.apache.kafka</groupId>
       <artifactId>kafka-clients</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
       <scope>test</scope>
     </dependency>
+
     <!-- Mocking framework for use with JUnit -->
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
       <scope>test</scope>
     </dependency>
+
     <!-- Used for testing HttpAppender -->
     <dependency>
       <groupId>com.github.tomakehurst</groupId>
       <artifactId>wiremock-jre8</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.xmlunit</groupId>
       <artifactId>xmlunit-core</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.xmlunit</groupId>
       <artifactId>xmlunit-matchers</artifactId>
       <scope>test</scope>
     </dependency>
+
     <!--  Apache Commons Compress -->
     <dependency>
       <groupId>org.tukaani</groupId>
       <artifactId>xz</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>com.github.luben</groupId>
       <artifactId>zstd-jni</artifactId>
       <scope>test</scope>
     </dependency>
+
   </dependencies>
 
   <build>

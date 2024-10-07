@@ -28,20 +28,6 @@ import org.openjdk.jmh.annotations.State;
 /**
  * Benchmarks the Unbox class.
  */
-// ============================== HOW TO RUN THIS TEST: ====================================
-//
-// single thread:
-// java -jar log4j-perf/target/benchmarks.jar ".*Unbox.*" -f 1 -wi 10 -i 15
-//
-// Default config with multiple threads (for example, 4 threads):
-// java -Dlog4j2.enable.threadlocals=true -jar log4j-perf/target/benchmarks.jar ".*Unbox.*" -f 1 -wi 10 -i 15 -t 4
-//
-// Web-app safe config with multiple threads (for example, 4 threads):
-// java -Dlog4j2.enable.threadlocals=false -jar log4j-perf/target/benchmarks.jar ".*Unbox.*" -f 1 -wi 10 -i 15 -t 4
-//
-// Usage help:
-// java -jar log4j-perf/target/benchmarks.jar -help
-//
 @State(Scope.Benchmark)
 public class UnboxBenchmark {
 

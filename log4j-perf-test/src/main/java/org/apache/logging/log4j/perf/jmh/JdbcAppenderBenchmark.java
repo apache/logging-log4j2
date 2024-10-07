@@ -43,13 +43,6 @@ import org.openjdk.jmh.infra.Blackhole;
 /**
  * Tests the overhead of a number of JDBC Appenders.
  */
-// ============================== HOW TO RUN THIS TEST: ====================================
-//
-// java -jar log4j-perf/target/benchmarks.jar ".*JdbcAppenderBenchmark.*" -f 1 -wi 5 -i 5
-//
-// Usage help:
-// java -jar log4j-perf/target/benchmarks.jar -help
-//
 @State(Scope.Thread)
 public class JdbcAppenderBenchmark {
     private Logger loggerH2;

@@ -35,17 +35,6 @@ import org.openjdk.jmh.annotations.TearDown;
 /**
  * Tests Log4j2 Async Loggers performance.
  */
-// ============================== HOW TO RUN THIS TEST: ====================================
-//
-// single thread:
-// java -jar log4j-perf/target/benchmarks.jar ".*AsyncLoggersLocationBenchmark.*" -f 1 -wi 10 -i 20
-//
-// multiple threads (for example, 4 threads):
-// java -jar log4j-perf/target/benchmarks.jar ".*AsyncLoggersLocationBenchmark.*" -f 1 -wi 10 -i 20 -t 4 -si true
-//
-// Usage help:
-// java -jar log4j-perf/target/benchmarks.jar -help
-//
 @State(Scope.Thread)
 public class AsyncLoggersLocationBenchmark {
 

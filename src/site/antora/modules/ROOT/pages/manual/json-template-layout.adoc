@@ -41,7 +41,7 @@ While running tests or developing locally, you can use xref:manual/pattern-layou
 
 Adding `log4j-layout-template-json` artifact to your list of dependencies is enough to enable access to JSON Template Layout in your Log4j configuration:
 
-include::partial$components/log4j-json-template-layout.adoc[]
+include::partial$components/log4j-layout-template-json.adoc[]
 
 JSON Template Layout is primarily configured through an *event template* describing the structure log events should be JSON-encoded in.
 Event templates themselves are also JSON documents, where objects containing `$resolver` members, such as,

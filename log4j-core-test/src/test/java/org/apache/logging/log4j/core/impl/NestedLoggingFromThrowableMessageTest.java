@@ -80,7 +80,7 @@ public class NestedLoggingFromThrowableMessageTest {
         final Set<String> lines2 = readUniqueLines(file2);
 
         assertEquals("Expected the same data from both appenders", lines1, lines2);
-        assertEquals(2, lines1.size());
+        assertEquals(3, lines1.size());
         assertTrue(lines1.contains("INFO NestedLoggingFromThrowableMessageTest Logging in getMessage "));
         assertTrue(lines1.contains("ERROR NestedLoggingFromThrowableMessageTest Test message"));
     }
