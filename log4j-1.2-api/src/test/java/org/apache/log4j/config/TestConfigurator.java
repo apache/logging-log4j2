@@ -16,7 +16,7 @@
  */
 package org.apache.log4j.config;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
@@ -45,7 +45,7 @@ public class TestConfigurator {
             } else {
                 fail("Test infra does not support " + configLocation);
             }
-            assertNotNull("No configuration created", configuration);
+            assertNotNull(configuration, "No configuration created");
             Configurator.reconfigure(configuration);
             return context;
         }

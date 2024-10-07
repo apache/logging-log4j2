@@ -16,7 +16,8 @@
  */
 package org.apache.log4j.config;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 
 import java.io.IOException;
 import java.util.List;
@@ -34,7 +35,7 @@ public class SyslogAppenderTest {
     private static MockSyslogServer syslogServer;
 
     @BeforeAll
-    public static void beforeClass() throws IOException {
+    public static void beforeAll() throws IOException {
         initTCPTestEnvironment(null);
         System.setProperty("syslog.port", Integer.toString(syslogServer.getLocalPort()));
         System.setProperty(
@@ -42,7 +43,7 @@ public class SyslogAppenderTest {
     }
 
     @AfterAll
-    public static void afterClass() {
+    public static void afterAll() {
         System.clearProperty(ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY);
         syslogServer.shutdown();
     }
@@ -59,7 +60,7 @@ public class SyslogAppenderTest {
                 break;
             }
         }
-        assertThat(messages).hasSize(1);
+        assertThat(messages, hasSize(1));
     }
 
     protected static void initTCPTestEnvironment(final String messageFormat) throws IOException {

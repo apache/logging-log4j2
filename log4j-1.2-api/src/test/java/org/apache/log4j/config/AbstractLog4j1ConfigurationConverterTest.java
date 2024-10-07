@@ -29,12 +29,13 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.xml.sax.SAXException;
+// import org.junit.jupiter.params.ParameterizedTest;
+// import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
+// import org.junit.runner.RunWith;
+// import org.junit.runners.Parameterized;
+
 public abstract class AbstractLog4j1ConfigurationConverterTest {
 
     protected static List<Path> getPaths(final String root) throws IOException {
@@ -49,14 +50,15 @@ public abstract class AbstractLog4j1ConfigurationConverterTest {
         return paths;
     }
 
-    private final Path pathIn;
+    protected final Path pathIn;
 
     public AbstractLog4j1ConfigurationConverterTest(final Path path) {
         this.pathIn = path;
     }
 
-    @Test
-    public void test() throws Exception {
+    // @ParameterizedTest
+    // @MethodSource("data")
+    public void test(final Path path) throws Exception {
         final Path tempFile = Files.createTempFile("log4j2", ".xml");
         try {
             final Log4j1ConfigurationConverter.CommandLineArguments cla =

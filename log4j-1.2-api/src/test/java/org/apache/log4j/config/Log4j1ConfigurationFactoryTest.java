@@ -16,11 +16,11 @@
  */
 package org.apache.log4j.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.Serializable;
 import java.net.URISyntaxException;
@@ -37,7 +37,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationTest {
 
@@ -46,7 +46,7 @@ public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationT
     @Override
     protected Configuration getConfiguration(final String configResource) throws URISyntaxException {
         final URL configLocation = ClassLoader.getSystemResource(configResource + SUFFIX);
-        assertNotNull(configResource, configLocation);
+        assertNotNull(configLocation, configResource);
         final Configuration configuration =
                 new Log4j1ConfigurationFactory().getConfiguration(null, "test", configLocation.toURI());
         assertNotNull(configuration);
@@ -58,7 +58,7 @@ public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationT
         final String name = "Console";
         final ConsoleAppender appender = configuration.getAppender(name);
         assertNotNull(
-                "Missing appender '" + name + "' in configuration " + configResource + " → " + configuration, appender);
+                appender, "Missing appender '" + name + "' in configuration " + configResource + " → " + configuration);
         assertEquals(Target.SYSTEM_ERR, appender.getTarget());
         //
         final LoggerConfig loggerConfig = configuration.getLoggerConfig("com.example.foo");

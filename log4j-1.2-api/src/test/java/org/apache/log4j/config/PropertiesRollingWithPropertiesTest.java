@@ -16,18 +16,15 @@
  */
 package org.apache.log4j.config;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.apache.logging.log4j.core.test.SystemPropertyTestRule;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
-import org.junit.rules.TestRule;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test configuration from Properties.
@@ -36,13 +33,14 @@ public class PropertiesRollingWithPropertiesTest {
 
     private static final String TEST_DIR = "target/" + PropertiesRollingWithPropertiesTest.class.getSimpleName();
 
-    @ClassRule
-    public static TestRule SP_RULE = RuleChain.emptyRuleChain()
-            // @formatter:off
-            .around(SystemPropertyTestRule.create("test.directory", TEST_DIR))
-            .around(SystemPropertyTestRule.create(
-                    "log4j.configuration", "target/test-classes/log4j1-rolling-properties.properties"));
-    // @formatter:on
+    @BeforeAll
+    public static void setupSystemProperties() {
+        // final File file = new File(tempDir, TEST_DIR);
+
+        // Set system properties as a replacement for SystemPropertyTestRule
+        System.setProperty("test.directory", TEST_DIR);
+        System.setProperty("log4j.configuration", "target/test-classes/log4j1-rolling-properties.properties");
+    }
 
     @Test
     public void testProperties() throws Exception {
@@ -50,7 +48,7 @@ public class PropertiesRollingWithPropertiesTest {
         Files.deleteIfExists(path);
         final Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
-        assertTrue("Log file was not created", Files.exists(path));
-        assertTrue("Log file is empty", Files.size(path) > 0);
+        assertTrue(Files.exists(path), "Log file was not created");
+        assertTrue(Files.size(path) > 0, "Log file is empty");
     }
 }
