@@ -37,8 +37,7 @@ import org.junit.jupiter.api.io.CleanupMode;
 @Target({FIELD, PARAMETER})
 @Inherited
 @Documented
-@ExtendWith(ExtensionContextAnchor.class)
-@ExtendWith(TempLoggingDirectory.class)
+@ExtendWith({ExtensionContextAnchor.class, TempLoggingDirectory.class})
 public @interface TempLoggingDir {
 
     CleanupMode cleanup() default CleanupMode.DEFAULT;

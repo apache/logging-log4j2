@@ -109,7 +109,7 @@
     <jmdns.version>3.5.12</jmdns.version>
     <jmh.version>1.37</jmh.version>
     <junit.version>4.13.2</junit.version>
-    <junit-jupiter.version>5.10.3</junit-jupiter.version>
+    <junit-jupiter.version>5.11.2</junit-jupiter.version>
     <junit-pioneer.version>1.9.1</junit-pioneer.version>
     <kafka.version>3.8.0</kafka.version>
     <lightcouch.version>0.2.0</lightcouch.version>

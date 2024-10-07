@@ -52,10 +52,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @Documented
 @Inherited
 @Tag("functional")
-@ExtendWith(TempLoggingDirectory.class)
-@ExtendWith(LoggerContextResolver.class)
-@ExtendWith(ConfigurationResolver.class)
-@ExtendWith(AppenderResolver.class)
+@ExtendWith({
+    TempLoggingDirectory.class,
+    LoggerContextResolver.class,
+    ConfigurationResolver.class,
+    AppenderResolver.class
+})
 public @interface LoggerContextSource {
     /**
      * Specifies the name of the configuration file to use for the annotated test.
