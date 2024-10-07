@@ -39,8 +39,7 @@ import org.junitpioneer.jupiter.ReadsSystemProperty;
 @Target({TYPE, METHOD})
 @Inherited
 @Documented
-@ExtendWith(ExtensionContextAnchor.class)
-@ExtendWith(TestPropertyResolver.class)
+@ExtendWith({ExtensionContextAnchor.class, TestPropertyResolver.class})
 @Repeatable(SetTestProperty.SetTestProperties.class)
 @ReadsSystemProperty
 @ReadsEnvironmentVariable
@@ -54,7 +53,7 @@ public @interface SetTestProperty {
     @Target({TYPE, METHOD})
     @Documented
     @Inherited
-    public @interface SetTestProperties {
+    @interface SetTestProperties {
 
         SetTestProperty[] value();
     }
