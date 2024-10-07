@@ -626,7 +626,7 @@ Setting this to <code>false</code> disables this behavior and allows you to excl
 </tbody>
 </table>
 <div class="paragraph">
-<p>If <code>true</code>, do not output ANSI escape codes</p>
+<p>If <code>true</code>, do not output ANSI escape codes.</p>
 </div>
 </div>
 <div class="sect3">
@@ -648,7 +648,7 @@ Setting this to <code>false</code> disables this behavior and allows you to excl
 </tbody>
 </table>
 <div class="paragraph">
-<p>If <code>true</code> and <code>System.console()</code> is null, do not output ANSI escape codes</p>
+<p>If <code>true</code> and <code>System.console()</code> is <code>null</code>, do not output ANSI escape codes</p>
 </div>
 </div>
 </div>
@@ -1493,7 +1493,7 @@ See <a href="layouts.html#LocationInformation" class="xref page">this section of
 <h4 id="converter-highlight"><a class="anchor" href="#converter-highlight"></a>Highlight</h4>
 <div class="paragraph">
 <p>Adds ANSI colors to the result of the enclosed pattern based on the current event&#8217;s <a href="https://logging.apache.org/log4j/2.x/manual/customloglevels.html">logging level</a>.
-Windows users should refer to <a href="#jansi">ANSI styling on Windows</a>.</p>
+Windows users should refer to <a href="#ansi-windows">ANSI styling on Windows</a>.</p>
 </div>
 <div class="listingblock">
 <div class="title"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/HighlightConverter.html"><code>HighlightConverter</code></a> specifier grammar</div>
@@ -1886,7 +1886,7 @@ message{lookups}{ansi}</code></pre>
 </div>
 <div class="paragraph">
 <p>Add <code>{ansi}</code> to render messages with ANSI escape codes.
-Windows users should refer to <a href="#jansi">ANSI styling on Windows</a>.</p>
+Windows users should refer to <a href="#ansi-windows">ANSI styling on Windows</a>.</p>
 </div>
 <div class="paragraph">
 <p>The default syntax for embedded ANSI codes is:</p>
@@ -2111,7 +2111,7 @@ sequenceNumber</code></pre>
 <div class="paragraph">
 <p>Use ANSI escape sequences to style the result of the enclosed pattern.
 The syntax of the <code>style_expression</code> parameter is described in <a href="#ansi-modifiers">Style modifiers</a>.
-Windows users should also refer to <a href="#jansi">ANSI styling on Windows</a>.</p>
+Windows users should also refer to <a href="#ansi-windows">ANSI styling on Windows</a>.</p>
 </div>
 <div class="listingblock">
 <div class="title"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/StyleConverter.html"><code>StyleConverter</code></a> specifier grammar</div>
@@ -2553,30 +2553,17 @@ characters, then truncate from the end.</p></td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="jansi"><a class="anchor" href="#jansi"></a>ANSI styling on Windows</h4>
+<h4 id="ansi-windows"><a class="anchor" href="#ansi-windows"></a>ANSI styling on Windows</h4>
 <div class="paragraph">
-<p>ANSI escape sequences are supported natively on many platforms, but not by default on Windows.
-To enable ANSI support add the
-<a href="http://fusesource.github.io/jansi/">Jansi</a>
-dependency to your application, and set <a href="systemproperties.html#log4j.console.jansiEnabled" class="xref page">the <code>log4j.console.jansiEnabled</code> system property</a> to <code>true</code>.
-This allows Log4j to use Jansi to add ANSI escape codes when writing to the console.</p>
+<p>ANSI escape sequences are supported natively on many platforms, but is disabled by default in <code>cmd.exe</code> on Windows.
+To enable ANSI escape sequences, create a registry key of name <code>HKEY_CURRENT_USER\Console\VirtualTerminalLevel</code> of type <code>DWORD</code> and set its value to <code>0x1</code>.</p>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
 <div class="paragraph">
-<p>Before Log4j 2.10, Jansi was enabled by default.
-The fact that Jansi requires native code means that Jansi can only be loaded by a single class loader.
-For web applications, this means the Jansi jar has to be in the web container&#8217;s classpath.
-To avoid causing problems for web applications, Log4j no longer automatically tries to load Jansi without explicit configuration from Log4j 2.10 onward.</p>
-</div>
-</td>
-</tr>
-</table>
+<p>See
+<a href="https://devblogs.microsoft.com/commandline/understanding-windows-console-host-settings/">Understanding Windows Console Host Settings</a>
+and
+<a href="https://learn.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences">Console Virtual Terminal Sequences</a>
+Microsoft documentation for more details.</p>
 </div>
 </div>
 </div>

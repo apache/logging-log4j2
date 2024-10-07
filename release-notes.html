@@ -330,7 +330,13 @@
 <div class="ulist">
 <ul>
 <li>
+<p>Remove JAnsi library support, since Windows console supports ANSI escapes now. (<a href="https://github.com/apache/logging-log4j2/issues/1736">1736</a>)</p>
+</li>
+<li>
 <p>Move <code>DisruptorBlockingQueue</code> plugin to new <code>log4j-conversant</code> module. (<a href="https://github.com/apache/logging-log4j2/pull/2914">2914</a>)</p>
+</li>
+<li>
+<p>Rewrite <code>JAnsiTextRenderer</code> to work without JAnsi library. (<a href="https://github.com/apache/logging-log4j2/pull/2916">2916</a>)</p>
 </li>
 </ul>
 </div>

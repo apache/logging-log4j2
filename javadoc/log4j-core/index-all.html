@@ -654,6 +654,12 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Converts text into ANSI escape sequences.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/core/pattern/AnsiTextRenderer.html" class="type-name-link" title="class in org.apache.logging.log4j.core.pattern">AnsiTextRenderer</a> - Class in <a href="org/apache/logging/log4j/core/pattern/package-summary.html">org.apache.logging.log4j.core.pattern</a></dt>
+<dd>
+<div class="block">Renders an input as ANSI escaped output.</div>
+</dd>
+<dt><a href="org/apache/logging/log4j/core/pattern/AnsiTextRenderer.html#%3Cinit%3E(java.lang.String%5B%5D,java.util.Map)" class="member-name-link">AnsiTextRenderer(String[], Map&lt;String, String&gt;)</a> - Constructor for class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/AnsiTextRenderer.html" title="class in org.apache.logging.log4j.core.pattern">AnsiTextRenderer</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/impl/ThrowableFormatOptions.html#anyLines()" class="member-name-link">anyLines()</a> - Method in class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/ThrowableFormatOptions.html" title="class in org.apache.logging.log4j.core.impl">ThrowableFormatOptions</a></dt>
 <dd>
 <div class="block">Determines if any lines should be printed.</div>
@@ -1872,10 +1878,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Enumeration of console destinations.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/impl/CoreProperties.ConsoleProperties.html#%3Cinit%3E(java.lang.Boolean)" class="member-name-link">ConsoleProperties(Boolean)</a> - Constructor for record class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/CoreProperties.ConsoleProperties.html" title="class in org.apache.logging.log4j.core.impl">CoreProperties.ConsoleProperties</a></dt>
-<dd>
-<div class="block">Creates an instance of a <code>ConsoleProperties</code> record class.</div>
-</dd>
 <dt><a href="org/apache/logging/log4j/core/util/Constants.html" class="type-name-link" title="class in org.apache.logging.log4j.core.util">Constants</a> - Class in <a href="org/apache/logging/log4j/core/util/package-summary.html">org.apache.logging.log4j.core.util</a></dt>
 <dd>
 <div class="block">Log4j Constants.</div>
@@ -2022,10 +2024,6 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/core/impl/CoreProperties.ConfigurationProperties.html" class="type-name-link" title="class in org.apache.logging.log4j.core.impl">CoreProperties.ConfigurationProperties</a> - Record Class in <a href="org/apache/logging/log4j/core/impl/package-summary.html">org.apache.logging.log4j.core.impl</a></dt>
 <dd>
 <div class="block">Properties related to the retrieval of a configuration.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/impl/CoreProperties.ConsoleProperties.html" class="type-name-link" title="class in org.apache.logging.log4j.core.impl">CoreProperties.ConsoleProperties</a> - Record Class in <a href="org/apache/logging/log4j/core/impl/package-summary.html">org.apache.logging.log4j.core.impl</a></dt>
-<dd>
-<div class="block">Properties to tune console output.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/impl/CoreProperties.ContextDataProperties.html" class="type-name-link" title="class in org.apache.logging.log4j.core.impl">CoreProperties.ContextDataProperties</a> - Record Class in <a href="org/apache/logging/log4j/core/impl/package-summary.html">org.apache.logging.log4j.core.impl</a></dt>
 <dd>&nbsp;</dd>
@@ -2638,6 +2636,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Constant for the default escape character.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/core/pattern/AnsiTextRenderer.html#DEFAULT_EXCEPTION_STYLE_MAP" class="member-name-link">DEFAULT_EXCEPTION_STYLE_MAP</a> - Static variable in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/AnsiTextRenderer.html" title="class in org.apache.logging.log4j.core.pattern">AnsiTextRenderer</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/layout/HtmlLayout.html#DEFAULT_FONT_FAMILY" class="member-name-link">DEFAULT_FONT_FAMILY</a> - Static variable in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/HtmlLayout.html" title="class in org.apache.logging.log4j.core.layout">HtmlLayout</a></dt>
 <dd>
 <div class="block">Default font family: "arial,sans-serif".</div>
@@ -2797,8 +2797,6 @@ loadScripts(document, 'script');</script>
 <div class="block">The default <a href="org/apache/logging/log4j/core/ErrorHandler.html" title="interface in org.apache.logging.log4j.core"><code>ErrorHandler</code></a> implementation falling back to <code>StatusLogger</code>.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/appender/DefaultErrorHandler.html#%3Cinit%3E(org.apache.logging.log4j.core.Appender)" class="member-name-link">DefaultErrorHandler(Appender)</a> - Constructor for class org.apache.logging.log4j.core.appender.<a href="org/apache/logging/log4j/core/appender/DefaultErrorHandler.html" title="class in org.apache.logging.log4j.core.appender">DefaultErrorHandler</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/pattern/JAnsiTextRenderer.html#DefaultExceptionStyleMap" class="member-name-link">DefaultExceptionStyleMap</a> - Static variable in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/JAnsiTextRenderer.html" title="class in org.apache.logging.log4j.core.pattern">JAnsiTextRenderer</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/config/plugins/PluginAttribute.html#defaultFloat()" class="member-name-link">defaultFloat()</a> - Element in annotation interface org.apache.logging.log4j.core.config.plugins.<a href="org/apache/logging/log4j/core/config/plugins/PluginAttribute.html" title="annotation interface in org.apache.logging.log4j.core.config.plugins">PluginAttribute</a></dt>
 <dd>
@@ -3185,10 +3183,6 @@ loadScripts(document, 'script');</script>
 <div class="block">Indicates whether some other object is "equal to" this one.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/impl/CoreProperties.ConfigurationProperties.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in record class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/CoreProperties.ConfigurationProperties.html" title="class in org.apache.logging.log4j.core.impl">CoreProperties.ConfigurationProperties</a></dt>
-<dd>
-<div class="block">Indicates whether some other object is "equal to" this one.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/impl/CoreProperties.ConsoleProperties.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in record class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/CoreProperties.ConsoleProperties.html" title="class in org.apache.logging.log4j.core.impl">CoreProperties.ConsoleProperties</a></dt>
 <dd>
 <div class="block">Indicates whether some other object is "equal to" this one.</div>
 </dd>
@@ -6790,7 +6784,7 @@ loadScripts(document, 'script');</script>
 <div class="block">This method returns the CSS style class that should be applied to
  the LoggingEvent passed as parameter, which can be null.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/pattern/JAnsiTextRenderer.html#getStyleMap()" class="member-name-link">getStyleMap()</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/JAnsiTextRenderer.html" title="class in org.apache.logging.log4j.core.pattern">JAnsiTextRenderer</a></dt>
+<dt><a href="org/apache/logging/log4j/core/pattern/AnsiTextRenderer.html#getStyleMap()" class="member-name-link">getStyleMap()</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/AnsiTextRenderer.html" title="class in org.apache.logging.log4j.core.pattern">AnsiTextRenderer</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/impl/ThrowableFormatOptions.html#getSuffix()" class="member-name-link">getSuffix()</a> - Method in class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/ThrowableFormatOptions.html" title="class in org.apache.logging.log4j.core.impl">ThrowableFormatOptions</a></dt>
 <dd>&nbsp;</dd>
@@ -7167,10 +7161,6 @@ loadScripts(document, 'script');</script>
 <div class="block">Returns a hash code value for this object.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/impl/CoreProperties.ConfigurationProperties.html#hashCode()" class="member-name-link">hashCode()</a> - Method in record class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/CoreProperties.ConfigurationProperties.html" title="class in org.apache.logging.log4j.core.impl">CoreProperties.ConfigurationProperties</a></dt>
-<dd>
-<div class="block">Returns a hash code value for this object.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/impl/CoreProperties.ConsoleProperties.html#hashCode()" class="member-name-link">hashCode()</a> - Method in record class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/CoreProperties.ConsoleProperties.html" title="class in org.apache.logging.log4j.core.impl">CoreProperties.ConsoleProperties</a></dt>
 <dd>
 <div class="block">Returns a hash code value for this object.</div>
 </dd>
@@ -7721,10 +7711,6 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/config/CronScheduledFuture.html#isCancelled()" class="member-name-link">isCancelled()</a> - Method in class org.apache.logging.log4j.core.config.<a href="org/apache/logging/log4j/core/config/CronScheduledFuture.html" title="class in org.apache.logging.log4j.core.config">CronScheduledFuture</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/util/Loader.html#isClassAvailable(java.lang.String)" class="member-name-link">isClassAvailable(String)</a> - Static method in class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/Loader.html" title="class in org.apache.logging.log4j.core.util">Loader</a></dt>
-<dd>
-<div class="block">Determines if a named Class can be loaded or not.</div>
-</dd>
 <dt><a href="org/apache/logging/log4j/core/impl/Log4jContextFactory.html#isClassLoaderDependent()" class="member-name-link">isClassLoaderDependent()</a> - Method in class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/Log4jContextFactory.html" title="class in org.apache.logging.log4j.core.impl">Log4jContextFactory</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/selector/BasicContextSelector.html#isClassLoaderDependent()" class="member-name-link">isClassLoaderDependent()</a> - Method in class org.apache.logging.log4j.core.selector.<a href="org/apache/logging/log4j/core/selector/BasicContextSelector.html" title="class in org.apache.logging.log4j.core.selector">BasicContextSelector</a></dt>
@@ -7928,8 +7914,6 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/AbstractAction.html#isInterrupted()" class="member-name-link">isInterrupted()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/AbstractAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">AbstractAction</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/util/Loader.html#isJansiAvailable()" class="member-name-link">isJansiAvailable()</a> - Static method in class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/Loader.html" title="class in org.apache.logging.log4j.core.util">Loader</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/net/SocketOptions.html#isKeepAlive()" class="member-name-link">isKeepAlive()</a> - Method in class org.apache.logging.log4j.core.net.<a href="org/apache/logging/log4j/core/net/SocketOptions.html" title="class in org.apache.logging.log4j.core.net">SocketOptions</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/FormattingInfo.html#isLeftAligned()" class="member-name-link">isLeftAligned()</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/FormattingInfo.html" title="class in org.apache.logging.log4j.core.pattern">FormattingInfo</a></dt>
@@ -8127,16 +8111,6 @@ loadScripts(document, 'script');</script>
 </dl>
 <h2 class="title" id="I:J">J</h2>
 <dl class="index">
-<dt><a href="org/apache/logging/log4j/core/impl/CoreProperties.ConsoleProperties.html#jansiEnabled()" class="member-name-link">jansiEnabled()</a> - Method in record class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/CoreProperties.ConsoleProperties.html" title="class in org.apache.logging.log4j.core.impl">CoreProperties.ConsoleProperties</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>jansiEnabled</code> record component.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/pattern/JAnsiTextRenderer.html" class="type-name-link" title="class in org.apache.logging.log4j.core.pattern">JAnsiTextRenderer</a> - Class in <a href="org/apache/logging/log4j/core/pattern/package-summary.html">org.apache.logging.log4j.core.pattern</a></dt>
-<dd>
-<div class="block">Renders an input as ANSI escaped output.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/pattern/JAnsiTextRenderer.html#%3Cinit%3E(java.lang.String%5B%5D,java.util.Map)" class="member-name-link">JAnsiTextRenderer(String[], Map&lt;String, AnsiRenderer.Code[]&gt;)</a> - Constructor for class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/JAnsiTextRenderer.html" title="class in org.apache.logging.log4j.core.pattern">JAnsiTextRenderer</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/lookup/JavaLookup.html" class="type-name-link" title="class in org.apache.logging.log4j.core.lookup">JavaLookup</a> - Class in <a href="org/apache/logging/log4j/core/lookup/package-summary.html">org.apache.logging.log4j.core.lookup</a></dt>
 <dd>
 <div class="block">Looks up keys related to Java: Java version, JRE version, VM version, and so on.</div>
@@ -10935,9 +10909,9 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Remove a RolloverListener.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/pattern/HtmlTextRenderer.html#render(java.lang.StringBuilder,java.lang.StringBuilder)" class="member-name-link">render(StringBuilder, StringBuilder)</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/HtmlTextRenderer.html" title="class in org.apache.logging.log4j.core.pattern">HtmlTextRenderer</a></dt>
+<dt><a href="org/apache/logging/log4j/core/pattern/AnsiTextRenderer.html#render(java.lang.StringBuilder,java.lang.StringBuilder)" class="member-name-link">render(StringBuilder, StringBuilder)</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/AnsiTextRenderer.html" title="class in org.apache.logging.log4j.core.pattern">AnsiTextRenderer</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/pattern/JAnsiTextRenderer.html#render(java.lang.StringBuilder,java.lang.StringBuilder)" class="member-name-link">render(StringBuilder, StringBuilder)</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/JAnsiTextRenderer.html" title="class in org.apache.logging.log4j.core.pattern">JAnsiTextRenderer</a></dt>
+<dt><a href="org/apache/logging/log4j/core/pattern/HtmlTextRenderer.html#render(java.lang.StringBuilder,java.lang.StringBuilder)" class="member-name-link">render(StringBuilder, StringBuilder)</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/HtmlTextRenderer.html" title="class in org.apache.logging.log4j.core.pattern">HtmlTextRenderer</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/PlainTextRenderer.html#render(java.lang.StringBuilder,java.lang.StringBuilder)" class="member-name-link">render(StringBuilder, StringBuilder)</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/PlainTextRenderer.html" title="class in org.apache.logging.log4j.core.pattern">PlainTextRenderer</a></dt>
 <dd>&nbsp;</dd>
@@ -10945,9 +10919,9 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Renders input text to an output.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/pattern/HtmlTextRenderer.html#render(java.lang.String,java.lang.StringBuilder,java.lang.String)" class="member-name-link">render(String, StringBuilder, String)</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/HtmlTextRenderer.html" title="class in org.apache.logging.log4j.core.pattern">HtmlTextRenderer</a></dt>
+<dt><a href="org/apache/logging/log4j/core/pattern/AnsiTextRenderer.html#render(java.lang.String,java.lang.StringBuilder,java.lang.String)" class="member-name-link">render(String, StringBuilder, String)</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/AnsiTextRenderer.html" title="class in org.apache.logging.log4j.core.pattern">AnsiTextRenderer</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/pattern/JAnsiTextRenderer.html#render(java.lang.String,java.lang.StringBuilder,java.lang.String)" class="member-name-link">render(String, StringBuilder, String)</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/JAnsiTextRenderer.html" title="class in org.apache.logging.log4j.core.pattern">JAnsiTextRenderer</a></dt>
+<dt><a href="org/apache/logging/log4j/core/pattern/HtmlTextRenderer.html#render(java.lang.String,java.lang.StringBuilder,java.lang.String)" class="member-name-link">render(String, StringBuilder, String)</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/HtmlTextRenderer.html" title="class in org.apache.logging.log4j.core.pattern">HtmlTextRenderer</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/PlainTextRenderer.html#render(java.lang.String,java.lang.StringBuilder,java.lang.String)" class="member-name-link">render(String, StringBuilder, String)</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/PlainTextRenderer.html" title="class in org.apache.logging.log4j.core.pattern">PlainTextRenderer</a></dt>
 <dd>&nbsp;</dd>
@@ -13660,10 +13634,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Returns a string representation of this record class.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/impl/CoreProperties.ConsoleProperties.html#toString()" class="member-name-link">toString()</a> - Method in record class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/CoreProperties.ConsoleProperties.html" title="class in org.apache.logging.log4j.core.impl">CoreProperties.ConsoleProperties</a></dt>
-<dd>
-<div class="block">Returns a string representation of this record class.</div>
-</dd>
 <dt><a href="org/apache/logging/log4j/core/impl/CoreProperties.ContextDataProperties.html#toString()" class="member-name-link">toString()</a> - Method in record class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/CoreProperties.ContextDataProperties.html" title="class in org.apache.logging.log4j.core.impl">CoreProperties.ContextDataProperties</a></dt>
 <dd>
 <div class="block">Returns a string representation of this record class.</div>
@@ -13773,12 +13743,12 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/net/TcpSocketManager.html#toString()" class="member-name-link">toString()</a> - Method in class org.apache.logging.log4j.core.net.<a href="org/apache/logging/log4j/core/net/TcpSocketManager.html" title="class in org.apache.logging.log4j.core.net">TcpSocketManager</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/pattern/AnsiTextRenderer.html#toString()" class="member-name-link">toString()</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/AnsiTextRenderer.html" title="class in org.apache.logging.log4j.core.pattern">AnsiTextRenderer</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/FormattingInfo.html#toString()" class="member-name-link">toString()</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/FormattingInfo.html" title="class in org.apache.logging.log4j.core.pattern">FormattingInfo</a></dt>
 <dd>
 <div class="block">Returns a String suitable for debugging.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/pattern/JAnsiTextRenderer.html#toString()" class="member-name-link">toString()</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/JAnsiTextRenderer.html" title="class in org.apache.logging.log4j.core.pattern">JAnsiTextRenderer</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/LiteralPatternConverter.html#toString()" class="member-name-link">toString()</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/LiteralPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">LiteralPatternConverter</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/NotANumber.html#toString()" class="member-name-link">toString()</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/NotANumber.html" title="class in org.apache.logging.log4j.core.pattern">NotANumber</a></dt>

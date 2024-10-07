@@ -635,7 +635,7 @@ They are documented in separate pages based on their target resource:</p>
 <h3 id="ConsoleAppender"><a class="anchor" href="#ConsoleAppender"></a>Console Appender</h3>
 <div class="paragraph">
 <p>As one might expect, the Console Appender writes its output to either the standard output or standard error output.
-The appender supports four different ways to access the output streams:</p>
+The appender supports three different ways to access the output streams:</p>
 </div>
 <div class="dlist">
 <dl>
@@ -667,50 +667,6 @@ Some application servers modify <code>System.out</code> and <code>System.err</co
 </td>
 </tr>
 </table>
-</div>
-</dd>
-<dt class="hdlist1"><code>JANSI</code></dt>
-<dd>
-<p>If the application is running on Windows and the
-<a href="https://fusesource.github.io/jansi/">JANSI library</a>
-is available, the Console appender will use JANSI to emulate ANSI sequence support.
-This mode can be enabled by setting the
-<a href="systemproperties.html#log4j.console.jansiEnabled" class="xref page"><code>log4j.console.jansiEnabled</code></a>
-configuration attribute to <code>true</code>.</p>
-<div class="paragraph">
-<p>Additional runtime dependencies are required to use JANSI:</p>
-</div>
-<div id="_tabs_1" class="openblock tabs is-sync is-loading">
-<div class="content">
-<div class="ulist tablist">
-<ul>
-<li id="_tabs_1_maven" class="tab">
-<p>Maven</p>
-</li>
-<li id="_tabs_1_gradle" class="tab">
-<p>Gradle</p>
-</li>
-</ul>
-</div>
-<div id="_tabs_1_maven--panel" class="tabpanel" aria-labelledby="_tabs_1_maven">
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
-  &lt;groupId&gt;org.fusesource.jansi&lt;/groupId&gt;
-  &lt;artifactId&gt;jansi&lt;/artifactId&gt;
-  &lt;version&gt;1.18&lt;/version&gt;
-&lt;/dependency&gt;</code></pre>
-</div>
-</div>
-</div>
-<div id="_tabs_1_gradle--panel" class="tabpanel" aria-labelledby="_tabs_1_gradle">
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.fusesource.jansi:jansi:1.18'</code></pre>
-</div>
-</div>
-</div>
-</div>
 </div>
 </dd>
 </dl>
@@ -786,9 +742,7 @@ or
 </div>
 <div class="paragraph">
 <p>This setting is incompatible with the
-<a href="#ConsoleAppender-attr-follow"><code>follow</code> attribute</a>
-and
-<a href="systemproperties.html#log4j.console.jansiEnabled" class="xref page">JANSI support</a>.</p>
+<a href="#ConsoleAppender-attr-follow"><code>follow</code> attribute</a>.</p>
 </div></div></td>
 </tr>
 <tr>
@@ -802,9 +756,7 @@ follow</code></p></td>
 <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/System.html#setOut-java.io.PrintStream-"><code>System.setErr</code></a>).</p>
 <p class="tableblock">Otherwise, the value of <code>System.out</code> (resp. <code>System.err</code>) at configuration time will be used.</p>
 <p class="tableblock">This setting is incompatible with the
-<a href="#ConsoleAppender-attr-direct"><code>direct</code> attribute</a>
-and
-<a href="systemproperties.html#log4j.console.jansiEnabled" class="xref page">JANSI support</a>.</p></td>
+<a href="#ConsoleAppender-attr-direct"><code>direct</code> attribute</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="ConsoleAppender-attr-ignoreExceptions"></a>
@@ -884,6 +836,75 @@ target</code></p></td>
 <div class="paragraph">
 <p>A typical configuration in a <strong>development</strong> environment might look like:</p>
 </div>
+<div id="_tabs_1" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_1_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_1_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_1_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_1_xml--panel" class="tabpanel" aria-labelledby="_tabs_1_xml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/appenders/console-dev.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Console name="CONSOLE"&gt;
+  &lt;PatternLayout pattern="%d [%t] %p %c - %m%n"/&gt;
+&lt;/Console&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_json--panel" class="tabpanel" aria-labelledby="_tabs_1_json">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/appenders/console-dev.json"><code>log4j2.json</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Console": {
+  "name": "CONSOLE",
+  "PatternLayout": {
+    "pattern": "%d [%t] %p %c - %m%n"
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_yaml--panel" class="tabpanel" aria-labelledby="_tabs_1_yaml">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/appenders/console-dev.yaml"><code>log4j2.yaml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Console:
+  name: "CONSOLE"
+  PatternLayout:
+    pattern: "%d [%t] %p %c - %m%n"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_properties--panel" class="tabpanel" aria-labelledby="_tabs_1_properties">
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/appenders/console-dev.properties"><code>log4j2.properties</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = Console
+appender.0.name = CONSOLE
+
+appender.0.layout.type = PatternLayout
+appender.0.layout.pattern = %d [%t] %p %c - %m%n</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>A typical configuration for a <strong>production</strong> environment might look like</p>
+</div>
 <div id="_tabs_2" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
@@ -904,75 +925,6 @@ target</code></p></td>
 </div>
 <div id="_tabs_2_xml--panel" class="tabpanel" aria-labelledby="_tabs_2_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/appenders/console-dev.xml"><code>log4j2.xml</code></a></div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Console name="CONSOLE"&gt;
-  &lt;PatternLayout pattern="%d [%t] %p %c - %m%n"/&gt;
-&lt;/Console&gt;</code></pre>
-</div>
-</div>
-</div>
-<div id="_tabs_2_json--panel" class="tabpanel" aria-labelledby="_tabs_2_json">
-<div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/appenders/console-dev.json"><code>log4j2.json</code></a></div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Console": {
-  "name": "CONSOLE",
-  "PatternLayout": {
-    "pattern": "%d [%t] %p %c - %m%n"
-  }
-}</code></pre>
-</div>
-</div>
-</div>
-<div id="_tabs_2_yaml--panel" class="tabpanel" aria-labelledby="_tabs_2_yaml">
-<div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/appenders/console-dev.yaml"><code>log4j2.yaml</code></a></div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Console:
-  name: "CONSOLE"
-  PatternLayout:
-    pattern: "%d [%t] %p %c - %m%n"</code></pre>
-</div>
-</div>
-</div>
-<div id="_tabs_2_properties--panel" class="tabpanel" aria-labelledby="_tabs_2_properties">
-<div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/appenders/console-dev.properties"><code>log4j2.properties</code></a></div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = Console
-appender.0.name = CONSOLE
-
-appender.0.layout.type = PatternLayout
-appender.0.layout.pattern = %d [%t] %p %c - %m%n</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="paragraph">
-<p>A typical configuration for a <strong>production</strong> environment might look like</p>
-</div>
-<div id="_tabs_3" class="openblock tabs is-sync is-loading">
-<div class="content">
-<div class="ulist tablist">
-<ul>
-<li id="_tabs_3_xml" class="tab">
-<p>XML</p>
-</li>
-<li id="_tabs_3_json" class="tab">
-<p>JSON</p>
-</li>
-<li id="_tabs_3_yaml" class="tab">
-<p>YAML</p>
-</li>
-<li id="_tabs_3_properties" class="tab">
-<p>Properties</p>
-</li>
-</ul>
-</div>
-<div id="_tabs_3_xml--panel" class="tabpanel" aria-labelledby="_tabs_3_xml">
-<div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/appenders/console-prod.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Console name="CONSOLE"
@@ -982,7 +934,7 @@ appender.0.layout.pattern = %d [%t] %p %c - %m%n</code></pre>
 </div>
 </div>
 </div>
-<div id="_tabs_3_json--panel" class="tabpanel" aria-labelledby="_tabs_3_json">
+<div id="_tabs_2_json--panel" class="tabpanel" aria-labelledby="_tabs_2_json">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/appenders/console-prod.json"><code>log4j2.json</code></a></div>
 <div class="content">
@@ -994,7 +946,7 @@ appender.0.layout.pattern = %d [%t] %p %c - %m%n</code></pre>
 </div>
 </div>
 </div>
-<div id="_tabs_3_yaml--panel" class="tabpanel" aria-labelledby="_tabs_3_yaml">
+<div id="_tabs_2_yaml--panel" class="tabpanel" aria-labelledby="_tabs_2_yaml">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/appenders/console-prod.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
@@ -1005,7 +957,7 @@ appender.0.layout.pattern = %d [%t] %p %c - %m%n</code></pre>
 </div>
 </div>
 </div>
-<div id="_tabs_3_properties--panel" class="tabpanel" aria-labelledby="_tabs_3_properties">
+<div id="_tabs_2_properties--panel" class="tabpanel" aria-labelledby="_tabs_2_properties">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/appenders/console-prod.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
@@ -1158,25 +1110,25 @@ By using Servlet appender, you typically will not be able to differentiate log e
 <div class="paragraph">
 <p>You can use it by declaring an appender of type <code>Servlet</code> in your configuration file:</p>
 </div>
-<div id="_tabs_4" class="openblock tabs is-sync is-loading">
+<div id="_tabs_3" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_4_xml" class="tab">
+<li id="_tabs_3_xml" class="tab">
 <p>XML</p>
 </li>
-<li id="_tabs_4_json" class="tab">
+<li id="_tabs_3_json" class="tab">
 <p>JSON</p>
 </li>
-<li id="_tabs_4_yaml" class="tab">
+<li id="_tabs_3_yaml" class="tab">
 <p>YAML</p>
 </li>
-<li id="_tabs_4_properties" class="tab">
+<li id="_tabs_3_properties" class="tab">
 <p>Properties</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_4_xml--panel" class="tabpanel" aria-labelledby="_tabs_4_xml">
+<div id="_tabs_3_xml--panel" class="tabpanel" aria-labelledby="_tabs_3_xml">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Servlet name="SERVLET"&gt;
@@ -1185,7 +1137,7 @@ By using Servlet appender, you typically will not be able to differentiate log e
 </div>
 </div>
 </div>
-<div id="_tabs_4_json--panel" class="tabpanel" aria-labelledby="_tabs_4_json">
+<div id="_tabs_3_json--panel" class="tabpanel" aria-labelledby="_tabs_3_json">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">"Servlet": {
@@ -1198,7 +1150,7 @@ By using Servlet appender, you typically will not be able to differentiate log e
 </div>
 </div>
 </div>
-<div id="_tabs_4_yaml--panel" class="tabpanel" aria-labelledby="_tabs_4_yaml">
+<div id="_tabs_3_yaml--panel" class="tabpanel" aria-labelledby="_tabs_3_yaml">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">Servlet:
@@ -1209,7 +1161,7 @@ By using Servlet appender, you typically will not be able to differentiate log e
 </div>
 </div>
 </div>
-<div id="_tabs_4_properties--panel" class="tabpanel" aria-labelledby="_tabs_4_properties">
+<div id="_tabs_3_properties--panel" class="tabpanel" aria-labelledby="_tabs_3_properties">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">appender.0.type = Servlet
@@ -1237,19 +1189,19 @@ this usually results in the stacktrace being printed to the log file twice.</td>
 <div class="paragraph">
 <p>Additional runtime dependencies are required for using the servlet appender:</p>
 </div>
-<div id="_tabs_5" class="openblock tabs is-sync is-loading">
+<div id="_tabs_4" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_5_maven" class="tab">
+<li id="_tabs_4_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_5_gradle" class="tab">
+<li id="_tabs_4_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_5_maven--panel" class="tabpanel" aria-labelledby="_tabs_5_maven">
+<div id="_tabs_4_maven--panel" class="tabpanel" aria-labelledby="_tabs_4_maven">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
@@ -1261,7 +1213,7 @@ this usually results in the stacktrace being printed to the log file twice.</td>
 </div>
 </div>
 </div>
-<div id="_tabs_5_gradle--panel" class="tabpanel" aria-labelledby="_tabs_5_gradle">
+<div id="_tabs_4_gradle--panel" class="tabpanel" aria-labelledby="_tabs_4_gradle">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-jakarta-web:3.0.0-alpha1'</code></pre>
