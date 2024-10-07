@@ -16,7 +16,13 @@
  */
 package org.apache.log4j;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -252,11 +258,11 @@ class PropertyConfiguratorTest {
             PropertyConfigurator.configure(inputStream);
 
             final Logger rootLogger = Logger.getRootLogger();
-            assertThat(rootLogger.getLevel()).isEqualTo(Level.INFO);
-            assertThat(rootLogger.getAppender("CONSOLE")).isNotNull();
+            assertThat(rootLogger.getLevel(), is(equalTo(Level.INFO)));
+            assertThat(rootLogger.getAppender("CONSOLE"), notNullValue());
             final Logger logger = Logger.getLogger("org.apache.log4j.PropertyConfiguratorTest");
-            assertThat(logger.getLevel()).isEqualTo(Level.DEBUG);
-            assertThat(logger.getAppender("ROLLING")).isNotNull();
+            assertThat(logger.getLevel(), is(equalTo(Level.DEBUG)));
+            assertThat(logger.getAppender("ROLLING"), notNullValue());
         }
     }
 
@@ -368,15 +374,15 @@ class PropertyConfiguratorTest {
     void when_compatibility_disabled_configurator_is_no_op() throws IOException {
         final Logger rootLogger = Logger.getRootLogger();
         final Logger logger = Logger.getLogger("org.apache.log4j.PropertyConfiguratorTest");
-        assertThat(logger.getLevel()).isNull();
+        assertThat(logger.getLevel(), nullValue());
         try (final InputStream inputStream = PropertyConfiguratorTest.class.getResourceAsStream(FILTER_PROPERTIES)) {
             PropertyConfigurator.configure(inputStream);
 
-            assertThat(rootLogger.getAppender("CONSOLE")).isNull();
-            assertThat(rootLogger.getLevel()).isNotEqualTo(Level.INFO);
+            assertThat(rootLogger.getAppender("CONSOLE"), nullValue());
+            assertThat(rootLogger.getLevel(), is(not(equalTo(Level.INFO))));
 
-            assertThat(logger.getAppender("ROLLING")).isNull();
-            assertThat(logger.getLevel()).isNull();
+            assertThat(logger.getAppender("ROLLING"), nullValue());
+            assertThat(logger.getLevel(), nullValue());
         }
     }
 }
