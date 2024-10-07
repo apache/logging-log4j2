@@ -20,13 +20,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.regex.Pattern;
 import org.apache.logging.log4j.test.TestProperties;
 import org.junit.jupiter.api.Test;
 
 @UsingTestProperties
 public class TempLoggingDirectoryTest {
 
-    private static final Path PER_CLASS_PATH = Paths.get("TempLoggingDirectoryTest");
+    private static final Pattern PER_CLASS_PATH = Pattern.compile("TempLoggingDirectoryTest\\d+");
     private static final Path PER_TEST_PATH = Paths.get("testInjectedFields");
 
     @TempLoggingDir
@@ -37,7 +38,8 @@ public class TempLoggingDirectoryTest {
 
     @Test
     void testInjectedFields(final @TempLoggingDir Path parameterLoggingPath, final TestProperties props) {
-        assertThat(staticLoggingPath).exists().endsWith(PER_CLASS_PATH);
+        assertThat(staticLoggingPath).exists();
+        assertThat(staticLoggingPath.getFileName().toString()).matches(PER_CLASS_PATH);
         assertThat(instanceLoggingPath).exists().startsWith(staticLoggingPath).endsWith(PER_TEST_PATH);
         assertThat(parameterLoggingPath).isEqualTo(instanceLoggingPath);
         assertThat(props.getProperty(TestProperties.LOGGING_PATH)).isEqualTo(instanceLoggingPath.toString());
