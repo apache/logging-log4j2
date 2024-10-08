@@ -37,23 +37,23 @@ include::partial$concepts.adoc[tag=!software-type]
 [TIP]
 ====
 Are you looking for an example of GraalVM application that uses the Log4j API?
-Check our
-https://github.com/apache/logging-log4j-samples/tree/main/log4j-samples-graalvm[`log4j-samples-graalvm`]
-sample.
+Check out
+the https://github.com/apache/logging-log4j-samples/tree/main/log4j-samples-graalvm[`log4j-samples-graalvm`]
+project.
 ====
 
 [#impl-simple]
 == Using Simple Logger
 
 If you use
-xref:manual/simple-logger.adoc[Simple Logger]
+xref:manual/simple-logger.adoc[Simple Logger] shipped with xref:manual/api.html[Log4j API]
 in your application, no additional steps are required to compile a GraalVM native image.
 
 [#impl-core]
 == Using Log4j Core
 
-Since version,
-xref:release-notes.adoc#release-notes-2-25-0[`2.25.0`]
+Since version
+xref:release-notes.adoc#release-notes-2-25-0[`2.25.0`],
 xref:manual/implementation.adoc[Log4j Core]
 and
 xref:components.adoc[all its official extensions]
