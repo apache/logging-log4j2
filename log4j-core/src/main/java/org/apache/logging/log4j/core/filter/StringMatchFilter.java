@@ -240,9 +240,9 @@ public final class StringMatchFilter extends AbstractFilter {
         private String text = "";
 
         /**
-         * Sets the text to match.
-         * @param text the text to match.
-         * @return this
+         * Sets the text to search in event messages.
+         * @param text the text to search in event messages.
+         * @return this instance.
          */
         public StringMatchFilter.Builder setMatchString(final String text) {
             this.text = text;
