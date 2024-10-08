@@ -176,7 +176,7 @@ The
 xref:manual/simple-logger.adoc[Simple Logger]
 implementation is embedded in the Log4j API and does not need any external dependency.
 It is intended as a convenience for environments where either a fully-fledged logging implementation is missing, or cannot be included for other reasons.
-Its usage is, however, opt-in and Log4j API will log an error to the
+The Log4j API will log an error to the
 xref:manual/status-logger.adoc[Status Logger] to avoid its unintentional usages:
 
 ----
