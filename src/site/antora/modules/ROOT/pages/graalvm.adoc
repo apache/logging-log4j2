@@ -26,7 +26,10 @@ xref:manual/implementation.adoc[its reference implementation]
 provide out-of-the-box support for creating native executables using
 https://www.graalvm.org/[GraalVM].
 
-Depending on the logging implementation you are using, additional steps might be required to compile a Log4j API application with GraalVM.
+This document complements the
+xref:manual/installation.adoc[Installation Guide]
+and provides additional details on the steps necessary to create native images that use the Log4j API.
+The information is split depending on which Log4j API implementation you are using.
 
 .Struggling with the logging API, implementation, and bridge concepts? Click for an introduction.
 [%collapsible]
@@ -89,18 +92,32 @@ xref:manual/plugins.adoc#plugin-registry[Log4j Plugin registration documentation
 [#impl-jul]
 == Using JUL
 
+Since version `2.24.0` the
+xref:manual/installation.adoc#impl-jul[Log4j API to JUL bridge]
+is tested for compatibility with GraalVM.
+
 Although `java.util.logging` is embedded into the JRE, currently not all
 https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Formatter.html[`j.u.l.Formatter`]
 and
 https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Handler.html[`j.u.l.Handler`]
 implementations have the required GraalVM metadata.
+See the official
+https://www.graalvm.org/latest/reference-manual/native-image/guides/add-logging-to-native-executable/[Add Logging to a Native Executable]
+guide for more information on how to add additional elements to your configuration.
 
+[TIP]
+====
 See
 https://github.com/apache/logging-log4j-samples/blob/main/log4j-samples-graalvm/src/reachability-metadata/jul/reflect-config.json[`reflect-config.json` in our `log4j-samples-graalvm` example project]
 for an example on how to enable `j.u.l.FileHandler`.
+====
 
 [#impl-logback]
 == Using Logback
+
+Since version `2.24.0` the
+xref:manual/installation.adoc#impl-logback[Log4j API to SLF4J bridge]
+is tested for compatibility with GraalVM.
 
 While Logback itself does not provide any GraalVM metadata, the data is available in the third-party
 https://github.com/oracle/graalvm-reachability-metadata/[GraalVM reachability metadata repository].
