@@ -85,7 +85,7 @@ public final class JAnsiTextRenderer implements TextRenderer {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    public static final Map<String, String> DEFAULT_EXCEPTION_STYLE_MAP;
+    public static final Map<String, String> DefaultExceptionStyleMap;
     static final Map<String, String> DEFAULT_MESSAGE_STYLE_MAP;
     private static final Map<String, Map<String, String>> PREFEDINED_STYLE_MAPS;
 
@@ -181,7 +181,7 @@ public final class JAnsiTextRenderer implements TextRenderer {
                 entry("ExtraClassInfo.Version", YELLOW));
 
         // Save
-        DEFAULT_EXCEPTION_STYLE_MAP = spock;
+        DefaultExceptionStyleMap = spock;
         DEFAULT_MESSAGE_STYLE_MAP = Collections.emptyMap();
         Map<String, Map<String, String>> predefinedStyleMaps = new HashMap<>();
         predefinedStyleMaps.put("Spock", spock);

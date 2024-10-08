@@ -292,7 +292,7 @@ public final class ThrowableFormatOptions {
                             ? Strings.EMPTY
                             : option.substring("ansi(".length(), option.length() - 1);
                     ansiRenderer = new JAnsiTextRenderer(
-                            new String[] {null, styleMapStr}, JAnsiTextRenderer.DEFAULT_EXCEPTION_STYLE_MAP);
+                            new String[] {null, styleMapStr}, JAnsiTextRenderer.DefaultExceptionStyleMap);
                 } else if (option.startsWith("S(") && option.endsWith(")")) {
                     suffix = option.substring("S(".length(), option.length() - 1);
                 } else if (option.startsWith("suffix(") && option.endsWith(")")) {

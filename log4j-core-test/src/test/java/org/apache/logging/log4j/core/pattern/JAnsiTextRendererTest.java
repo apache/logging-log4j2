@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.pattern;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.presentation.HexadecimalRepresentation.HEXA_REPRESENTATION;
 
-import java.util.Map;
+import java.util.Collections;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -47,7 +47,7 @@ class JAnsiTextRendererTest {
     @ParameterizedTest
     @MethodSource
     void testRendering(final String format, final String text, final String expected) {
-        final JAnsiTextRenderer renderer = new JAnsiTextRenderer(new String[] {"ansi", format}, Map.of());
+        final JAnsiTextRenderer renderer = new JAnsiTextRenderer(new String[] {"ansi", format}, Collections.emptyMap());
         final StringBuilder actual = new StringBuilder();
         renderer.render(new StringBuilder(text), actual);
         assertThat(actual.toString())
