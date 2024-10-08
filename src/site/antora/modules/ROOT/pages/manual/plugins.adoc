@@ -237,7 +237,9 @@ Maven::
       <configuration>
         <proc>only</proc>
         <annotationProcessorPaths>
-          <!-- Include `log4j-core` providing `org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor` that generates `Log4j2Plugins.dat` -->
+          <!-- Include `log4j-core` providing
+               1. `org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor` that generates `Log4j2Plugins.dat`
+               2. `org.apache.logging.log4j.core.config.plugins.processor.GraalVmProcessor` that generates the GraalVM reachability metadata file -->
           <path>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
@@ -251,7 +253,7 @@ Maven::
           <processor>org.apache.logging.log4j.core.config.plugins.processor.GraalVmProcessor</processor>
         </annotationProcessors>
         <compilerArgs>
-          <!-- Provide the project coordinates to the `GraalVmProcessor`: -->
+          <!-- Provide the project coordinates to `GraalVmProcessor`: -->
           <arg>-Alog4j.graalvm.groupId=${project.groupId}</arg>
           <arg>-Alog4j.graalvm.artifactId=${project.artifactId}</arg>
         </compilerArgs>
