@@ -16,21 +16,21 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.logging.log4j.core.test.categories.Appenders;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-@Category(Appenders.Jpa.class)
+@Tag("Appenders.Jpa")
 public class ContextMapAttributeConverterTest {
     private ContextMapAttributeConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.converter = new ContextMapAttributeConverter();
     }
@@ -42,7 +42,7 @@ public class ContextMapAttributeConverterTest {
         map.put("key2", "value2");
 
         assertEquals(
-                "The converted value is not correct.", map.toString(), this.converter.convertToDatabaseColumn(map));
+                map.toString(), this.converter.convertToDatabaseColumn(map), "The converted value is not correct.");
     }
 
     @Test
@@ -53,16 +53,16 @@ public class ContextMapAttributeConverterTest {
         map.put("myKey", "yourValue");
 
         assertEquals(
-                "The converted value is not correct.", map.toString(), this.converter.convertToDatabaseColumn(map));
+                map.toString(), this.converter.convertToDatabaseColumn(map), "The converted value is not correct.");
     }
 
     @Test
     public void testConvertNullToDatabaseColumn() {
-        assertNull("The converted value should be null.", this.converter.convertToDatabaseColumn(null));
+        assertNull(this.converter.convertToDatabaseColumn(null), "The converted value should be null.");
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testConvertToEntityAttribute() {
-        this.converter.convertToEntityAttribute(null);
+        assertThrows(UnsupportedOperationException.class, () -> this.converter.convertToEntityAttribute(null));
     }
 }

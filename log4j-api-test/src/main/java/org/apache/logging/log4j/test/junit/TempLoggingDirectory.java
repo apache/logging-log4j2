@@ -51,7 +51,8 @@ public class TempLoggingDirectory implements BeforeAllCallback, BeforeEachCallba
         Path loggingPath = null;
         for (final Field field : fields) {
             if (loggingPath != null) {
-                StatusLogger.getLogger().warn("Multiple fields with @TempLoggingDir annotation are not supported.");
+                StatusLogger.getLogger()
+                        .warn("Multiple static fields with @TempLoggingDir annotation are not supported.");
             } else {
                 final CleanupMode cleanup = determineCleanupMode(field);
                 loggingPath = createLoggingPath(context, cleanup).getPath();
@@ -63,8 +64,8 @@ public class TempLoggingDirectory implements BeforeAllCallback, BeforeEachCallba
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
-        // JUnit 5 does not set an error on the parent context if one of the children
-        // fail. We record the list of children.
+        // JUnit 5 does not set an error on the parent context if one of the children fails.
+        // We record the list of children.
         context.getParent().ifPresent(c -> {
             final PathHolder holder = ExtensionContextAnchor.getAttribute(PathHolder.class, PathHolder.class, c);
             if (holder != null) {
@@ -78,7 +79,8 @@ public class TempLoggingDirectory implements BeforeAllCallback, BeforeEachCallba
         final Object instance = context.getRequiredTestInstance();
         for (final Field field : fields) {
             if (loggingPath != null) {
-                StatusLogger.getLogger().warn("Multiple fields with @TempLoggingDir annotation are not supported.");
+                StatusLogger.getLogger()
+                        .warn("Multiple instance fields with @TempLoggingDir annotation are not supported.");
             } else {
                 final CleanupMode cleanup = determineCleanupMode(field);
                 loggingPath = createLoggingPath(context, cleanup).getPath();
@@ -102,7 +104,7 @@ public class TempLoggingDirectory implements BeforeAllCallback, BeforeEachCallba
             throws ParameterResolutionException {
         final TempLoggingDir annotation =
                 parameterContext.findAnnotation(TempLoggingDir.class).get();
-        // Get or create temporary directory
+        // Get or create a temporary directory
         PathHolder holder = ExtensionContextAnchor.getAttribute(PathHolder.class, PathHolder.class, extensionContext);
         if (holder == null || !extensionContext.equals(holder.getMainContext())) {
             final CleanupMode mode = determineCleanupMode(annotation);
@@ -111,14 +113,9 @@ public class TempLoggingDirectory implements BeforeAllCallback, BeforeEachCallba
         return holder.getPath();
     }
 
-    private PathHolder createLoggingPath(final ExtensionContext context, final CleanupMode cleanup) {
+    private PathHolder createLoggingPath(ExtensionContext context, CleanupMode cleanup) {
         final TestProperties props = TestPropertySource.createProperties(context);
-        // Create temporary directory
-        final String baseDir = System.getProperty("basedir");
-        final Path basePath = (baseDir != null ? Paths.get(baseDir, "target") : Paths.get(".")).resolve("logs");
-        final Class<?> clazz = context.getRequiredTestClass();
-        final String dir = clazz.getName().replaceAll("[.$]", File.separatorChar == '\\' ? "\\\\" : File.separator);
-        final Path perClassPath = basePath.resolve(dir);
+        final Path perClassPath = determinePerClassPath(context);
         // Per test subfolder
         final Path loggingPath = context.getTestMethod()
                 .map(m -> perClassPath.resolve(m.getName()))
@@ -133,6 +130,29 @@ public class TempLoggingDirectory implements BeforeAllCallback, BeforeEachCallba
         final PathHolder holder = new PathHolder(loggingPath, cleanup, context);
         ExtensionContextAnchor.setAttribute(PathHolder.class, holder, context);
         return holder;
+    }
+
+    private Path determinePerClassPath(ExtensionContext context) {
+        // Check if the parent context already created a folder
+        PathHolder holder = ExtensionContextAnchor.getAttribute(PathHolder.class, PathHolder.class, context);
+        if (holder == null) {
+            try {
+                // Create temporary per-class directory
+                final String baseDir = System.getProperty("basedir");
+                final Path basePath = (baseDir != null ? Paths.get(baseDir, "target") : Paths.get(".")).resolve("logs");
+                final Class<?> clazz = context.getRequiredTestClass();
+                final Package pkg = clazz.getPackage();
+                final String dir =
+                        pkg.getName().replaceAll("[.$]", File.separatorChar == '\\' ? "\\\\" : File.separator);
+                // Create a temporary directory that uses the simple class name as prefix
+                Path packagePath = basePath.resolve(dir);
+                Files.createDirectories(packagePath);
+                return Files.createTempDirectory(packagePath, clazz.getSimpleName());
+            } catch (final IOException e) {
+                throw new ExtensionContextException("Failed to create temporary directory.", e);
+            }
+        }
+        return holder.getPath();
     }
 
     private CleanupMode determineCleanupMode(final TempLoggingDir annotation) {

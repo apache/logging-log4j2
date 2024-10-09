@@ -16,28 +16,24 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Arrays;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
-import org.apache.logging.log4j.test.junit.ThreadContextStackRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.apache.logging.log4j.test.junit.UsingThreadContextStack;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-@Category(Appenders.Jpa.class)
+@UsingThreadContextStack
+@Tag("Appenders.Jpa")
 public class ContextStackJsonAttributeConverterTest {
     private ContextStackJsonAttributeConverter converter;
 
-    @Rule
-    public final ThreadContextStackRule threadContextRule = new ThreadContextStackRule();
-
-    @Before
+    @BeforeEach
     public void setUp() {
         this.converter = new ContextStackJsonAttributeConverter();
     }
@@ -48,12 +44,12 @@ public class ContextStackJsonAttributeConverterTest {
 
         final String converted = this.converter.convertToDatabaseColumn(stack);
 
-        assertNotNull("The converted value should not be null.", converted);
+        assertNotNull(converted, "The converted value should not be null.");
 
         final ThreadContext.ContextStack reversed = this.converter.convertToEntityAttribute(converted);
 
-        assertNotNull("The reversed value should not be null.", reversed);
-        assertEquals("The reversed value is not correct.", stack.asList(), reversed.asList());
+        assertNotNull(reversed, "The reversed value should not be null.");
+        assertEquals(stack.asList(), reversed.asList(), "The reversed value is not correct.");
     }
 
     @Test
@@ -62,22 +58,22 @@ public class ContextStackJsonAttributeConverterTest {
 
         final String converted = this.converter.convertToDatabaseColumn(stack);
 
-        assertNotNull("The converted value should not be null.", converted);
+        assertNotNull(converted, "The converted value should not be null.");
 
         final ThreadContext.ContextStack reversed = this.converter.convertToEntityAttribute(converted);
 
-        assertNotNull("The reversed value should not be null.", reversed);
-        assertEquals("The reversed value is not correct.", stack.asList(), reversed.asList());
+        assertNotNull(reversed, "The reversed value should not be null.");
+        assertEquals(stack.asList(), reversed.asList(), "The reversed value is not correct.");
     }
 
     @Test
     public void testConvertNullToDatabaseColumn() {
-        assertNull("The converted value should be null.", this.converter.convertToDatabaseColumn(null));
+        assertNull(this.converter.convertToDatabaseColumn(null), "The converted value should be null.");
     }
 
     @Test
     public void testConvertNullOrBlankToEntityAttribute() {
-        assertNull("The converted attribute should be null (1).", this.converter.convertToEntityAttribute(null));
-        assertNull("The converted attribute should be null (2).", this.converter.convertToEntityAttribute(""));
+        assertNull(this.converter.convertToEntityAttribute(null), "The converted attribute should be null (1).");
+        assertNull(this.converter.convertToEntityAttribute(""), "The converted attribute should be null (2).");
     }
 }
