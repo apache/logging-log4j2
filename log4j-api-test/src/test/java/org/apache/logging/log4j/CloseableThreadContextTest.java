@@ -296,7 +296,6 @@ public class CloseableThreadContextTest {
                     ThreadContext.put(
                             "not-in-closeable", "true"); // Remove this line, and closing context behaves as expected
                     ThreadContext.putAll(Collections.singletonMap("inner", "two")); // But this is not a problem
-                    System.err.println(ThreadContext.getContext());
                     assertEquals("two", ThreadContext.get("inner"));
                     assertEquals("two", ThreadContext.get("outer"));
                 }
