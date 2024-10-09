@@ -47,10 +47,6 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
     private static final Filter[] EMPTY_FILTERS = Filter.EMPTY_ARRAY;
     private final Filter[] filters;
 
-    private CompositeFilter() {
-        this.filters = EMPTY_FILTERS;
-    }
-
     private CompositeFilter(final Filter[] filters) {
         this.filters = filters == null ? EMPTY_FILTERS : filters;
     }
