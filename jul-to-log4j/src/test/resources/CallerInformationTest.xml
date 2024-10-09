@@ -15,16 +15,28 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration xmlns="https://logging.apache.org/xml/ns">
-    <Appenders>
-        <Console name="STDOUT" target="SYSTEM_ERR" follow="true">
-            <PatternLayout
-                    pattern="log4j2: %d{HH:mm:ss.SSS} %5level - [%thread][%logger: %class/%method/%line] - %message%n"/>
-        </Console>
-    </Appenders>
-    <Loggers>
-        <Root level="TRACE"/>
-        <Logger name="foo" level="WARN"/>
-        <Logger name="foo.bar" level="INFO"/>
-    </Loggers>
+<Configuration xmlns="https://logging.apache.org/xml/ns"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="
+                   https://logging.apache.org/xml/ns
+                   https://logging.apache.org/xml/ns/log4j-config-3.xsd">
+  <Appenders>
+    <List name="Class">
+      <PatternLayout pattern="%class"
+                     alwaysWriteExceptions="false"/>
+    </List>
+    <List name="Method">
+      <PatternLayout pattern="%method"
+                     alwaysWriteExceptions="false"/>
+    </List>
+  </Appenders>
+  <Loggers>
+    <Logger name="ClassLogger" level="ALL">
+      <AppenderRef ref="Class"/>
+    </Logger>
+    <Logger name="MethodLogger" level="ALL">
+      <AppenderRef ref="Method"/>
+    </Logger>
+    <Root level="OFF"/>
+  </Loggers>
 </Configuration>

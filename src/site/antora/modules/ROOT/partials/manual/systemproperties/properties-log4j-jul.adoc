@@ -21,12 +21,46 @@
 |===
 | Env. variable | `LOG4J_JUL_LEVEL_CONVERTER`
 | Type          | `Class<? extends LevelConverter>`
-| Default value | `org.apache.logging.log4j.jul.DefaultLevelConverter`
+| Default value | `org.apache.logging.jul.tolog4j.internal.DefaultLevelConverter`
 |===
 
-Fully qualified name of an alternative `org.apache.logging.log4j.jul.LevelConverter` implementation.
+Fully qualified name of an alternative `org.apache.logging.jul.tolog4j.spi.LevelConverter` implementation.
 
-See xref:log4j-jul.adoc#default-level-conversions[Default Level Conversions] for the default implementation.
+.Default level conversions
+[%collapsible]
+====
+[cols="1m,1",id=default-level-conversions]
+|===
+| Java Level | Log4j Level
+
+| https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.logging/java/util/logging/Level.html#OFF[OFF]
+| `OFF`
+
+| https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.logging/java/util/logging/Level.html#SEVERE[SEVERE]
+| `ERROR`
+
+| https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.logging/java/util/logging/Level.html#WARNING[WARNING]
+| `WARN`
+
+| https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.logging/java/util/logging/Level.html#INFO[INFO]
+| `INFO`
+
+| https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.logging/java/util/logging/Level.html#CONFIG[CONFIG]
+| custom `CONFIG` level with a numeric value of `450`
+
+| https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.logging/java/util/logging/Level.html#FINE[FINE]
+| `DEBUG`
+
+| https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.logging/java/util/logging/Level.html#FINER[FINER]
+| `TRACE`
+
+| https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.logging/java/util/logging/Level.html#FINEST[FINEST]
+| custom `FINEST` level with a numeric value of `700`
+
+| https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.logging/java/util/logging/Level.html#ALL[ALL]
+| `ALL`
+|===
+====
 
 [id=log4j.jul.loggerAdapter]
 == `log4j.jul.loggerAdapter`
@@ -35,17 +69,9 @@ See xref:log4j-jul.adoc#default-level-conversions[Default Level Conversions] for
 |===
 | Env. variable | `LOG4J_JUL_LOGGER_ADAPTER`
 | Type          | `Class<? extends AbstractLoggerAdapter>`
-| Default value | _depends on classpath_
+| Default value | `org.apache.logging.jul.tolog4j.internal.ApiLoggerAdapter`
 |===
 
-Fully qualified class name of the `org.apache.logging.log4j.jul.AbstractLoggerAdapter` implementation to use.
+Fully qualified class name of a custom `org.apache.logging.jul.tolog4j.spi.AbstractLoggerAdapter` implementation to use, which provides an implementation of the `j.u.l.Logger` mutator methods (e.g., `Logger.setLevel()`).
 
-This property allows users to choose between two implementation of the logging bridge:
-
-org.apache.logging.log4j.jul.CoreLoggerAdapter::
-The default if `log4j-core` is found in the class path.
-It allows users to modify the Log4j Core configuration through the JUL https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.logging/java/util/logging/Logger.html[`Logger`] interface.
-
-org.apache.logging.log4j.jul.ApiLoggerAdapter::
-The default if `log4j-core` cannot be found in the class path.
-It disables the level mutators in the JUL `Logger` interface.
+By default `org.apache.logging.jul.tolog4j.internal.ApiLoggerAdapter` is used and the mutator methods are disabled.
