@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.impl.ThrowableFormatOptions;
 
-class ThrowableExtendedStackTraceRendererFactory extends ThrowableStackTraceRendererFactory {
+final class ThrowableExtendedStackTraceRendererFactory extends ThrowableStackTraceRendererFactory {
 
     static final ThrowableExtendedStackTraceRendererFactory INSTANCE = new ThrowableExtendedStackTraceRendererFactory();
 
