@@ -265,6 +265,9 @@
     <a class="nav-link" href="../migrate-from-slf4j.html">Migrating from SLF4J</a>
   </li>
   <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../graalvm.html">Building GraalVM native images</a>
+  </li>
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../hibernate.html">Integrating with Hibernate</a>
   </li>
   <li class="nav-item" data-depth="1">
@@ -708,6 +711,33 @@ Since currently only
 </td>
 </tr>
 </table>
+</div>
+<div class="sect2">
+<h3 id="impl-simple"><a class="anchor" href="#impl-simple"></a>Installing Simple Logger</h3>
+<div class="paragraph">
+<p>The
+<a href="simple-logger.html" class="xref page">Simple Logger</a>
+implementation is embedded in the Log4j API and does not need any external dependency.
+It is intended as a convenience for environments where either a fully-fledged logging implementation is missing, or cannot be included for other reasons.
+The Log4j API will log an error to the
+<a href="status-logger.html" class="xref page">Status Logger</a> to avoid its unintentional usages:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>2024-10-03T11:53:34.281462230Z main ERROR Log4j API could not find a logging provider.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To remove the warning and confirm that you want to use Simple Logger, add a
+<a href="systemproperties.html#property-sources" class="xref page"><code>log4j2.component.properties</code> file</a>
+at the root of your class path with content:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties"># Activate Simple Logger implementation
+log4j.provider = org.apache.logging.log4j.simple.internal.SimpleProvider</code></pre>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="impl-core"><a class="anchor" href="#impl-core"></a>Installing Log4j Core</h3>
@@ -1165,6 +1195,14 @@ See <a href="https://docs.spring.io/spring-boot/reference/features/logging.html"
 </div>
 </div>
 <div class="sect3">
+<h4 id="impl-core-graalvm"><a class="anchor" href="#impl-core-graalvm"></a>Installing Log4j Core for GraalVM applications</h4>
+<div class="paragraph">
+<p>See
+<a href="../graalvm.html#impl-core" class="xref page">Using Log4j Core</a>
+in our GraalVM guide for more details on how to create GraalVM native applications that use Log4j Core.</p>
+</div>
+</div>
+<div class="sect3">
 <h4 id="impl-core-config"><a class="anchor" href="#impl-core-config"></a>Configuring Log4j Core</h4>
 <div class="paragraph">
 <p>As with any other logging implementation, Log4j Core needs to be properly configured.
@@ -1198,19 +1236,16 @@ A basic configuration can be obtained by adding one of these files to your appli
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xsi:schemaLocation="https://logging.apache.org/xml/ns
                                    https://logging.apache.org/xml/ns/log4j-config-2.xsd"&gt;
-
-  &lt;appenders&gt;
+  &lt;Appenders&gt;
     &lt;Console name="CONSOLE"&gt;
       &lt;PatternLayout pattern="%d [%t] %5p %c{1.} - %m%n"/&gt;<i class="conum" data-value="1"></i><b>(1)</b>
     &lt;/Console&gt;
-  &lt;/appenders&gt;
-
-  &lt;loggers&gt;
-    &lt;root level="INFO"&gt;
+  &lt;/Appenders&gt;
+  &lt;Loggers&gt;
+    &lt;Root level="INFO"&gt;
       &lt;AppenderRef ref="CONSOLE"/&gt;
-    &lt;/root&gt;
-  &lt;/loggers&gt;
-
+    &lt;/Root&gt;
+  &lt;/Loggers&gt;
 &lt;/Configuration&gt;</code></pre>
 </div>
 </div>
@@ -1477,6 +1512,14 @@ runtimeOnly 'org.slf4j:slf4j-jdk14:2.0.16' // SLF4J-to-JUL bridge</code></pre>
 </li>
 </ul>
 </div>
+<div class="sect3">
+<h4 id="impl-jul-graalvm"><a class="anchor" href="#impl-jul-graalvm"></a>Installing JUL for GraalVM applications</h4>
+<div class="paragraph">
+<p>See
+<a href="../graalvm.html#impl-jul" class="xref page">Using JUL</a>
+in our GraalVM guide for more details on how to create GraalVM native applications that use JUL.</p>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="impl-logback"><a class="anchor" href="#impl-logback"></a>Installing Logback</h3>
@@ -1531,6 +1574,14 @@ runtimeOnly 'org.apache.logging.log4j:log4j-to-slf4j' // Log4j-to-SLF4J bridge</
 </div>
 <div class="paragraph">
 <p>To configure Logback, see <a href="https://logback.qos.ch/manual/configuration.html">Logback&#8217;s configuration documentation</a>.</p>
+</div>
+<div class="sect3">
+<h4 id="impl-jul-logback"><a class="anchor" href="#impl-jul-logback"></a>Installing Logback for GraalVM applications</h4>
+<div class="paragraph">
+<p>See
+<a href="../graalvm.html#impl-logback" class="xref page">Using Logback</a>
+in our GraalVM guide for more details on how to create GraalVM native applications that use Logback.</p>
+</div>
 </div>
 </div>
 </div>

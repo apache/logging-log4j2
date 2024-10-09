@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Log4j IOStreams :: Apache Log4j</title>
-    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/log4j-iostreams.html">
+    <title>Building GraalVM native images :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/graalvm.html">
     <meta name="generator" content="Antora 3.2.0-alpha.6">
 <link rel="stylesheet" href="./_/css/site.css">
 <link rel="icon" href="./_/../_images/favicon.ico" type="image/x-icon">
@@ -264,7 +264,7 @@
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="migrate-from-slf4j.html">Migrating from SLF4J</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item is-current-page" data-depth="1">
     <a class="nav-link" href="graalvm.html">Building GraalVM native images</a>
   </li>
   <li class="nav-item" data-depth="1">
@@ -285,7 +285,7 @@
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="components.html">Components</a>
 <ul class="nav-list">
-  <li class="nav-item is-current-page" data-depth="1">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="log4j-iostreams.html">Log4j IOStreams</a>
   </li>
   <li class="nav-item" data-depth="1">
@@ -339,63 +339,216 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="index.html">Home</a></li>
-    <li><a href="components.html">Components</a></li>
-    <li><a href="log4j-iostreams.html">Log4j IOStreams</a></li>
+    <li>Resources</li>
+    <li><a href="graalvm.html">Building GraalVM native images</a></li>
   </ul>
 </nav>
-<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/log4j-iostreams.adoc">Edit this Page</a></div>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/graalvm.adoc">Edit this Page</a></div>
 </div>
   <div class="content">
 <aside class="toc sidebar" data-title="Contents" data-levels="4">
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Log4j IOStreams</h1>
-<div class="sect1">
-<h2 id="_log4j_iostreams"><a class="anchor" href="#_log4j_iostreams"></a>Log4j IOStreams</h2>
+<h1 class="page">Building GraalVM native images</h1>
+<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>The IOStreams component is a
+<p>Since version
+<a href="release-notes.html#release-notes-2-25-0" class="xref page"><code>2.25.0</code></a>
+both
 <a href="manual/api.html" class="xref page">Log4j API</a>
-extension that provides numerous classes from
-<a href="https://docs.oracle.com/javase/8/docs/api/java/io/package-summary.html"><code>java.io</code></a>
-that can either write to a
-<a href="javadoc/log4j-api/org/apache/logging/log4j/Logger.html"><code>Logger</code></a>
-while writing to another <code>OutputStream</code> or <code>Writer</code>, or the contents read by an <code>InputStream</code> or <code>Reader</code> can be
-<a href="https://www.enterpriseintegrationpatterns.com/patterns/messaging/WireTap.html">wiretapped</a>
-by a <code>Logger</code>.</p>
+and
+<a href="manual/implementation.html" class="xref page">its reference implementation</a>
+provide out-of-the-box support for creating native executables using
+<a href="https://www.graalvm.org/">GraalVM</a>.</p>
+</div>
+<div class="paragraph">
+<p>This document complements the
+<a href="manual/installation.html" class="xref page">Installation Guide</a>
+and provides additional details on the steps necessary to create native images that use the Log4j API.
+The information is split depending on which Log4j API implementation you are using.</p>
+</div>
+<details>
+<summary class="title">Struggling with the logging API, implementation, and bridge concepts? Click for an introduction.</summary>
+<div class="content">
+<div id="logging-api" class="dlist">
+<dl>
+<dt class="hdlist1">Logging API</dt>
+<dd>
+<p>A logging API is an interface your code or your dependencies directly logs against.
+It is required at compile-time.
+It is implementation agnostic to ensure that your application can write logs, but is not tied to a specific logging implementation.
+Log4j API, <a href="https://www.slf4j.org">SLF4J</a>, <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/logging/overview.html">JUL (Java Logging)</a>, <a href="https://commons.apache.org/proper/commons-logging/">JCL (Apache Commons Logging)</a>, <a href="https://openjdk.org/jeps/264">JPL (Java Platform Logging)</a> and <a href="https://github.com/jboss-logging/jboss-logging">JBoss Logging</a> are major logging APIs.</p>
+</dd>
+</dl>
+</div>
+<div id="logging-impl" class="dlist">
+<dl>
+<dt class="hdlist1">Logging implementation</dt>
+<dd>
+<p>A logging implementation is only required at runtime and can be changed without the need to recompile your software.
+Log4j Core, <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/logging/overview.html">JUL (Java Logging)</a>, <a href="https://logback.qos.ch">Logback</a> are the most well-known logging implementations.</p>
+</dd>
+</dl>
+</div>
+<div id="logging-bridge" class="dlist">
+<dl>
+<dt class="hdlist1">Logging bridge</dt>
+<dd>
+<p>Logging implementations accept input from a single logging API of their preference; Log4j Core from Log4j API, Logback from SLF4J, etc.
+A logging bridge is a simple logging implementation of a logging API that forwards all messages to a foreign logging API.
+Logging bridges allow a logging implementation to accept input from other logging APIs that are not their primary logging API.
+For instance, <code>log4j-slf4j2-impl</code> <em>bridges</em> SLF4J calls to Log4 API and effectively enables Log4j Core to accept input from SLF4J.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>To make things a little bit more tangible, consider the following visualization of a typical Log4j Core installation with bridges for an application:</p>
+</div>
+<div class="imageblock kroki">
+<div class="content">
+<img src="_images/diag-a51b68065f249459078382aa4c61888857f01b2c.svg" alt="Visualization of a typical Log4j Core installation with SLF4J, JUL, and JPL bridges">
+</div>
+<div class="title">Figure 1. Visualization of a typical Log4j Core installation with SLF4J, JUL, and JPL bridges</div>
+</div>
+</div>
+</details>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Are you looking for an example of GraalVM application that uses the Log4j API?
+Check out
+the <a href="https://github.com/apache/logging-log4j-samples/tree/main/log4j-samples-graalvm"><code>log4j-samples-graalvm</code></a>
+project.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_requirements"><a class="anchor" href="#_requirements"></a>Requirements</h2>
+<h2 id="impl-simple"><a class="anchor" href="#impl-simple"></a>Using Simple Logger</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The Log4j IOStreams API extension requires the Log4j 2 API.
-This component was introduced in Log4j 2.1.</p>
+<p>If you use
+<a href="manual/simple-logger.html" class="xref page">Simple Logger</a> shipped with <a href="manual/api.html" class="xref page">Log4j API</a>
+in your application, no additional steps are required to compile a GraalVM native image.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_usage"><a class="anchor" href="#_usage"></a>Usage</h2>
+<h2 id="impl-core"><a class="anchor" href="#impl-core"></a>Using Log4j Core</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The main entry point for the IOStreams module is the builder class <code>IoBuilder</code>, and in particular, the <code>IoBuilder.forLogger()</code> methods.
-One primary usage of this API extension is for setting up loggers in the JDBC API.
-For example:</p>
+<p>Since version
+<a href="release-notes.html#release-notes-2-25-0" class="xref page"><code>2.25.0</code></a>,
+<a href="manual/implementation.html" class="xref page">Log4j Core</a>
+and
+<a href="components.html" class="xref page">all its official extensions</a>
+are bundled with the necessary
+<a href="https://www.graalvm.org/latest/reference-manual/native-image/metadata/">GraalVM reachability metadata</a>
+to help GraalVM with the creation of native images.
+Additional steps are only required:</p>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>If you use a configuration file, which is not in a
+<a href="manual/configuration.html#automatic-configuration" class="xref page">standard location</a>, you need to create a
+<a href="https://www.graalvm.org/jdk17/reference-manual/native-image/metadata/#resource-metadata-in-json"><code>META-INF/native-image/&lt;groupId&gt;/&lt;artifactId&gt;/resource-config.json</code></a> file in your classpath with content:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">PrintWriter logger = IoBuilder.forLogger(DriverManager.class)
-                              .setLevel(Level.DEBUG)
-                              .buildPrintWriter();
-DriverManager.setLogWriter(logger);</code></pre>
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "resources": {
+    "includes": [
+      {
+        "pattern": "path/to/your/configuration/file"
+      }
+    ]
+  }
+}</code></pre>
 </div>
+</div>
+</li>
+<li>
+<p>If you use <strong>third-party</strong>
+<a href="manual/plugins.html" class="xref page">Log4j Plugin JARs</a>
+you need to make sure they contain a
+<a href="https://www.graalvm.org/jdk17/reference-manual/native-image/metadata/#specifying-reflection-metadata-in-json"><code>reflect-config.json</code></a> metadata file.
+If that is not the case, please point the maintainer to the
+<a href="manual/plugins.html#plugin-registry" class="xref page">Log4j Plugin registration documentation</a>.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="impl-jul"><a class="anchor" href="#impl-jul"></a>Using JUL</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Since version <code>2.24.0</code> the
+<a href="manual/installation.html#impl-jul" class="xref page">Log4j API to JUL bridge</a>
+is tested for compatibility with GraalVM.</p>
 </div>
 <div class="paragraph">
-<p>Using the <code>IoBuilder</code> class, there are a few more options that can be set.
-In general, there are six primary classes one can build from it: <code>Reader</code>, <code>Writer</code>, <code>PrintWriter</code>, <code>InputStream</code>, <code>OutputStream</code>, and <code>PrintStream</code>.
-The input-oriented classes are for wiretapping, and the output-oriented classes are for creating either an output class that solely outputs its lines as log messages, or an output filter class that logs all lines output through it to its delegate output class.</p>
+<p>Although <code>java.util.logging</code> is embedded into the JRE, currently not all
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Formatter.html"><code>j.u.l.Formatter</code></a>
+and
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Handler.html"><code>j.u.l.Handler</code></a>
+implementations have the required GraalVM metadata.
+See the official
+<a href="https://www.graalvm.org/latest/reference-manual/native-image/guides/add-logging-to-native-executable/">Add Logging to a Native Executable</a>
+guide for more information on how to add additional elements to your configuration.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>See
+<a href="https://github.com/apache/logging-log4j-samples/blob/main/log4j-samples-graalvm/src/reachability-metadata/jul/reflect-config.json"><code>reflect-config.json</code> in our <code>log4j-samples-graalvm</code> example project</a>
+for an example on how to enable <code>j.u.l.FileHandler</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="impl-logback"><a class="anchor" href="#impl-logback"></a>Using Logback</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Since version <code>2.24.0</code> the
+<a href="manual/installation.html#impl-logback" class="xref page">Log4j API to SLF4J bridge</a>
+is tested for compatibility with GraalVM.</p>
+</div>
+<div class="paragraph">
+<p>While Logback itself does not provide any GraalVM metadata, the data is available in the third-party
+<a href="https://github.com/oracle/graalvm-reachability-metadata/">GraalVM reachability metadata repository</a>.</p>
+</div>
+<div class="paragraph">
+<p>See the GraalVM Reachability Metadata Support documentation appropriate for your build tool for more information:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html#metadata-support">Gradle Plugin documentation</a></p>
+</li>
+<li>
+<p><a href="https://graalvm.github.io/native-build-tools/latest/maven-plugin.html#metadata-support">Maven Plugin documentation</a></p>
+</li>
+</ul>
 </div>
 </div>
 </div>
