@@ -42,6 +42,15 @@ class PatternLayoutDefaultExceptionHandlerTest {
     }
 
     @Test
+    void default_exception_handler_should_be_provided_after_newline() {
+        final String threadName = Thread.currentThread().getName();
+        final String exceptionClassName = EXCEPTION.getClass().getCanonicalName();
+        final String exceptionMessage = EXCEPTION.getMessage();
+        final String firstLine = String.format("%s%n%s: %s", threadName, exceptionClassName, exceptionMessage);
+        assertThatPatternEncodes("%t%n", true).startsWith(firstLine);
+    }
+
+    @Test
     void default_exception_handler_should_not_be_provided_if_user_provides_one() {
         final String className = EXCEPTION.getStackTrace()[0].getClassName();
         assertThatPatternEncodes("%ex{short.className}", true).isEqualTo(className);
