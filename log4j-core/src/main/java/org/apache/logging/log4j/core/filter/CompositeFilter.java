@@ -21,11 +21,11 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.util.ObjectArrayIterator;
@@ -124,7 +124,7 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         this.setStopping();
         for (final Filter filter : filters) {
-            ((LifeCycle) filter).stop(timeout, timeUnit);
+            filter.stop(timeout, timeUnit);
         }
         setStopped();
         return true;
