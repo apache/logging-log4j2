@@ -49,7 +49,7 @@ project.
 == Using Simple Logger
 
 If you use
-xref:manual/simple-logger.adoc[Simple Logger] shipped with xref:manual/api.html[Log4j API]
+xref:manual/simple-logger.adoc[Simple Logger] shipped with xref:manual/api.adoc[Log4j API]
 in your application, no additional steps are required to compile a GraalVM native image.
 
 [#impl-core]
