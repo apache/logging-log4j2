@@ -70,6 +70,7 @@
 * xref:migrate-from-log4j1.adoc[]
 * xref:migrate-from-logback.adoc[]
 * xref:migrate-from-slf4j.adoc[]
+* xref:graalvm.adoc[]
 * xref:hibernate.adoc[]
 * xref:jakarta.adoc[]
 * xref:soa.adoc[]
