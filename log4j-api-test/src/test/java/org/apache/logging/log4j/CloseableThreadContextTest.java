@@ -285,7 +285,7 @@ public class CloseableThreadContextTest {
      * @see <a href="https://github.com/apache/logging-log4j2/issues/2946#issuecomment-2382935426">#2946</a>
      */
     @Test
-    public void testAutoCloseableThreadContextPutAll() {
+    void testAutoCloseableThreadContextPutAll() {
         try (final CloseableThreadContext.Instance ctc1 = CloseableThreadContext.put("outer", "one")) {
             try (final CloseableThreadContext.Instance ctc2 = CloseableThreadContext.put("outer", "two")) {
                 assertEquals("two", ThreadContext.get("outer"));
