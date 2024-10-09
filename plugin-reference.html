@@ -14727,11 +14727,13 @@ If not "or" the operation will be an "and".</p>
 </dl>
 </div>
 <div class="paragraph">
-<p>This filter returns the onMatch result if the level in the LogEvent is the same or more specific than the configured level and the onMismatch value otherwise.</p>
+<p>This filter returns the onMatch result if the level in the <code>org.apache.logging.log4j.core.LogEvent</code> is the same or more specific than the configured level and the <code>onMismatch</code> value otherwise.</p>
 </div>
 <div class="paragraph">
-<p>For example, if the ThresholdFilter is configured with Level ERROR and the LogEvent contains Level DEBUG then the onMismatch value will be returned since ERROR events are more specific than DEBUG.
-The default Level is ERROR.</p>
+<p>For example, if the ThresholdFilter is configured with Level <code>ERROR</code> and the LogEvent contains Level <code>DEBUG</code> then the <code>onMismatch</code> value will be returned since <code>ERROR</code> events are more specific than <code>DEBUG</code>.</p>
+</div>
+<div class="paragraph">
+<p>The default Level is <code>ERROR</code>.</p>
 </div>
 <div class="sect4">
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-ThresholdFilter_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-ThresholdFilter_XML-snippet"></a>XML snippet</h5>
