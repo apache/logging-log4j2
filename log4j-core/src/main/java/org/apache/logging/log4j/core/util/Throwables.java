@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import static java.util.Objects.requireNonNull;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -24,7 +26,9 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Helps with Throwable objects.
@@ -34,31 +38,22 @@ public final class Throwables {
     private Throwables() {}
 
     /**
-     * Returns the deepest cause of the given {@code throwable}.
+     * Extracts the deepest exception in the causal chain of the given {@code throwable}.
+     * Circular references will be handled and ignored.
      *
-     * @param throwable the throwable to navigate
-     * @return the deepest throwable or the given throwable
+     * @param throwable a throwable to navigate
+     * @return the deepest exception in the causal chain
      */
     public static Throwable getRootCause(final Throwable throwable) {
-
-        // Keep a second pointer that slowly walks the causal chain. If the fast
-        // pointer ever catches the slower pointer, then there's a loop.
-        Throwable slowPointer = throwable;
-        boolean advanceSlowPointer = false;
-
-        Throwable parent = throwable;
-        Throwable cause;
-        while ((cause = parent.getCause()) != null) {
-            parent = cause;
-            if (parent == slowPointer) {
-                throw new IllegalArgumentException("loop in causal chain");
-            }
-            if (advanceSlowPointer) {
-                slowPointer = slowPointer.getCause();
-            }
-            advanceSlowPointer = !advanceSlowPointer; // only advance every other iteration
+        requireNonNull(throwable, "throwable");
+        final Set<Throwable> visitedThrowables = new HashSet<>();
+        Throwable prevCause = throwable;
+        visitedThrowables.add(prevCause);
+        Throwable nextCause;
+        while ((nextCause = prevCause.getCause()) != null && visitedThrowables.add(nextCause)) {
+            prevCause = nextCause;
         }
-        return parent;
+        return prevCause;
     }
 
     /**

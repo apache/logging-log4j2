@@ -16,10 +16,8 @@
  */
 package org.apache.logging.log4j.core;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.apache.logging.log4j.core.test.internal.GcHelper.awaitGarbageCollection;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.junit.jupiter.api.Test;
@@ -27,36 +25,28 @@ import org.junit.jupiter.api.Test;
 public class ReusableParameterizedMessageMemoryLeakTest {
 
     @Test
-    public void testParametersAreNotLeaked() throws Exception {
-        final CountDownLatch latch = new CountDownLatch(1);
-        final ReusableMessage message = (ReusableMessage)
-                ReusableMessageFactory.INSTANCE.newMessage("foo {}", new ParameterObject("paramValue", latch));
-        // Large enough for the parameters, but smaller than the default reusable array size.
-        message.swapParameters(new Object[5]);
-        try (final GarbageCollectionHelper gcHelper = new GarbageCollectionHelper()) {
-            gcHelper.run();
-            assertTrue(latch.await(30, TimeUnit.SECONDS), "Parameter should have been garbage collected");
-        }
+    public void parameters_should_be_garbage_collected() throws Exception {
+        awaitGarbageCollection(() -> {
+            final ParameterObject parameter = new ParameterObject("paramValue");
+            final ReusableMessage message =
+                    (ReusableMessage) ReusableMessageFactory.INSTANCE.newMessage("foo {}", parameter);
+            // Large enough for the parameters, but smaller than the default reusable array size
+            message.swapParameters(new Object[5]);
+            return parameter;
+        });
     }
 
     private static final class ParameterObject {
-        private final String value;
-        private final CountDownLatch latch;
 
-        ParameterObject(final String value, final CountDownLatch latch) {
+        private final String value;
+
+        private ParameterObject(final String value) {
             this.value = value;
-            this.latch = latch;
         }
 
         @Override
         public String toString() {
             return value;
-        }
-
-        @Override
-        protected void finalize() throws Throwable {
-            latch.countDown();
-            super.finalize();
         }
     }
 }

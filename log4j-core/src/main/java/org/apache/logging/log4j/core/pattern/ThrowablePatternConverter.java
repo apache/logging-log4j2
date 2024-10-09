@@ -55,15 +55,15 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
     private final ThrowableRenderer renderer;
 
     /**
-     * @deprecated Use {@link #ThrowablePatternConverter(String, String, String[], Configuration, Function)} instead.
+     * @deprecated Use {@link #ThrowablePatternConverter(String, String, String[], Configuration, ThrowablePropertyRendererFactory, ThrowableStackTraceRendererFactory)} instead.
      */
     @Deprecated
     protected ThrowablePatternConverter(final String name, final String style, @Nullable final String[] options) {
-        this(name, style, options, null, null);
+        this(name, style, options, null, null, null);
     }
 
     /**
-     * @deprecated Use {@link #ThrowablePatternConverter(String, String, String[], Configuration, Function)} instead.
+     * @deprecated Use {@link #ThrowablePatternConverter(String, String, String[], Configuration, ThrowablePropertyRendererFactory, ThrowableStackTraceRendererFactory)} instead.
      */
     @Deprecated
     protected ThrowablePatternConverter(
@@ -71,7 +71,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
             final String style,
             @Nullable final String[] options,
             @Nullable final Configuration config) {
-        this(name, style, options, config, null);
+        this(name, style, options, config, null, null);
     }
 
     /**
@@ -89,8 +89,8 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
             final String style,
             @Nullable final String[] options,
             @Nullable final Configuration config,
-            @Nullable
-                    final Function<ThrowableFormatOptions, ThrowableStackTraceRenderer<?>> stackTraceRendererFactory) {
+            @Nullable final ThrowablePropertyRendererFactory propertyRendererFactory,
+            @Nullable final ThrowableStackTraceRendererFactory stackTraceRendererFactory) {
 
         // Process `name`, `style`, and `options`
         super(name, style);
@@ -103,16 +103,8 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         this.formatters = Collections.unmodifiableList(suffixFormatters);
 
         // Create the effective renderer
-        final ThrowablePropertyRenderer propertyRenderer = ThrowablePropertyRenderer.fromOptions(options);
-        if (propertyRenderer != null) {
-            this.renderer = propertyRenderer;
-        } else {
-            final Function<ThrowableFormatOptions, ThrowableStackTraceRenderer<?>> effectiveRendererFactory =
-                    stackTraceRendererFactory != null
-                            ? stackTraceRendererFactory
-                            : ThrowablePatternConverter::createRenderer;
-            this.renderer = effectiveRendererFactory.apply(this.options);
-        }
+        this.renderer =
+                createEffectiveRenderer(options, this.options, propertyRendererFactory, stackTraceRendererFactory);
     }
 
     /**
@@ -124,7 +116,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
      */
     public static ThrowablePatternConverter newInstance(
             @Nullable final Configuration config, @Nullable final String[] options) {
-        return new ThrowablePatternConverter("Throwable", "throwable", options, config, null);
+        return new ThrowablePatternConverter("Throwable", "throwable", options, config, null, null);
     }
 
     /**
@@ -137,15 +129,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         final Throwable throwable = event.getThrown();
         if (throwable != null) {
             final String lineSeparator = effectiveLineSeparatorProvider.apply(event);
-            ensureWhitespaceSuffix(buffer);
             renderer.renderThrowable(buffer, throwable, lineSeparator);
-        }
-    }
-
-    private static void ensureWhitespaceSuffix(final StringBuilder buffer) {
-        final int bufferLength = buffer.length();
-        if (bufferLength > 0 && !Character.isWhitespace(buffer.charAt(bufferLength - 1))) {
-            buffer.append(' ');
         }
     }
 
@@ -234,8 +218,25 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         }
     }
 
-    private static ThrowableStackTraceRenderer<?> createRenderer(final ThrowableFormatOptions options) {
-        return new ThrowableStackTraceRenderer<>(options.getIgnorePackages(), options.getLines());
+    private static ThrowableRenderer createEffectiveRenderer(
+            final String[] rawOptions,
+            final ThrowableFormatOptions options,
+            @Nullable final ThrowablePropertyRendererFactory propertyRendererFactory,
+            @Nullable final ThrowableStackTraceRendererFactory stackTraceRendererFactory) {
+
+        // Try to create a property renderer first
+        final ThrowablePropertyRendererFactory effectivePropertyRendererFactory =
+                propertyRendererFactory != null ? propertyRendererFactory : ThrowablePropertyRendererFactory.INSTANCE;
+        final ThrowableRenderer propertyRenderer = effectivePropertyRendererFactory.createPropertyRenderer(rawOptions);
+        if (propertyRenderer != null) {
+            return propertyRenderer;
+        }
+
+        // Create a stack trace renderer
+        final ThrowableStackTraceRendererFactory effectiveStackTraceRendererFactory = stackTraceRendererFactory != null
+                ? stackTraceRendererFactory
+                : ThrowableStackTraceRendererFactory.INSTANCE;
+        return effectiveStackTraceRendererFactory.createStackTraceRenderer(options);
     }
 
     /**

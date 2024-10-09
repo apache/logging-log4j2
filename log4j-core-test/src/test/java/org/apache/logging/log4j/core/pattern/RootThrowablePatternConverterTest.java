@@ -17,13 +17,19 @@
 package org.apache.logging.log4j.core.pattern;
 
 import static java.util.Arrays.asList;
+import static org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.EXCEPTION;
+import static org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.LEVEL;
+import static org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.convert;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import foo.TestFriendlyException;
 import java.util.List;
 import org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.AbstractPropertyTest;
 import org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.AbstractStackTraceTest;
 import org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.DepthTestCase;
+import org.apache.logging.log4j.core.util.Throwables;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -32,11 +38,14 @@ import org.junit.jupiter.params.provider.MethodSource;
  */
 class RootThrowablePatternConverterTest {
 
+    private static final StackTraceElement THROWING_METHOD =
+            Throwables.getRootCause(EXCEPTION).getStackTrace()[0];
+
     @Nested
     class PropertyTest extends AbstractPropertyTest {
 
         PropertyTest() {
-            super("%rEx");
+            super("%rEx", THROWING_METHOD);
         }
     }
 
@@ -59,7 +68,7 @@ class RootThrowablePatternConverterTest {
             "	at " + TestFriendlyException.NAMED_MODULE_STACK_TRACE_ELEMENT,
             "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
             "	at foo.TestFriendlyException.<clinit>(TestFriendlyException.java:0)",
-            "	at org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.<clinit>(ThrowablePatternConverterTest.java:0)",
+            "	at " + TestFriendlyException.ORG_APACHE_REPLACEMENT_STACK_TRACE_ELEMENT,
             "	Suppressed: foo.TestFriendlyException: r_s_c [localized]",
             "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
             "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
@@ -78,6 +87,16 @@ class RootThrowablePatternConverterTest {
 
         StackTraceTest() {
             super("%rEx");
+        }
+
+        @Test
+        @Override
+        void output_should_be_newline_prefixed() {
+            final String pattern = "%p" + patternPrefix;
+            final String stackTrace = convert(pattern);
+            final String expectedStart = String.format(
+                    "%s%n[CIRCULAR REFERENCE: %s", LEVEL, EXCEPTION.getClass().getCanonicalName());
+            assertThat(stackTrace).as("pattern=`%s`", pattern).startsWith(expectedStart);
         }
 
         @ParameterizedTest
@@ -120,7 +139,7 @@ class RootThrowablePatternConverterTest {
                             "Wrapped by: foo.TestFriendlyException: r [localized]",
                             "	at " + TestFriendlyException.NAMED_MODULE_STACK_TRACE_ELEMENT,
                             "	... suppressed 2 lines",
-                            "	at org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.<clinit>(ThrowablePatternConverterTest.java:0)",
+                            "	at " + TestFriendlyException.ORG_APACHE_REPLACEMENT_STACK_TRACE_ELEMENT,
                             "	Suppressed: foo.TestFriendlyException: r_s_c [localized]",
                             "		... suppressed 2 lines",
                             "		... 3 more",
@@ -136,7 +155,7 @@ class RootThrowablePatternConverterTest {
         @MethodSource("org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest#depthTestCases")
         void depth_and_package_limited_output_should_match_2(final DepthTestCase depthTestCase) {
             final String pattern = String.format(
-                    "%s{%d}{filters(org.apache)}%s",
+                    "%s{%d}{filters(bar)}%s",
                     patternPrefix, depthTestCase.maxLineCount, depthTestCase.separatorTestCase.patternAddendum);
             assertStackTraceLines(
                     depthTestCase,

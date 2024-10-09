@@ -21,7 +21,7 @@ import java.util.Set;
 import org.jspecify.annotations.Nullable;
 
 /**
- * {@link ThrowableStackTraceRenderer} variant where the stack trace causal chain is rendered in reverse order.
+ * {@link ThrowableStackTraceRenderer} variant where the stack trace causal chain is processed in reverse order.
  */
 final class ThrowableInvertedStackTraceRenderer
         extends ThrowableStackTraceRenderer<ThrowableStackTraceRenderer.Context> {
