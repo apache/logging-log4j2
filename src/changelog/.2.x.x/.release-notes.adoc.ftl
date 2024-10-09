@@ -20,14 +20,22 @@
 
 <#if release.date?has_content>Release date:: ${release.date}</#if>
 
-This releases contains ...
+This minor release contains bug fixes, behavioral improvements, and a fully-fledged support for the GraalVM native image generation.
 
+[#release-notes-2-25-0-graalvm]
 === GraalVM reachability metadata
 
-Log4j Core and all its extension modules have been enhanced with embedded
+Log4j Core and all its extension modules have been enriched with embedded
 https://www.graalvm.org/latest/reference-manual/native-image/metadata/[GraalVM reachability metadata].
-This will allow the generation of GraalVM native images out-of-the-box, without any additional step necessary.
+This allows the generation of GraalVM native images out-of-the-box without any additional steps.
+See our xref:graalvm.adoc[GraalVM guide] for details.
 
-See our xref:graalvm.adoc[GraalVM guide] for more details.
+[#release-notes-2-25-0-PL-ex]
+=== Exception handling in Pattern Layout
+
+Exception handling in xref:manual/pattern-layout.adoc[Pattern Layout] went through a major rewrite.
+This effectively helped with fixing some bugs by matching the feature parity of all exception converters.
+Additionally, rendered stack traces are ensured to be prefixed with a newline, which used to be a whitespace in earlier versions.
+The support for the `\{ansi}` option in exception converters is removed too.
 
 <#include "../.changelog.adoc.ftl">

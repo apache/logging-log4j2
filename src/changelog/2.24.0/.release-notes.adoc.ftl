@@ -20,7 +20,7 @@
 
 <#if release.date?has_content>Release date:: ${release.date}</#if>
 
-This release contains improvements and changes in several areas of Apache Log4j:
+This release contains improvements and changes in several areas of Log4j:
 
 === Log4j API
 
@@ -34,7 +34,7 @@ Check your configuration for typos.
 
 === Documentation
 
-The xref:index.adoc[Apache Log4j 2] website has been almost entirely rewritten to provide improved documentation and faster access to the information you need.
+The project website has been almost entirely rewritten to provide improved documentation and faster access to the information you need.
 
 === Bridges
 
