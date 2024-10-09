@@ -33,8 +33,9 @@ See our xref:graalvm.adoc[GraalVM guide] for details.
 [#release-notes-2-25-0-PL-ex]
 === Exception handling in Pattern Layout
 
-Exception handling in Pattern Layout went through a major rewrite.
+Exception handling in xref:manual/pattern-layout.adoc[Pattern Layout] went through a major rewrite.
 This effectively helped with fixing some bugs by matching the feature parity of all exception converters.
 Additionally, rendered stack traces are ensured to be prefixed with a newline, which used to be a whitespace in earlier versions.
+The support for the `\{ansi}` option in exception converters is removed too.
 
 <#include "../.changelog.adoc.ftl">
