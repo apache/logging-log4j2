@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender.rolling.action;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -166,12 +167,38 @@ public class FileRenameAction extends AbstractAction {
                                 }
                             }
                         } catch (final IOException exCopy) {
-                            LOGGER.error(
-                                    "Unable to copy file {} to {}: {} {}",
-                                    source.getAbsolutePath(),
-                                    destination.getAbsolutePath(),
-                                    exCopy.getClass().getName(),
-                                    exCopy.getMessage());
+                            if (source.isFile()) {
+                                LOGGER.error(
+                                        "Unable to copy file {} to {}: {} {}",
+                                        source.getAbsolutePath(),
+                                        destination.getAbsolutePath(),
+                                        exCopy.getClass().getName(),
+                                        exCopy.getMessage());
+                            } else {
+                                LOGGER.debug(
+                                        "Unable to copy file {} to {}: {} {} - will try to create destination since source file does not exist",
+                                        source.getAbsolutePath(),
+                                        destination.getAbsolutePath(),
+                                        exCopy.getClass().getName(),
+                                        exCopy.getMessage());
+                                try {
+                                    Files.copy(
+                                            new ByteArrayInputStream(new byte[0]),
+                                            destination.toPath(),
+                                            StandardCopyOption.REPLACE_EXISTING);
+                                    result = true;
+                                    LOGGER.trace(
+                                            "Created file {} since {} does not exist",
+                                            destination.getAbsolutePath(),
+                                            source.getAbsolutePath());
+                                } catch (final IOException exCreate) {
+                                    LOGGER.error(
+                                            "Unable to create file {}: {} {}",
+                                            destination.getAbsolutePath(),
+                                            exCreate.getClass().getName(),
+                                            exCreate.getMessage());
+                                }
+                            }
                         }
                     } else {
                         LOGGER.trace(
@@ -191,7 +218,8 @@ public class FileRenameAction extends AbstractAction {
             }
         } else {
             try {
-                return source.delete();
+                Files.deleteIfExists(source.toPath());
+                return true;
             } catch (final Exception exDelete) {
                 LOGGER.error(
                         "Unable to delete empty file {}: {} {}",
