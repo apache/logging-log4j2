@@ -209,7 +209,7 @@ The optional footer to include at the bottom of each log file
 |Default value |`false`
 |===
 
-If `true`, do not output ANSI escape codes
+If `true`, do not output ANSI escape codes.
 
 [#plugin-attr-noConsoleNoAnsi]
 ==== `noConsoleNoAnsi`
@@ -220,7 +220,7 @@ If `true`, do not output ANSI escape codes
 |Default value |`false`
 |===
 
-If `true` and `System.console()` is null, do not output ANSI escape codes
+If `true` and `System.console()` is `null`, do not output ANSI escape codes
 
 [#plugin-elements]
 === Plugin elements
@@ -1598,19 +1598,14 @@ If your terminal supports 24-bit colors, you can specify:
 [#jansi]
 ==== ANSI styling on Windows
 
-ANSI escape sequences are supported natively on many platforms, but not by default on Windows.
-To enable ANSI support add the
-http://fusesource.github.io/jansi/[Jansi]
-dependency to your application, and set xref:manual/systemproperties.adoc#log4j2.skipJansi[the `log4j2.skipJansi` system property] to `false`.
-This allows Log4j to use Jansi to add ANSI escape codes when writing to the console.
+ANSI escape sequences are supported natively on many platforms, but are disabled by default in `cmd.exe` on Windows.
+To enable ANSI escape sequences, create a registry key named `HKEY_CURRENT_USER\Console\VirtualTerminalLevel` of type `DWORD` and set its value to `0x1`.
 
-[NOTE]
-====
-Before Log4j 2.10, Jansi was enabled by default.
-The fact that Jansi requires native code means that Jansi can only be loaded by a single class loader.
-For web applications, this means the Jansi jar has to be in the web container's classpath.
-To avoid causing problems for web applications, Log4j no longer automatically tries to load Jansi without explicit configuration from Log4j 2.10 onward.
-====
+See
+https://devblogs.microsoft.com/commandline/understanding-windows-console-host-settings/[Understanding Windows Console Host Settings]
+and
+https://learn.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences[Console Virtual Terminal Sequences]
+Microsoft documentation for more details.
 
 [#garbage-free]
 === Garbage-free configuration

@@ -23,12 +23,12 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 
 /**
- * Tests https://issues.apache.org/jira/browse/LOG4J2-272
+ * Tests <a href="https://issues.apache.org/jira/browse/LOG4J2-272">LOG4J2-272</a>
  * <p>
  * Running from a Windows command line from the root of the project:
  * </p>
  * <pre>
- * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes;%HOME%\.m2\repository\org\fusesource\jansi\jansi\1.14\jansi-1.14.jar; org.apache.logging.log4j.core.appender.ConsoleAppenderAnsiStyleJira272Main log4j-core/target/test-classes/log4j2-272.xml
+ * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes org.apache.logging.log4j.core.appender.ConsoleAppenderAnsiStyleJira272Main log4j-core/target/test-classes/log4j2-272.xml
  * </pre>
  */
 public class ConsoleAppenderAnsiStyleJira272Main {
@@ -36,10 +36,8 @@ public class ConsoleAppenderAnsiStyleJira272Main {
     private static final Logger LOG = LogManager.getLogger(ConsoleAppenderAnsiStyleJira272Main.class);
 
     public static void main(final String[] args) {
-        System.setProperty("log4j.skipJansi", "false"); // LOG4J2-2087: explicitly enable
-        // System.out.println(System.getProperty("java.class.path"));
         final String config = args.length == 0 ? "target/test-classes/log4j2-272.xml" : args[0];
-        try (final LoggerContext ctx =
+        try (final LoggerContext ignored =
                 Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(), config)) {
             LOG.fatal("Fatal message.");
             LOG.error("Error message.");

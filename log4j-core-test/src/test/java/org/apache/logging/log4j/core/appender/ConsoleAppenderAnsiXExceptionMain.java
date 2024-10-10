@@ -22,9 +22,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 /**
  * Shows how to use ANSI escape codes to color messages. Each message is printed to the console in color, but the rest
@@ -34,21 +32,20 @@ import org.junit.experimental.categories.Category;
  * </p>
  *
  * <pre>
- * mvn -Dtest=org.apache.logging.log4j.core.appender.ConsoleAppenderJAnsiXExceptionMain test
+ * mvn -Dtest=org.apache.logging.log4j.core.appender.ConsoleAppenderAnsiXExceptionMain test
  * </pre>
  *
  * or, on Windows:
  *
  * <pre>
- * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes;%USERPROFILE%\.m2\repository\org\fusesource\jansi\jansi\1.14\jansi-1.14.jar; org.apache.logging.log4j.core.appender.ConsoleAppenderJAnsiXExceptionMain log4j-core/src/test/resources/log4j2-console-xex-ansi.xml
+ * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes org.apache.logging.log4j.core.appender.ConsoleAppenderAnsiXExceptionMain log4j-core/src/test/resources/log4j2-console-xex-ansi.xml
  * </pre>
  *
  */
-@Category(Layouts.Jansi.class)
-public class ConsoleAppenderJAnsiXExceptionMain {
+public class ConsoleAppenderAnsiXExceptionMain {
 
     public static void main(final String[] args) {
-        new ConsoleAppenderJAnsiXExceptionMain().test(args);
+        new ConsoleAppenderAnsiXExceptionMain().test(args);
     }
 
     /**
@@ -60,12 +57,10 @@ public class ConsoleAppenderJAnsiXExceptionMain {
     }
 
     public void test(final String[] args) {
-        System.setProperty("log4j.skipJansi", "false"); // LOG4J2-2087: explicitly enable
-        // System.out.println(System.getProperty("java.class.path"));
         final String config =
                 args == null || args.length == 0 ? "target/test-classes/log4j2-console-xex-ansi.xml" : args[0];
         final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(), config);
-        final Logger logger = LogManager.getLogger(ConsoleAppenderJAnsiXExceptionMain.class);
+        final Logger logger = LogManager.getLogger(ConsoleAppenderAnsiXExceptionMain.class);
         try {
             Files.getFileStore(Paths.get("?BOGUS?"));
         } catch (final Exception e) {

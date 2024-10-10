@@ -349,6 +349,10 @@ public final class Loader {
         }
     }
 
+    /**
+     * @deprecated Since 2.25.0 without a replacement.
+     */
+    @Deprecated
     public static boolean isJansiAvailable() {
         return isClassAvailable("org.fusesource.jansi.AnsiRenderer");
     }

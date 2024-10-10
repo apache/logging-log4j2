@@ -66,7 +66,6 @@
       org.apache.commons.csv;resolution:=optional,
       org.apache.kafka.*;resolution:=optional,
       org.codehaus.stax2;resolution:=optional,
-      org.fusesource.jansi;resolution:=optional,
       org.jctools.*;resolution:=optional,
       org.zeromq;resolution:=optional,
       javax.lang.model.*;resolution:=optional,
@@ -97,7 +96,6 @@
       java.management;transitive=false;static=true,
       java.naming;transitive=false,
       org.apache.commons.csv;transitive=false,
-      org.fusesource.jansi;transitive=false,
       org.jspecify;transitive=false,
       org.zeromq.jeromq;transitive=false,
       <!-- A module descriptor is only available in version 1.2.16+, hence it is not detected -->
@@ -192,12 +190,6 @@
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-yaml</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <!-- Required for console color support in Windows -->
-    <dependency>
-      <groupId>org.fusesource.jansi</groupId>
-      <artifactId>jansi</artifactId>
       <optional>true</optional>
     </dependency>
     <!-- Alternative implementation of BlockingQueue using JCTools for AsyncAppender -->

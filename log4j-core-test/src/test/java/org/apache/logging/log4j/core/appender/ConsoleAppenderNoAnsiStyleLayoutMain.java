@@ -30,7 +30,7 @@ import org.apache.logging.log4j.core.config.Configurator;
  * </p>
  *
  * <pre>
- * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes;%HOME%\.m2\repository\org\fusesource\jansi\jansi\1.14\jansi-1.14.jar; org.apache.logging.log4j.core.appender.ConsoleAppenderNoAnsiStyleLayoutMain log4j-core/target/test-classes/log4j2-console-style-ansi.xml
+ * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes org.apache.logging.log4j.core.appender.ConsoleAppenderNoAnsiStyleLayoutMain log4j-core/target/test-classes/log4j2-console-style-ansi.xml
  * </pre>
  */
 public class ConsoleAppenderNoAnsiStyleLayoutMain {
@@ -43,12 +43,11 @@ public class ConsoleAppenderNoAnsiStyleLayoutMain {
 
     public static void main(final String[] args) {
         final String config = args.length == 0 ? "target/test-classes/log4j2-console-style-no-ansi.xml" : args[0];
-        test(args, config);
+        test(config);
     }
 
-    static void test(final String[] args, final String config) {
-        // System.out.println(System.getProperty("java.class.path"));
-        try (final LoggerContext ctx =
+    static void test(final String config) {
+        try (final LoggerContext ignored =
                 Configurator.initialize(ConsoleAppenderNoAnsiStyleLayoutMain.class.getName(), config)) {
             LOG.fatal("Fatal message.");
             LOG.error("Error message.");

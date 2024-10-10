@@ -38,4 +38,10 @@ This effectively helped with fixing some bugs by matching the feature parity of 
 Additionally, rendered stack traces are ensured to be prefixed with a newline, which used to be a whitespace in earlier versions.
 The support for the `\{ansi}` option in exception converters is removed too.
 
+=== ANSI support on Windows
+
+Since 2017, Windows 10 and newer have offered native support for ANSI escapes.
+The support for the outdated Jansi 1.x library has therefore been removed.
+See xref:manual/pattern-layout.adoc#jansi[ANSI styling on Windows] for more information.
+
 <#include "../.changelog.adoc.ftl">

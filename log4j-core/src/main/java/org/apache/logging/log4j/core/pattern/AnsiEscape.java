@@ -421,6 +421,11 @@ public enum AnsiEscape {
      * @return a new map
      */
     public static Map<String, String> createMap(final String[] values, final String[] dontEscapeKeys) {
+        return createMap(values, dontEscapeKeys, "\\s");
+    }
+
+    static Map<String, String> createMap(
+            final String[] values, final String[] dontEscapeKeys, final String separatorRegex) {
         final String[] sortedIgnoreKeys = dontEscapeKeys != null ? dontEscapeKeys.clone() : Strings.EMPTY_ARRAY;
         Arrays.sort(sortedIgnoreKeys);
         final Map<String, String> map = new HashMap<>();
@@ -430,7 +435,7 @@ public enum AnsiEscape {
                 final String key = toRootUpperCase(keyValue[0]);
                 final String value = keyValue[1];
                 final boolean escape = Arrays.binarySearch(sortedIgnoreKeys, key) < 0;
-                map.put(key, escape ? createSequence(value.split("\\s")) : value);
+                map.put(key, escape ? createSequence(value.split(separatorRegex)) : value);
             } else {
                 LOGGER.warn("Syntax error, missing '=': Expected \"{KEY1=VALUE, KEY2=VALUE, ...}");
             }
