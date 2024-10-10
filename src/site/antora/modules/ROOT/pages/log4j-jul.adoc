@@ -189,5 +189,5 @@ You can do it by either:
 Independently of the way you install the JUL-to-Log4j bridge, you can finely tune the behavior of the bridge using the following configuration properties.
 See xref:manual/systemproperties.adoc[] for more details.
 
-include::partial$manual/systemproperties/properties-log4j-jul.adoc[leveloffset=+2]
+include::partial$manual/systemproperties/properties-log4j-jul.adoc[leveloffset=+1]
 

@@ -273,7 +273,6 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-conversant_org-apache-
 [#JCToolsBlockingQueueFactory]
 `JCToolsBlockingQueue`::
 +
-+
 This queue factory uses
 https://jctools.github.io/JCTools/[JCTools], specifically the MPSC bounded lock-free queue.
 +

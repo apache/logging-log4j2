@@ -2,7 +2,7 @@
 <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
-       type="updated">
-  <issue id="2305" link="https://github.com/apache/logging-log4j2/pull/2305"/>
-  <description format="asciidoc">Update `com.github.tomakehurst:wiremock-jre8` to version `2.35.2`</description>
+       type="added">
+    <issue id="2921" link="https://github.com/apache/logging-log4j2/pull/2921"/>
+    <description format="asciidoc">Split extended compression algorithm support to new `log4j-compress` module.</description>
 </entry>

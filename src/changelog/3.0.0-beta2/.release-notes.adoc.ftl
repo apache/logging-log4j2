@@ -29,7 +29,8 @@ The async appender is still available by default in `log4j-core`.
 Other features were removed:
 
 * Jetty 9.x users are encouraged to migrate to Jetty 10.x or later and replace `log4j-appserver` with `log4j-slf4j2-impl`.
-* Tomcat JULI support will be available from a third-party (cf. https://github.com/copernik-eu/log4j-plugins/pull/102[copernik-eu/log4j-plugins]).
+* Tomcat JULI support is available from a third-party project (cf.
+https://oss.copernik.eu/tomcat/3.x/components/tomcat-juli-to-log4j[`tomcat-juli-to-log4j`]).
 * Apache Commons Logging users are encouraged to upgrade `commons-logging` to version 1.3.0 or later and remove `log4j-jcl`.
 * Support for the XML layout was dropped.
 * Support for JMX was dropped and will be replaced with a more recent technology.
