@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
+import org.apache.logging.log4j.core.selector.BasicContextSelector;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.util.Cancellable;
@@ -36,6 +37,7 @@ import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.DefaultShutdownCallbackRegistry;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
+import org.apache.logging.log4j.core.util.internal.SystemUtils;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -104,7 +106,12 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
         } catch (final Exception e) {
             LOGGER.error("Unable to create custom ContextSelector. Falling back to default.", e);
         }
-        return new ClassLoaderContextSelector();
+        // StackLocator is broken on Android:
+        // 1. Android could use the StackLocator implementation for JDK 11, but does not support multi-release JARs.
+        // 2. Android does not have the `sun.reflect` classes used in the JDK 8 implementation.
+        //
+        // Therefore, we use a single logger context.
+        return SystemUtils.isOsAndroid() ? new BasicContextSelector() : new ClassLoaderContextSelector();
     }
 
     private static ShutdownCallbackRegistry createShutdownCallbackRegistry() {

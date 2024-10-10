@@ -17,10 +17,13 @@
 package org.apache.logging.log4j.core.lookup;
 
 import java.lang.management.ManagementFactory;
-import java.util.List;
+import java.util.Collections;
 import java.util.Map;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.util.internal.SystemUtils;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Maps JVM input arguments (but not main arguments) using JMX to acquire JVM arguments.
@@ -31,17 +34,16 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 @Plugin(name = "jvmrunargs", category = StrLookup.CATEGORY)
 public class JmxRuntimeInputArgumentsLookup extends MapLookup {
 
-    static {
-        final List<String> argsList = ManagementFactory.getRuntimeMXBean().getInputArguments();
-        JMX_SINGLETON = new JmxRuntimeInputArgumentsLookup(MapLookup.toMap(argsList));
-    }
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
-    public static final JmxRuntimeInputArgumentsLookup JMX_SINGLETON;
+    public static final JmxRuntimeInputArgumentsLookup JMX_SINGLETON = new JmxRuntimeInputArgumentsLookup();
 
     /**
      * Constructor when used directly as a plugin.
      */
-    public JmxRuntimeInputArgumentsLookup() {}
+    public JmxRuntimeInputArgumentsLookup() {
+        this(getMapFromJmx());
+    }
 
     public JmxRuntimeInputArgumentsLookup(final Map<String, String> map) {
         super(map);
@@ -54,5 +56,16 @@ public class JmxRuntimeInputArgumentsLookup extends MapLookup {
         }
         final Map<String, String> map = getMap();
         return map == null ? null : map.get(key);
+    }
+
+    private static Map<String, String> getMapFromJmx() {
+        if (!SystemUtils.isOsAndroid()) {
+            try {
+                return MapLookup.toMap(ManagementFactory.getRuntimeMXBean().getInputArguments());
+            } catch (LinkageError e) {
+                LOGGER.warn("Failed to get JMX arguments from JVM.", e);
+            }
+        }
+        return Collections.emptyMap();
     }
 }
