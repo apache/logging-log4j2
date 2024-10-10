@@ -16,16 +16,15 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-@Category(AsyncLoggers.class)
+@Tag("AsyncLoggers")
 public class AsyncLoggerContextSelectorTest {
 
     private static final String FQCN = AsyncLoggerContextSelectorTest.class.getName();

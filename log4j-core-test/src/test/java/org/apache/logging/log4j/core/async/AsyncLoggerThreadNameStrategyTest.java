@@ -16,23 +16,22 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-@Category(AsyncLoggers.class)
+@Tag("AsyncLoggers")
 public class AsyncLoggerThreadNameStrategyTest {
-    @After
+    @AfterEach
     public void after() {
         System.clearProperty("AsyncLogger.ThreadNameStrategy");
     }
 
-    @Before
+    @BeforeEach
     public void before() {
         System.clearProperty("AsyncLogger.ThreadNameStrategy");
     }

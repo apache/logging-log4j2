@@ -16,25 +16,25 @@
  */
 package org.apache.logging.log4j.core.selector;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.util.Constants;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public final class BasicContextSelectorTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, BasicContextSelector.class.getName());
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         System.clearProperty(Constants.LOG4J_CONTEXT_SELECTOR);
     }

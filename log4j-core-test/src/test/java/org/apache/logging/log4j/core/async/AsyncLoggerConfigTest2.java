@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,18 +27,17 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-@Category(AsyncLoggers.class)
+@Tag("AsyncLoggers")
 public class AsyncLoggerConfigTest2 {
 
     @Test
     public void testConsecutiveReconfigure() throws Exception {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "AsyncLoggerConfigTest2.xml");
         final File file = new File("target", "AsyncLoggerConfigTest2.log");
-        assertTrue("Deleted old file before test", !file.exists() || file.delete());
+        assertTrue(!file.exists() || file.delete(), "Deleted old file before test");
 
         final Logger log = LogManager.getLogger("com.foo.Bar");
         final String msg = "Message before reconfig";
@@ -57,9 +56,9 @@ public class AsyncLoggerConfigTest2 {
         final String line2 = reader.readLine();
         reader.close();
         file.delete();
-        assertNotNull("line1", line1);
-        assertNotNull("line2", line2);
-        assertTrue("line1 " + line1, line1.contains(msg));
-        assertTrue("line2 " + line2, line2.contains(msg2));
+        assertNotNull(line1, "line1");
+        assertNotNull(line2, "line2");
+        assertTrue(line1.contains(msg), "line1 " + line1);
+        assertTrue(line2.contains(msg2), "line2 " + line2);
     }
 }

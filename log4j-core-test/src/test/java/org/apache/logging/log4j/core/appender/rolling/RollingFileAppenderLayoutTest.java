@@ -18,15 +18,15 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class RollingFileAppenderLayoutTest {
 
     @Test
     public void testDefaultLayout() throws Exception {
         // @formatter:off
-        Assert.assertNotNull(RollingFileAppender.newBuilder()
+        Assertions.assertNotNull(RollingFileAppender.newBuilder()
                 .setName(RollingFileAppenderLayoutTest.class.getName())
                 .setConfiguration(new DefaultConfiguration())
                 .withFileName("log.txt")

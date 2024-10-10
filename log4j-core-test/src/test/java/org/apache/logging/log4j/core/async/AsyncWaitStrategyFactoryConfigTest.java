@@ -17,20 +17,19 @@
 package org.apache.logging.log4j.core.async;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.YieldingWaitStrategy;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-@Category(AsyncLoggers.class)
+@Tag("AsyncLoggers")
 public class AsyncWaitStrategyFactoryConfigTest {
 
     @Test

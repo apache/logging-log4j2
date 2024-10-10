@@ -17,23 +17,22 @@
 package org.apache.logging.log4j.core.async;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.util.Constants;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-@Category(AsyncLoggers.class)
+@Tag("AsyncLoggers")
 public class AsyncWaitStrategyFactoryIncorrectConfigGlobalLoggersTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, AsyncLoggerContextSelector.class.getName());
         System.setProperty(
@@ -41,7 +40,7 @@ public class AsyncWaitStrategyFactoryIncorrectConfigGlobalLoggersTest {
                 "AsyncWaitStrategyIncorrectFactoryConfigGlobalLoggerTest.xml");
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         System.clearProperty(Constants.LOG4J_CONTEXT_SELECTOR);
         System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);

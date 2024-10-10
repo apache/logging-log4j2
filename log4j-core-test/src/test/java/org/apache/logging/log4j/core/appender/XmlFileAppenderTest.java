@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.nio.charset.Charset;
@@ -26,18 +26,17 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
-import org.apache.logging.log4j.core.test.categories.Layouts;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests a "complete" XML file a.k.a. a well-formed XML file.
  */
-@Category(Layouts.Xml.class)
+@Tag("Layouts.Xml")
 public class XmlFileAppenderTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "XmlFileAppenderTest.xml");
     }
@@ -65,11 +64,11 @@ public class XmlFileAppenderTest {
 
         for (int i = 0; i < expect.length; i++) {
             assertTrue(
-                    "Expected line " + i + " to contain " + expect[i] + " but got: " + lines.get(i),
-                    lines.get(i).contains(expect[i]));
+                    lines.get(i).contains(expect[i]),
+                    "Expected line " + i + " to contain " + expect[i] + " but got: " + lines.get(i));
         }
 
         final String location = "testFlushAtEndOfBatch";
-        assertTrue("no location", !lines.get(0).contains(location));
+        assertTrue(!lines.get(0).contains(location), "no location");
     }
 }

@@ -19,9 +19,8 @@ package org.apache.logging.log4j.core.appender.mom.kafka;
 import static org.junit.Assert.assertEquals;
 
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -30,7 +29,7 @@ import org.junit.jupiter.api.Test;
  *
  * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-2916">LOG4J2-2916</a>
  */
-@Category(Appenders.Kafka.class)
+@Tag("Appenders.Kafka")
 @LoggerContextSource("KafkaManagerProducerThreadLeakTest.xml")
 class KafkaManagerProducerThreadLeakTest {
 
