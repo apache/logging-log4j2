@@ -16,76 +16,99 @@
  */
 package org.apache.logging.log4j.core;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.apache.logging.log4j.core.test.internal.GcHelper.awaitGarbageCollection;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.lang.ref.Cleaner;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import org.apache.logging.log4j.LogManager;
+import java.util.List;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.CoreLoggerContexts;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
+import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
+import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.test.TestConstants;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 @Tag("functional")
-@SetTestProperty(key = TestConstants.GC_ENABLE_DIRECT_ENCODERS, value = "true")
-@SetTestProperty(key = TestConstants.CONFIGURATION_FILE, value = "EventParameterMemoryLeakTest.xml")
-public class EventParameterMemoryLeakTest {
+class EventParameterMemoryLeakTest {
 
     @Test
-    @SuppressWarnings("UnusedAssignment") // parameter set to null to allow garbage collection
-    public void testParametersAreNotLeaked() throws Exception {
-        final File file = new File("target", "EventParameterMemoryLeakTest.log");
-        assertTrue(!file.exists() || file.delete(), "Deleted old file before test");
+    @SetTestProperty(key = TestConstants.GC_ENABLE_DIRECT_ENCODERS, value = "true")
+    void parameters_should_be_garbage_collected(final TestInfo testInfo) throws Throwable {
+        awaitGarbageCollection(() -> {
+            final ListAppender[] appenderRef = {null};
+            final Logger[] loggerRef = {null};
+            try (final LoggerContext ignored = createLoggerContext(testInfo, appenderRef, loggerRef)) {
 
-        final Logger log = LogManager.getLogger("com.foo.Bar");
-        final CountDownLatch latch = new CountDownLatch(1);
-        final Cleaner cleaner = Cleaner.create();
-        Object parameter = new ParameterObject("paramValue");
-        cleaner.register(parameter, latch::countDown);
-        log.info("Message with parameter {}", parameter);
-        log.info(parameter);
-        log.info("test", new ObjectThrowable(parameter));
-        log.info("test {}", "hello", new ObjectThrowable(parameter));
-        parameter = null;
-        CoreLoggerContexts.stopLoggerContext(file);
-        final BufferedReader reader = new BufferedReader(new FileReader(file));
-        final String line1 = reader.readLine();
-        final String line2 = reader.readLine();
-        final String line3 = reader.readLine();
-        // line4 is empty line because of the line separator after throwable pattern
-        final String line4 = reader.readLine();
-        final String line5 = reader.readLine();
-        final String line6 = reader.readLine();
-        final String line7 = reader.readLine();
-        reader.close();
-        file.delete();
-        assertThat(line1, containsString("Message with parameter paramValue"));
-        assertThat(line2, containsString("paramValue"));
-        assertThat(line3, containsString("paramValue"));
-        assertThat(line4, is(""));
-        assertThat(line5, containsString("paramValue"));
-        assertThat(line6, is(""));
-        assertNull(line7, "Expected only six lines");
-        try (final GarbageCollectionHelper gcHelper = new GarbageCollectionHelper()) {
-            gcHelper.run();
-            assertTrue(latch.await(30, TimeUnit.SECONDS), "Parameter should have been garbage collected");
-        }
+                // Log messages
+                final ParameterObject parameter = new ParameterObject("paramValue");
+                loggerRef[0].info("Message with parameter {}", parameter);
+                loggerRef[0].info(parameter);
+                loggerRef[0].info("test", new ObjectThrowable(parameter));
+                loggerRef[0].info("test {}", "hello", new ObjectThrowable(parameter));
+
+                // Verify the logging
+                final List<String> messages = appenderRef[0].getMessages();
+                assertThat(messages).hasSize(4);
+                assertThat(messages.get(0)).isEqualTo("Message with parameter %s", parameter.value);
+                assertThat(messages.get(1)).isEqualTo(parameter.value);
+                assertThat(messages.get(2))
+                        .startsWith(String.format("test%n%s: %s", ObjectThrowable.class.getName(), parameter.value));
+                assertThat(messages.get(3))
+                        .startsWith(
+                                String.format("test hello%n%s: %s", ObjectThrowable.class.getName(), parameter.value));
+
+                // Return the GC subject
+                return parameter;
+            }
+        });
+    }
+
+    private static LoggerContext createLoggerContext(
+            final TestInfo testInfo, final ListAppender[] appenderRef, final Logger[] loggerRef) {
+        final String loggerContextName = String.format("%s-LC", testInfo.getDisplayName());
+        final LoggerContext loggerContext =
+                new LoggerContext(loggerContextName, null, (String) null, DI.createInitializedFactory());
+        final String appenderName = "LIST";
+        final Configuration configuration = createConfiguration(appenderName);
+        loggerContext.start(configuration);
+        appenderRef[0] = configuration.getAppender(appenderName);
+        assertThat(appenderRef[0]).isNotNull();
+        final Class<?> testClass = testInfo.getTestClass().orElse(null);
+        assertThat(testClass).isNotNull();
+        loggerRef[0] = loggerContext.getLogger(testClass);
+        return loggerContext;
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private static Configuration createConfiguration(final String appenderName) {
+        final ConfigurationBuilder<BuiltConfiguration> configBuilder =
+                ConfigurationBuilderFactory.newConfigurationBuilder();
+        final LayoutComponentBuilder layoutComponentBuilder =
+                configBuilder.newLayout("PatternLayout").addAttribute("pattern", "%m");
+        final AppenderComponentBuilder appenderComponentBuilder =
+                configBuilder.newAppender(appenderName, "List").add(layoutComponentBuilder);
+        final RootLoggerComponentBuilder loggerComponentBuilder =
+                configBuilder.newRootLogger(Level.ALL).add(configBuilder.newAppenderRef(appenderName));
+        return configBuilder
+                .add(appenderComponentBuilder)
+                .add(loggerComponentBuilder)
+                .build(false);
     }
 
     private static final class ParameterObject {
+
         private final String value;
 
-        ParameterObject(final String value) {
+        private ParameterObject(final String value) {
             this.value = value;
         }
 
@@ -96,9 +119,10 @@ public class EventParameterMemoryLeakTest {
     }
 
     private static final class ObjectThrowable extends RuntimeException {
+
         private final Object object;
 
-        ObjectThrowable(final Object object) {
+        private ObjectThrowable(final Object object) {
             super(String.valueOf(object));
             this.object = object;
         }
