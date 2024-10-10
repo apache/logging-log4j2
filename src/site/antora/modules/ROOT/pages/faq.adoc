@@ -327,3 +327,55 @@ https://gradleup.com/shadow/[Gradle Shadow Plugin]:::
 You need to use the
 https://github.com/GradleUp/shadow/blob/main/src/main/groovy/com/github/jengelman/gradle/plugins/shadow/transformers/Log4j2PluginsCacheFileTransformer.groovy[`Log4j2PluginsCacheFileTransformer`].
 ====
+
+[#android]
+== Can I use Log4j with Android?
+
+Of course, you can!
+Since version `2.25.0` both the Log4j API and our three Log4j API implementations are tested for compatibility with the Android platform.
+
+If you use
+xref:manual/api.adoc[Log4j API]
+in an Android project, you have four choices for the Log4j API implementation:
+
+[#android-log4j-core]
+Log4j Core::
++
+Our
+xref:manual/implementation.adoc[reference Log4j API implementation]
+works on Android out-of-the-box.
+However, due to the limitations of the Android platform, the following features will not work:
++
+* The
+xref:manual/configuration.adoc#xinclude[XInclude feature]
+for XML configuration files will not work if you are using the standard Android XML parser.
+You might need to add the
+https://xerces.apache.org/[Xerces parser]
+to use the feature.
+* Due to the lack of Android support for multi-release JARs, some location-based features like the no-arg
+link:javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#getLogger()[`LogManager.getLogger()`]
+method or
+xref:manual/systemproperties.adoc#log4j2.contextSelector[`ClassLoaderContextSelector`]
+(default on JRE) are not available.
+You should use `BasicContextSelector` (default on Android) or `BasicAsyncLoggerContextSelector` instead.
+
+[#android-jul]
+JUL::
+[#android-logback]
+Logback::
++
+Both our
+xref:manual/installation.adoc#impl-jul[Log4j API-to-JUL]
+and
+xref:manual/installation.adoc#impl-logback[Log4j API-to-SLF4J]
+bridges are tested for compatibility with Android.
+
+[#android-native]
+Log4j API-to-Android logging API bridge::
++
+If you wish to bridge Log4j API to
+https://developer.android.com/reference/android/util/Log[Android's native logging API]
+directly, you can use the **third-party** `com.celeral:log4j2-android` artifact.
+See the
+https://github.com/Celeral/log4j2-android[`log4j2-android` project website]
+for more information.
